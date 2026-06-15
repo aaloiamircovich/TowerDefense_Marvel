@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Hero TD</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="game-ui">
+        <header id="top-bar">
+            <div class="top-section left" aria-label="Estado de partida">
+                <div class="status-item"><i class="fas fa-user-shield"></i> Lv.<span id="ui-player-lv">1</span></div>
+                <div class="status-item text-red"><i class="fas fa-heart"></i> <span id="ui-lives">20</span></div>
+                <div class="status-item text-yellow"><i class="fas fa-coins"></i> <span id="ui-credits">650</span></div>
+                <div class="status-item text-blue"><i class="fas fa-star"></i> <span id="ui-stars">0</span></div>
+            </div>
+
+            <div class="top-section center">
+                <div class="status-item map-info"><span id="ui-level-name">MAPA</span> | OLEADA <span id="ui-wave">1</span></div>
+            </div>
+
+            <div class="top-section right">
+                <nav id="hub-menu" aria-label="Paneles">
+                    <button class="hub-btn" data-panel="profile" title="Perfil" aria-label="Perfil"><i class="fas fa-id-card"></i></button>
+                    <button class="hub-btn" data-panel="collection" title="Colección" aria-label="Colección"><i class="fas fa-grip"></i></button>
+                    <button class="hub-btn" data-panel="inventory" title="Inventario" aria-label="Inventario"><i class="fas fa-box-open"></i></button>
+                    <button class="hub-btn" data-panel="shop" title="Tienda" aria-label="Tienda"><i class="fas fa-shopping-cart"></i></button>
+                    <button class="hub-btn" data-panel="map" title="Mapa" aria-label="Mapa"><i class="fas fa-map-marked-alt"></i></button>
+                    <button class="hub-btn" data-panel="settings" title="Ajustes" aria-label="Ajustes"><i class="fas fa-cog"></i></button>
+                </nav>
+                <div id="fps-display">60 FPS</div>
+            </div>
+        </header>
+
+        <main id="main-content">
+            <aside id="left-panel" class="side-panel">
+                <div class="panel-header">Equipo</div>
+                <div id="selection-status" class="selection-status">Elige un héroe y colócalo junto al camino.</div>
+                <div class="hero-grid"></div>
+            </aside>
+
+            <section id="center-canvas-container">
+                <canvas id="gameCanvas" width="800" height="600"></canvas>
+                <div id="toast" class="toast hidden"></div>
+            </section>
+
+            <aside id="right-panel" class="side-panel">
+                <div class="panel-header split-header">
+                    <span>Radar de Oleada</span>
+                    <span id="next-wave-number">1</span>
+                </div>
+
+                <div id="wave-preview"></div>
+
+                <div id="enemy-info-panel">
+                    <div id="enemy-info-empty" class="empty-state">
+                        <i class="fas fa-skull"></i>
+                        <p>Selecciona un enemigo para ver sus datos</p>
+                    </div>
+                    <div id="enemy-info-content" class="hidden">
+                        <h3 id="en-info-name" class="text-red">ENEMIGO</h3>
+                        <div class="stat-list">
+                            <div class="stat-row"><span>Salud</span><strong id="en-info-hp">0</strong></div>
+                            <div class="stat-row"><span>Velocidad</span><strong id="en-info-speed">0</strong></div>
+                            <div class="stat-row"><span>Armadura</span><strong id="en-info-armor">0</strong></div>
+                            <div class="stat-row"><span>Recompensa</span><strong id="en-info-reward">$0</strong></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="wave-controls">
+                    <div class="control-row">
+                        <button id="btn-pause" class="btn-action" title="Pausar" aria-label="Pausar"><i class="fas fa-pause"></i></button>
+                        <button id="btn-auto" class="btn-action muted" title="Auto oleada" aria-label="Auto oleada"><i class="fas fa-forward"></i></button>
+                        <button id="btn-speed" class="btn-action speed-btn" title="Velocidad">x1 <i class="fas fa-rocket"></i></button>
+                    </div>
+                    <button id="next-wave-btn" class="btn-primary">INICIAR OLEADA</button>
+                </div>
+            </aside>
+        </main>
+    </div>
+
+    <div id="panel-overlay" class="hidden">
+        <div id="panel-container">
+            <button id="close-panel-btn" aria-label="Cerrar"><i class="fas fa-times"></i></button>
+            <div id="panel-content"></div>
+        </div>
+    </div>
+
+    <script type="module" src="src/main.js"></script>
+</body>
+</html>

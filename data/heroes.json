@@ -1,0 +1,188 @@
+{
+  "iron_man": {
+    "id": "iron_man", "name": "Iron Man", "category": "Tecnológico", "rarity": "Rare",
+    "cost": 250, "damage": 25, "range": 160, "fireRate": 1.5, "canSeeStealth": true,
+    "ability": "SOBRECARGA ARC", "abilityDesc": "Cada 3 ataques dispara un grueso láser azul que atraviesa a múltiples enemigos en línea recta.", "sprite": "assets/images/heroes/iron_man.png", "evolutionId": "iron_man_extremis",
+    "allowedTerrains": [0, 1, 3]
+  },
+  "spiderman": {
+    "id": "spiderman", "name": "Spider-Man", "category": "Urbano", "rarity": "Common",
+    "cost": 150, "damage": 15, "range": 110, "fireRate": 2.2, "canSeeStealth": true,
+    "ability": "TELARAÑA", "abilityDesc": "Envuelve a los enemigos en redes, reduciendo drásticamente su velocidad de movimiento.", "sprite": "assets/images/heroes/spiderman.png", "evolutionId": "iron_spider",
+    "allowedTerrains": [1, 3]
+  },
+  "capitan_america": {
+    "id": "capitan_america", "name": "Capitán América", "category": "Urbano", "rarity": "Rare",
+    "cost": 200, "damage": 30, "range": 100, "fireRate": 1.2, "canSeeStealth": false,
+    "ability": "REBOTE DE ESCUDO", "abilityDesc": "Lanza su escudo, el cual rebota automáticamente entre 3 enemigos cercanos haciendo daño en cadena.", "sprite": "assets/images/heroes/capitan_america.png",
+    "allowedTerrains": [1, 3]
+  },
+  "thor": {
+    "id": "thor", "name": "Thor", "category": "Místico", "rarity": "Legendary",
+    "cost": 600, "damage": 70, "range": 180, "fireRate": 0.8, "canSeeStealth": false,
+    "ability": "TORMENTA DIVINA", "abilityDesc": "Invoca enormes rayos del cielo que caen sobre el camino y causan daño masivo en área.", "sprite": "assets/images/heroes/thor.png",
+    "allowedTerrains": [0, 1, 3]
+  },
+  "hulk": {
+    "id": "hulk", "name": "Hulk", "category": "Mutante", "rarity": "Rare",
+    "cost": 400, "damage": 80, "range": 80, "fireRate": 0.5, "canSeeStealth": false,
+    "ability": "PISOTÓN GAMMA", "abilityDesc": "Golpea el suelo con furia, creando una onda expansiva verde que aturde a los enemigos cercanos.", "sprite": "assets/images/heroes/hulk.png",
+    "allowedTerrains": [1, 3]
+  },
+  "black_widow": {
+    "id": "black_widow", "name": "Black Widow", "category": "Urbano", "rarity": "Common",
+    "cost": 140, "damage": 18, "range": 130, "fireRate": 2.0, "canSeeStealth": true,
+    "ability": "DESCARGA ELÉCTRICA", "abilityDesc": "Sus proyectiles tienen una alta probabilidad de electrocutar y paralizar al enemigo por 1 segundo.", "sprite": "assets/images/heroes/black_widow.png",
+    "allowedTerrains": [1, 3]
+  },
+  "hawkeye": {
+    "id": "hawkeye", "name": "Hawkeye", "category": "Urbano", "rarity": "Common",
+    "cost": 130, "damage": 22, "range": 220, "fireRate": 1.1, "canSeeStealth": true,
+    "ability": "FLECHA EXPLOSIVA", "abilityDesc": "Dispara flechas con punta detonante que explotan al impactar, causando daño en área.", "sprite": "assets/images/heroes/hawkeye.png",
+    "allowedTerrains": [1, 3]
+  },
+  "black_panther": {
+    "id": "black_panther", "name": "Black Panther", "category": "Tecnológico", "rarity": "Rare",
+    "cost": 220, "damage": 35, "range": 90, "fireRate": 1.8, "canSeeStealth": true,
+    "ability": "VIBRANIUM", "abilityDesc": "Acumula energía cinética. Su daño aumenta progresivamente por cada ataque consecutivo al mismo objetivo.", "sprite": "assets/images/heroes/black_panther.png",
+    "allowedTerrains": [1, 3]
+  },
+  "doctor_strange": {
+    "id": "doctor_strange", "name": "Doctor Strange", "category": "Místico", "rarity": "Legendary",
+    "cost": 550, "damage": 55, "range": 200, "fireRate": 1.0, "canSeeStealth": true,
+    "ability": "PORTAL MÍSTICO", "abilityDesc": "Abre portales dorados frente a él, duplicando los proyectiles mágicos que dispara.", "sprite": "assets/images/heroes/doctor_strange.png",
+    "allowedTerrains": [0, 1, 3]
+  },
+  "captain_marvel": {
+    "id": "captain_marvel", "name": "Captain Marvel", "category": "Cósmico", "rarity": "Legendary",
+    "cost": 700, "damage": 90, "range": 250, "fireRate": 0.7, "canSeeStealth": false,
+    "ability": "FORMA BINARIA", "abilityDesc": "Al derrotar a un enemigo, entra en estado ígneo incrementando enormemente su daño durante 3 segundos.", "sprite": "assets/images/heroes/captain_marvel.png",
+    "allowedTerrains": [0, 1, 3]
+  },
+  "wolverine": {
+    "id": "wolverine", "name": "Wolverine", "category": "Mutante", "rarity": "Rare",
+    "cost": 300, "damage": 40, "range": 70, "fireRate": 2.5, "canSeeStealth": true,
+    "ability": "REGENERACIÓN", "abilityDesc": "Entra en frenesí salvaje. Su velocidad de ataque se multiplica drásticamente si está rodeado de enemigos.", "sprite": "assets/images/heroes/wolverine.png",
+    "allowedTerrains": [1, 3]
+  },
+  "daredevil": {
+    "id": "daredevil", "name": "Daredevil", "category": "Urbano", "rarity": "Common",
+    "cost": 120, "damage": 20, "range": 100, "fireRate": 2.0, "canSeeStealth": true,
+    "ability": "RADAR", "abilityDesc": "Detecta enemigos con camuflaje y emite un pulso que permite a los héroes cercanos verlos también.", "sprite": "assets/images/heroes/daredevil.png",
+    "allowedTerrains": [1, 3]
+  },
+  "ant_man": {
+    "id": "ant_man", "name": "Ant-Man", "category": "Tecnológico", "rarity": "Rare",
+    "cost": 180, "damage": 28, "range": 110, "fireRate": 1.4, "canSeeStealth": true,
+    "ability": "TAMAÑO VARIABLE", "abilityDesc": "Alterna aleatoriamente su tamaño: Gigante (alcance masivo y daño) u Hormiga (velocidad extrema).", "sprite": "assets/images/heroes/ant_man.png",
+    "allowedTerrains": [1, 3]
+  },
+  "star_lord": {
+    "id": "star_lord", "name": "Star-Lord", "category": "Cósmico", "rarity": "Common",
+    "cost": 160, "damage": 20, "range": 160, "fireRate": 1.6, "canSeeStealth": false,
+    "ability": "DISPARO DOBLE", "abilityDesc": "Usa sus dos blásters simultáneamente para disparar a dos objetivos diferentes a la vez.", "sprite": "assets/images/heroes/star_lord.png",
+    "allowedTerrains": [1, 3]
+  },
+  "groot": {
+    "id": "groot", "name": "Groot", "category": "Cósmico", "rarity": "Rare",
+    "cost": 350, "damage": 45, "range": 120, "fireRate": 0.6, "canSeeStealth": false,
+    "ability": "RAÍCES", "abilityDesc": "Atrapa a los enemigos en su lugar con ramas y raíces, inmovilizándolos temporalmente.", "sprite": "assets/images/heroes/groot.png",
+    "allowedTerrains": [1, 3]
+  },
+  "gamora": {
+    "id": "gamora", "name": "Gamora", "category": "Cósmico", "rarity": "Rare",
+    "cost": 240, "damage": 42, "range": 90, "fireRate": 1.9, "canSeeStealth": true,
+    "ability": "GOLPE MORTAL", "abilityDesc": "Ejecutora implacable. Sus ataques siempre son críticos si el enemigo tiene menos del 30% de salud.", "sprite": "assets/images/heroes/gamora.png",
+    "allowedTerrains": [1, 3]
+  },
+  "scarlet_witch": {
+    "id": "scarlet_witch", "name": "Scarlet Witch", "category": "Místico", "rarity": "Legendary",
+    "cost": 650, "damage": 65, "range": 220, "fireRate": 0.9, "canSeeStealth": true,
+    "ability": "MALDICIÓN", "abilityDesc": "Conecta mágicamente a los enemigos. El daño que recibe el objetivo maldito salpica a los demás.", "sprite": "assets/images/heroes/scarlet_witch.png",
+    "allowedTerrains": [0, 1, 3]
+  },
+  "vision": {
+    "id": "vision", "name": "Vision", "category": "Tecnológico", "rarity": "Legendary",
+    "cost": 500, "damage": 50, "range": 190, "fireRate": 1.3, "canSeeStealth": true,
+    "ability": "INTANGIBILIDAD", "abilityDesc": "Dispara rayos láser concentrados que atraviesan a todos los enemigos sin perder potencia.", "sprite": "assets/images/heroes/vision.png",
+    "allowedTerrains": [0, 1, 3]
+  },
+  "falcon": {
+    "id": "falcon", "name": "Falcon", "category": "Tecnológico", "rarity": "Common",
+    "cost": 140, "damage": 16, "range": 150, "fireRate": 2.1, "canSeeStealth": true,
+    "ability": "REDWING", "abilityDesc": "Despliega un pequeño dron auxiliar que escanea el mapa y ataca enemigos de forma autónoma.", "sprite": "assets/images/heroes/falcon.png",
+    "allowedTerrains": [0, 1, 3]
+  },
+  "winter_soldier": {
+    "id": "winter_soldier", "name": "Winter Soldier", "category": "Urbano", "rarity": "Rare",
+    "cost": 260, "damage": 38, "range": 180, "fireRate": 1.3, "canSeeStealth": true,
+    "ability": "MUNICIÓN PESADA", "abilityDesc": "Utiliza munición perforante que ignora un porcentaje de la armadura del enemigo.", "sprite": "assets/images/heroes/winter_soldier.png",
+    "allowedTerrains": [1, 3]
+  },
+  "shang_chi": {
+    "id": "shang_chi", "name": "Shang-Chi", "category": "Urbano", "rarity": "Rare",
+    "cost": 210, "damage": 45, "range": 80, "fireRate": 2.2, "canSeeStealth": false,
+    "ability": "DIEZ ANILLOS", "abilityDesc": "Lanza anillos místicos dorados que giran y rebotan entre varios enemigos a gran velocidad.", "sprite": "assets/images/heroes/shang_chi.png",
+    "allowedTerrains": [1, 3]
+  },
+  "moon_knight": {
+    "id": "moon_knight", "name": "Moon Knight", "category": "Urbano", "rarity": "Rare",
+    "cost": 230, "damage": 32, "range": 120, "fireRate": 1.7, "canSeeStealth": true,
+    "ability": "LUNA CRECIENTE", "abilityDesc": "Lanza proyectiles en forma de bumerán que dañan a los enemigos tanto al ir como al volver.", "sprite": "assets/images/heroes/moon_knight.png",
+    "allowedTerrains": [1, 3]
+  },
+  "she_hulk": {
+    "id": "she_hulk", "name": "She-Hulk", "category": "Mutante", "rarity": "Rare",
+    "cost": 320, "damage": 55, "range": 90, "fireRate": 1.1, "canSeeStealth": false,
+    "ability": "IMPACTO BRUTAL", "abilityDesc": "Sus golpes son tan pesados que empujan hacia atrás a los enemigos (Efecto Knockback).", "sprite": "assets/images/heroes/she_hulk.png",
+    "allowedTerrains": [1, 3]
+  },
+  "jean_grey": {
+    "id": "jean_grey", "name": "Jean Grey", "category": "Mutante", "rarity": "Legendary",
+    "cost": 600, "damage": 60, "range": 210, "fireRate": 1.0, "canSeeStealth": true,
+    "ability": "CONTROL MENTAL", "abilityDesc": "Confunde la mente del enemigo, reduciendo su velocidad y forzándolo a retroceder en el camino.", "sprite": "assets/images/heroes/jean_grey.png", "evolutionId": "phoenix",
+    "allowedTerrains": [0, 1, 3]
+  },
+  "cyclops": {
+    "id": "cyclops", "name": "Cyclops", "category": "Mutante", "rarity": "Rare",
+    "cost": 250, "damage": 40, "range": 240, "fireRate": 1.2, "canSeeStealth": true,
+    "ability": "RAYO PENETRANTE", "abilityDesc": "Abre su visor para lanzar un rayo rojo continuo que calcina todo lo que toca en línea recta.", "sprite": "assets/images/heroes/cyclops.png",
+    "allowedTerrains": [1, 3]
+  },
+  "storm": {
+    "id": "storm", "name": "Storm", "category": "Mutante", "rarity": "Rare",
+    "cost": 280, "damage": 35, "range": 200, "fireRate": 1.4, "canSeeStealth": false,
+    "ability": "VENTISCA", "abilityDesc": "Genera un aura helada a su alrededor que ralentiza pasivamente a todos los enemigos.", "sprite": "assets/images/heroes/storm.png",
+    "allowedTerrains": [0, 1, 3]
+  },
+  "silver_surfer": {
+    "id": "silver_surfer", "name": "Silver Surfer", "category": "Cósmico", "rarity": "Legendary",
+    "cost": 800, "damage": 100, "range": 300, "fireRate": 0.6, "canSeeStealth": true,
+    "ability": "ENERGÍA CÓSMICA", "abilityDesc": "Canaliza el Poder Cósmico. Sus ataques impactan generando explosiones estelares de gran área.", "sprite": "assets/images/heroes/silver_surfer.png",
+    "allowedTerrains": [0, 1, 3]
+  },
+  "blade": {
+    "id": "blade", "name": "Blade", "category": "Místico", "rarity": "Rare",
+    "cost": 240, "damage": 36, "range": 110, "fireRate": 1.8, "canSeeStealth": true,
+    "ability": "SED DE SANGRE", "abilityDesc": "Cada enemigo derrotado bajo su espada aumenta permanentemente su velocidad de ataque.", "sprite": "assets/images/heroes/blade.png",
+    "allowedTerrains": [1, 3]
+  },
+  "ghost_rider": {
+    "id": "ghost_rider", "name": "Ghost Rider", "category": "Místico", "rarity": "Legendary",
+    "cost": 500, "damage": 75, "range": 150, "fireRate": 0.9, "canSeeStealth": true,
+    "ability": "FUEGO INFERNAL", "abilityDesc": "Sus ataques envuelven a los enemigos en llamas, causándoles daño por quemadura continua.", "sprite": "assets/images/heroes/ghost_rider.png",
+    "allowedTerrains": [1, 3]
+  },
+  "luke_cage": {
+    "id": "luke_cage", "name": "Luke Cage", "category": "Urbano", "rarity": "Common",
+    "cost": 180, "damage": 25, "range": 85, "fireRate": 1.4, "canSeeStealth": false,
+    "ability": "PIEL DE ACERO", "abilityDesc": "Posee un aura defensiva e intimidante que rompe la armadura de los enemigos que pasen cerca.", "sprite": "assets/images/heroes/luke_cage.png",
+    "allowedTerrains": [1, 3]
+  },
+  "domino": {
+    "id": "domino", "name": "Domino", "category": "Mutante", "rarity": "Legendary",
+    "cost": 450, "damage": 20, "range": 140, "fireRate": 1.5, "canSeeStealth": true,
+    "ability": "CODICIA", "abilityDesc": "Símbolo de suerte y riqueza. Sus ataques desprenden monedas, robando un 10% del oro enemigo por impacto.", "sprite": "assets/images/heroes/domino.png",
+    "allowedTerrains": [1, 3]
+  }
+}

@@ -1,0 +1,65 @@
+[
+  {
+    "id": "level_1",
+    "name": "Calles de Nueva York",
+    "description": "Hydra y A.I.M. avanzan por Manhattan rumbo a la Torre Stark. Defiende las avenidas entre taxis, asfalto y neón.",
+    "thumbnail": "city_streets",
+    "difficulty": "Fácil",
+    "theme": {
+      "id": "new-york",
+      "label": "Manhattan",
+      "accent": "#40c9ff",
+      "brief": "Avenidas urbanas, alcantarillas, agua del Hudson y tecnología Stark."
+    },
+    "path": [
+      { "x": 0, "y": 120 },
+      { "x": 280, "y": 120 },
+      { "x": 280, "y": 360 },
+      { "x": 520, "y": 360 },
+      { "x": 520, "y": 500 },
+      { "x": 800, "y": 500 }
+    ]
+  },
+  {
+    "id": "level_2",
+    "name": "Base de los Vengadores",
+    "description": "Ultrón ha invadido el complejo. Mantén los drones dentro de los corredores blindados del hangar.",
+    "thumbnail": "avengers_hq",
+    "difficulty": "Normal",
+    "theme": {
+      "id": "avengers",
+      "label": "Complejo Avengers",
+      "accent": "#fca311",
+      "brief": "Hangar táctico, paneles de energía, acero y pasillos S.H.I.E.L.D."
+    },
+    "path": [
+      { "x": 0, "y": 300 },
+      { "x": 200, "y": 300 },
+      { "x": 200, "y": 100 },
+      { "x": 600, "y": 100 },
+      { "x": 600, "y": 500 },
+      { "x": 800, "y": 500 }
+    ]
+  },
+  {
+    "id": "level_3",
+    "name": "Reino de Wakanda",
+    "description": "Mercenarios buscan las minas de Vibranium. Usa el terreno selvático y los canales para proteger Birnin Zana.",
+    "thumbnail": "wakanda",
+    "difficulty": "Difícil",
+    "theme": {
+      "id": "wakanda",
+      "label": "Wakanda",
+      "accent": "#b865ff",
+      "brief": "Selva, oro, roca púrpura y vetas de Vibranium."
+    },
+    "path": [
+      { "x": 400, "y": 0 },
+      { "x": 400, "y": 200 },
+      { "x": 120, "y": 200 },
+      { "x": 120, "y": 400 },
+      { "x": 700, "y": 400 },
+      { "x": 700, "y": 600 }
+    ]
+  }
+]

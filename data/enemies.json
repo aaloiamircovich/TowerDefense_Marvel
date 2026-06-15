@@ -1,0 +1,126 @@
+{
+  "normal": {
+    "hydra_soldier": {
+      "id": "hydra_soldier", "name": "Soldado de Hydra", "category": "Urbano",
+      "hp": 100, "speed": 50, "reward": 10, "armor": 0, "stealth": false
+    },
+    "aim_scientist": {
+      "id": "aim_scientist", "name": "Científico A.I.M.", "category": "Tecnológico",
+      "hp": 85, "speed": 55, "reward": 12, "armor": 0, "stealth": false
+    },
+    "sentinel": {
+      "id": "sentinel", "name": "Centinela", "category": "Tecnológico",
+      "hp": 500, "speed": 35, "reward": 45, "armor": 0.60, "stealth": false
+    },
+    "outrider": {
+      "id": "outrider", "name": "Outrider", "category": "Cósmico",
+      "hp": 120, "speed": 75, "reward": 15, "armor": 0.10, "stealth": false
+    },
+    "chitauri_warrior": {
+      "id": "chitauri_warrior", "name": "Guerrero Chitauri", "category": "Cósmico",
+      "hp": 150, "speed": 50, "reward": 18, "armor": 0.20, "stealth": false
+    },
+    "dark_elf": {
+      "id": "dark_elf", "name": "Elfo Oscuro", "category": "Místico",
+      "hp": 130, "speed": 60, "reward": 20, "armor": 0, "stealth": true
+    },
+    "skrull_infiltrator": {
+      "id": "skrull_infiltrator", "name": "Infiltrado Skrull", "category": "Cósmico",
+      "hp": 110, "speed": 65, "reward": 25, "armor": 0, "stealth": true
+    },
+    "hand_ninja": {
+      "id": "hand_ninja", "name": "Ninja de La Mano", "category": "Urbano",
+      "hp": 90, "speed": 90, "reward": 22, "armor": 0, "stealth": true
+    },
+    "symbiote_spawn": {
+      "id": "symbiote_spawn", "name": "Simbionte", "category": "Cósmico",
+      "hp": 180, "speed": 80, "reward": 30, "armor": 0.30, "stealth": false
+    },
+    "doombot": {
+      "id": "doombot", "name": "Doombot", "category": "Tecnológico",
+      "hp": 200, "speed": 45, "reward": 20, "armor": 0.35, "stealth": false
+    },
+    "hellfire_guard": {
+      "id": "hellfire_guard", "name": "Guardia Hellfire", "category": "Mutante",
+      "hp": 160, "speed": 50, "reward": 20, "armor": 0.15, "stealth": false
+    },
+    "frost_giant_scout": {
+      "id": "frost_giant_scout", "name": "Gigante de Hielo", "category": "Místico",
+      "hp": 600, "speed": 30, "reward": 50, "armor": 0.20, "stealth": false
+    },
+    "sakaaran_soldier": {
+      "id": "sakaaran_soldier", "name": "Soldado Sakaarano", "category": "Cósmico",
+      "hp": 140, "speed": 55, "reward": 15, "armor": 0.25, "stealth": false
+    },
+    "brotherhood_mutant": {
+      "id": "brotherhood_mutant", "name": "Mutante de la Hermandad", "category": "Mutante",
+      "hp": 170, "speed": 60, "reward": 25, "armor": 0, "stealth": false
+    },
+    "ultron_drone": {
+      "id": "ultron_drone", "name": "Dron de Ultrón", "category": "Tecnológico",
+      "hp": 120, "speed": 70, "reward": 15, "armor": 0.20, "stealth": false
+    }
+  },
+  "bosses": {
+    "loki": {
+      "id": "loki", "name": "Loki", "category": "Místico", "isBoss": true,
+      "hp": 4000, "speed": 70, "reward": 1000, "armor": 0.10, "stealth": true, "immuneToStun": false
+    },
+    "doctor_doom": {
+      "id": "doctor_doom", "name": "Doctor Doom", "category": "Tecnológico", "isBoss": true,
+      "hp": 6000, "speed": 40, "reward": 1500, "armor": 0.50, "stealth": false, "immuneToStun": true
+    },
+    "magneto": {
+      "id": "magneto", "name": "Magneto", "category": "Mutante", "isBoss": true,
+      "hp": 5500, "speed": 45, "reward": 1200, "armor": 0.40, "stealth": false, "immuneToSlow": true
+    },
+    "green_goblin": {
+      "id": "green_goblin", "name": "Duende Verde", "category": "Tecnológico", "isBoss": true,
+      "hp": 3500, "speed": 90, "reward": 800, "armor": 0.20, "stealth": false, "immuneToSlow": false
+    },
+    "red_skull": {
+      "id": "red_skull", "name": "Red Skull", "category": "Urbano", "isBoss": true,
+      "hp": 4500, "speed": 50, "reward": 1000, "armor": 0.30, "stealth": false, "immuneToStun": false
+    },
+    "ultron_prime": {
+      "id": "ultron_prime", "name": "Ultrón Prime", "category": "Tecnológico", "isBoss": true,
+      "hp": 7000, "speed": 40, "reward": 2000, "armor": 0.55, "stealth": false, "immuneToStun": true
+    },
+    "kingpin": {
+      "id": "kingpin", "name": "Kingpin", "category": "Urbano", "isBoss": true,
+      "hp": 8000, "speed": 30, "reward": 1500, "armor": 0.45, "stealth": false, "immuneToSlow": true
+    },
+    "kang": {
+      "id": "kang", "name": "Kang el Conquistador", "category": "Cósmico", "isBoss": true,
+      "hp": 6500, "speed": 50, "reward": 1800, "armor": 0.35, "stealth": false, "immuneToStun": true
+    },
+    "apocalypse": {
+      "id": "apocalypse", "name": "Apocalypse", "category": "Mutante", "isBoss": true,
+      "hp": 12000, "speed": 35, "reward": 3000, "armor": 0.50, "stealth": false, "immuneToStun": true, "immuneToSlow": true
+    },
+    "carnage": {
+      "id": "carnage", "name": "Carnage", "category": "Urbano", "isBoss": true,
+      "hp": 4000, "speed": 110, "reward": 1000, "armor": 0.15, "stealth": false, "immuneToSlow": true
+    },
+    "hela": {
+      "id": "hela", "name": "Hela", "category": "Místico", "isBoss": true,
+      "hp": 9000, "speed": 40, "reward": 2500, "armor": 0.30, "stealth": false, "immuneToStun": true
+    },
+    "killmonger": {
+      "id": "killmonger", "name": "Killmonger", "category": "Urbano", "isBoss": true,
+      "hp": 5000, "speed": 60, "reward": 1200, "armor": 0.40, "stealth": false, "immuneToStun": false
+    },
+    "dormammu": {
+      "id": "dormammu", "name": "Dormammu", "category": "Místico", "isBoss": true,
+      "hp": 15000, "speed": 25, "reward": 5000, "armor": 0.20, "stealth": false, "immuneToStun": true, "immuneToSlow": true
+    },
+    "galactus": {
+      "id": "galactus", "name": "Galactus", "category": "Cósmico", "isBoss": true,
+      "hp": 50000, "speed": 20, "reward": 10000, "armor": 0.70, "stealth": false, "immuneToStun": true, "immuneToSlow": true
+    },
+    "thanos_final": {
+      "id": "thanos_final", "name": "Thanos (Guantelete)", "category": "Cósmico", "isBoss": true, "isFinalBoss": true,
+      "hp": 150000, "speed": 25, "reward": 0, "armor": 0.65, "stealth": false, "immuneToStun": true, "immuneToSlow": true
+    }
+  }
+}

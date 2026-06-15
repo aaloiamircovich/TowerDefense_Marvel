@@ -1,0 +1,52 @@
+{
+  "telarana_sintetica": {
+    "id": "telarana_sintetica", "name": "TELARAÑA SINTÉTICA", 
+    "desc": "Potencia los efectos de ralentización.",
+    "icon": "assets/images/items/web.png", "price": 250, "tier": 1
+  },
+  "aerodeslizador": {
+    "id": "aerodeslizador", "name": "AERODESLIZADOR S.H.I.E.L.D.", 
+    "desc": "Permite colocar a este héroe sobre el AGUA.",
+    "icon": "assets/images/items/hoverboard.png", "price": 300, "tier": 1
+  },
+  "lentes_edith": {
+    "id": "lentes_edith", "name": "LENTES E.D.I.T.H.", 
+    "desc": "Permite al héroe detectar y golpear enemigos INVISIBLES.",
+    "icon": "assets/images/items/edith.png", "price": 400, "tier": 1
+  },
+  "reactor_arc": {
+    "id": "reactor_arc", "name": "REACTOR ARC", 
+    "desc": "Aumenta la Velocidad de Ataque un 25%.",
+    "icon": "assets/images/items/reactor.png", "price": 600, "tier": 2
+  },
+  "suero_supersoldado": {
+    "id": "suero_supersoldado", "name": "SUERO DEL SÚPER SOLDADO", 
+    "desc": "Si tu base tiene poca Vida, aumenta Daño un 30%.",
+    "icon": "assets/images/items/serum.png", "price": 800, "tier": 2
+  },
+  "contrato_stark": {
+    "id": "contrato_stark", "name": "CONTRATO STARK", 
+    "desc": "Genera $1 Crédito extra por cada ataque que impacte.",
+    "icon": "assets/images/items/stark_coin.png", "price": 1000, "tier": 2
+  },
+  "particulas_pym": {
+    "id": "particulas_pym", "name": "PARTÍCULAS PYM", 
+    "desc": "Reduce el tiempo de recarga a la mitad (+50% Vel. Ataque).",
+    "icon": "assets/images/items/pym.png", "price": 1500, "tier": 3
+  },
+  "simbionte": {
+    "id": "simbionte", "name": "SIMBIONTE VENOM", 
+    "desc": "El daño aumenta progresivamente al golpear al mismo enemigo.",
+    "icon": "assets/images/items/symbiote.png", "price": 1800, "tier": 3
+  },
+  "protocolo_extremis": {
+    "id": "protocolo_extremis", "name": "PROTOCOLO EXTREMIS", 
+    "desc": "Restaura 1 Vida a tu base por cada 15 enemigos que derrote.",
+    "icon": "assets/images/items/extremis.png", "price": 2500, "tier": 4
+  },
+  "gema_poder": {
+    "id": "gema_poder", "name": "GEMA DEL PODER", 
+    "desc": "Otorga un aumento masivo del 50% al Daño Total del héroe.",
+    "icon": "assets/images/items/power_stone.png", "price": 4000, "tier": 4
+  }
+}
