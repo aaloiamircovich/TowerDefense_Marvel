@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marvel Tower Defense</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div id="game-container">
+        <!-- HEADER / UI SUPERIOR -->
+        <header id="top-bar" style="background: linear-gradient(180deg, #b91d1d 0%, #7f1d1d 100%); border-bottom: 3px solid #f3d403; box-shadow: 0 4px 10px rgba(0,0,0,0.5);">
+            <div class="stats">
+                <span style="text-shadow: 1px 1px 2px #000;"><i class="fas fa-heart" style="color:#fff;"></i> <span id="ui-lives">20</span></span>
+                <span style="text-shadow: 1px 1px 2px #000;"><i class="fas fa-coins" style="color:#f3d403;"></i> $<span id="ui-credits">1000</span></span>
+                <span style="text-shadow: 1px 1px 2px #000;"><i class="fas fa-gem" style="color: #e9d5ff;"></i> <span id="ui-gems">100</span></span>
+                <span style="text-shadow: 1px 1px 2px #000;"><i class="fas fa-star" style="color:#60a5fa;"></i> <span id="ui-stars">0</span></span>
+                <span style="text-shadow: 1px 1px 2px #000; font-weight: 900; letter-spacing: 1px;">MISIÓN: <span id="ui-wave">1</span></span>
+            </div>
+            <div class="controls">
+                <span id="fps-display" style="font-family: monospace; opacity: 0.7;">60 FPS</span>
+                <button id="btn-profile" class="hub-btn" data-panel="profile" title="PERFIL" style="background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.2); padding: 10px 15px;"><i class="fas fa-user-shield"></i></button>
+                <button id="btn-quests" class="hub-btn" data-panel="quests" title="OBJETIVOS" style="background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.2); padding: 10px 15px;"><i class="fas fa-bullseye"></i></button>
+                <button id="btn-wiki" class="hub-btn" data-panel="wiki" title="GUÍA" style="background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.2); padding: 10px 15px;"><i class="fas fa-book"></i></button>
+                <button id="btn-shop" class="hub-btn" data-panel="shop" title="TIENDA" style="background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.2); padding: 10px 15px;"><i class="fas fa-store"></i></button>
+                <button id="btn-levels" class="hub-btn" data-panel="levels" title="NIVELES" style="background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.2); padding: 10px 15px;"><i class="fas fa-map"></i></button>
+                <button id="btn-collection" class="hub-btn" data-panel="collection" title="EQUIPO" style="background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.2); padding: 10px 15px;"><i class="fas fa-users"></i></button>
+                <button id="btn-inventory" class="hub-btn" data-panel="inventory" title="MOCHILA" style="background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.2); padding: 10px 15px;"><i class="fas fa-box-open"></i></button>
+                <button id="btn-settings" class="hub-btn" data-panel="settings" title="OPCIONES" style="background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.2); padding: 10px 15px;"><i class="fas fa-cog"></i></button>
+            </div>
+        </header>
+
+        <!-- ÁREA PRINCIPAL -->
+        <main id="main-area">
+            <!-- PANEL LATERAL IZQUIERDO (PERSONAJES EQUIPADOS) -->
+            <aside id="left-panel">
+                <div class="panel-section">
+                    <h3 style="color:var(--primary-blue); text-align:center; font-size:14px; margin-bottom:20px; text-transform:uppercase; letter-spacing:1px;">Héroes Listos</h3>
+                    <div class="hero-grid"></div>
+                </div>
+            </aside>
+
+            <!-- CANVAS JUEGO -->
+            <div id="canvas-container">
+                <canvas id="gameCanvas" width="800" height="600"></canvas>
+            </div>
+
+            <!-- PANEL LATERAL DERECHO (RADAR Y EQUIPO) -->
+            <aside id="side-panel">
+                <div class="panel-section">
+                    <h3>RADAR: OLEADA <span id="next-wave-number">1</span></h3>
+                    <div id="wave-preview" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;"></div>
+                    <div class="radar-controls" style="margin-top:10px; display:flex; gap:5px; justify-content:center;">
+                        <button id="next-wave-btn" class="btn-action"><i class="fas fa-forward"></i></button>
+                        <button id="btn-pause" class="btn-action"><i class="fas fa-pause"></i></button>
+                        <button id="btn-auto" class="btn-action"><i class="fas fa-sync"></i></button>
+                        <button id="btn-speed" class="btn-action">x1 <i class="fas fa-rocket"></i></button>
+                    </div>
+                </div>
+
+                <div class="panel-section">
+                    <h3>GESTIÓN DE MISIÓN</h3>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px;">
+                        <button id="btn-sidebar-retry" class="btn-action" title="Reintentar Checkpoint" style="background:var(--accent-red); color:white; font-size:11px; height:auto; padding:10px 5px;"><i class="fas fa-undo"></i> REINTENTAR</button>
+                        <button id="btn-sidebar-restart" class="btn-action" title="Reiniciar" style="background:#444; color:white; font-size:11px; height:auto; padding:10px 5px;"><i class="fas fa-trash-alt"></i> REINICIAR</button>
+                    </div>
+                </div>
+
+                <div class="panel-section" id="enemy-info-panel">
+                    <h3>INFO OBJETIVO</h3>
+                    <div id="enemy-info-empty" style="text-align:center; color:#666; font-size:12px; padding:20px 0;">Haz clic en un enemigo en el mapa o radar.</div>
+                    <div id="enemy-info-content" class="hidden">
+                        <h4 id="en-info-name" style="color:var(--accent-red); margin-bottom:5px;"></h4>
+                        <p>Salud: <strong id="en-info-hp"></strong></p>
+                        <p>Velocidad: <strong id="en-info-speed"></strong></p>
+                        <p>Armadura: <strong id="en-info-armor"></strong></p>
+                        <p>Regeneración: <strong id="en-info-regen" style="color:#00ff00;"></strong>/s</p>
+                        <p>Recompensa: <strong id="en-info-reward" style="color:gold;"></strong></p>
+                        <p id="en-stealth-row" style="color:#00d4ff; font-size:11px; margin-top:5px; display:none;"><i class="fas fa-ghost"></i> OBJETIVO SIGILOSO</p>
+                        <p id="en-flying-row" style="color:#ff8c00; font-size:11px; margin-top:5px; display:none;"><i class="fas fa-plane"></i> UNIDAD VOLADORA</p>
+                        <p id="en-cloner-row" style="color:#a335ee; font-size:11px; margin-top:5px; display:none;"><i class="fas fa-users"></i> UNIDAD CLONADORA</p>
+                    </div>
+                </div>
+            </aside>
+        </main>
+    </div>
+
+    <!-- OVERLAY (MODALES / TIENDA / STATS) -->
+    <div id="panel-overlay" class="hidden">
+        <div class="modal">
+            <button id="close-panel-btn" class="hidden"><i class="fas fa-times"></i></button>
+            <div id="panel-content"></div>
+        </div>
+    </div>
+
+    <script type="module" src="src/main.js"></script>
+</body>
+</html>

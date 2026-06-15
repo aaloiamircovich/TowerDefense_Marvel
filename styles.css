@@ -1,0 +1,72 @@
+            :root {
+    --bg-dark: #111;
+    --bg-panel: #1a1a1a;
+    --primary-blue: #0078d7;
+    --accent-red: #d32f2f;
+    --bright-yellow: #ffcc00;
+    --text-light: #f0f0f0;
+    --border-color: #333;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #000; color: var(--text-light); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+.hidden { display: none !important; }
+.text-red { color: var(--accent-red); } .text-yellow { color: var(--bright-yellow); } .text-blue { color: var(--primary-blue); }
+
+#game-container { display: flex; flex-direction: column; height: 100%; }
+#top-bar { display: flex; justify-content: space-between; padding: 10px 20px; background: var(--bg-panel); border-bottom: 2px solid var(--border-color); position: relative; z-index: 2000; }
+.stats span { margin-right: 15px; font-weight: bold; font-size: 1.1em; }
+.controls button { background: #333; color: white; border: none; padding: 5px 15px; margin-left: 10px; cursor: pointer; border-radius: 5px; font-weight: bold; transition: 0.2s; }
+.controls button:hover { background: var(--primary-blue); }
+
+#main-area { display: flex; justify-content: center; align-items: stretch; flex: 1; overflow: hidden; background: #000; }
+#canvas-container { flex: 1; display: flex; justify-content: center; align-items: center; background: #000; padding: 0; position: relative; overflow: hidden; }
+canvas { background: #000; box-shadow: 0 0 50px rgba(0,0,0,0.9); width: 100%; height: 100%; max-width: 100%; max-height: 100%; display: block; aspect-ratio: 800 / 600; object-fit: contain; }
+
+#left-panel { width: 250px; padding: 10px; background: rgba(15,15,15,0.95); border-right: 2px solid #333; overflow-y: auto; flex-shrink: 0; }
+#side-panel { width: 250px; background: rgba(15,15,15,0.95); border-left: 2px solid #333; display: flex; flex-direction: column; padding: 10px; overflow-y: auto; flex-shrink: 0; }
+.panel-section { background: #222; border-radius: 8px; padding: 10px; margin-bottom: 10px; border: 1px solid #333; }
+.panel-section h3 { margin-bottom: 10px; font-size: 14px; text-transform: uppercase; color: #aaa; border-bottom: 1px solid #444; padding-bottom: 5px; }
+.flex-grow { flex: 1; }
+
+.btn-action { background: #333; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; transition: 0.2s; }
+.btn-action:hover { background: var(--bright-yellow); color: black; }
+
+.hero-grid { display: flex; flex-direction: column; gap: 8px; }
+.hero-card { display: flex; align-items: center; justify-content: space-between; background: #111; padding: 5px 10px; border-radius: 5px; border: 1px solid #444; }
+.hero-actions { display: flex; gap: 5px; }
+
+#panel-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: flex; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(5px); }
+
+.modal { 
+    background: var(--bg-panel); width: 85%; max-width: 1000px; height: 85%; max-height: 700px; 
+    border-radius: 10px; border: 2px solid var(--border-color); padding: 20px; 
+    position: relative; display: flex; flex-direction: column; overflow: visible; 
+}
+
+#panel-content { flex: 1; overflow-y: auto; padding-right: 5px; margin-top: 15px; }
+
+#close-panel-btn { 
+    position: absolute; top: -15px; right: -15px; background: var(--accent-red); 
+    color: white; border: 2px solid var(--bright-yellow); border-radius: 50%; width: 34px; height: 34px; 
+    display: flex; justify-content: center; align-items: center; font-size: 18px; 
+    cursor: pointer; z-index: 9999; transition: 0.2s; box-shadow: 0 0 15px rgba(211, 47, 47, 0.5);
+}
+#close-panel-btn:hover { background: var(--accent-red); border-color: var(--bright-yellow); transform: scale(1.1); }
+.btn-primary { background: var(--primary-blue); color: white; border: none; padding: 10px 20px; border-radius: 5px; font-weight: bold; cursor: pointer; }
+.btn-primary:hover { background: #005bb5; }
+
+/* Efecto Rarity Cosmic */
+@keyframes cosmic-flicker {
+    0%, 100% { opacity: 1; box-shadow: 0 0 10px #fff; border-color: #fff; }
+    50% { opacity: 0.8; box-shadow: 0 0 25px #fff, inset 0 0 10px #fff; border-color: #000; }
+}
+
+.rarity-cosmic {
+    background: #000 !important;
+    animation: cosmic-flicker 1.5s infinite ease-in-out;
+}
+
+.rarity-cosmic h3, .rarity-cosmic strong, .rarity-cosmic span {
+    color: #fff !important;
+    text-shadow: 0 0 5px #fff;
+}
