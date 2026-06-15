@@ -74,7 +74,8 @@ export class WaveManager {
         this.preparedQueue.forEach((entry) => {
             if (!seen.has(entry.config.id)) {
                 seen.add(entry.config.id);
-                unique.push(entry.config);
+                const count = this.preparedQueue.filter((candidate) => candidate.config.id === entry.config.id).length;
+                unique.push({ ...entry.config, previewCount: count });
             }
         });
         return unique;

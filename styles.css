@@ -382,6 +382,13 @@ canvas {
     white-space: nowrap;
 }
 
+.wave-enemy-card strong {
+    display: block;
+    margin-top: 5px;
+    color: var(--bright-yellow);
+    font-size: 12px;
+}
+
 #enemy-info-panel {
     flex: 1;
     min-height: 0;
@@ -783,6 +790,25 @@ select {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     gap: 12px;
+}
+
+.setting-toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 48px;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: rgba(20, 31, 45, 0.9);
+    color: var(--text);
+    font-weight: 700;
+}
+
+.setting-toggle input {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--level-accent);
 }
 
 .result-copy {

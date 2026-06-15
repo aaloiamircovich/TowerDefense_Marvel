@@ -150,12 +150,14 @@ export class Hero {
         const img = this.config.sprite ? imageCache.get(this.config.sprite) : null;
 
         ctx.save();
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, stats.range, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.035)';
-        ctx.fill();
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
-        ctx.stroke();
+        if (this.game.showHeroRanges) {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, stats.range, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.035)';
+            ctx.fill();
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+            ctx.stroke();
+        }
 
         if (this.flashTimer > 0) {
             ctx.beginPath();

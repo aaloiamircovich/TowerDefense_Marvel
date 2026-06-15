@@ -25,6 +25,8 @@ export class GameLoop {
         this.gameSpeed = 1;
         this.gridSize = 40;
         this.terrainMap = [];
+        this.showGrid = true;
+        this.showHeroRanges = true;
 
         this.theme = this.getLevelTheme();
 
@@ -208,8 +210,10 @@ export class GameLoop {
         ctx.fillStyle = colors[terrainType] || colors[1];
         ctx.fillRect(px, py, size, size);
 
-        ctx.strokeStyle = this.theme.gridLine;
-        ctx.strokeRect(px, py, size, size);
+        if (this.showGrid) {
+            ctx.strokeStyle = this.theme.gridLine;
+            ctx.strokeRect(px, py, size, size);
+        }
 
         if (terrainType === 2) {
             ctx.fillStyle = this.theme.pathCenter;

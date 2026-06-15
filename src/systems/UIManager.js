@@ -116,6 +116,7 @@ export class UIManager {
             card.title = enemy.name;
             card.innerHTML = `
                 <span class="enemy-token">${enemy.name.charAt(0)}</span>
+                <strong>x${enemy.previewCount || 1}</strong>
                 <small>${enemy.isBoss ? 'Jefe' : enemy.category}</small>
             `;
             card.addEventListener('click', () => this.inspectUnit(enemy, true));
@@ -459,10 +460,28 @@ export class UIManager {
         this.panelContent.innerHTML = `
             <h2>${title}</h2>
             <div class="settings-grid">
+                <label class="setting-toggle">
+                    <input type="checkbox" id="toggle-ranges" ${this.game.showHeroRanges ? 'checked' : ''}>
+                    <span>Mostrar rangos de héroes</span>
+                </label>
+                <label class="setting-toggle">
+                    <input type="checkbox" id="toggle-grid" ${this.game.showGrid ? 'checked' : ''}>
+                    <span>Mostrar cuadrícula táctica</span>
+                </label>
                 <button class="btn-primary ghost" id="reset-placement">Cancelar colocación</button>
                 <button class="btn-primary danger" id="clear-run">Reiniciar nivel</button>
             </div>
         `;
+
+        document.getElementById('toggle-ranges')?.addEventListener('change', (event) => {
+            this.game.showHeroRanges = event.target.checked;
+            this.showToast(event.target.checked ? 'Rangos visibles' : 'Rangos ocultos', 'info');
+        });
+
+        document.getElementById('toggle-grid')?.addEventListener('change', (event) => {
+            this.game.showGrid = event.target.checked;
+            this.showToast(event.target.checked ? 'Cuadrícula visible' : 'Cuadrícula oculta', 'info');
+        });
 
         document.getElementById('reset-placement')?.addEventListener('click', () => {
             this.game.inputManager.clearPlacement();
