@@ -21,6 +21,21 @@ Luego abrir:
 http://127.0.0.1:5173/
 ```
 
+## Calidad
+
+```bash
+npm run build:data
+npm run validate
+npm test
+npm run check
+```
+
+- `build:data` regenera el respaldo para abrir por `file://`.
+- `validate` revisa IDs, referencias, rutas, números y assets.
+- `validate:strict` también convierte los assets ausentes en errores.
+- `test` ejecuta la suite nativa de Node.
+- `check` reproduce el control usado por GitHub Actions.
+
 También puede abrirse `index.html` directamente. En ese modo el juego usa `data/bootstrapData.js` como respaldo para evitar problemas de `fetch` con archivos locales.
 
 ## GitHub Desktop

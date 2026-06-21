@@ -1,0 +1,32 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { ResourceManager } from '../src/systems/ResourceManager.js';
+
+test('ResourceManager administra creditos sin permitir saldo negativo', () => {
+    const resources = new ResourceManager({}, 20, 100);
+
+    assert.equal(resources.removeCredits(80), true);
+    assert.equal(resources.credits, 20);
+    assert.equal(resources.removeCredits(25), false);
+    assert.equal(resources.credits, 20);
+    assert.equal(resources.removeCredits(-10), false);
+    resources.addCredits(-50);
+    assert.equal(resources.credits, 20);
+});
+
+test('ResourceManager limita la curacion a maxLives', () => {
+    const resources = new ResourceManager({}, 20, 0);
+    resources.removeLife(5);
+    resources.addLife(99);
+    assert.equal(resources.lives, 20);
+});
+
+test('ResourceManager dispara gameOver una sola vez al llegar a cero', () => {
+    let calls = 0;
+    const resources = new ResourceManager({ gameOver: () => calls++ }, 2, 0);
+    resources.removeLife(2);
+    resources.removeLife(1);
+
+    assert.equal(resources.lives, 0);
+    assert.equal(calls, 1);
+});

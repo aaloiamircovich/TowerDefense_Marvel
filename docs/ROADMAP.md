@@ -24,6 +24,8 @@ Este roadmap convierte el prototipo actual en un tower defense pulido, escalable
 
 **Terminado cuando:** una validacion detecta IDs duplicados, sprites ausentes, referencias rotas y rutas diagonales antes de ejecutar el juego.
 
+**Estado:** implementada. Hay tests nativos de Node, validacion de datos/assets, generacion automatica del respaldo y CI de GitHub. Los warnings de sprites pendientes alimentan la Fase 1.
+
 ## Fase 1 - Pipeline profesional de sprites
 
 **Objetivo:** eliminar fallbacks visuales y unificar la produccion de assets.

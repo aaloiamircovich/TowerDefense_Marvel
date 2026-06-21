@@ -12,7 +12,7 @@ window.__MARVEL_TD_DATA__ = {
       "canSeeStealth": true,
       "ability": "SOBRECARGA ARC",
       "abilityDesc": "Cada 3 ataques dispara un grueso láser azul que atraviesa a múltiples enemigos en línea recta.",
-      "sprite": "assets/images/heroes/iron_man.png",
+      "sprite": "assets/images/heroes/iron_man/portrait.png",
       "evolutionId": "iron_man_extremis",
       "allowedTerrains": [
         0,
@@ -32,7 +32,7 @@ window.__MARVEL_TD_DATA__ = {
       "canSeeStealth": true,
       "ability": "TELARAÑA",
       "abilityDesc": "Envuelve a los enemigos en redes, reduciendo drásticamente su velocidad de movimiento.",
-      "sprite": "assets/images/heroes/spiderman.png",
+      "sprite": "assets/images/heroes/spiderman/portrait.png",
       "evolutionId": "iron_spider",
       "allowedTerrains": [
         1,
@@ -919,7 +919,7 @@ window.__MARVEL_TD_DATA__ = {
       "description": "Incursión Tecnológica",
       "groups": [
         {
-          "type": "ultron_sentry",
+          "type": "hydra_soldier",
           "count": 10,
           "interval": 1.2
         }
@@ -930,7 +930,7 @@ window.__MARVEL_TD_DATA__ = {
       "description": "El Engaño de Loki",
       "groups": [
         {
-          "type": "ultron_sentry",
+          "type": "aim_scientist",
           "count": 5,
           "interval": 1
         },
@@ -946,7 +946,7 @@ window.__MARVEL_TD_DATA__ = {
       "description": "Bajo Mundo",
       "groups": [
         {
-          "type": "kingpin_thug",
+          "type": "hand_ninja",
           "count": 8,
           "interval": 1.5
         }

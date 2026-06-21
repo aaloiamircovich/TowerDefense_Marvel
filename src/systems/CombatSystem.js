@@ -11,7 +11,7 @@ export class CombatSystem {
             CombatSystem.applyItemEffects(attacker, target, resourceManager, result.killed);
         }
 
-        projectile.effects.forEach((effect) => {
+        (projectile.effects || []).forEach((effect) => {
             if (Math.random() <= (effect.chance || 1)) {
                 target.applyDebuff(effect.type, effect.duration, effect.power);
             }

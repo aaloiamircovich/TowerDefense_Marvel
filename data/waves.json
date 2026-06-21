@@ -3,14 +3,14 @@
     "waveNumber": 1,
     "description": "Incursión Tecnológica",
     "groups": [
-      { "type": "ultron_sentry", "count": 10, "interval": 1.2 }
+      { "type": "hydra_soldier", "count": 10, "interval": 1.2 }
     ]
   },
   {
     "waveNumber": 2,
     "description": "El Engaño de Loki",
     "groups": [
-      { "type": "ultron_sentry", "count": 5, "interval": 1.0 },
+      { "type": "aim_scientist", "count": 5, "interval": 1.0 },
       { "type": "loki", "count": 2, "interval": 5.0 }
     ]
   },
@@ -18,7 +18,7 @@
     "waveNumber": 3,
     "description": "Bajo Mundo",
     "groups": [
-      { "type": "kingpin_thug", "count": 8, "interval": 1.5 }
+      { "type": "hand_ninja", "count": 8, "interval": 1.5 }
     ]
   }
 ]

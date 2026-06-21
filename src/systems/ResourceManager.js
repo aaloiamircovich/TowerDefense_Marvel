@@ -11,11 +11,11 @@ export class ResourceManager {
     }
 
     addCredits(amount) {
-        this.credits += Math.max(0, amount);
+        if (Number.isFinite(amount) && amount > 0) this.credits += amount;
     }
 
     removeCredits(amount) {
-        if (this.credits >= amount) {
+        if (Number.isFinite(amount) && amount > 0 && this.credits >= amount) {
             this.credits -= amount;
             return true;
         }
@@ -23,10 +23,14 @@ export class ResourceManager {
     }
 
     addLife(amount = 1) {
-        this.lives = Math.min(this.maxLives, this.lives + amount);
+        if (Number.isFinite(amount) && amount > 0) {
+            this.lives = Math.min(this.maxLives, this.lives + amount);
+        }
     }
 
     removeLife(amount = 1) {
+        if (!Number.isFinite(amount) || amount <= 0 || this.lives <= 0) return;
+
         this.lives = Math.max(0, this.lives - amount);
         if (this.lives <= 0 && this.game && typeof this.game.gameOver === 'function') {
             this.game.gameOver();

@@ -1,5 +1,14 @@
 {
+  "name": "towerdefense-marvel",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
   "scripts": {
-    "dev": "node dev-server.js"
+    "dev": "node dev-server.js",
+    "test": "node --test",
+    "validate": "node scripts/validate-data.js",
+    "validate:strict": "node scripts/validate-data.js --strict-assets",
+    "build:data": "node scripts/build-bootstrap-data.js",
+    "check": "npm run validate && npm test"
   }
 }
