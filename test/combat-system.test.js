@@ -20,7 +20,7 @@ test('CombatSystem aplica ventaja de tipo', () => {
 
 test('Contrato Stark genera un credito por impacto', () => {
     let credits = 0;
-    const attacker = { items: [{ id: 'contrato_stark' }], killCount: 0 };
+    const attacker = { items: [{ id: 'contrato_stark', effects: { onHitCredit: 1 } }], killCount: 0 };
     const target = createTarget('Urbano', (damage) => ({ damage, killed: false }));
 
     CombatSystem.applyImpact({ attackerType: 'Urbano', damage: 10, effects: [] }, target, attacker, {
@@ -33,7 +33,7 @@ test('Contrato Stark genera un credito por impacto', () => {
 test('Protocolo Extremis cura despues de quince bajas', () => {
     let lives = 0;
     const attacker = {
-        items: [{ id: 'protocolo_extremis' }],
+        items: [{ id: 'protocolo_extremis', effects: { killHealEvery: 15 } }],
         killCount: 14
     };
     const target = createTarget('Urbano', (damage) => ({ damage, killed: true }));

@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import { aggregateItemEffects } from '../src/systems/ItemEffectSystem.js';
 
 const heroes = JSON.parse(fs.readFileSync(new URL('../data/heroes.json', import.meta.url), 'utf8'));
 const items = JSON.parse(fs.readFileSync(new URL('../data/items.json', import.meta.url), 'utf8'));
@@ -36,8 +37,30 @@ console.log(`Menor eficiencia: ${ranking.slice(-3).map((hero) => hero.name).join
 console.log(`Creditos proyectados tras oleadas 1/5/10: ${missionProjection[0]} / ${missionProjection[4]} / ${missionProjection[9]}`);
 console.log(`Precios medianos por tier: ${Object.entries(tierPrices).map(([tier, prices]) => `T${tier}=$${median(prices)}`).join(' | ')}`);
 
+const slots = {
+    weapon: Object.values(items).filter((item) => item.slot === 'weapon'),
+    armor: Object.values(items).filter((item) => item.slot === 'armor'),
+    artifact: Object.values(items).filter((item) => item.slot === 'artifact')
+};
+const builds = slots.weapon.flatMap((weapon) => slots.armor.flatMap((armor) => slots.artifact.map((artifact) => {
+    const effects = aggregateItemEffects([weapon, armor, artifact]);
+    const power = (1 + (effects.damagePct || 0))
+        * (1 + (effects.fireRatePct || 0))
+        * (1 + (effects.rangePct || 0) * 0.4)
+        * (1 + (effects.critChance || 0) / 100)
+        + (effects.armorPenetration || 0) * 0.2;
+    return { ids: [weapon.id, armor.id, artifact.id], power };
+})));
+builds.sort((a, b) => b.power - a.power);
+console.log(`Builds de tres ranuras simuladas: ${builds.length}`);
+console.log(`Mayor multiplicador estimado: ${builds[0].power.toFixed(2)} (${builds[0].ids.join(' + ')})`);
+
 if (missionProjection[0] < 800 || missionProjection[4] < 1800) {
     console.error('ERROR: la economia de mision no permite una segunda decision temprana.');
+    process.exitCode = 1;
+}
+if (builds[0].power > 2.25) {
+    console.error('ERROR: una combinacion de objetos supera el presupuesto de poder 2.25.');
     process.exitCode = 1;
 }
 

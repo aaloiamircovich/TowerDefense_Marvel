@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.3.0 - 2026-06-21
+
+- Catálogo ampliado de 10 a 30 objetos con iconos propios.
+- Ranuras separadas de arma, armadura y artefacto.
+- Seis familias con bonus de dos piezas y efectos declarativos.
+- Forja de duplicados, tres niveles de mejora y materiales persistentes.
+- Loadouts guardados por héroe y migración automática del formato anterior.
+- Simulación de 960 builds y 84 tests automatizados.
+
 ## 1.2.0 - 2026-06-21
 
 - Mesa táctica con pausa, selección persistente y siete prioridades de objetivo.

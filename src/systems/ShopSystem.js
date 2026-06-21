@@ -27,8 +27,7 @@ export class ShopSystem {
         const key = this.getRotationKey();
         if (shop.rotationKey === key && shop.slotIds.length > 0) return;
 
-        const available = Object.values(this.game.itemDatabase)
-            .filter((item) => !this.progression.hasItem(item.id));
+        const available = Object.values(this.game.itemDatabase);
         const bands = [
             available.filter((item) => item.tier === 1),
             available.filter((item) => item.tier === 2),
@@ -55,7 +54,7 @@ export class ShopSystem {
         this.ensureRotation();
         const shop = this.progression.state.shop;
         const item = this.game.itemDatabase[itemId];
-        if (!item || !shop.slotIds.includes(itemId) || shop.purchasedIds.includes(itemId) || this.progression.hasItem(itemId)) {
+        if (!item || !shop.slotIds.includes(itemId) || shop.purchasedIds.includes(itemId)) {
             return { ok: false, reason: 'Objeto no disponible' };
         }
         if (!this.progression.spendMetaCredits(item.price)) return { ok: false, reason: 'Fondos S.H.I.E.L.D. insuficientes' };

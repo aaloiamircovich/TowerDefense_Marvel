@@ -21,6 +21,20 @@ test('ProgressionManager migra un guardado antiguo', () => {
     assert.deepEqual(manager.state.ownedItemIds, ['reactor_arc']);
 });
 
+test('Migracion convierte el objeto equipado antiguo a su ranura', () => {
+    const storage = new MemoryStorage();
+    storage.setItem(SAVE_KEY, JSON.stringify({
+        version: 4,
+        heroes: ['iron_man'],
+        team: ['iron_man'],
+        equippedItems: { iron_man: 'lentes_edith' }
+    }));
+    const manager = new ProgressionManager(storage);
+    manager.initialize(createGame(), data);
+
+    assert.deepEqual(manager.state.equippedItems.iron_man, { artifact: 'lentes_edith' });
+});
+
 test('ProgressionManager conserva heroes, fondos y equipo al reabrir', () => {
     const storage = new MemoryStorage();
     const first = new ProgressionManager(storage);
@@ -35,7 +49,7 @@ test('ProgressionManager conserva heroes, fondos y equipo al reabrir', () => {
     reopened.initialize(reopenedGame, data);
 
     assert.deepEqual(reopenedGame.activeTeam.map((hero) => hero.id), ['spiderman']);
-    assert.equal(reopened.state.equippedItems.spiderman, 'reactor_arc');
+    assert.deepEqual(reopened.state.equippedItems.spiderman, { weapon: 'reactor_arc' });
     assert.equal(reopened.state.metaCredits, 1500);
 });
 
@@ -50,7 +64,7 @@ test('Arbol de mejoras exige dependencias y descuenta fondos', () => {
     assert.equal(manager.getHeroBonuses('iron_man').damage, 0.1);
 });
 
-test('Equipar un objeto devuelve el anterior al inventario', () => {
+test('Equipar objetos en ranuras distintas conserva ambos', () => {
     const manager = new ProgressionManager(new MemoryStorage());
     manager.initialize(createGame(), data);
     manager.startProfile('iron_man');
@@ -59,8 +73,53 @@ test('Equipar un objeto devuelve el anterior al inventario', () => {
     manager.equipItem('iron_man', 'reactor_arc');
     manager.equipItem('iron_man', 'lentes_edith');
 
-    assert.equal(manager.state.equippedItems.iron_man, 'lentes_edith');
+    assert.deepEqual(manager.state.equippedItems.iron_man, { weapon: 'reactor_arc', artifact: 'lentes_edith' });
+    assert.deepEqual(manager.state.ownedItemIds, []);
+});
+
+test('Reemplazar un objeto devuelve la ranura anterior al inventario', () => {
+    const manager = new ProgressionManager(new MemoryStorage());
+    manager.initialize(createGame(), data);
+    manager.startProfile('iron_man');
+    manager.addOwnedItem('reactor_arc');
+    manager.addOwnedItem('municion_repulsora');
+    manager.equipItem('iron_man', 'reactor_arc');
+    manager.equipItem('iron_man', 'municion_repulsora');
+
+    assert.deepEqual(manager.state.equippedItems.iron_man, { weapon: 'municion_repulsora' });
     assert.deepEqual(manager.state.ownedItemIds, ['reactor_arc']);
+});
+
+test('Forja recicla duplicados y mejora objetos hasta nivel tres', () => {
+    const manager = new ProgressionManager(new MemoryStorage());
+    manager.initialize(createGame(), data);
+    manager.startProfile('iron_man');
+    manager.addOwnedItem('reactor_arc');
+    manager.addOwnedItem('reactor_arc');
+
+    assert.equal(manager.getOwnedQuantity('reactor_arc'), 2);
+    assert.equal(manager.salvageItem('reactor_arc').materials, 40);
+    manager.state.forgeMaterials = 500;
+    assert.equal(manager.upgradeItem('reactor_arc').level, 2);
+    assert.equal(manager.upgradeItem('reactor_arc').level, 3);
+    assert.equal(manager.upgradeItem('reactor_arc').ok, false);
+});
+
+test('Loadout restaura tres ranuras de forma atomica', () => {
+    const manager = new ProgressionManager(new MemoryStorage());
+    manager.initialize(createGame(), data);
+    manager.startProfile('iron_man');
+    ['reactor_arc', 'chaleco_tactico', 'lentes_edith', 'municion_repulsora'].forEach((id) => manager.addOwnedItem(id));
+    manager.equipItem('iron_man', 'reactor_arc');
+    manager.equipItem('iron_man', 'chaleco_tactico');
+    manager.equipItem('iron_man', 'lentes_edith');
+    manager.saveLoadout('iron_man');
+    manager.equipItem('iron_man', 'municion_repulsora');
+
+    assert.equal(manager.applyLoadout('iron_man').ok, true);
+    assert.deepEqual(manager.state.equippedItems.iron_man, {
+        weapon: 'reactor_arc', armor: 'chaleco_tactico', artifact: 'lentes_edith'
+    });
 });
 
 test('Progreso de mapa guarda estrellas, desafio y dificultad', () => {

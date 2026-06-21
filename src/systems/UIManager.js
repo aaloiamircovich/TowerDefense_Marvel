@@ -3,6 +3,8 @@ import { CampaignPanel } from '../ui/CampaignPanel.js';
 import { ProfilePanel } from '../ui/ProfilePanel.js';
 import { SettingsPanel } from '../ui/SettingsPanel.js';
 import { TooltipController } from '../ui/TooltipController.js';
+import { InventoryPanel } from '../ui/InventoryPanel.js';
+import { getActiveSets, ITEM_SLOTS, SET_BONUSES, SLOT_LABELS } from './ItemEffectSystem.js';
 
 export class UIManager {
     constructor(gameInstance) {
@@ -23,13 +25,12 @@ export class UIManager {
         this.shopInitialized = false;
         this.shopSlots = [null, null, null];
         this.itemPool = [];
-        this.inventoryFilter = 0;
-        this.inventoryHeroId = null;
         this.toastTimer = null;
         this.lastFocusedElement = null;
         this.profilePanel = new ProfilePanel(this);
         this.campaignPanel = new CampaignPanel(this);
         this.settingsPanel = new SettingsPanel(this);
+        this.inventoryPanel = new InventoryPanel(this);
         this.tooltipController = new TooltipController();
 
         this.initListeners();
@@ -284,10 +285,12 @@ export class UIManager {
         const fireRate = Number(effectiveStats?.fireRate || (hero.fireRate || config.fireRate || 1) * (1 + (bonuses.fireRate || 0))).toFixed(1);
         const critChance = Math.round(effectiveStats?.critChance || (hero.critChance || config.critChance || 5) + (bonuses.critChance || 0));
         const terrains = this.getTerrainText(hero.allowedTerrains || config.allowedTerrains || [1]);
-        const equippedItemId = this.game.progression?.state.equippedItems[config.id];
+        const equippedSlots = this.game.progression?.state.equippedItems[config.id] || {};
         const items = hero.items?.length
             ? hero.items
-            : [this.game.itemDatabase?.[equippedItemId]].filter(Boolean);
+            : Object.values(equippedSlots).map((itemId) => this.game.itemDatabase?.[itemId]).filter(Boolean);
+        const itemBySlot = Object.fromEntries(items.map((item) => [item.slot, item]));
+        const activeSets = getActiveSets(items);
         const combat = hero.combatStats || {};
         const abilityState = hero.abilitySystem?.getDisplayState?.() || null;
         const isDeployed = this.game.heroes.includes(hero);
@@ -358,10 +361,18 @@ export class UIManager {
 
                     <div class="equipment-card">
                         <h3>Equipamiento</h3>
-                        <div id="modal-item-slot-1" class="item-slot ${items[0] ? 'filled' : ''}">
-                            ${items[0] ? `<strong>${items[0].name}</strong><span>${items[0].desc}</span><button class="btn-unequip-modal btn-primary ghost">Desequipar</button>` : '<strong>Ranura libre</strong><span>Equipa un objeto desde el inventario.</span>'}
+                        <div class="hero-equipment-slots">
+                            ${ITEM_SLOTS.map((slot) => {
+                                const item = itemBySlot[slot];
+                                return `<div class="item-slot ${item ? 'filled' : ''}">
+                                    <span>${SLOT_LABELS[slot]}</span>
+                                    <strong>${item?.name || 'Ranura libre'}</strong>
+                                    ${item ? `<small>Nivel ${item.forgeLevel || 1}</small><button class="btn-unequip-modal icon-command" data-slot="${slot}" title="Desequipar"><i class="fas fa-eject"></i></button>` : ''}
+                                </div>`;
+                            }).join('')}
                         </div>
-                        <div id="modal-inventory-list" class="inventory-strip"></div>
+                        <div class="set-status ${activeSets.length ? 'active' : ''}">${activeSets.length ? activeSets.map((set) => set.description).join(' · ') : 'Sin bonus de set activo'}</div>
+                        <button id="open-inventory-panel" class="btn-primary ghost"><i class="fas fa-box-open"></i> Gestionar inventario</button>
                     </div>
                 </section>
             </div>
@@ -391,49 +402,15 @@ export class UIManager {
             button.addEventListener('click', () => this.purchaseMetaUpgrade(config, button.dataset.node));
         });
 
-        this.panelContent.querySelector('.btn-unequip-modal')?.addEventListener('click', () => {
-            this.game.progression.unequipItem(config.id);
+        this.panelContent.querySelectorAll('.btn-unequip-modal').forEach((button) => button.addEventListener('click', () => {
+            this.game.progression.unequipItem(config.id, button.dataset.slot);
             this.showToast('Objeto devuelto al inventario', 'success');
             const deployed = this.game.heroes.find((unit) => unit.id === config.id);
             this.renderHeroDetails(deployed || config);
-        });
-
-        this.setupInventoryDrag(hero);
-    }
-
-    setupInventoryDrag(hero) {
-        const slot = document.getElementById('modal-item-slot-1');
-        const inventory = document.getElementById('modal-inventory-list');
-        if (!slot || !inventory) return;
-
-        if (!hero.items) hero.items = [];
-
-        if (!hero.items[0]) {
-            slot.addEventListener('dragover', (event) => event.preventDefault());
-            slot.addEventListener('drop', (event) => {
-                const index = Number(event.dataTransfer.getData('item-index'));
-                const item = this.game.ownedItems[index];
-                if (!item) return;
-                if (this.game.progression.equipItem(hero.id, item.id)) {
-                    this.showToast(`${item.name} equipado`, 'success');
-                    const deployed = this.game.heroes.find((unit) => unit.id === hero.id);
-                    this.renderHeroDetails(deployed || hero);
-                }
-            });
-        }
-
-        if (!this.game.ownedItems.length) {
-            inventory.innerHTML = '<span class="empty-copy">Inventario vacío.</span>';
-            return;
-        }
-
-        this.game.ownedItems.forEach((item, index) => {
-            const element = document.createElement('div');
-            element.className = 'inventory-pill';
-            element.draggable = true;
-            element.textContent = item.name;
-            element.addEventListener('dragstart', (event) => event.dataTransfer.setData('item-index', index));
-            inventory.appendChild(element);
+        }));
+        document.getElementById('open-inventory-panel')?.addEventListener('click', () => {
+            this.inventoryPanel.heroId = config.id;
+            this.renderPanel('inventory');
         });
     }
 
@@ -520,7 +497,7 @@ export class UIManager {
 
         if (type === 'shop') return this.renderShop(title);
         if (type === 'collection') return this.renderCollection(title);
-        if (type === 'inventory') return this.renderInventory(title);
+        if (type === 'inventory') return this.inventoryPanel.render(title);
         if (type === 'map') return this.renderMap(title);
         if (type === 'settings') return this.renderSettings(title);
         return this.renderProfile(title);
@@ -557,11 +534,16 @@ export class UIManager {
 
     renderShopItem(item, purchased = false) {
         if (!item) return '<div class="shop-card empty-copy">Agotado</div>';
+        const owned = this.game.progression.getOwnedQuantity(item.id);
         return `
             <div class="shop-card ${purchased ? 'purchased' : ''}">
                 <div class="item-badge">T${item.tier || 1}</div>
-                <h4>${item.name}</h4>
+                <div class="shop-item-heading">
+                    ${this.renderSprite(item.icon, item.name)}
+                    <div><small>${SLOT_LABELS[item.slot]} · ${SET_BONUSES[item.set]?.name || item.set}</small><h4>${item.name}</h4></div>
+                </div>
                 <p>${item.desc}</p>
+                <small>Copias disponibles: ${owned}</small>
                 <button class="btn-buy-item btn-primary ghost" data-id="${item.id}" ${purchased ? 'disabled' : ''}>${purchased ? 'ADQUIRIDO' : `${item.price} F`}</button>
             </div>
         `;
@@ -620,75 +602,6 @@ export class UIManager {
 
         this.renderPanel('collection');
         this.renderHeroRoster(this.game.activeTeam, (hero) => this.game.inputManager.setPlacementMode(hero));
-    }
-
-    renderInventory(title) {
-        this.inventoryHeroId ||= this.game.activeTeam[0]?.id || this.game.unlockedHeroes[0]?.id || null;
-        const targetHero = this.game.heroDatabase[this.inventoryHeroId];
-        const equippedId = this.game.progression.state.equippedItems[this.inventoryHeroId];
-        const equipped = equippedId ? this.game.itemDatabase[equippedId] : null;
-        const visibleItems = this.game.ownedItems.filter((item) => this.inventoryFilter === 0 || item.tier === this.inventoryFilter);
-        this.panelContent.innerHTML = `
-            <div class="panel-title-row"><h2>${title}</h2><strong>${this.game.ownedItems.length} disponibles</strong></div>
-            <div class="inventory-toolbar">
-                <label>Héroe
-                    <select id="inventory-hero-select">
-                        ${this.game.unlockedHeroes.map((hero) => `<option value="${hero.id}" ${hero.id === this.inventoryHeroId ? 'selected' : ''}>${hero.name}</option>`).join('')}
-                    </select>
-                </label>
-                <div class="tier-filters" aria-label="Filtrar por tier">
-                    ${[0, 1, 2, 3, 4].map((tier) => `<button class="tier-filter ${this.inventoryFilter === tier ? 'active' : ''}" data-tier="${tier}">${tier === 0 ? 'Todos' : `T${tier}`}</button>`).join('')}
-                </div>
-            </div>
-            <section class="equipped-summary">
-                <span>Equipado en ${targetHero?.name || 'héroe'}</span>
-                <strong>${equipped?.name || 'Ninguno'}</strong>
-                ${equipped ? `<button class="btn-unequip-item btn-primary ghost">Desequipar</button>` : ''}
-            </section>
-            <div class="inventory-grid">
-                ${visibleItems.length
-                    ? visibleItems.map((item) => `<article class="inventory-card">
-                        <div class="item-badge">T${item.tier}</div><h3>${item.name}</h3><p>${item.desc}</p>
-                        <small>${this.getItemImpact(item)}${equipped ? ` · reemplaza ${equipped.name}` : ''}</small>
-                        <button class="btn-equip-item btn-primary ghost" data-id="${item.id}">Equipar</button>
-                    </article>`).join('')
-                    : '<p class="empty-copy">No tienes objetos todavía.</p>'}
-            </div>
-        `;
-
-        document.getElementById('inventory-hero-select')?.addEventListener('change', (event) => {
-            this.inventoryHeroId = event.target.value;
-            this.renderInventory(title);
-        });
-        this.panelContent.querySelectorAll('.tier-filter').forEach((button) => {
-            button.addEventListener('click', () => {
-                this.inventoryFilter = Number(button.dataset.tier);
-                this.renderInventory(title);
-            });
-        });
-        this.panelContent.querySelectorAll('.btn-equip-item').forEach((button) => {
-            button.addEventListener('click', () => {
-                const item = this.game.itemDatabase[button.dataset.id];
-                if (this.game.progression.equipItem(this.inventoryHeroId, item.id)) {
-                    this.showToast(`${item.name} equipado`, 'success');
-                    this.renderInventory(title);
-                }
-            });
-        });
-        this.panelContent.querySelector('.btn-unequip-item')?.addEventListener('click', () => {
-            this.game.progression.unequipItem(this.inventoryHeroId);
-            this.showToast('Objeto desequipado', 'success');
-            this.renderInventory(title);
-        });
-    }
-
-    getItemImpact(item) {
-        const impacts = {
-            telarana_sintetica: 'Control adicional', aerodeslizador: 'Habilita agua', lentes_edith: 'Detecta sigilo',
-            reactor_arc: '+25% cadencia', suero_supersoldado: '+30% daño en emergencia', contrato_stark: '+1 crédito por impacto',
-            particulas_pym: '+50% cadencia', simbionte: 'Daño acumulativo', protocolo_extremis: '+1 vida cada 15 bajas', gema_poder: '+50% daño'
-        };
-        return impacts[item.id] || 'Mejora táctica';
     }
 
     renderProfile(title) {

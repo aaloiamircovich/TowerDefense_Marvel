@@ -39,6 +39,8 @@ Este segundo ciclo parte de una base estable: campaña de siete mapas, cinco her
 
 **Terminado cuando:** cada heroe central tiene al menos tres builds viables y no quedan warnings de iconos de objetos.
 
+**Estado:** implementada en la version 1.3.0. El catalogo contiene 30 objetos con iconos, tres ranuras, seis familias y bonus de dos piezas. La forja recicla duplicados, mejora hasta nivel tres y guarda materiales; los loadouts restauran configuraciones de forma atomica. La migracion conserva el objeto de guardados 1.2 y la simulacion evalua 960 builds con un techo de poder controlado.
+
 ## Fase 12 - Refuerzos de los Avengers
 
 **Objetivo:** producir seis heroes completos con roles que el equipo actual no cubre.

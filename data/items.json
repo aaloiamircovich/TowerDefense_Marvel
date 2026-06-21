@@ -1,52 +1,127 @@
 {
-  "telarana_sintetica": {
-    "id": "telarana_sintetica", "name": "TELARAÑA SINTÉTICA", 
-    "desc": "Potencia los efectos de ralentización.",
-    "icon": "assets/images/items/web.png", "price": 250, "tier": 1
-  },
-  "aerodeslizador": {
-    "id": "aerodeslizador", "name": "AERODESLIZADOR S.H.I.E.L.D.", 
-    "desc": "Permite colocar a este héroe sobre el AGUA.",
-    "icon": "assets/images/items/hoverboard.png", "price": 300, "tier": 1
+  "reactor_arc": {
+    "id": "reactor_arc", "name": "REACTOR ARC", "desc": "+25% de cadencia.",
+    "icon": "assets/images/items/reactor_arc.png", "price": 700, "tier": 2, "slot": "weapon", "set": "stark", "effects": { "fireRatePct": 0.25 }
   },
   "lentes_edith": {
-    "id": "lentes_edith", "name": "LENTES E.D.I.T.H.", 
-    "desc": "Permite al héroe detectar y golpear enemigos INVISIBLES.",
-    "icon": "assets/images/items/edith.png", "price": 400, "tier": 1
-  },
-  "reactor_arc": {
-    "id": "reactor_arc", "name": "REACTOR ARC", 
-    "desc": "Aumenta la Velocidad de Ataque un 25%.",
-    "icon": "assets/images/items/reactor.png", "price": 600, "tier": 2
-  },
-  "suero_supersoldado": {
-    "id": "suero_supersoldado", "name": "SUERO DEL SÚPER SOLDADO", 
-    "desc": "Si tu base tiene poca Vida, aumenta Daño un 30%.",
-    "icon": "assets/images/items/serum.png", "price": 800, "tier": 2
+    "id": "lentes_edith", "name": "LENTES E.D.I.T.H.", "desc": "Detecta sigilo y aumenta 5% el alcance.",
+    "icon": "assets/images/items/lentes_edith.png", "price": 450, "tier": 1, "slot": "artifact", "set": "stark", "effects": { "detectStealth": true, "rangePct": 0.05 }
   },
   "contrato_stark": {
-    "id": "contrato_stark", "name": "CONTRATO STARK", 
-    "desc": "Genera $1 Crédito extra por cada ataque que impacte.",
-    "icon": "assets/images/items/stark_coin.png", "price": 1000, "tier": 2
-  },
-  "particulas_pym": {
-    "id": "particulas_pym", "name": "PARTÍCULAS PYM", 
-    "desc": "Reduce el tiempo de recarga a la mitad (+50% Vel. Ataque).",
-    "icon": "assets/images/items/pym.png", "price": 1500, "tier": 3
-  },
-  "simbionte": {
-    "id": "simbionte", "name": "SIMBIONTE VENOM", 
-    "desc": "El daño aumenta progresivamente al golpear al mismo enemigo.",
-    "icon": "assets/images/items/symbiote.png", "price": 1800, "tier": 3
+    "id": "contrato_stark", "name": "CONTRATO STARK", "desc": "Genera $1 adicional por impacto.",
+    "icon": "assets/images/items/contrato_stark.png", "price": 1000, "tier": 2, "slot": "artifact", "set": "stark", "effects": { "onHitCredit": 1 }
   },
   "protocolo_extremis": {
-    "id": "protocolo_extremis", "name": "PROTOCOLO EXTREMIS", 
-    "desc": "Restaura 1 Vida a tu base por cada 15 enemigos que derrote.",
-    "icon": "assets/images/items/extremis.png", "price": 2500, "tier": 4
+    "id": "protocolo_extremis", "name": "PROTOCOLO EXTREMIS", "desc": "Restaura 1 vida cada 15 bajas.",
+    "icon": "assets/images/items/protocolo_extremis.png", "price": 2800, "tier": 4, "slot": "armor", "set": "stark", "effects": { "killHealEvery": 15 }
   },
+  "municion_repulsora": {
+    "id": "municion_repulsora", "name": "MUNICIÓN REPULSORA", "desc": "Ignora 25% de la armadura enemiga.",
+    "icon": "assets/images/items/municion_repulsora.png", "price": 1550, "tier": 3, "slot": "weapon", "set": "stark", "effects": { "armorPenetration": 0.25 }
+  },
+
+  "escudo_vibranium": {
+    "id": "escudo_vibranium", "name": "ESCUDO DE VIBRANIUM", "desc": "+8% daño y +5% alcance.",
+    "icon": "assets/images/items/escudo_vibranium.png", "price": 900, "tier": 2, "slot": "armor", "set": "vibranium", "effects": { "damagePct": 0.08, "rangePct": 0.05 }
+  },
+  "tejido_cinetico": {
+    "id": "tejido_cinetico", "name": "TEJIDO CINÉTICO", "desc": "+12% de cadencia.",
+    "icon": "assets/images/items/tejido_cinetico.png", "price": 650, "tier": 2, "slot": "armor", "set": "vibranium", "effects": { "fireRatePct": 0.12 }
+  },
+  "lanza_dora": {
+    "id": "lanza_dora", "name": "LANZA DORA MILAJE", "desc": "+4% crítico y 20% de penetración.",
+    "icon": "assets/images/items/lanza_dora.png", "price": 1700, "tier": 3, "slot": "weapon", "set": "vibranium", "effects": { "critChance": 4, "armorPenetration": 0.2 }
+  },
+  "cuentas_kimoyo": {
+    "id": "cuentas_kimoyo", "name": "CUENTAS KIMOYO", "desc": "Detecta sigilo y aumenta 12% el alcance.",
+    "icon": "assets/images/items/cuentas_kimoyo.png", "price": 950, "tier": 2, "slot": "artifact", "set": "vibranium", "effects": { "detectStealth": true, "rangePct": 0.12 }
+  },
+  "corazon_wakanda": {
+    "id": "corazon_wakanda", "name": "CORAZÓN DE WAKANDA", "desc": "+15% de daño.",
+    "icon": "assets/images/items/corazon_wakanda.png", "price": 1850, "tier": 3, "slot": "artifact", "set": "vibranium", "effects": { "damagePct": 0.15 }
+  },
+
+  "particulas_pym": {
+    "id": "particulas_pym", "name": "PARTÍCULAS PYM", "desc": "+35% de cadencia.",
+    "icon": "assets/images/items/particulas_pym.png", "price": 1800, "tier": 3, "slot": "artifact", "set": "pym", "effects": { "fireRatePct": 0.35 }
+  },
+  "aerodeslizador": {
+    "id": "aerodeslizador", "name": "AERODESLIZADOR PYM", "desc": "Permite colocación sobre agua y +5% alcance.",
+    "icon": "assets/images/items/aerodeslizador.png", "price": 350, "tier": 1, "slot": "armor", "set": "pym", "effects": { "allowWater": true, "rangePct": 0.05 }
+  },
+  "guanteletes_gigantes": {
+    "id": "guanteletes_gigantes", "name": "GUANTELETES GIGANTES", "desc": "Los impactos dañan un área pequeña.",
+    "icon": "assets/images/items/guanteletes_gigantes.png", "price": 1600, "tier": 3, "slot": "weapon", "set": "pym", "effects": { "splashRadius": 46, "splashFactor": 0.35 }
+  },
+  "regulador_cuantico": {
+    "id": "regulador_cuantico", "name": "REGULADOR CUÁNTICO", "desc": "+8% de probabilidad crítica.",
+    "icon": "assets/images/items/regulador_cuantico.png", "price": 850, "tier": 2, "slot": "artifact", "set": "pym", "effects": { "critChance": 8 }
+  },
+  "aguijon_wasp": {
+    "id": "aguijon_wasp", "name": "AGUIJÓN WASP", "desc": "25% de ralentizar al impactar.",
+    "icon": "assets/images/items/aguijon_wasp.png", "price": 400, "tier": 1, "slot": "weapon", "set": "pym", "effects": { "slowChance": 0.25, "slowPower": 0.25 }
+  },
+
   "gema_poder": {
-    "id": "gema_poder", "name": "GEMA DEL PODER", 
-    "desc": "Otorga un aumento masivo del 50% al Daño Total del héroe.",
-    "icon": "assets/images/items/power_stone.png", "price": 4000, "tier": 4
+    "id": "gema_poder", "name": "GEMA DEL PODER", "desc": "+35% de daño total.",
+    "icon": "assets/images/items/gema_poder.png", "price": 4000, "tier": 4, "slot": "artifact", "set": "mystic", "effects": { "damagePct": 0.35 }
+  },
+  "ojo_agamotto": {
+    "id": "ojo_agamotto", "name": "OJO DE AGAMOTTO", "desc": "Detecta sigilo y aumenta 15% el alcance.",
+    "icon": "assets/images/items/ojo_agamotto.png", "price": 2700, "tier": 4, "slot": "artifact", "set": "mystic", "effects": { "detectStealth": true, "rangePct": 0.15 }
+  },
+  "capa_levitacion": {
+    "id": "capa_levitacion", "name": "CAPA DE LEVITACIÓN", "desc": "Permite agua y aumenta 10% el alcance.",
+    "icon": "assets/images/items/capa_levitacion.png", "price": 1450, "tier": 3, "slot": "armor", "set": "mystic", "effects": { "allowWater": true, "rangePct": 0.1 }
+  },
+  "runas_kamar_taj": {
+    "id": "runas_kamar_taj", "name": "RUNAS DE KAMAR-TAJ", "desc": "35% de ralentizar al impactar.",
+    "icon": "assets/images/items/runas_kamar_taj.png", "price": 800, "tier": 2, "slot": "weapon", "set": "mystic", "effects": { "slowChance": 0.35, "slowPower": 0.3 }
+  },
+  "anillo_portal": {
+    "id": "anillo_portal", "name": "ANILLO PORTAL", "desc": "Agrega un rebote de proyectil.",
+    "icon": "assets/images/items/anillo_portal.png", "price": 1900, "tier": 3, "slot": "weapon", "set": "mystic", "effects": { "chainCount": 1, "chainRange": 100, "chainFactor": 0.55 }
+  },
+
+  "simbionte": {
+    "id": "simbionte", "name": "SIMBIONTE VENOM", "desc": "Aumenta el daño contra el mismo objetivo.",
+    "icon": "assets/images/items/simbionte.png", "price": 1900, "tier": 3, "slot": "armor", "set": "symbiote", "effects": { "consecutiveDamagePct": 0.025 }
+  },
+  "telarana_sintetica": {
+    "id": "telarana_sintetica", "name": "TELARAÑA SINTÉTICA", "desc": "40% de aplicar ralentización acumulable.",
+    "icon": "assets/images/items/telarana_sintetica.png", "price": 300, "tier": 1, "slot": "weapon", "set": "symbiote", "effects": { "slowChance": 0.4, "slowPower": 0.35 }
+  },
+  "tentaculo_klyntar": {
+    "id": "tentaculo_klyntar", "name": "TENTÁCULO KLYNTAR", "desc": "35% de romper armadura.",
+    "icon": "assets/images/items/tentaculo_klyntar.png", "price": 950, "tier": 2, "slot": "weapon", "set": "symbiote", "effects": { "armorBreakChance": 0.35, "armorBreakPower": 0.18 }
+  },
+  "memoria_colmena": {
+    "id": "memoria_colmena", "name": "MEMORIA COLMENA", "desc": "Detecta sigilo y aumenta 12% el alcance.",
+    "icon": "assets/images/items/memoria_colmena.png", "price": 900, "tier": 2, "slot": "artifact", "set": "symbiote", "effects": { "detectStealth": true, "rangePct": 0.12 }
+  },
+  "fragmento_carnage": {
+    "id": "fragmento_carnage", "name": "FRAGMENTO CARNAGE", "desc": "+18% daño y +5% crítico.",
+    "icon": "assets/images/items/fragmento_carnage.png", "price": 3000, "tier": 4, "slot": "artifact", "set": "symbiote", "effects": { "damagePct": 0.18, "critChance": 5 }
+  },
+
+  "suero_supersoldado": {
+    "id": "suero_supersoldado", "name": "SUERO DEL SÚPER SOLDADO", "desc": "+30% daño y cadencia con 10 vidas o menos.",
+    "icon": "assets/images/items/suero_supersoldado.png", "price": 850, "tier": 2, "slot": "armor", "set": "shield", "effects": { "lowLifeDamagePct": 0.3, "lowLifeFireRatePct": 0.3 }
+  },
+  "chaleco_tactico": {
+    "id": "chaleco_tactico", "name": "CHALECO TÁCTICO", "desc": "+8% daño y +8% cadencia.",
+    "icon": "assets/images/items/chaleco_tactico.png", "price": 400, "tier": 1, "slot": "armor", "set": "shield", "effects": { "damagePct": 0.08, "fireRatePct": 0.08 }
+  },
+  "municion_ice": {
+    "id": "municion_ice", "name": "MUNICIÓN I.C.E.R.", "desc": "30% de ralentizar y 10% de penetración.",
+    "icon": "assets/images/items/municion_ice.png", "price": 750, "tier": 2, "slot": "weapon", "set": "shield", "effects": { "slowChance": 0.3, "slowPower": 0.2, "armorPenetration": 0.1 }
+  },
+  "baliza_fury": {
+    "id": "baliza_fury", "name": "BALIZA FURY", "desc": "+10% alcance y detección de sigilo.",
+    "icon": "assets/images/items/baliza_fury.png", "price": 350, "tier": 1, "slot": "artifact", "set": "shield", "effects": { "rangePct": 0.1, "detectStealth": true }
+  },
+  "dron_shield": {
+    "id": "dron_shield", "name": "DRON S.H.I.E.L.D.", "desc": "Agrega un rebote y +5% de cadencia.",
+    "icon": "assets/images/items/dron_shield.png", "price": 1500, "tier": 3, "slot": "artifact", "set": "shield", "effects": { "chainCount": 1, "chainRange": 90, "chainFactor": 0.5, "fireRatePct": 0.05 }
   }
 }

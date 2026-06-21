@@ -1,7 +1,7 @@
 import { calculateHeroBonuses, getUpgradeNode } from '../data/HeroUpgradeCatalog.js';
 
 const SAVE_KEY = 'tower-defense-marvel-save';
-const SAVE_VERSION = 4;
+const SAVE_VERSION = 5;
 
 function createMapProgress(progress = {}) {
     return {
@@ -21,6 +21,9 @@ function createDefaultState() {
         activeTeamIds: [],
         ownedItemIds: [],
         equippedItems: {},
+        itemLevels: {},
+        forgeMaterials: 0,
+        loadouts: {},
         heroUpgrades: {},
         mapProgress: {},
         lastLevelId: 'level_1',
@@ -83,6 +86,9 @@ export class ProgressionManager {
         migrated.activeTeamIds = raw.activeTeamIds || raw.team || migrated.unlockedHeroIds.slice(0, 6);
         migrated.ownedItemIds = raw.ownedItemIds || raw.items || [];
         migrated.equippedItems = raw.equippedItems || {};
+        migrated.itemLevels = raw.itemLevels || {};
+        migrated.forgeMaterials = raw.forgeMaterials || 0;
+        migrated.loadouts = raw.loadouts || {};
         migrated.heroUpgrades = raw.heroUpgrades || raw.upgrades || {};
         migrated.mapProgress = raw.mapProgress || raw.maps || {};
         migrated.lastLevelId = raw.lastLevelId || 'level_1';
@@ -98,11 +104,31 @@ export class ProgressionManager {
         this.state.unlockedHeroIds = [...new Set(this.state.unlockedHeroIds)].filter((id) => heroIds.has(id));
         this.state.activeTeamIds = [...new Set(this.state.activeTeamIds)]
             .filter((id) => this.state.unlockedHeroIds.includes(id)).slice(0, 6);
-        this.state.ownedItemIds = [...new Set(this.state.ownedItemIds)].filter((id) => itemIds.has(id));
+        this.state.ownedItemIds = (this.state.ownedItemIds || []).filter((id) => itemIds.has(id));
         Object.keys(this.state.equippedItems).forEach((heroId) => {
-            const itemId = this.state.equippedItems[heroId];
-            if (!heroIds.has(heroId) || !itemIds.has(itemId)) delete this.state.equippedItems[heroId];
+            if (!heroIds.has(heroId)) {
+                delete this.state.equippedItems[heroId];
+                return;
+            }
+            const rawSlots = this.state.equippedItems[heroId];
+            const slots = typeof rawSlots === 'string'
+                ? { [this.data.items[rawSlots]?.slot || 'artifact']: rawSlots }
+                : { ...(rawSlots || {}) };
+            this.state.equippedItems[heroId] = Object.fromEntries(Object.entries(slots)
+                .filter(([slot, itemId]) => ['weapon', 'armor', 'artifact'].includes(slot)
+                    && itemIds.has(itemId)
+                    && this.data.items[itemId].slot === slot));
         });
+        this.state.itemLevels = Object.fromEntries(Object.entries(this.state.itemLevels || {})
+            .filter(([itemId]) => itemIds.has(itemId))
+            .map(([itemId, level]) => [itemId, Math.max(1, Math.min(3, Number(level) || 1))]));
+        this.state.forgeMaterials = Math.max(0, Math.floor(Number(this.state.forgeMaterials) || 0));
+        this.state.loadouts = Object.fromEntries(Object.entries(this.state.loadouts || {})
+            .filter(([heroId]) => heroIds.has(heroId))
+            .map(([heroId, loadout]) => [heroId, {
+                slots: Object.fromEntries(Object.entries(loadout?.slots || {})
+                    .filter(([slot, itemId]) => ['weapon', 'armor', 'artifact'].includes(slot) && itemIds.has(itemId)))
+            }]));
         if (!levelIds.has(this.state.lastLevelId)) this.state.lastLevelId = 'level_1';
         this.state.mapProgress = Object.fromEntries(Object.entries(this.state.mapProgress || {})
             .filter(([levelId]) => levelIds.has(levelId))
@@ -189,32 +215,42 @@ export class ProgressionManager {
 
     equipItem(heroId, itemId) {
         if (!this.state.ownedItemIds.includes(itemId) || !this.state.unlockedHeroIds.includes(heroId)) return false;
-        const previous = this.state.equippedItems[heroId];
-        this.state.ownedItemIds = this.state.ownedItemIds.filter((id) => id !== itemId);
+        const item = this.data.items[itemId];
+        if (!item?.slot) return false;
+        const slots = { ...(this.state.equippedItems[heroId] || {}) };
+        const previous = slots[item.slot];
+        this.removeOwnedItem(itemId);
         if (previous) this.state.ownedItemIds.push(previous);
-        this.state.equippedItems[heroId] = itemId;
+        slots[item.slot] = itemId;
+        this.state.equippedItems[heroId] = slots;
         this.save();
         this.syncGame();
         return true;
     }
 
-    unequipItem(heroId) {
-        const itemId = this.state.equippedItems[heroId];
+    unequipItem(heroId, slot = null) {
+        const slots = { ...(this.state.equippedItems[heroId] || {}) };
+        const targetSlot = slot || Object.keys(slots)[0];
+        const itemId = slots[targetSlot];
         if (!itemId) return false;
         this.state.ownedItemIds.push(itemId);
-        delete this.state.equippedItems[heroId];
+        delete slots[targetSlot];
+        if (Object.keys(slots).length) this.state.equippedItems[heroId] = slots;
+        else delete this.state.equippedItems[heroId];
         this.save();
         this.syncGame();
         return true;
     }
 
     applyEquippedItem(hero) {
-        const itemId = this.state.equippedItems[hero.id];
-        hero.items = itemId && this.data.items[itemId] ? [{ ...this.data.items[itemId] }] : [];
+        const slots = this.state.equippedItems[hero.id] || {};
+        hero.items = Object.values(slots).map((itemId) => this.data.items[itemId]
+            ? { ...this.data.items[itemId], forgeLevel: this.getItemLevel(itemId) }
+            : null).filter(Boolean);
     }
 
     addOwnedItem(itemId) {
-        if (!this.data.items[itemId] || this.hasItem(itemId)) return false;
+        if (!this.data.items[itemId]) return false;
         this.state.ownedItemIds.push(itemId);
         this.save();
         this.syncGame();
@@ -222,7 +258,79 @@ export class ProgressionManager {
     }
 
     hasItem(itemId) {
-        return this.state.ownedItemIds.includes(itemId) || Object.values(this.state.equippedItems).includes(itemId);
+        return this.state.ownedItemIds.includes(itemId)
+            || Object.values(this.state.equippedItems).some((slots) => Object.values(slots || {}).includes(itemId));
+    }
+
+    getOwnedQuantity(itemId) {
+        return this.state.ownedItemIds.filter((id) => id === itemId).length;
+    }
+
+    removeOwnedItem(itemId) {
+        const index = this.state.ownedItemIds.indexOf(itemId);
+        if (index < 0) return false;
+        this.state.ownedItemIds.splice(index, 1);
+        return true;
+    }
+
+    getItemLevel(itemId) {
+        return this.state.itemLevels[itemId] || 1;
+    }
+
+    getForgeCost(itemId) {
+        const item = this.data.items[itemId];
+        const level = this.getItemLevel(itemId);
+        return item ? item.tier * level * 30 : Infinity;
+    }
+
+    salvageItem(itemId) {
+        const item = this.data.items[itemId];
+        if (!item || !this.removeOwnedItem(itemId)) return { ok: false, reason: 'No hay una copia disponible para reciclar' };
+        const materials = item.tier * 20;
+        this.state.forgeMaterials += materials;
+        this.save();
+        this.syncGame();
+        return { ok: true, materials };
+    }
+
+    upgradeItem(itemId) {
+        if (!this.hasItem(itemId)) return { ok: false, reason: 'Primero debes obtener el objeto' };
+        const level = this.getItemLevel(itemId);
+        if (level >= 3) return { ok: false, reason: 'El objeto ya alcanzó nivel 3' };
+        const cost = this.getForgeCost(itemId);
+        if (this.state.forgeMaterials < cost) return { ok: false, reason: `Necesitas ${cost} materiales` };
+        this.state.forgeMaterials -= cost;
+        this.state.itemLevels[itemId] = level + 1;
+        this.save();
+        this.syncGame();
+        return { ok: true, level: level + 1, cost };
+    }
+
+    saveLoadout(heroId) {
+        if (!this.state.unlockedHeroIds.includes(heroId)) return false;
+        this.state.loadouts[heroId] = { slots: { ...(this.state.equippedItems[heroId] || {}) } };
+        this.save();
+        return true;
+    }
+
+    applyLoadout(heroId) {
+        const target = this.state.loadouts[heroId]?.slots;
+        if (!target) return { ok: false, reason: 'No hay un loadout guardado' };
+
+        const current = { ...(this.state.equippedItems[heroId] || {}) };
+        const available = [...this.state.ownedItemIds, ...Object.values(current)];
+        for (const itemId of Object.values(target)) {
+            const index = available.indexOf(itemId);
+            if (index < 0) return { ok: false, reason: `Falta ${this.data.items[itemId]?.name || itemId}` };
+            available.splice(index, 1);
+        }
+
+        this.state.ownedItemIds.push(...Object.values(current));
+        Object.values(target).forEach((itemId) => this.removeOwnedItem(itemId));
+        this.state.equippedItems[heroId] = { ...target };
+        this.save();
+        this.syncGame();
+        return { ok: true };
     }
 
     recordWave(game, waveNumber) {

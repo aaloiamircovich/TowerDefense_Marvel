@@ -104,10 +104,17 @@ function validateEnemies(enemies) {
 
 function validateItems(items) {
     validateRecordIds('items', items);
+    if (Object.keys(items).length < 30) errors.push('items necesita al menos 30 objetos para la Fase 11');
+    const validSlots = new Set(['weapon', 'armor', 'artifact']);
     for (const [key, item] of Object.entries(items)) {
         requireText(item.name, `items.${key}.name`);
         requirePositive(item.price, `items.${key}.price`);
         requirePositive(item.tier, `items.${key}.tier`);
+        if (!validSlots.has(item.slot)) errors.push(`items.${key}.slot no es valido`);
+        requireText(item.set, `items.${key}.set`);
+        if (!item.effects || typeof item.effects !== 'object' || Array.isArray(item.effects)) {
+            errors.push(`items.${key}.effects debe ser un objeto`);
+        }
         if (item.icon) validateAsset(item.icon, `items.${key}.icon`);
     }
 }

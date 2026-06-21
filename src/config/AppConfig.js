@@ -1,2 +1,2 @@
-export const APP_VERSION = '1.2.0';
+export const APP_VERSION = '1.3.0';
 export const FAN_PROJECT_NOTICE = 'Proyecto fan no oficial, sin afiliación ni respaldo de Marvel o Disney. No destinado a uso comercial.';

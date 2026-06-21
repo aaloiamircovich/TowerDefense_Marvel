@@ -1,5 +1,7 @@
 import { TypeChart } from '../../data/TypeChart.js';
 
+import { aggregateItemEffects } from './ItemEffectSystem.js';
+
 export class CombatSystem {
     static applyImpact(projectile, target, attacker, resourceManager) {
         if (!target?.isAlive) return { damage: 0, killed: false, hits: 0 };
@@ -90,22 +92,23 @@ export class CombatSystem {
         }
 
         attacker.killCount = (attacker.killCount || 0) + 1;
-        if (attacker.items?.some((item) => item.id === 'protocolo_extremis') && attacker.killCount >= 15) {
+        const healEvery = aggregateItemEffects(attacker.items).killHealEvery;
+        if (healEvery && attacker.killCount >= healEvery) {
             resourceManager?.addLife(1);
             attacker.killCount = 0;
         }
     }
 
     static applyItemEffects(attacker, target, resourceManager) {
+        const itemEffects = aggregateItemEffects(attacker.items);
+        if (itemEffects.onHitCredit) {
+            resourceManager?.addCredits(itemEffects.onHitCredit);
+            attacker.recordGold?.(itemEffects.onHitCredit);
+        }
         attacker.items.forEach((item) => {
             if (item.flags?.includes('slow_on_armor') && target.armor > 0) {
                 target.applyStatus?.({ type: 'slow', duration: 1, power: 0.5 }, attacker)
                     ?? target.applyDebuff?.('slow', 1, 0.5);
-            }
-
-            if (item.id === 'contrato_stark') {
-                resourceManager?.addCredits(1);
-                attacker.recordGold?.(1);
             }
 
             if (item.id === 'leftovers') {

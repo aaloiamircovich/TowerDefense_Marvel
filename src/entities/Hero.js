@@ -2,6 +2,7 @@ import { Projectile } from './Projectile.js';
 import { getCachedImage } from '../rendering/ImageCache.js';
 import { SpriteAnimator } from '../rendering/SpriteAnimator.js';
 import { HeroAbilitySystem } from '../systems/HeroAbilitySystem.js';
+import { aggregateItemEffects } from '../systems/ItemEffectSystem.js';
 
 export class Hero {
     constructor(config, x, y, game) {
@@ -18,7 +19,8 @@ export class Hero {
         this.fireRate = config.fireRate || 1;
         this.critChance = config.critChance || 5;
         this.attackType = config.attackType || this.category;
-        this.allowedTerrains = [...(config.allowedTerrains || [1])];
+        this.baseAllowedTerrains = [...(config.allowedTerrains || [1])];
+        this.allowedTerrains = [...this.baseAllowedTerrains];
         this.targetingPriority = config.targetingPriority || 'Primero';
         this.deployedCost = config.cost || 0;
         this.lastRepositionWave = -1;
@@ -44,6 +46,7 @@ export class Hero {
     }
 
     getEffectiveStats() {
+        this.allowedTerrains = [...this.baseAllowedTerrains];
         const stats = {
             damage: this.damage,
             fireRate: this.fireRate,
@@ -60,17 +63,17 @@ export class Hero {
             stats.critChance += progression.critChance;
         }
 
-        this.items.forEach((item) => {
-            if (item.id === 'reactor_arc') stats.fireRate *= 1.25;
-            if (item.id === 'particulas_pym') stats.fireRate *= 1.5;
-            if (item.id === 'gema_poder') stats.damage *= 1.5;
-            if (item.id === 'lentes_edith') stats.canSeeStealth = true;
-            if (item.id === 'aerodeslizador' && !this.allowedTerrains.includes(0)) this.allowedTerrains.push(0);
-        });
+        const itemEffects = aggregateItemEffects(this.items);
+        stats.damage *= 1 + (itemEffects.damagePct || 0);
+        stats.fireRate *= 1 + (itemEffects.fireRatePct || 0);
+        stats.range *= 1 + (itemEffects.rangePct || 0);
+        stats.critChance += itemEffects.critChance || 0;
+        if (itemEffects.detectStealth) stats.canSeeStealth = true;
+        if (itemEffects.allowWater && !this.allowedTerrains.includes(0)) this.allowedTerrains.push(0);
 
-        if (this.items.some((item) => item.id === 'suero_supersoldado') && this.game.resourceManager.lives <= 10) {
-            stats.damage *= 1.3;
-            stats.fireRate *= 1.3;
+        if (this.game.resourceManager.lives <= 10) {
+            stats.damage *= 1 + (itemEffects.lowLifeDamagePct || 0);
+            stats.fireRate *= 1 + (itemEffects.lowLifeFireRatePct || 0);
         }
 
         return this.abilitySystem.applyStatModifiers(stats);
@@ -133,10 +136,11 @@ export class Hero {
         this.combatStats.shots++;
         if (isCrit) this.combatStats.crits++;
 
-        if (this.items.some((item) => item.id === 'simbionte')) {
+        const itemEffects = aggregateItemEffects(this.items);
+        if (itemEffects.consecutiveDamagePct) {
             if (this.lastTargetId === target.uid) {
                 this.consecutiveHits++;
-                finalDamage *= 1 + this.consecutiveHits * 0.025;
+                finalDamage *= 1 + this.consecutiveHits * itemEffects.consecutiveDamagePct;
             } else {
                 this.consecutiveHits = 0;
                 this.lastTargetId = target.uid;
@@ -171,9 +175,9 @@ export class Hero {
         if (this.id === 'scarlet_witch') effects.push({ type: 'mark', duration: 2.5, power: 0.25, chance: 0.65 });
         if (this.id === 'jean_grey') effects.push({ type: 'knockback', duration: 0, power: 42, chance: 0.25 });
         if (this.id === 'she_hulk') effects.push({ type: 'knockback', duration: 0, power: 30, chance: 0.35 });
-        if (this.items.some((item) => item.id === 'telarana_sintetica')) {
-            effects.push({ type: 'slow', duration: 1.2, power: 0.35, chance: 0.4 });
-        }
+        const itemEffects = aggregateItemEffects(this.items);
+        if (itemEffects.slowChance) effects.push({ type: 'slow', duration: 1.2, power: itemEffects.slowPower || 0.2, chance: itemEffects.slowChance });
+        if (itemEffects.armorBreakChance) effects.push({ type: 'armorBreak', duration: 3, power: itemEffects.armorBreakPower || 0.15, chance: itemEffects.armorBreakChance });
 
         return effects;
     }
@@ -187,7 +191,17 @@ export class Hero {
             cyclops: { armorPenetration: 0.35 },
             moon_knight: { returning: true }
         };
-        return profiles[this.id] || {};
+        const base = profiles[this.id] || {};
+        const itemEffects = aggregateItemEffects(this.items);
+        return {
+            ...base,
+            chainCount: (base.chainCount || 0) + Math.round(itemEffects.chainCount || 0),
+            chainRange: Math.max(base.chainRange || 0, itemEffects.chainRange || 0),
+            chainFactor: Math.max(base.chainFactor || 0, itemEffects.chainFactor || 0),
+            splashRadius: Math.max(base.splashRadius || 0, itemEffects.splashRadius || 0),
+            splashFactor: Math.max(base.splashFactor || 0, itemEffects.splashFactor || 0),
+            armorPenetration: Math.min(0.85, (base.armorPenetration || 0) + (itemEffects.armorPenetration || 0))
+        };
     }
 
     recordDamage(amount) {
@@ -198,7 +212,8 @@ export class Hero {
         this.combatStats.kills++;
         this.killCount++;
 
-        if (this.items.some((item) => item.id === 'protocolo_extremis') && this.killCount >= 15) {
+        const healEvery = aggregateItemEffects(this.items).killHealEvery;
+        if (healEvery && this.killCount >= healEvery) {
             resourceManager?.addLife(1);
             this.killCount = 0;
         }
