@@ -153,6 +153,7 @@ export class UIManager {
         const fireRate = Number(hero.fireRate || config.fireRate || 1).toFixed(1);
         const terrains = this.getTerrainText(hero.allowedTerrains || config.allowedTerrains || [1]);
         const items = hero.items || [];
+        const combat = hero.combatStats || {};
 
         this.panelContent.innerHTML = `
             <div class="hero-detail">
@@ -184,6 +185,13 @@ export class UIManager {
                             <select id="targeting-select">
                                 ${['Primero', 'Último', 'Fuerte', 'Débil'].map((priority) => `<option value="${priority}" ${hero.targetingPriority === priority ? 'selected' : ''}>${priority}</option>`).join('')}
                             </select>
+                        </div>
+                        <div class="detail-card">
+                            <h3>Combate</h3>
+                            <p><span>Daño total</span><strong>${Math.round(combat.damageDealt || 0)}</strong></p>
+                            <p><span>Bajas</span><strong>${combat.kills || 0}</strong></p>
+                            <p><span>Disparos</span><strong>${combat.shots || 0}</strong></p>
+                            <p><span>Críticos</span><strong>${combat.crits || 0}</strong></p>
                         </div>
                     </div>
 
@@ -576,7 +584,8 @@ export class UIManager {
 
         const weights = { Common: 60, Rare: 30, Legendary: 10 };
         const weightedPool = pool.flatMap((hero) => Array(weights[hero.rarity] || 20).fill(hero));
-        const hero = weightedPool[Math.floor(Math.random() * weightedPool.length)];
+        const hero = this.game.random?.pick?.(weightedPool)
+            || weightedPool[Math.floor(Math.random() * weightedPool.length)];
 
         this.game.unlockedHeroes.push(hero);
         document.getElementById('gacha-res').innerHTML = `Desbloqueado: <strong>${hero.name}</strong>`;

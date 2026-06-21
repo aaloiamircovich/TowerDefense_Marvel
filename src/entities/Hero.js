@@ -24,6 +24,13 @@ export class Hero {
         this.consecutiveHits = 0;
         this.lastTargetId = null;
         this.killCount = 0;
+        this.combatStats = {
+            damageDealt: 0,
+            kills: 0,
+            shots: 0,
+            crits: 0,
+            goldGenerated: 0
+        };
         this.size = 36;
         this.flashTimer = 0;
         this.animator = config.visual ? new SpriteAnimator(config.visual) : null;
@@ -97,8 +104,11 @@ export class Hero {
         this.animator?.faceVector(target.x - this.x, target.y - this.y);
         this.animator?.playAttack();
 
-        const isCrit = Math.random() * 100 < this.critChance;
+        const roll = this.game?.random?.next?.() ?? Math.random();
+        const isCrit = roll * 100 < this.critChance;
         let finalDamage = isCrit ? stats.damage * 2 : stats.damage;
+        this.combatStats.shots++;
+        if (isCrit) this.combatStats.crits++;
 
         if (this.items.some((item) => item.id === 'simbionte')) {
             if (this.lastTargetId === target.uid) {
@@ -115,6 +125,7 @@ export class Hero {
             damage: finalDamage,
             attackerType: this.category,
             effects: this.getProjectileEffects(),
+            ...this.getProjectileProfile(),
             color: this.getProjectileColor(),
             radius: isCrit ? 7 : 5
         }));
@@ -127,11 +138,47 @@ export class Hero {
         if (this.id === 'black_widow') effects.push({ type: 'stun', duration: 0.45, power: 1, chance: 0.18 });
         if (this.id === 'groot') effects.push({ type: 'slow', duration: 1.8, power: 0.6, chance: 0.5 });
         if (this.id === 'storm') effects.push({ type: 'slow', duration: 1.1, power: 0.35, chance: 0.7 });
+        if (this.id === 'ghost_rider') effects.push({ type: 'burn', duration: 3, power: 7, chance: 0.8 });
+        if (this.id === 'blade') effects.push({ type: 'bleed', duration: 3, power: 6, chance: 0.75 });
+        if (this.id === 'luke_cage') effects.push({ type: 'armorBreak', duration: 3, power: 0.25, chance: 0.55 });
+        if (this.id === 'scarlet_witch') effects.push({ type: 'mark', duration: 2.5, power: 0.25, chance: 0.65 });
+        if (this.id === 'jean_grey') effects.push({ type: 'knockback', duration: 0, power: 42, chance: 0.25 });
+        if (this.id === 'she_hulk') effects.push({ type: 'knockback', duration: 0, power: 30, chance: 0.35 });
         if (this.items.some((item) => item.id === 'telarana_sintetica')) {
             effects.push({ type: 'slow', duration: 1.2, power: 0.35, chance: 0.4 });
         }
 
         return effects;
+    }
+
+    getProjectileProfile() {
+        const profiles = {
+            capitan_america: { chainCount: 2, chainRange: 115, chainFactor: 0.6, returning: true },
+            thor: { chainCount: 3, chainRange: 130, chainFactor: 0.7 },
+            hawkeye: { splashRadius: 62, splashFactor: 0.55 },
+            winter_soldier: { armorPenetration: 0.45 },
+            cyclops: { armorPenetration: 0.35 },
+            moon_knight: { returning: true }
+        };
+        return profiles[this.id] || {};
+    }
+
+    recordDamage(amount) {
+        this.combatStats.damageDealt += Math.max(0, amount || 0);
+    }
+
+    recordKill(resourceManager) {
+        this.combatStats.kills++;
+        this.killCount++;
+
+        if (this.items.some((item) => item.id === 'protocolo_extremis') && this.killCount >= 15) {
+            resourceManager?.addLife(1);
+            this.killCount = 0;
+        }
+    }
+
+    recordGold(amount) {
+        this.combatStats.goldGenerated += Math.max(0, amount || 0);
     }
 
     getProjectileColor() {

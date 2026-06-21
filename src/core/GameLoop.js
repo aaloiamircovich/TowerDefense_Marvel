@@ -1,7 +1,8 @@
 import { Hero } from '../entities/Hero.js';
+import { RandomSource } from '../utils/Random.js';
 
 export class GameLoop {
-    constructor(canvasId) {
+    constructor(canvasId, options = {}) {
         this.canvas = document.getElementById(canvasId);
         this.ctx = this.canvas.getContext('2d');
         this.lastTime = performance.now();
@@ -16,6 +17,7 @@ export class GameLoop {
         this.projectiles = [];
         this.path = [];
         this.stars = 0;
+        this.random = new RandomSource(options.seed ?? Date.now());
 
         this.waveManager = null;
         this.uiManager = null;

@@ -36,34 +36,66 @@ export class Enemy {
         }
     }
 
-    takeDamage(amount) {
-        const armorRatio = this.armor > 1 ? Math.min(this.armor / 100, 0.85) : Math.min(this.armor, 0.85);
+    takeDamage(amount, options = {}) {
+        const baseArmor = this.armor > 1 ? this.armor / 100 : this.armor;
+        const armorBreak = this.debuffs
+            .filter((debuff) => debuff.type === 'armorBreak')
+            .reduce((total, debuff) => total + debuff.power, 0);
+        const penetration = Math.max(0, Math.min(1, options.armorPenetration || 0));
+        const armorRatio = options.ignoreArmor
+            ? 0
+            : Math.max(0, Math.min(baseArmor - armorBreak, 0.85)) * (1 - penetration);
         const finalDamage = Math.max(1, amount * (1 - armorRatio));
-        this.hp -= finalDamage;
+        const appliedDamage = Math.min(this.hp, finalDamage);
+        this.hp -= appliedDamage;
 
         if (this.hp <= 0) {
             this.hp = 0;
             this.isAlive = false;
         }
 
-        return { damage: finalDamage, killed: !this.isAlive };
+        return { damage: appliedDamage, killed: !this.isAlive };
     }
 
     applyDebuff(type, duration = 1, power = 0.5) {
-        if (type === 'slow' && this.config.immuneToSlow) return;
-        if (type === 'stun' && this.config.immuneToStun) return;
+        return this.applyStatus({ type, duration, power });
+    }
+
+    applyStatus(effect, source = null) {
+        const { type, duration = 1, power = 0.5 } = effect;
+        if (type === 'slow' && this.config.immuneToSlow) return false;
+        if (type === 'stun' && this.config.immuneToStun) return false;
+        if (type === 'knockback') {
+            this.moveBackward(power);
+            return true;
+        }
 
         const existing = this.debuffs.find((debuff) => debuff.type === type);
         if (existing) {
             existing.duration = Math.max(existing.duration, duration);
             existing.power = Math.max(existing.power, power);
+            existing.source = source || existing.source;
         } else {
-            this.debuffs.push({ type, duration, power });
+            this.debuffs.push({ type, duration, power, source, tickTimer: 0 });
         }
+        return true;
     }
 
     updateDebuffs(dt) {
         this.debuffs.forEach((debuff) => {
+            if ((debuff.type === 'burn' || debuff.type === 'bleed') && this.isAlive) {
+                const interval = debuff.type === 'burn' ? 0.5 : 0.4;
+                debuff.tickTimer += Math.min(dt, debuff.duration);
+                while (debuff.tickTimer >= interval && this.isAlive) {
+                    const result = this.takeDamage(debuff.power * interval, { ignoreArmor: true });
+                    debuff.source?.recordDamage?.(result.damage);
+                    if (result.killed && !this.killCredited) {
+                        this.killCredited = true;
+                        debuff.source?.recordKill?.(debuff.source?.game?.resourceManager);
+                    }
+                    debuff.tickTimer -= interval;
+                }
+            }
             debuff.duration -= dt;
         });
         this.debuffs = this.debuffs.filter((debuff) => debuff.duration > 0);
@@ -80,33 +112,81 @@ export class Enemy {
         }
     }
 
+    getDamageTakenMultiplier() {
+        const mark = this.debuffs
+            .filter((debuff) => debuff.type === 'mark')
+            .reduce((strongest, debuff) => Math.max(strongest, debuff.power), 0);
+        return 1 + mark;
+    }
+
     update(dt) {
         if (!this.isAlive || this.hasReachedEnd) return;
         this.updateDebuffs(dt);
         if (this.speed <= 0) return;
 
+        this.moveForward(this.speed * dt);
+    }
+
+    moveForward(distance) {
+        let remaining = Math.max(0, distance);
+
+        while (remaining > 0) {
+            const target = this.path[this.pathIndex + 1];
+            if (!target) {
+                this.hasReachedEnd = true;
+                return;
+            }
+
+            const dx = target.x - this.x;
+            const dy = target.y - this.y;
+            const segmentRemaining = Math.hypot(dx, dy);
+            if (segmentRemaining <= remaining) {
+                this.x = target.x;
+                this.y = target.y;
+                this.pathIndex++;
+                this.distanceTravelled += segmentRemaining;
+                remaining -= segmentRemaining;
+            } else {
+                this.x += (dx / segmentRemaining) * remaining;
+                this.y += (dy / segmentRemaining) * remaining;
+                this.snapToPathSegment(target);
+                this.distanceTravelled += remaining;
+                remaining = 0;
+            }
+        }
+    }
+
+    moveBackward(distance) {
+        let remaining = Math.max(0, distance);
+        let moved = 0;
+
+        while (remaining > 0) {
+            const segmentStart = this.path[this.pathIndex];
+            if (!segmentStart) break;
+
+            const dx = segmentStart.x - this.x;
+            const dy = segmentStart.y - this.y;
+            const distanceToStart = Math.hypot(dx, dy);
+            if (distanceToStart > remaining) {
+                this.x += (dx / distanceToStart) * remaining;
+                this.y += (dy / distanceToStart) * remaining;
+                moved += remaining;
+                remaining = 0;
+            } else {
+                this.x = segmentStart.x;
+                this.y = segmentStart.y;
+                moved += distanceToStart;
+                remaining -= distanceToStart;
+                if (this.pathIndex === 0) break;
+                this.pathIndex--;
+            }
+        }
+
+        this.hasReachedEnd = false;
+        this.distanceTravelled = Math.max(0, this.distanceTravelled - moved);
         const target = this.path[this.pathIndex + 1];
-        if (!target) {
-            this.hasReachedEnd = true;
-            return;
-        }
-
-        const dx = target.x - this.x;
-        const dy = target.y - this.y;
-        const distance = Math.hypot(dx, dy);
-        const moveDist = this.speed * dt;
-
-        if (distance <= moveDist) {
-            this.x = target.x;
-            this.y = target.y;
-            this.pathIndex++;
-            this.distanceTravelled += distance;
-        } else {
-            this.x += (dx / distance) * moveDist;
-            this.y += (dy / distance) * moveDist;
-            this.snapToPathSegment(target);
-            this.distanceTravelled += moveDist;
-        }
+        if (target) this.snapToPathSegment(target);
+        return moved;
     }
 
     snapToPathSegment(target) {
@@ -174,8 +254,16 @@ export class Enemy {
     }
 
     renderDebuffPips(ctx) {
+        const colors = {
+            stun: '#ffd166',
+            slow: '#40c9ff',
+            burn: '#ff6b35',
+            bleed: '#e63946',
+            armorBreak: '#b8b8b8',
+            mark: '#d86cff'
+        };
         this.debuffs.forEach((debuff, index) => {
-            ctx.fillStyle = debuff.type === 'stun' ? '#ffd166' : '#40c9ff';
+            ctx.fillStyle = colors[debuff.type] || '#ffffff';
             ctx.beginPath();
             ctx.arc(this.x - 8 + index * 8, this.y + this.size / 2 + 7, 3, 0, Math.PI * 2);
             ctx.fill();
