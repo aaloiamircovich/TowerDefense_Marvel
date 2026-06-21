@@ -2,6 +2,11 @@
 
 Tower defense ambientado en escenarios inspirados por Marvel, con niveles temáticos, oleadas escaladas, tienda, colección de héroes y configuración visual.
 
+## Plan de desarrollo
+
+- [Roadmap completo](docs/ROADMAP.md)
+- [Pipeline profesional de sprites](docs/SPRITE_PIPELINE.md)
+
 ## Ejecutar
 
 La forma recomendada es usar el servidor local:
