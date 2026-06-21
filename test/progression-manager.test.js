@@ -88,6 +88,18 @@ test('Objetivos de misión entregan una recompensa una sola vez', () => {
     assert.deepEqual(manager.getMapProgress('level_1').missionObjectives, ['ny_rescue']);
 });
 
+test('Ajustes accesibles conservan tipos y límites válidos', () => {
+    const manager = new ProgressionManager(new MemoryStorage());
+    manager.initialize(createGame(), data);
+    manager.updateSetting('highContrast', true);
+    manager.updateSetting('uiScale', 'large');
+    manager.updateSetting('musicVolume', 4);
+
+    assert.equal(manager.state.settings.highContrast, true);
+    assert.equal(manager.state.settings.uiScale, 'large');
+    assert.equal(manager.state.settings.musicVolume, 1);
+});
+
 function createGame() {
     return {
         heroes: [], audio: { setEnabled: () => {} }, resourceManager: { lives: 20, maxLives: 20 },

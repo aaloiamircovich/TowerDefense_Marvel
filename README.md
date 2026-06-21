@@ -2,6 +2,8 @@
 
 Tower defense ambientado en escenarios inspirados por Marvel, con siete misiones temáticas, reglas propias por mapa, objetivos secundarios, oleadas escaladas, tienda y colección de héroes.
 
+Incluye audio por buses, música temática, interfaz responsive, navegación por teclado, alto contraste, reducción de movimiento y escala de UI persistente.
+
 ## Plan de desarrollo
 
 - [Roadmap completo](docs/ROADMAP.md)

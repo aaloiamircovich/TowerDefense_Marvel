@@ -12,9 +12,10 @@ import { ShopSystem } from './systems/ShopSystem.js';
 import { MissionSystem } from './systems/MissionSystem.js';
 
 async function initGame() {
+    let ui = null;
     try {
         const game = new GameLoop('gameCanvas');
-        const ui = new UIManager(game);
+        ui = new UIManager(game);
         const resources = new ResourceManager(game, 20, 650);
 
         game.uiManager = ui;
@@ -101,7 +102,7 @@ async function initGame() {
             });
         }
     } catch (error) {
-        alert('Error crítico al cargar. Revisa la consola F12.');
+        ui?.showFatalError(error);
         console.error('Detalle del fallo:', error);
     }
 }

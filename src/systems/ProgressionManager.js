@@ -1,7 +1,7 @@
 import { calculateHeroBonuses, getUpgradeNode } from '../data/HeroUpgradeCatalog.js';
 
 const SAVE_KEY = 'tower-defense-marvel-save';
-const SAVE_VERSION = 3;
+const SAVE_VERSION = 4;
 
 function createMapProgress(progress = {}) {
     return {
@@ -25,7 +25,17 @@ function createDefaultState() {
         mapProgress: {},
         lastLevelId: 'level_1',
         shop: { rotationKey: '', slotIds: [], purchasedIds: [], heroPity: 0 },
-        settings: { ranges: true, grid: true, audio: true }
+        settings: {
+            ranges: true,
+            grid: true,
+            audio: true,
+            highContrast: false,
+            reduceMotion: false,
+            uiScale: 'normal',
+            masterVolume: 0.7,
+            musicVolume: 0.25,
+            sfxVolume: 0.75
+        }
     };
 }
 
@@ -57,7 +67,15 @@ export class ProgressionManager {
 
     static migrate(raw) {
         if (!raw || typeof raw !== 'object') return createDefaultState();
-        if (raw.version === SAVE_VERSION) return { ...createDefaultState(), ...raw };
+        if (raw.version === SAVE_VERSION) {
+            const defaults = createDefaultState();
+            return {
+                ...defaults,
+                ...raw,
+                shop: { ...defaults.shop, ...(raw.shop || {}) },
+                settings: { ...defaults.settings, ...(raw.settings || {}) }
+            };
+        }
 
         const migrated = createDefaultState();
         migrated.metaCredits = raw.metaCredits ?? raw.credits ?? migrated.metaCredits;
@@ -100,7 +118,7 @@ export class ProgressionManager {
         this.game.ownedItems = this.state.ownedItemIds.map((id) => ({ ...this.data.items[id] })).filter(Boolean);
         this.game.showHeroRanges = this.state.settings.ranges;
         this.game.showGrid = this.state.settings.grid;
-        this.game.audio?.setEnabled(this.state.settings.audio);
+        this.applySettings();
         this.game.stars = this.getTotalStars();
         this.game.heroes?.forEach((hero) => this.applyEquippedItem(hero));
     }
@@ -250,8 +268,33 @@ export class ProgressionManager {
 
     updateSetting(key, value) {
         if (!(key in this.state.settings)) return;
-        this.state.settings[key] = Boolean(value);
+        if (['ranges', 'grid', 'audio', 'highContrast', 'reduceMotion'].includes(key)) {
+            this.state.settings[key] = Boolean(value);
+        } else if (['masterVolume', 'musicVolume', 'sfxVolume'].includes(key)) {
+            this.state.settings[key] = Math.max(0, Math.min(1, Number(value) || 0));
+        } else if (key === 'uiScale' && ['compact', 'normal', 'large'].includes(value)) {
+            this.state.settings[key] = value;
+        } else {
+            return;
+        }
         this.save();
+        this.applySettings();
+    }
+
+    applySettings() {
+        const settings = this.state.settings;
+        this.game.showHeroRanges = settings.ranges;
+        this.game.showGrid = settings.grid;
+        this.game.audio?.setEnabled(settings.audio);
+        this.game.audio?.setBusVolume?.('master', settings.masterVolume);
+        this.game.audio?.setBusVolume?.('music', settings.musicVolume);
+        this.game.audio?.setBusVolume?.('sfx', settings.sfxVolume);
+
+        const documentRef = globalThis.document;
+        if (!documentRef) return;
+        documentRef.body.classList.toggle('high-contrast', settings.highContrast);
+        documentRef.body.classList.toggle('reduce-motion', settings.reduceMotion);
+        documentRef.body.dataset.uiScale = settings.uiScale;
     }
 }
 

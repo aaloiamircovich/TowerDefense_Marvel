@@ -23,12 +23,12 @@
 
             <div class="top-section right">
                 <nav id="hub-menu" aria-label="Paneles">
-                    <button class="hub-btn" data-panel="profile" title="Perfil" aria-label="Perfil"><i class="fas fa-id-card"></i></button>
-                    <button class="hub-btn" data-panel="collection" title="Colección" aria-label="Colección"><i class="fas fa-grip"></i></button>
-                    <button class="hub-btn" data-panel="inventory" title="Inventario" aria-label="Inventario"><i class="fas fa-box-open"></i></button>
-                    <button class="hub-btn" data-panel="shop" title="Tienda" aria-label="Tienda"><i class="fas fa-shopping-cart"></i></button>
-                    <button class="hub-btn" data-panel="map" title="Mapa" aria-label="Mapa"><i class="fas fa-map-marked-alt"></i></button>
-                    <button class="hub-btn" data-panel="settings" title="Ajustes" aria-label="Ajustes"><i class="fas fa-cog"></i></button>
+                    <button class="hub-btn" data-panel="profile" title="Perfil" aria-label="Perfil" data-tooltip="Perfil y progreso"><i class="fas fa-id-card"></i></button>
+                    <button class="hub-btn" data-panel="collection" title="Colección" aria-label="Colección" data-tooltip="Colección de héroes"><i class="fas fa-grip"></i></button>
+                    <button class="hub-btn" data-panel="inventory" title="Inventario" aria-label="Inventario" data-tooltip="Inventario y equipamiento"><i class="fas fa-box-open"></i></button>
+                    <button class="hub-btn" data-panel="shop" title="Tienda" aria-label="Tienda" data-tooltip="Tienda S.H.I.E.L.D."><i class="fas fa-shopping-cart"></i></button>
+                    <button class="hub-btn" data-panel="map" title="Mapa" aria-label="Mapa" data-tooltip="Campaña y mapas"><i class="fas fa-map-marked-alt"></i></button>
+                    <button class="hub-btn" data-panel="settings" title="Ajustes" aria-label="Ajustes" data-tooltip="Audio y accesibilidad"><i class="fas fa-cog"></i></button>
                 </nav>
                 <div id="fps-display">60 FPS</div>
             </div>
@@ -43,7 +43,7 @@
 
             <section id="center-canvas-container">
                 <canvas id="gameCanvas" width="800" height="600"></canvas>
-                <div id="toast" class="toast hidden"></div>
+                <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
             </section>
 
             <aside id="right-panel" class="side-panel">
@@ -81,9 +81,9 @@
 
                 <div id="wave-controls">
                     <div class="control-row">
-                        <button id="btn-pause" class="btn-action" title="Pausar" aria-label="Pausar"><i class="fas fa-pause"></i></button>
-                        <button id="btn-auto" class="btn-action muted" title="Auto oleada" aria-label="Auto oleada"><i class="fas fa-forward"></i></button>
-                        <button id="btn-speed" class="btn-action speed-btn" title="Velocidad">x1 <i class="fas fa-rocket"></i></button>
+                        <button id="btn-pause" class="btn-action" title="Pausar" aria-label="Pausar" aria-pressed="false" data-tooltip="Pausar o reanudar"><i class="fas fa-pause"></i></button>
+                        <button id="btn-auto" class="btn-action muted" title="Auto oleada" aria-label="Auto oleada" aria-pressed="false" data-tooltip="Iniciar oleadas automáticamente"><i class="fas fa-forward"></i></button>
+                        <button id="btn-speed" class="btn-action speed-btn" title="Velocidad" data-tooltip="Cambiar velocidad de juego">x1 <i class="fas fa-rocket"></i></button>
                     </div>
                     <button id="next-wave-btn" class="btn-primary">INICIAR OLEADA</button>
                 </div>
@@ -92,7 +92,7 @@
     </div>
 
     <div id="panel-overlay" class="hidden">
-        <div id="panel-container">
+        <div id="panel-container" role="dialog" aria-modal="true" aria-label="Panel del juego" tabindex="-1">
             <button id="close-panel-btn" aria-label="Cerrar"><i class="fas fa-times"></i></button>
             <div id="panel-content"></div>
         </div>

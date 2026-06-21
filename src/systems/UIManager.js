@@ -1,4 +1,8 @@
 import { getHeroUpgradeTree } from '../data/HeroUpgradeCatalog.js';
+import { CampaignPanel } from '../ui/CampaignPanel.js';
+import { ProfilePanel } from '../ui/ProfilePanel.js';
+import { SettingsPanel } from '../ui/SettingsPanel.js';
+import { TooltipController } from '../ui/TooltipController.js';
 
 export class UIManager {
     constructor(gameInstance) {
@@ -22,6 +26,11 @@ export class UIManager {
         this.inventoryFilter = 0;
         this.inventoryHeroId = null;
         this.toastTimer = null;
+        this.lastFocusedElement = null;
+        this.profilePanel = new ProfilePanel(this);
+        this.campaignPanel = new CampaignPanel(this);
+        this.settingsPanel = new SettingsPanel(this);
+        this.tooltipController = new TooltipController();
 
         this.initListeners();
     }
@@ -43,6 +52,8 @@ export class UIManager {
         btnPause?.addEventListener('click', () => {
             const isPaused = this.game.togglePause();
             btnPause.innerHTML = isPaused ? '<i class="fas fa-play"></i>' : '<i class="fas fa-pause"></i>';
+            btnPause.setAttribute('aria-pressed', String(isPaused));
+            btnPause.setAttribute('aria-label', isPaused ? 'Reanudar' : 'Pausar');
             this.showToast(isPaused ? 'Pausa' : 'Partida reanudada', 'info');
         });
 
@@ -51,6 +62,7 @@ export class UIManager {
             this.game.waveManager.autoWave = !this.game.waveManager.autoWave;
             btnAuto.classList.toggle('active', this.game.waveManager.autoWave);
             btnAuto.classList.toggle('muted', !this.game.waveManager.autoWave);
+            btnAuto.setAttribute('aria-pressed', String(this.game.waveManager.autoWave));
             if (this.game.waveManager.autoWave && !this.game.waveManager.isWaveActive) this.game.waveManager.startNextWave();
         });
 
@@ -60,18 +72,49 @@ export class UIManager {
             this.game.gameSpeed = speeds[nextIndex];
             btnSpeed.innerHTML = `x${this.game.gameSpeed} <i class="fas fa-rocket"></i>`;
         });
+
+        window.addEventListener('pointerdown', () => this.game.audio?.unlock(), { once: true });
+        window.addEventListener('keydown', () => this.game.audio?.unlock(), { once: true });
+        window.addEventListener('keydown', (event) => this.handleDialogKeydown(event));
     }
 
     openPanel(type) {
+        this.tooltipController.hide();
+        this.lastFocusedElement = document.activeElement;
         this.game.pause();
         this.overlay.classList.remove('hidden');
         document.getElementById('close-panel-btn').classList.remove('hidden');
+        this.game.audio?.play('ui');
         this.renderPanel(type);
+        window.requestAnimationFrame(() => document.getElementById('close-panel-btn')?.focus());
     }
 
     closePanel() {
         this.overlay.classList.add('hidden');
         if (!this.game.isManuallyPaused && !this.game.isGameOver) this.game.start();
+        this.lastFocusedElement?.focus?.();
+    }
+
+    handleDialogKeydown(event) {
+        if (this.overlay.classList.contains('hidden')) return;
+        if (event.key === 'Escape' && !document.getElementById('close-panel-btn')?.classList.contains('hidden')) {
+            event.preventDefault();
+            this.closePanel();
+            return;
+        }
+        if (event.key !== 'Tab') return;
+        const focusable = [...this.overlay.querySelectorAll('button:not([disabled]), select, input, [tabindex="0"]')]
+            .filter((element) => !element.classList.contains('hidden'));
+        if (focusable.length === 0) return;
+        const first = focusable[0];
+        const last = focusable.at(-1);
+        if (event.shiftKey && document.activeElement === first) {
+            event.preventDefault();
+            last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+            event.preventDefault();
+            first.focus();
+        }
     }
 
     setSelectionStatus(text) {
@@ -96,6 +139,7 @@ export class UIManager {
     updateLevelTheme(levelConfig) {
         if (this.levelNameEl) this.levelNameEl.textContent = levelConfig.theme?.label || levelConfig.name || 'Mapa';
         document.documentElement.style.setProperty('--level-accent', levelConfig.theme?.accent || '#40c9ff');
+        this.game.audio?.setTheme(levelConfig.theme?.id || 'new-york');
     }
 
     updateMissionStatus(snapshot) {
@@ -121,6 +165,9 @@ export class UIManager {
         window.clearTimeout(this.toastTimer);
         this.toastEl.textContent = message;
         this.toastEl.className = `toast ${type}`;
+        if (type === 'success') this.game.audio?.play('confirm');
+        if (type === 'warning') this.game.audio?.play('warning');
+        if (type === 'reward') this.game.audio?.play('reward');
         this.toastTimer = window.setTimeout(() => this.toastEl.classList.add('hidden'), 2200);
     }
 
@@ -168,6 +215,7 @@ export class UIManager {
 
     inspectUnit(unit, isEnemyFlag = false) {
         if (!unit) return;
+        this.tooltipController.hide();
 
         const isEnemy = isEnemyFlag || (unit.hp !== undefined && unit.takeDamage !== undefined);
         if (isEnemy) {
@@ -197,6 +245,10 @@ export class UIManager {
         const level = hero.level || config.level || 1;
         const bonuses = this.game.progression?.getHeroBonuses(config.id) || {};
         const effectiveStats = hero.getEffectiveStats?.();
+        const baseDamage = Math.round(hero.damage || config.damage || 0);
+        const baseRange = Math.round(hero.range || config.range || 0);
+        const baseFireRate = Number(hero.fireRate || config.fireRate || 1);
+        const baseCritChance = Math.round(hero.critChance || config.critChance || 5);
         const damage = Math.round(effectiveStats?.damage || (hero.damage || config.damage || 0) * (1 + (bonuses.damage || 0)));
         const range = Math.round(effectiveStats?.range || (hero.range || config.range || 0) * (1 + (bonuses.range || 0)));
         const fireRate = Number(effectiveStats?.fireRate || (hero.fireRate || config.fireRate || 1) * (1 + (bonuses.fireRate || 0))).toFixed(1);
@@ -227,10 +279,10 @@ export class UIManager {
                     <div class="stats-grid">
                         <div class="detail-card">
                             <h3>Estadísticas</h3>
-                            <p><span>Daño</span><strong>${damage}</strong></p>
-                            <p><span>Recarga</span><strong>${fireRate}/s</strong></p>
-                            <p><span>Crítico</span><strong>${critChance}%</strong></p>
-                            <p><span>Alcance</span><strong>${range}</strong></p>
+                            <p data-tooltip="Daño por impacto antes de armadura y resistencias"><span>Daño</span><strong>${damage}${damage !== baseDamage ? `<small class="stat-delta">+${damage - baseDamage}</small>` : ''}</strong></p>
+                            <p data-tooltip="Ataques realizados por segundo"><span>Recarga</span><strong>${fireRate}/s${Number(fireRate) !== baseFireRate ? `<small class="stat-delta">+${(Number(fireRate) - baseFireRate).toFixed(1)}</small>` : ''}</strong></p>
+                            <p data-tooltip="Probabilidad de infligir daño crítico"><span>Crítico</span><strong>${critChance}%${critChance !== baseCritChance ? `<small class="stat-delta">+${critChance - baseCritChance}%</small>` : ''}</strong></p>
+                            <p data-tooltip="Distancia máxima de adquisición de objetivos"><span>Alcance</span><strong>${range}${range !== baseRange ? `<small class="stat-delta">+${range - baseRange}</small>` : ''}</strong></p>
                         </div>
                         <div class="detail-card">
                             <h3>Táctica</h3>
@@ -591,125 +643,19 @@ export class UIManager {
     }
 
     renderProfile(title) {
-        const progression = this.game.progression;
-        const bestWaves = Object.values(progression.state.mapProgress).reduce((total, map) => total + (map.bestWave || 0), 0);
-        const challenges = Object.values(progression.state.mapProgress).reduce((total, map) => total + (map.challenges?.length || 0), 0);
-        this.panelContent.innerHTML = `
-            <h2>${title}</h2>
-            <div class="profile-grid">
-                <div class="detail-card"><h3>Progreso</h3><p><span>Mejores oleadas</span><strong>${bestWaves}</strong></p><p><span>Estrellas</span><strong>${this.game.stars}/${this.game.levelsData.length * 3}</strong></p><p><span>Desafíos</span><strong>${challenges}/${this.game.levelsData.length * 2}</strong></p></div>
-                <div class="detail-card"><h3>Plantilla</h3><p><span>Héroes</span><strong>${this.game.unlockedHeroes.length}</strong></p><p><span>Equipo activo</span><strong>${this.game.activeTeam.length}/6</strong></p></div>
-                <div class="detail-card"><h3>Economía</h3><p><span>Fondos S.H.I.E.L.D.</span><strong>${progression.state.metaCredits} F</strong></p><p><span>Créditos de misión</span><strong>$${Math.floor(this.game.resourceManager.credits)}</strong></p></div>
-                <div class="detail-card"><h3>Zona Marvel</h3><p><span>Mapa</span><strong>${this.game.currentLevel?.theme?.label || this.game.currentLevel?.name || 'Mapa'}</strong></p><p><span>Ambiente</span><strong>${this.game.currentLevel?.theme?.brief || 'Defensa táctica'}</strong></p></div>
-            </div>
-        `;
+        this.profilePanel.render(title);
     }
 
     renderMap(title) {
-        this.panelContent.innerHTML = `
-            <h2>${title}</h2>
-            <div class="map-list">
-                ${this.game.levelsData.map((level, index) => {
-                    const progress = this.game.progression.getMapProgress(level.id);
-                    return `<article class="map-card ${this.game.currentLevel?.id === level.id ? 'active' : ''}">
-                        <strong>${level.name}</strong>
-                        <span>Mejor oleada ${progress.bestWave} · ${'★'.repeat(progress.stars)}${'☆'.repeat(3 - progress.stars)}</span>
-                        <small>${level.description}</small>
-                        <em>${level.theme?.brief || ''}</em>
-                        <div class="map-mechanic"><b>${level.mission?.mechanic?.label || 'Defensa táctica'}</b><span>${level.mission?.mechanic?.description || ''}</span></div>
-                        <div class="difficulty-switch" aria-label="Dificultad">
-                            ${[['easy', 'Fácil'], ['normal', 'Normal'], ['hard', 'Difícil']].map(([value, label]) => `<button class="difficulty-btn ${progress.difficulty === value ? 'active' : ''}" data-level="${level.id}" data-value="${value}">${label}</button>`).join('')}
-                        </div>
-                        <div class="challenge-row"><span class="${progress.challenges.includes('sin_danos') ? 'done' : ''}">Sin daños</span><span class="${progress.challenges.includes('cazajefes') ? 'done' : ''}">Cazajefes</span>${(level.mission?.objectives || []).map((objective) => `<span class="${progress.missionObjectives.includes(objective.id) ? 'done' : ''}">${objective.label} · ${objective.reward} F</span>`).join('')}</div>
-                        <button class="btn-load-map btn-primary ghost" data-index="${index}">Jugar</button>
-                    </article>`;
-                }).join('')}
-            </div>
-        `;
-
-        this.panelContent.querySelectorAll('.difficulty-btn').forEach((button) => {
-            button.addEventListener('click', () => {
-                this.game.progression.setDifficulty(button.dataset.level, button.dataset.value);
-                this.renderMap(title);
-            });
-        });
-        this.panelContent.querySelectorAll('.btn-load-map').forEach((button) => {
-            button.addEventListener('click', () => {
-                const level = this.game.levelsData[Number(button.dataset.index)];
-                this.game.loadLevel(level);
-                this.renderHeroRoster(this.game.activeTeam, (hero) => this.game.inputManager.setPlacementMode(hero));
-                this.renderMissionBriefing(level);
-            });
-        });
+        this.campaignPanel.render(title);
     }
 
     renderMissionBriefing(level) {
-        const mission = level.mission || {};
-        this.panelContent.innerHTML = `
-            <section class="mission-briefing">
-                <span class="briefing-kicker">${mission.operation || 'Operación táctica'}</span>
-                <h2>${level.name}</h2>
-                <p class="briefing-copy">${mission.briefing || level.description}</p>
-                <blockquote><strong>${mission.speaker || 'S.H.I.E.L.D.'}</strong><span>${mission.dialogue || level.theme?.brief || ''}</span></blockquote>
-                <div class="briefing-mechanic"><b>${mission.mechanic?.label || 'Defensa táctica'}</b><span>${mission.mechanic?.description || ''}</span></div>
-                <div class="briefing-objectives">
-                    ${(mission.objectives || []).map((objective) => `<div><span>${objective.label}</span><small>${objective.description}</small><b>+${objective.reward} F</b></div>`).join('')}
-                </div>
-                <button class="btn-primary" id="deploy-mission">DESPLEGAR EQUIPO</button>
-            </section>
-        `;
-        document.getElementById('deploy-mission')?.addEventListener('click', () => this.closePanel());
+        this.campaignPanel.renderBriefing(level);
     }
 
     renderSettings(title) {
-        this.panelContent.innerHTML = `
-            <h2>${title}</h2>
-            <div class="settings-grid">
-                <label class="setting-toggle">
-                    <input type="checkbox" id="toggle-ranges" ${this.game.showHeroRanges ? 'checked' : ''}>
-                    <span>Mostrar rangos de héroes</span>
-                </label>
-                <label class="setting-toggle">
-                    <input type="checkbox" id="toggle-grid" ${this.game.showGrid ? 'checked' : ''}>
-                    <span>Mostrar cuadrícula táctica</span>
-                </label>
-                <label class="setting-toggle">
-                    <input type="checkbox" id="toggle-audio" ${this.game.audio?.enabled ? 'checked' : ''}>
-                    <span>Audio de combate</span>
-                </label>
-                <button class="btn-primary ghost" id="reset-placement">Cancelar colocación</button>
-                <button class="btn-primary danger" id="clear-run">Reiniciar nivel</button>
-            </div>
-        `;
-
-        document.getElementById('toggle-ranges')?.addEventListener('change', (event) => {
-            this.game.showHeroRanges = event.target.checked;
-            this.game.progression.updateSetting('ranges', event.target.checked);
-            this.showToast(event.target.checked ? 'Rangos visibles' : 'Rangos ocultos', 'info');
-        });
-
-        document.getElementById('toggle-grid')?.addEventListener('change', (event) => {
-            this.game.showGrid = event.target.checked;
-            this.game.progression.updateSetting('grid', event.target.checked);
-            this.showToast(event.target.checked ? 'Cuadrícula visible' : 'Cuadrícula oculta', 'info');
-        });
-
-        document.getElementById('toggle-audio')?.addEventListener('change', (event) => {
-            this.game.audio?.setEnabled(event.target.checked);
-            this.game.progression.updateSetting('audio', event.target.checked);
-            this.showToast(event.target.checked ? 'Audio activado' : 'Audio silenciado', 'info');
-        });
-
-        document.getElementById('reset-placement')?.addEventListener('click', () => {
-            this.game.inputManager.clearPlacement();
-            this.closePanel();
-        });
-
-        document.getElementById('clear-run')?.addEventListener('click', () => {
-            this.game.loadLevel(this.game.currentLevel);
-            this.renderHeroRoster(this.game.activeTeam, (hero) => this.game.inputManager.setPlacementMode(hero));
-            this.closePanel();
-        });
+        this.settingsPanel.render(title);
     }
 
     renderStarterSelector(starters, onSelect) {
@@ -748,7 +694,9 @@ export class UIManager {
         this.heroGrid.innerHTML = '';
 
         activeTeam.forEach((hero) => {
-            const deployed = this.game.heroes.some((unit) => unit.id === hero.id);
+            const deployedHero = this.game.heroes.find((unit) => unit.id === hero.id);
+            const deployed = Boolean(deployedHero);
+            const abilityState = deployedHero?.abilitySystem?.getDisplayState?.();
             const card = document.createElement('article');
             card.className = `hero-card ${deployed ? 'deployed' : ''}`;
             card.innerHTML = `
@@ -756,10 +704,11 @@ export class UIManager {
                 <div>
                     <strong>${hero.name}</strong>
                     <span>$${hero.cost || 0} | ${hero.rarity || 'Common'}</span>
+                    ${abilityState ? `<small class="roster-ability ${abilityState.ready ? 'ready' : ''}">${abilityState.label}</small>` : ''}
                 </div>
                 <div class="hero-actions">
-                    <button class="btn-action place-btn" title="Colocar" aria-label="Colocar"><i class="fas fa-map-marker-alt"></i></button>
-                    <button class="btn-action stats-btn" title="Mejoras" aria-label="Mejoras"><i class="fas fa-chart-bar"></i></button>
+                    <button class="btn-action place-btn" title="Colocar" aria-label="Colocar" data-tooltip="Colocar héroe"><i class="fas fa-map-marker-alt"></i></button>
+                    <button class="btn-action stats-btn" title="Mejoras" aria-label="Mejoras" data-tooltip="Estadísticas y mejoras"><i class="fas fa-chart-bar"></i></button>
                 </div>
             `;
             card.querySelector('.place-btn').addEventListener('click', (event) => {
@@ -788,6 +737,7 @@ export class UIManager {
     }
 
     showGameOver() {
+        this.game.audio?.play('warning');
         this.overlay.classList.remove('hidden');
         document.getElementById('close-panel-btn')?.classList.add('hidden');
         this.panelContent.innerHTML = `
@@ -807,6 +757,7 @@ export class UIManager {
     }
 
     showVictory() {
+        this.game.audio?.play('victory');
         this.overlay.classList.remove('hidden');
         document.getElementById('close-panel-btn')?.classList.add('hidden');
         this.panelContent.innerHTML = `
@@ -820,6 +771,22 @@ export class UIManager {
             document.getElementById('close-panel-btn')?.classList.remove('hidden');
             this.closePanel();
         });
+    }
+
+    showFatalError(error) {
+        this.game?.pause?.();
+        this.overlay.classList.remove('hidden');
+        document.getElementById('close-panel-btn')?.classList.add('hidden');
+        this.panelContent.innerHTML = `
+            <div class="end-state error-state" role="alert">
+                <i class="fas fa-triangle-exclamation"></i>
+                <h2>No se pudo iniciar la misión</h2>
+                <p id="fatal-error-copy"></p>
+                <button class="btn-primary" id="reload-game">Reintentar carga</button>
+            </div>
+        `;
+        document.getElementById('fatal-error-copy').textContent = error?.message || 'Revisa los datos del juego e inténtalo nuevamente.';
+        document.getElementById('reload-game')?.addEventListener('click', () => window.location.reload());
     }
 
     getTerrainText(terrains) {

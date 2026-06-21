@@ -7,7 +7,7 @@ Este roadmap convierte el prototipo actual en un tower defense pulido, escalable
 - 31 heroes definidos; Iron Man y Spider-Man usan sprites animados y tres heroes cuentan con arte procedural temporal.
 - Cinco heroes tienen kits completos y el resto ya comparte el nucleo avanzado de proyectiles y estados.
 - 15 enemigos normales y 15 jefes estan definidos para la siguiente fase.
-- Hay 56 tests, validacion de datos, CI, audio sintetizado y pipeline de sprites.
+- Hay 59 tests, validacion de datos, CI, audio sintetizado y pipeline de sprites.
 - `UIManager.js` aun concentra demasiadas responsabilidades y debe dividirse antes de ampliar la progresion.
 - `data/bootstrapData.js` se genera automaticamente desde los JSON fuente.
 
@@ -125,6 +125,8 @@ Este roadmap convierte el prototipo actual en un tower defense pulido, escalable
 - Reemplazar `alert()` por modales/toasts integrados.
 
 **Terminado cuando:** las acciones importantes tienen feedback visual y sonoro, y la interfaz puede usarse sin adivinar.
+
+**Estado:** implementada. Campana, perfil y ajustes viven en modulos separados; las estadisticas comparan valores base y efectivos, las habilidades exponen su estado y los controles incluyen tooltips y navegacion por teclado. El audio dispone de buses general, musica y SFX con ambiente por mapa, mientras contraste, movimiento y escala de UI se guardan entre sesiones.
 
 ## Fase 8 - Rendimiento, QA y lanzamiento
 

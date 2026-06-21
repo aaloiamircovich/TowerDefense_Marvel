@@ -184,6 +184,7 @@ export class WaveManager {
         if (this.currentWave > this.maxWaves || this.isWaveActive || this.game.isGameOver) return;
 
         this.game.missionSystem?.onWaveStart(this.currentWave);
+        this.game.audio?.play('wave');
         this.isWaveActive = true;
         this.spawnTimer = 0;
         this.enemiesQueue = [...this.preparedQueue];
@@ -232,7 +233,7 @@ export class WaveManager {
         }
 
         const metaCopy = metaReward > 0 ? ` · +${metaReward} Fondos` : '';
-        this.game.uiManager?.showToast(`Oleada superada: +$${waveBounty}${metaCopy}`, 'success');
+        this.game.uiManager?.showToast(`Oleada superada: +$${waveBounty}${metaCopy}`, 'reward');
         this.currentWave++;
 
         if (this.currentWave > this.maxWaves) {
