@@ -4,10 +4,10 @@ Este roadmap convierte el prototipo actual en un tower defense pulido, escalable
 
 ## Estado actual auditado
 
-- 31 heroes definidos; Iron Man y Spider-Man usan sprites animados y tres heroes cuentan con arte procedural temporal.
+- 31 heroes definidos; los cinco heroes del equipo central usan sprites direccionales y ataques animados.
 - Cinco heroes tienen kits completos y el resto ya comparte el nucleo avanzado de proyectiles y estados.
 - 15 enemigos normales y 15 jefes estan definidos para la siguiente fase.
-- Hay 64 tests, validacion de datos, CI, audio sintetizado y pipeline de sprites.
+- Hay 67 tests, validacion de datos, CI, audio sintetizado y pipeline de sprites.
 - `UIManager.js` aun concentra demasiadas responsabilidades y debe dividirse antes de ampliar la progresion.
 - `data/bootstrapData.js` se genera automaticamente desde los JSON fuente.
 
@@ -143,12 +143,25 @@ Este roadmap convierte el prototipo actual en un tower defense pulido, escalable
 
 **Estado:** implementada. Proyectiles y VFX usan object pools, los heroes animados se sirven desde atlas y el HUD mide FPS, frame promedio, p95, pico de entidades y reutilizacion. El benchmark de 150 enemigos, 300 proyectiles y 120 VFX queda por debajo del presupuesto de 16.67 ms; la suite cubre 64 pruebas, incluyendo el flujo completo de partida. La version 1.0.0 incorpora PWA actualizable, changelog, control de lanzamiento y aviso de proyecto fan.
 
+## Fase 9 - Produccion visual del equipo central
+
+**Objetivo:** eliminar el arte procedural temporal de la vertical slice de cinco heroes.
+
+- Crear retratos y ocho direcciones para Capitan America, Thor y Doctor Strange.
+- Dar a cada uno nueve frames de ataque legibles y tematicos.
+- Integrar todos los assets al atlas y a la precarga.
+- Mantener un generador reproducible y validar dimensiones, rutas y frames.
+
+**Terminado cuando:** los cinco heroes centrales usan sprites reales en selector, roster, mapa y combate sin depender de fallbacks especiales.
+
+**Estado:** implementada en la version 1.1.0. Capitan America lanza su escudo, Thor alza Mjolnir con relampagos y Doctor Strange abre un sello mistico. El atlas contiene 90 sprites y la suite valida automaticamente los contratos visuales de los tres heroes nuevos.
+
 ## Orden de produccion recomendado
 
 1. Fases 0 y 1.
 2. Fases 2 y 3.
 3. Fases 4 y 5.
 4. Fases 6 y 7.
-5. Fase 8.
+5. Fases 8 y 9.
 
 No conviene producir sprites para los 31 heroes antes de cerrar el contrato de datos, animacion y combate con la vertical slice de cinco heroes.

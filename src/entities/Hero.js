@@ -271,11 +271,6 @@ export class Hero {
     }
 
     renderFallback(ctx) {
-        if (['capitan_america', 'thor', 'doctor_strange'].includes(this.id)) {
-            this.renderMarvelFallback(ctx);
-            return;
-        }
-
         ctx.fillStyle = this.getProjectileColor();
         ctx.beginPath();
         ctx.roundRect(this.x - 17, this.y - 17, 34, 34, 8);
@@ -289,68 +284,5 @@ export class Hero {
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText(this.name.charAt(0), this.x, this.y + 1);
-    }
-
-    renderMarvelFallback(ctx) {
-        const bob = Math.sin(this.visualTime * 4) * 1.2;
-        const attackScale = this.flashTimer > 0 ? 1.12 : 1;
-        ctx.save();
-        ctx.translate(this.x, this.y + bob);
-        ctx.scale(attackScale, attackScale);
-
-        if (this.id === 'capitan_america') {
-            ctx.fillStyle = '#183d73';
-            ctx.beginPath();
-            ctx.arc(0, 0, 17, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.strokeStyle = '#f4f7ff';
-            ctx.lineWidth = 3;
-            ctx.beginPath();
-            ctx.arc(0, 0, 12, 0, Math.PI * 2);
-            ctx.stroke();
-            ctx.fillStyle = '#e63946';
-            ctx.beginPath();
-            ctx.arc(0, 0, 7, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.fillStyle = '#ffffff';
-            ctx.fillRect(-1.5, -5, 3, 10);
-            ctx.fillRect(-5, -1.5, 10, 3);
-        } else if (this.id === 'thor') {
-            ctx.fillStyle = '#263b63';
-            ctx.beginPath();
-            ctx.roundRect(-14, -13, 28, 30, 7);
-            ctx.fill();
-            ctx.fillStyle = '#d9e2ec';
-            ctx.fillRect(4, -17, 14, 9);
-            ctx.fillStyle = '#8b5e3c';
-            ctx.fillRect(3, -9, 4, 20);
-            ctx.fillStyle = '#e63946';
-            ctx.beginPath();
-            ctx.moveTo(-13, -8);
-            ctx.lineTo(-20, 15);
-            ctx.lineTo(-7, 10);
-            ctx.closePath();
-            ctx.fill();
-        } else {
-            ctx.fillStyle = '#1d4f79';
-            ctx.beginPath();
-            ctx.arc(0, -2, 14, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.fillStyle = '#b51f35';
-            ctx.beginPath();
-            ctx.moveTo(-12, -8);
-            ctx.lineTo(-20, 18);
-            ctx.lineTo(0, 11);
-            ctx.lineTo(20, 18);
-            ctx.lineTo(12, -8);
-            ctx.closePath();
-            ctx.fill();
-            ctx.strokeStyle = '#f5a623';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.arc(0, 1, 20 + Math.sin(this.visualTime * 5) * 2, 0, Math.PI * 2);
-            ctx.stroke();
-        }
-        ctx.restore();
     }
 }

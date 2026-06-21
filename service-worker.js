@@ -1,10 +1,12 @@
-const CACHE_NAME = 'hero-td-v1.0.0-r2';
+const CACHE_NAME = 'hero-td-v1.1.0';
 const CORE_ASSETS = [
     './', './index.html', './styles.css', './manifest.webmanifest',
     './data/bootstrapData.js', './data/sprite-atlas.js', './data/heroes.json', './data/enemies.json',
     './data/items.json', './data/levels.json', './data/waves.json', './data/TypeChart.js',
     './assets/images/heroes/atlas.png', './assets/images/heroes/iron_man/portrait.png',
-    './assets/images/heroes/spiderman/portrait.png', './assets/icons/icon-192.png', './assets/icons/icon-512.png',
+    './assets/images/heroes/spiderman/portrait.png', './assets/images/heroes/capitan_america/portrait.png',
+    './assets/images/heroes/thor/portrait.png', './assets/images/heroes/doctor_strange/portrait.png',
+    './assets/icons/icon-192.png', './assets/icons/icon-512.png',
     './src/main.js', './src/config/AppConfig.js', './src/pwa/register.js',
     './src/audio/AudioManager.js', './src/core/GameLoop.js', './src/core/InputManager.js',
     './src/data/HeroUpgradeCatalog.js', './src/entities/Enemy.js', './src/entities/Hero.js', './src/entities/Projectile.js',

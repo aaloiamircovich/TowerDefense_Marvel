@@ -122,7 +122,41 @@ window.__MARVEL_TD_DATA__ = {
       "ability": "REBOTE DE ESCUDO",
       "abilityDesc": "El escudo golpea al objetivo, rebota dos veces y regresa. Su liderazgo da +10% de daño y +15% de cadencia a aliados cercanos.",
       "niche": "soporte de escuadrón y cadenas",
-      "sprite": "assets/images/heroes/capitan_america.png",
+      "sprite": "assets/images/heroes/capitan_america/portrait.png",
+      "visual": {
+        "portrait": "assets/images/heroes/capitan_america/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/capitan_america/sprites/north.png",
+          "north-east": "assets/images/heroes/capitan_america/sprites/north-east.png",
+          "east": "assets/images/heroes/capitan_america/sprites/east.png",
+          "south-east": "assets/images/heroes/capitan_america/sprites/south-east.png",
+          "south": "assets/images/heroes/capitan_america/sprites/south.png",
+          "south-west": "assets/images/heroes/capitan_america/sprites/south-west.png",
+          "west": "assets/images/heroes/capitan_america/sprites/west.png",
+          "north-west": "assets/images/heroes/capitan_america/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 16,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/capitan_america/shoot/0.png",
+            "assets/images/heroes/capitan_america/shoot/1.png",
+            "assets/images/heroes/capitan_america/shoot/2.png",
+            "assets/images/heroes/capitan_america/shoot/3.png",
+            "assets/images/heroes/capitan_america/shoot/4.png",
+            "assets/images/heroes/capitan_america/shoot/5.png",
+            "assets/images/heroes/capitan_america/shoot/6.png",
+            "assets/images/heroes/capitan_america/shoot/7.png",
+            "assets/images/heroes/capitan_america/shoot/8.png"
+          ]
+        }
+      },
       "allowedTerrains": [
         1,
         3
@@ -141,7 +175,41 @@ window.__MARVEL_TD_DATA__ = {
       "ability": "TORMENTA DIVINA",
       "abilityDesc": "Sus ataques encadenan rayos. Cada 11 segundos, Tormenta Divina golpea hasta cinco enemigos y los aturde brevemente.",
       "niche": "daño masivo contra grupos",
-      "sprite": "assets/images/heroes/thor.png",
+      "sprite": "assets/images/heroes/thor/portrait.png",
+      "visual": {
+        "portrait": "assets/images/heroes/thor/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/thor/sprites/north.png",
+          "north-east": "assets/images/heroes/thor/sprites/north-east.png",
+          "east": "assets/images/heroes/thor/sprites/east.png",
+          "south-east": "assets/images/heroes/thor/sprites/south-east.png",
+          "south": "assets/images/heroes/thor/sprites/south.png",
+          "south-west": "assets/images/heroes/thor/sprites/south-west.png",
+          "west": "assets/images/heroes/thor/sprites/west.png",
+          "north-west": "assets/images/heroes/thor/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 14,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/thor/shoot/0.png",
+            "assets/images/heroes/thor/shoot/1.png",
+            "assets/images/heroes/thor/shoot/2.png",
+            "assets/images/heroes/thor/shoot/3.png",
+            "assets/images/heroes/thor/shoot/4.png",
+            "assets/images/heroes/thor/shoot/5.png",
+            "assets/images/heroes/thor/shoot/6.png",
+            "assets/images/heroes/thor/shoot/7.png",
+            "assets/images/heroes/thor/shoot/8.png"
+          ]
+        }
+      },
       "allowedTerrains": [
         0,
         1,
@@ -233,7 +301,41 @@ window.__MARVEL_TD_DATA__ = {
       "ability": "PORTAL MÍSTICO",
       "abilityDesc": "Cada segundo ataque se duplica mediante un portal. Cada 9 segundos crea un campo temporal que ralentiza 62% a todos los enemigos cercanos.",
       "niche": "amplificación de proyectiles y control temporal",
-      "sprite": "assets/images/heroes/doctor_strange.png",
+      "sprite": "assets/images/heroes/doctor_strange/portrait.png",
+      "visual": {
+        "portrait": "assets/images/heroes/doctor_strange/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/doctor_strange/sprites/north.png",
+          "north-east": "assets/images/heroes/doctor_strange/sprites/north-east.png",
+          "east": "assets/images/heroes/doctor_strange/sprites/east.png",
+          "south-east": "assets/images/heroes/doctor_strange/sprites/south-east.png",
+          "south": "assets/images/heroes/doctor_strange/sprites/south.png",
+          "south-west": "assets/images/heroes/doctor_strange/sprites/south-west.png",
+          "west": "assets/images/heroes/doctor_strange/sprites/west.png",
+          "north-west": "assets/images/heroes/doctor_strange/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 14,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/doctor_strange/shoot/0.png",
+            "assets/images/heroes/doctor_strange/shoot/1.png",
+            "assets/images/heroes/doctor_strange/shoot/2.png",
+            "assets/images/heroes/doctor_strange/shoot/3.png",
+            "assets/images/heroes/doctor_strange/shoot/4.png",
+            "assets/images/heroes/doctor_strange/shoot/5.png",
+            "assets/images/heroes/doctor_strange/shoot/6.png",
+            "assets/images/heroes/doctor_strange/shoot/7.png",
+            "assets/images/heroes/doctor_strange/shoot/8.png"
+          ]
+        }
+      },
       "allowedTerrains": [
         0,
         1,

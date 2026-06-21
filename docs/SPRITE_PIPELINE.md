@@ -2,7 +2,9 @@
 
 ## Estado actual
 
-Iron Man y Spider-Man ya usan el contrato `visual` con retrato, ocho direcciones, nueve frames de ataque, precarga y cache compartido. Los heroes nuevos deben copiar este contrato y no agregar rutas sueltas fuera de su carpeta.
+Iron Man, Spider-Man, Capitan America, Thor y Doctor Strange usan el contrato `visual` con retrato, ocho direcciones, nueve frames de ataque, precarga y cache compartido. Los heroes nuevos deben copiar este contrato y no agregar rutas sueltas fuera de su carpeta.
+
+Los tres ultimos se generan de forma reproducible con `npm run build:heroes`; el comando tambien reconstruye el atlas y el respaldo de datos.
 
 ## Formato base
 

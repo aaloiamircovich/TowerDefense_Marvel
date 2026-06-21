@@ -4,7 +4,7 @@ Tower defense ambientado en escenarios inspirados por Marvel, con siete misiones
 
 Incluye audio por buses, música temática, interfaz responsive, navegación por teclado, alto contraste, reducción de movimiento y escala de UI persistente.
 
-La versión 1.0.0 también puede instalarse como PWA, conserva los recursos esenciales para jugar sin conexión y actualiza código y datos al volver a estar en línea.
+La versión 1.1.0 también puede instalarse como PWA, conserva los recursos esenciales para jugar sin conexión y actualiza código y datos al volver a estar en línea.
 
 > Proyecto fan no oficial, educativo y sin fines comerciales. No está afiliado ni respaldado por Marvel Entertainment o The Walt Disney Company. Consulta [NOTICE.md](NOTICE.md).
 
@@ -32,6 +32,7 @@ http://127.0.0.1:5173/
 
 ```bash
 npm run build:data
+npm run build:heroes
 npm run validate
 npm test
 npm run balance
@@ -41,6 +42,7 @@ npm run check
 ```
 
 - `build:data` regenera el respaldo para abrir por `file://`.
+- `build:heroes` regenera sprites, atlas y datos del equipo central.
 - `validate` revisa IDs, referencias, rutas, números y assets.
 - `validate:strict` también convierte los assets ausentes en errores.
 - `test` ejecuta la suite nativa de Node.
