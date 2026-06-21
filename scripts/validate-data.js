@@ -15,6 +15,7 @@ validateEnemies(data.enemies);
 validateItems(data.items);
 validateLevels(data.levels);
 validateWaves(data.waves, data.enemies);
+validateSpriteAtlas(data.heroes);
 validateBootstrap(data);
 
 for (const warning of warnings) console.warn(`WARN: ${warning}`);
@@ -164,6 +165,27 @@ function validateWaves(waves, enemies) {
             requirePositive(group.count, `waves.${wave.waveNumber}.${group.type}.count`);
             requirePositive(group.interval, `waves.${wave.waveNumber}.${group.type}.interval`);
         }
+    }
+}
+
+function validateSpriteAtlas(heroes) {
+    const file = path.join(root, 'data', 'sprite-atlas.js');
+    if (!fs.existsSync(file)) {
+        errors.push('data/sprite-atlas.js no existe');
+        return;
+    }
+    try {
+        const source = fs.readFileSync(file, 'utf8');
+        const atlas = JSON.parse(source.replace(/^window\.__MARVEL_TD_ATLAS__\s*=\s*/, '').replace(/;\s*$/, ''));
+        validateAsset(atlas.image, 'spriteAtlas.image');
+        for (const [heroId, hero] of Object.entries(heroes)) {
+            if (!hero.visual) continue;
+            for (const visualSource of collectVisualSources(hero.visual)) {
+                if (!atlas.frames?.[visualSource]) errors.push(`spriteAtlas no contiene ${heroId}: ${visualSource}`);
+            }
+        }
+    } catch (error) {
+        errors.push(`data/sprite-atlas.js no es valido: ${error.message}`);
     }
 }
 

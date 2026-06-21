@@ -136,6 +136,13 @@ export class UIManager {
         if (this.starsEl && stars !== undefined) this.starsEl.textContent = stars;
     }
 
+    updatePerformance(snapshot, poolStats = {}) {
+        if (!this.fpsEl) return;
+        this.fpsEl.textContent = `${Math.round(snapshot.fps)} FPS`;
+        this.fpsEl.classList.toggle('performance-warning', snapshot.p95Ms > 16.67);
+        this.fpsEl.title = `Frame promedio ${snapshot.averageMs.toFixed(2)} ms · p95 ${snapshot.p95Ms.toFixed(2)} ms · pico ${snapshot.peakEntities} entidades · ${poolStats.reused || 0} proyectiles reutilizados`;
+    }
+
     updateLevelTheme(levelConfig) {
         if (this.levelNameEl) this.levelNameEl.textContent = levelConfig.theme?.label || levelConfig.name || 'Mapa';
         document.documentElement.style.setProperty('--level-accent', levelConfig.theme?.accent || '#40c9ff');

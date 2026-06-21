@@ -1,6 +1,6 @@
 {
   "name": "towerdefense-marvel",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -9,7 +9,10 @@
     "validate": "node scripts/validate-data.js",
     "validate:strict": "node scripts/validate-data.js --strict-assets",
     "build:data": "node scripts/build-bootstrap-data.js",
+    "build:atlas": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/build-sprite-atlas.ps1",
     "balance": "node scripts/simulate-economy.js",
-    "check": "npm run validate && npm test && npm run balance"
+    "benchmark": "node scripts/benchmark-combat.js",
+    "release:check": "node scripts/validate-release.js",
+    "check": "npm run validate && npm test && npm run balance && npm run benchmark && npm run release:check"
   }
 }

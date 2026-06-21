@@ -13,8 +13,16 @@ export function getCachedImage(source) {
     return imageCache.get(source);
 }
 
+export function getSpriteFrame(source) {
+    const atlas = globalThis.__MARVEL_TD_ATLAS__;
+    const frame = atlas?.frames?.[source];
+    if (frame) return { image: getCachedImage(atlas.image), frame };
+    return { image: getCachedImage(source), frame: null };
+}
+
 export async function preloadImages(sources) {
-    const uniqueSources = [...new Set(sources.filter(Boolean))];
+    const atlas = globalThis.__MARVEL_TD_ATLAS__;
+    const uniqueSources = [...new Set(sources.filter(Boolean).map((source) => atlas?.frames?.[source] ? atlas.image : source))];
     const images = uniqueSources.map((source) => getCachedImage(source)).filter(Boolean);
 
     await Promise.all(images.map((image) => {

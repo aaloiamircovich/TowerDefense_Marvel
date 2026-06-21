@@ -10,6 +10,7 @@ import { collectVisualSources } from './rendering/SpriteAnimator.js';
 import { ProgressionManager } from './systems/ProgressionManager.js';
 import { ShopSystem } from './systems/ShopSystem.js';
 import { MissionSystem } from './systems/MissionSystem.js';
+import { registerPwa } from './pwa/register.js';
 
 async function initGame() {
     let ui = null;
@@ -64,8 +65,8 @@ async function initGame() {
             game.difficulty = game.progression.getMapProgress(levelConfig.id).difficulty;
             game.heroes = [];
             game.enemies = [];
-            game.projectiles = [];
-            game.vfx.effects = [];
+            game.clearProjectiles();
+            game.vfx.clear();
             game.completedWaves = [];
             game.path = normalizePath(levelConfig.path, game.canvas.width, game.canvas.height);
             document.body.dataset.levelTheme = levelConfig.theme?.id || 'new-york';
@@ -108,3 +109,4 @@ async function initGame() {
 }
 
 initGame();
+registerPwa();

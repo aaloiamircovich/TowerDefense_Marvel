@@ -126,12 +126,14 @@ export class HeroAbilitySystem {
         const portalX = this.hero.x + Math.cos(angle) * 26;
         const portalY = this.hero.y + Math.sin(angle) * 26;
 
-        projectiles.push(new Projectile(portalX, portalY, target, {
+        const duplicateConfig = {
             ...projectileConfig,
             damage: projectileConfig.damage * 0.65 * this.getPowerScale(),
             radius: Math.max(3, projectileConfig.radius - 1),
             visualStyle: 'mystic'
-        }));
+        };
+        if (this.hero.game.spawnProjectile) this.hero.game.spawnProjectile(portalX, portalY, target, duplicateConfig);
+        else projectiles.push(new Projectile(portalX, portalY, target, duplicateConfig));
         this.hero.game.vfx?.addRing(portalX, portalY, { color: '#f5a623', radius: 24, duration: 0.38 });
         this.hero.game.audio?.play('portal');
         this.hero.recordAbility();

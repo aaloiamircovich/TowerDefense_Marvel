@@ -1,10 +1,13 @@
+import { ObjectPool } from '../utils/ObjectPool.js';
+
 export class CombatVfx {
     constructor() {
         this.effects = [];
+        this.pool = new ObjectPool(() => ({}), clearEffect, 384);
     }
 
     addBeam(from, to, options = {}) {
-        this.effects.push({
+        this.addEffect({
             type: 'beam',
             from: { x: from.x, y: from.y },
             to: { x: to.x, y: to.y },
@@ -16,7 +19,7 @@ export class CombatVfx {
     }
 
     addRing(x, y, options = {}) {
-        this.effects.push({
+        this.addEffect({
             type: 'ring',
             x,
             y,
@@ -36,7 +39,7 @@ export class CombatVfx {
             points.push({ x: x + offset, y: y * progress });
         }
         points.push({ x, y });
-        this.effects.push({
+        this.addEffect({
             type: 'lightning',
             points,
             color: options.color || '#dff6ff',
@@ -46,7 +49,7 @@ export class CombatVfx {
     }
 
     addBurst(x, y, options = {}) {
-        this.effects.push({
+        this.addEffect({
             type: 'burst',
             x,
             y,
@@ -58,8 +61,24 @@ export class CombatVfx {
     }
 
     update(dt) {
-        this.effects.forEach((effect) => { effect.duration -= dt; });
-        this.effects = this.effects.filter((effect) => effect.duration > 0);
+        let writeIndex = 0;
+        for (const effect of this.effects) {
+            effect.duration -= dt;
+            if (effect.duration > 0) this.effects[writeIndex++] = effect;
+            else this.pool.release(effect);
+        }
+        this.effects.length = writeIndex;
+    }
+
+    addEffect(config) {
+        const effect = this.pool.acquire((target) => Object.assign(target, config));
+        this.effects.push(effect);
+        return effect;
+    }
+
+    clear() {
+        this.effects.forEach((effect) => this.pool.release(effect));
+        this.effects.length = 0;
     }
 
     render(ctx) {
@@ -107,5 +126,11 @@ export class CombatVfx {
             }
         }
         ctx.restore();
+    }
+}
+
+function clearEffect(effect) {
+    for (const key of Object.keys(effect)) {
+        if (key !== '__poolUsed') delete effect[key];
     }
 }

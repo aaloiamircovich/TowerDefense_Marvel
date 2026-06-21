@@ -2,6 +2,10 @@ import { CombatSystem } from '../systems/CombatSystem.js';
 
 export class Projectile {
     constructor(x, y, target, config = {}) {
+        this.reset(x, y, target, config);
+    }
+
+    reset(x, y, target, config = {}) {
         this.x = x;
         this.y = y;
         this.target = target;
@@ -22,6 +26,14 @@ export class Projectile {
         this.visualStyle = config.visualStyle || 'energy';
         this.phase = 'outbound';
         this.isActive = true;
+        return this;
+    }
+
+    deactivate() {
+        this.isActive = false;
+        this.target = null;
+        this.attacker = null;
+        this.effects = [];
     }
 
     update(dt) {

@@ -145,7 +145,8 @@ export class Hero {
             radius: isCrit ? 7 : 5,
             visualStyle: this.getProjectileVisualStyle()
         };
-        projectiles.push(new Projectile(this.x, this.y, target, projectileConfig));
+        if (this.game?.spawnProjectile) this.game.spawnProjectile(this.x, this.y, target, projectileConfig);
+        else projectiles.push(new Projectile(this.x, this.y, target, projectileConfig));
         this.abilitySystem.onAttack(target, stats, projectileConfig, projectiles);
     }
 

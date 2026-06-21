@@ -13,7 +13,8 @@ const types = {
     '.png': 'image/png',
     '.jpg': 'image/jpeg',
     '.jpeg': 'image/jpeg',
-    '.svg': 'image/svg+xml'
+    '.svg': 'image/svg+xml',
+    '.webmanifest': 'application/manifest+json; charset=utf-8'
 };
 
 http.createServer((req, res) => {
@@ -34,7 +35,9 @@ http.createServer((req, res) => {
             return;
         }
 
-        res.writeHead(200, { 'Content-Type': types[path.extname(file).toLowerCase()] || 'application/octet-stream' });
+        const headers = { 'Content-Type': types[path.extname(file).toLowerCase()] || 'application/octet-stream' };
+        if (path.basename(file) === 'service-worker.js') headers['Cache-Control'] = 'no-cache';
+        res.writeHead(200, headers);
         res.end(data);
     });
 }).listen(port, '127.0.0.1', () => {

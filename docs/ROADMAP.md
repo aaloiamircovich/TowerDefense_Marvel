@@ -7,7 +7,7 @@ Este roadmap convierte el prototipo actual en un tower defense pulido, escalable
 - 31 heroes definidos; Iron Man y Spider-Man usan sprites animados y tres heroes cuentan con arte procedural temporal.
 - Cinco heroes tienen kits completos y el resto ya comparte el nucleo avanzado de proyectiles y estados.
 - 15 enemigos normales y 15 jefes estan definidos para la siguiente fase.
-- Hay 59 tests, validacion de datos, CI, audio sintetizado y pipeline de sprites.
+- Hay 64 tests, validacion de datos, CI, audio sintetizado y pipeline de sprites.
 - `UIManager.js` aun concentra demasiadas responsabilidades y debe dividirse antes de ampliar la progresion.
 - `data/bootstrapData.js` se genera automaticamente desde los JSON fuente.
 
@@ -140,6 +140,8 @@ Este roadmap convierte el prototipo actual en un tower defense pulido, escalable
 - Disclaimer claro de fan project no oficial de Marvel.
 
 **Terminado cuando:** 60 FPS estables en el objetivo definido, cero errores de consola y checks verdes en GitHub.
+
+**Estado:** implementada. Proyectiles y VFX usan object pools, los heroes animados se sirven desde atlas y el HUD mide FPS, frame promedio, p95, pico de entidades y reutilizacion. El benchmark de 150 enemigos, 300 proyectiles y 120 VFX queda por debajo del presupuesto de 16.67 ms; la suite cubre 64 pruebas, incluyendo el flujo completo de partida. La version 1.0.0 incorpora PWA actualizable, changelog, control de lanzamiento y aviso de proyecto fan.
 
 ## Orden de produccion recomendado
 

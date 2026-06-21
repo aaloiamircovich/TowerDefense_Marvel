@@ -1,0 +1,16 @@
+{
+  "name": "Super Hero Tower Defense",
+  "short_name": "Hero TD",
+  "description": "Tower defense táctico de proyecto fan inspirado en universos de superhéroes.",
+  "id": "/",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#080b10",
+  "theme_color": "#0d1522",
+  "icons": [
+    { "src": "assets/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "assets/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

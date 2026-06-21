@@ -299,6 +299,10 @@ body[data-level-theme="wakanda"] .panel-header {
     font-size: 12px;
 }
 
+#fps-display.performance-warning {
+    color: var(--bright-yellow);
+}
+
 .roster-ability {
     display: block;
     margin-top: 4px;
@@ -1386,6 +1390,21 @@ body.reduce-motion *::after {
     .hero-actions {
         grid-column: 1 / -1;
     }
+}
+
+.release-notice {
+    display: grid;
+    gap: 5px;
+    margin-top: 18px;
+    padding: 12px 0;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.4;
+}
+
+.release-notice strong {
+    color: var(--level-accent);
 }
 
 @media (max-width: 820px) {

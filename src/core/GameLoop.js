@@ -3,6 +3,9 @@ import { Enemy } from '../entities/Enemy.js';
 import { RandomSource } from '../utils/Random.js';
 import { CombatVfx } from '../rendering/CombatVfx.js';
 import { AudioManager } from '../audio/AudioManager.js';
+import { Projectile } from '../entities/Projectile.js';
+import { ObjectPool } from '../utils/ObjectPool.js';
+import { PerformanceMonitor } from '../systems/PerformanceMonitor.js';
 
 export class GameLoop {
     constructor(canvasId, options = {}) {
@@ -23,6 +26,12 @@ export class GameLoop {
         this.random = new RandomSource(options.seed ?? Date.now());
         this.vfx = new CombatVfx();
         this.audio = new AudioManager();
+        this.projectilePool = new ObjectPool(
+            () => new Projectile(0, 0, null),
+            (projectile) => projectile.deactivate(),
+            768
+        );
+        this.performanceMonitor = new PerformanceMonitor();
 
         this.waveManager = null;
         this.uiManager = null;
@@ -112,6 +121,17 @@ export class GameLoop {
         return enemy;
     }
 
+    spawnProjectile(x, y, target, config = {}) {
+        const projectile = this.projectilePool.acquire((item) => item.reset(x, y, target, config));
+        this.projectiles.push(projectile);
+        return projectile;
+    }
+
+    clearProjectiles() {
+        this.projectiles.forEach((projectile) => this.projectilePool.release(projectile));
+        this.projectiles.length = 0;
+    }
+
     start() {
         if (this.isGameOver) return;
         this.isRunning = true;
@@ -136,7 +156,8 @@ export class GameLoop {
     }
 
     loop(timestamp) {
-        this.deltaTime = (timestamp - this.lastTime) / 1000;
+        const frameMs = timestamp - this.lastTime;
+        this.deltaTime = frameMs / 1000;
         this.lastTime = timestamp;
         if (this.deltaTime > 0.1) this.deltaTime = 0.1;
 
@@ -144,6 +165,12 @@ export class GameLoop {
             this.fps = 1 / this.deltaTime;
             this.update(this.deltaTime * this.gameSpeed);
         }
+
+        const performanceSnapshot = this.performanceMonitor.record(
+            frameMs,
+            this.enemies.length + this.projectiles.length + this.vfx.effects.length
+        );
+        if (performanceSnapshot) this.uiManager?.updatePerformance(performanceSnapshot, this.projectilePool.getStats());
 
         this.render(this.ctx);
         requestAnimationFrame((time) => this.loop(time));
@@ -166,16 +193,23 @@ export class GameLoop {
         this.projectiles.forEach((projectile) => projectile.update(dt));
         this.vfx.update(dt);
 
-        this.enemies = this.enemies.filter((enemy) => {
+        let enemyWriteIndex = 0;
+        for (const enemy of this.enemies) {
             if (!enemy.isAlive && !enemy.hasReachedEnd && !enemy.rewarded) {
                 this.resourceManager.addCredits(enemy.reward ?? enemy.config.reward ?? 10);
                 this.missionSystem?.onEnemyDefeated(enemy);
                 enemy.rewarded = true;
             }
-            return enemy.isAlive && !enemy.hasReachedEnd;
-        });
+            if (enemy.isAlive && !enemy.hasReachedEnd) this.enemies[enemyWriteIndex++] = enemy;
+        }
+        this.enemies.length = enemyWriteIndex;
 
-        this.projectiles = this.projectiles.filter((projectile) => projectile.isActive);
+        let projectileWriteIndex = 0;
+        for (const projectile of this.projectiles) {
+            if (projectile.isActive) this.projectiles[projectileWriteIndex++] = projectile;
+            else this.projectilePool.release(projectile);
+        }
+        this.projectiles.length = projectileWriteIndex;
 
         if (this.uiManager && this.resourceManager) {
             const currentWave = this.waveManager ? this.waveManager.currentWave : 1;

@@ -4,10 +4,15 @@ Tower defense ambientado en escenarios inspirados por Marvel, con siete misiones
 
 Incluye audio por buses, música temática, interfaz responsive, navegación por teclado, alto contraste, reducción de movimiento y escala de UI persistente.
 
+La versión 1.0.0 también puede instalarse como PWA, conserva los recursos esenciales para jugar sin conexión y actualiza código y datos al volver a estar en línea.
+
+> Proyecto fan no oficial, educativo y sin fines comerciales. No está afiliado ni respaldado por Marvel Entertainment o The Walt Disney Company. Consulta [NOTICE.md](NOTICE.md).
+
 ## Plan de desarrollo
 
 - [Roadmap completo](docs/ROADMAP.md)
 - [Pipeline profesional de sprites](docs/SPRITE_PIPELINE.md)
+- [Objetivo y benchmark de rendimiento](docs/PERFORMANCE.md)
 
 ## Ejecutar
 
@@ -30,6 +35,8 @@ npm run build:data
 npm run validate
 npm test
 npm run balance
+npm run benchmark
+npm run release:check
 npm run check
 ```
 
@@ -38,6 +45,8 @@ npm run check
 - `validate:strict` también convierte los assets ausentes en errores.
 - `test` ejecuta la suite nativa de Node.
 - `balance` simula eficiencia de heroes, recompensas por oleada y precios de objetos.
+- `benchmark` mide 150 enemigos, 300 proyectiles y 120 VFX contra un presupuesto de 60 FPS.
+- `release:check` valida versión, PWA, atlas, caché offline y aviso legal.
 - `check` reproduce el control usado por GitHub Actions.
 
 También puede abrirse `index.html` directamente. En ese modo el juego usa `data/bootstrapData.js` como respaldo para evitar problemas de `fetch` con archivos locales.

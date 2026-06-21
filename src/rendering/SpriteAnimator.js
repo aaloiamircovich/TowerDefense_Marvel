@@ -1,4 +1,4 @@
-import { getCachedImage } from './ImageCache.js';
+import { getSpriteFrame } from './ImageCache.js';
 
 export const DIRECTIONS = [
     'east',
@@ -19,7 +19,7 @@ export class SpriteAnimator {
         this.frameIndex = 0;
         this.elapsed = 0;
 
-        collectVisualSources(config).forEach((source) => getCachedImage(source));
+        collectVisualSources(config).forEach((source) => getSpriteFrame(source));
     }
 
     faceVector(dx, dy) {
@@ -66,14 +66,18 @@ export class SpriteAnimator {
     }
 
     render(ctx, x, y) {
-        const image = getCachedImage(this.getCurrentSource());
+        const { image, frame } = getSpriteFrame(this.getCurrentSource());
         if (!image?.complete || image.naturalWidth <= 0) return false;
 
         const size = this.config.size || 96;
         const anchor = this.config.anchor || { x: 0.5, y: 0.5 };
         const previousSmoothing = ctx.imageSmoothingEnabled;
         ctx.imageSmoothingEnabled = false;
-        ctx.drawImage(image, x - size * anchor.x, y - size * anchor.y, size, size);
+        if (frame) {
+            ctx.drawImage(image, frame.x, frame.y, frame.width, frame.height, x - size * anchor.x, y - size * anchor.y, size, size);
+        } else {
+            ctx.drawImage(image, x - size * anchor.x, y - size * anchor.y, size, size);
+        }
         ctx.imageSmoothingEnabled = previousSmoothing;
         return true;
     }
