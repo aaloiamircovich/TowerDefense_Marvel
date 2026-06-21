@@ -69,6 +69,8 @@ function validateHeroVisual(heroId, visual) {
 }
 
 function validateEnemies(enemies) {
+    const validArchetypes = new Set(['soldier', 'runner', 'tank', 'shield', 'stealth', 'flying', 'summoner', 'support', 'boss']);
+    const phasedBosses = new Set(['loki', 'ultron_prime', 'killmonger', 'magneto', 'thanos_final']);
     for (const group of ['normal', 'bosses']) {
         if (!enemies[group] || typeof enemies[group] !== 'object') {
             errors.push(`enemies.${group} no existe`);
@@ -82,6 +84,19 @@ function validateEnemies(enemies) {
             requirePositive(enemy.speed, `enemies.${group}.${key}.speed`);
             if (enemy.reward !== 0) requirePositive(enemy.reward, `enemies.${group}.${key}.reward`);
             if (enemy.sprite) validateAsset(enemy.sprite, `enemies.${group}.${key}.sprite`);
+            if (group === 'normal') {
+                requireText(enemy.faction, `enemies.${group}.${key}.faction`);
+                if (!validArchetypes.has(enemy.archetype)) errors.push(`enemies.${group}.${key}.archetype no es valido`);
+                if (!Number.isInteger(enemy.threat) || enemy.threat < 1 || enemy.threat > 5) {
+                    errors.push(`enemies.${group}.${key}.threat debe estar entre 1 y 5`);
+                }
+            }
+            if (phasedBosses.has(key)) {
+                requireText(enemy.faction, `enemies.${group}.${key}.faction`);
+                if (!Array.isArray(enemy.phases) || enemy.phases.length < 2) {
+                    errors.push(`enemies.${group}.${key}.phases necesita al menos 2 fases`);
+                }
+            }
         }
     }
 }

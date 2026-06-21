@@ -71,3 +71,89 @@ test('Enemy combina marca, ruptura y penetracion de armadura', () => {
     const result = enemy.takeDamage(20 * enemy.getDamageTakenMultiplier(), { armorPenetration: 0.5 });
     assert.equal(result.damage, 21.25);
 });
+
+test('Enemy consume la barrera antes de perder salud', () => {
+    const enemy = new Enemy({ id: 'shield', hp: 100, speed: 50, barrierRatio: 0.2 }, [{ x: 0, y: 0 }]);
+
+    enemy.takeDamage(10);
+    assert.equal(enemy.hp, 100);
+    assert.equal(enemy.behavior.barrier, 10);
+
+    enemy.takeDamage(20);
+    assert.equal(enemy.hp, 90);
+    assert.equal(enemy.behavior.barrier, 0);
+});
+
+test('Enemy aplica resistencias por categoria de atacante', () => {
+    const enemy = new Enemy({
+        id: 'resistant', hp: 100, speed: 50, resistances: { Tecnológico: 0.25 }
+    }, [{ x: 0, y: 0 }]);
+
+    enemy.takeDamage(20, { attackerType: 'Tecnológico' });
+    assert.equal(enemy.hp, 85);
+});
+
+test('Soporte cura aliados cercanos sin superar su salud maxima', () => {
+    const game = createEnemyGame();
+    const support = new Enemy({
+        id: 'support', hp: 100, speed: 1, archetype: 'support', healPower: 0.1, behaviorCooldown: 0.1
+    }, game.path, game);
+    const ally = new Enemy({ id: 'ally', hp: 100, speed: 1 }, game.path, game);
+    ally.hp = 50;
+    game.enemies = [support, ally];
+
+    support.update(0.2);
+    assert.equal(ally.hp, 60);
+});
+
+test('Invocador crea refuerzos sobre su misma ruta', () => {
+    const game = createEnemyGame();
+    let summon = null;
+    game.enemyDatabase = { normal: { drone: { id: 'drone', hp: 20, speed: 20 } } };
+    game.spawnEnemy = (config, source) => { summon = { config, source }; };
+    const summoner = new Enemy({
+        id: 'summoner', hp: 100, speed: 1, archetype: 'summoner', summonId: 'drone', summonLimit: 1, behaviorCooldown: 0.1
+    }, game.path, game);
+
+    summoner.update(0.2);
+    assert.equal(summon.config.id, 'drone');
+    assert.equal(summon.source, summoner);
+});
+
+test('Jefe anuncia y activa una fase por umbral de salud', () => {
+    const game = createEnemyGame();
+    const boss = new Enemy({
+        id: 'boss', hp: 100, speed: 1, isBoss: true, archetype: 'boss',
+        phases: [{ threshold: 0.8, name: 'Fase de prueba', telegraph: 0.2, barrier: 0.2 }]
+    }, game.path, game);
+    boss.takeDamage(30);
+
+    boss.update(0.1);
+    assert.equal(boss.telegraph.label, 'Fase de prueba');
+    boss.update(0.2);
+    assert.equal(boss.currentPhase, 'Fase de prueba');
+    assert.equal(boss.behavior.barrier, 20);
+});
+
+test('Refuerzo aparece detras del invocador y permanece sobre un giro', () => {
+    const path = [{ x: 0, y: 0 }, { x: 100, y: 0 }, { x: 100, y: 100 }];
+    const source = new Enemy({ id: 'source', hp: 100, speed: 1 }, path);
+    const reinforcement = new Enemy({ id: 'reinforcement', hp: 20, speed: 1 }, path);
+    source.moveForward(150);
+
+    reinforcement.copyPathPosition(source, 30);
+    assert.equal(reinforcement.pathIndex, 1);
+    assert.equal(reinforcement.x, 100);
+    assert.equal(reinforcement.y, 20);
+    assert.equal(reinforcement.distanceTravelled, 120);
+});
+
+function createEnemyGame() {
+    return {
+        path: [{ x: 0, y: 0 }, { x: 500, y: 0 }],
+        enemies: [],
+        vfx: { addRing: () => {}, addBurst: () => {} },
+        audio: { play: () => {} },
+        uiManager: { showToast: () => {} }
+    };
+}

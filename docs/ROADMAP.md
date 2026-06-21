@@ -7,7 +7,7 @@ Este roadmap convierte el prototipo actual en un tower defense pulido, escalable
 - 31 heroes definidos; Iron Man y Spider-Man usan sprites animados y tres heroes cuentan con arte procedural temporal.
 - Cinco heroes tienen kits completos y el resto ya comparte el nucleo avanzado de proyectiles y estados.
 - 15 enemigos normales y 15 jefes estan definidos para la siguiente fase.
-- Hay 33 tests, validacion de datos, CI, audio sintetizado y pipeline de sprites.
+- Hay 42 tests, validacion de datos, CI, audio sintetizado y pipeline de sprites.
 - `UIManager.js` aun concentra demasiadas responsabilidades y debe dividirse antes de ampliar la progresion.
 - `data/bootstrapData.js` se genera automaticamente desde los JSON fuente.
 
@@ -81,6 +81,8 @@ Este roadmap convierte el prototipo actual en un tower defense pulido, escalable
 - Agregar modificadores de oleada sin depender solo de subir HP.
 
 **Terminado cuando:** el jugador cambia estrategia por composición enemiga, no solo por números más altos.
+
+**Estado:** implementada. Cada mapa genera facciones propias, los siete arquetipos tienen conducta real, cinco jefes usan fases con telegraph y el radar anticipa rol, sigilo, resistencias, amenaza, recompensa y modificadores.
 
 ## Fase 5 - Progresion y economia
 

@@ -4,7 +4,8 @@ const CUES = {
     web: { frequency: 760, endFrequency: 320, duration: 0.08, type: 'triangle', volume: 0.025 },
     shield: { frequency: 230, endFrequency: 150, duration: 0.13, type: 'square', volume: 0.025 },
     thunder: { frequency: 95, endFrequency: 42, duration: 0.38, type: 'sawtooth', volume: 0.065 },
-    portal: { frequency: 340, endFrequency: 680, duration: 0.28, type: 'sine', volume: 0.04 }
+    portal: { frequency: 340, endFrequency: 680, duration: 0.28, type: 'sine', volume: 0.04 },
+    boss: { frequency: 120, endFrequency: 45, duration: 0.52, type: 'sawtooth', volume: 0.07 }
 };
 
 export class AudioManager {

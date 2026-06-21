@@ -59,7 +59,8 @@ export class CombatSystem {
         const typeMultiplier = TypeChart[projectile.attackerType]?.[target.category] || 1;
         const markMultiplier = target.getDamageTakenMultiplier?.() || 1;
         const result = target.takeDamage(projectile.damage * factor * typeMultiplier * markMultiplier, {
-            armorPenetration: projectile.armorPenetration || 0
+            armorPenetration: projectile.armorPenetration || 0,
+            attackerType: projectile.attackerType
         });
 
         attacker?.recordDamage?.(result.damage);

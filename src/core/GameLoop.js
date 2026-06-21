@@ -1,4 +1,5 @@
 import { Hero } from '../entities/Hero.js';
+import { Enemy } from '../entities/Enemy.js';
 import { RandomSource } from '../utils/Random.js';
 import { CombatVfx } from '../rendering/CombatVfx.js';
 import { AudioManager } from '../audio/AudioManager.js';
@@ -102,6 +103,13 @@ export class GameLoop {
         this.heroes.push(new Hero(config, x, y, this));
     }
 
+    spawnEnemy(config, source = null) {
+        const enemy = new Enemy(config, this.path, this);
+        if (source) enemy.copyPathPosition(source, 24);
+        this.enemies.push(enemy);
+        return enemy;
+    }
+
     start() {
         if (this.isGameOver) return;
         this.isRunning = true;
@@ -156,7 +164,7 @@ export class GameLoop {
 
         this.enemies = this.enemies.filter((enemy) => {
             if (!enemy.isAlive && !enemy.hasReachedEnd && !enemy.rewarded) {
-                this.resourceManager.addCredits(enemy.reward || enemy.config.reward || 10);
+                this.resourceManager.addCredits(enemy.reward ?? enemy.config.reward ?? 10);
                 enemy.rewarded = true;
             }
             return enemy.isAlive && !enemy.hasReachedEnd;

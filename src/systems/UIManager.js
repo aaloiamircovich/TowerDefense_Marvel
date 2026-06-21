@@ -102,22 +102,42 @@ export class UIManager {
         this.toastTimer = window.setTimeout(() => this.toastEl.classList.add('hidden'), 2200);
     }
 
-    renderWavePreview(uniqueEnemies) {
+    renderWavePreview(uniqueEnemies, modifier = null, faction = null, waveNumber = 1) {
         const container = document.getElementById('wave-preview');
         const numberEl = document.getElementById('next-wave-number');
+        const intelEl = document.getElementById('wave-intel');
         if (!container) return;
 
-        if (numberEl) numberEl.textContent = this.game.waveManager?.currentWave || 1;
+        if (numberEl) numberEl.textContent = waveNumber;
+        if (intelEl) {
+            intelEl.innerHTML = `
+                <strong>${faction?.label || 'Amenaza desconocida'}</strong>
+                <span>${modifier?.label || 'Oleada estándar'}: ${modifier?.description || ''}</span>
+            `;
+        }
+        document.getElementById('enemy-info-empty')?.classList.remove('hidden');
+        document.getElementById('enemy-info-content')?.classList.add('hidden');
         container.innerHTML = '';
+
+        const roles = {
+            runner: 'Corredor', tank: 'Tanque', shield: 'Escudo', stealth: 'Sigilo',
+            flying: 'Volador', summoner: 'Invocador', support: 'Soporte', boss: 'Jefe', soldier: 'Soldado'
+        };
+        const categoryColors = {
+            Tecnológico: '#40c9ff', Místico: '#b865ff', Urbano: '#e63946',
+            Cósmico: '#ff8bd1', Mutante: '#c7f464'
+        };
 
         uniqueEnemies.forEach((enemy) => {
             const card = document.createElement('button');
             card.className = 'wave-enemy-card';
-            card.title = enemy.name;
+            card.style.setProperty('--enemy-color', categoryColors[enemy.category] || '#fca311');
+            card.title = `${enemy.name} | ${roles[enemy.archetype] || 'Soldado'} | Amenaza ${enemy.threat || 1}/5`;
             card.innerHTML = `
                 <span class="enemy-token">${enemy.name.charAt(0)}</span>
-                <strong>x${enemy.previewCount || 1}</strong>
-                <small>${enemy.isBoss ? 'Jefe' : enemy.category}</small>
+                <span class="enemy-count">x${enemy.previewCount || 1}</span>
+                <strong>${roles[enemy.archetype] || (enemy.isBoss ? 'Jefe' : 'Soldado')}</strong>
+                <small>${enemy.stealth ? 'Sigilo · ' : ''}${'◆'.repeat(Math.max(1, enemy.threat || 1))}</small>
             `;
             card.addEventListener('click', () => this.inspectUnit(enemy, true));
             container.appendChild(card);
@@ -135,7 +155,12 @@ export class UIManager {
             document.getElementById('en-info-hp').textContent = `${Math.ceil(unit.hp || 0)} / ${Math.ceil(unit.maxHp || unit.hp || 0)}`;
             document.getElementById('en-info-speed').textContent = Math.round(unit.speed || 0);
             document.getElementById('en-info-armor').textContent = `${Math.round((unit.armor || 0) * 100)}%`;
-            document.getElementById('en-info-reward').textContent = `$${unit.reward || 10}`;
+            document.getElementById('en-info-reward').textContent = `$${unit.reward ?? 10}`;
+            document.getElementById('en-info-faction').textContent = unit.faction || 'Independiente';
+            document.getElementById('en-info-role').textContent = this.getEnemyRole(unit.archetype, unit.isBoss);
+            document.getElementById('en-info-resists').textContent = this.getResistanceText(unit);
+            document.getElementById('en-info-threat').textContent = `${unit.threat || 1} / 5`;
+            document.getElementById('en-info-phase').textContent = unit.currentPhase || (unit.phases?.length ? `${unit.phases.length} fases` : '-');
             return;
         }
 
@@ -648,6 +673,23 @@ export class UIManager {
     getTerrainText(terrains) {
         const names = { 0: 'Agua', 1: 'Hierba', 2: 'Camino', 3: 'Montaña', 4: 'Arbusto', 11: 'Hierba', 12: 'Hierba alta' };
         return terrains.map((terrain) => names[terrain] || terrain).join(', ');
+    }
+
+    getEnemyRole(archetype, isBoss = false) {
+        const roles = {
+            runner: 'Corredor', tank: 'Tanque', shield: 'Escudo', stealth: 'Sigilo',
+            flying: 'Volador', summoner: 'Invocador', support: 'Soporte', boss: 'Jefe', soldier: 'Soldado'
+        };
+        return roles[archetype] || (isBoss ? 'Jefe' : 'Soldado');
+    }
+
+    getResistanceText(unit) {
+        const labels = Object.entries(unit.resistances || {})
+            .filter(([, value]) => value > 0)
+            .map(([type, value]) => `${type} ${Math.round(value * 100)}%`);
+        if (unit.statusResistance > 0) labels.push(`Estados ${Math.round(unit.statusResistance * 100)}%`);
+        if (unit.stealth) labels.push('Detección requerida');
+        return labels.join(', ') || 'Ninguna';
     }
 
     renderSprite(src, name) {

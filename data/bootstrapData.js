@@ -655,7 +655,11 @@ window.__MARVEL_TD_DATA__ = {
         "speed": 50,
         "reward": 10,
         "armor": 0,
-        "stealth": false
+        "stealth": false,
+        "faction": "Hydra",
+        "archetype": "shield",
+        "barrierRatio": 0.22,
+        "threat": 2
       },
       "aim_scientist": {
         "id": "aim_scientist",
@@ -665,7 +669,12 @@ window.__MARVEL_TD_DATA__ = {
         "speed": 55,
         "reward": 12,
         "armor": 0,
-        "stealth": false
+        "stealth": false,
+        "faction": "A.I.M.",
+        "archetype": "support",
+        "healPower": 0.06,
+        "behaviorCooldown": 4,
+        "threat": 2
       },
       "sentinel": {
         "id": "sentinel",
@@ -675,7 +684,14 @@ window.__MARVEL_TD_DATA__ = {
         "speed": 35,
         "reward": 45,
         "armor": 0.6,
-        "stealth": false
+        "stealth": false,
+        "faction": "Legión de Ultrón",
+        "archetype": "tank",
+        "statusResistance": 0.35,
+        "resistances": {
+          "Tecnológico": 0.2
+        },
+        "threat": 5
       },
       "outrider": {
         "id": "outrider",
@@ -685,7 +701,10 @@ window.__MARVEL_TD_DATA__ = {
         "speed": 75,
         "reward": 15,
         "armor": 0.1,
-        "stealth": false
+        "stealth": false,
+        "faction": "Outriders",
+        "archetype": "runner",
+        "threat": 2
       },
       "chitauri_warrior": {
         "id": "chitauri_warrior",
@@ -695,7 +714,11 @@ window.__MARVEL_TD_DATA__ = {
         "speed": 50,
         "reward": 18,
         "armor": 0.2,
-        "stealth": false
+        "stealth": false,
+        "faction": "Outriders",
+        "archetype": "shield",
+        "barrierRatio": 0.18,
+        "threat": 3
       },
       "dark_elf": {
         "id": "dark_elf",
@@ -705,7 +728,13 @@ window.__MARVEL_TD_DATA__ = {
         "speed": 60,
         "reward": 20,
         "armor": 0,
-        "stealth": true
+        "stealth": true,
+        "faction": "Asgardianos Oscuros",
+        "archetype": "stealth",
+        "resistances": {
+          "Místico": 0.2
+        },
+        "threat": 3
       },
       "skrull_infiltrator": {
         "id": "skrull_infiltrator",
@@ -715,7 +744,10 @@ window.__MARVEL_TD_DATA__ = {
         "speed": 65,
         "reward": 25,
         "armor": 0,
-        "stealth": true
+        "stealth": true,
+        "faction": "Skrulls",
+        "archetype": "stealth",
+        "threat": 3
       },
       "hand_ninja": {
         "id": "hand_ninja",
@@ -725,7 +757,10 @@ window.__MARVEL_TD_DATA__ = {
         "speed": 90,
         "reward": 22,
         "armor": 0,
-        "stealth": true
+        "stealth": true,
+        "faction": "Hydra",
+        "archetype": "runner",
+        "threat": 3
       },
       "symbiote_spawn": {
         "id": "symbiote_spawn",
@@ -735,7 +770,11 @@ window.__MARVEL_TD_DATA__ = {
         "speed": 80,
         "reward": 30,
         "armor": 0.3,
-        "stealth": false
+        "stealth": false,
+        "faction": "Simbiontes",
+        "archetype": "tank",
+        "statusResistance": 0.25,
+        "threat": 4
       },
       "doombot": {
         "id": "doombot",
@@ -745,7 +784,13 @@ window.__MARVEL_TD_DATA__ = {
         "speed": 45,
         "reward": 20,
         "armor": 0.35,
-        "stealth": false
+        "stealth": false,
+        "faction": "Legión de Ultrón",
+        "archetype": "summoner",
+        "summonId": "ultron_drone",
+        "summonLimit": 2,
+        "behaviorCooldown": 7,
+        "threat": 4
       },
       "hellfire_guard": {
         "id": "hellfire_guard",
@@ -755,7 +800,12 @@ window.__MARVEL_TD_DATA__ = {
         "speed": 50,
         "reward": 20,
         "armor": 0.15,
-        "stealth": false
+        "stealth": false,
+        "faction": "Mercenarios",
+        "archetype": "support",
+        "healPower": 0.08,
+        "behaviorCooldown": 4,
+        "threat": 3
       },
       "frost_giant_scout": {
         "id": "frost_giant_scout",
@@ -765,7 +815,11 @@ window.__MARVEL_TD_DATA__ = {
         "speed": 30,
         "reward": 50,
         "armor": 0.2,
-        "stealth": false
+        "stealth": false,
+        "faction": "Jotunheim",
+        "archetype": "tank",
+        "statusResistance": 0.4,
+        "threat": 5
       },
       "sakaaran_soldier": {
         "id": "sakaaran_soldier",
@@ -775,7 +829,14 @@ window.__MARVEL_TD_DATA__ = {
         "speed": 55,
         "reward": 15,
         "armor": 0.25,
-        "stealth": false
+        "stealth": false,
+        "faction": "Mercenarios",
+        "archetype": "flying",
+        "flying": true,
+        "statusResistances": {
+          "slow": 0.35
+        },
+        "threat": 3
       },
       "brotherhood_mutant": {
         "id": "brotherhood_mutant",
@@ -785,7 +846,11 @@ window.__MARVEL_TD_DATA__ = {
         "speed": 60,
         "reward": 25,
         "armor": 0,
-        "stealth": false
+        "stealth": false,
+        "faction": "Hermandad Mutante",
+        "archetype": "support",
+        "healPower": 0.05,
+        "threat": 3
       },
       "ultron_drone": {
         "id": "ultron_drone",
@@ -795,7 +860,27 @@ window.__MARVEL_TD_DATA__ = {
         "speed": 70,
         "reward": 15,
         "armor": 0.2,
-        "stealth": false
+        "stealth": false,
+        "faction": "Legión de Ultrón",
+        "archetype": "flying",
+        "flying": true,
+        "statusResistances": {
+          "slow": 0.3
+        },
+        "threat": 2
+      },
+      "mercenary_raider": {
+        "id": "mercenary_raider",
+        "name": "Saqueador de Vibranium",
+        "category": "Urbano",
+        "hp": 125,
+        "speed": 82,
+        "reward": 18,
+        "armor": 0.12,
+        "stealth": false,
+        "faction": "Mercenarios",
+        "archetype": "runner",
+        "threat": 2
       }
     },
     "bosses": {
@@ -809,7 +894,32 @@ window.__MARVEL_TD_DATA__ = {
         "reward": 1000,
         "armor": 0.1,
         "stealth": true,
-        "immuneToStun": false
+        "immuneToStun": false,
+        "faction": "Asgardianos Oscuros",
+        "archetype": "boss",
+        "threat": 5,
+        "resistances": {
+          "Místico": 0.25
+        },
+        "phases": [
+          {
+            "threshold": 0.7,
+            "name": "Ejército de Ilusiones",
+            "telegraph": 1.3,
+            "summonId": "dark_elf",
+            "summonCount": 2,
+            "stealth": 3,
+            "color": "#69e58c"
+          },
+          {
+            "threshold": 0.35,
+            "name": "Maestro del Engaño",
+            "telegraph": 1.1,
+            "barrier": 0.14,
+            "speed": 1.3,
+            "color": "#d86cff"
+          }
+        ]
       },
       "doctor_doom": {
         "id": "doctor_doom",
@@ -833,7 +943,30 @@ window.__MARVEL_TD_DATA__ = {
         "reward": 1200,
         "armor": 0.4,
         "stealth": false,
-        "immuneToSlow": true
+        "immuneToSlow": true,
+        "faction": "Hermandad Mutante",
+        "archetype": "boss",
+        "threat": 5,
+        "resistances": {
+          "Tecnológico": 0.35
+        },
+        "phases": [
+          {
+            "threshold": 0.72,
+            "name": "Campo Magnético",
+            "telegraph": 1.4,
+            "barrier": 0.2,
+            "color": "#d86cff"
+          },
+          {
+            "threshold": 0.35,
+            "name": "Polaridad Inversa",
+            "telegraph": 1.2,
+            "barrier": 0.28,
+            "armor": 0.1,
+            "color": "#ff4d6d"
+          }
+        ]
       },
       "green_goblin": {
         "id": "green_goblin",
@@ -869,7 +1002,32 @@ window.__MARVEL_TD_DATA__ = {
         "reward": 2000,
         "armor": 0.55,
         "stealth": false,
-        "immuneToStun": true
+        "immuneToStun": true,
+        "faction": "Legión de Ultrón",
+        "archetype": "boss",
+        "threat": 5,
+        "resistances": {
+          "Tecnológico": 0.3
+        },
+        "phases": [
+          {
+            "threshold": 0.7,
+            "name": "Producción de Drones",
+            "telegraph": 1.4,
+            "summonId": "ultron_drone",
+            "summonCount": 3,
+            "barrier": 0.12,
+            "color": "#40c9ff"
+          },
+          {
+            "threshold": 0.3,
+            "name": "Protocolo Prime",
+            "telegraph": 1.1,
+            "armor": 0.12,
+            "speed": 1.25,
+            "color": "#e63946"
+          }
+        ]
       },
       "kingpin": {
         "id": "kingpin",
@@ -942,7 +1100,31 @@ window.__MARVEL_TD_DATA__ = {
         "reward": 1200,
         "armor": 0.4,
         "stealth": false,
-        "immuneToStun": false
+        "immuneToStun": false,
+        "faction": "Mercenarios",
+        "archetype": "boss",
+        "threat": 5,
+        "resistances": {
+          "Urbano": 0.2
+        },
+        "phases": [
+          {
+            "threshold": 0.68,
+            "name": "Traje de Vibranium",
+            "telegraph": 1.2,
+            "barrier": 0.18,
+            "speed": 1.2,
+            "color": "#b865ff"
+          },
+          {
+            "threshold": 0.3,
+            "name": "Desafío al Trono",
+            "telegraph": 1,
+            "heal": 0.12,
+            "speed": 1.45,
+            "color": "#fca311"
+          }
+        ]
       },
       "dormammu": {
         "id": "dormammu",
@@ -982,7 +1164,41 @@ window.__MARVEL_TD_DATA__ = {
         "armor": 0.65,
         "stealth": false,
         "immuneToStun": true,
-        "immuneToSlow": true
+        "immuneToSlow": true,
+        "immuneToKnockback": true,
+        "faction": "Orden Negro",
+        "archetype": "boss",
+        "threat": 5,
+        "resistances": {
+          "Cósmico": 0.35,
+          "Místico": 0.2
+        },
+        "phases": [
+          {
+            "threshold": 0.75,
+            "name": "Gema del Poder",
+            "telegraph": 1.5,
+            "barrier": 0.12,
+            "color": "#b865ff"
+          },
+          {
+            "threshold": 0.5,
+            "name": "Ejército Outrider",
+            "telegraph": 1.4,
+            "summonId": "outrider",
+            "summonCount": 4,
+            "color": "#ff8bd1"
+          },
+          {
+            "threshold": 0.25,
+            "name": "Destino Inevitable",
+            "telegraph": 1.2,
+            "armor": 0.12,
+            "speed": 1.35,
+            "heal": 0.08,
+            "color": "#ffd166"
+          }
+        ]
       }
     }
   },

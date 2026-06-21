@@ -1,8 +1,10 @@
+import { EnemyBehaviorSystem } from '../systems/EnemyBehaviorSystem.js';
+
 let enemyUid = 0;
 const imageCache = new Map();
 
 export class Enemy {
-    constructor(config, path) {
+    constructor(config, path, game = null) {
         this.uid = `enemy-${enemyUid++}`;
         this.config = config;
         this.name = config.name || 'Enemigo';
@@ -10,10 +12,16 @@ export class Enemy {
         this.maxHp = this.hp;
         this.baseSpeed = config.speed || 50;
         this.speed = this.baseSpeed;
-        this.reward = config.reward || 10;
+        this.reward = config.reward ?? 10;
         this.armor = config.armor || 0;
         this.category = config.category || 'Urbano';
+        this.faction = config.faction || 'Independiente';
+        this.archetype = config.archetype || 'soldier';
+        this.threat = config.threat || 1;
+        this.resistances = { ...(config.resistances || {}) };
+        this.statusResistance = config.statusResistance || 0;
         this.stealth = Boolean(config.stealth);
+        this.flying = Boolean(config.flying || this.archetype === 'flying');
         this.isBoss = Boolean(config.isBoss);
         this.sprite = config.sprite;
         this.debuffs = [];
@@ -28,6 +36,9 @@ export class Enemy {
         this.distanceTravelled = 0;
         this.processed = false;
         this.rewarded = false;
+        this.telegraph = null;
+        this.currentPhase = config.phaseLabel || (this.isBoss ? 'Fase inicial' : null);
+        this.behavior = new EnemyBehaviorSystem(this, game);
 
         if (this.sprite && !imageCache.has(this.sprite)) {
             const img = new Image();
@@ -45,8 +56,10 @@ export class Enemy {
         const armorRatio = options.ignoreArmor
             ? 0
             : Math.max(0, Math.min(baseArmor - armorBreak, 0.85)) * (1 - penetration);
-        const finalDamage = Math.max(1, amount * (1 - armorRatio));
-        const appliedDamage = Math.min(this.hp, finalDamage);
+        const resistance = Math.max(0, Math.min(0.8, this.resistances[options.attackerType] || 0));
+        const finalDamage = Math.max(1, amount * (1 - resistance) * (1 - armorRatio));
+        const barrierResult = this.behavior.absorbDamage(finalDamage);
+        const appliedDamage = Math.min(this.hp, barrierResult.remaining);
         this.hp -= appliedDamage;
 
         if (this.hp <= 0) {
@@ -54,7 +67,7 @@ export class Enemy {
             this.isAlive = false;
         }
 
-        return { damage: appliedDamage, killed: !this.isAlive };
+        return { damage: appliedDamage + barrierResult.absorbed, killed: !this.isAlive };
     }
 
     applyDebuff(type, duration = 1, power = 0.5) {
@@ -66,14 +79,18 @@ export class Enemy {
         if (type === 'slow' && this.config.immuneToSlow) return false;
         if (type === 'stun' && this.config.immuneToStun) return false;
         if (type === 'knockback') {
+            if (this.flying || this.config.immuneToKnockback) return false;
             this.moveBackward(power);
             return true;
         }
 
+        const specificResistance = this.config.statusResistances?.[type] || 0;
+        const adjustedDuration = duration * Math.max(0.2, 1 - this.statusResistance - specificResistance);
+
         if (type === 'web') {
             const web = this.debuffs.find((debuff) => debuff.type === 'web');
             if (web) {
-                web.duration = Math.max(web.duration, duration);
+                web.duration = Math.max(web.duration, adjustedDuration);
                 web.stacks = (web.stacks || 0) + 1;
                 web.source = source || web.source;
                 if (web.stacks >= 3) {
@@ -82,18 +99,18 @@ export class Enemy {
                     source?.recordAbility?.();
                 }
             } else {
-                this.debuffs.push({ type, duration, power, source, stacks: 1, tickTimer: 0 });
+                this.debuffs.push({ type, duration: adjustedDuration, power, source, stacks: 1, tickTimer: 0 });
             }
             return true;
         }
 
         const existing = this.debuffs.find((debuff) => debuff.type === type);
         if (existing) {
-            existing.duration = Math.max(existing.duration, duration);
+            existing.duration = Math.max(existing.duration, adjustedDuration);
             existing.power = Math.max(existing.power, power);
             existing.source = source || existing.source;
         } else {
-            this.debuffs.push({ type, duration, power, source, tickTimer: 0 });
+            this.debuffs.push({ type, duration: adjustedDuration, power, source, tickTimer: 0 });
         }
         return true;
     }
@@ -141,6 +158,9 @@ export class Enemy {
     update(dt) {
         if (!this.isAlive || this.hasReachedEnd) return;
         this.updateDebuffs(dt);
+        if (!this.isAlive) return;
+        this.behavior.update(dt);
+        this.speed *= this.behavior.getSpeedMultiplier();
         if (this.speed <= 0) return;
 
         this.moveForward(this.speed * dt);
@@ -208,6 +228,14 @@ export class Enemy {
         return moved;
     }
 
+    copyPathPosition(source, backwardOffset = 0) {
+        this.pathIndex = source.pathIndex;
+        this.x = source.x;
+        this.y = source.y;
+        this.distanceTravelled = source.distanceTravelled;
+        if (backwardOffset > 0) this.moveBackward(backwardOffset);
+    }
+
     snapToPathSegment(target) {
         const current = this.path[this.pathIndex];
         if (!current || !target) return;
@@ -221,6 +249,7 @@ export class Enemy {
 
         ctx.save();
         if (this.stealth) ctx.globalAlpha = 0.72;
+        if (this.flying) ctx.translate(0, Math.sin(this.behavior.elapsed * 5) * 4 - 6);
 
         const img = this.sprite ? imageCache.get(this.sprite) : null;
         if (img?.complete && img.naturalWidth > 0) {
@@ -230,7 +259,9 @@ export class Enemy {
         }
 
         this.renderHealthBar(ctx);
+        this.renderBarrier(ctx);
         this.renderDebuffPips(ctx);
+        this.renderTelegraph(ctx);
         ctx.restore();
     }
 
@@ -255,6 +286,28 @@ export class Enemy {
         ctx.lineWidth = this.isBoss ? 3 : 1.5;
         ctx.stroke();
 
+        if (this.archetype === 'runner') {
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+            ctx.fillRect(this.x - this.size / 2 - 6, this.y - 5, 6, 2);
+            ctx.fillRect(this.x - this.size / 2 - 9, this.y + 3, 9, 2);
+        } else if (this.archetype === 'shield') {
+            ctx.strokeStyle = '#7be0ff';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size / 2 + 4, -Math.PI * 0.7, Math.PI * 0.7);
+            ctx.stroke();
+        } else if (this.archetype === 'support') {
+            ctx.fillStyle = '#69e58c';
+            ctx.fillRect(this.x - 2, this.y - 8, 4, 16);
+            ctx.fillRect(this.x - 8, this.y - 2, 16, 4);
+        } else if (this.archetype === 'summoner') {
+            ctx.strokeStyle = '#d86cff';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size / 2 + 5, 0, Math.PI * 2);
+            ctx.stroke();
+        }
+
         ctx.fillStyle = '#071018';
         ctx.font = `bold ${this.isBoss ? 14 : 11}px Segoe UI`;
         ctx.textAlign = 'center';
@@ -270,6 +323,31 @@ export class Enemy {
         ctx.fillRect(this.x - width / 2, this.y - this.size / 2 - 10, width, 5);
         ctx.fillStyle = hpPercent > 0.45 ? '#46d369' : hpPercent > 0.2 ? '#fca311' : '#e63946';
         ctx.fillRect(this.x - width / 2, this.y - this.size / 2 - 10, width * hpPercent, 5);
+    }
+
+    renderBarrier(ctx) {
+        if (this.behavior.barrier <= 0 || this.behavior.barrierMax <= 0) return;
+        const percent = Math.min(1, this.behavior.barrier / this.behavior.barrierMax);
+        ctx.strokeStyle = 'rgba(123, 224, 255, 0.9)';
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size / 2 + 5, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * percent);
+        ctx.stroke();
+    }
+
+    renderTelegraph(ctx) {
+        if (!this.telegraph) return;
+        const progress = 1 - this.telegraph.duration / this.telegraph.maxDuration;
+        const radius = this.size / 2 + 10 + progress * 18;
+        ctx.strokeStyle = this.telegraph.color;
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, radius, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.fillStyle = this.telegraph.color;
+        ctx.font = 'bold 9px Segoe UI';
+        ctx.textAlign = 'center';
+        ctx.fillText(this.telegraph.label.toUpperCase(), this.x, this.y - this.size / 2 - 18);
     }
 
     renderDebuffPips(ctx) {

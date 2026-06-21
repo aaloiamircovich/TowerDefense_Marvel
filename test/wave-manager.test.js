@@ -19,9 +19,37 @@ test('WaveManager prepara un jefe cada diez oleadas', () => {
 
     assert.equal(manager.preparedQueue.length, 1);
     assert.equal(manager.preparedQueue[0].config.isBoss, true);
+    assert.equal(manager.preparedQueue[0].config.id, 'loki');
 });
 
-function createGame() {
+test('WaveManager usa la faccion correspondiente al mapa', () => {
+    const game = createGame('avengers');
+    const manager = new WaveManager(game, enemies);
+    const ids = new Set(manager.preparedQueue.map((entry) => entry.config.id));
+
+    assert.equal(manager.faction.label, 'Legión de Ultrón');
+    assert.deepEqual(ids, new Set(['doombot', 'ultron_drone']));
+});
+
+test('WaveManager aplica modificadores sin depender solo de salud', () => {
+    const manager = new WaveManager(createGame(), enemies);
+    manager.currentWave = 2;
+    manager.prepareNextWave();
+
+    assert.equal(manager.waveModifier.id, 'rush');
+    assert.ok(manager.preparedQueue.every((entry) => entry.config.speed > enemies.normal[entry.config.id].speed));
+});
+
+test('WaveManager prepara barreras globales en la oleada protegida', () => {
+    const manager = new WaveManager(createGame(), enemies);
+    manager.currentWave = 3;
+    manager.prepareNextWave();
+
+    assert.equal(manager.waveModifier.id, 'shielded');
+    assert.ok(manager.preparedQueue.every((entry) => entry.config.barrierRatio >= 0.16));
+});
+
+function createGame(theme = 'new-york') {
     return {
         uiManager: null,
         heroes: [],
@@ -29,6 +57,7 @@ function createGame() {
         completedWaves: [],
         stars: 0,
         path: [{ x: 0, y: 0 }, { x: 40, y: 0 }],
+        currentLevel: { theme: { id: theme } },
         resourceManager: { addCredits: () => {} },
         pause: () => {}
     };
