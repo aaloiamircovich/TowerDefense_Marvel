@@ -20,6 +20,8 @@ export class Hero {
         this.attackType = config.attackType || this.category;
         this.allowedTerrains = [...(config.allowedTerrains || [1])];
         this.targetingPriority = config.targetingPriority || 'Primero';
+        this.deployedCost = config.cost || 0;
+        this.lastRepositionWave = -1;
         this.timer = 0;
         this.items = [];
         this.consecutiveHits = 0;
@@ -110,6 +112,12 @@ export class Hero {
                 return inRange.sort((a, b) => b.hp - a.hp)[0];
             case 'Débil':
                 return inRange.sort((a, b) => a.hp - b.hp)[0];
+            case 'Rápido':
+                return inRange.sort((a, b) => b.speed - a.speed || b.distanceTravelled - a.distanceTravelled)[0];
+            case 'Sigilo':
+                return inRange.sort((a, b) => Number(b.stealth) - Number(a.stealth) || b.distanceTravelled - a.distanceTravelled)[0];
+            case 'Jefe':
+                return inRange.sort((a, b) => Number(b.isBoss) - Number(a.isBoss) || (b.threat || 1) - (a.threat || 1) || b.distanceTravelled - a.distanceTravelled)[0];
             default:
                 return inRange[0];
         }

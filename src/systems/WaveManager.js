@@ -121,7 +121,13 @@ export class WaveManager {
         }
 
         if (this.game.uiManager) {
-            this.game.uiManager.renderWavePreview(this.getUniqueEnemies(), this.waveModifier, this.faction, this.currentWave);
+            this.game.uiManager.renderWavePreview(
+                this.getUniqueEnemies(),
+                this.waveModifier,
+                this.faction,
+                this.currentWave,
+                this.getWaveSummary()
+            );
             this.game.uiManager.setNextWaveEnabled(true);
         }
     }
@@ -178,6 +184,42 @@ export class WaveManager {
             }
         });
         return unique;
+    }
+
+    getWaveSummary() {
+        const roles = new Set();
+        let reward = 110 + this.currentWave * 24;
+        let fastest = 0;
+        let maxThreat = 1;
+        let stealthCount = 0;
+        let hasBoss = false;
+
+        this.preparedQueue.forEach(({ config }) => {
+            roles.add(config.archetype || (config.isBoss ? 'boss' : 'soldier'));
+            reward += config.reward || 0;
+            fastest = Math.max(fastest, config.speed || 0);
+            maxThreat = Math.max(maxThreat, config.threat || 1);
+            if (config.stealth) stealthCount++;
+            if (config.isBoss) hasBoss = true;
+        });
+
+        let counter = 'Daño equilibrado';
+        if (hasBoss) counter = 'Daño sostenido';
+        else if (stealthCount > 0) counter = 'Detección de sigilo';
+        else if (roles.has('shield') || roles.has('tank')) counter = 'Perforación y control';
+        else if (roles.has('runner')) counter = 'Ralentización';
+        else if (roles.has('flying')) counter = 'Alcance y cadenas';
+
+        return {
+            total: this.preparedQueue.length,
+            reward,
+            fastest,
+            maxThreat,
+            stealthCount,
+            hasBoss,
+            roles: [...roles],
+            counter
+        };
     }
 
     startNextWave() {

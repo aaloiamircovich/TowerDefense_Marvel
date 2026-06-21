@@ -1,0 +1,43 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { Hero } from '../src/entities/Hero.js';
+
+test('prioridad Rapido elige mayor velocidad', () => {
+    const hero = createHero('Rápido');
+    const slow = createTarget({ speed: 30, distanceTravelled: 90 });
+    const fast = createTarget({ speed: 90, distanceTravelled: 20 });
+    assert.equal(hero.getBestTarget([slow, fast], hero.getEffectiveStats()), fast);
+});
+
+test('prioridad Sigilo prefiere unidades ocultas detectables', () => {
+    const hero = createHero('Sigilo', true);
+    const visible = createTarget({ distanceTravelled: 100 });
+    const stealth = createTarget({ stealth: true, distanceTravelled: 10 });
+    assert.equal(hero.getBestTarget([visible, stealth], hero.getEffectiveStats()), stealth);
+});
+
+test('prioridad Jefe usa amenaza como desempate', () => {
+    const hero = createHero('Jefe');
+    const soldier = createTarget({ threat: 5, distanceTravelled: 100 });
+    const lesserBoss = createTarget({ isBoss: true, threat: 3, distanceTravelled: 80 });
+    const mainBoss = createTarget({ isBoss: true, threat: 5, distanceTravelled: 10 });
+    assert.equal(hero.getBestTarget([soldier, lesserBoss, mainBoss], hero.getEffectiveStats()), mainBoss);
+});
+
+function createHero(priority, canSeeStealth = false) {
+    return new Hero({
+        id: 'test', name: 'Test', damage: 10, range: 300, fireRate: 1,
+        targetingPriority: priority, canSeeStealth, allowedTerrains: [1]
+    }, 0, 0, {
+        heroes: [], resourceManager: { lives: 20 },
+        progression: null, showHeroRanges: false
+    });
+}
+
+function createTarget(overrides = {}) {
+    return {
+        x: 50, y: 0, hp: 100, speed: 50, distanceTravelled: 0,
+        isAlive: true, stealth: false, isBoss: false, threat: 1,
+        ...overrides
+    };
+}

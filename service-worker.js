@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hero-td-v1.1.0';
+const CACHE_NAME = 'hero-td-v1.2.0';
 const CORE_ASSETS = [
     './', './index.html', './styles.css', './manifest.webmanifest',
     './data/bootstrapData.js', './data/sprite-atlas.js', './data/heroes.json', './data/enemies.json',
@@ -13,7 +13,8 @@ const CORE_ASSETS = [
     './src/rendering/CombatVfx.js', './src/rendering/ImageCache.js', './src/rendering/SpriteAnimator.js',
     './src/systems/CombatSystem.js', './src/systems/EnemyBehaviorSystem.js', './src/systems/HeroAbilitySystem.js',
     './src/systems/MissionSystem.js', './src/systems/PerformanceMonitor.js', './src/systems/ProgressionManager.js',
-    './src/systems/ResourceManager.js', './src/systems/ShopSystem.js', './src/systems/UIManager.js', './src/systems/WaveManager.js',
+    './src/systems/ResourceManager.js', './src/systems/ShopSystem.js', './src/systems/TacticalActionSystem.js',
+    './src/systems/UIManager.js', './src/systems/WaveManager.js',
     './src/ui/CampaignPanel.js', './src/ui/ProfilePanel.js', './src/ui/SettingsPanel.js', './src/ui/TooltipController.js',
     './src/utils/Loader.js', './src/utils/ObjectPool.js', './src/utils/PathUtils.js', './src/utils/Random.js'
 ];

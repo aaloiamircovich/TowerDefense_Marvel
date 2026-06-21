@@ -412,6 +412,34 @@ canvas {
     line-height: 1.35;
 }
 
+#wave-intel .wave-summary {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 5px;
+    margin-top: 6px;
+}
+
+#wave-intel .wave-summary span {
+    display: flex;
+    justify-content: space-between;
+    gap: 6px;
+    padding: 5px 6px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 6px;
+    background: rgba(5, 7, 11, 0.42);
+}
+
+#wave-intel .wave-summary b {
+    color: var(--text);
+}
+
+#wave-intel .wave-counter {
+    margin-top: 3px;
+    color: var(--bright-yellow);
+    font-size: 10px;
+    line-height: 1.35;
+}
+
 #mission-status {
     display: grid;
     gap: 7px;
@@ -1387,9 +1415,23 @@ body.reduce-motion *::after {
         grid-template-columns: 36px minmax(0, 1fr);
     }
 
-    .hero-actions {
+.hero-actions {
         grid-column: 1 / -1;
     }
+}
+
+.tactical-actions {
+    display: grid;
+    width: 100%;
+    gap: 8px;
+}
+
+.tactical-actions .btn-primary {
+    min-height: 40px;
+}
+
+body.tactical-paused #gameCanvas {
+    box-shadow: 0 0 0 2px rgba(252, 163, 17, 0.55), 0 18px 42px rgba(0, 0, 0, 0.45);
 }
 
 .release-notice {

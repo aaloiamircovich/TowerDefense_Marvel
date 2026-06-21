@@ -50,11 +50,7 @@ export class UIManager {
         const btnSpeed = document.getElementById('btn-speed');
 
         btnPause?.addEventListener('click', () => {
-            const isPaused = this.game.togglePause();
-            btnPause.innerHTML = isPaused ? '<i class="fas fa-play"></i>' : '<i class="fas fa-pause"></i>';
-            btnPause.setAttribute('aria-pressed', String(isPaused));
-            btnPause.setAttribute('aria-label', isPaused ? 'Reanudar' : 'Pausar');
-            this.showToast(isPaused ? 'Pausa' : 'Partida reanudada', 'info');
+            this.setManualPause(!this.game.isManuallyPaused);
         });
 
         btnAuto?.addEventListener('click', () => {
@@ -121,6 +117,24 @@ export class UIManager {
         if (this.selectionStatus) this.selectionStatus.textContent = text;
     }
 
+    setManualPause(paused, announce = true) {
+        this.game.isManuallyPaused = Boolean(paused);
+        if (this.game.isManuallyPaused) this.game.pause();
+        else this.game.start();
+
+        const button = document.getElementById('btn-pause');
+        if (button) {
+            button.innerHTML = this.game.isManuallyPaused ? '<i class="fas fa-play"></i>' : '<i class="fas fa-pause"></i>';
+            button.classList.toggle('active', this.game.isManuallyPaused);
+            button.setAttribute('aria-pressed', String(this.game.isManuallyPaused));
+            button.setAttribute('aria-label', this.game.isManuallyPaused ? 'Reanudar' : 'Pausar');
+            button.dataset.tooltip = this.game.isManuallyPaused ? 'Reanudar partida' : 'Entrar en pausa táctica';
+        }
+        document.body.classList.toggle('tactical-paused', this.game.isManuallyPaused);
+        if (announce) this.showToast(this.game.isManuallyPaused ? 'Pausa táctica: inspecciona y reorganiza' : 'Partida reanudada', 'info');
+        return this.game.isManuallyPaused;
+    }
+
     setNextWaveEnabled(enabled) {
         const button = document.getElementById('next-wave-btn');
         if (!button) return;
@@ -178,7 +192,7 @@ export class UIManager {
         this.toastTimer = window.setTimeout(() => this.toastEl.classList.add('hidden'), 2200);
     }
 
-    renderWavePreview(uniqueEnemies, modifier = null, faction = null, waveNumber = 1) {
+    renderWavePreview(uniqueEnemies, modifier = null, faction = null, waveNumber = 1, summary = null) {
         const container = document.getElementById('wave-preview');
         const numberEl = document.getElementById('next-wave-number');
         const intelEl = document.getElementById('wave-intel');
@@ -189,6 +203,15 @@ export class UIManager {
             intelEl.innerHTML = `
                 <strong>${faction?.label || 'Amenaza desconocida'}</strong>
                 <span>${modifier?.label || 'Oleada estándar'}: ${modifier?.description || ''}</span>
+                ${summary ? `
+                    <div class="wave-summary">
+                        <span><b>${summary.total}</b> enemigos</span>
+                        <span><b>$${summary.reward}</b> botín</span>
+                        <span><b>${summary.fastest}</b> vel. máx.</span>
+                        <span><b>${summary.maxThreat}/5</b> amenaza</span>
+                    </div>
+                    <small class="wave-counter"><i class="fas fa-crosshairs"></i> Respuesta: ${summary.counter}</small>
+                ` : ''}
             `;
         }
         document.getElementById('enemy-info-empty')?.classList.remove('hidden');
@@ -267,6 +290,10 @@ export class UIManager {
             : [this.game.itemDatabase?.[equippedItemId]].filter(Boolean);
         const combat = hero.combatStats || {};
         const abilityState = hero.abilitySystem?.getDisplayState?.() || null;
+        const isDeployed = this.game.heroes.includes(hero);
+        const repositionPermission = isDeployed ? this.game.tacticalActions?.canReposition(hero) : null;
+        const sellPermission = isDeployed ? this.game.tacticalActions?.canSell(hero) : null;
+        const sellRefund = isDeployed ? this.game.tacticalActions?.getSellRefund(hero) || 0 : 0;
 
         this.panelContent.innerHTML = `
             <div class="hero-detail">
@@ -280,6 +307,12 @@ export class UIManager {
                             return `<button class="modal-btn-upgrade btn-primary ghost" data-amt="${amount}" data-cost="${cost}">+${amount} $${cost}</button>`;
                         }).join('')}
                     </div>
+                    ${isDeployed ? `
+                        <div class="tactical-actions">
+                            <button id="reposition-hero" class="btn-primary ghost" ${repositionPermission?.ok ? '' : 'disabled'} title="${repositionPermission?.reason || 'Mover una vez por oleada'}"><i class="fas fa-arrows-alt"></i> Reposicionar</button>
+                            <button id="sell-hero" class="btn-primary danger" ${sellPermission?.ok ? '' : 'disabled'} title="${sellPermission?.reason || 'Retirar héroe'}"><i class="fas fa-coins"></i> Vender $${sellRefund}</button>
+                        </div>
+                    ` : ''}
                 </section>
 
                 <section class="detail-stack">
@@ -296,7 +329,7 @@ export class UIManager {
                             <p><span>Terreno</span><strong>${terrains}</strong></p>
                             <label class="field-label" for="targeting-select">Apuntar a</label>
                             <select id="targeting-select">
-                                ${['Primero', 'Último', 'Fuerte', 'Débil'].map((priority) => `<option value="${priority}" ${hero.targetingPriority === priority ? 'selected' : ''}>${priority}</option>`).join('')}
+                                ${['Primero', 'Último', 'Fuerte', 'Débil', 'Rápido', 'Sigilo', 'Jefe'].map((priority) => `<option value="${priority}" ${hero.targetingPriority === priority ? 'selected' : ''}>${priority}</option>`).join('')}
                             </select>
                         </div>
                         <div class="detail-card">
@@ -343,6 +376,15 @@ export class UIManager {
             button.addEventListener('click', () => {
                 this.processUpgrade(hero, Number(button.dataset.amt), Number(button.dataset.cost));
             });
+        });
+
+        document.getElementById('reposition-hero')?.addEventListener('click', () => {
+            if (this.game.inputManager.setRepositionMode(hero)) this.closePanel();
+        });
+
+        document.getElementById('sell-hero')?.addEventListener('click', () => {
+            const result = this.game.inputManager.sellHero(hero);
+            if (result.ok) this.closePanel();
         });
 
         this.panelContent.querySelectorAll('.skill-node').forEach((button) => {
@@ -714,13 +756,14 @@ export class UIManager {
                     ${abilityState ? `<small class="roster-ability ${abilityState.ready ? 'ready' : ''}">${abilityState.label}</small>` : ''}
                 </div>
                 <div class="hero-actions">
-                    <button class="btn-action place-btn" title="Colocar" aria-label="Colocar" data-tooltip="Colocar héroe"><i class="fas fa-map-marker-alt"></i></button>
+                    <button class="btn-action place-btn" title="${deployed ? 'Reposicionar' : 'Colocar'}" aria-label="${deployed ? 'Reposicionar' : 'Colocar'}" data-tooltip="${deployed ? 'Mover una vez por oleada' : 'Colocar héroe'}"><i class="fas ${deployed ? 'fa-arrows-alt' : 'fa-map-marker-alt'}"></i></button>
                     <button class="btn-action stats-btn" title="Mejoras" aria-label="Mejoras" data-tooltip="Estadísticas y mejoras"><i class="fas fa-chart-bar"></i></button>
                 </div>
             `;
             card.querySelector('.place-btn').addEventListener('click', (event) => {
                 event.stopPropagation();
-                onSelect(hero);
+                if (deployedHero) this.game.inputManager.setRepositionMode(deployedHero);
+                else onSelect(hero);
             });
             card.querySelector('.stats-btn').addEventListener('click', (event) => {
                 event.stopPropagation();

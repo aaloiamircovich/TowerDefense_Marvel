@@ -65,6 +65,7 @@ async function initGame() {
             game.difficulty = game.progression.getMapProgress(levelConfig.id).difficulty;
             game.heroes = [];
             game.enemies = [];
+            game.selectedUnit = null;
             game.clearProjectiles();
             game.vfx.clear();
             game.completedWaves = [];

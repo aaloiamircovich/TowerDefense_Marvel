@@ -49,6 +49,17 @@ test('WaveManager prepara barreras globales en la oleada protegida', () => {
     assert.ok(manager.preparedQueue.every((entry) => entry.config.barrierRatio >= 0.16));
 });
 
+test('WaveManager resume cantidad, botin y counter de la cola preparada', () => {
+    const manager = new WaveManager(createGame(), enemies);
+    const summary = manager.getWaveSummary();
+
+    assert.equal(summary.total, manager.preparedQueue.length);
+    assert.ok(summary.reward > 110);
+    assert.ok(summary.fastest > 0);
+    assert.ok(summary.maxThreat >= 1);
+    assert.equal(typeof summary.counter, 'string');
+});
+
 function createGame(theme = 'new-york') {
     return {
         uiManager: null,

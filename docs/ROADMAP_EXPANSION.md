@@ -24,6 +24,8 @@ Este segundo ciclo parte de una base estable: campaña de siete mapas, cinco her
 
 **Terminado cuando:** colocar, mover, vender y cambiar objetivos es reversible, legible y esta cubierto por pruebas de economia y rutas.
 
+**Estado:** implementada en la version 1.2.0. La colocacion muestra sprite, alcance y distancia al camino; los clics invalidos no cancelan la accion. Cada heroe puede reposicionarse una vez por oleada, venderse al 70% entre oleadas y usar siete prioridades. La pausa tactica conserva seleccion y el radar calcula cantidad, botin, velocidad, amenaza y respuesta recomendada.
+
 ## Fase 11 - Objetos 2.0 y forja
 
 **Objetivo:** convertir el inventario en una fuente de builds, no en una lista de bonificaciones.

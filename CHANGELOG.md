@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.2.0 - 2026-06-21
+
+- Mesa táctica con pausa, selección persistente y siete prioridades de objetivo.
+- Previsualización de colocación con sprite, alcance y distancia real al camino.
+- Reposición gratuita una vez por oleada y venta segura al 70% entre oleadas.
+- Radar ampliado con cantidad, botín, velocidad, amenaza y counter recomendado.
+- Atajos de selección para los seis espacios del equipo y 77 tests automatizados.
+
 ## 1.1.0 - 2026-06-21
 
 - Sprites direccionales y retratos para Capitán América, Thor y Doctor Strange.

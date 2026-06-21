@@ -44,6 +44,38 @@ export function removeDuplicatePoints(points) {
     });
 }
 
+export function getClosestPointOnPath(point, path) {
+    if (!point || !Array.isArray(path) || path.length < 2) return null;
+
+    let closest = null;
+    let closestDistance = Infinity;
+    for (let index = 0; index < path.length - 1; index++) {
+        const candidate = getClosestPointOnSegment(point, path[index], path[index + 1]);
+        const distance = Math.hypot(point.x - candidate.x, point.y - candidate.y);
+        if (distance < closestDistance) {
+            closest = candidate;
+            closestDistance = distance;
+        }
+    }
+
+    return closest ? { ...closest, distance: closestDistance } : null;
+}
+
+export function distanceToPath(point, path) {
+    return getClosestPointOnPath(point, path)?.distance ?? Infinity;
+}
+
+function getClosestPointOnSegment(point, start, end) {
+    const dx = end.x - start.x;
+    const dy = end.y - start.y;
+    const lengthSquared = dx * dx + dy * dy;
+    if (lengthSquared === 0) return { x: start.x, y: start.y };
+
+    const projection = ((point.x - start.x) * dx + (point.y - start.y) * dy) / lengthSquared;
+    const t = clamp(projection, 0, 1);
+    return { x: start.x + dx * t, y: start.y + dy * t };
+}
+
 function createFallbackPath(width, height, margin) {
     return [
         { x: -margin, y: 120 },

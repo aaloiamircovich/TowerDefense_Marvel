@@ -37,6 +37,8 @@ export class GameLoop {
         this.uiManager = null;
         this.resourceManager = null;
         this.inputManager = null;
+        this.selectedUnit = null;
+        this.tacticalActions = null;
 
         this.gameSpeed = 1;
         this.gridSize = 40;
@@ -112,6 +114,7 @@ export class GameLoop {
         const hero = new Hero(config, x, y, this);
         this.progression?.applyEquippedItem(hero);
         this.heroes.push(hero);
+        return hero;
     }
 
     spawnEnemy(config, source = null) {

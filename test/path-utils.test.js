@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { isOrthogonalPath, normalizePath, removeDuplicatePoints } from '../src/utils/PathUtils.js';
+import { distanceToPath, getClosestPointOnPath, isOrthogonalPath, normalizePath, removeDuplicatePoints } from '../src/utils/PathUtils.js';
 
 test('normalizePath crea entrada y salida fuera del mapa', () => {
     const result = normalizePath([
@@ -47,4 +47,15 @@ test('removeDuplicatePoints elimina puntos consecutivos repetidos', () => {
         { x: 0, y: 0 },
         { x: 40, y: 0 }
     ]);
+});
+
+test('distanceToPath mide la distancia al tramo mas cercano', () => {
+    const path = [{ x: 0, y: 100 }, { x: 200, y: 100 }, { x: 200, y: 300 }];
+    assert.equal(distanceToPath({ x: 80, y: 140 }, path), 40);
+    assert.equal(distanceToPath({ x: 240, y: 220 }, path), 40);
+});
+
+test('getClosestPointOnPath limita la proyeccion a los extremos', () => {
+    const closest = getClosestPointOnPath({ x: 260, y: 40 }, [{ x: 0, y: 100 }, { x: 200, y: 100 }]);
+    assert.deepEqual(closest, { x: 200, y: 100, distance: Math.hypot(60, 60) });
 });
