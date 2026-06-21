@@ -24,6 +24,38 @@ const FACTIONS = {
             ['sakaaran_soldier', 8], ['symbiote_spawn', 14], ['hellfire_guard', 20]
         ],
         bosses: ['killmonger', 'loki']
+    },
+    sanctum: {
+        label: 'Dimensión Oscura',
+        roster: [
+            ['dark_elf', 1], ['hand_ninja', 1], ['frost_giant_scout', 5],
+            ['symbiote_spawn', 10], ['hellfire_guard', 16], ['skrull_infiltrator', 22]
+        ],
+        bosses: ['dormammu', 'loki']
+    },
+    'x-mansion': {
+        label: 'Centinelas / Hermandad',
+        roster: [
+            ['sentinel', 1], ['brotherhood_mutant', 1], ['mercenary_raider', 5],
+            ['hellfire_guard', 10], ['skrull_infiltrator', 16], ['doombot', 22]
+        ],
+        bosses: ['magneto', 'apocalypse']
+    },
+    knowhere: {
+        label: 'Saqueadores Cósmicos',
+        roster: [
+            ['sakaaran_soldier', 1], ['chitauri_warrior', 1], ['outrider', 5],
+            ['skrull_infiltrator', 10], ['symbiote_spawn', 16], ['dark_elf', 22]
+        ],
+        bosses: ['kang', 'galactus']
+    },
+    latveria: {
+        label: 'Ejército de Doom',
+        roster: [
+            ['doombot', 1], ['aim_scientist', 1], ['hydra_soldier', 5],
+            ['ultron_drone', 10], ['hellfire_guard', 16], ['sentinel', 22]
+        ],
+        bosses: ['doctor_doom', 'red_skull']
     }
 };
 
@@ -151,6 +183,7 @@ export class WaveManager {
     startNextWave() {
         if (this.currentWave > this.maxWaves || this.isWaveActive || this.game.isGameOver) return;
 
+        this.game.missionSystem?.onWaveStart(this.currentWave);
         this.isWaveActive = true;
         this.spawnTimer = 0;
         this.enemiesQueue = [...this.preparedQueue];
@@ -187,6 +220,7 @@ export class WaveManager {
 
     finishWave() {
         this.isWaveActive = false;
+        this.game.missionSystem?.onWaveFinished(this.currentWave);
         const waveBounty = 110 + this.currentWave * 24;
         this.game.resourceManager.addCredits(waveBounty);
 

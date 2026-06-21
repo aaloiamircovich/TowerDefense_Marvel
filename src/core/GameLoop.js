@@ -151,11 +151,13 @@ export class GameLoop {
 
     update(dt) {
         if (this.waveManager) this.waveManager.update(dt);
+        this.missionSystem?.update(dt);
 
         this.enemies.forEach((enemy) => {
             enemy.update(dt);
             if (enemy.hasReachedEnd && !enemy.processed) {
-                this.resourceManager.removeLife(enemy.isBoss ? 3 : 1);
+                const absorbed = this.missionSystem?.handleLeak(enemy) || false;
+                if (!absorbed) this.resourceManager.removeLife(enemy.isBoss ? 3 : 1);
                 enemy.processed = true;
             }
         });
@@ -167,6 +169,7 @@ export class GameLoop {
         this.enemies = this.enemies.filter((enemy) => {
             if (!enemy.isAlive && !enemy.hasReachedEnd && !enemy.rewarded) {
                 this.resourceManager.addCredits(enemy.reward ?? enemy.config.reward ?? 10);
+                this.missionSystem?.onEnemyDefeated(enemy);
                 enemy.rewarded = true;
             }
             return enemy.isAlive && !enemy.hasReachedEnd;
@@ -191,6 +194,7 @@ export class GameLoop {
             }
         }
 
+        this.missionSystem?.render(ctx);
         this.drawPathGuide(ctx);
         this.enemies.forEach((enemy) => enemy.render(ctx));
         this.vfx.render(ctx);
@@ -354,6 +358,58 @@ export class GameLoop {
                 mountainMark: 'rgba(184, 101, 255, 0.24)',
                 decorLight: '#d4af37',
                 decorDark: '#5bd16f'
+            },
+            sanctum: {
+                void: '#0d0808',
+                waterBand: false,
+                terrain: { 0: '#24334a', 1: '#4a2924', 11: '#5b3328', 12: '#6b3d2b', 2: '#71513c', 3: '#24131e', 4: '#35202c' },
+                gridLine: 'rgba(255, 143, 61, 0.08)',
+                pathCenter: 'rgba(255, 193, 105, 0.24)',
+                pathEdge: 'rgba(184, 101, 255, 0.42)',
+                pathGlow: 'rgba(255, 143, 61, 0.34)',
+                pathStripe: 'rgba(255, 220, 156, 0.42)',
+                mountainMark: 'rgba(184, 101, 255, 0.24)',
+                decorLight: '#ff8f3d',
+                decorDark: '#6d3e76'
+            },
+            'x-mansion': {
+                void: '#071015',
+                waterBand: false,
+                terrain: { 0: '#285f7a', 1: '#326c48', 11: '#3d7c52', 12: '#4b8c59', 2: '#8b8e91', 3: '#39424d', 4: '#235538' },
+                gridLine: 'rgba(244, 211, 94, 0.08)',
+                pathCenter: 'rgba(244, 211, 94, 0.24)',
+                pathEdge: 'rgba(32, 76, 122, 0.48)',
+                pathGlow: 'rgba(244, 211, 94, 0.28)',
+                pathStripe: 'rgba(255, 255, 255, 0.34)',
+                mountainMark: 'rgba(244, 211, 94, 0.22)',
+                decorLight: '#f4d35e',
+                decorDark: '#245493'
+            },
+            knowhere: {
+                void: '#05080d',
+                waterBand: false,
+                terrain: { 0: '#183f5e', 1: '#34343e', 11: '#42414a', 12: '#4c4b55', 2: '#71636d', 3: '#161923', 4: '#2a2632' },
+                gridLine: 'rgba(255, 107, 214, 0.08)',
+                pathCenter: 'rgba(64, 201, 255, 0.22)',
+                pathEdge: 'rgba(255, 107, 214, 0.42)',
+                pathGlow: 'rgba(255, 107, 214, 0.30)',
+                pathStripe: 'rgba(64, 201, 255, 0.42)',
+                mountainMark: 'rgba(255, 107, 214, 0.20)',
+                decorLight: '#ff6bd6',
+                decorDark: '#40c9ff'
+            },
+            latveria: {
+                void: '#070a08',
+                waterBand: false,
+                terrain: { 0: '#233d4d', 1: '#35413a', 11: '#414d45', 12: '#4a584e', 2: '#60645d', 3: '#202720', 4: '#29342c' },
+                gridLine: 'rgba(123, 224, 109, 0.07)',
+                pathCenter: 'rgba(252, 163, 17, 0.22)',
+                pathEdge: 'rgba(123, 224, 109, 0.38)',
+                pathGlow: 'rgba(123, 224, 109, 0.28)',
+                pathStripe: 'rgba(216, 223, 216, 0.34)',
+                mountainMark: 'rgba(123, 224, 109, 0.18)',
+                decorLight: '#7be06d',
+                decorDark: '#8d6e3f'
             }
         };
 

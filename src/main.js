@@ -9,6 +9,7 @@ import { preloadImages } from './rendering/ImageCache.js';
 import { collectVisualSources } from './rendering/SpriteAnimator.js';
 import { ProgressionManager } from './systems/ProgressionManager.js';
 import { ShopSystem } from './systems/ShopSystem.js';
+import { MissionSystem } from './systems/MissionSystem.js';
 
 async function initGame() {
     try {
@@ -48,6 +49,7 @@ async function initGame() {
         game.progression = new ProgressionManager();
         game.progression.initialize(game, data);
         game.shopSystem = new ShopSystem(game, game.progression);
+        game.missionSystem = new MissionSystem(game);
 
         const input = new InputManager(game.canvas, game, ui, resources);
         game.inputManager = input;
@@ -63,9 +65,11 @@ async function initGame() {
             game.enemies = [];
             game.projectiles = [];
             game.vfx.effects = [];
+            game.completedWaves = [];
             game.path = normalizePath(levelConfig.path, game.canvas.width, game.canvas.height);
             document.body.dataset.levelTheme = levelConfig.theme?.id || 'new-york';
             game.generateLevelMap();
+            game.missionSystem.loadLevel(levelConfig);
             game.waveManager = new WaveManager(game, data.enemies, data.waves);
             game.resourceManager.reset(20, 650);
             ui.showToast(`${levelConfig.name} cargado`, 'info');

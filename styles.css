@@ -366,6 +366,51 @@ canvas {
     line-height: 1.35;
 }
 
+#mission-status {
+    display: grid;
+    gap: 7px;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    background: color-mix(in srgb, var(--level-accent), transparent 92%);
+}
+
+.mission-heading {
+    display: grid;
+    gap: 2px;
+}
+
+.mission-heading strong {
+    color: var(--level-accent);
+    font-size: 12px;
+}
+
+.mission-heading span,
+#mission-status p,
+#mission-status > b {
+    margin: 0;
+    color: var(--muted);
+    font-size: 10px;
+    line-height: 1.35;
+}
+
+#mission-status > b {
+    color: var(--bright-yellow);
+}
+
+.mission-objectives-mini {
+    display: grid;
+    gap: 3px;
+}
+
+.mission-objectives-mini span {
+    color: var(--muted);
+    font-size: 9px;
+}
+
+.mission-objectives-mini span.done {
+    color: #69e58c;
+}
+
 .wave-enemy-card {
     position: relative;
     min-height: 92px;
@@ -1000,6 +1045,26 @@ select {
     line-height: 1.35;
 }
 
+.map-mechanic {
+    grid-column: 1 / -1;
+    display: grid;
+    gap: 3px;
+    padding: 9px 10px;
+    border-left: 3px solid var(--level-accent);
+    background: rgba(7, 16, 24, 0.48);
+}
+
+.map-mechanic b {
+    color: var(--level-accent);
+    font-size: 12px;
+}
+
+.map-mechanic span {
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.35;
+}
+
 .map-card .difficulty-switch,
 .map-card .challenge-row,
 .map-card .btn-load-map {
@@ -1026,6 +1091,74 @@ select {
 .map-card.active {
     border-color: var(--level-accent);
     box-shadow: inset 3px 0 0 var(--level-accent);
+}
+
+.mission-briefing {
+    display: grid;
+    gap: 16px;
+    max-width: 760px;
+    margin: 0 auto;
+}
+
+.briefing-kicker {
+    color: var(--level-accent);
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.mission-briefing h2,
+.briefing-copy {
+    margin: 0;
+}
+
+.briefing-copy {
+    color: var(--muted);
+    line-height: 1.55;
+}
+
+.mission-briefing blockquote {
+    display: grid;
+    gap: 6px;
+    margin: 0;
+    padding: 14px 16px;
+    border-left: 3px solid var(--level-accent);
+    background: rgba(7, 16, 24, 0.58);
+}
+
+.mission-briefing blockquote strong,
+.briefing-mechanic b {
+    color: var(--level-accent);
+}
+
+.mission-briefing blockquote span,
+.briefing-mechanic span {
+    color: var(--muted);
+    line-height: 1.45;
+}
+
+.briefing-mechanic,
+.briefing-objectives {
+    display: grid;
+    gap: 8px;
+}
+
+.briefing-objectives > div {
+    display: grid;
+    grid-template-columns: minmax(120px, 0.8fr) minmax(180px, 1.8fr) auto;
+    gap: 12px;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.briefing-objectives small {
+    color: var(--muted);
+    line-height: 1.35;
+}
+
+.briefing-objectives b {
+    color: var(--bright-yellow);
 }
 
 .settings-grid {
@@ -1101,7 +1234,8 @@ select {
     }
 
     #center-canvas-container {
-        min-height: 70vh;
+        min-height: 0;
+        padding: 10px;
         order: -1;
     }
 
@@ -1117,7 +1251,12 @@ select {
     .hero-detail,
     .stats-grid,
     .tree-branches,
-    .inventory-toolbar {
+    .inventory-toolbar,
+    .briefing-objectives > div {
+        grid-template-columns: 1fr;
+    }
+
+    .map-card {
         grid-template-columns: 1fr;
     }
 }

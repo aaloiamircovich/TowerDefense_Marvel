@@ -1,7 +1,17 @@
 import { calculateHeroBonuses, getUpgradeNode } from '../data/HeroUpgradeCatalog.js';
 
 const SAVE_KEY = 'tower-defense-marvel-save';
-const SAVE_VERSION = 2;
+const SAVE_VERSION = 3;
+
+function createMapProgress(progress = {}) {
+    return {
+        bestWave: Math.max(0, Number(progress.bestWave) || 0),
+        stars: Math.max(0, Math.min(3, Number(progress.stars) || 0)),
+        difficulty: ['easy', 'normal', 'hard'].includes(progress.difficulty) ? progress.difficulty : 'normal',
+        challenges: [...new Set(progress.challenges || [])],
+        missionObjectives: [...new Set(progress.missionObjectives || [])]
+    };
+}
 
 function createDefaultState() {
     return {
@@ -58,6 +68,8 @@ export class ProgressionManager {
         migrated.heroUpgrades = raw.heroUpgrades || raw.upgrades || {};
         migrated.mapProgress = raw.mapProgress || raw.maps || {};
         migrated.lastLevelId = raw.lastLevelId || 'level_1';
+        migrated.shop = raw.shop || migrated.shop;
+        migrated.settings = { ...migrated.settings, ...(raw.settings || {}) };
         return migrated;
     }
 
@@ -74,6 +86,9 @@ export class ProgressionManager {
             if (!heroIds.has(heroId) || !itemIds.has(itemId)) delete this.state.equippedItems[heroId];
         });
         if (!levelIds.has(this.state.lastLevelId)) this.state.lastLevelId = 'level_1';
+        this.state.mapProgress = Object.fromEntries(Object.entries(this.state.mapProgress || {})
+            .filter(([levelId]) => levelIds.has(levelId))
+            .map(([levelId, progress]) => [levelId, createMapProgress(progress)]));
         this.state.metaCredits = Math.max(0, Number(this.state.metaCredits) || 0);
         this.save();
     }
@@ -194,9 +209,7 @@ export class ProgressionManager {
 
     recordWave(game, waveNumber) {
         const levelId = game.currentLevel?.id || 'level_1';
-        const progress = this.state.mapProgress[levelId] || {
-            bestWave: 0, stars: 0, difficulty: 'normal', challenges: []
-        };
+        const progress = createMapProgress(this.state.mapProgress[levelId]);
         progress.bestWave = Math.max(progress.bestWave, waveNumber);
         progress.stars = Math.max(progress.stars, waveNumber >= 50 ? 3 : waveNumber >= 20 ? 2 : waveNumber >= 5 ? 1 : 0);
         if (waveNumber >= 5 && game.resourceManager.lives === game.resourceManager.maxLives) {
@@ -211,7 +224,16 @@ export class ProgressionManager {
     }
 
     getMapProgress(levelId) {
-        return this.state.mapProgress[levelId] || { bestWave: 0, stars: 0, difficulty: 'normal', challenges: [] };
+        return createMapProgress(this.state.mapProgress[levelId]);
+    }
+
+    completeMissionObjective(levelId, objectiveId, reward) {
+        const progress = this.getMapProgress(levelId);
+        if (progress.missionObjectives.includes(objectiveId)) return false;
+        progress.missionObjectives.push(objectiveId);
+        this.state.mapProgress[levelId] = progress;
+        this.addMetaCredits(reward);
+        return true;
     }
 
     setDifficulty(levelId, difficulty) {

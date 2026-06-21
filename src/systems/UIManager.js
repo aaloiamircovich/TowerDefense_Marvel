@@ -98,6 +98,24 @@ export class UIManager {
         document.documentElement.style.setProperty('--level-accent', levelConfig.theme?.accent || '#40c9ff');
     }
 
+    updateMissionStatus(snapshot) {
+        const container = document.getElementById('mission-status');
+        if (!container || !snapshot) return;
+        const specialStatus = snapshot.blackout > 0
+            ? `<b>Corte: ${snapshot.blackout}s</b>`
+            : snapshot.shieldCharges > 0
+                ? `<b>Escudo: ${snapshot.shieldCharges} · Vibranium ${snapshot.vibranium}/6</b>`
+                : '';
+        container.innerHTML = `
+            <div class="mission-heading"><strong>${snapshot.operation}</strong><span>${snapshot.mechanicLabel}</span></div>
+            <p>${snapshot.message}</p>
+            ${specialStatus}
+            <div class="mission-objectives-mini">
+                ${snapshot.objectives.map((objective) => `<span class="${objective.complete ? 'done' : ''}">${objective.complete ? '✓' : `${objective.value}/${objective.target}`} ${objective.label}</span>`).join('')}
+            </div>
+        `;
+    }
+
     showToast(message, type = 'info') {
         if (!this.toastEl) return;
         window.clearTimeout(this.toastTimer);
@@ -579,7 +597,7 @@ export class UIManager {
         this.panelContent.innerHTML = `
             <h2>${title}</h2>
             <div class="profile-grid">
-                <div class="detail-card"><h3>Progreso</h3><p><span>Mejores oleadas</span><strong>${bestWaves}</strong></p><p><span>Estrellas</span><strong>${this.game.stars}/9</strong></p><p><span>Desafíos</span><strong>${challenges}/6</strong></p></div>
+                <div class="detail-card"><h3>Progreso</h3><p><span>Mejores oleadas</span><strong>${bestWaves}</strong></p><p><span>Estrellas</span><strong>${this.game.stars}/${this.game.levelsData.length * 3}</strong></p><p><span>Desafíos</span><strong>${challenges}/${this.game.levelsData.length * 2}</strong></p></div>
                 <div class="detail-card"><h3>Plantilla</h3><p><span>Héroes</span><strong>${this.game.unlockedHeroes.length}</strong></p><p><span>Equipo activo</span><strong>${this.game.activeTeam.length}/6</strong></p></div>
                 <div class="detail-card"><h3>Economía</h3><p><span>Fondos S.H.I.E.L.D.</span><strong>${progression.state.metaCredits} F</strong></p><p><span>Créditos de misión</span><strong>$${Math.floor(this.game.resourceManager.credits)}</strong></p></div>
                 <div class="detail-card"><h3>Zona Marvel</h3><p><span>Mapa</span><strong>${this.game.currentLevel?.theme?.label || this.game.currentLevel?.name || 'Mapa'}</strong></p><p><span>Ambiente</span><strong>${this.game.currentLevel?.theme?.brief || 'Defensa táctica'}</strong></p></div>
@@ -598,10 +616,11 @@ export class UIManager {
                         <span>Mejor oleada ${progress.bestWave} · ${'★'.repeat(progress.stars)}${'☆'.repeat(3 - progress.stars)}</span>
                         <small>${level.description}</small>
                         <em>${level.theme?.brief || ''}</em>
+                        <div class="map-mechanic"><b>${level.mission?.mechanic?.label || 'Defensa táctica'}</b><span>${level.mission?.mechanic?.description || ''}</span></div>
                         <div class="difficulty-switch" aria-label="Dificultad">
                             ${[['easy', 'Fácil'], ['normal', 'Normal'], ['hard', 'Difícil']].map(([value, label]) => `<button class="difficulty-btn ${progress.difficulty === value ? 'active' : ''}" data-level="${level.id}" data-value="${value}">${label}</button>`).join('')}
                         </div>
-                        <div class="challenge-row"><span class="${progress.challenges.includes('sin_danos') ? 'done' : ''}">Sin daños</span><span class="${progress.challenges.includes('cazajefes') ? 'done' : ''}">Cazajefes</span></div>
+                        <div class="challenge-row"><span class="${progress.challenges.includes('sin_danos') ? 'done' : ''}">Sin daños</span><span class="${progress.challenges.includes('cazajefes') ? 'done' : ''}">Cazajefes</span>${(level.mission?.objectives || []).map((objective) => `<span class="${progress.missionObjectives.includes(objective.id) ? 'done' : ''}">${objective.label} · ${objective.reward} F</span>`).join('')}</div>
                         <button class="btn-load-map btn-primary ghost" data-index="${index}">Jugar</button>
                     </article>`;
                 }).join('')}
@@ -619,9 +638,27 @@ export class UIManager {
                 const level = this.game.levelsData[Number(button.dataset.index)];
                 this.game.loadLevel(level);
                 this.renderHeroRoster(this.game.activeTeam, (hero) => this.game.inputManager.setPlacementMode(hero));
-                this.closePanel();
+                this.renderMissionBriefing(level);
             });
         });
+    }
+
+    renderMissionBriefing(level) {
+        const mission = level.mission || {};
+        this.panelContent.innerHTML = `
+            <section class="mission-briefing">
+                <span class="briefing-kicker">${mission.operation || 'Operación táctica'}</span>
+                <h2>${level.name}</h2>
+                <p class="briefing-copy">${mission.briefing || level.description}</p>
+                <blockquote><strong>${mission.speaker || 'S.H.I.E.L.D.'}</strong><span>${mission.dialogue || level.theme?.brief || ''}</span></blockquote>
+                <div class="briefing-mechanic"><b>${mission.mechanic?.label || 'Defensa táctica'}</b><span>${mission.mechanic?.description || ''}</span></div>
+                <div class="briefing-objectives">
+                    ${(mission.objectives || []).map((objective) => `<div><span>${objective.label}</span><small>${objective.description}</small><b>+${objective.reward} F</b></div>`).join('')}
+                </div>
+                <button class="btn-primary" id="deploy-mission">DESPLEGAR EQUIPO</button>
+            </section>
+        `;
+        document.getElementById('deploy-mission')?.addEventListener('click', () => this.closePanel());
     }
 
     renderSettings(title) {

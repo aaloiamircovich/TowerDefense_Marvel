@@ -1255,6 +1255,49 @@ window.__MARVEL_TD_DATA__ = {
         "accent": "#40c9ff",
         "brief": "Avenidas urbanas, alcantarillas, agua del Hudson y tecnología Stark."
       },
+      "mission": {
+        "operation": "Operación Puente Seguro",
+        "speaker": "Spider-Man",
+        "briefing": "Hydra cerró varias calles y los equipos de emergencia quedaron atrapados. La barricada Stark controla el acceso principal, pero cada tres oleadas cruzará un convoy civil.",
+        "dialogue": "Mantengan despejada la avenida. Yo vigilo los tejados; ustedes hagan que nadie llegue a la salida.",
+        "mechanic": {
+          "type": "streets",
+          "label": "Barricada y evacuación",
+          "description": "La barricada ralentiza enemigos y cada quinta oleada el bloqueo desvía la invasión por alcantarillas. Los convoyes aparecen cada tres oleadas.",
+          "status": "Barricada Stark preparada en la Quinta Avenida.",
+          "zone": {
+            "x": 280,
+            "y": 240,
+            "radius": 70
+          },
+          "convoyStart": {
+            "x": 80,
+            "y": 65
+          },
+          "convoyEnd": {
+            "x": 720,
+            "y": 65
+          }
+        },
+        "objectives": [
+          {
+            "id": "ny_flawless",
+            "label": "Avenida intacta",
+            "description": "Supera 5 oleadas sin perder vidas.",
+            "metric": "noLeakWaves",
+            "target": 5,
+            "reward": 180
+          },
+          {
+            "id": "ny_rescue",
+            "label": "Héroe del barrio",
+            "description": "Evacua a 9 civiles.",
+            "metric": "civiliansSaved",
+            "target": 9,
+            "reward": 260
+          }
+        ]
+      },
       "path": [
         {
           "x": 0,
@@ -1280,6 +1323,68 @@ window.__MARVEL_TD_DATA__ = {
           "x": 800,
           "y": 500
         }
+      ],
+      "alternatePaths": [
+        [
+          {
+            "x": 0,
+            "y": 120
+          },
+          {
+            "x": 280,
+            "y": 120
+          },
+          {
+            "x": 280,
+            "y": 360
+          },
+          {
+            "x": 520,
+            "y": 360
+          },
+          {
+            "x": 520,
+            "y": 500
+          },
+          {
+            "x": 800,
+            "y": 500
+          }
+        ],
+        [
+          {
+            "x": 0,
+            "y": 120
+          },
+          {
+            "x": 160,
+            "y": 120
+          },
+          {
+            "x": 160,
+            "y": 480
+          },
+          {
+            "x": 400,
+            "y": 480
+          },
+          {
+            "x": 400,
+            "y": 280
+          },
+          {
+            "x": 680,
+            "y": 280
+          },
+          {
+            "x": 680,
+            "y": 500
+          },
+          {
+            "x": 800,
+            "y": 500
+          }
+        ]
       ]
     },
     {
@@ -1293,6 +1398,46 @@ window.__MARVEL_TD_DATA__ = {
         "label": "Complejo Avengers",
         "accent": "#fca311",
         "brief": "Hangar táctico, paneles de energía, acero y pasillos S.H.I.E.L.D."
+      },
+      "mission": {
+        "operation": "Protocolo Casa de Hierro",
+        "speaker": "Iron Man",
+        "briefing": "Ultrón tomó la red del hangar. Una puerta de contención y una torreta auxiliar siguen bajo control local, aunque cada cuatro oleadas sufriremos un corte de energía.",
+        "dialogue": "J.A.R.V.I.S. dejó un par de sorpresas manuales. Úsenlas antes de que Ultrón encuentre el interruptor.",
+        "mechanic": {
+          "type": "security",
+          "label": "Defensas del hangar",
+          "description": "La puerta contiene hasta tres enemigos una vez por oleada y la torreta dispara automáticamente. Los cortes de energía desactivan ambas durante ocho segundos.",
+          "status": "Red local aislada. Puerta y torreta disponibles.",
+          "door": {
+            "x": 600,
+            "y": 300,
+            "radius": 40
+          },
+          "turret": {
+            "x": 485,
+            "y": 245,
+            "range": 180
+          }
+        },
+        "objectives": [
+          {
+            "id": "hq_systems",
+            "label": "Operador de sistemas",
+            "description": "Activa la puerta de seguridad 6 veces.",
+            "metric": "mechanicUses",
+            "target": 6,
+            "reward": 240
+          },
+          {
+            "id": "hq_clean",
+            "label": "Hangar sellado",
+            "description": "Supera 5 oleadas sin fugas.",
+            "metric": "noLeakWaves",
+            "target": 5,
+            "reward": 220
+          }
+        ]
       },
       "path": [
         {
@@ -1333,6 +1478,46 @@ window.__MARVEL_TD_DATA__ = {
         "accent": "#b865ff",
         "brief": "Selva, oro, roca púrpura y vetas de Vibranium."
       },
+      "mission": {
+        "operation": "Escudo de Birnin Zana",
+        "speaker": "Shuri",
+        "briefing": "Los raíles magnéticos redirigen el acceso a la ciudad entre oleadas. Cada seis enemigos derrotados cargan un pulso de Vibranium que fractura armaduras y añade una carga al escudo cinético.",
+        "dialogue": "El Vibranium recuerda cada impacto. Denle suficiente energía y la ciudad devolverá el golpe.",
+        "mechanic": {
+          "type": "vibranium",
+          "label": "Red cinética",
+          "description": "La ruta cambia entre oleadas. Cada seis bajas libera un pulso antiarmadura y recarga el escudo que absorbe fugas.",
+          "status": "Escudo cinético con una carga inicial.",
+          "nodes": [
+            {
+              "x": 300,
+              "y": 300
+            },
+            {
+              "x": 560,
+              "y": 470
+            }
+          ]
+        },
+        "objectives": [
+          {
+            "id": "wakanda_pulses",
+            "label": "Tecnología de Shuri",
+            "description": "Activa o consume la red cinética 4 veces.",
+            "metric": "mechanicUses",
+            "target": 4,
+            "reward": 280
+          },
+          {
+            "id": "wakanda_boss",
+            "label": "Wakanda por siempre",
+            "description": "Derrota a un jefe en Wakanda.",
+            "metric": "bosses",
+            "target": 1,
+            "reward": 320
+          }
+        ]
+      },
       "path": [
         {
           "x": 400,
@@ -1357,6 +1542,404 @@ window.__MARVEL_TD_DATA__ = {
         {
           "x": 700,
           "y": 600
+        }
+      ],
+      "alternatePaths": [
+        [
+          {
+            "x": 400,
+            "y": 0
+          },
+          {
+            "x": 400,
+            "y": 200
+          },
+          {
+            "x": 120,
+            "y": 200
+          },
+          {
+            "x": 120,
+            "y": 400
+          },
+          {
+            "x": 700,
+            "y": 400
+          },
+          {
+            "x": 700,
+            "y": 600
+          }
+        ],
+        [
+          {
+            "x": 400,
+            "y": 0
+          },
+          {
+            "x": 400,
+            "y": 120
+          },
+          {
+            "x": 640,
+            "y": 120
+          },
+          {
+            "x": 640,
+            "y": 300
+          },
+          {
+            "x": 200,
+            "y": 300
+          },
+          {
+            "x": 200,
+            "y": 520
+          },
+          {
+            "x": 700,
+            "y": 520
+          },
+          {
+            "x": 700,
+            "y": 600
+          }
+        ]
+      ]
+    },
+    {
+      "id": "level_4",
+      "name": "Sanctum Sanctorum",
+      "description": "Dormammu rasga las protecciones del Sanctum. Defiende el sello de Bleecker Street contra incursiones místicas.",
+      "thumbnail": "sanctum",
+      "difficulty": "Difícil",
+      "theme": {
+        "id": "sanctum",
+        "label": "Sanctum",
+        "accent": "#ff8f3d",
+        "brief": "Runas, madera antigua, portales y luz mística."
+      },
+      "mission": {
+        "operation": "Sello de las Tres Puertas",
+        "speaker": "Doctor Strange",
+        "briefing": "Las protecciones del Sanctum debilitan a cada invasor que cruza el atrio. Mantén el sello hasta que el portal pueda cerrarse.",
+        "dialogue": "He visto futuros peores. Procuremos que este no se una a la lista.",
+        "mechanic": {
+          "type": "ward",
+          "label": "Runas protectoras",
+          "description": "Los sellos marcan a los enemigos cercanos y aumentan todo el daño que reciben.",
+          "status": "Las runas del Sanctum están sincronizadas.",
+          "landmarks": [
+            {
+              "x": 240,
+              "y": 320,
+              "radius": 58,
+              "label": "RUNA",
+              "color": "#ff8f3d"
+            },
+            {
+              "x": 560,
+              "y": 280,
+              "radius": 58,
+              "label": "SELLO",
+              "color": "#b865ff"
+            }
+          ]
+        },
+        "objectives": [
+          {
+            "id": "sanctum_kills",
+            "label": "Guardián del Sanctum",
+            "description": "Derrota 60 invasores.",
+            "metric": "kills",
+            "target": 60,
+            "reward": 300
+          },
+          {
+            "id": "sanctum_boss",
+            "label": "Hechicero Supremo",
+            "description": "Derrota a un jefe.",
+            "metric": "bosses",
+            "target": 1,
+            "reward": 360
+          }
+        ]
+      },
+      "path": [
+        {
+          "x": 0,
+          "y": 480
+        },
+        {
+          "x": 240,
+          "y": 480
+        },
+        {
+          "x": 240,
+          "y": 160
+        },
+        {
+          "x": 560,
+          "y": 160
+        },
+        {
+          "x": 560,
+          "y": 420
+        },
+        {
+          "x": 800,
+          "y": 420
+        }
+      ]
+    },
+    {
+      "id": "level_5",
+      "name": "Instituto Xavier",
+      "description": "Los Centinelas asedian la Mansión X. Protege a los estudiantes y evita que alcancen Cerebro.",
+      "thumbnail": "x_mansion",
+      "difficulty": "Difícil",
+      "theme": {
+        "id": "x-mansion",
+        "label": "Mansión X",
+        "accent": "#f4d35e",
+        "brief": "Jardines, piedra académica, tecnología mutante y sala de peligro."
+      },
+      "mission": {
+        "operation": "Protocolo Escuela Segura",
+        "speaker": "Profesor X",
+        "briefing": "Los estudiantes están en los refugios y Cerebro sigue conectado. Contén a los Centinelas en los jardines exteriores.",
+        "dialogue": "La fuerza es necesaria hoy, pero recuerden por qué elegimos proteger en lugar de destruir.",
+        "mechanic": {
+          "type": "academy",
+          "label": "Defensa mutante",
+          "description": "Cada baliza de la Sala de Peligro aturde hasta dos invasores una vez por oleada.",
+          "status": "Cerebro coordina la defensa del instituto.",
+          "landmarks": [
+            {
+              "x": 180,
+              "y": 300,
+              "radius": 54,
+              "label": "X",
+              "color": "#f4d35e"
+            },
+            {
+              "x": 620,
+              "y": 340,
+              "radius": 54,
+              "label": "X",
+              "color": "#40c9ff"
+            }
+          ]
+        },
+        "objectives": [
+          {
+            "id": "xmansion_clean",
+            "label": "Escuela segura",
+            "description": "Supera 8 oleadas sin fugas.",
+            "metric": "noLeakWaves",
+            "target": 8,
+            "reward": 340
+          },
+          {
+            "id": "xmansion_boss",
+            "label": "Sueño de Xavier",
+            "description": "Derrota a un jefe.",
+            "metric": "bosses",
+            "target": 1,
+            "reward": 380
+          }
+        ]
+      },
+      "path": [
+        {
+          "x": 0,
+          "y": 100
+        },
+        {
+          "x": 180,
+          "y": 100
+        },
+        {
+          "x": 180,
+          "y": 500
+        },
+        {
+          "x": 620,
+          "y": 500
+        },
+        {
+          "x": 620,
+          "y": 180
+        },
+        {
+          "x": 800,
+          "y": 180
+        }
+      ]
+    },
+    {
+      "id": "level_6",
+      "name": "Knowhere",
+      "description": "Saqueadores y fuerzas cósmicas invaden el puerto minero de Knowhere tras una reliquia Celestial.",
+      "thumbnail": "knowhere",
+      "difficulty": "Extrema",
+      "theme": {
+        "id": "knowhere",
+        "label": "Knowhere",
+        "accent": "#ff6bd6",
+        "brief": "Minería Celestial, neón alienígena, metal orgánico y vacío espacial."
+      },
+      "mission": {
+        "operation": "Carga Celestial",
+        "speaker": "Star-Lord",
+        "briefing": "La reliquia está lista para extracción, pero medio puerto quiere cobrarla. Mantén abierto el corredor de embarque.",
+        "dialogue": "Plan sencillo: ustedes disparan, yo salvo la galaxia y después discutimos quién eligió la música.",
+        "mechanic": {
+          "type": "salvage",
+          "label": "Puerto de extracción",
+          "description": "Cada ocho bajas recuperan carga Celestial y conceden $40 créditos adicionales.",
+          "status": "La Milano espera autorización para despegar.",
+          "landmarks": [
+            {
+              "x": 260,
+              "y": 200,
+              "label": "CARGA",
+              "color": "#ff6bd6"
+            },
+            {
+              "x": 520,
+              "y": 440,
+              "label": "NAVE",
+              "color": "#40c9ff"
+            }
+          ]
+        },
+        "objectives": [
+          {
+            "id": "knowhere_kills",
+            "label": "Cazarrecompensas",
+            "description": "Derrota 80 enemigos.",
+            "metric": "kills",
+            "target": 80,
+            "reward": 420
+          },
+          {
+            "id": "knowhere_clean",
+            "label": "Carga intacta",
+            "description": "Supera 8 oleadas sin fugas.",
+            "metric": "noLeakWaves",
+            "target": 8,
+            "reward": 400
+          }
+        ]
+      },
+      "path": [
+        {
+          "x": 120,
+          "y": 0
+        },
+        {
+          "x": 120,
+          "y": 200
+        },
+        {
+          "x": 360,
+          "y": 200
+        },
+        {
+          "x": 360,
+          "y": 440
+        },
+        {
+          "x": 680,
+          "y": 440
+        },
+        {
+          "x": 680,
+          "y": 600
+        }
+      ]
+    },
+    {
+      "id": "level_7",
+      "name": "Latveria",
+      "description": "Los Doombots sellaron los accesos a Castle Doom. Rompe la línea mecánica y alcanza el reactor central.",
+      "thumbnail": "latveria",
+      "difficulty": "Extrema",
+      "theme": {
+        "id": "latveria",
+        "label": "Latveria",
+        "accent": "#7be06d",
+        "brief": "Fortaleza industrial, piedra, vapor, acero y energía arcana."
+      },
+      "mission": {
+        "operation": "Trono de Hierro",
+        "speaker": "Nick Fury",
+        "briefing": "Doom convirtió la ciudadela en una fábrica de guerra. La ruta al reactor está abierta por pocos minutos; sostén la entrada.",
+        "dialogue": "No necesito que conquisten Latveria. Solo que le recuerden a Doom que el mundo está mirando.",
+        "mechanic": {
+          "type": "fortress",
+          "label": "Asedio a Castle Doom",
+          "description": "Cada diez bajas activan un sabotaje S.H.I.E.L.D. que fractura el blindaje de toda la oleada.",
+          "status": "Escuadrón de asedio en posición.",
+          "landmarks": [
+            {
+              "x": 160,
+              "y": 200,
+              "label": "BRECHA",
+              "color": "#7be06d"
+            },
+            {
+              "x": 480,
+              "y": 300,
+              "label": "DOOM",
+              "color": "#fca311"
+            }
+          ]
+        },
+        "objectives": [
+          {
+            "id": "latveria_kills",
+            "label": "Rompehierros",
+            "description": "Derrota 100 enemigos.",
+            "metric": "kills",
+            "target": 100,
+            "reward": 480
+          },
+          {
+            "id": "latveria_boss",
+            "label": "Desafío a Doom",
+            "description": "Derrota a un jefe.",
+            "metric": "bosses",
+            "target": 1,
+            "reward": 520
+          }
+        ]
+      },
+      "path": [
+        {
+          "x": 0,
+          "y": 300
+        },
+        {
+          "x": 160,
+          "y": 300
+        },
+        {
+          "x": 160,
+          "y": 100
+        },
+        {
+          "x": 480,
+          "y": 100
+        },
+        {
+          "x": 480,
+          "y": 500
+        },
+        {
+          "x": 800,
+          "y": 500
         }
       ]
     }

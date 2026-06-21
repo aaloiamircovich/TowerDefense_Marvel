@@ -1,6 +1,6 @@
 # Super Hero TD
 
-Tower defense ambientado en escenarios inspirados por Marvel, con niveles temáticos, oleadas escaladas, tienda, colección de héroes y configuración visual.
+Tower defense ambientado en escenarios inspirados por Marvel, con siete misiones temáticas, reglas propias por mapa, objetivos secundarios, oleadas escaladas, tienda y colección de héroes.
 
 ## Plan de desarrollo
 

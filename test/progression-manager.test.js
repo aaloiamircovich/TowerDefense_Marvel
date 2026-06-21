@@ -78,6 +78,16 @@ test('Progreso de mapa guarda estrellas, desafio y dificultad', () => {
     assert.deepEqual(progress.challenges.sort(), ['cazajefes', 'sin_danos']);
 });
 
+test('Objetivos de misión entregan una recompensa una sola vez', () => {
+    const manager = new ProgressionManager(new MemoryStorage());
+    manager.initialize(createGame(), data);
+
+    assert.equal(manager.completeMissionObjective('level_1', 'ny_rescue', 200), true);
+    assert.equal(manager.completeMissionObjective('level_1', 'ny_rescue', 200), false);
+    assert.equal(manager.state.metaCredits, 1400);
+    assert.deepEqual(manager.getMapProgress('level_1').missionObjectives, ['ny_rescue']);
+});
+
 function createGame() {
     return {
         heroes: [], audio: { setEnabled: () => {} }, resourceManager: { lives: 20, maxLives: 20 },

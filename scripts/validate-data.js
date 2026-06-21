@@ -122,6 +122,22 @@ function validateLevels(levels) {
         requireText(level.name, `levels.${level.id}.name`);
         if (!isOrthogonalPath(level.path)) errors.push(`levels.${level.id}.path contiene segmentos diagonales o puntos invalidos`);
         if (!level.theme?.id) errors.push(`levels.${level.id}.theme.id es obligatorio`);
+        requireText(level.mission?.operation, `levels.${level.id}.mission.operation`);
+        requireText(level.mission?.briefing, `levels.${level.id}.mission.briefing`);
+        requireText(level.mission?.mechanic?.label, `levels.${level.id}.mission.mechanic.label`);
+        if (!Array.isArray(level.mission?.objectives) || level.mission.objectives.length < 2) {
+            errors.push(`levels.${level.id}.mission.objectives necesita al menos dos objetivos`);
+        } else {
+            level.mission.objectives.forEach((objective) => {
+                requireText(objective.id, `levels.${level.id}.mission.objectives.id`);
+                requireText(objective.metric, `levels.${level.id}.mission.objectives.${objective.id}.metric`);
+                requirePositive(objective.target, `levels.${level.id}.mission.objectives.${objective.id}.target`);
+                requirePositive(objective.reward, `levels.${level.id}.mission.objectives.${objective.id}.reward`);
+            });
+        }
+        for (const [index, alternatePath] of (level.alternatePaths || []).entries()) {
+            if (!isOrthogonalPath(alternatePath)) errors.push(`levels.${level.id}.alternatePaths.${index} no es ortogonal`);
+        }
     }
 }
 

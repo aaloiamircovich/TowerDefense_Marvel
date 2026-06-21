@@ -60,6 +60,9 @@ export class InputManager {
 
         if (terrainType === undefined) return { valid: false, message: 'Fuera del mapa.' };
 
+        const missionBlock = this.game.missionSystem?.getPlacementBlock?.(x, y);
+        if (missionBlock) return { valid: false, message: missionBlock };
+
         const allowedTerrains = this.placingHero.allowedTerrains || [1, 3, 11, 12];
         if (!allowedTerrains.includes(placementTerrain)) {
             return { valid: false, message: `${this.placingHero.name} no puede ir sobre ${terrainNames[terrainType] || 'ese terreno'}.` };
