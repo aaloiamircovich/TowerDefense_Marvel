@@ -100,7 +100,9 @@ export class GameLoop {
     }
 
     spawnHero(config, x, y) {
-        this.heroes.push(new Hero(config, x, y, this));
+        const hero = new Hero(config, x, y, this);
+        this.progression?.applyEquippedItem(hero);
+        this.heroes.push(hero);
     }
 
     spawnEnemy(config, source = null) {

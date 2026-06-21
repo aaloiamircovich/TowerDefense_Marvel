@@ -145,11 +145,13 @@ export class HeroAbilitySystem {
     getCooldown() {
         const base = ACTIVE_COOLDOWNS[this.hero.id] || 0;
         const reduction = Math.min(0.25, Math.max(0, this.hero.level - 1) * 0.02);
-        return base * (1 - reduction);
+        const progression = this.hero.game.progression?.getHeroBonuses(this.hero.id);
+        return base * (1 - reduction) * (1 - (progression?.cooldown || 0));
     }
 
     getPowerScale() {
-        return 1 + Math.min(0.4, Math.max(0, this.hero.level - 1) * 0.04);
+        const progression = this.hero.game.progression?.getHeroBonuses(this.hero.id);
+        return 1 + Math.min(0.4, Math.max(0, this.hero.level - 1) * 0.04) + (progression?.abilityPower || 0);
     }
 
     getDisplayState() {

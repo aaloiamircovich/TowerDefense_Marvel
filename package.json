@@ -9,6 +9,7 @@
     "validate": "node scripts/validate-data.js",
     "validate:strict": "node scripts/validate-data.js --strict-assets",
     "build:data": "node scripts/build-bootstrap-data.js",
-    "check": "npm run validate && npm test"
+    "balance": "node scripts/simulate-economy.js",
+    "check": "npm run validate && npm test && npm run balance"
   }
 }

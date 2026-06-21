@@ -1,3 +1,5 @@
+import { getHeroUpgradeTree } from '../data/HeroUpgradeCatalog.js';
+
 export class UIManager {
     constructor(gameInstance) {
         this.game = gameInstance;
@@ -17,6 +19,8 @@ export class UIManager {
         this.shopInitialized = false;
         this.shopSlots = [null, null, null];
         this.itemPool = [];
+        this.inventoryFilter = 0;
+        this.inventoryHeroId = null;
         this.toastTimer = null;
 
         this.initListeners();
@@ -173,11 +177,17 @@ export class UIManager {
     renderHeroDetails(hero) {
         const config = hero.config || hero;
         const level = hero.level || config.level || 1;
-        const damage = Math.round(hero.damage || config.damage || 0);
-        const range = Math.round(hero.range || config.range || 0);
-        const fireRate = Number(hero.fireRate || config.fireRate || 1).toFixed(1);
+        const bonuses = this.game.progression?.getHeroBonuses(config.id) || {};
+        const effectiveStats = hero.getEffectiveStats?.();
+        const damage = Math.round(effectiveStats?.damage || (hero.damage || config.damage || 0) * (1 + (bonuses.damage || 0)));
+        const range = Math.round(effectiveStats?.range || (hero.range || config.range || 0) * (1 + (bonuses.range || 0)));
+        const fireRate = Number(effectiveStats?.fireRate || (hero.fireRate || config.fireRate || 1) * (1 + (bonuses.fireRate || 0))).toFixed(1);
+        const critChance = Math.round(effectiveStats?.critChance || (hero.critChance || config.critChance || 5) + (bonuses.critChance || 0));
         const terrains = this.getTerrainText(hero.allowedTerrains || config.allowedTerrains || [1]);
-        const items = hero.items || [];
+        const equippedItemId = this.game.progression?.state.equippedItems[config.id];
+        const items = hero.items?.length
+            ? hero.items
+            : [this.game.itemDatabase?.[equippedItemId]].filter(Boolean);
         const combat = hero.combatStats || {};
         const abilityState = hero.abilitySystem?.getDisplayState?.() || null;
 
@@ -201,7 +211,7 @@ export class UIManager {
                             <h3>Estadísticas</h3>
                             <p><span>Daño</span><strong>${damage}</strong></p>
                             <p><span>Recarga</span><strong>${fireRate}/s</strong></p>
-                            <p><span>Crítico</span><strong>${hero.critChance || config.critChance || 5}%</strong></p>
+                            <p><span>Crítico</span><strong>${critChance}%</strong></p>
                             <p><span>Alcance</span><strong>${range}</strong></p>
                         </div>
                         <div class="detail-card">
@@ -234,10 +244,12 @@ export class UIManager {
                         ` : ''}
                     </div>
 
+                    ${this.renderUpgradeTree(config)}
+
                     <div class="equipment-card">
                         <h3>Equipamiento</h3>
                         <div id="modal-item-slot-1" class="item-slot ${items[0] ? 'filled' : ''}">
-                            ${items[0] ? `<strong>${items[0].name}</strong><span>${items[0].desc}</span>` : '<strong>Ranura libre</strong><span>Arrastra un objeto del inventario.</span>'}
+                            ${items[0] ? `<strong>${items[0].name}</strong><span>${items[0].desc}</span><button class="btn-unequip-modal btn-primary ghost">Desequipar</button>` : '<strong>Ranura libre</strong><span>Equipa un objeto desde el inventario.</span>'}
                         </div>
                         <div id="modal-inventory-list" class="inventory-strip"></div>
                     </div>
@@ -256,6 +268,17 @@ export class UIManager {
             });
         });
 
+        this.panelContent.querySelectorAll('.skill-node').forEach((button) => {
+            button.addEventListener('click', () => this.purchaseMetaUpgrade(config, button.dataset.node));
+        });
+
+        this.panelContent.querySelector('.btn-unequip-modal')?.addEventListener('click', () => {
+            this.game.progression.unequipItem(config.id);
+            this.showToast('Objeto devuelto al inventario', 'success');
+            const deployed = this.game.heroes.find((unit) => unit.id === config.id);
+            this.renderHeroDetails(deployed || config);
+        });
+
         this.setupInventoryDrag(hero);
     }
 
@@ -272,10 +295,11 @@ export class UIManager {
                 const index = Number(event.dataTransfer.getData('item-index'));
                 const item = this.game.ownedItems[index];
                 if (!item) return;
-                hero.items.push(item);
-                this.game.ownedItems.splice(index, 1);
-                this.showToast(`${item.name} equipado`, 'success');
-                this.renderHeroDetails(hero);
+                if (this.game.progression.equipItem(hero.id, item.id)) {
+                    this.showToast(`${item.name} equipado`, 'success');
+                    const deployed = this.game.heroes.find((unit) => unit.id === hero.id);
+                    this.renderHeroDetails(deployed || hero);
+                }
             });
         }
 
@@ -292,6 +316,44 @@ export class UIManager {
             element.addEventListener('dragstart', (event) => event.dataTransfer.setData('item-index', index));
             inventory.appendChild(element);
         });
+    }
+
+    renderUpgradeTree(hero) {
+        if (!this.game.progression) return '';
+        const purchased = new Set(this.game.progression.state.heroUpgrades[hero.id] || []);
+        return `
+            <section class="upgrade-tree">
+                <div class="tree-heading">
+                    <h3>Árbol de mejora</h3>
+                    <span>${this.game.progression.state.metaCredits} Fondos S.H.I.E.L.D.</span>
+                </div>
+                <div class="tree-branches">
+                    ${getHeroUpgradeTree(hero).map((branch) => `
+                        <div class="tree-branch">
+                            <strong>${branch.name}</strong>
+                            ${branch.nodes.map((node) => {
+                                const owned = purchased.has(node.id);
+                                const locked = node.requires && !purchased.has(node.requires);
+                                return `<button class="skill-node ${owned ? 'owned' : ''}" data-node="${node.id}" ${owned || locked ? 'disabled' : ''}>
+                                    <span>${node.name}</span><small>${node.desc}</small><b>${owned ? 'Adquirida' : locked ? 'Bloqueada' : `${node.cost} F`}</b>
+                                </button>`;
+                            }).join('')}
+                        </div>
+                    `).join('')}
+                </div>
+            </section>
+        `;
+    }
+
+    purchaseMetaUpgrade(hero, nodeId) {
+        const result = this.game.progression.purchaseUpgrade(hero, nodeId);
+        if (!result.ok) {
+            this.showToast(result.reason, 'warning');
+            return;
+        }
+        this.showToast(`${result.node.name} adquirida`, 'success');
+        const deployed = this.game.heroes.find((unit) => unit.id === hero.id);
+        this.renderHeroDetails(deployed || hero);
     }
 
     calculateLevelCost(currentLevel, amount) {
@@ -346,28 +408,23 @@ export class UIManager {
     }
 
     renderShop(title) {
-        if (!this.shopInitialized) {
-            const ownedIds = this.game.ownedItems.map((item) => item.id);
-            this.itemPool = Object.values(this.game.itemDatabase || {})
-                .filter((item) => !ownedIds.includes(item.id))
-                .sort((a, b) => (a.tier || 1) - (b.tier || 1) || (a.price || 0) - (b.price || 0));
-            this.refillShop();
-            this.shopInitialized = true;
-        }
+        const rotation = this.game.shopSystem.getRotation();
+        const funds = this.game.progression.state.metaCredits;
 
         this.panelContent.innerHTML = `
-            <h2>${title}</h2>
+            <div class="panel-title-row"><h2>${title}</h2><strong>${funds} Fondos S.H.I.E.L.D.</strong></div>
             <div class="shop-layout">
                 <section class="shop-feature">
                     <h3>Caja S.H.I.E.L.D.</h3>
-                    <p>Desbloquea un héroe aliado para reforzar la defensa multiversal.</p>
-                    <button class="btn-primary" id="gacha-btn">ABRIR POR $500</button>
+                    <p>Recluta un héroe sin duplicados. Tras cuatro aperturas comunes, la siguiente garantiza Rare o Legendary.</p>
+                    <div class="pity-track">Garantía: ${Math.min(4, this.game.progression.state.shop.heroPity)}/4</div>
+                    <button class="btn-primary" id="gacha-btn">RECLUTAR POR 500 F</button>
                     <div id="gacha-res" class="result-copy"></div>
                 </section>
                 <section>
-                    <h3>Arsenal Stark / Wakanda</h3>
+                    <h3>Rotación diaria · ${this.game.shopSystem.getRotationKey()}</h3>
                     <div class="shop-grid">
-                        ${this.shopSlots.map((item, index) => this.renderShopItem(item, index)).join('')}
+                        ${rotation.map((slot) => this.renderShopItem(slot.item, slot.purchased)).join('') || '<p class="empty-copy">Arsenal completado.</p>'}
                     </div>
                 </section>
             </div>
@@ -375,35 +432,29 @@ export class UIManager {
 
         document.getElementById('gacha-btn')?.addEventListener('click', () => this.handleGacha());
         this.panelContent.querySelectorAll('.btn-buy-item').forEach((button) => {
-            button.addEventListener('click', () => this.buyItem(Number(button.dataset.idx)));
+            button.addEventListener('click', () => this.buyItem(button.dataset.id));
         });
     }
 
-    renderShopItem(item, index) {
+    renderShopItem(item, purchased = false) {
         if (!item) return '<div class="shop-card empty-copy">Agotado</div>';
         return `
-            <div class="shop-card">
+            <div class="shop-card ${purchased ? 'purchased' : ''}">
                 <div class="item-badge">T${item.tier || 1}</div>
                 <h4>${item.name}</h4>
                 <p>${item.desc}</p>
-                <button class="btn-buy-item btn-primary ghost" data-idx="${index}">$${item.price}</button>
+                <button class="btn-buy-item btn-primary ghost" data-id="${item.id}" ${purchased ? 'disabled' : ''}>${purchased ? 'ADQUIRIDO' : `${item.price} F`}</button>
             </div>
         `;
     }
 
-    buyItem(index) {
-        const item = this.shopSlots[index];
-        if (!item) return;
-
-        if (!this.game.resourceManager.removeCredits(item.price)) {
-            this.showToast('Créditos insuficientes', 'warning');
+    buyItem(itemId) {
+        const result = this.game.shopSystem.purchaseItem(itemId);
+        if (!result.ok) {
+            this.showToast(result.reason, 'warning');
             return;
         }
-
-        this.game.ownedItems.push({ ...item });
-        this.shopSlots[index] = null;
-        this.refillShop();
-        this.showToast(`${item.name} comprado`, 'success');
+        this.showToast(`${result.item.name} comprado`, 'success');
         this.renderShop('Tienda');
     }
 
@@ -433,41 +484,104 @@ export class UIManager {
     }
 
     toggleHeroEquip(id) {
-        const heroConfig = this.game.unlockedHeroes.find((hero) => hero.id === id);
         const equipped = this.game.activeTeam.some((hero) => hero.id === id);
+        let teamIds = this.game.activeTeam.map((hero) => hero.id);
 
         if (equipped) {
-            this.game.activeTeam = this.game.activeTeam.filter((hero) => hero.id !== id);
+            teamIds = teamIds.filter((heroId) => heroId !== id);
         } else {
             if (this.game.activeTeam.length >= 6) {
                 this.showToast('Tu equipo activo está lleno', 'warning');
                 return;
             }
-            this.game.activeTeam.push(heroConfig);
+            teamIds.push(id);
         }
+
+        this.game.progression.setActiveTeam(teamIds);
 
         this.renderPanel('collection');
         this.renderHeroRoster(this.game.activeTeam, (hero) => this.game.inputManager.setPlacementMode(hero));
     }
 
     renderInventory(title) {
+        this.inventoryHeroId ||= this.game.activeTeam[0]?.id || this.game.unlockedHeroes[0]?.id || null;
+        const targetHero = this.game.heroDatabase[this.inventoryHeroId];
+        const equippedId = this.game.progression.state.equippedItems[this.inventoryHeroId];
+        const equipped = equippedId ? this.game.itemDatabase[equippedId] : null;
+        const visibleItems = this.game.ownedItems.filter((item) => this.inventoryFilter === 0 || item.tier === this.inventoryFilter);
         this.panelContent.innerHTML = `
-            <h2>${title}</h2>
+            <div class="panel-title-row"><h2>${title}</h2><strong>${this.game.ownedItems.length} disponibles</strong></div>
+            <div class="inventory-toolbar">
+                <label>Héroe
+                    <select id="inventory-hero-select">
+                        ${this.game.unlockedHeroes.map((hero) => `<option value="${hero.id}" ${hero.id === this.inventoryHeroId ? 'selected' : ''}>${hero.name}</option>`).join('')}
+                    </select>
+                </label>
+                <div class="tier-filters" aria-label="Filtrar por tier">
+                    ${[0, 1, 2, 3, 4].map((tier) => `<button class="tier-filter ${this.inventoryFilter === tier ? 'active' : ''}" data-tier="${tier}">${tier === 0 ? 'Todos' : `T${tier}`}</button>`).join('')}
+                </div>
+            </div>
+            <section class="equipped-summary">
+                <span>Equipado en ${targetHero?.name || 'héroe'}</span>
+                <strong>${equipped?.name || 'Ninguno'}</strong>
+                ${equipped ? `<button class="btn-unequip-item btn-primary ghost">Desequipar</button>` : ''}
+            </section>
             <div class="inventory-grid">
-                ${this.game.ownedItems.length
-                    ? this.game.ownedItems.map((item) => `<div class="inventory-card"><h3>${item.name}</h3><p>${item.desc}</p></div>`).join('')
+                ${visibleItems.length
+                    ? visibleItems.map((item) => `<article class="inventory-card">
+                        <div class="item-badge">T${item.tier}</div><h3>${item.name}</h3><p>${item.desc}</p>
+                        <small>${this.getItemImpact(item)}${equipped ? ` · reemplaza ${equipped.name}` : ''}</small>
+                        <button class="btn-equip-item btn-primary ghost" data-id="${item.id}">Equipar</button>
+                    </article>`).join('')
                     : '<p class="empty-copy">No tienes objetos todavía.</p>'}
             </div>
         `;
+
+        document.getElementById('inventory-hero-select')?.addEventListener('change', (event) => {
+            this.inventoryHeroId = event.target.value;
+            this.renderInventory(title);
+        });
+        this.panelContent.querySelectorAll('.tier-filter').forEach((button) => {
+            button.addEventListener('click', () => {
+                this.inventoryFilter = Number(button.dataset.tier);
+                this.renderInventory(title);
+            });
+        });
+        this.panelContent.querySelectorAll('.btn-equip-item').forEach((button) => {
+            button.addEventListener('click', () => {
+                const item = this.game.itemDatabase[button.dataset.id];
+                if (this.game.progression.equipItem(this.inventoryHeroId, item.id)) {
+                    this.showToast(`${item.name} equipado`, 'success');
+                    this.renderInventory(title);
+                }
+            });
+        });
+        this.panelContent.querySelector('.btn-unequip-item')?.addEventListener('click', () => {
+            this.game.progression.unequipItem(this.inventoryHeroId);
+            this.showToast('Objeto desequipado', 'success');
+            this.renderInventory(title);
+        });
+    }
+
+    getItemImpact(item) {
+        const impacts = {
+            telarana_sintetica: 'Control adicional', aerodeslizador: 'Habilita agua', lentes_edith: 'Detecta sigilo',
+            reactor_arc: '+25% cadencia', suero_supersoldado: '+30% daño en emergencia', contrato_stark: '+1 crédito por impacto',
+            particulas_pym: '+50% cadencia', simbionte: 'Daño acumulativo', protocolo_extremis: '+1 vida cada 15 bajas', gema_poder: '+50% daño'
+        };
+        return impacts[item.id] || 'Mejora táctica';
     }
 
     renderProfile(title) {
+        const progression = this.game.progression;
+        const bestWaves = Object.values(progression.state.mapProgress).reduce((total, map) => total + (map.bestWave || 0), 0);
+        const challenges = Object.values(progression.state.mapProgress).reduce((total, map) => total + (map.challenges?.length || 0), 0);
         this.panelContent.innerHTML = `
             <h2>${title}</h2>
             <div class="profile-grid">
-                <div class="detail-card"><h3>Progreso</h3><p><span>Oleadas superadas</span><strong>${this.game.completedWaves.length}</strong></p><p><span>Estrellas</span><strong>${this.game.stars}</strong></p></div>
+                <div class="detail-card"><h3>Progreso</h3><p><span>Mejores oleadas</span><strong>${bestWaves}</strong></p><p><span>Estrellas</span><strong>${this.game.stars}/9</strong></p><p><span>Desafíos</span><strong>${challenges}/6</strong></p></div>
                 <div class="detail-card"><h3>Plantilla</h3><p><span>Héroes</span><strong>${this.game.unlockedHeroes.length}</strong></p><p><span>Equipo activo</span><strong>${this.game.activeTeam.length}/6</strong></p></div>
-                <div class="detail-card"><h3>Base</h3><p><span>Vida</span><strong>${this.game.resourceManager.lives}/${this.game.resourceManager.maxLives}</strong></p><p><span>Créditos</span><strong>$${Math.floor(this.game.resourceManager.credits)}</strong></p></div>
+                <div class="detail-card"><h3>Economía</h3><p><span>Fondos S.H.I.E.L.D.</span><strong>${progression.state.metaCredits} F</strong></p><p><span>Créditos de misión</span><strong>$${Math.floor(this.game.resourceManager.credits)}</strong></p></div>
                 <div class="detail-card"><h3>Zona Marvel</h3><p><span>Mapa</span><strong>${this.game.currentLevel?.theme?.label || this.game.currentLevel?.name || 'Mapa'}</strong></p><p><span>Ambiente</span><strong>${this.game.currentLevel?.theme?.brief || 'Defensa táctica'}</strong></p></div>
             </div>
         `;
@@ -477,18 +591,30 @@ export class UIManager {
         this.panelContent.innerHTML = `
             <h2>${title}</h2>
             <div class="map-list">
-                ${this.game.levelsData.map((level, index) => `
-                    <button class="map-card ${this.game.currentLevel?.id === level.id ? 'active' : ''}" data-index="${index}">
+                ${this.game.levelsData.map((level, index) => {
+                    const progress = this.game.progression.getMapProgress(level.id);
+                    return `<article class="map-card ${this.game.currentLevel?.id === level.id ? 'active' : ''}">
                         <strong>${level.name}</strong>
-                        <span>${level.difficulty}</span>
+                        <span>Mejor oleada ${progress.bestWave} · ${'★'.repeat(progress.stars)}${'☆'.repeat(3 - progress.stars)}</span>
                         <small>${level.description}</small>
                         <em>${level.theme?.brief || ''}</em>
-                    </button>
-                `).join('')}
+                        <div class="difficulty-switch" aria-label="Dificultad">
+                            ${[['easy', 'Fácil'], ['normal', 'Normal'], ['hard', 'Difícil']].map(([value, label]) => `<button class="difficulty-btn ${progress.difficulty === value ? 'active' : ''}" data-level="${level.id}" data-value="${value}">${label}</button>`).join('')}
+                        </div>
+                        <div class="challenge-row"><span class="${progress.challenges.includes('sin_danos') ? 'done' : ''}">Sin daños</span><span class="${progress.challenges.includes('cazajefes') ? 'done' : ''}">Cazajefes</span></div>
+                        <button class="btn-load-map btn-primary ghost" data-index="${index}">Jugar</button>
+                    </article>`;
+                }).join('')}
             </div>
         `;
 
-        this.panelContent.querySelectorAll('.map-card').forEach((button) => {
+        this.panelContent.querySelectorAll('.difficulty-btn').forEach((button) => {
+            button.addEventListener('click', () => {
+                this.game.progression.setDifficulty(button.dataset.level, button.dataset.value);
+                this.renderMap(title);
+            });
+        });
+        this.panelContent.querySelectorAll('.btn-load-map').forEach((button) => {
             button.addEventListener('click', () => {
                 const level = this.game.levelsData[Number(button.dataset.index)];
                 this.game.loadLevel(level);
@@ -521,16 +647,19 @@ export class UIManager {
 
         document.getElementById('toggle-ranges')?.addEventListener('change', (event) => {
             this.game.showHeroRanges = event.target.checked;
+            this.game.progression.updateSetting('ranges', event.target.checked);
             this.showToast(event.target.checked ? 'Rangos visibles' : 'Rangos ocultos', 'info');
         });
 
         document.getElementById('toggle-grid')?.addEventListener('change', (event) => {
             this.game.showGrid = event.target.checked;
+            this.game.progression.updateSetting('grid', event.target.checked);
             this.showToast(event.target.checked ? 'Cuadrícula visible' : 'Cuadrícula oculta', 'info');
         });
 
         document.getElementById('toggle-audio')?.addEventListener('change', (event) => {
             this.game.audio?.setEnabled(event.target.checked);
+            this.game.progression.updateSetting('audio', event.target.checked);
             this.showToast(event.target.checked ? 'Audio activado' : 'Audio silenciado', 'info');
         });
 
@@ -610,29 +739,15 @@ export class UIManager {
     }
 
     handleGacha() {
-        const cost = 500;
-        if (!this.game.resourceManager.removeCredits(cost)) {
-            this.showToast('Créditos insuficientes', 'warning');
+        const result = this.game.shopSystem.recruitHero();
+        if (!result.ok) {
+            this.showToast(result.reason, 'warning');
             return;
         }
-
-        const ownedIds = this.game.unlockedHeroes.map((hero) => hero.id);
-        const pool = Object.values(this.game.heroDatabase).filter((hero) => !ownedIds.includes(hero.id));
-
-        if (pool.length === 0) {
-            this.game.resourceManager.addCredits(cost);
-            this.showToast('Ya tienes todos los héroes', 'info');
-            return;
-        }
-
-        const weights = { Common: 60, Rare: 30, Legendary: 10 };
-        const weightedPool = pool.flatMap((hero) => Array(weights[hero.rarity] || 20).fill(hero));
-        const hero = this.game.random?.pick?.(weightedPool)
-            || weightedPool[Math.floor(Math.random() * weightedPool.length)];
-
-        this.game.unlockedHeroes.push(hero);
-        document.getElementById('gacha-res').innerHTML = `Desbloqueado: <strong>${hero.name}</strong>`;
-        this.showToast(`${hero.name} desbloqueado`, 'success');
+        document.getElementById('gacha-res').innerHTML = `Reclutado: <strong>${result.hero.name}</strong>${result.guaranteed ? ' · Garantía activada' : ''}`;
+        this.showToast(`${result.hero.name} se unió a la plantilla`, 'success');
+        this.renderHeroRoster(this.game.activeTeam, (hero) => this.game.inputManager.setPlacementMode(hero));
+        window.setTimeout(() => this.renderShop('Tienda'), 900);
     }
 
     showGameOver() {

@@ -46,8 +46,17 @@ export class Hero {
             damage: this.damage,
             fireRate: this.fireRate,
             range: this.range,
+            critChance: this.critChance,
             canSeeStealth: this.config.canSeeStealth || false
         };
+
+        const progression = this.game.progression?.getHeroBonuses(this.id);
+        if (progression) {
+            stats.damage *= 1 + progression.damage;
+            stats.fireRate *= 1 + progression.fireRate;
+            stats.range *= 1 + progression.range;
+            stats.critChance += progression.critChance;
+        }
 
         this.items.forEach((item) => {
             if (item.id === 'reactor_arc') stats.fireRate *= 1.25;
@@ -111,7 +120,7 @@ export class Hero {
         this.animator?.playAttack();
 
         const roll = this.game?.random?.next?.() ?? Math.random();
-        const isCrit = roll * 100 < this.critChance;
+        const isCrit = roll * 100 < stats.critChance;
         let finalDamage = isCrit ? stats.damage * 2 : stats.damage;
         this.combatStats.shots++;
         if (isCrit) this.combatStats.crits++;

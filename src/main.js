@@ -7,6 +7,8 @@ import { WaveManager } from './systems/WaveManager.js';
 import { normalizePath } from './utils/PathUtils.js';
 import { preloadImages } from './rendering/ImageCache.js';
 import { collectVisualSources } from './rendering/SpriteAnimator.js';
+import { ProgressionManager } from './systems/ProgressionManager.js';
+import { ShopSystem } from './systems/ShopSystem.js';
 
 async function initGame() {
     try {
@@ -43,6 +45,9 @@ async function initGame() {
         game.ownedItems = [];
         game.stars = 0;
         game.completedWaves = [];
+        game.progression = new ProgressionManager();
+        game.progression.initialize(game, data);
+        game.shopSystem = new ShopSystem(game, game.progression);
 
         const input = new InputManager(game.canvas, game, ui, resources);
         game.inputManager = input;
@@ -51,6 +56,9 @@ async function initGame() {
             if (!levelConfig) throw new Error('Nivel no encontrado.');
 
             game.currentLevel = levelConfig;
+            game.progression.state.lastLevelId = levelConfig.id;
+            game.progression.save();
+            game.difficulty = game.progression.getMapProgress(levelConfig.id).difficulty;
             game.heroes = [];
             game.enemies = [];
             game.projectiles = [];
@@ -64,7 +72,8 @@ async function initGame() {
             ui.updateLevelTheme(levelConfig);
         };
 
-        game.loadLevel(data.levels[0]);
+        const savedLevel = data.levels.find((level) => level.id === game.progression.state.lastLevelId) || data.levels[0];
+        game.loadLevel(savedLevel);
 
         const starterPool = [
             data.heroes.iron_man,
@@ -76,13 +85,17 @@ async function initGame() {
             throw new Error('No se encontraron héroes iniciales.');
         }
 
-        ui.renderStarterSelector(starterPool, (chosen) => {
-            game.unlockedHeroes.push(chosen);
-            game.activeTeam.push(chosen);
+        if (game.unlockedHeroes.length > 0) {
             ui.renderHeroRoster(game.activeTeam, (hero) => input.setPlacementMode(hero));
-            ui.showToast(`${chosen.name} se unió al equipo`, 'success');
             game.start();
-        });
+        } else {
+            ui.renderStarterSelector(starterPool, (chosen) => {
+                game.progression.startProfile(chosen.id);
+                ui.renderHeroRoster(game.activeTeam, (hero) => input.setPlacementMode(hero));
+                ui.showToast(`${chosen.name} se unió al equipo`, 'success');
+                game.start();
+            });
+        }
     } catch (error) {
         alert('Error crítico al cargar. Revisa la consola F12.');
         console.error('Detalle del fallo:', error);

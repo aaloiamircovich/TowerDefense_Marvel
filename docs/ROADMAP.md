@@ -7,7 +7,7 @@ Este roadmap convierte el prototipo actual en un tower defense pulido, escalable
 - 31 heroes definidos; Iron Man y Spider-Man usan sprites animados y tres heroes cuentan con arte procedural temporal.
 - Cinco heroes tienen kits completos y el resto ya comparte el nucleo avanzado de proyectiles y estados.
 - 15 enemigos normales y 15 jefes estan definidos para la siguiente fase.
-- Hay 42 tests, validacion de datos, CI, audio sintetizado y pipeline de sprites.
+- Hay 50 tests, validacion de datos, CI, audio sintetizado y pipeline de sprites.
 - `UIManager.js` aun concentra demasiadas responsabilidades y debe dividirse antes de ampliar la progresion.
 - `data/bootstrapData.js` se genera automaticamente desde los JSON fuente.
 
@@ -96,6 +96,8 @@ Este roadmap convierte el prototipo actual en un tower defense pulido, escalable
 - Rebalancear costes mediante simulaciones de oleadas.
 
 **Terminado cuando:** cerrar y abrir conserva progreso, y cada compra compite con otra decision valiosa.
+
+**Estado:** implementada. El guardado versionado conserva equipo, inventario, mejoras, fondos, ajustes y progreso por mapa. Cada heroe dispone de dos ramas persistentes, la tienda rota diariamente sin duplicados injustos y una simulacion automatizada controla costes, recompensas y eficiencia.
 
 ## Fase 6 - Campaña Marvel y mapas
 

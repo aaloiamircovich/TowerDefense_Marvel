@@ -36,6 +36,12 @@ const MODIFIERS = [
     { id: 'elite', label: 'Escuadrón élite', description: '+25% salud y +10% armadura.', hpFactor: 1.25, armorBonus: 0.1 }
 ];
 
+const DIFFICULTIES = {
+    easy: { hp: 0.85, speed: 0.95, count: 0.9, reward: 0.9 },
+    normal: { hp: 1, speed: 1, count: 1, reward: 1 },
+    hard: { hp: 1.3, speed: 1.1, count: 1.15, reward: 1.25 }
+};
+
 export class WaveManager {
     constructor(gameInstance, enemiesDb) {
         this.game = gameInstance;
@@ -68,7 +74,8 @@ export class WaveManager {
             this.preparedQueue.push({ config: this.scaleEnemy(config, 1 + this.currentWave * 0.08, true), delay: 0 });
         } else {
             const baseCount = 7 + Math.floor(this.currentWave * 0.55);
-            const count = Math.round(baseCount * (this.waveModifier.countFactor || 1));
+            const difficulty = DIFFICULTIES[this.game.difficulty || 'normal'];
+            const count = Math.max(1, Math.round(baseCount * (this.waveModifier.countFactor || 1) * difficulty.count));
             const interval = Math.max(0.45, 1.45 - this.currentWave / 65);
             const normalPool = this.getEnemyPoolForWave();
 
@@ -114,14 +121,15 @@ export class WaveManager {
 
     scaleEnemy(config, multiplier, isBoss) {
         const modifier = isBoss ? {} : this.waveModifier;
+        const difficulty = DIFFICULTIES[this.game.difficulty || 'normal'];
         return {
             ...config,
-            hp: Math.round(config.hp * multiplier * (modifier.hpFactor || 1)),
-            speed: Math.round(config.speed * (modifier.speedFactor || 1)),
+            hp: Math.round(config.hp * multiplier * (modifier.hpFactor || 1) * difficulty.hp),
+            speed: Math.round(config.speed * (modifier.speedFactor || 1) * difficulty.speed),
             armor: Math.min(0.8, (config.armor || 0) + (modifier.armorBonus || 0)),
             barrierRatio: Math.max(config.barrierRatio || 0, modifier.barrierRatio || 0),
             stealth: modifier.stealth || config.stealth || false,
-            reward: Math.round((config.reward || 10) * (isBoss ? 1 : 1 + this.currentWave * 0.02)),
+            reward: Math.round((config.reward ?? 10) * (isBoss ? 1 : 1 + this.currentWave * 0.02) * difficulty.reward),
             isBoss: isBoss || config.isBoss || false,
             waveModifier: this.waveModifier.id
         };
@@ -182,12 +190,15 @@ export class WaveManager {
         const waveBounty = 110 + this.currentWave * 24;
         this.game.resourceManager.addCredits(waveBounty);
 
+        let metaReward = 0;
         if (!this.game.completedWaves.includes(this.currentWave)) {
             this.game.completedWaves.push(this.currentWave);
-            this.game.stars += this.currentWave % 10 === 0 ? 3 : 1;
+            if (this.game.progression) metaReward = this.game.progression.recordWave(this.game, this.currentWave);
+            else this.game.stars += this.currentWave % 10 === 0 ? 3 : 1;
         }
 
-        this.game.uiManager?.showToast(`Oleada superada: +$${waveBounty}`, 'success');
+        const metaCopy = metaReward > 0 ? ` · +${metaReward} Fondos` : '';
+        this.game.uiManager?.showToast(`Oleada superada: +$${waveBounty}${metaCopy}`, 'success');
         this.currentWave++;
 
         if (this.currentWave > this.maxWaves) {

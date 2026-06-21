@@ -105,7 +105,7 @@
   },
   "black_panther": {
     "id": "black_panther", "name": "Black Panther", "category": "Tecnológico", "rarity": "Rare",
-    "cost": 220, "damage": 35, "range": 90, "fireRate": 1.8, "canSeeStealth": true,
+    "cost": 300, "damage": 35, "range": 90, "fireRate": 1.8, "canSeeStealth": true,
     "ability": "VIBRANIUM", "abilityDesc": "Acumula energía cinética. Su daño aumenta progresivamente por cada ataque consecutivo al mismo objetivo.", "sprite": "assets/images/heroes/black_panther.png",
     "allowedTerrains": [1, 3]
   },
@@ -123,7 +123,7 @@
   },
   "wolverine": {
     "id": "wolverine", "name": "Wolverine", "category": "Mutante", "rarity": "Rare",
-    "cost": 300, "damage": 40, "range": 70, "fireRate": 2.5, "canSeeStealth": true,
+    "cost": 420, "damage": 40, "range": 70, "fireRate": 2.5, "canSeeStealth": true,
     "ability": "REGENERACIÓN", "abilityDesc": "Entra en frenesí salvaje. Su velocidad de ataque se multiplica drásticamente si está rodeado de enemigos.", "sprite": "assets/images/heroes/wolverine.png",
     "allowedTerrains": [1, 3]
   },
@@ -147,13 +147,13 @@
   },
   "groot": {
     "id": "groot", "name": "Groot", "category": "Cósmico", "rarity": "Rare",
-    "cost": 350, "damage": 45, "range": 120, "fireRate": 0.6, "canSeeStealth": false,
+    "cost": 260, "damage": 45, "range": 120, "fireRate": 0.6, "canSeeStealth": false,
     "ability": "RAÍCES", "abilityDesc": "Atrapa a los enemigos en su lugar con ramas y raíces, inmovilizándolos temporalmente.", "sprite": "assets/images/heroes/groot.png",
     "allowedTerrains": [1, 3]
   },
   "gamora": {
     "id": "gamora", "name": "Gamora", "category": "Cósmico", "rarity": "Rare",
-    "cost": 240, "damage": 42, "range": 90, "fireRate": 1.9, "canSeeStealth": true,
+    "cost": 340, "damage": 42, "range": 90, "fireRate": 1.9, "canSeeStealth": true,
     "ability": "GOLPE MORTAL", "abilityDesc": "Ejecutora implacable. Sus ataques siempre son críticos si el enemigo tiene menos del 30% de salud.", "sprite": "assets/images/heroes/gamora.png",
     "allowedTerrains": [1, 3]
   },
@@ -183,7 +183,7 @@
   },
   "shang_chi": {
     "id": "shang_chi", "name": "Shang-Chi", "category": "Urbano", "rarity": "Rare",
-    "cost": 210, "damage": 45, "range": 80, "fireRate": 2.2, "canSeeStealth": false,
+    "cost": 400, "damage": 45, "range": 80, "fireRate": 2.2, "canSeeStealth": false,
     "ability": "DIEZ ANILLOS", "abilityDesc": "Lanza anillos místicos dorados que giran y rebotan entre varios enemigos a gran velocidad.", "sprite": "assets/images/heroes/shang_chi.png",
     "allowedTerrains": [1, 3]
   },
@@ -225,7 +225,7 @@
   },
   "blade": {
     "id": "blade", "name": "Blade", "category": "Místico", "rarity": "Rare",
-    "cost": 240, "damage": 36, "range": 110, "fireRate": 1.8, "canSeeStealth": true,
+    "cost": 300, "damage": 36, "range": 110, "fireRate": 1.8, "canSeeStealth": true,
     "ability": "SED DE SANGRE", "abilityDesc": "Cada enemigo derrotado bajo su espada aumenta permanentemente su velocidad de ataque.", "sprite": "assets/images/heroes/blade.png",
     "allowedTerrains": [1, 3]
   },
@@ -243,7 +243,7 @@
   },
   "domino": {
     "id": "domino", "name": "Domino", "category": "Mutante", "rarity": "Legendary",
-    "cost": 450, "damage": 20, "range": 140, "fireRate": 1.5, "canSeeStealth": true,
+    "cost": 300, "damage": 20, "range": 140, "fireRate": 1.5, "canSeeStealth": true,
     "ability": "CODICIA", "abilityDesc": "Símbolo de suerte y riqueza. Sus ataques desprenden monedas, robando un 10% del oro enemigo por impacto.", "sprite": "assets/images/heroes/domino.png",
     "allowedTerrains": [1, 3]
   }

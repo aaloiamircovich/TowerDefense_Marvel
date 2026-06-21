@@ -27,6 +27,7 @@ http://127.0.0.1:5173/
 npm run build:data
 npm run validate
 npm test
+npm run balance
 npm run check
 ```
 
@@ -34,6 +35,7 @@ npm run check
 - `validate` revisa IDs, referencias, rutas, números y assets.
 - `validate:strict` también convierte los assets ausentes en errores.
 - `test` ejecuta la suite nativa de Node.
+- `balance` simula eficiencia de heroes, recompensas por oleada y precios de objetos.
 - `check` reproduce el control usado por GitHub Actions.
 
 También puede abrirse `index.html` directamente. En ese modo el juego usa `data/bootstrapData.js` como respaldo para evitar problemas de `fetch` con archivos locales.
