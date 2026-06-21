@@ -14,6 +14,40 @@ window.__MARVEL_TD_DATA__ = {
       "abilityDesc": "Cada 3 ataques dispara un grueso láser azul que atraviesa a múltiples enemigos en línea recta.",
       "sprite": "assets/images/heroes/iron_man/portrait.png",
       "evolutionId": "iron_man_extremis",
+      "visual": {
+        "portrait": "assets/images/heroes/iron_man/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/iron_man/sprites/north.png",
+          "north-east": "assets/images/heroes/iron_man/sprites/north-east.png",
+          "east": "assets/images/heroes/iron_man/sprites/east.png",
+          "south-east": "assets/images/heroes/iron_man/sprites/south-east.png",
+          "south": "assets/images/heroes/iron_man/sprites/south.png",
+          "south-west": "assets/images/heroes/iron_man/sprites/south-west.png",
+          "west": "assets/images/heroes/iron_man/sprites/west.png",
+          "north-west": "assets/images/heroes/iron_man/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 16,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/iron_man/shoot/0.png",
+            "assets/images/heroes/iron_man/shoot/1.png",
+            "assets/images/heroes/iron_man/shoot/2.png",
+            "assets/images/heroes/iron_man/shoot/3.png",
+            "assets/images/heroes/iron_man/shoot/4.png",
+            "assets/images/heroes/iron_man/shoot/5.png",
+            "assets/images/heroes/iron_man/shoot/6.png",
+            "assets/images/heroes/iron_man/shoot/7.png",
+            "assets/images/heroes/iron_man/shoot/8.png"
+          ]
+        }
+      },
       "allowedTerrains": [
         0,
         1,
@@ -34,6 +68,40 @@ window.__MARVEL_TD_DATA__ = {
       "abilityDesc": "Envuelve a los enemigos en redes, reduciendo drásticamente su velocidad de movimiento.",
       "sprite": "assets/images/heroes/spiderman/portrait.png",
       "evolutionId": "iron_spider",
+      "visual": {
+        "portrait": "assets/images/heroes/spiderman/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/spiderman/sprites/north.png",
+          "north-east": "assets/images/heroes/spiderman/sprites/north-east.png",
+          "east": "assets/images/heroes/spiderman/sprites/east.png",
+          "south-east": "assets/images/heroes/spiderman/sprites/south-east.png",
+          "south": "assets/images/heroes/spiderman/sprites/south.png",
+          "south-west": "assets/images/heroes/spiderman/sprites/south-west.png",
+          "west": "assets/images/heroes/spiderman/sprites/west.png",
+          "north-west": "assets/images/heroes/spiderman/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 16,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/spiderman/shoot/0.png",
+            "assets/images/heroes/spiderman/shoot/1.png",
+            "assets/images/heroes/spiderman/shoot/2.png",
+            "assets/images/heroes/spiderman/shoot/3.png",
+            "assets/images/heroes/spiderman/shoot/4.png",
+            "assets/images/heroes/spiderman/shoot/5.png",
+            "assets/images/heroes/spiderman/shoot/6.png",
+            "assets/images/heroes/spiderman/shoot/7.png",
+            "assets/images/heroes/spiderman/shoot/8.png"
+          ]
+        }
+      },
       "allowedTerrains": [
         1,
         3

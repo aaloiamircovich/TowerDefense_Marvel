@@ -158,7 +158,7 @@ export class UIManager {
             <div class="hero-detail">
                 <section class="hero-portrait">
                     <h2>${hero.name}</h2>
-                    <div class="portrait-frame">${this.renderSprite(config.sprite, hero.name)}</div>
+                    <div class="portrait-frame">${this.renderSprite(config.visual?.portrait || config.sprite, hero.name)}</div>
                     <div class="level-chip">Nivel ${level}</div>
                     <div class="upgrade-list">
                         ${[1, 5, 10].map((amount) => {
@@ -373,7 +373,7 @@ export class UIManager {
                     const equipped = this.game.activeTeam.some((active) => active.id === hero.id);
                     return `
                         <article class="collection-card">
-                            ${this.renderSprite(hero.sprite, hero.name)}
+                            ${this.renderSprite(hero.visual?.portrait || hero.sprite, hero.name)}
                             <h3>${hero.name}</h3>
                             <small>${hero.rarity || 'Common'} | $${hero.cost || 0}</small>
                             <button class="btn-equip btn-primary ${equipped ? 'danger' : 'ghost'}" data-id="${hero.id}">
@@ -508,7 +508,7 @@ export class UIManager {
             <div class="starter-grid">
                 ${starters.map((hero) => `
                     <button class="starter-card" data-id="${hero.id}">
-                        ${this.renderSprite(hero.sprite, hero.name)}
+                        ${this.renderSprite(hero.visual?.portrait || hero.sprite, hero.name)}
                         <strong>${hero.name}</strong>
                         <span>${hero.category} | $${hero.cost}</span>
                     </button>
@@ -535,7 +535,7 @@ export class UIManager {
             const card = document.createElement('article');
             card.className = `hero-card ${deployed ? 'deployed' : ''}`;
             card.innerHTML = `
-                ${this.renderSprite(hero.sprite, hero.name)}
+                ${this.renderSprite(hero.visual?.portrait || hero.sprite, hero.name)}
                 <div>
                     <strong>${hero.name}</strong>
                     <span>$${hero.cost || 0} | ${hero.rarity || 'Common'}</span>

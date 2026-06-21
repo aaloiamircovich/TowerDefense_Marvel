@@ -1,6 +1,6 @@
 import { Projectile } from './Projectile.js';
-
-const imageCache = new Map();
+import { getCachedImage } from '../rendering/ImageCache.js';
+import { SpriteAnimator } from '../rendering/SpriteAnimator.js';
 
 export class Hero {
     constructor(config, x, y, game) {
@@ -26,12 +26,8 @@ export class Hero {
         this.killCount = 0;
         this.size = 36;
         this.flashTimer = 0;
-
-        if (config.sprite && !imageCache.has(config.sprite)) {
-            const img = new Image();
-            img.src = config.sprite;
-            imageCache.set(config.sprite, img);
-        }
+        this.animator = config.visual ? new SpriteAnimator(config.visual) : null;
+        this.legacyImage = getCachedImage(config.sprite);
     }
 
     getEffectiveStats() {
@@ -61,6 +57,7 @@ export class Hero {
     update(dt, enemies, projectiles) {
         this.timer += dt;
         this.flashTimer = Math.max(0, this.flashTimer - dt);
+        this.animator?.update(dt);
         const stats = this.getEffectiveStats();
 
         if (this.timer >= 1 / stats.fireRate) {
@@ -97,6 +94,9 @@ export class Hero {
     }
 
     shoot(target, stats, projectiles) {
+        this.animator?.faceVector(target.x - this.x, target.y - this.y);
+        this.animator?.playAttack();
+
         const isCrit = Math.random() * 100 < this.critChance;
         let finalDamage = isCrit ? stats.damage * 2 : stats.damage;
 
@@ -147,7 +147,6 @@ export class Hero {
 
     render(ctx) {
         const stats = this.getEffectiveStats();
-        const img = this.config.sprite ? imageCache.get(this.config.sprite) : null;
 
         ctx.save();
         if (this.game.showHeroRanges) {
@@ -166,9 +165,11 @@ export class Hero {
             ctx.fill();
         }
 
-        if (img?.complete && img.naturalWidth > 0) {
-            ctx.drawImage(img, this.x - this.size / 2, this.y - this.size / 2, this.size, this.size);
-        } else {
+        const animated = this.animator?.render(ctx, this.x, this.y) || false;
+        if (!animated && this.legacyImage?.complete && this.legacyImage.naturalWidth > 0) {
+            ctx.imageSmoothingEnabled = false;
+            ctx.drawImage(this.legacyImage, this.x - this.size / 2, this.y - this.size / 2, this.size, this.size);
+        } else if (!animated) {
             this.renderFallback(ctx);
         }
 

@@ -38,6 +38,8 @@ Este roadmap convierte el prototipo actual en un tower defense pulido, escalable
 
 **Terminado cuando:** Iron Man y Spider-Man se ven y animan correctamente en selector, roster, mapa y ataque sin crear `Image` durante el game loop.
 
+**Estado:** vertical slice completada. El contrato visual, cache, precarga, ocho direcciones y animacion de ataque estan implementados y validados para Iron Man y Spider-Man. Los heroes restantes pasan a produccion incremental con este mismo contrato.
+
 ## Fase 2 - Nucleo de combate confiable
 
 **Objetivo:** que todas las estadisticas y efectos tengan significado real.

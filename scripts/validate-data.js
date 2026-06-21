@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { isOrthogonalPath } from '../src/utils/PathUtils.js';
+import { DIRECTIONS, collectVisualSources } from '../src/rendering/SpriteAnimator.js';
 import { buildBootstrapSource, readProjectData } from './lib/project-data.js';
 
 const root = process.cwd();
@@ -38,10 +39,32 @@ function validateHeroes(heroes) {
         }
 
         validateAsset(hero.sprite, `heroes.${key}.sprite`);
+        if (hero.visual) validateHeroVisual(key, hero.visual);
 
         if (hero.evolutionId && !knownIds.has(hero.evolutionId)) {
             warnings.push(`heroes.${key}.evolutionId referencia '${hero.evolutionId}', que aun no existe`);
         }
+    }
+}
+
+function validateHeroVisual(heroId, visual) {
+    requirePositive(visual.size, `heroes.${heroId}.visual.size`);
+    requirePositive(visual.attack?.fps, `heroes.${heroId}.visual.attack.fps`);
+
+    if (!visual.anchor || !isUnitNumber(visual.anchor.x) || !isUnitNumber(visual.anchor.y)) {
+        errors.push(`heroes.${heroId}.visual.anchor debe tener x/y entre 0 y 1`);
+    }
+
+    for (const direction of DIRECTIONS) {
+        if (!visual.idle?.[direction]) errors.push(`heroes.${heroId}.visual.idle.${direction} es obligatorio`);
+    }
+
+    if (!Array.isArray(visual.attack?.frames) || visual.attack.frames.length < 2) {
+        errors.push(`heroes.${heroId}.visual.attack.frames necesita al menos 2 frames`);
+    }
+
+    for (const source of collectVisualSources(visual)) {
+        validateAsset(source, `heroes.${heroId}.visual`);
     }
 }
 
@@ -154,4 +177,8 @@ function requireText(value, label) {
 
 function requirePositive(value, label) {
     if (!Number.isFinite(value) || value <= 0) errors.push(`${label} debe ser un numero positivo`);
+}
+
+function isUnitNumber(value) {
+    return Number.isFinite(value) && value >= 0 && value <= 1;
 }

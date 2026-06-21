@@ -1,5 +1,9 @@
 # Pipeline de sprites
 
+## Estado actual
+
+Iron Man y Spider-Man ya usan el contrato `visual` con retrato, ocho direcciones, nueve frames de ataque, precarga y cache compartido. Los heroes nuevos deben copiar este contrato y no agregar rutas sueltas fuera de su carpeta.
+
 ## Formato base
 
 - Tamaño recomendado en mundo: `48x48` o `64x64` por frame.

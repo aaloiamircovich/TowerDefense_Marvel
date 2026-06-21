@@ -5,6 +5,8 @@ import { InputManager } from './core/InputManager.js';
 import { ResourceManager } from './systems/ResourceManager.js';
 import { WaveManager } from './systems/WaveManager.js';
 import { normalizePath } from './utils/PathUtils.js';
+import { preloadImages } from './rendering/ImageCache.js';
+import { collectVisualSources } from './rendering/SpriteAnimator.js';
 
 async function initGame() {
     try {
@@ -26,6 +28,10 @@ async function initGame() {
         if (!data.heroes || !data.enemies || !data.levels || !data.items) {
             throw new Error('Faltan datos esenciales o algún JSON tiene errores de sintaxis.');
         }
+
+        const visualSources = Object.values(data.heroes)
+            .flatMap((hero) => collectVisualSources(hero.visual));
+        await preloadImages(visualSources);
 
         game.heroDatabase = data.heroes;
         game.enemyDatabase = data.enemies;
