@@ -11,6 +11,7 @@ La versión 1.1.0 también puede instalarse como PWA, conserva los recursos esen
 ## Plan de desarrollo
 
 - [Roadmap completo](docs/ROADMAP.md)
+- [Roadmap de expansión 1.2 a 2.0](docs/ROADMAP_EXPANSION.md)
 - [Pipeline profesional de sprites](docs/SPRITE_PIPELINE.md)
 - [Objetivo y benchmark de rendimiento](docs/PERFORMANCE.md)
 

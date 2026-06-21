@@ -164,4 +164,4 @@ Este roadmap convierte el prototipo actual en un tower defense pulido, escalable
 4. Fases 6 y 7.
 5. Fases 8 y 9.
 
-No conviene producir sprites para los 31 heroes antes de cerrar el contrato de datos, animacion y combate con la vertical slice de cinco heroes.
+El primer ciclo esta completo. Las Fases 10 a 20, con mejoras tacticas, objetos, produccion de los 31 heroes, campaña adicional, modos y endgame, se detallan en [ROADMAP_EXPANSION.md](ROADMAP_EXPANSION.md).
