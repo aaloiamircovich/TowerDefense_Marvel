@@ -17,6 +17,11 @@ export class CombatSystem {
 
         const enemies = attacker?.game?.enemies || [];
         if (projectile.splashRadius > 0) {
+            attacker?.game?.vfx?.addBurst(target.x, target.y, {
+                color: projectile.color,
+                radius: projectile.splashRadius,
+                duration: 0.32
+            });
             enemies
                 .filter((enemy) => enemy !== target && enemy.isAlive && CombatSystem.distance(enemy, target) <= projectile.splashRadius)
                 .forEach((enemy) => {
@@ -34,6 +39,11 @@ export class CombatSystem {
                     .sort((a, b) => CombatSystem.distance(a, current) - CombatSystem.distance(b, current))[0];
                 if (!next) break;
                 CombatSystem.applyDamage(projectile, next, attacker, resourceManager, projectile.chainFactor ** (jump + 1));
+                attacker?.game?.vfx?.addBeam(current, next, {
+                    color: projectile.color,
+                    width: 3,
+                    duration: 0.16
+                });
                 visited.add(next);
                 current = next;
                 hits++;

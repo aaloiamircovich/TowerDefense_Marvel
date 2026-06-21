@@ -70,6 +70,23 @@ export class Enemy {
             return true;
         }
 
+        if (type === 'web') {
+            const web = this.debuffs.find((debuff) => debuff.type === 'web');
+            if (web) {
+                web.duration = Math.max(web.duration, duration);
+                web.stacks = (web.stacks || 0) + 1;
+                web.source = source || web.source;
+                if (web.stacks >= 3) {
+                    web.stacks = 0;
+                    this.applyStatus({ type: 'stun', duration: 0.7, power: 1 }, source);
+                    source?.recordAbility?.();
+                }
+            } else {
+                this.debuffs.push({ type, duration, power, source, stacks: 1, tickTimer: 0 });
+            }
+            return true;
+        }
+
         const existing = this.debuffs.find((debuff) => debuff.type === type);
         if (existing) {
             existing.duration = Math.max(existing.duration, duration);
@@ -101,12 +118,14 @@ export class Enemy {
         this.debuffs = this.debuffs.filter((debuff) => debuff.duration > 0);
 
         const slow = this.debuffs.find((debuff) => debuff.type === 'slow');
+        const web = this.debuffs.find((debuff) => debuff.type === 'web' && debuff.stacks > 0);
         const stunned = this.debuffs.some((debuff) => debuff.type === 'stun');
 
         if (stunned) {
             this.speed = 0;
-        } else if (slow) {
-            this.speed = this.baseSpeed * Math.max(0.2, 1 - slow.power);
+        } else if (slow || web) {
+            const slowPower = Math.max(slow?.power || 0, (web?.power || 0) * (web?.stacks || 0));
+            this.speed = this.baseSpeed * Math.max(0.2, 1 - slowPower);
         } else {
             this.speed = this.baseSpeed;
         }
@@ -260,7 +279,8 @@ export class Enemy {
             burn: '#ff6b35',
             bleed: '#e63946',
             armorBreak: '#b8b8b8',
-            mark: '#d86cff'
+            mark: '#d86cff',
+            web: '#f4f7ff'
         };
         this.debuffs.forEach((debuff, index) => {
             ctx.fillStyle = colors[debuff.type] || '#ffffff';

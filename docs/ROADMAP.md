@@ -4,13 +4,12 @@ Este roadmap convierte el prototipo actual en un tower defense pulido, escalable
 
 ## Estado actual auditado
 
-- 31 heroes definidos, pero 31 rutas `sprite` apuntan a archivos inexistentes.
-- Solo Iron Man y Spider-Man tienen assets locales aprovechables.
-- 4 heroes tienen logica de habilidad especifica; el resto solo tiene descripcion.
-- 15 enemigos normales y 15 jefes definidos.
-- No hay tests automatizados, guardado persistente, audio ni pipeline de sprites.
-- `UIManager.js` concentra demasiadas responsabilidades y debe dividirse.
-- `data/bootstrapData.js` duplica los JSON y necesita generacion automatica.
+- 31 heroes definidos; Iron Man y Spider-Man usan sprites animados y tres heroes cuentan con arte procedural temporal.
+- Cinco heroes tienen kits completos y el resto ya comparte el nucleo avanzado de proyectiles y estados.
+- 15 enemigos normales y 15 jefes estan definidos para la siguiente fase.
+- Hay 33 tests, validacion de datos, CI, audio sintetizado y pipeline de sprites.
+- `UIManager.js` aun concentra demasiadas responsabilidades y debe dividirse antes de ampliar la progresion.
+- `data/bootstrapData.js` se genera automaticamente desde los JSON fuente.
 
 ## Fase 0 - Baseline estable
 
@@ -52,6 +51,8 @@ Este roadmap convierte el prototipo actual en un tower defense pulido, escalable
 
 **Terminado cuando:** los resultados de combate son deterministas con semilla y tienen tests para cada efecto.
 
+**Estado:** implementada. El daño usa una fuente aleatoria sembrable, todos los estados del listado tienen lógica real y la telemetría por héroe se muestra en partida.
+
 ## Fase 3 - Vertical slice Marvel
 
 **Objetivo:** cinco heroes completos y claramente distintos.
@@ -66,6 +67,8 @@ Este roadmap convierte el prototipo actual en un tower defense pulido, escalable
 - Reescribir las descripciones para que reflejen exactamente la implementacion.
 
 **Terminado cuando:** los cinco permiten composiciones diferentes y ninguna habilidad es solo texto.
+
+**Estado:** implementada. Los cinco kits tienen mecanicas, escalado por nivel, cooldown o carga visible, VFX y audio. Capitan America, Thor y Doctor Strange usan animacion procedural mientras sus sprites definitivos recorren el pipeline visual.
 
 ## Fase 4 - Enemigos, facciones y jefes
 

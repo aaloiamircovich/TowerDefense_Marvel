@@ -11,7 +11,8 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.5,
       "canSeeStealth": true,
       "ability": "SOBRECARGA ARC",
-      "abilityDesc": "Cada 3 ataques dispara un grueso láser azul que atraviesa a múltiples enemigos en línea recta.",
+      "abilityDesc": "Cada tercer ataque activa un láser ARC que atraviesa la línea de tiro, inflige 90% de daño adicional e ignora 35% de armadura.",
+      "niche": "daño lineal y antiarmadura",
       "sprite": "assets/images/heroes/iron_man/portrait.png",
       "evolutionId": "iron_man_extremis",
       "visual": {
@@ -65,7 +66,8 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 2.2,
       "canSeeStealth": true,
       "ability": "TELARAÑA",
-      "abilityDesc": "Envuelve a los enemigos en redes, reduciendo drásticamente su velocidad de movimiento.",
+      "abilityDesc": "Cada impacto acumula una red y reduce 20% la velocidad. Al llegar a tres redes, inmoviliza al objetivo durante 0.7 segundos.",
+      "niche": "control constante y detección de sigilo",
       "sprite": "assets/images/heroes/spiderman/portrait.png",
       "evolutionId": "iron_spider",
       "visual": {
@@ -118,7 +120,8 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.2,
       "canSeeStealth": false,
       "ability": "REBOTE DE ESCUDO",
-      "abilityDesc": "Lanza su escudo, el cual rebota automáticamente entre 3 enemigos cercanos haciendo daño en cadena.",
+      "abilityDesc": "El escudo golpea al objetivo, rebota dos veces y regresa. Su liderazgo da +10% de daño y +15% de cadencia a aliados cercanos.",
+      "niche": "soporte de escuadrón y cadenas",
       "sprite": "assets/images/heroes/capitan_america.png",
       "allowedTerrains": [
         1,
@@ -136,7 +139,8 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 0.8,
       "canSeeStealth": false,
       "ability": "TORMENTA DIVINA",
-      "abilityDesc": "Invoca enormes rayos del cielo que caen sobre el camino y causan daño masivo en área.",
+      "abilityDesc": "Sus ataques encadenan rayos. Cada 11 segundos, Tormenta Divina golpea hasta cinco enemigos y los aturde brevemente.",
+      "niche": "daño masivo contra grupos",
       "sprite": "assets/images/heroes/thor.png",
       "allowedTerrains": [
         0,
@@ -227,7 +231,8 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1,
       "canSeeStealth": true,
       "ability": "PORTAL MÍSTICO",
-      "abilityDesc": "Abre portales dorados frente a él, duplicando los proyectiles mágicos que dispara.",
+      "abilityDesc": "Cada segundo ataque se duplica mediante un portal. Cada 9 segundos crea un campo temporal que ralentiza 62% a todos los enemigos cercanos.",
+      "niche": "amplificación de proyectiles y control temporal",
       "sprite": "assets/images/heroes/doctor_strange.png",
       "allowedTerrains": [
         0,

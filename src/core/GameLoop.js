@@ -1,5 +1,7 @@
 import { Hero } from '../entities/Hero.js';
 import { RandomSource } from '../utils/Random.js';
+import { CombatVfx } from '../rendering/CombatVfx.js';
+import { AudioManager } from '../audio/AudioManager.js';
 
 export class GameLoop {
     constructor(canvasId, options = {}) {
@@ -18,6 +20,8 @@ export class GameLoop {
         this.path = [];
         this.stars = 0;
         this.random = new RandomSource(options.seed ?? Date.now());
+        this.vfx = new CombatVfx();
+        this.audio = new AudioManager();
 
         this.waveManager = null;
         this.uiManager = null;
@@ -148,6 +152,7 @@ export class GameLoop {
 
         this.heroes.forEach((hero) => hero.update(dt, this.enemies, this.projectiles));
         this.projectiles.forEach((projectile) => projectile.update(dt));
+        this.vfx.update(dt);
 
         this.enemies = this.enemies.filter((enemy) => {
             if (!enemy.isAlive && !enemy.hasReachedEnd && !enemy.rewarded) {
@@ -178,6 +183,7 @@ export class GameLoop {
 
         this.drawPathGuide(ctx);
         this.enemies.forEach((enemy) => enemy.render(ctx));
+        this.vfx.render(ctx);
         this.heroes.forEach((hero) => hero.render(ctx));
         this.projectiles.forEach((projectile) => projectile.render(ctx));
         if (this.inputManager) this.inputManager.draw(ctx);

@@ -19,6 +19,7 @@ export class Projectile {
         this.chainFactor = config.chainFactor ?? 0.65;
         this.armorPenetration = config.armorPenetration || 0;
         this.returning = Boolean(config.returning);
+        this.visualStyle = config.visualStyle || 'energy';
         this.phase = 'outbound';
         this.isActive = true;
     }
@@ -69,10 +70,43 @@ export class Projectile {
         ctx.save();
         ctx.shadowColor = this.color;
         ctx.shadowBlur = 10;
-        ctx.fillStyle = this.color;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        ctx.fill();
+        if (this.visualStyle === 'shield') {
+            ctx.fillStyle = '#1d5fa7';
+            ctx.strokeStyle = '#f4f7ff';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.radius + 3, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+            ctx.fillStyle = '#e63946';
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, Math.max(2, this.radius - 1), 0, Math.PI * 2);
+            ctx.fill();
+        } else if (this.visualStyle === 'lightning') {
+            ctx.strokeStyle = this.color;
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(this.x - 7, this.y - 6);
+            ctx.lineTo(this.x + 1, this.y - 1);
+            ctx.lineTo(this.x - 2, this.y + 7);
+            ctx.lineTo(this.x + 8, this.y + 1);
+            ctx.stroke();
+        } else if (this.visualStyle === 'mystic') {
+            ctx.strokeStyle = '#f5a623';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.radius + 3, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.fillStyle = this.color;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+            ctx.fill();
+        } else {
+            ctx.fillStyle = this.color;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+            ctx.fill();
+        }
         ctx.restore();
     }
 }

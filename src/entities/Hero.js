@@ -1,6 +1,7 @@
 import { Projectile } from './Projectile.js';
 import { getCachedImage } from '../rendering/ImageCache.js';
 import { SpriteAnimator } from '../rendering/SpriteAnimator.js';
+import { HeroAbilitySystem } from '../systems/HeroAbilitySystem.js';
 
 export class Hero {
     constructor(config, x, y, game) {
@@ -29,12 +30,15 @@ export class Hero {
             kills: 0,
             shots: 0,
             crits: 0,
-            goldGenerated: 0
+            goldGenerated: 0,
+            abilityActivations: 0
         };
         this.size = 36;
         this.flashTimer = 0;
+        this.visualTime = 0;
         this.animator = config.visual ? new SpriteAnimator(config.visual) : null;
         this.legacyImage = getCachedImage(config.sprite);
+        this.abilitySystem = new HeroAbilitySystem(this);
     }
 
     getEffectiveStats() {
@@ -58,14 +62,16 @@ export class Hero {
             stats.fireRate *= 1.3;
         }
 
-        return stats;
+        return this.abilitySystem.applyStatModifiers(stats);
     }
 
     update(dt, enemies, projectiles) {
         this.timer += dt;
         this.flashTimer = Math.max(0, this.flashTimer - dt);
+        this.visualTime += dt;
         this.animator?.update(dt);
         const stats = this.getEffectiveStats();
+        this.abilitySystem.update(dt, enemies, stats, projectiles);
 
         if (this.timer >= 1 / stats.fireRate) {
             const target = this.getBestTarget(enemies, stats);
@@ -120,21 +126,24 @@ export class Hero {
             }
         }
 
-        projectiles.push(new Projectile(this.x, this.y, target, {
+        const projectileConfig = {
             attacker: this,
             damage: finalDamage,
             attackerType: this.category,
             effects: this.getProjectileEffects(),
             ...this.getProjectileProfile(),
             color: this.getProjectileColor(),
-            radius: isCrit ? 7 : 5
-        }));
+            radius: isCrit ? 7 : 5,
+            visualStyle: this.getProjectileVisualStyle()
+        };
+        projectiles.push(new Projectile(this.x, this.y, target, projectileConfig));
+        this.abilitySystem.onAttack(target, stats, projectileConfig, projectiles);
     }
 
     getProjectileEffects() {
         const effects = [];
 
-        if (this.id === 'spiderman') effects.push({ type: 'slow', duration: 1.4, power: 0.45, chance: 0.75 });
+        effects.push(...this.abilitySystem.getAttackEffects());
         if (this.id === 'black_widow') effects.push({ type: 'stun', duration: 0.45, power: 1, chance: 0.18 });
         if (this.id === 'groot') effects.push({ type: 'slow', duration: 1.8, power: 0.6, chance: 0.5 });
         if (this.id === 'storm') effects.push({ type: 'slow', duration: 1.1, power: 0.35, chance: 0.7 });
@@ -181,6 +190,17 @@ export class Hero {
         this.combatStats.goldGenerated += Math.max(0, amount || 0);
     }
 
+    recordAbility() {
+        this.combatStats.abilityActivations++;
+    }
+
+    getProjectileVisualStyle() {
+        if (this.id === 'capitan_america') return 'shield';
+        if (this.id === 'thor') return 'lightning';
+        if (this.id === 'doctor_strange') return 'mystic';
+        return 'energy';
+    }
+
     getProjectileColor() {
         const colors = {
             Tecnológico: '#40c9ff',
@@ -224,10 +244,28 @@ export class Hero {
         ctx.font = 'bold 10px Segoe UI';
         ctx.textAlign = 'center';
         ctx.fillText(`Lv.${this.level}`, this.x, this.y - 24);
+        this.renderAbilityIndicator(ctx);
         ctx.restore();
     }
 
+    renderAbilityIndicator(ctx) {
+        const state = this.abilitySystem.getDisplayState();
+        if (!state || state.progress === null) return;
+
+        const width = 30;
+        const y = this.y + 23;
+        ctx.fillStyle = 'rgba(5, 7, 11, 0.85)';
+        ctx.fillRect(this.x - width / 2, y, width, 4);
+        ctx.fillStyle = state.ready ? '#ffd166' : '#40c9ff';
+        ctx.fillRect(this.x - width / 2, y, width * Math.max(0, Math.min(1, state.progress)), 4);
+    }
+
     renderFallback(ctx) {
+        if (['capitan_america', 'thor', 'doctor_strange'].includes(this.id)) {
+            this.renderMarvelFallback(ctx);
+            return;
+        }
+
         ctx.fillStyle = this.getProjectileColor();
         ctx.beginPath();
         ctx.roundRect(this.x - 17, this.y - 17, 34, 34, 8);
@@ -241,5 +279,68 @@ export class Hero {
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText(this.name.charAt(0), this.x, this.y + 1);
+    }
+
+    renderMarvelFallback(ctx) {
+        const bob = Math.sin(this.visualTime * 4) * 1.2;
+        const attackScale = this.flashTimer > 0 ? 1.12 : 1;
+        ctx.save();
+        ctx.translate(this.x, this.y + bob);
+        ctx.scale(attackScale, attackScale);
+
+        if (this.id === 'capitan_america') {
+            ctx.fillStyle = '#183d73';
+            ctx.beginPath();
+            ctx.arc(0, 0, 17, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#f4f7ff';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.arc(0, 0, 12, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.fillStyle = '#e63946';
+            ctx.beginPath();
+            ctx.arc(0, 0, 7, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(-1.5, -5, 3, 10);
+            ctx.fillRect(-5, -1.5, 10, 3);
+        } else if (this.id === 'thor') {
+            ctx.fillStyle = '#263b63';
+            ctx.beginPath();
+            ctx.roundRect(-14, -13, 28, 30, 7);
+            ctx.fill();
+            ctx.fillStyle = '#d9e2ec';
+            ctx.fillRect(4, -17, 14, 9);
+            ctx.fillStyle = '#8b5e3c';
+            ctx.fillRect(3, -9, 4, 20);
+            ctx.fillStyle = '#e63946';
+            ctx.beginPath();
+            ctx.moveTo(-13, -8);
+            ctx.lineTo(-20, 15);
+            ctx.lineTo(-7, 10);
+            ctx.closePath();
+            ctx.fill();
+        } else {
+            ctx.fillStyle = '#1d4f79';
+            ctx.beginPath();
+            ctx.arc(0, -2, 14, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#b51f35';
+            ctx.beginPath();
+            ctx.moveTo(-12, -8);
+            ctx.lineTo(-20, 18);
+            ctx.lineTo(0, 11);
+            ctx.lineTo(20, 18);
+            ctx.lineTo(12, -8);
+            ctx.closePath();
+            ctx.fill();
+            ctx.strokeStyle = '#f5a623';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(0, 1, 20 + Math.sin(this.visualTime * 5) * 2, 0, Math.PI * 2);
+            ctx.stroke();
+        }
+        ctx.restore();
     }
 }

@@ -154,6 +154,7 @@ export class UIManager {
         const terrains = this.getTerrainText(hero.allowedTerrains || config.allowedTerrains || [1]);
         const items = hero.items || [];
         const combat = hero.combatStats || {};
+        const abilityState = hero.abilitySystem?.getDisplayState?.() || null;
 
         this.panelContent.innerHTML = `
             <div class="hero-detail">
@@ -192,12 +193,20 @@ export class UIManager {
                             <p><span>Bajas</span><strong>${combat.kills || 0}</strong></p>
                             <p><span>Disparos</span><strong>${combat.shots || 0}</strong></p>
                             <p><span>Críticos</span><strong>${combat.crits || 0}</strong></p>
+                            <p><span>Habilidades</span><strong>${combat.abilityActivations || 0}</strong></p>
                         </div>
                     </div>
 
                     <div class="ability-card">
                         <h3>${config.ability || 'Ataque básico'}</h3>
                         <p>${config.abilityDesc || 'Ataca al enemigo objetivo con su daño base.'}</p>
+                        ${config.niche ? `<div class="ability-niche">Rol táctico: <strong>${config.niche}</strong></div>` : ''}
+                        ${abilityState ? `
+                            <div class="ability-status ${abilityState.ready ? 'ready' : ''}">
+                                <span>${abilityState.label}</span>
+                                ${abilityState.progress === null ? '' : `<div class="ability-meter"><i style="width:${Math.round(abilityState.progress * 100)}%"></i></div>`}
+                            </div>
+                        ` : ''}
                     </div>
 
                     <div class="equipment-card">
@@ -476,6 +485,10 @@ export class UIManager {
                     <input type="checkbox" id="toggle-grid" ${this.game.showGrid ? 'checked' : ''}>
                     <span>Mostrar cuadrícula táctica</span>
                 </label>
+                <label class="setting-toggle">
+                    <input type="checkbox" id="toggle-audio" ${this.game.audio?.enabled ? 'checked' : ''}>
+                    <span>Audio de combate</span>
+                </label>
                 <button class="btn-primary ghost" id="reset-placement">Cancelar colocación</button>
                 <button class="btn-primary danger" id="clear-run">Reiniciar nivel</button>
             </div>
@@ -489,6 +502,11 @@ export class UIManager {
         document.getElementById('toggle-grid')?.addEventListener('change', (event) => {
             this.game.showGrid = event.target.checked;
             this.showToast(event.target.checked ? 'Cuadrícula visible' : 'Cuadrícula oculta', 'info');
+        });
+
+        document.getElementById('toggle-audio')?.addEventListener('change', (event) => {
+            this.game.audio?.setEnabled(event.target.checked);
+            this.showToast(event.target.checked ? 'Audio activado' : 'Audio silenciado', 'info');
         });
 
         document.getElementById('reset-placement')?.addEventListener('click', () => {

@@ -2,7 +2,7 @@
   "iron_man": {
     "id": "iron_man", "name": "Iron Man", "category": "Tecnológico", "rarity": "Rare",
     "cost": 250, "damage": 25, "range": 160, "fireRate": 1.5, "canSeeStealth": true,
-    "ability": "SOBRECARGA ARC", "abilityDesc": "Cada 3 ataques dispara un grueso láser azul que atraviesa a múltiples enemigos en línea recta.", "sprite": "assets/images/heroes/iron_man/portrait.png", "evolutionId": "iron_man_extremis",
+    "ability": "SOBRECARGA ARC", "abilityDesc": "Cada tercer ataque activa un láser ARC que atraviesa la línea de tiro, inflige 90% de daño adicional e ignora 35% de armadura.", "niche": "daño lineal y antiarmadura", "sprite": "assets/images/heroes/iron_man/portrait.png", "evolutionId": "iron_man_extremis",
     "visual": {
       "portrait": "assets/images/heroes/iron_man/portrait.png",
       "size": 96,
@@ -39,7 +39,7 @@
   "spiderman": {
     "id": "spiderman", "name": "Spider-Man", "category": "Urbano", "rarity": "Common",
     "cost": 150, "damage": 15, "range": 110, "fireRate": 2.2, "canSeeStealth": true,
-    "ability": "TELARAÑA", "abilityDesc": "Envuelve a los enemigos en redes, reduciendo drásticamente su velocidad de movimiento.", "sprite": "assets/images/heroes/spiderman/portrait.png", "evolutionId": "iron_spider",
+    "ability": "TELARAÑA", "abilityDesc": "Cada impacto acumula una red y reduce 20% la velocidad. Al llegar a tres redes, inmoviliza al objetivo durante 0.7 segundos.", "niche": "control constante y detección de sigilo", "sprite": "assets/images/heroes/spiderman/portrait.png", "evolutionId": "iron_spider",
     "visual": {
       "portrait": "assets/images/heroes/spiderman/portrait.png",
       "size": 96,
@@ -76,13 +76,13 @@
   "capitan_america": {
     "id": "capitan_america", "name": "Capitán América", "category": "Urbano", "rarity": "Rare",
     "cost": 200, "damage": 30, "range": 100, "fireRate": 1.2, "canSeeStealth": false,
-    "ability": "REBOTE DE ESCUDO", "abilityDesc": "Lanza su escudo, el cual rebota automáticamente entre 3 enemigos cercanos haciendo daño en cadena.", "sprite": "assets/images/heroes/capitan_america.png",
+    "ability": "REBOTE DE ESCUDO", "abilityDesc": "El escudo golpea al objetivo, rebota dos veces y regresa. Su liderazgo da +10% de daño y +15% de cadencia a aliados cercanos.", "niche": "soporte de escuadrón y cadenas", "sprite": "assets/images/heroes/capitan_america.png",
     "allowedTerrains": [1, 3]
   },
   "thor": {
     "id": "thor", "name": "Thor", "category": "Místico", "rarity": "Legendary",
     "cost": 600, "damage": 70, "range": 180, "fireRate": 0.8, "canSeeStealth": false,
-    "ability": "TORMENTA DIVINA", "abilityDesc": "Invoca enormes rayos del cielo que caen sobre el camino y causan daño masivo en área.", "sprite": "assets/images/heroes/thor.png",
+    "ability": "TORMENTA DIVINA", "abilityDesc": "Sus ataques encadenan rayos. Cada 11 segundos, Tormenta Divina golpea hasta cinco enemigos y los aturde brevemente.", "niche": "daño masivo contra grupos", "sprite": "assets/images/heroes/thor.png",
     "allowedTerrains": [0, 1, 3]
   },
   "hulk": {
@@ -112,7 +112,7 @@
   "doctor_strange": {
     "id": "doctor_strange", "name": "Doctor Strange", "category": "Místico", "rarity": "Legendary",
     "cost": 550, "damage": 55, "range": 200, "fireRate": 1.0, "canSeeStealth": true,
-    "ability": "PORTAL MÍSTICO", "abilityDesc": "Abre portales dorados frente a él, duplicando los proyectiles mágicos que dispara.", "sprite": "assets/images/heroes/doctor_strange.png",
+    "ability": "PORTAL MÍSTICO", "abilityDesc": "Cada segundo ataque se duplica mediante un portal. Cada 9 segundos crea un campo temporal que ralentiza 62% a todos los enemigos cercanos.", "niche": "amplificación de proyectiles y control temporal", "sprite": "assets/images/heroes/doctor_strange.png",
     "allowedTerrains": [0, 1, 3]
   },
   "captain_marvel": {

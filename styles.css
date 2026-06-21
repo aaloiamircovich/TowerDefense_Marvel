@@ -678,6 +678,43 @@ canvas {
     text-transform: uppercase;
 }
 
+.ability-niche {
+    margin-top: 12px;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.ability-status {
+    display: grid;
+    gap: 7px;
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+    color: #40c9ff;
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.ability-status.ready {
+    color: var(--bright-yellow);
+}
+
+.ability-meter {
+    height: 5px;
+    overflow: hidden;
+    border-radius: 3px;
+    background: #080b10;
+}
+
+.ability-meter i {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: currentColor;
+    transition: width 160ms linear;
+}
+
 select {
     width: 100%;
     min-height: 38px;

@@ -54,6 +54,7 @@ async function initGame() {
             game.heroes = [];
             game.enemies = [];
             game.projectiles = [];
+            game.vfx.effects = [];
             game.path = normalizePath(levelConfig.path, game.canvas.width, game.canvas.height);
             document.body.dataset.levelTheme = levelConfig.theme?.id || 'new-york';
             game.generateLevelMap();
