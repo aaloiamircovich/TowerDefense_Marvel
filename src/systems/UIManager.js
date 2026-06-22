@@ -223,7 +223,7 @@ export class UIManager {
 
         const roles = {
             runner: 'Corredor', tank: 'Tanque', shield: 'Escudo', stealth: 'Sigilo',
-            flying: 'Volador', summoner: 'Invocador', support: 'Soporte', boss: 'Jefe', soldier: 'Soldado'
+            flying: 'Volador', summoner: 'Invocador', support: 'Soporte', commander: 'Comandante', phaser: 'Faseador', boss: 'Jefe', soldier: 'Soldado'
         };
         const categoryColors = {
             Tecnológico: '#40c9ff', Místico: '#b865ff', Urbano: '#e63946',
@@ -743,7 +743,7 @@ export class UIManager {
     getEnemyRole(archetype, isBoss = false) {
         const roles = {
             runner: 'Corredor', tank: 'Tanque', shield: 'Escudo', stealth: 'Sigilo',
-            flying: 'Volador', summoner: 'Invocador', support: 'Soporte', boss: 'Jefe', soldier: 'Soldado'
+            flying: 'Volador', summoner: 'Invocador', support: 'Soporte', commander: 'Comandante', phaser: 'Faseador', boss: 'Jefe', soldier: 'Soldado'
         };
         return roles[archetype] || (isBoss ? 'Jefe' : 'Soldado');
     }

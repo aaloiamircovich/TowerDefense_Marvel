@@ -582,14 +582,14 @@ window.__MARVEL_TD_DATA__ = {
       "name": "Captain Marvel",
       "category": "Cósmico",
       "rarity": "Legendary",
-      "cost": 700,
+      "cost": 650,
       "damage": 90,
       "range": 250,
       "fireRate": 0.7,
       "canSeeStealth": false,
-      "ability": "FORMA BINARIA",
-      "abilityDesc": "Al derrotar a un enemigo, entra en estado ígneo incrementando enormemente su daño durante 3 segundos.",
-      "sprite": "assets/images/heroes/captain_marvel.png",
+      "ability": "ENERGÍA BINARIA",
+      "abilityDesc": "Carga energía al atacar y derrotar enemigos. Al superar 60 vuela a una posición avanzada, atraviesa la línea enemiga y regresa a su puesto.",
+      "sprite": "assets/images/heroes/captain_marvel/portrait.png",
       "allowedTerrains": [
         0,
         1,
@@ -600,10 +600,45 @@ window.__MARVEL_TD_DATA__ = {
       ],
       "formationRole": "artillery",
       "teamMetrics": {
-        "damage": 3,
+        "damage": 5,
         "control": 2,
         "support": 2,
-        "detection": 1
+        "detection": 3
+      },
+      "niche": "artillería móvil y ruptura de líneas",
+      "visual": {
+        "portrait": "assets/images/heroes/captain_marvel/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/captain_marvel/sprites/north.png",
+          "north-east": "assets/images/heroes/captain_marvel/sprites/north-east.png",
+          "east": "assets/images/heroes/captain_marvel/sprites/east.png",
+          "south-east": "assets/images/heroes/captain_marvel/sprites/south-east.png",
+          "south": "assets/images/heroes/captain_marvel/sprites/south.png",
+          "south-west": "assets/images/heroes/captain_marvel/sprites/south-west.png",
+          "west": "assets/images/heroes/captain_marvel/sprites/west.png",
+          "north-west": "assets/images/heroes/captain_marvel/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 14,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/captain_marvel/shoot/0.png",
+            "assets/images/heroes/captain_marvel/shoot/1.png",
+            "assets/images/heroes/captain_marvel/shoot/2.png",
+            "assets/images/heroes/captain_marvel/shoot/3.png",
+            "assets/images/heroes/captain_marvel/shoot/4.png",
+            "assets/images/heroes/captain_marvel/shoot/5.png",
+            "assets/images/heroes/captain_marvel/shoot/6.png",
+            "assets/images/heroes/captain_marvel/shoot/7.png",
+            "assets/images/heroes/captain_marvel/shoot/8.png"
+          ]
+        }
       }
     },
     "wolverine": {
@@ -697,14 +732,14 @@ window.__MARVEL_TD_DATA__ = {
       "name": "Star-Lord",
       "category": "Cósmico",
       "rarity": "Common",
-      "cost": 160,
+      "cost": 220,
       "damage": 20,
       "range": 160,
       "fireRate": 1.6,
       "canSeeStealth": false,
-      "ability": "DISPARO DOBLE",
-      "abilityDesc": "Usa sus dos blásters simultáneamente para disparar a dos objetivos diferentes a la vez.",
-      "sprite": "assets/images/heroes/star_lord.png",
+      "ability": "BLÁSTERS ELEMENTALES",
+      "abilityDesc": "Dispara a dos blancos y alterna plasma perforante, munición criogénica o cargas incendiarias.",
+      "sprite": "assets/images/heroes/star_lord/portrait.png",
       "allowedTerrains": [
         1,
         3
@@ -714,10 +749,45 @@ window.__MARVEL_TD_DATA__ = {
       ],
       "formationRole": "artillery",
       "teamMetrics": {
-        "damage": 3,
-        "control": 2,
-        "support": 2,
-        "detection": 1
+        "damage": 4,
+        "control": 4,
+        "support": 3,
+        "detection": 2
+      },
+      "niche": "doble objetivo y respuesta elemental",
+      "visual": {
+        "portrait": "assets/images/heroes/star_lord/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/star_lord/sprites/north.png",
+          "north-east": "assets/images/heroes/star_lord/sprites/north-east.png",
+          "east": "assets/images/heroes/star_lord/sprites/east.png",
+          "south-east": "assets/images/heroes/star_lord/sprites/south-east.png",
+          "south": "assets/images/heroes/star_lord/sprites/south.png",
+          "south-west": "assets/images/heroes/star_lord/sprites/south-west.png",
+          "west": "assets/images/heroes/star_lord/sprites/west.png",
+          "north-west": "assets/images/heroes/star_lord/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 14,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/star_lord/shoot/0.png",
+            "assets/images/heroes/star_lord/shoot/1.png",
+            "assets/images/heroes/star_lord/shoot/2.png",
+            "assets/images/heroes/star_lord/shoot/3.png",
+            "assets/images/heroes/star_lord/shoot/4.png",
+            "assets/images/heroes/star_lord/shoot/5.png",
+            "assets/images/heroes/star_lord/shoot/6.png",
+            "assets/images/heroes/star_lord/shoot/7.png",
+            "assets/images/heroes/star_lord/shoot/8.png"
+          ]
+        }
       }
     },
     "groot": {
@@ -725,14 +795,14 @@ window.__MARVEL_TD_DATA__ = {
       "name": "Groot",
       "category": "Cósmico",
       "rarity": "Rare",
-      "cost": 260,
+      "cost": 300,
       "damage": 45,
       "range": 120,
       "fireRate": 0.6,
       "canSeeStealth": false,
-      "ability": "RAÍCES",
-      "abilityDesc": "Atrapa a los enemigos en su lugar con ramas y raíces, inmovilizándolos temporalmente.",
-      "sprite": "assets/images/heroes/groot.png",
+      "ability": "MURO DE RAÍCES",
+      "abilityDesc": "Levanta una barrera temporal sobre la ruta que ralentiza grupos sin desplazarlos. Con otro Guardián recupera una vida cada veinte segundos.",
+      "sprite": "assets/images/heroes/groot/portrait.png",
       "allowedTerrains": [
         1,
         3
@@ -742,10 +812,45 @@ window.__MARVEL_TD_DATA__ = {
       ],
       "formationRole": "support",
       "teamMetrics": {
-        "damage": 3,
-        "control": 2,
-        "support": 2,
+        "damage": 2,
+        "control": 5,
+        "support": 5,
         "detection": 1
+      },
+      "niche": "control de paso y recuperación de Guardianes",
+      "visual": {
+        "portrait": "assets/images/heroes/groot/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/groot/sprites/north.png",
+          "north-east": "assets/images/heroes/groot/sprites/north-east.png",
+          "east": "assets/images/heroes/groot/sprites/east.png",
+          "south-east": "assets/images/heroes/groot/sprites/south-east.png",
+          "south": "assets/images/heroes/groot/sprites/south.png",
+          "south-west": "assets/images/heroes/groot/sprites/south-west.png",
+          "west": "assets/images/heroes/groot/sprites/west.png",
+          "north-west": "assets/images/heroes/groot/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 14,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/groot/shoot/0.png",
+            "assets/images/heroes/groot/shoot/1.png",
+            "assets/images/heroes/groot/shoot/2.png",
+            "assets/images/heroes/groot/shoot/3.png",
+            "assets/images/heroes/groot/shoot/4.png",
+            "assets/images/heroes/groot/shoot/5.png",
+            "assets/images/heroes/groot/shoot/6.png",
+            "assets/images/heroes/groot/shoot/7.png",
+            "assets/images/heroes/groot/shoot/8.png"
+          ]
+        }
       }
     },
     "gamora": {
@@ -753,14 +858,14 @@ window.__MARVEL_TD_DATA__ = {
       "name": "Gamora",
       "category": "Cósmico",
       "rarity": "Rare",
-      "cost": 340,
+      "cost": 360,
       "damage": 42,
       "range": 90,
       "fireRate": 1.9,
       "canSeeStealth": true,
-      "ability": "GOLPE MORTAL",
-      "abilityDesc": "Ejecutora implacable. Sus ataques siempre son críticos si el enemigo tiene menos del 30% de salud.",
-      "sprite": "assets/images/heroes/gamora.png",
+      "ability": "ASESINA DE ÉLITE",
+      "abilityDesc": "Encadena ataques cercanos y ejecuta enemigos no jefes por debajo del 25% de salud.",
+      "sprite": "assets/images/heroes/gamora/portrait.png",
       "allowedTerrains": [
         1,
         3
@@ -770,10 +875,45 @@ window.__MARVEL_TD_DATA__ = {
       ],
       "formationRole": "vanguard",
       "teamMetrics": {
-        "damage": 3,
+        "damage": 5,
         "control": 2,
-        "support": 2,
+        "support": 1,
         "detection": 4
+      },
+      "niche": "ejecución, cadenas cuerpo a cuerpo y élites",
+      "visual": {
+        "portrait": "assets/images/heroes/gamora/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/gamora/sprites/north.png",
+          "north-east": "assets/images/heroes/gamora/sprites/north-east.png",
+          "east": "assets/images/heroes/gamora/sprites/east.png",
+          "south-east": "assets/images/heroes/gamora/sprites/south-east.png",
+          "south": "assets/images/heroes/gamora/sprites/south.png",
+          "south-west": "assets/images/heroes/gamora/sprites/south-west.png",
+          "west": "assets/images/heroes/gamora/sprites/west.png",
+          "north-west": "assets/images/heroes/gamora/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 14,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/gamora/shoot/0.png",
+            "assets/images/heroes/gamora/shoot/1.png",
+            "assets/images/heroes/gamora/shoot/2.png",
+            "assets/images/heroes/gamora/shoot/3.png",
+            "assets/images/heroes/gamora/shoot/4.png",
+            "assets/images/heroes/gamora/shoot/5.png",
+            "assets/images/heroes/gamora/shoot/6.png",
+            "assets/images/heroes/gamora/shoot/7.png",
+            "assets/images/heroes/gamora/shoot/8.png"
+          ]
+        }
       }
     },
     "scarlet_witch": {
@@ -1142,14 +1282,14 @@ window.__MARVEL_TD_DATA__ = {
       "name": "Silver Surfer",
       "category": "Cósmico",
       "rarity": "Legendary",
-      "cost": 800,
+      "cost": 760,
       "damage": 100,
       "range": 300,
       "fireRate": 0.6,
       "canSeeStealth": true,
-      "ability": "ENERGÍA CÓSMICA",
-      "abilityDesc": "Canaliza el Poder Cósmico. Sus ataques impactan generando explosiones estelares de gran área.",
-      "sprite": "assets/images/heroes/silver_surfer.png",
+      "ability": "PODER CÓSMICO",
+      "abilityDesc": "Traza rayos que atraviesan enemigos y configura su poder para daño, control o resonancia de equipo.",
+      "sprite": "assets/images/heroes/silver_surfer/portrait.png",
       "allowedTerrains": [
         0,
         1,
@@ -1158,10 +1298,45 @@ window.__MARVEL_TD_DATA__ = {
       "tags": [],
       "formationRole": "artillery",
       "teamMetrics": {
-        "damage": 3,
-        "control": 2,
-        "support": 2,
-        "detection": 4
+        "damage": 5,
+        "control": 4,
+        "support": 3,
+        "detection": 5
+      },
+      "niche": "trayectorias globales y potencia configurable",
+      "visual": {
+        "portrait": "assets/images/heroes/silver_surfer/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/silver_surfer/sprites/north.png",
+          "north-east": "assets/images/heroes/silver_surfer/sprites/north-east.png",
+          "east": "assets/images/heroes/silver_surfer/sprites/east.png",
+          "south-east": "assets/images/heroes/silver_surfer/sprites/south-east.png",
+          "south": "assets/images/heroes/silver_surfer/sprites/south.png",
+          "south-west": "assets/images/heroes/silver_surfer/sprites/south-west.png",
+          "west": "assets/images/heroes/silver_surfer/sprites/west.png",
+          "north-west": "assets/images/heroes/silver_surfer/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 14,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/silver_surfer/shoot/0.png",
+            "assets/images/heroes/silver_surfer/shoot/1.png",
+            "assets/images/heroes/silver_surfer/shoot/2.png",
+            "assets/images/heroes/silver_surfer/shoot/3.png",
+            "assets/images/heroes/silver_surfer/shoot/4.png",
+            "assets/images/heroes/silver_surfer/shoot/5.png",
+            "assets/images/heroes/silver_surfer/shoot/6.png",
+            "assets/images/heroes/silver_surfer/shoot/7.png",
+            "assets/images/heroes/silver_surfer/shoot/8.png"
+          ]
+        }
       }
     },
     "blade": {
@@ -1349,7 +1524,7 @@ window.__MARVEL_TD_DATA__ = {
         "reward": 18,
         "armor": 0.2,
         "stealth": false,
-        "faction": "Outriders",
+        "faction": "Chitauri",
         "archetype": "shield",
         "barrierRatio": 0.18,
         "threat": 3
@@ -1515,6 +1690,92 @@ window.__MARVEL_TD_DATA__ = {
         "faction": "Mercenarios",
         "archetype": "runner",
         "threat": 2
+      },
+      "kree_commander": {
+        "id": "kree_commander",
+        "name": "Comandante Kree",
+        "category": "Cósmico",
+        "hp": 260,
+        "speed": 44,
+        "reward": 34,
+        "armor": 0.32,
+        "stealth": false,
+        "faction": "Imperio Kree",
+        "archetype": "commander",
+        "behaviorCooldown": 5,
+        "commandPower": 0.22,
+        "threat": 4
+      },
+      "kree_sentry": {
+        "id": "kree_sentry",
+        "name": "Centinela Kree",
+        "category": "Cósmico",
+        "hp": 230,
+        "speed": 48,
+        "reward": 26,
+        "armor": 0.28,
+        "stealth": false,
+        "faction": "Imperio Kree",
+        "archetype": "shield",
+        "barrierRatio": 0.24,
+        "threat": 4
+      },
+      "chitauri_phaser": {
+        "id": "chitauri_phaser",
+        "name": "Faseador Chitauri",
+        "category": "Cósmico",
+        "hp": 145,
+        "speed": 72,
+        "reward": 28,
+        "armor": 0.08,
+        "stealth": false,
+        "faction": "Chitauri",
+        "archetype": "phaser",
+        "behaviorCooldown": 6,
+        "threat": 4
+      },
+      "chitauri_skimmer": {
+        "id": "chitauri_skimmer",
+        "name": "Deslizador Chitauri",
+        "category": "Cósmico",
+        "hp": 165,
+        "speed": 78,
+        "reward": 24,
+        "armor": 0.12,
+        "stealth": false,
+        "flying": true,
+        "faction": "Chitauri",
+        "archetype": "flying",
+        "threat": 3
+      },
+      "black_order_hunter": {
+        "id": "black_order_hunter",
+        "name": "Cazador de la Orden",
+        "category": "Cósmico",
+        "hp": 210,
+        "speed": 86,
+        "reward": 36,
+        "armor": 0.18,
+        "stealth": true,
+        "faction": "Orden Negra",
+        "archetype": "runner",
+        "threat": 4
+      },
+      "black_order_magus": {
+        "id": "black_order_magus",
+        "name": "Magus de la Orden",
+        "category": "Místico",
+        "hp": 280,
+        "speed": 42,
+        "reward": 42,
+        "armor": 0.2,
+        "stealth": false,
+        "faction": "Orden Negra",
+        "archetype": "summoner",
+        "summonId": "outrider",
+        "summonLimit": 3,
+        "behaviorCooldown": 6,
+        "threat": 5
       }
     },
     "bosses": {

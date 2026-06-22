@@ -85,6 +85,8 @@ Este segundo ciclo parte de una base estable: campaña de siete mapas, cinco her
 
 **Terminado cuando:** el contenido cosmico habilita estrategias que no dependen de torres estaticas tradicionales.
 
+**Estado:** implementada en la version 1.6.0. Captain Marvel vuela temporalmente entre posiciones, Star-Lord combina doble blanco y tres municiones, Groot crea muros de control y cura Guardianes, Gamora encadena ejecuciones y Silver Surfer atraviesa líneas con tres configuraciones. Knowhere incorpora comandantes Kree, faseadores y tropas Chitauri y de la Orden Negra; rutas, invocaciones y raíces están cubiertas por pruebas.
+
 ## Fase 15 - Heroes callejeros y Midnight Suns
 
 **Objetivo:** profundizar control, riesgo y combate cercano.

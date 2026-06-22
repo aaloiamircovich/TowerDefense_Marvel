@@ -120,6 +120,30 @@ test('Invocador crea refuerzos sobre su misma ruta', () => {
     assert.equal(summon.source, summoner);
 });
 
+test('Comandante Kree acelera aliados cercanos', () => {
+    const game = createEnemyGame();
+    const commander = new Enemy({ id: 'commander', hp: 100, speed: 1, archetype: 'commander', behaviorCooldown: 0.1, commandPower: 0.25 }, game.path, game);
+    const ally = new Enemy({ id: 'ally', hp: 100, speed: 40 }, game.path, game);
+    game.enemies = [commander, ally];
+
+    commander.update(0.2);
+    ally.updateDebuffs(0.1);
+    assert.ok(ally.debuffs.some((effect) => effect.type === 'haste'));
+    assert.equal(ally.speed, 50);
+});
+
+test('Faseador Chitauri entra en sigilo sin salir de la ruta', () => {
+    const game = createEnemyGame();
+    const phaser = new Enemy({ id: 'phaser', hp: 100, speed: 40, archetype: 'phaser', behaviorCooldown: 0.1 }, game.path, game);
+    phaser.x = 40;
+    phaser.distanceTravelled = 40;
+
+    phaser.update(0.2);
+    assert.equal(phaser.stealth, true);
+    assert.equal(phaser.y, 0);
+    assert.ok(phaser.x > 40);
+});
+
 test('Jefe anuncia y activa una fase por umbral de salud', () => {
     const game = createEnemyGame();
     const boss = new Enemy({

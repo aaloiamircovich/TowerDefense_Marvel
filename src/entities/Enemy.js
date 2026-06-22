@@ -137,6 +137,7 @@ export class Enemy {
         const slow = this.debuffs.find((debuff) => debuff.type === 'slow');
         const web = this.debuffs.find((debuff) => debuff.type === 'web' && debuff.stacks > 0);
         const stunned = this.debuffs.some((debuff) => debuff.type === 'stun');
+        const haste = this.debuffs.find((debuff) => debuff.type === 'haste');
 
         if (stunned) {
             this.speed = 0;
@@ -146,6 +147,7 @@ export class Enemy {
         } else {
             this.speed = this.baseSpeed;
         }
+        if (haste && !stunned) this.speed *= 1 + haste.power;
     }
 
     getDamageTakenMultiplier() {

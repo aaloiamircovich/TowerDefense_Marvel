@@ -42,10 +42,10 @@ const FACTIONS = {
         bosses: ['magneto', 'apocalypse']
     },
     knowhere: {
-        label: 'Saqueadores Cósmicos',
+        label: 'Kree / Chitauri / Orden Negra',
         roster: [
-            ['sakaaran_soldier', 1], ['chitauri_warrior', 1], ['outrider', 5],
-            ['skrull_infiltrator', 10], ['symbiote_spawn', 16], ['dark_elf', 22]
+            ['chitauri_warrior', 1], ['chitauri_skimmer', 1], ['kree_sentry', 5],
+            ['chitauri_phaser', 9], ['kree_commander', 14], ['black_order_hunter', 19], ['black_order_magus', 24]
         ],
         bosses: ['kang', 'galactus']
     },

@@ -1,135 +1,643 @@
 {
   "normal": {
     "hydra_soldier": {
-      "id": "hydra_soldier", "name": "Soldado de Hydra", "category": "Urbano",
-      "hp": 100, "speed": 50, "reward": 10, "armor": 0, "stealth": false, "faction": "Hydra", "archetype": "shield", "barrierRatio": 0.22, "threat": 2
+      "id": "hydra_soldier",
+      "name": "Soldado de Hydra",
+      "category": "Urbano",
+      "hp": 100,
+      "speed": 50,
+      "reward": 10,
+      "armor": 0,
+      "stealth": false,
+      "faction": "Hydra",
+      "archetype": "shield",
+      "barrierRatio": 0.22,
+      "threat": 2
     },
     "aim_scientist": {
-      "id": "aim_scientist", "name": "Científico A.I.M.", "category": "Tecnológico",
-      "hp": 85, "speed": 55, "reward": 12, "armor": 0, "stealth": false, "faction": "A.I.M.", "archetype": "support", "healPower": 0.06, "behaviorCooldown": 4, "threat": 2
+      "id": "aim_scientist",
+      "name": "Científico A.I.M.",
+      "category": "Tecnológico",
+      "hp": 85,
+      "speed": 55,
+      "reward": 12,
+      "armor": 0,
+      "stealth": false,
+      "faction": "A.I.M.",
+      "archetype": "support",
+      "healPower": 0.06,
+      "behaviorCooldown": 4,
+      "threat": 2
     },
     "sentinel": {
-      "id": "sentinel", "name": "Centinela", "category": "Tecnológico",
-      "hp": 500, "speed": 35, "reward": 45, "armor": 0.60, "stealth": false, "faction": "Legión de Ultrón", "archetype": "tank", "statusResistance": 0.35, "resistances": { "Tecnológico": 0.2 }, "threat": 5
+      "id": "sentinel",
+      "name": "Centinela",
+      "category": "Tecnológico",
+      "hp": 500,
+      "speed": 35,
+      "reward": 45,
+      "armor": 0.6,
+      "stealth": false,
+      "faction": "Legión de Ultrón",
+      "archetype": "tank",
+      "statusResistance": 0.35,
+      "resistances": {
+        "Tecnológico": 0.2
+      },
+      "threat": 5
     },
     "outrider": {
-      "id": "outrider", "name": "Outrider", "category": "Cósmico",
-      "hp": 120, "speed": 75, "reward": 15, "armor": 0.10, "stealth": false, "faction": "Outriders", "archetype": "runner", "threat": 2
+      "id": "outrider",
+      "name": "Outrider",
+      "category": "Cósmico",
+      "hp": 120,
+      "speed": 75,
+      "reward": 15,
+      "armor": 0.1,
+      "stealth": false,
+      "faction": "Outriders",
+      "archetype": "runner",
+      "threat": 2
     },
     "chitauri_warrior": {
-      "id": "chitauri_warrior", "name": "Guerrero Chitauri", "category": "Cósmico",
-      "hp": 150, "speed": 50, "reward": 18, "armor": 0.20, "stealth": false, "faction": "Outriders", "archetype": "shield", "barrierRatio": 0.18, "threat": 3
+      "id": "chitauri_warrior",
+      "name": "Guerrero Chitauri",
+      "category": "Cósmico",
+      "hp": 150,
+      "speed": 50,
+      "reward": 18,
+      "armor": 0.2,
+      "stealth": false,
+      "faction": "Chitauri",
+      "archetype": "shield",
+      "barrierRatio": 0.18,
+      "threat": 3
     },
     "dark_elf": {
-      "id": "dark_elf", "name": "Elfo Oscuro", "category": "Místico",
-      "hp": 130, "speed": 60, "reward": 20, "armor": 0, "stealth": true, "faction": "Asgardianos Oscuros", "archetype": "stealth", "resistances": { "Místico": 0.2 }, "threat": 3
+      "id": "dark_elf",
+      "name": "Elfo Oscuro",
+      "category": "Místico",
+      "hp": 130,
+      "speed": 60,
+      "reward": 20,
+      "armor": 0,
+      "stealth": true,
+      "faction": "Asgardianos Oscuros",
+      "archetype": "stealth",
+      "resistances": {
+        "Místico": 0.2
+      },
+      "threat": 3
     },
     "skrull_infiltrator": {
-      "id": "skrull_infiltrator", "name": "Infiltrado Skrull", "category": "Cósmico",
-      "hp": 110, "speed": 65, "reward": 25, "armor": 0, "stealth": true, "faction": "Skrulls", "archetype": "stealth", "threat": 3
+      "id": "skrull_infiltrator",
+      "name": "Infiltrado Skrull",
+      "category": "Cósmico",
+      "hp": 110,
+      "speed": 65,
+      "reward": 25,
+      "armor": 0,
+      "stealth": true,
+      "faction": "Skrulls",
+      "archetype": "stealth",
+      "threat": 3
     },
     "hand_ninja": {
-      "id": "hand_ninja", "name": "Ninja de La Mano", "category": "Urbano",
-      "hp": 90, "speed": 90, "reward": 22, "armor": 0, "stealth": true, "faction": "Hydra", "archetype": "runner", "threat": 3
+      "id": "hand_ninja",
+      "name": "Ninja de La Mano",
+      "category": "Urbano",
+      "hp": 90,
+      "speed": 90,
+      "reward": 22,
+      "armor": 0,
+      "stealth": true,
+      "faction": "Hydra",
+      "archetype": "runner",
+      "threat": 3
     },
     "symbiote_spawn": {
-      "id": "symbiote_spawn", "name": "Simbionte", "category": "Cósmico",
-      "hp": 180, "speed": 80, "reward": 30, "armor": 0.30, "stealth": false, "faction": "Simbiontes", "archetype": "tank", "statusResistance": 0.25, "threat": 4
+      "id": "symbiote_spawn",
+      "name": "Simbionte",
+      "category": "Cósmico",
+      "hp": 180,
+      "speed": 80,
+      "reward": 30,
+      "armor": 0.3,
+      "stealth": false,
+      "faction": "Simbiontes",
+      "archetype": "tank",
+      "statusResistance": 0.25,
+      "threat": 4
     },
     "doombot": {
-      "id": "doombot", "name": "Doombot", "category": "Tecnológico",
-      "hp": 200, "speed": 45, "reward": 20, "armor": 0.35, "stealth": false, "faction": "Legión de Ultrón", "archetype": "summoner", "summonId": "ultron_drone", "summonLimit": 2, "behaviorCooldown": 7, "threat": 4
+      "id": "doombot",
+      "name": "Doombot",
+      "category": "Tecnológico",
+      "hp": 200,
+      "speed": 45,
+      "reward": 20,
+      "armor": 0.35,
+      "stealth": false,
+      "faction": "Legión de Ultrón",
+      "archetype": "summoner",
+      "summonId": "ultron_drone",
+      "summonLimit": 2,
+      "behaviorCooldown": 7,
+      "threat": 4
     },
     "hellfire_guard": {
-      "id": "hellfire_guard", "name": "Guardia Hellfire", "category": "Mutante",
-      "hp": 160, "speed": 50, "reward": 20, "armor": 0.15, "stealth": false, "faction": "Mercenarios", "archetype": "support", "healPower": 0.08, "behaviorCooldown": 4, "threat": 3
+      "id": "hellfire_guard",
+      "name": "Guardia Hellfire",
+      "category": "Mutante",
+      "hp": 160,
+      "speed": 50,
+      "reward": 20,
+      "armor": 0.15,
+      "stealth": false,
+      "faction": "Mercenarios",
+      "archetype": "support",
+      "healPower": 0.08,
+      "behaviorCooldown": 4,
+      "threat": 3
     },
     "frost_giant_scout": {
-      "id": "frost_giant_scout", "name": "Gigante de Hielo", "category": "Místico",
-      "hp": 600, "speed": 30, "reward": 50, "armor": 0.20, "stealth": false, "faction": "Jotunheim", "archetype": "tank", "statusResistance": 0.4, "threat": 5
+      "id": "frost_giant_scout",
+      "name": "Gigante de Hielo",
+      "category": "Místico",
+      "hp": 600,
+      "speed": 30,
+      "reward": 50,
+      "armor": 0.2,
+      "stealth": false,
+      "faction": "Jotunheim",
+      "archetype": "tank",
+      "statusResistance": 0.4,
+      "threat": 5
     },
     "sakaaran_soldier": {
-      "id": "sakaaran_soldier", "name": "Soldado Sakaarano", "category": "Cósmico",
-      "hp": 140, "speed": 55, "reward": 15, "armor": 0.25, "stealth": false, "faction": "Mercenarios", "archetype": "flying", "flying": true, "statusResistances": { "slow": 0.35 }, "threat": 3
+      "id": "sakaaran_soldier",
+      "name": "Soldado Sakaarano",
+      "category": "Cósmico",
+      "hp": 140,
+      "speed": 55,
+      "reward": 15,
+      "armor": 0.25,
+      "stealth": false,
+      "faction": "Mercenarios",
+      "archetype": "flying",
+      "flying": true,
+      "statusResistances": {
+        "slow": 0.35
+      },
+      "threat": 3
     },
     "brotherhood_mutant": {
-      "id": "brotherhood_mutant", "name": "Mutante de la Hermandad", "category": "Mutante",
-      "hp": 170, "speed": 60, "reward": 25, "armor": 0, "stealth": false, "faction": "Hermandad Mutante", "archetype": "support", "healPower": 0.05, "threat": 3
+      "id": "brotherhood_mutant",
+      "name": "Mutante de la Hermandad",
+      "category": "Mutante",
+      "hp": 170,
+      "speed": 60,
+      "reward": 25,
+      "armor": 0,
+      "stealth": false,
+      "faction": "Hermandad Mutante",
+      "archetype": "support",
+      "healPower": 0.05,
+      "threat": 3
     },
     "ultron_drone": {
-      "id": "ultron_drone", "name": "Dron de Ultrón", "category": "Tecnológico",
-      "hp": 120, "speed": 70, "reward": 15, "armor": 0.20, "stealth": false, "faction": "Legión de Ultrón", "archetype": "flying", "flying": true, "statusResistances": { "slow": 0.3 }, "threat": 2
+      "id": "ultron_drone",
+      "name": "Dron de Ultrón",
+      "category": "Tecnológico",
+      "hp": 120,
+      "speed": 70,
+      "reward": 15,
+      "armor": 0.2,
+      "stealth": false,
+      "faction": "Legión de Ultrón",
+      "archetype": "flying",
+      "flying": true,
+      "statusResistances": {
+        "slow": 0.3
+      },
+      "threat": 2
     },
     "mercenary_raider": {
-      "id": "mercenary_raider", "name": "Saqueador de Vibranium", "category": "Urbano",
-      "hp": 125, "speed": 82, "reward": 18, "armor": 0.12, "stealth": false, "faction": "Mercenarios", "archetype": "runner", "threat": 2
+      "id": "mercenary_raider",
+      "name": "Saqueador de Vibranium",
+      "category": "Urbano",
+      "hp": 125,
+      "speed": 82,
+      "reward": 18,
+      "armor": 0.12,
+      "stealth": false,
+      "faction": "Mercenarios",
+      "archetype": "runner",
+      "threat": 2
+    },
+    "kree_commander": {
+      "id": "kree_commander",
+      "name": "Comandante Kree",
+      "category": "Cósmico",
+      "hp": 260,
+      "speed": 44,
+      "reward": 34,
+      "armor": 0.32,
+      "stealth": false,
+      "faction": "Imperio Kree",
+      "archetype": "commander",
+      "behaviorCooldown": 5,
+      "commandPower": 0.22,
+      "threat": 4
+    },
+    "kree_sentry": {
+      "id": "kree_sentry",
+      "name": "Centinela Kree",
+      "category": "Cósmico",
+      "hp": 230,
+      "speed": 48,
+      "reward": 26,
+      "armor": 0.28,
+      "stealth": false,
+      "faction": "Imperio Kree",
+      "archetype": "shield",
+      "barrierRatio": 0.24,
+      "threat": 4
+    },
+    "chitauri_phaser": {
+      "id": "chitauri_phaser",
+      "name": "Faseador Chitauri",
+      "category": "Cósmico",
+      "hp": 145,
+      "speed": 72,
+      "reward": 28,
+      "armor": 0.08,
+      "stealth": false,
+      "faction": "Chitauri",
+      "archetype": "phaser",
+      "behaviorCooldown": 6,
+      "threat": 4
+    },
+    "chitauri_skimmer": {
+      "id": "chitauri_skimmer",
+      "name": "Deslizador Chitauri",
+      "category": "Cósmico",
+      "hp": 165,
+      "speed": 78,
+      "reward": 24,
+      "armor": 0.12,
+      "stealth": false,
+      "flying": true,
+      "faction": "Chitauri",
+      "archetype": "flying",
+      "threat": 3
+    },
+    "black_order_hunter": {
+      "id": "black_order_hunter",
+      "name": "Cazador de la Orden",
+      "category": "Cósmico",
+      "hp": 210,
+      "speed": 86,
+      "reward": 36,
+      "armor": 0.18,
+      "stealth": true,
+      "faction": "Orden Negra",
+      "archetype": "runner",
+      "threat": 4
+    },
+    "black_order_magus": {
+      "id": "black_order_magus",
+      "name": "Magus de la Orden",
+      "category": "Místico",
+      "hp": 280,
+      "speed": 42,
+      "reward": 42,
+      "armor": 0.2,
+      "stealth": false,
+      "faction": "Orden Negra",
+      "archetype": "summoner",
+      "summonId": "outrider",
+      "summonLimit": 3,
+      "behaviorCooldown": 6,
+      "threat": 5
     }
   },
   "bosses": {
     "loki": {
-      "id": "loki", "name": "Loki", "category": "Místico", "isBoss": true,
-      "hp": 4000, "speed": 70, "reward": 1000, "armor": 0.10, "stealth": true, "immuneToStun": false, "faction": "Asgardianos Oscuros", "archetype": "boss", "threat": 5, "resistances": { "Místico": 0.25 },
-      "phases": [{ "threshold": 0.7, "name": "Ejército de Ilusiones", "telegraph": 1.3, "summonId": "dark_elf", "summonCount": 2, "stealth": 3, "color": "#69e58c" }, { "threshold": 0.35, "name": "Maestro del Engaño", "telegraph": 1.1, "barrier": 0.14, "speed": 1.3, "color": "#d86cff" }]
+      "id": "loki",
+      "name": "Loki",
+      "category": "Místico",
+      "isBoss": true,
+      "hp": 4000,
+      "speed": 70,
+      "reward": 1000,
+      "armor": 0.1,
+      "stealth": true,
+      "immuneToStun": false,
+      "faction": "Asgardianos Oscuros",
+      "archetype": "boss",
+      "threat": 5,
+      "resistances": {
+        "Místico": 0.25
+      },
+      "phases": [
+        {
+          "threshold": 0.7,
+          "name": "Ejército de Ilusiones",
+          "telegraph": 1.3,
+          "summonId": "dark_elf",
+          "summonCount": 2,
+          "stealth": 3,
+          "color": "#69e58c"
+        },
+        {
+          "threshold": 0.35,
+          "name": "Maestro del Engaño",
+          "telegraph": 1.1,
+          "barrier": 0.14,
+          "speed": 1.3,
+          "color": "#d86cff"
+        }
+      ]
     },
     "doctor_doom": {
-      "id": "doctor_doom", "name": "Doctor Doom", "category": "Tecnológico", "isBoss": true,
-      "hp": 6000, "speed": 40, "reward": 1500, "armor": 0.50, "stealth": false, "immuneToStun": true
+      "id": "doctor_doom",
+      "name": "Doctor Doom",
+      "category": "Tecnológico",
+      "isBoss": true,
+      "hp": 6000,
+      "speed": 40,
+      "reward": 1500,
+      "armor": 0.5,
+      "stealth": false,
+      "immuneToStun": true
     },
     "magneto": {
-      "id": "magneto", "name": "Magneto", "category": "Mutante", "isBoss": true,
-      "hp": 5500, "speed": 45, "reward": 1200, "armor": 0.40, "stealth": false, "immuneToSlow": true, "faction": "Hermandad Mutante", "archetype": "boss", "threat": 5, "resistances": { "Tecnológico": 0.35 },
-      "phases": [{ "threshold": 0.72, "name": "Campo Magnético", "telegraph": 1.4, "barrier": 0.2, "color": "#d86cff" }, { "threshold": 0.35, "name": "Polaridad Inversa", "telegraph": 1.2, "barrier": 0.28, "armor": 0.1, "color": "#ff4d6d" }]
+      "id": "magneto",
+      "name": "Magneto",
+      "category": "Mutante",
+      "isBoss": true,
+      "hp": 5500,
+      "speed": 45,
+      "reward": 1200,
+      "armor": 0.4,
+      "stealth": false,
+      "immuneToSlow": true,
+      "faction": "Hermandad Mutante",
+      "archetype": "boss",
+      "threat": 5,
+      "resistances": {
+        "Tecnológico": 0.35
+      },
+      "phases": [
+        {
+          "threshold": 0.72,
+          "name": "Campo Magnético",
+          "telegraph": 1.4,
+          "barrier": 0.2,
+          "color": "#d86cff"
+        },
+        {
+          "threshold": 0.35,
+          "name": "Polaridad Inversa",
+          "telegraph": 1.2,
+          "barrier": 0.28,
+          "armor": 0.1,
+          "color": "#ff4d6d"
+        }
+      ]
     },
     "green_goblin": {
-      "id": "green_goblin", "name": "Duende Verde", "category": "Tecnológico", "isBoss": true,
-      "hp": 3500, "speed": 90, "reward": 800, "armor": 0.20, "stealth": false, "immuneToSlow": false
+      "id": "green_goblin",
+      "name": "Duende Verde",
+      "category": "Tecnológico",
+      "isBoss": true,
+      "hp": 3500,
+      "speed": 90,
+      "reward": 800,
+      "armor": 0.2,
+      "stealth": false,
+      "immuneToSlow": false
     },
     "red_skull": {
-      "id": "red_skull", "name": "Red Skull", "category": "Urbano", "isBoss": true,
-      "hp": 4500, "speed": 50, "reward": 1000, "armor": 0.30, "stealth": false, "immuneToStun": false
+      "id": "red_skull",
+      "name": "Red Skull",
+      "category": "Urbano",
+      "isBoss": true,
+      "hp": 4500,
+      "speed": 50,
+      "reward": 1000,
+      "armor": 0.3,
+      "stealth": false,
+      "immuneToStun": false
     },
     "ultron_prime": {
-      "id": "ultron_prime", "name": "Ultrón Prime", "category": "Tecnológico", "isBoss": true,
-      "hp": 7000, "speed": 40, "reward": 2000, "armor": 0.55, "stealth": false, "immuneToStun": true, "faction": "Legión de Ultrón", "archetype": "boss", "threat": 5, "resistances": { "Tecnológico": 0.3 },
-      "phases": [{ "threshold": 0.7, "name": "Producción de Drones", "telegraph": 1.4, "summonId": "ultron_drone", "summonCount": 3, "barrier": 0.12, "color": "#40c9ff" }, { "threshold": 0.3, "name": "Protocolo Prime", "telegraph": 1.1, "armor": 0.12, "speed": 1.25, "color": "#e63946" }]
+      "id": "ultron_prime",
+      "name": "Ultrón Prime",
+      "category": "Tecnológico",
+      "isBoss": true,
+      "hp": 7000,
+      "speed": 40,
+      "reward": 2000,
+      "armor": 0.55,
+      "stealth": false,
+      "immuneToStun": true,
+      "faction": "Legión de Ultrón",
+      "archetype": "boss",
+      "threat": 5,
+      "resistances": {
+        "Tecnológico": 0.3
+      },
+      "phases": [
+        {
+          "threshold": 0.7,
+          "name": "Producción de Drones",
+          "telegraph": 1.4,
+          "summonId": "ultron_drone",
+          "summonCount": 3,
+          "barrier": 0.12,
+          "color": "#40c9ff"
+        },
+        {
+          "threshold": 0.3,
+          "name": "Protocolo Prime",
+          "telegraph": 1.1,
+          "armor": 0.12,
+          "speed": 1.25,
+          "color": "#e63946"
+        }
+      ]
     },
     "kingpin": {
-      "id": "kingpin", "name": "Kingpin", "category": "Urbano", "isBoss": true,
-      "hp": 8000, "speed": 30, "reward": 1500, "armor": 0.45, "stealth": false, "immuneToSlow": true
+      "id": "kingpin",
+      "name": "Kingpin",
+      "category": "Urbano",
+      "isBoss": true,
+      "hp": 8000,
+      "speed": 30,
+      "reward": 1500,
+      "armor": 0.45,
+      "stealth": false,
+      "immuneToSlow": true
     },
     "kang": {
-      "id": "kang", "name": "Kang el Conquistador", "category": "Cósmico", "isBoss": true,
-      "hp": 6500, "speed": 50, "reward": 1800, "armor": 0.35, "stealth": false, "immuneToStun": true
+      "id": "kang",
+      "name": "Kang el Conquistador",
+      "category": "Cósmico",
+      "isBoss": true,
+      "hp": 6500,
+      "speed": 50,
+      "reward": 1800,
+      "armor": 0.35,
+      "stealth": false,
+      "immuneToStun": true
     },
     "apocalypse": {
-      "id": "apocalypse", "name": "Apocalypse", "category": "Mutante", "isBoss": true,
-      "hp": 12000, "speed": 35, "reward": 3000, "armor": 0.50, "stealth": false, "immuneToStun": true, "immuneToSlow": true
+      "id": "apocalypse",
+      "name": "Apocalypse",
+      "category": "Mutante",
+      "isBoss": true,
+      "hp": 12000,
+      "speed": 35,
+      "reward": 3000,
+      "armor": 0.5,
+      "stealth": false,
+      "immuneToStun": true,
+      "immuneToSlow": true
     },
     "carnage": {
-      "id": "carnage", "name": "Carnage", "category": "Urbano", "isBoss": true,
-      "hp": 4000, "speed": 110, "reward": 1000, "armor": 0.15, "stealth": false, "immuneToSlow": true
+      "id": "carnage",
+      "name": "Carnage",
+      "category": "Urbano",
+      "isBoss": true,
+      "hp": 4000,
+      "speed": 110,
+      "reward": 1000,
+      "armor": 0.15,
+      "stealth": false,
+      "immuneToSlow": true
     },
     "hela": {
-      "id": "hela", "name": "Hela", "category": "Místico", "isBoss": true,
-      "hp": 9000, "speed": 40, "reward": 2500, "armor": 0.30, "stealth": false, "immuneToStun": true
+      "id": "hela",
+      "name": "Hela",
+      "category": "Místico",
+      "isBoss": true,
+      "hp": 9000,
+      "speed": 40,
+      "reward": 2500,
+      "armor": 0.3,
+      "stealth": false,
+      "immuneToStun": true
     },
     "killmonger": {
-      "id": "killmonger", "name": "Killmonger", "category": "Urbano", "isBoss": true,
-      "hp": 5000, "speed": 60, "reward": 1200, "armor": 0.40, "stealth": false, "immuneToStun": false, "faction": "Mercenarios", "archetype": "boss", "threat": 5, "resistances": { "Urbano": 0.2 },
-      "phases": [{ "threshold": 0.68, "name": "Traje de Vibranium", "telegraph": 1.2, "barrier": 0.18, "speed": 1.2, "color": "#b865ff" }, { "threshold": 0.3, "name": "Desafío al Trono", "telegraph": 1, "heal": 0.12, "speed": 1.45, "color": "#fca311" }]
+      "id": "killmonger",
+      "name": "Killmonger",
+      "category": "Urbano",
+      "isBoss": true,
+      "hp": 5000,
+      "speed": 60,
+      "reward": 1200,
+      "armor": 0.4,
+      "stealth": false,
+      "immuneToStun": false,
+      "faction": "Mercenarios",
+      "archetype": "boss",
+      "threat": 5,
+      "resistances": {
+        "Urbano": 0.2
+      },
+      "phases": [
+        {
+          "threshold": 0.68,
+          "name": "Traje de Vibranium",
+          "telegraph": 1.2,
+          "barrier": 0.18,
+          "speed": 1.2,
+          "color": "#b865ff"
+        },
+        {
+          "threshold": 0.3,
+          "name": "Desafío al Trono",
+          "telegraph": 1,
+          "heal": 0.12,
+          "speed": 1.45,
+          "color": "#fca311"
+        }
+      ]
     },
     "dormammu": {
-      "id": "dormammu", "name": "Dormammu", "category": "Místico", "isBoss": true,
-      "hp": 15000, "speed": 25, "reward": 5000, "armor": 0.20, "stealth": false, "immuneToStun": true, "immuneToSlow": true
+      "id": "dormammu",
+      "name": "Dormammu",
+      "category": "Místico",
+      "isBoss": true,
+      "hp": 15000,
+      "speed": 25,
+      "reward": 5000,
+      "armor": 0.2,
+      "stealth": false,
+      "immuneToStun": true,
+      "immuneToSlow": true
     },
     "galactus": {
-      "id": "galactus", "name": "Galactus", "category": "Cósmico", "isBoss": true,
-      "hp": 50000, "speed": 20, "reward": 10000, "armor": 0.70, "stealth": false, "immuneToStun": true, "immuneToSlow": true
+      "id": "galactus",
+      "name": "Galactus",
+      "category": "Cósmico",
+      "isBoss": true,
+      "hp": 50000,
+      "speed": 20,
+      "reward": 10000,
+      "armor": 0.7,
+      "stealth": false,
+      "immuneToStun": true,
+      "immuneToSlow": true
     },
     "thanos_final": {
-      "id": "thanos_final", "name": "Thanos (Guantelete)", "category": "Cósmico", "isBoss": true, "isFinalBoss": true,
-      "hp": 150000, "speed": 25, "reward": 0, "armor": 0.65, "stealth": false, "immuneToStun": true, "immuneToSlow": true, "immuneToKnockback": true, "faction": "Orden Negro", "archetype": "boss", "threat": 5, "resistances": { "Cósmico": 0.35, "Místico": 0.2 },
-      "phases": [{ "threshold": 0.75, "name": "Gema del Poder", "telegraph": 1.5, "barrier": 0.12, "color": "#b865ff" }, { "threshold": 0.5, "name": "Ejército Outrider", "telegraph": 1.4, "summonId": "outrider", "summonCount": 4, "color": "#ff8bd1" }, { "threshold": 0.25, "name": "Destino Inevitable", "telegraph": 1.2, "armor": 0.12, "speed": 1.35, "heal": 0.08, "color": "#ffd166" }]
+      "id": "thanos_final",
+      "name": "Thanos (Guantelete)",
+      "category": "Cósmico",
+      "isBoss": true,
+      "isFinalBoss": true,
+      "hp": 150000,
+      "speed": 25,
+      "reward": 0,
+      "armor": 0.65,
+      "stealth": false,
+      "immuneToStun": true,
+      "immuneToSlow": true,
+      "immuneToKnockback": true,
+      "faction": "Orden Negro",
+      "archetype": "boss",
+      "threat": 5,
+      "resistances": {
+        "Cósmico": 0.35,
+        "Místico": 0.2
+      },
+      "phases": [
+        {
+          "threshold": 0.75,
+          "name": "Gema del Poder",
+          "telegraph": 1.5,
+          "barrier": 0.12,
+          "color": "#b865ff"
+        },
+        {
+          "threshold": 0.5,
+          "name": "Ejército Outrider",
+          "telegraph": 1.4,
+          "summonId": "outrider",
+          "summonCount": 4,
+          "color": "#ff8bd1"
+        },
+        {
+          "threshold": 0.25,
+          "name": "Destino Inevitable",
+          "telegraph": 1.2,
+          "armor": 0.12,
+          "speed": 1.35,
+          "heal": 0.08,
+          "color": "#ffd166"
+        }
+      ]
     }
   }
 }

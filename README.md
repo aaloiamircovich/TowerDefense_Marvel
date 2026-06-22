@@ -2,9 +2,9 @@
 
 Tower defense ambientado en escenarios inspirados por Marvel, con siete misiones temáticas, reglas propias por mapa, objetivos secundarios, oleadas escaladas, tienda y colección de héroes.
 
-Incluye once héroes con kits y sprites completos, constructor de equipo con sinergias y formaciones, mesa táctica, 30 objetos con forja y loadouts, prioridades de objetivo, reposición y venta de héroes, audio por buses, música temática, interfaz responsive, navegación por teclado, alto contraste, reducción de movimiento y escala de UI persistente.
+Incluye dieciséis héroes con kits y sprites completos, constructor de equipo con sinergias y formaciones, mesa táctica, 30 objetos con forja y loadouts, prioridades de objetivo, reposición y venta de héroes, audio por buses, música temática, interfaz responsive, navegación por teclado, alto contraste, reducción de movimiento y escala de UI persistente.
 
-La versión 1.5.0 también puede instalarse como PWA, conserva los recursos esenciales para jugar sin conexión y actualiza código y datos al volver a estar en línea.
+La versión 1.6.0 también puede instalarse como PWA, conserva los recursos esenciales para jugar sin conexión y actualiza código y datos al volver a estar en línea.
 
 > Proyecto fan no oficial, educativo y sin fines comerciales. No está afiliado ni respaldado por Marvel Entertainment o The Walt Disney Company. Consulta [NOTICE.md](NOTICE.md).
 
@@ -36,6 +36,7 @@ npm run build:data
 npm run build:heroes
 npm run build:items
 npm run build:synergies
+npm run build:cosmic
 npm run validate
 npm test
 npm run balance
@@ -48,6 +49,7 @@ npm run check
 - `build:heroes` regenera sprites, atlas y datos del equipo central.
 - `build:items` regenera los 30 iconos de objetos y el respaldo de datos.
 - `build:synergies` normaliza etiquetas, roles, métricas y respaldo de datos.
+- `build:cosmic` configura héroes, enemigos y datos de la expansión cósmica.
 - `validate` revisa IDs, referencias, rutas, números y assets.
 - `validate:strict` también convierte los assets ausentes en errores.
 - `test` ejecuta la suite nativa de Node.

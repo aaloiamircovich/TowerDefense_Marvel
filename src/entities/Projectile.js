@@ -135,6 +135,23 @@ export class Projectile {
             ctx.lineTo(this.x - this.radius - 2, this.y);
             ctx.closePath();
             ctx.fill();
+        } else if (this.visualStyle === 'blaster') {
+            ctx.strokeStyle = this.color;
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.moveTo(this.x - 7, this.y);
+            ctx.lineTo(this.x + 7, this.y);
+            ctx.stroke();
+        } else if (this.visualStyle === 'cosmic') {
+            ctx.strokeStyle = this.color;
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.radius + 4, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.fillStyle = this.color;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+            ctx.fill();
         } else {
             ctx.fillStyle = this.color;
             ctx.beginPath();

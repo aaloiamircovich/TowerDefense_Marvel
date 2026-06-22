@@ -210,6 +210,7 @@ export class Hero {
     recordKill(resourceManager) {
         this.combatStats.kills++;
         this.killCount++;
+        this.abilitySystem.onKill();
 
         const healEvery = aggregateItemEffects(this.items).killHealEvery;
         if (healEvery && this.killCount >= healEvery) {

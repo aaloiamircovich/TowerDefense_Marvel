@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.6.0 - 2026-06-22
+
+- Captain Marvel, Star-Lord, Groot, Gamora y Silver Surfer reciben kits completos, mejoras, audio y estados visibles.
+- Vuelo binario temporal, doble objetivo elemental, muros de raíces, ejecuciones y trayectorias cósmicas configurables.
+- Comandantes Kree y faseadores Chitauri estrenan roles de haste y cambio de fase sobre rutas seguras.
+- Seis tropas Kree, Chitauri y de la Orden Negra amplían la progresión de Knowhere.
+- 90 recursos visuales nuevos, atlas de 288 sprites y 114 pruebas automatizadas.
+- Simulación ampliada a 8.008 composiciones de seis héroes.
+
 ## 1.5.0 - 2026-06-22
 
 - Ocho familias Marvel con bonos de dos y cuatro miembros y rendimientos decrecientes.

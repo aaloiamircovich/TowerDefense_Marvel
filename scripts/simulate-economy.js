@@ -8,7 +8,8 @@ const items = JSON.parse(fs.readFileSync(new URL('../data/items.json', import.me
 const utility = {
     iron_man: 1.25, spiderman: 1.3, capitan_america: 1.35, thor: 1.55, doctor_strange: 1.5,
     groot: 1.35, scarlet_witch: 1.3, storm: 1.25,
-    hulk: 2.25, black_widow: 1.2, hawkeye: 1.35, black_panther: 1.55, vision: 1.6, falcon: 1.55
+    hulk: 2.25, black_widow: 1.2, hawkeye: 1.35, black_panther: 1.55, vision: 1.6, falcon: 1.55,
+    captain_marvel: 1.45, star_lord: 1.4, groot: 1.9, gamora: 1.4, silver_surfer: 1.75
 };
 
 const ranking = Object.values(heroes).map((hero) => {
@@ -61,6 +62,10 @@ const phase12Ids = ['hulk', 'black_widow', 'hawkeye', 'black_panther', 'vision',
 const phase12 = ranking.filter((hero) => phase12Ids.includes(hero.id));
 const phase12Efficiencies = phase12.map((hero) => hero.efficiency);
 console.log(`Refuerzos Avengers: ${phase12.map((hero) => `${hero.name} ${hero.efficiency.toFixed(3)}`).join(' | ')}`);
+const phase14Ids = ['captain_marvel', 'star_lord', 'groot', 'gamora', 'silver_surfer'];
+const phase14 = ranking.filter((hero) => phase14Ids.includes(hero.id));
+const phase14Efficiencies = phase14.map((hero) => hero.efficiency);
+console.log(`Expansión cósmica: ${phase14.map((hero) => `${hero.name} ${hero.efficiency.toFixed(3)}`).join(' | ')}`);
 
 const readyHeroes = Object.values(heroes).filter((hero) => hero.visual);
 const teamCombinations = combinations(readyHeroes, 6).map((team) => {
@@ -89,6 +94,10 @@ if (builds[0].power > 2.25) {
 }
 if (Math.min(...phase12Efficiencies) < 0.2 || Math.max(...phase12Efficiencies) > 0.42) {
     console.error('ERROR: un refuerzo Avengers queda fuera del rango de eficiencia 0.20-0.42.');
+    process.exitCode = 1;
+}
+if (Math.min(...phase14Efficiencies) < 0.2 || Math.max(...phase14Efficiencies) > 0.42) {
+    console.error('ERROR: un héroe cósmico queda fuera del rango de eficiencia 0.20-0.42.');
     process.exitCode = 1;
 }
 if (bestTeam.multiplier > 1.3 || competitiveTeams.length < 8 || competitiveMixed.length < 3) {

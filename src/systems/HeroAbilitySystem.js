@@ -1,6 +1,7 @@
 import { Projectile } from '../entities/Projectile.js';
 import { CombatSystem } from './CombatSystem.js';
 import { AvengerKitSystem } from './AvengerKitSystem.js';
+import { CosmicKitSystem } from './CosmicKitSystem.js';
 
 const ACTIVE_COOLDOWNS = {
     thor: 11,
@@ -13,11 +14,13 @@ export class HeroAbilitySystem {
         this.attackCount = 0;
         this.cooldownRemaining = 0;
         this.avengerKit = new AvengerKitSystem(hero);
+        this.cosmicKit = new CosmicKitSystem(hero);
     }
 
     update(dt, enemies, stats, projectiles) {
         this.cooldownRemaining = Math.max(0, this.cooldownRemaining - dt);
         this.avengerKit.update(dt, enemies, stats, projectiles);
+        this.cosmicKit.update(dt, enemies, stats, projectiles);
         if (this.cooldownRemaining > 0) return;
 
         const targets = this.getTargetsInRange(enemies, stats.range);
@@ -31,6 +34,7 @@ export class HeroAbilitySystem {
     onAttack(target, stats, projectileConfig, projectiles) {
         this.attackCount++;
         this.avengerKit.onAttack(target, stats, projectileConfig, projectiles);
+        this.cosmicKit.onAttack(target, stats, projectileConfig, projectiles);
 
         if (this.hero.id === 'iron_man') {
             this.hero.game.audio?.play('repulsor');
@@ -46,7 +50,7 @@ export class HeroAbilitySystem {
     }
 
     getAttackEffects(target) {
-        const effects = this.avengerKit.getAttackEffects(target);
+        const effects = [...this.avengerKit.getAttackEffects(target), ...this.cosmicKit.getAttackEffects(target)];
         if (this.hero.id === 'spiderman') {
             effects.push({ type: 'web', duration: 2.6, power: 0.2, chance: 1 });
         }
@@ -64,7 +68,8 @@ export class HeroAbilitySystem {
             stats.damage *= 1.1;
             stats.fireRate *= 1.15;
         }
-        return this.avengerKit.applyStatModifiers(stats);
+        this.avengerKit.applyStatModifiers(stats);
+        return this.cosmicKit.applyStatModifiers(stats);
     }
 
     activateArcOverload(target, stats) {
@@ -183,35 +188,40 @@ export class HeroAbilitySystem {
                 ready
             };
         }
-        return this.avengerKit.getDisplayState();
+        return this.avengerKit.getDisplayState() || this.cosmicKit.getDisplayState();
     }
 
     getControlState() {
-        return this.avengerKit.getControlState();
+        return this.avengerKit.getControlState() || this.cosmicKit.getControlState();
     }
 
     setCombatMode(mode) {
-        return this.avengerKit.setMode(mode);
+        return this.avengerKit.setMode(mode) || this.cosmicKit.setMode(mode);
     }
 
     getCombatMode() {
-        return this.avengerKit.getMode();
+        return this.avengerKit.getMode() || this.cosmicKit.getMode();
     }
 
     getProjectileProfile() {
-        return this.avengerKit.getProjectileProfile();
+        return { ...this.avengerKit.getProjectileProfile(), ...this.cosmicKit.getProjectileProfile() };
     }
 
     getProjectileColor() {
-        return this.avengerKit.getProjectileColor();
+        return this.avengerKit.getProjectileColor() || this.cosmicKit.getProjectileColor();
     }
 
     getProjectileVisualStyle() {
-        return this.avengerKit.getProjectileVisualStyle();
+        return this.avengerKit.getProjectileVisualStyle() || this.cosmicKit.getProjectileVisualStyle();
     }
 
     render(ctx) {
         this.avengerKit.render(ctx);
+        this.cosmicKit.render(ctx);
+    }
+
+    onKill() {
+        this.cosmicKit.onKill();
     }
 
     static getLineEndpoint(origin, target, distance) {

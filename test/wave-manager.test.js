@@ -31,6 +31,18 @@ test('WaveManager usa la faccion correspondiente al mapa', () => {
     assert.deepEqual(ids, new Set(['doombot', 'ultron_drone']));
 });
 
+test('Knowhere incorpora Kree, Chitauri y Orden Negra por progresión', () => {
+    const manager = new WaveManager(createGame('knowhere'), enemies);
+    manager.currentWave = 25;
+    manager.prepareNextWave();
+    const pool = new Set(manager.getEnemyPoolForWave().map((enemy) => enemy.id));
+
+    assert.equal(manager.faction.label, 'Kree / Chitauri / Orden Negra');
+    assert.ok(pool.has('kree_commander'));
+    assert.ok(pool.has('chitauri_phaser'));
+    assert.ok(pool.has('black_order_magus'));
+});
+
 test('WaveManager aplica modificadores sin depender solo de salud', () => {
     const manager = new WaveManager(createGame(), enemies);
     manager.currentWave = 2;

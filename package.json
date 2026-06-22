@@ -1,6 +1,6 @@
 {
   "name": "towerdefense-marvel",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -10,7 +10,8 @@
     "validate:strict": "node scripts/validate-data.js --strict-assets",
     "build:data": "node scripts/build-bootstrap-data.js",
     "build:atlas": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/build-sprite-atlas.ps1",
-    "build:heroes": "node scripts/configure-avenger-heroes.js && node scripts/configure-team-synergies.js && powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/build-core-hero-sprites.ps1 && npm run build:atlas && npm run build:data",
+    "build:heroes": "node scripts/configure-avenger-heroes.js && node scripts/configure-cosmic-expansion.js && node scripts/configure-team-synergies.js && powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/build-core-hero-sprites.ps1 && npm run build:atlas && npm run build:data",
+    "build:cosmic": "node scripts/configure-cosmic-expansion.js && node scripts/configure-team-synergies.js && npm run build:data",
     "build:synergies": "node scripts/configure-team-synergies.js && npm run build:data",
     "build:items": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/build-item-icons.ps1 && npm run build:data",
     "balance": "node scripts/simulate-economy.js",

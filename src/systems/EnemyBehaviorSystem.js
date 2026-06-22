@@ -33,12 +33,15 @@ export class EnemyBehaviorSystem {
 
         if (this.archetype === 'support' && this.actionTimer <= 0) this.healAllies();
         if (this.archetype === 'summoner' && this.actionTimer <= 0) this.summonReinforcement();
+        if (this.archetype === 'commander' && this.actionTimer <= 0) this.commandAllies();
+        if (this.archetype === 'phaser' && this.actionTimer <= 0) this.activatePhaseShift();
         if (this.enemy.isBoss) this.updateBossPhases(dt);
     }
 
     getSpeedMultiplier() {
         const runnerBurst = this.archetype === 'runner' && this.elapsed % 5 < 1.4 ? 1.45 : 1;
-        return runnerBurst * this.phaseSpeedMultiplier;
+        const phaseBurst = this.archetype === 'phaser' && this.temporaryStealth > 0 ? 1.35 : 1;
+        return runnerBurst * phaseBurst * this.phaseSpeedMultiplier;
     }
 
     absorbDamage(amount) {
@@ -80,6 +83,21 @@ export class EnemyBehaviorSystem {
             this.game?.vfx?.addRing(this.enemy.x, this.enemy.y, { color: '#d86cff', radius: 42, duration: 0.5 });
         }
         this.actionTimer = this.enemy.config.behaviorCooldown || 7;
+    }
+
+    commandAllies() {
+        const allies = (this.game?.enemies || []).filter((candidate) => candidate.isAlive
+            && candidate !== this.enemy && Math.hypot(candidate.x - this.enemy.x, candidate.y - this.enemy.y) <= 145);
+        allies.forEach((ally) => ally.applyStatus?.({ type: 'haste', duration: 2.5, power: this.enemy.config.commandPower || 0.2 }, this.enemy));
+        if (allies.length) this.game?.vfx?.addRing(this.enemy.x, this.enemy.y, { color: '#5be7ff', radius: 145, duration: 0.5 });
+        this.actionTimer = this.enemy.config.behaviorCooldown || 5;
+    }
+
+    activatePhaseShift() {
+        this.enemy.stealth = true;
+        this.temporaryStealth = 1.4;
+        this.game?.vfx?.addBurst(this.enemy.x, this.enemy.y, { color: '#ff8bd1', radius: 28, duration: 0.25 });
+        this.actionTimer = this.enemy.config.behaviorCooldown || 6;
     }
 
     updateBossPhases(dt) {

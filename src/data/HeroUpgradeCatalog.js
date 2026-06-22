@@ -30,7 +30,12 @@ const HERO_LABELS = {
     hawkeye: ['Puntas calibradas', 'Flecha perforante', 'Tiro imposible', 'Carcaj criogénico', 'Detonación amplia', 'Nunca fallo'],
     black_panther: ['Garras de vibranium', 'Energía cinética', 'Rey guerrero', 'Manto real', 'Contraataque', 'Wakanda por siempre'],
     vision: ['Rayo solar', 'Masa crítica', 'Sintetizoide supremo', 'Fase espectral', 'Control de densidad', 'Piedra de la Mente'],
-    falcon: ['Alas de combate', 'Ataque rasante', 'Capitán aéreo', 'Escáner Redwing', 'Marcado táctico', 'Superioridad aérea']
+    falcon: ['Alas de combate', 'Ataque rasante', 'Capitán aéreo', 'Escáner Redwing', 'Marcado táctico', 'Superioridad aérea'],
+    captain_marvel: ['Fotones concentrados', 'Impacto binario', 'Más alto, más lejos', 'Vuelo orbital', 'Absorción de energía', 'Forma binaria'],
+    star_lord: ['Blásters gemelos', 'Plasma Kree', 'Forajido legendario', 'Carcaj elemental', 'Órdenes de la Milano', 'Plan casi perfecto'],
+    groot: ['Golpe de rama', 'Corteza ancestral', 'Flora colosal', 'Raíces profundas', 'Regeneración', 'Yo soy Groot'],
+    gamora: ['Godslayer', 'Cadena letal', 'Mujer más peligrosa', 'Paso asesino', 'Caza de élites', 'Última Zen-Whoberi'],
+    silver_surfer: ['Poder primordial', 'Rayo estelar', 'Heraldo libre', 'Tabla cósmica', 'Resonancia universal', 'Poder Cósmico']
 };
 
 export function getHeroUpgradeTree(hero) {
