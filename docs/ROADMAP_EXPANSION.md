@@ -118,6 +118,8 @@ Este segundo ciclo parte de una base estable: campaña de siete mapas, cinco her
 
 **Terminado cuando:** los 31 heroes tienen contrato visual, kit completo, mejoras, audio y tests sin assets ausentes.
 
+**Estado:** implementada en la version 1.8.0. Wolverine, Jean Grey, Cyclops, Storm, Domino, Scarlet Witch, Ant-Man y Winter Soldier incorporan kits, controles, medidores, audio, mejoras y sprites completos. El atlas cubre los 31 heroes y las pruebas verifican que telequinesis, saltos, impactos y desvios respeten cada segmento de ruta.
+
 ## Fase 17 - Campaña de mundos en colision
 
 **Objetivo:** agregar mapas donde la geometria y las reglas cambien la estrategia.

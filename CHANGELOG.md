@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.8.0 - 2026-06-22
+
+- Wolverine, Jean Grey, Cyclops, Storm, Domino, Scarlet Witch, Ant-Man y Winter Soldier completan los 31 kits del roster.
+- Frenesí, Phoenix, visor óptico, clima, suerte sembrada, maldiciones, escala Pym y munición táctica incorporan controles y estados propios.
+- Telequinesis, saltos, desvíos e impactos conservan la posición enemiga dentro de los segmentos de ruta.
+- 144 recursos visuales nuevos y atlas completo de 558 sprites.
+- 144 pruebas automatizadas y simulación de 736.281 composiciones de seis héroes.
+
 ## 1.7.0 - 2026-06-22
 
 - Daredevil, Moon Knight, Blade, Ghost Rider, Luke Cage, Shang-Chi y She-Hulk reciben kits completos, mejoras, audio y estados visibles.

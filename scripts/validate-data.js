@@ -30,6 +30,7 @@ function validateHeroes(heroes) {
     const phase12Heroes = new Set(['hulk', 'black_widow', 'hawkeye', 'black_panther', 'vision', 'falcon']);
     const phase14Heroes = new Set(['captain_marvel', 'star_lord', 'groot', 'gamora', 'silver_surfer']);
     const phase15Heroes = new Set(['daredevil', 'moon_knight', 'blade', 'ghost_rider', 'luke_cage', 'shang_chi', 'she_hulk']);
+    const phase16Heroes = new Set(['wolverine', 'jean_grey', 'cyclops', 'storm', 'domino', 'scarlet_witch', 'ant_man', 'winter_soldier']);
     const validTags = new Set(['Avengers', 'Defenders', 'Guardianes', 'X-Men', 'Místico', 'Callejero', 'Wakanda', 'Tecnología']);
     const validRoles = new Set(['vanguard', 'support', 'artillery']);
 
@@ -46,7 +47,7 @@ function validateHeroes(heroes) {
 
         validateAsset(hero.sprite, `heroes.${key}.sprite`);
         if (hero.visual) validateHeroVisual(key, hero.visual);
-        if (phase12Heroes.has(key) || phase14Heroes.has(key) || phase15Heroes.has(key)) {
+        if (phase12Heroes.has(key) || phase14Heroes.has(key) || phase15Heroes.has(key) || phase16Heroes.has(key)) {
             if (!hero.visual) errors.push(`heroes.${key}.visual es obligatorio para las expansiones de roster`);
             requireText(hero.abilityDesc, `heroes.${key}.abilityDesc`);
             requireText(hero.niche, `heroes.${key}.niche`);

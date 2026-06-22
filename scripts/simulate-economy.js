@@ -11,7 +11,9 @@ const utility = {
     hulk: 2.25, black_widow: 1.2, hawkeye: 1.35, black_panther: 1.55, vision: 1.6, falcon: 1.55,
     captain_marvel: 1.45, star_lord: 1.4, groot: 1.9, gamora: 1.4, silver_surfer: 1.75,
     daredevil: 1.2, moon_knight: 1.4, blade: 1.35, ghost_rider: 1.45,
-    luke_cage: 1.45, shang_chi: 1.2, she_hulk: 1.45
+    luke_cage: 1.45, shang_chi: 1.2, she_hulk: 1.45,
+    wolverine: 1.5, jean_grey: 1.65, cyclops: 1.4, storm: 1.55,
+    domino: 1.65, scarlet_witch: 1.75, ant_man: 1.35, winter_soldier: 1.35
 };
 
 const ranking = Object.values(heroes).map((hero) => {
@@ -72,6 +74,10 @@ const phase15Ids = ['daredevil', 'moon_knight', 'blade', 'ghost_rider', 'luke_ca
 const phase15 = ranking.filter((hero) => phase15Ids.includes(hero.id));
 const phase15Efficiencies = phase15.map((hero) => hero.efficiency);
 console.log(`Héroes callejeros: ${phase15.map((hero) => `${hero.name} ${hero.efficiency.toFixed(3)}`).join(' | ')}`);
+const phase16Ids = ['wolverine', 'jean_grey', 'cyclops', 'storm', 'domino', 'scarlet_witch', 'ant_man', 'winter_soldier'];
+const phase16 = ranking.filter((hero) => phase16Ids.includes(hero.id));
+const phase16Efficiencies = phase16.map((hero) => hero.efficiency);
+console.log(`Reserva mutante: ${phase16.map((hero) => `${hero.name} ${hero.efficiency.toFixed(3)}`).join(' | ')}`);
 
 const readyHeroes = Object.values(heroes).filter((hero) => hero.visual);
 const teamCombinations = combinations(readyHeroes, 6).map((team) => {
@@ -108,6 +114,10 @@ if (Math.min(...phase14Efficiencies) < 0.2 || Math.max(...phase14Efficiencies) >
 }
 if (Math.min(...phase15Efficiencies) < 0.2 || Math.max(...phase15Efficiencies) > 0.42) {
     console.error('ERROR: un héroe callejero queda fuera del rango de eficiencia 0.20-0.42.');
+    process.exitCode = 1;
+}
+if (Math.min(...phase16Efficiencies) < 0.2 || Math.max(...phase16Efficiencies) > 0.42) {
+    console.error('ERROR: un héroe de reserva queda fuera del rango de eficiencia 0.20-0.42.');
     process.exitCode = 1;
 }
 if (bestTeam.multiplier > 1.3 || competitiveTeams.length < 8 || competitiveMixed.length < 3) {

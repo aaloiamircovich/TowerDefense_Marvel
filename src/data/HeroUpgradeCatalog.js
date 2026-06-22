@@ -42,7 +42,15 @@ const HERO_LABELS = {
     ghost_rider: ['Cadena infernal', 'Fuego del infierno', 'Espíritu de Venganza', 'Arrastre condenado', 'Alma culpable', 'Mirada de Penitencia'],
     luke_cage: ['Puños de Harlem', 'Golpe demoledor', 'A prueba de balas', 'Línea defensiva', 'Intercepción', 'Defensor inquebrantable'],
     shang_chi: ['Golpe de Ta Lo', 'Ráfaga de anillos', 'Maestro del Kung Fu', 'Órbita dorada', 'Guardia circular', 'Leyenda de los Diez Anillos'],
-    she_hulk: ['Golpe gamma', 'Impacto jurídico', 'Fuerza sensacional', 'Provocación', 'Retroceso seguro', 'Objeción definitiva']
+    she_hulk: ['Golpe gamma', 'Impacto jurídico', 'Fuerza sensacional', 'Provocación', 'Retroceso seguro', 'Objeción definitiva'],
+    wolverine: ['Garras de adamantium', 'Frenesí salvaje', 'El mejor en lo que hace', 'Factor curativo', 'Salto depredador', 'Arma X'],
+    jean_grey: ['Pulso psiónico', 'Telequinesis superior', 'Omega mutante', 'Mente serena', 'Ascenso Phoenix', 'Fuerza Phoenix'],
+    cyclops: ['Visor calibrado', 'Haz penetrante', 'Líder de campo', 'Geometría óptica', 'Rebote preciso', 'A mí, X-Men'],
+    storm: ['Relámpago', 'Frente de tormenta', 'Diosa del Trueno', 'Ventisca', 'Clima extremo', 'Reina de los cielos'],
+    domino: ['Disparo afortunado', 'Probabilidad imposible', 'La suerte favorece', 'Desvío milagroso', 'Golpe de fortuna', 'Siempre sale bien'],
+    scarlet_witch: ['Hex carmesí', 'Realidad fracturada', 'Bruja Escarlata', 'Maldición enlazada', 'Tiempo alterado', 'No más límites'],
+    ant_man: ['Golpe Pym', 'Impacto gigante', 'Héroe diminuto', 'Enjambre de hormigas', 'Escala variable', 'Reino Cuántico'],
+    winter_soldier: ['Brazo de vibranium', 'Ráfaga perforante', 'Soldado perfecto', 'Munición eléctrica', 'Carga explosiva', 'Protocolo borrado']
 };
 
 export function getHeroUpgradeTree(hero) {

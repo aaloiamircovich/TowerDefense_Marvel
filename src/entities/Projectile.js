@@ -178,6 +178,21 @@ export class Projectile {
             ctx.moveTo(this.x - 8, this.y + 6);
             ctx.lineTo(this.x + 8, this.y - 6);
             ctx.stroke();
+        } else if (this.visualStyle === 'optic') {
+            ctx.strokeStyle = this.color;
+            ctx.lineWidth = 5;
+            ctx.beginPath();
+            ctx.moveTo(this.x - 10, this.y);
+            ctx.lineTo(this.x + 10, this.y);
+            ctx.stroke();
+        } else if (this.visualStyle === 'pym') {
+            ctx.strokeStyle = this.color;
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.radius + 3, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.fillStyle = '#ef3340';
+            ctx.fillRect(this.x - 2, this.y - 2, 4, 4);
         } else {
             ctx.fillStyle = this.color;
             ctx.beginPath();

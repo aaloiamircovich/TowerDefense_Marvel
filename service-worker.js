@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hero-td-v1.7.0';
+const CACHE_NAME = 'hero-td-v1.8.0';
 const CORE_ASSETS = [
     './', './index.html', './styles.css', './manifest.webmanifest',
     './data/bootstrapData.js', './data/sprite-atlas.js', './data/heroes.json', './data/enemies.json',
@@ -16,12 +16,16 @@ const CORE_ASSETS = [
     './assets/images/heroes/blade/portrait.png', './assets/images/heroes/ghost_rider/portrait.png',
     './assets/images/heroes/luke_cage/portrait.png', './assets/images/heroes/shang_chi/portrait.png',
     './assets/images/heroes/she_hulk/portrait.png',
+    './assets/images/heroes/wolverine/portrait.png', './assets/images/heroes/jean_grey/portrait.png',
+    './assets/images/heroes/cyclops/portrait.png', './assets/images/heroes/storm/portrait.png',
+    './assets/images/heroes/domino/portrait.png', './assets/images/heroes/scarlet_witch/portrait.png',
+    './assets/images/heroes/ant_man/portrait.png', './assets/images/heroes/winter_soldier/portrait.png',
     './assets/icons/icon-192.png', './assets/icons/icon-512.png',
     './src/main.js', './src/config/AppConfig.js', './src/pwa/register.js',
     './src/audio/AudioManager.js', './src/core/GameLoop.js', './src/core/InputManager.js',
     './src/data/HeroUpgradeCatalog.js', './src/entities/Enemy.js', './src/entities/Hero.js', './src/entities/Projectile.js',
     './src/rendering/CombatVfx.js', './src/rendering/ImageCache.js', './src/rendering/SpriteAnimator.js',
-    './src/systems/AvengerKitSystem.js', './src/systems/CosmicKitSystem.js', './src/systems/StreetKitSystem.js', './src/systems/CombatSystem.js', './src/systems/EnemyBehaviorSystem.js', './src/systems/HeroAbilitySystem.js',
+    './src/systems/AvengerKitSystem.js', './src/systems/CosmicKitSystem.js', './src/systems/StreetKitSystem.js', './src/systems/MutantKitSystem.js', './src/systems/CombatSystem.js', './src/systems/EnemyBehaviorSystem.js', './src/systems/HeroAbilitySystem.js',
     './src/systems/MissionSystem.js', './src/systems/PerformanceMonitor.js', './src/systems/ProgressionManager.js', './src/systems/TeamSynergySystem.js',
     './src/systems/ItemEffectSystem.js', './src/systems/ResourceManager.js', './src/systems/ShopSystem.js', './src/systems/TacticalActionSystem.js',
     './src/systems/UIManager.js', './src/systems/WaveManager.js',

@@ -168,9 +168,6 @@ export class Hero {
 
         effects.push(...this.abilitySystem.getAttackEffects(target));
         if (this.id === 'groot') effects.push({ type: 'slow', duration: 1.8, power: 0.6, chance: 0.5 });
-        if (this.id === 'storm') effects.push({ type: 'slow', duration: 1.1, power: 0.35, chance: 0.7 });
-        if (this.id === 'scarlet_witch') effects.push({ type: 'mark', duration: 2.5, power: 0.25, chance: 0.65 });
-        if (this.id === 'jean_grey') effects.push({ type: 'knockback', duration: 0, power: 42, chance: 0.25 });
         const itemEffects = aggregateItemEffects(this.items);
         if (itemEffects.slowChance) effects.push({ type: 'slow', duration: 1.2, power: itemEffects.slowPower || 0.2, chance: itemEffects.slowChance });
         if (itemEffects.armorBreakChance) effects.push({ type: 'armorBreak', duration: 3, power: itemEffects.armorBreakPower || 0.15, chance: itemEffects.armorBreakChance });
@@ -182,8 +179,6 @@ export class Hero {
         const profiles = {
             capitan_america: { chainCount: 2, chainRange: 115, chainFactor: 0.6, returning: true },
             thor: { chainCount: 3, chainRange: 130, chainFactor: 0.7 },
-            winter_soldier: { armorPenetration: 0.45 },
-            cyclops: { armorPenetration: 0.35 },
             moon_knight: { returning: true }
         };
         const base = { ...(profiles[this.id] || {}), ...this.abilitySystem.getProjectileProfile() };

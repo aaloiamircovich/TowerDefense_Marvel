@@ -17,7 +17,7 @@ for (const required of ['service-worker.js', 'CHANGELOG.md', 'NOTICE.md', 'data/
 
 const atlasSource = fs.readFileSync(path.join(root, 'data', 'sprite-atlas.js'), 'utf8');
 const atlas = JSON.parse(atlasSource.replace(/^window\.__MARVEL_TD_ATLAS__\s*=\s*/, '').replace(/;\s*$/, ''));
-if (Object.keys(atlas.frames || {}).length < 414) errors.push('El atlas debe contener al menos 414 sprites en la Fase 15');
+if (Object.keys(atlas.frames || {}).length < 558) errors.push('El atlas debe contener al menos 558 sprites en la Fase 16');
 requireFile(atlas.image);
 
 const serviceWorker = fs.readFileSync(path.join(root, 'service-worker.js'), 'utf8');

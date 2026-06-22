@@ -2,9 +2,9 @@
 
 ## Estado actual
 
-Veintitres heroes, desde Iron Man hasta la expansion urbana 1.7.0, usan el contrato `visual` con retrato, ocho direcciones, nueve frames de ataque, precarga y cache compartido. Los heroes nuevos deben copiar este contrato y no agregar rutas sueltas fuera de su carpeta.
+Los treinta y un heroes, desde Iron Man hasta la reserva mutante 1.8.0, usan el contrato `visual` con retrato, ocho direcciones, nueve frames de ataque, precarga y cache compartido. Los heroes nuevos deben copiar este contrato y no agregar rutas sueltas fuera de su carpeta.
 
-Capitan America, Thor, Doctor Strange, los seis refuerzos Avengers, cinco heroes cosmicos y siete heroes urbanos se generan de forma reproducible con `npm run build:heroes`; el comando tambien reconstruye contratos, atlas y respaldo de datos.
+Veintinueve heroes se generan de forma reproducible con `npm run build:heroes`; Iron Man y Spider-Man conservan su vertical slice original. El comando tambien reconstruye contratos, atlas y respaldo de datos.
 
 ## Formato base
 
