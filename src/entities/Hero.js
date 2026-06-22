@@ -169,12 +169,8 @@ export class Hero {
         effects.push(...this.abilitySystem.getAttackEffects(target));
         if (this.id === 'groot') effects.push({ type: 'slow', duration: 1.8, power: 0.6, chance: 0.5 });
         if (this.id === 'storm') effects.push({ type: 'slow', duration: 1.1, power: 0.35, chance: 0.7 });
-        if (this.id === 'ghost_rider') effects.push({ type: 'burn', duration: 3, power: 7, chance: 0.8 });
-        if (this.id === 'blade') effects.push({ type: 'bleed', duration: 3, power: 6, chance: 0.75 });
-        if (this.id === 'luke_cage') effects.push({ type: 'armorBreak', duration: 3, power: 0.25, chance: 0.55 });
         if (this.id === 'scarlet_witch') effects.push({ type: 'mark', duration: 2.5, power: 0.25, chance: 0.65 });
         if (this.id === 'jean_grey') effects.push({ type: 'knockback', duration: 0, power: 42, chance: 0.25 });
-        if (this.id === 'she_hulk') effects.push({ type: 'knockback', duration: 0, power: 30, chance: 0.35 });
         const itemEffects = aggregateItemEffects(this.items);
         if (itemEffects.slowChance) effects.push({ type: 'slow', duration: 1.2, power: itemEffects.slowPower || 0.2, chance: itemEffects.slowChance });
         if (itemEffects.armorBreakChance) effects.push({ type: 'armorBreak', duration: 3, power: itemEffects.armorBreakPower || 0.15, chance: itemEffects.armorBreakChance });

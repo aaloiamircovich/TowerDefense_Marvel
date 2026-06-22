@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.7.0 - 2026-06-22
+
+- Daredevil, Moon Knight, Blade, Ghost Rider, Luke Cage, Shang-Chi y She-Hulk reciben kits completos, mejoras, audio y estados visibles.
+- Radar global, ciclo lunar, sangrado de élites, Penitencia contra jefes, intercepción, patrones de anillos y provocación gamma amplían el combate cercano.
+- Todo arrastre, intercepción y retroceso usa segmentos del trazado y mantiene a los enemigos sobre su ruta.
+- 126 recursos visuales nuevos y atlas ampliado a 414 sprites.
+- 128 pruebas automatizadas y simulación ampliada a 100.947 composiciones de seis héroes.
+
 ## 1.6.0 - 2026-06-22
 
 - Captain Marvel, Star-Lord, Groot, Gamora y Silver Surfer reciben kits completos, mejoras, audio y estados visibles.

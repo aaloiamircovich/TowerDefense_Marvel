@@ -27,7 +27,10 @@ const metrics = {
     hawkeye: [4, 4, 1, 4], black_panther: [4, 3, 4, 4], doctor_strange: [4, 5, 4, 3],
     vision: [5, 2, 2, 5], falcon: [3, 3, 5, 5],
     captain_marvel: [5, 2, 2, 3], star_lord: [4, 4, 3, 2], groot: [2, 5, 5, 1],
-    gamora: [5, 2, 1, 4], silver_surfer: [5, 4, 3, 5]
+    gamora: [5, 2, 1, 4], silver_surfer: [5, 4, 3, 5],
+    daredevil: [3, 3, 4, 5], moon_knight: [4, 4, 2, 4], blade: [5, 2, 3, 4],
+    ghost_rider: [5, 4, 1, 4], luke_cage: [3, 4, 5, 1], shang_chi: [5, 4, 3, 1],
+    she_hulk: [5, 4, 2, 1]
 };
 
 for (const hero of Object.values(heroes)) {

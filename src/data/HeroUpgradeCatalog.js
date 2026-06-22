@@ -35,7 +35,14 @@ const HERO_LABELS = {
     star_lord: ['Blásters gemelos', 'Plasma Kree', 'Forajido legendario', 'Carcaj elemental', 'Órdenes de la Milano', 'Plan casi perfecto'],
     groot: ['Golpe de rama', 'Corteza ancestral', 'Flora colosal', 'Raíces profundas', 'Regeneración', 'Yo soy Groot'],
     gamora: ['Godslayer', 'Cadena letal', 'Mujer más peligrosa', 'Paso asesino', 'Caza de élites', 'Última Zen-Whoberi'],
-    silver_surfer: ['Poder primordial', 'Rayo estelar', 'Heraldo libre', 'Tabla cósmica', 'Resonancia universal', 'Poder Cósmico']
+    silver_surfer: ['Poder primordial', 'Rayo estelar', 'Heraldo libre', 'Tabla cósmica', 'Resonancia universal', 'Poder Cósmico'],
+    daredevil: ['Bastones reforzados', 'Contraataque ciego', 'El hombre sin miedo', 'Sentidos afinados', 'Radar global', 'Guardián de Hell\'s Kitchen'],
+    moon_knight: ['Dardos lunares', 'Creciente doble', 'Puño de Khonshu', 'Capa planeadora', 'Ciclo acelerado', 'Avatar de la Luna'],
+    blade: ['Espada de plata', 'Sangrado profundo', 'Daywalker', 'Caza de élites', 'Sed controlada', 'Vampiro perfecto'],
+    ghost_rider: ['Cadena infernal', 'Fuego del infierno', 'Espíritu de Venganza', 'Arrastre condenado', 'Alma culpable', 'Mirada de Penitencia'],
+    luke_cage: ['Puños de Harlem', 'Golpe demoledor', 'A prueba de balas', 'Línea defensiva', 'Intercepción', 'Defensor inquebrantable'],
+    shang_chi: ['Golpe de Ta Lo', 'Ráfaga de anillos', 'Maestro del Kung Fu', 'Órbita dorada', 'Guardia circular', 'Leyenda de los Diez Anillos'],
+    she_hulk: ['Golpe gamma', 'Impacto jurídico', 'Fuerza sensacional', 'Provocación', 'Retroceso seguro', 'Objeción definitiva']
 };
 
 export function getHeroUpgradeTree(hero) {

@@ -427,6 +427,127 @@ function Draw-CosmicHero($graphics, [string]$hero, [int]$dx, [int]$dy, [float]$p
     }
 }
 
+function Draw-StreetHero($graphics, [string]$hero, [int]$dx, [int]$dy, [float]$pulse) {
+    $back = $dy -lt 0
+    $reach = [Math]::Round(13 * $pulse)
+    switch ($hero) {
+        'daredevil' {
+            $graphics.FillRectangle([System.Drawing.Brushes]::DarkRed, 24, 42, 7, 15)
+            $graphics.FillRectangle([System.Drawing.Brushes]::DarkRed, 34, 42, 7, 15)
+            $graphics.FillPolygon([System.Drawing.Brushes]::Firebrick, [System.Drawing.Point[]]@(
+                [System.Drawing.Point]::new(21, 25), [System.Drawing.Point]::new(43, 25),
+                [System.Drawing.Point]::new(39, 46), [System.Drawing.Point]::new(25, 46)))
+            $graphics.FillEllipse([System.Drawing.Brushes]::Crimson, 24, 12, 16, 17)
+            $graphics.FillPolygon([System.Drawing.Brushes]::Crimson, [System.Drawing.Point[]]@(
+                [System.Drawing.Point]::new(25, 15), [System.Drawing.Point]::new(27, 7), [System.Drawing.Point]::new(31, 14),
+                [System.Drawing.Point]::new(35, 14), [System.Drawing.Point]::new(38, 7), [System.Drawing.Point]::new(40, 16)))
+            if (-not $back) { $graphics.FillRectangle([System.Drawing.Brushes]::Black, 26, 19, 13, 3) }
+            $batonPen = New-Object System.Drawing.Pen ([System.Drawing.Color]::IndianRed), 3
+            $graphics.DrawLine($batonPen, 20 - $reach, 31, 13 - $reach, 47)
+            $graphics.DrawLine($batonPen, 44 + $reach, 31, 51 + $reach, 47)
+            $batonPen.Dispose()
+        }
+        'moon_knight' {
+            $graphics.FillRectangle([System.Drawing.Brushes]::LightGray, 24, 42, 7, 15)
+            $graphics.FillRectangle([System.Drawing.Brushes]::LightGray, 34, 42, 7, 15)
+            $graphics.FillPolygon([System.Drawing.Brushes]::WhiteSmoke, [System.Drawing.Point[]]@(
+                [System.Drawing.Point]::new(20, 25), [System.Drawing.Point]::new(44, 25),
+                [System.Drawing.Point]::new(40, 47), [System.Drawing.Point]::new(24, 47)))
+            $graphics.FillPolygon([System.Drawing.Brushes]::Gainsboro, [System.Drawing.Point[]]@(
+                [System.Drawing.Point]::new(24, 17), [System.Drawing.Point]::new(32, 7),
+                [System.Drawing.Point]::new(40, 17), [System.Drawing.Point]::new(39, 28), [System.Drawing.Point]::new(25, 28)))
+            if (-not $back) {
+                $graphics.FillRectangle([System.Drawing.Brushes]::White, 27, 19, 3, 2)
+                $graphics.FillRectangle([System.Drawing.Brushes]::White, 35, 19, 3, 2)
+                $moonPen = New-Object System.Drawing.Pen ([System.Drawing.Color]::Silver), 2
+                $graphics.DrawArc($moonPen, 28, 31, 9, 9, 55, 250)
+                $moonPen.Dispose()
+            }
+            $graphics.FillPolygon([System.Drawing.Brushes]::Silver, [System.Drawing.Point[]]@(
+                [System.Drawing.Point]::new(15 - $reach, 34), [System.Drawing.Point]::new(21 - $reach, 31),
+                [System.Drawing.Point]::new(18 - $reach, 40)))
+        }
+        'blade' {
+            $graphics.FillRectangle([System.Drawing.Brushes]::Black, 23, 42, 8, 15)
+            $graphics.FillRectangle([System.Drawing.Brushes]::Black, 34, 42, 8, 15)
+            $graphics.FillPolygon([System.Drawing.Brushes]::Black, [System.Drawing.Point[]]@(
+                [System.Drawing.Point]::new(19, 24), [System.Drawing.Point]::new(45, 24),
+                [System.Drawing.Point]::new(41, 51), [System.Drawing.Point]::new(23, 51)))
+            $graphics.FillRectangle([System.Drawing.Brushes]::DarkRed, 28, 27, 8, 21)
+            $graphics.FillEllipse([System.Drawing.Brushes]::SaddleBrown, 25, 12, 14, 15)
+            if (-not $back) { $graphics.FillRectangle([System.Drawing.Brushes]::Black, 24, 17, 16, 4) }
+            $swordPen = New-Object System.Drawing.Pen ([System.Drawing.Color]::Silver), 4
+            $graphics.DrawLine($swordPen, 44 + $reach, 43, 52 + $reach, 12)
+            $swordPen.Dispose()
+            $graphics.DrawLine([System.Drawing.Pens]::DarkRed, 43 + $reach, 39, 51 + $reach, 42)
+        }
+        'ghost_rider' {
+            $graphics.FillRectangle([System.Drawing.Brushes]::Black, 23, 42, 8, 15)
+            $graphics.FillRectangle([System.Drawing.Brushes]::Black, 34, 42, 8, 15)
+            $graphics.FillPolygon([System.Drawing.Brushes]::Black, [System.Drawing.Point[]]@(
+                [System.Drawing.Point]::new(20, 25), [System.Drawing.Point]::new(44, 25),
+                [System.Drawing.Point]::new(40, 47), [System.Drawing.Point]::new(24, 47)))
+            $graphics.DrawLine([System.Drawing.Pens]::Silver, 22, 31, 42, 40)
+            $graphics.FillEllipse([System.Drawing.Brushes]::Ivory, 25, 13, 14, 15)
+            if (-not $back) {
+                $graphics.FillRectangle([System.Drawing.Brushes]::Black, 27, 18, 3, 3)
+                $graphics.FillRectangle([System.Drawing.Brushes]::Black, 35, 18, 3, 3)
+            }
+            $graphics.FillPolygon([System.Drawing.Brushes]::OrangeRed, [System.Drawing.Point[]]@(
+                [System.Drawing.Point]::new(24, 16), [System.Drawing.Point]::new(27, 5), [System.Drawing.Point]::new(31, 11),
+                [System.Drawing.Point]::new(34, 2), [System.Drawing.Point]::new(37, 12), [System.Drawing.Point]::new(42, 6), [System.Drawing.Point]::new(40, 18)))
+            $chainPen = New-Object System.Drawing.Pen ([System.Drawing.Color]::LightGray), 2
+            $graphics.DrawArc($chainPen, 8 - $reach, 27, 20 + $reach, 22, 80, 220)
+            $chainPen.Dispose()
+        }
+        'luke_cage' {
+            $graphics.FillRectangle([System.Drawing.Brushes]::MidnightBlue, 23, 42, 8, 15)
+            $graphics.FillRectangle([System.Drawing.Brushes]::MidnightBlue, 34, 42, 8, 15)
+            $graphics.FillPolygon([System.Drawing.Brushes]::Gold, [System.Drawing.Point[]]@(
+                [System.Drawing.Point]::new(19, 24), [System.Drawing.Point]::new(45, 24),
+                [System.Drawing.Point]::new(40, 47), [System.Drawing.Point]::new(24, 47)))
+            $graphics.FillEllipse([System.Drawing.Brushes]::SaddleBrown, 24, 11, 16, 16)
+            if (-not $back) {
+                $graphics.FillRectangle([System.Drawing.Brushes]::Black, 27, 18, 3, 2)
+                $graphics.FillRectangle([System.Drawing.Brushes]::Black, 35, 18, 3, 2)
+            }
+            $graphics.FillEllipse([System.Drawing.Brushes]::SaddleBrown, 10 - $reach, 30, 13, 13)
+            $graphics.FillEllipse([System.Drawing.Brushes]::SaddleBrown, 42 + $reach, 30, 13, 13)
+        }
+        'shang_chi' {
+            $graphics.FillRectangle([System.Drawing.Brushes]::Black, 23, 42, 8, 15)
+            $graphics.FillRectangle([System.Drawing.Brushes]::Black, 34, 42, 8, 15)
+            $graphics.FillPolygon([System.Drawing.Brushes]::Crimson, [System.Drawing.Point[]]@(
+                [System.Drawing.Point]::new(20, 24), [System.Drawing.Point]::new(44, 24),
+                [System.Drawing.Point]::new(39, 47), [System.Drawing.Point]::new(25, 47)))
+            $graphics.FillRectangle([System.Drawing.Brushes]::Black, 29, 25, 6, 22)
+            $graphics.FillEllipse([System.Drawing.Brushes]::NavajoWhite, 25, 12, 14, 15)
+            $graphics.FillRectangle([System.Drawing.Brushes]::Black, 24, 10, 16, 7)
+            $ringPen = New-Object System.Drawing.Pen ([System.Drawing.Color]::Gold), 2
+            for ($i = 0; $i -lt 5; $i++) {
+                $graphics.DrawEllipse($ringPen, 11 - $reach + $i, 28 + $i * 4, 9, 5)
+                $graphics.DrawEllipse($ringPen, 44 + $reach - $i, 28 + $i * 4, 9, 5)
+            }
+            $ringPen.Dispose()
+        }
+        'she_hulk' {
+            $graphics.FillRectangle([System.Drawing.Brushes]::Purple, 22, 42, 9, 15)
+            $graphics.FillRectangle([System.Drawing.Brushes]::Purple, 34, 42, 9, 15)
+            $graphics.FillPolygon([System.Drawing.Brushes]::DarkMagenta, [System.Drawing.Point[]]@(
+                [System.Drawing.Point]::new(18, 25), [System.Drawing.Point]::new(46, 25),
+                [System.Drawing.Point]::new(41, 47), [System.Drawing.Point]::new(23, 47)))
+            $graphics.FillEllipse([System.Drawing.Brushes]::YellowGreen, 24, 11, 16, 17)
+            $graphics.FillRectangle([System.Drawing.Brushes]::DarkGreen, 23, 9, 18, 8)
+            if (-not $back) {
+                $graphics.FillRectangle([System.Drawing.Brushes]::White, 27, 19, 3, 2)
+                $graphics.FillRectangle([System.Drawing.Brushes]::White, 35, 19, 3, 2)
+            }
+            $graphics.FillEllipse([System.Drawing.Brushes]::YellowGreen, 8 - $reach, 29, 15, 15)
+            $graphics.FillEllipse([System.Drawing.Brushes]::YellowGreen, 42 + $reach, 29, 15, 15)
+        }
+    }
+}
+
 function New-HeroSprite([string]$hero, [string]$direction, [int]$attackFrame, [string]$path, [int]$size) {
     $bitmap = New-Object System.Drawing.Bitmap 62, 62, ([System.Drawing.Imaging.PixelFormat]::Format32bppArgb)
     $graphics = [System.Drawing.Graphics]::FromImage($bitmap)
@@ -450,13 +571,20 @@ function New-HeroSprite([string]$hero, [string]$direction, [int]$attackFrame, [s
         'groot' { Draw-CosmicHero $graphics $hero $vector[0] $vector[1] $pulse }
         'gamora' { Draw-CosmicHero $graphics $hero $vector[0] $vector[1] $pulse }
         'silver_surfer' { Draw-CosmicHero $graphics $hero $vector[0] $vector[1] $pulse }
+        'daredevil' { Draw-StreetHero $graphics $hero $vector[0] $vector[1] $pulse }
+        'moon_knight' { Draw-StreetHero $graphics $hero $vector[0] $vector[1] $pulse }
+        'blade' { Draw-StreetHero $graphics $hero $vector[0] $vector[1] $pulse }
+        'ghost_rider' { Draw-StreetHero $graphics $hero $vector[0] $vector[1] $pulse }
+        'luke_cage' { Draw-StreetHero $graphics $hero $vector[0] $vector[1] $pulse }
+        'shang_chi' { Draw-StreetHero $graphics $hero $vector[0] $vector[1] $pulse }
+        'she_hulk' { Draw-StreetHero $graphics $hero $vector[0] $vector[1] $pulse }
     }
     Save-ScaledSprite $bitmap $path $size
     $graphics.Dispose()
     $bitmap.Dispose()
 }
 
-$heroes = @('capitan_america', 'thor', 'doctor_strange', 'hulk', 'black_widow', 'hawkeye', 'black_panther', 'vision', 'falcon', 'captain_marvel', 'star_lord', 'groot', 'gamora', 'silver_surfer')
+$heroes = @('capitan_america', 'thor', 'doctor_strange', 'hulk', 'black_widow', 'hawkeye', 'black_panther', 'vision', 'falcon', 'captain_marvel', 'star_lord', 'groot', 'gamora', 'silver_surfer', 'daredevil', 'moon_knight', 'blade', 'ghost_rider', 'luke_cage', 'shang_chi', 'she_hulk')
 foreach ($hero in $heroes) {
     $root = Join-Path $ProjectRoot "assets\images\heroes\$hero"
     foreach ($direction in $directions.Keys) {

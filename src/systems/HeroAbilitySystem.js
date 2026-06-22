@@ -2,6 +2,7 @@ import { Projectile } from '../entities/Projectile.js';
 import { CombatSystem } from './CombatSystem.js';
 import { AvengerKitSystem } from './AvengerKitSystem.js';
 import { CosmicKitSystem } from './CosmicKitSystem.js';
+import { StreetKitSystem } from './StreetKitSystem.js';
 
 const ACTIVE_COOLDOWNS = {
     thor: 11,
@@ -15,12 +16,14 @@ export class HeroAbilitySystem {
         this.cooldownRemaining = 0;
         this.avengerKit = new AvengerKitSystem(hero);
         this.cosmicKit = new CosmicKitSystem(hero);
+        this.streetKit = new StreetKitSystem(hero);
     }
 
     update(dt, enemies, stats, projectiles) {
         this.cooldownRemaining = Math.max(0, this.cooldownRemaining - dt);
         this.avengerKit.update(dt, enemies, stats, projectiles);
         this.cosmicKit.update(dt, enemies, stats, projectiles);
+        this.streetKit.update(dt, enemies, stats, projectiles);
         if (this.cooldownRemaining > 0) return;
 
         const targets = this.getTargetsInRange(enemies, stats.range);
@@ -35,6 +38,7 @@ export class HeroAbilitySystem {
         this.attackCount++;
         this.avengerKit.onAttack(target, stats, projectileConfig, projectiles);
         this.cosmicKit.onAttack(target, stats, projectileConfig, projectiles);
+        this.streetKit.onAttack(target, stats, projectileConfig, projectiles);
 
         if (this.hero.id === 'iron_man') {
             this.hero.game.audio?.play('repulsor');
@@ -50,7 +54,7 @@ export class HeroAbilitySystem {
     }
 
     getAttackEffects(target) {
-        const effects = [...this.avengerKit.getAttackEffects(target), ...this.cosmicKit.getAttackEffects(target)];
+        const effects = [...this.avengerKit.getAttackEffects(target), ...this.cosmicKit.getAttackEffects(target), ...this.streetKit.getAttackEffects(target)];
         if (this.hero.id === 'spiderman') {
             effects.push({ type: 'web', duration: 2.6, power: 0.2, chance: 1 });
         }
@@ -69,7 +73,8 @@ export class HeroAbilitySystem {
             stats.fireRate *= 1.15;
         }
         this.avengerKit.applyStatModifiers(stats);
-        return this.cosmicKit.applyStatModifiers(stats);
+        this.cosmicKit.applyStatModifiers(stats);
+        return this.streetKit.applyStatModifiers(stats);
     }
 
     activateArcOverload(target, stats) {
@@ -188,40 +193,42 @@ export class HeroAbilitySystem {
                 ready
             };
         }
-        return this.avengerKit.getDisplayState() || this.cosmicKit.getDisplayState();
+        return this.avengerKit.getDisplayState() || this.cosmicKit.getDisplayState() || this.streetKit.getDisplayState();
     }
 
     getControlState() {
-        return this.avengerKit.getControlState() || this.cosmicKit.getControlState();
+        return this.avengerKit.getControlState() || this.cosmicKit.getControlState() || this.streetKit.getControlState();
     }
 
     setCombatMode(mode) {
-        return this.avengerKit.setMode(mode) || this.cosmicKit.setMode(mode);
+        return this.avengerKit.setMode(mode) || this.cosmicKit.setMode(mode) || this.streetKit.setMode(mode);
     }
 
     getCombatMode() {
-        return this.avengerKit.getMode() || this.cosmicKit.getMode();
+        return this.avengerKit.getMode() || this.cosmicKit.getMode() || this.streetKit.getMode();
     }
 
     getProjectileProfile() {
-        return { ...this.avengerKit.getProjectileProfile(), ...this.cosmicKit.getProjectileProfile() };
+        return { ...this.avengerKit.getProjectileProfile(), ...this.cosmicKit.getProjectileProfile(), ...this.streetKit.getProjectileProfile() };
     }
 
     getProjectileColor() {
-        return this.avengerKit.getProjectileColor() || this.cosmicKit.getProjectileColor();
+        return this.avengerKit.getProjectileColor() || this.cosmicKit.getProjectileColor() || this.streetKit.getProjectileColor();
     }
 
     getProjectileVisualStyle() {
-        return this.avengerKit.getProjectileVisualStyle() || this.cosmicKit.getProjectileVisualStyle();
+        return this.avengerKit.getProjectileVisualStyle() || this.cosmicKit.getProjectileVisualStyle() || this.streetKit.getProjectileVisualStyle();
     }
 
     render(ctx) {
         this.avengerKit.render(ctx);
         this.cosmicKit.render(ctx);
+        this.streetKit.render(ctx);
     }
 
-    onKill() {
+    onKill(target) {
         this.cosmicKit.onKill();
+        this.streetKit.onKill(target);
     }
 
     static getLineEndpoint(origin, target, distance) {

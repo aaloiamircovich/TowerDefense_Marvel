@@ -152,6 +152,32 @@ export class Projectile {
             ctx.beginPath();
             ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
             ctx.fill();
+        } else if (this.visualStyle === 'crescent') {
+            ctx.fillStyle = this.color;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.radius + 3, -Math.PI * 0.7, Math.PI * 0.7);
+            ctx.arc(this.x + 4, this.y, this.radius + 1, Math.PI * 0.7, -Math.PI * 0.7, true);
+            ctx.fill();
+        } else if (this.visualStyle === 'hellfire') {
+            ctx.fillStyle = this.color;
+            ctx.beginPath();
+            ctx.moveTo(this.x, this.y - this.radius - 7);
+            ctx.quadraticCurveTo(this.x + this.radius + 6, this.y, this.x, this.y + this.radius + 4);
+            ctx.quadraticCurveTo(this.x - this.radius - 6, this.y, this.x, this.y - this.radius - 7);
+            ctx.fill();
+        } else if (this.visualStyle === 'ring') {
+            ctx.strokeStyle = this.color;
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.ellipse(this.x, this.y, this.radius + 4, this.radius, 0.45, 0, Math.PI * 2);
+            ctx.stroke();
+        } else if (this.visualStyle === 'blade') {
+            ctx.strokeStyle = this.color;
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(this.x - 8, this.y + 6);
+            ctx.lineTo(this.x + 8, this.y - 6);
+            ctx.stroke();
         } else {
             ctx.fillStyle = this.color;
             ctx.beginPath();

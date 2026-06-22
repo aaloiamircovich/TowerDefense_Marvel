@@ -101,6 +101,8 @@ Este segundo ciclo parte de una base estable: campaña de siete mapas, cinco her
 
 **Terminado cuando:** los siete pueden defender zonas estrechas sin romper rutas ni trivializar jefes.
 
+**Estado:** implementada en la version 1.7.0. Daredevil comparte deteccion global, Moon Knight alterna tres fases, Blade caza elites con robo de vida limitado, Ghost Rider arrastra y reserva Penitencia para jefes, Luke Cage intercepta fugas, Shang-Chi configura sus anillos y She-Hulk combina provocacion con impacto. Los siete incluyen sprites, audio, mejoras, balance y pruebas que verifican el trazado.
+
 ## Fase 16 - Mutantes y reserva tactica
 
 **Objetivo:** completar los 31 heroes definidos y cerrar el backlog principal de sprites.

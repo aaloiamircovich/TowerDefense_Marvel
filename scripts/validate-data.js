@@ -29,6 +29,7 @@ function validateHeroes(heroes) {
     const knownIds = new Set(Object.keys(heroes));
     const phase12Heroes = new Set(['hulk', 'black_widow', 'hawkeye', 'black_panther', 'vision', 'falcon']);
     const phase14Heroes = new Set(['captain_marvel', 'star_lord', 'groot', 'gamora', 'silver_surfer']);
+    const phase15Heroes = new Set(['daredevil', 'moon_knight', 'blade', 'ghost_rider', 'luke_cage', 'shang_chi', 'she_hulk']);
     const validTags = new Set(['Avengers', 'Defenders', 'Guardianes', 'X-Men', 'Místico', 'Callejero', 'Wakanda', 'Tecnología']);
     const validRoles = new Set(['vanguard', 'support', 'artillery']);
 
@@ -45,8 +46,8 @@ function validateHeroes(heroes) {
 
         validateAsset(hero.sprite, `heroes.${key}.sprite`);
         if (hero.visual) validateHeroVisual(key, hero.visual);
-        if (phase12Heroes.has(key) || phase14Heroes.has(key)) {
-            if (!hero.visual) errors.push(`heroes.${key}.visual es obligatorio para la Fase 12`);
+        if (phase12Heroes.has(key) || phase14Heroes.has(key) || phase15Heroes.has(key)) {
+            if (!hero.visual) errors.push(`heroes.${key}.visual es obligatorio para las expansiones de roster`);
             requireText(hero.abilityDesc, `heroes.${key}.abilityDesc`);
             requireText(hero.niche, `heroes.${key}.niche`);
         }
