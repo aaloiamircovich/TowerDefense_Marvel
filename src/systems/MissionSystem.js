@@ -33,6 +33,10 @@ export class MissionSystem {
             turretCooldown: 0,
             vibranium: 0,
             shieldCharges: level.mission?.mechanic?.type === 'vibranium' ? 1 : 0,
+            cycleTimer: level.mission?.mechanic?.cycle || 6,
+            inverted: false,
+            vegetation: level.mission?.mechanic?.vegetation || 0,
+            breachedCells: new Set(),
             affectedEnemies: new Set(),
             activeLandmarks: new Set()
         };
@@ -65,6 +69,21 @@ export class MissionSystem {
         } else if (type === 'vibranium') {
             this.switchReactiveRoute(waveNumber);
             this.state.message = `Ruta cinética ${waveNumber % 2 === 0 ? 'Dorada' : 'Pantera'} activa.`;
+        } else if (type === 'bifrost') {
+            this.switchReactiveRoute(waveNumber);
+            this.state.message = `Ancla ${waveNumber % 2 === 0 ? 'Vanaheim' : 'Asgard'} conectada al Bifrost.`;
+        } else if (type === 'inversion') {
+            this.state.cycleTimer = this.level.mission.mechanic.cycle || 6;
+            this.state.inverted = false;
+            this.state.message = 'Realidad estable: las runas ralentizan invasores.';
+        } else if (type === 'jungle') {
+            const routes = this.level.alternatePaths || [];
+            if (routes.length) this.switchRoute(Math.floor((waveNumber - 1) / 3) % routes.length);
+            this.state.vegetation = this.level.mission.mechanic.vegetation || 5;
+            this.state.message = waveNumber % 3 === 1 ? 'La selva reveló un sendero oculto.' : 'La vegetación contiene el avance.';
+        } else if (type === 'raft') {
+            this.state.breachedCells.clear();
+            this.state.message = 'Bloques de contención reiniciados para la oleada.';
         } else {
             this.state.message = this.level.mission?.mechanic?.status || 'Objetivo táctico activo.';
         }
@@ -78,6 +97,10 @@ export class MissionSystem {
         if (type === 'streets') this.updateStreets(dt);
         if (type === 'security') this.updateSecurity(dt);
         if (type === 'ward' || type === 'academy') this.updateLandmarks(type);
+        if (type === 'bifrost') this.updateBifrost();
+        if (type === 'inversion') this.updateInversion(dt);
+        if (type === 'jungle') this.updateJungle();
+        if (type === 'raft') this.updateRaft();
     }
 
     updateStreets(dt) {
@@ -143,6 +166,72 @@ export class MissionSystem {
                 this.state.message = `Baliza ${index + 1} de la Sala de Peligro activada.`;
                 this.publish();
             }
+        });
+    }
+
+    updateBifrost() {
+        const mechanic = this.level.mission.mechanic;
+        for (const portal of mechanic.portals || []) {
+            const targets = this.game.enemies.filter((enemy) => enemy.isAlive && !this.state.affectedEnemies.has(enemy.uid) && distanceTo(enemy, portal) <= (portal.radius || 42));
+            targets.forEach((enemy) => {
+                const moved = enemy.moveForward?.(mechanic.jumpDistance || 140) || 0;
+                this.state.affectedEnemies.add(enemy.uid);
+                if (moved !== false) {
+                    this.state.metrics.mechanicUses++;
+                    this.game.vfx?.addRing?.(enemy.x, enemy.y, { color: '#65cdff', radius: 38, duration: 0.35 });
+                }
+            });
+        }
+    }
+
+    updateInversion(dt) {
+        const mechanic = this.level.mission.mechanic;
+        this.state.cycleTimer -= dt;
+        if (this.state.cycleTimer <= 0) {
+            this.state.inverted = !this.state.inverted;
+            this.state.cycleTimer += mechanic.cycle || 6;
+            this.state.metrics.mechanicUses++;
+            this.state.message = this.state.inverted ? 'Paradoja activa: las runas aceleran invasores.' : 'Realidad estable: las runas vuelven a ralentizar.';
+            this.publish();
+        }
+        for (const landmark of mechanic.landmarks || []) {
+            this.game.enemies.filter((enemy) => enemy.isAlive && distanceTo(enemy, landmark) <= (landmark.radius || 70))
+                .forEach((enemy) => enemy.applyStatus(this.state.inverted
+                    ? { type: 'haste', duration: 0.45, power: 0.24 }
+                    : { type: 'slow', duration: 0.45, power: 0.42 }));
+        }
+    }
+
+    updateJungle() {
+        if (this.state.vegetation <= 0) return;
+        const mechanic = this.level.mission.mechanic;
+        for (const landmark of mechanic.landmarks || []) {
+            const target = this.game.enemies.find((enemy) => enemy.isAlive && !this.state.affectedEnemies.has(enemy.uid) && distanceTo(enemy, landmark) <= (landmark.radius || 54));
+            if (!target) continue;
+            target.applyStatus({ type: 'slow', duration: 3, power: 0.62 });
+            this.state.affectedEnemies.add(target.uid);
+            this.state.vegetation--;
+            this.state.metrics.mechanicUses++;
+            if (this.state.vegetation === 0) {
+                this.state.message = 'La vegetación fue destruida: el sendero queda libre.';
+                this.publish();
+                return;
+            }
+        }
+    }
+
+    updateRaft() {
+        const mechanic = this.level.mission.mechanic;
+        (mechanic.landmarks || []).forEach((cell, index) => {
+            if (this.state.breachedCells.has(index)) return;
+            const source = this.game.enemies.find((enemy) => enemy.isAlive && enemy.hp < enemy.maxHp && distanceTo(enemy, cell) <= (cell.radius || 58));
+            if (!source) return;
+            this.state.breachedCells.add(index);
+            this.state.metrics.mechanicUses++;
+            this.game.spawnEnemy?.(mechanic.prisoner, source);
+            this.state.message = `Brecha en celda ${cell.label}: prisionero liberado.`;
+            this.game.audio?.play('warning');
+            this.publish();
         });
     }
 
@@ -239,7 +328,7 @@ export class MissionSystem {
             x: gridX * this.game.gridSize + this.game.gridSize / 2,
             y: gridY * this.game.gridSize + this.game.gridSize / 2
         };
-        const reserved = [mechanic.zone, mechanic.door, mechanic.turret, ...(mechanic.nodes || []), ...(mechanic.landmarks || [])].filter(Boolean);
+        const reserved = [mechanic.zone, mechanic.door, mechanic.turret, ...(mechanic.nodes || []), ...(mechanic.landmarks || []), ...(mechanic.portals || [])].filter(Boolean);
         return reserved.some((zone) => distanceTo(point, zone) < (zone.radius || 34) + 16)
             ? 'Celda reservada para una defensa de la misión.'
             : null;
@@ -294,6 +383,10 @@ export class MissionSystem {
             (mechanic.nodes || []).forEach((node) => drawToken(ctx, node.x, node.y, '#b865ff', 'V'));
             const exit = this.game.path.at(-2);
             if (exit) drawZone(ctx, { ...exit, radius: 34 }, '#d4af37', `ESC ${this.state.shieldCharges}`);
+        }
+
+        if (mechanic.type === 'bifrost') {
+            (mechanic.portals || []).forEach((portal, index) => drawZone(ctx, portal, '#65cdff', `BIF ${index + 1}`));
         }
 
         for (const landmark of mechanic.landmarks || []) {

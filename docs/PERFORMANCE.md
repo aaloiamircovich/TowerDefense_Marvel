@@ -17,4 +17,4 @@ El control falla si el p95 supera 16.67 ms. En la preparacion de la version 1.0.
 
 ## Control de regresiones
 
-`npm run check` ejecuta validacion de datos y assets, 144 tests, simulacion de balance, benchmark y control de lanzamiento. GitHub Actions reproduce el mismo comando en cada push y pull request.
+`npm run check` ejecuta validacion de datos y assets, 150 tests, simulacion de balance, benchmark y control de lanzamiento. GitHub Actions reproduce el mismo comando en cada push y pull request.

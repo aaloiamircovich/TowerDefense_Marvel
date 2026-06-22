@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.9.0 - 2026-06-22
+
+- Asgard, Dimensión Oscura, Savage Land y The Raft amplían la campaña a once mapas.
+- Bifrost, ciclos de inversión, vegetación destructible y celdas por daño colateral cambian la geometría y el ritmo de defensa.
+- Ocho tropas, cuatro jefes con fases, objetivos secundarios, diálogos y ambientación propia por mundo.
+- Todas las aceleraciones, teletransportes y apariciones conservan el segmento de ruta del enemigo.
+- 150 pruebas automatizadas, 30 enemigos normales y 19 jefes validados.
+
 ## 1.8.0 - 2026-06-22
 
 - Wolverine, Jean Grey, Cyclops, Storm, Domino, Scarlet Witch, Ant-Man y Winter Soldier completan los 31 kits del roster.

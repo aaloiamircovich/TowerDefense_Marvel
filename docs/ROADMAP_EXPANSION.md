@@ -133,6 +133,8 @@ Este segundo ciclo parte de una base estable: campaña de siete mapas, cinco her
 
 **Terminado cuando:** los cuatro mapas requieren equipos y colocaciones diferentes a los siete actuales.
 
+**Estado:** implementada en la version 1.9.0. Asgard alterna anclas y saltos de Bifrost, la Dimension Oscura invierte runas por ciclos, Savage Land consume vegetacion y revela senderos, y The Raft libera mini-jefes cuando el dano colateral alcanza una celda. Cada mundo incorpora faccion, jefe por fases, objetivos, dialogo, audio y tema visual propios.
+
 ## Fase 18 - Director de encuentros
 
 **Objetivo:** generar variedad justa sin sustituir el diseño manual de oleadas.

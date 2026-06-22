@@ -320,6 +320,112 @@
       "summonLimit": 3,
       "behaviorCooldown": 6,
       "threat": 5
+    },
+    "asgardian_traitor": {
+      "id": "asgardian_traitor",
+      "name": "Traidor Asgardiano",
+      "category": "Místico",
+      "hp": 240,
+      "speed": 58,
+      "reward": 34,
+      "armor": 0.25,
+      "stealth": false,
+      "faction": "Ejército de Malekith",
+      "archetype": "soldier",
+      "threat": 4
+    },
+    "dark_elf_skirmisher": {
+      "id": "dark_elf_skirmisher",
+      "name": "Hostigador Elfo Oscuro",
+      "category": "Místico",
+      "hp": 175,
+      "speed": 86,
+      "reward": 31,
+      "armor": 0.12,
+      "stealth": true,
+      "faction": "Ejército de Malekith",
+      "archetype": "runner",
+      "threat": 4
+    },
+    "mindless_one": {
+      "id": "mindless_one",
+      "name": "Sin Mente",
+      "category": "Místico",
+      "hp": 390,
+      "speed": 38,
+      "reward": 46,
+      "armor": 0.36,
+      "stealth": false,
+      "faction": "Dimensión Oscura",
+      "archetype": "tank",
+      "threat": 5
+    },
+    "dark_zealot": {
+      "id": "dark_zealot",
+      "name": "Fanático Oscuro",
+      "category": "Místico",
+      "hp": 210,
+      "speed": 64,
+      "reward": 37,
+      "armor": 0.16,
+      "stealth": false,
+      "faction": "Dimensión Oscura",
+      "archetype": "support",
+      "healPower": 0.05,
+      "behaviorCooldown": 5,
+      "threat": 4
+    },
+    "savage_raptor": {
+      "id": "savage_raptor",
+      "name": "Raptor Salvaje",
+      "category": "Mutante",
+      "hp": 150,
+      "speed": 102,
+      "reward": 29,
+      "armor": 0.06,
+      "stealth": false,
+      "faction": "Savage Land",
+      "archetype": "runner",
+      "threat": 4
+    },
+    "savage_brute": {
+      "id": "savage_brute",
+      "name": "Bruto Mutado",
+      "category": "Mutante",
+      "hp": 440,
+      "speed": 34,
+      "reward": 52,
+      "armor": 0.34,
+      "stealth": false,
+      "faction": "Savage Land",
+      "archetype": "tank",
+      "threat": 5
+    },
+    "raft_escapee": {
+      "id": "raft_escapee",
+      "name": "Fugitivo de The Raft",
+      "category": "Urbano",
+      "hp": 235,
+      "speed": 72,
+      "reward": 35,
+      "armor": 0.18,
+      "stealth": false,
+      "faction": "Prisioneros de The Raft",
+      "archetype": "soldier",
+      "threat": 4
+    },
+    "raft_saboteur": {
+      "id": "raft_saboteur",
+      "name": "Saboteador de Celdas",
+      "category": "Tecnológico",
+      "hp": 190,
+      "speed": 78,
+      "reward": 42,
+      "armor": 0.14,
+      "stealth": true,
+      "faction": "Prisioneros de The Raft",
+      "archetype": "stealth",
+      "threat": 5
     }
   },
   "bosses": {
@@ -636,6 +742,117 @@
           "speed": 1.35,
           "heal": 0.08,
           "color": "#ffd166"
+        }
+      ]
+    },
+    "malekith": {
+      "id": "malekith",
+      "name": "Malekith",
+      "category": "Místico",
+      "hp": 5200,
+      "speed": 32,
+      "reward": 720,
+      "armor": 0.38,
+      "isBoss": true,
+      "faction": "Ejército de Malekith",
+      "archetype": "boss",
+      "threat": 5,
+      "phases": [
+        {
+          "threshold": 0.7,
+          "label": "Éter oscuro",
+          "speedFactor": 1.15,
+          "barrierRatio": 0.12
+        },
+        {
+          "threshold": 0.35,
+          "label": "Convergencia",
+          "speedFactor": 1.25,
+          "summonId": "dark_elf_skirmisher",
+          "summonCount": 3
+        }
+      ]
+    },
+    "baron_mordo": {
+      "id": "baron_mordo",
+      "name": "Barón Mordo",
+      "category": "Místico",
+      "hp": 5600,
+      "speed": 30,
+      "reward": 760,
+      "armor": 0.3,
+      "isBoss": true,
+      "faction": "Dimensión Oscura",
+      "archetype": "boss",
+      "threat": 5,
+      "phases": [
+        {
+          "threshold": 0.72,
+          "label": "Hechizo vedado",
+          "barrierRatio": 0.18
+        },
+        {
+          "threshold": 0.38,
+          "label": "Ruptura temporal",
+          "speedFactor": 1.3,
+          "summonId": "dark_zealot",
+          "summonCount": 2
+        }
+      ]
+    },
+    "sauron": {
+      "id": "sauron",
+      "name": "Sauron",
+      "category": "Mutante",
+      "hp": 6100,
+      "speed": 36,
+      "reward": 800,
+      "armor": 0.32,
+      "flying": true,
+      "isBoss": true,
+      "faction": "Savage Land",
+      "archetype": "boss",
+      "threat": 5,
+      "phases": [
+        {
+          "threshold": 0.66,
+          "label": "Drenaje vital",
+          "heal": 0.12
+        },
+        {
+          "threshold": 0.3,
+          "label": "Señor prehistórico",
+          "speedFactor": 1.25,
+          "summonId": "savage_raptor",
+          "summonCount": 4
+        }
+      ]
+    },
+    "abomination": {
+      "id": "abomination",
+      "name": "Abominación",
+      "category": "Mutante",
+      "hp": 7200,
+      "speed": 28,
+      "reward": 860,
+      "armor": 0.45,
+      "isBoss": true,
+      "faction": "Prisioneros de The Raft",
+      "archetype": "boss",
+      "threat": 5,
+      "phases": [
+        {
+          "threshold": 0.7,
+          "label": "Furia gamma",
+          "speedFactor": 1.18,
+          "barrierRatio": 0.12
+        },
+        {
+          "threshold": 0.32,
+          "label": "Contención rota",
+          "speedFactor": 1.3,
+          "summonId": "raft_escapee",
+          "summonCount": 4
         }
       ]
     }

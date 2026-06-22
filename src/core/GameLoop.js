@@ -450,6 +450,34 @@ export class GameLoop {
                 mountainMark: 'rgba(123, 224, 109, 0.18)',
                 decorLight: '#7be06d',
                 decorDark: '#8d6e3f'
+            },
+            asgard: {
+                void: '#08070d', waterBand: false,
+                terrain: { 0: '#284b70', 1: '#65512c', 11: '#796132', 12: '#8d7238', 2: '#c3a24b', 3: '#241c30', 4: '#4d3d23' },
+                gridLine: 'rgba(255, 209, 102, 0.09)', pathCenter: 'rgba(255, 226, 138, 0.3)', pathEdge: 'rgba(101, 205, 255, 0.42)',
+                pathGlow: 'rgba(101, 205, 255, 0.38)', pathStripe: 'rgba(255, 255, 255, 0.48)', mountainMark: 'rgba(255, 209, 102, 0.25)',
+                decorLight: '#ffd166', decorDark: '#65cdff'
+            },
+            'dark-dimension': {
+                void: '#09030d', waterBand: false,
+                terrain: { 0: '#45206a', 1: '#32143e', 11: '#431b52', 12: '#582366', 2: '#6d2c68', 3: '#120819', 4: '#271030' },
+                gridLine: 'rgba(255, 79, 163, 0.1)', pathCenter: 'rgba(255, 79, 163, 0.24)', pathEdge: 'rgba(139, 92, 255, 0.48)',
+                pathGlow: 'rgba(255, 79, 163, 0.38)', pathStripe: 'rgba(255, 190, 229, 0.42)', mountainMark: 'rgba(139, 92, 255, 0.3)',
+                decorLight: '#ff4fa3', decorDark: '#8b5cff'
+            },
+            'savage-land': {
+                void: '#071008', waterBand: true,
+                terrain: { 0: '#286b72', 1: '#285a2e', 11: '#34703a', 12: '#438746', 2: '#8f7744', 3: '#18351e', 4: '#1b4825' },
+                gridLine: 'rgba(126, 224, 129, 0.08)', pathCenter: 'rgba(219, 190, 101, 0.25)', pathEdge: 'rgba(61, 112, 54, 0.5)',
+                pathGlow: 'rgba(126, 224, 129, 0.32)', pathStripe: 'rgba(255, 225, 141, 0.38)', mountainMark: 'rgba(255, 209, 102, 0.22)',
+                decorLight: '#7ee081', decorDark: '#8a4f32'
+            },
+            'the-raft': {
+                void: '#04090d', waterBand: true,
+                terrain: { 0: '#153f5c', 1: '#263844', 11: '#304754', 12: '#395562', 2: '#65737b', 3: '#101a21', 4: '#1d2b34' },
+                gridLine: 'rgba(88, 214, 255, 0.09)', pathCenter: 'rgba(88, 214, 255, 0.22)', pathEdge: 'rgba(255, 107, 107, 0.4)',
+                pathGlow: 'rgba(88, 214, 255, 0.34)', pathStripe: 'rgba(220, 242, 250, 0.42)', mountainMark: 'rgba(255, 209, 102, 0.2)',
+                decorLight: '#58d6ff', decorDark: '#ff6b6b'
             }
         };
 

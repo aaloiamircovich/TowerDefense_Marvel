@@ -56,6 +56,38 @@ const FACTIONS = {
             ['ultron_drone', 10], ['hellfire_guard', 16], ['sentinel', 22]
         ],
         bosses: ['doctor_doom', 'red_skull']
+    },
+    asgard: {
+        label: 'Elfos Oscuros / Gigantes',
+        roster: [
+            ['dark_elf_skirmisher', 1], ['frost_giant_scout', 1], ['asgardian_traitor', 5],
+            ['dark_elf', 9], ['hellfire_guard', 15], ['mindless_one', 22]
+        ],
+        bosses: ['malekith', 'hela']
+    },
+    'dark-dimension': {
+        label: 'Dimensión Oscura / Zealots',
+        roster: [
+            ['dark_zealot', 1], ['dark_elf', 1], ['mindless_one', 5],
+            ['hellfire_guard', 10], ['black_order_magus', 16], ['symbiote_spawn', 22]
+        ],
+        bosses: ['baron_mordo', 'dormammu']
+    },
+    'savage-land': {
+        label: 'Bestias / Mutados',
+        roster: [
+            ['savage_raptor', 1], ['mercenary_raider', 1], ['savage_brute', 5],
+            ['brotherhood_mutant', 10], ['sakaaran_soldier', 16], ['sentinel', 22]
+        ],
+        bosses: ['sauron', 'apocalypse']
+    },
+    'the-raft': {
+        label: 'Prisioneros / Saboteadores',
+        roster: [
+            ['raft_escapee', 1], ['raft_saboteur', 1], ['mercenary_raider', 5],
+            ['symbiote_spawn', 10], ['hellfire_guard', 16], ['ultron_drone', 22]
+        ],
+        bosses: ['abomination', 'green_goblin']
     }
 };
 

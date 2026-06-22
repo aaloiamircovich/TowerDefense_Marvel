@@ -1,10 +1,10 @@
 # Super Hero TD
 
-Tower defense ambientado en escenarios inspirados por Marvel, con siete misiones temáticas, reglas propias por mapa, objetivos secundarios, oleadas escaladas, tienda y colección de héroes.
+Tower defense ambientado en escenarios inspirados por Marvel, con once misiones temáticas, reglas propias por mapa, objetivos secundarios, oleadas escaladas, tienda y colección de héroes.
 
 Incluye los treinta y un héroes del roster con kits y sprites completos, constructor de equipo con sinergias y formaciones, mesa táctica, 30 objetos con forja y loadouts, prioridades de objetivo, reposición y venta de héroes, audio por buses, música temática, interfaz responsive, navegación por teclado, alto contraste, reducción de movimiento y escala de UI persistente.
 
-La versión 1.8.0 también puede instalarse como PWA, conserva los recursos esenciales para jugar sin conexión y actualiza código y datos al volver a estar en línea.
+La versión 1.9.0 también puede instalarse como PWA, conserva los recursos esenciales para jugar sin conexión y actualiza código y datos al volver a estar en línea.
 
 > Proyecto fan no oficial, educativo y sin fines comerciales. No está afiliado ni respaldado por Marvel Entertainment o The Walt Disney Company. Consulta [NOTICE.md](NOTICE.md).
 
@@ -39,6 +39,7 @@ npm run build:synergies
 npm run build:cosmic
 npm run build:street
 npm run build:mutants
+npm run build:worlds
 npm run validate
 npm test
 npm run balance
@@ -54,6 +55,7 @@ npm run check
 - `build:cosmic` configura héroes, enemigos y datos de la expansión cósmica.
 - `build:street` configura los héroes callejeros y Midnight Suns, sus roles y el respaldo de datos.
 - `build:mutants` configura los mutantes y la reserva táctica que completan el roster.
+- `build:worlds` genera los cuatro mapas, facciones y jefes de mundos en colisión.
 - `validate` revisa IDs, referencias, rutas, números y assets.
 - `validate:strict` también convierte los assets ausentes en errores.
 - `test` ejecuta la suite nativa de Node.

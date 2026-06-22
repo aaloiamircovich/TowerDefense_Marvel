@@ -1,6 +1,6 @@
 {
   "name": "towerdefense-marvel",
-  "version": "1.8.0",
+  "version": "1.9.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -14,6 +14,7 @@
     "build:cosmic": "node scripts/configure-cosmic-expansion.js && node scripts/configure-team-synergies.js && npm run build:data",
     "build:street": "node scripts/configure-street-expansion.js && node scripts/configure-team-synergies.js && npm run build:data",
     "build:mutants": "node scripts/configure-mutant-reserve.js && node scripts/configure-team-synergies.js && npm run build:data",
+    "build:worlds": "node scripts/configure-collision-worlds.js && npm run build:data",
     "build:synergies": "node scripts/configure-team-synergies.js && npm run build:data",
     "build:items": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/build-item-icons.ps1 && npm run build:data",
     "balance": "node scripts/simulate-economy.js",

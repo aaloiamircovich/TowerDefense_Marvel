@@ -48,7 +48,11 @@ const THEME_TONES = {
     sanctum: [73.42, 146.83],
     'x-mansion': [87.31, 130.81],
     knowhere: [65.41, 130.81],
-    latveria: [77.78, 116.54]
+    latveria: [77.78, 116.54],
+    asgard: [98, 196],
+    'dark-dimension': [61.74, 123.47],
+    'savage-land': [73.42, 110],
+    'the-raft': [82.41, 164.81]
 };
 
 export class AudioManager {
