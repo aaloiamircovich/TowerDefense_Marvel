@@ -440,6 +440,29 @@ canvas {
     line-height: 1.35;
 }
 
+#wave-intel .wave-branches {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+    margin-top: 5px;
+}
+
+#wave-intel .wave-branches button {
+    min-height: 30px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--muted);
+    background: rgba(5, 7, 11, 0.55);
+    font-size: 10px;
+    font-weight: 700;
+}
+
+#wave-intel .wave-branches button.active {
+    border-color: var(--level-accent);
+    color: var(--text);
+    background: color-mix(in srgb, var(--level-accent), transparent 84%);
+}
+
 #mission-status {
     display: grid;
     gap: 7px;

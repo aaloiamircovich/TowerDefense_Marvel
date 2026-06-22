@@ -1,4 +1,5 @@
 import { Enemy } from '../entities/Enemy.js';
+import { EncounterDirector } from './EncounterDirector.js';
 
 const FACTIONS = {
     'new-york': {
@@ -119,6 +120,8 @@ export class WaveManager {
         this.autoWave = false;
         this.waveModifier = MODIFIERS[0];
         this.faction = this.getFaction();
+        this.director = new EncounterDirector(gameInstance);
+        this.selectedBranch = null;
 
         this.prepareNextWave();
     }
@@ -128,7 +131,7 @@ export class WaveManager {
         if (this.currentWave > this.maxWaves) return;
 
         this.faction = this.getFaction();
-        this.waveModifier = this.getWaveModifier();
+        this.waveModifier = this.director.sanitizeModifier(this.getWaveModifier(), this.getTeamCapabilities());
 
         if (this.currentWave === this.maxWaves) {
             const config = this.data.bosses.thanos_final;
@@ -137,14 +140,18 @@ export class WaveManager {
             const config = this.getBossForWave();
             this.preparedQueue.push({ config: this.scaleEnemy(config, 1 + this.currentWave * 0.08, true), delay: 0 });
         } else {
-            const baseCount = 7 + Math.floor(this.currentWave * 0.55);
             const difficulty = DIFFICULTIES[this.game.difficulty || 'normal'];
-            const count = Math.max(1, Math.round(baseCount * (this.waveModifier.countFactor || 1) * difficulty.count));
             const interval = Math.max(0.45, 1.45 - this.currentWave / 65);
             const normalPool = this.getEnemyPoolForWave();
+            const encounter = this.director.compose(normalPool, this.currentWave, this.selectedBranch || 'safe', this.getTeamCapabilities());
+            const countFactor = (this.waveModifier.countFactor || 1) * difficulty.count;
+            const adjustedEncounter = countFactor > 1 ? [...encounter, ...encounter.slice(0, Math.round(encounter.length * (countFactor - 1)))] : [...encounter];
+            while (this.currentWave <= 2 && adjustedEncounter.length < 7 && encounter.length) {
+                adjustedEncounter.push(encounter[adjustedEncounter.length % encounter.length]);
+            }
 
-            for (let index = 0; index < count; index++) {
-                const config = normalPool[(index + this.currentWave) % normalPool.length];
+            for (let index = 0; index < adjustedEncounter.length; index++) {
+                const config = adjustedEncounter[index];
                 this.preparedQueue.push({
                     config: this.scaleEnemy(config, 1 + this.currentWave * 0.045, false),
                     delay: index === 0 ? 0.2 : interval
@@ -158,7 +165,7 @@ export class WaveManager {
                 this.waveModifier,
                 this.faction,
                 this.currentWave,
-                this.getWaveSummary()
+                { ...this.getWaveSummary(), branchOptions: this.director.getBranchOptions(this.currentWave), selectedBranch: this.selectedBranch || 'safe' }
             );
             this.game.uiManager.setNextWaveEnabled(true);
         }
@@ -187,6 +194,23 @@ export class WaveManager {
             return { id: 'boss', label: 'Amenaza máxima', description: 'Jefe con múltiples fases.' };
         }
         return MODIFIERS[(this.currentWave - 1) % MODIFIERS.length];
+    }
+
+    getTeamCapabilities() {
+        const heroes = (this.game.heroes?.length ? this.game.heroes : this.game.activeTeam || []).map((entry) => entry.config || entry);
+        if (!heroes.length) return { detection: true, penetration: true, control: true };
+        return {
+            detection: heroes.some((hero) => hero.canSeeStealth || (hero.teamMetrics?.detection || 0) >= 4),
+            penetration: heroes.some((hero) => ['iron_man', 'vision', 'hawkeye', 'winter_soldier', 'cyclops', 'silver_surfer'].includes(hero.id)),
+            control: heroes.some((hero) => (hero.teamMetrics?.control || 0) >= 4)
+        };
+    }
+
+    chooseBranch(branchId) {
+        if (!this.director.getBranchOptions(this.currentWave).some((option) => option.id === branchId)) return false;
+        this.selectedBranch = branchId;
+        this.prepareNextWave();
+        return true;
     }
 
     scaleEnemy(config, multiplier, isBoss) {
@@ -309,6 +333,7 @@ export class WaveManager {
         const metaCopy = metaReward > 0 ? ` · +${metaReward} Fondos` : '';
         this.game.uiManager?.showToast(`Oleada superada: +$${waveBounty}${metaCopy}`, 'reward');
         this.currentWave++;
+        this.selectedBranch = null;
 
         if (this.currentWave > this.maxWaves) {
             this.game.uiManager?.showVictory();

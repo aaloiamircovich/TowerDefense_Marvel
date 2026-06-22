@@ -214,8 +214,15 @@ export class UIManager {
                         <span><b>${summary.maxThreat}/5</b> amenaza</span>
                     </div>
                     <small class="wave-counter"><i class="fas fa-crosshairs"></i> Respuesta: ${summary.counter}</small>
+                    ${summary.branchOptions?.length ? `<div class="wave-branches" aria-label="Ruta de encuentro">
+                        ${summary.branchOptions.map((option) => `<button type="button" data-branch="${option.id}" class="${summary.selectedBranch === option.id ? 'active' : ''}" title="${option.description}">${option.label}</button>`).join('')}
+                    </div>` : ''}
                 ` : ''}
             `;
+            intelEl.querySelectorAll('[data-branch]').forEach((button) => button.addEventListener('click', () => {
+                this.game.waveManager?.chooseBranch(button.dataset.branch);
+                this.game.audio?.play('ui');
+            }));
         }
         document.getElementById('enemy-info-empty')?.classList.remove('hidden');
         document.getElementById('enemy-info-content')?.classList.add('hidden');
@@ -239,7 +246,7 @@ export class UIManager {
                 <span class="enemy-token">${enemy.name.charAt(0)}</span>
                 <span class="enemy-count">x${enemy.previewCount || 1}</span>
                 <strong>${roles[enemy.archetype] || (enemy.isBoss ? 'Jefe' : 'Soldado')}</strong>
-                <small>${enemy.stealth ? 'Sigilo · ' : ''}${'◆'.repeat(Math.max(1, enemy.threat || 1))}</small>
+                <small>${enemy.affix?.label ? `${enemy.affix.label} · ` : ''}${enemy.stealth ? 'Sigilo · ' : ''}${'◆'.repeat(Math.max(1, enemy.threat || 1))}</small>
             `;
             card.addEventListener('click', () => this.inspectUnit(enemy, true));
             container.appendChild(card);

@@ -148,6 +148,8 @@ Este segundo ciclo parte de una base estable: campaña de siete mapas, cinco her
 
 **Terminado cuando:** dos partidas del mismo mapa varian sin producir combinaciones imposibles o ilegibles.
 
+**Estado:** implementada en la version 1.10.0. El director usa semillas reproducibles, presupuesto de amenaza y counters del equipo; cinco afijos alteran comportamiento y botin, los mini-jefes anuncian fases y cada cuarta oleada ofrece Contencion o Cazar elite. El radar identifica afijos y mantiene una respuesta tactica disponible.
+
 ## Fase 19 - Modos de juego
 
 **Objetivo:** reutilizar el combate en experiencias con ritmos distintos.

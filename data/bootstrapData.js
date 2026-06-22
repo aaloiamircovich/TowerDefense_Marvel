@@ -2741,14 +2741,14 @@ window.__MARVEL_TD_DATA__ = {
         "phases": [
           {
             "threshold": 0.7,
-            "label": "Éter oscuro",
-            "speedFactor": 1.15,
-            "barrierRatio": 0.12
+            "name": "Éter oscuro",
+            "speed": 1.15,
+            "barrier": 0.12
           },
           {
             "threshold": 0.35,
-            "label": "Convergencia",
-            "speedFactor": 1.25,
+            "name": "Convergencia",
+            "speed": 1.25,
             "summonId": "dark_elf_skirmisher",
             "summonCount": 3
           }
@@ -2769,13 +2769,13 @@ window.__MARVEL_TD_DATA__ = {
         "phases": [
           {
             "threshold": 0.72,
-            "label": "Hechizo vedado",
-            "barrierRatio": 0.18
+            "name": "Hechizo vedado",
+            "barrier": 0.18
           },
           {
             "threshold": 0.38,
-            "label": "Ruptura temporal",
-            "speedFactor": 1.3,
+            "name": "Ruptura temporal",
+            "speed": 1.3,
             "summonId": "dark_zealot",
             "summonCount": 2
           }
@@ -2797,13 +2797,13 @@ window.__MARVEL_TD_DATA__ = {
         "phases": [
           {
             "threshold": 0.66,
-            "label": "Drenaje vital",
+            "name": "Drenaje vital",
             "heal": 0.12
           },
           {
             "threshold": 0.3,
-            "label": "Señor prehistórico",
-            "speedFactor": 1.25,
+            "name": "Señor prehistórico",
+            "speed": 1.25,
             "summonId": "savage_raptor",
             "summonCount": 4
           }
@@ -2824,14 +2824,14 @@ window.__MARVEL_TD_DATA__ = {
         "phases": [
           {
             "threshold": 0.7,
-            "label": "Furia gamma",
-            "speedFactor": 1.18,
-            "barrierRatio": 0.12
+            "name": "Furia gamma",
+            "speed": 1.18,
+            "barrier": 0.12
           },
           {
             "threshold": 0.32,
-            "label": "Contención rota",
-            "speedFactor": 1.3,
+            "name": "Contención rota",
+            "speed": 1.3,
             "summonId": "raft_escapee",
             "summonCount": 4
           }

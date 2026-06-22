@@ -20,6 +20,10 @@ export class EnemyBehaviorSystem {
         this.elapsed += dt;
         this.actionTimer -= dt;
         this.barrierRechargeDelay = Math.max(0, this.barrierRechargeDelay - dt);
+        const affix = this.enemy.config.affix?.id;
+        if (affix === 'regenerator' && this.enemy.hp < this.enemy.maxHp) {
+            this.enemy.hp = Math.min(this.enemy.maxHp, this.enemy.hp + this.enemy.maxHp * 0.012 * dt);
+        }
 
         if (this.temporaryStealth > 0) {
             this.temporaryStealth -= dt;
@@ -33,15 +37,16 @@ export class EnemyBehaviorSystem {
 
         if (this.archetype === 'support' && this.actionTimer <= 0) this.healAllies();
         if (this.archetype === 'summoner' && this.actionTimer <= 0) this.summonReinforcement();
-        if (this.archetype === 'commander' && this.actionTimer <= 0) this.commandAllies();
+        if ((this.archetype === 'commander' || affix === 'commander') && this.actionTimer <= 0) this.commandAllies();
         if (this.archetype === 'phaser' && this.actionTimer <= 0) this.activatePhaseShift();
-        if (this.enemy.isBoss) this.updateBossPhases(dt);
+        if (this.enemy.isBoss || this.enemy.config.isMiniBoss) this.updateBossPhases(dt);
     }
 
     getSpeedMultiplier() {
         const runnerBurst = this.archetype === 'runner' && this.elapsed % 5 < 1.4 ? 1.45 : 1;
         const phaseBurst = this.archetype === 'phaser' && this.temporaryStealth > 0 ? 1.35 : 1;
-        return runnerBurst * phaseBurst * this.phaseSpeedMultiplier;
+        const unstableBurst = this.enemy.config.affix?.id === 'unstable' && this.enemy.hp / this.enemy.maxHp < 0.35 ? 1.45 : 1;
+        return runnerBurst * phaseBurst * unstableBurst * this.phaseSpeedMultiplier;
     }
 
     absorbDamage(amount) {

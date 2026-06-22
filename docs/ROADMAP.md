@@ -7,7 +7,7 @@ Este roadmap convierte el prototipo actual en un tower defense pulido, escalable
 - Los 31 heroes definidos usan sprites direccionales, ataques animados y kits completos.
 - El roster completo comparte controles, medidores, audio, mejoras y contratos visuales validados.
 - 30 enemigos normales y 19 jefes cubren once mapas de campaña.
-- Hay 150 tests, validacion de datos, CI, audio sintetizado y pipeline de sprites.
+- Hay 156 tests, validacion de datos, CI, audio sintetizado y pipeline de sprites.
 - `UIManager.js` aun concentra demasiadas responsabilidades y debe dividirse antes de ampliar la progresion.
 - `data/bootstrapData.js` se genera automaticamente desde los JSON fuente.
 

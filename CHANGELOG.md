@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.10.0 - 2026-06-22
+
+- Director de encuentros reproducible por mapa, oleada y rama elegida.
+- Presupuesto de amenaza reemplaza composiciones rígidas y valida detección y perforación disponibles.
+- Afijos Regenerador, Reflector, Comandante, Inestable y Cazador modifican comportamiento y recompensa.
+- Mini-jefes con fase anunciada aparecen cada cinco oleadas entre jefes principales.
+- Contención y Cazar élite ofrecen decisiones explícitas de seguridad o botín cada cuatro oleadas.
+- 156 pruebas automatizadas cubren semillas, counters, ramas, afijos y telegraphs.
+
 ## 1.9.0 - 2026-06-22
 
 - Asgard, Dimensión Oscura, Savage Land y The Raft amplían la campaña a once mapas.
