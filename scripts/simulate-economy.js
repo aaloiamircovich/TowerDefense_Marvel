@@ -6,14 +6,15 @@ const items = JSON.parse(fs.readFileSync(new URL('../data/items.json', import.me
 
 const utility = {
     iron_man: 1.25, spiderman: 1.3, capitan_america: 1.35, thor: 1.55, doctor_strange: 1.5,
-    groot: 1.35, scarlet_witch: 1.3, storm: 1.25, black_widow: 1.2, hawkeye: 1.2
+    groot: 1.35, scarlet_witch: 1.3, storm: 1.25,
+    hulk: 2.25, black_widow: 1.2, hawkeye: 1.35, black_panther: 1.55, vision: 1.6, falcon: 1.55
 };
 
 const ranking = Object.values(heroes).map((hero) => {
     const critMultiplier = 1 + (hero.critChance || 5) / 100;
     const dps = hero.damage * hero.fireRate * critMultiplier;
     const tacticalPower = dps * (1 + hero.range / 650) * (utility[hero.id] || 1);
-    return { name: hero.name, cost: hero.cost, power: tacticalPower, efficiency: tacticalPower / hero.cost };
+    return { id: hero.id, name: hero.name, cost: hero.cost, power: tacticalPower, efficiency: tacticalPower / hero.cost };
 }).sort((a, b) => b.efficiency - a.efficiency);
 
 const tierPrices = Object.values(items).reduce((groups, item) => {
@@ -55,12 +56,21 @@ builds.sort((a, b) => b.power - a.power);
 console.log(`Builds de tres ranuras simuladas: ${builds.length}`);
 console.log(`Mayor multiplicador estimado: ${builds[0].power.toFixed(2)} (${builds[0].ids.join(' + ')})`);
 
+const phase12Ids = ['hulk', 'black_widow', 'hawkeye', 'black_panther', 'vision', 'falcon'];
+const phase12 = ranking.filter((hero) => phase12Ids.includes(hero.id));
+const phase12Efficiencies = phase12.map((hero) => hero.efficiency);
+console.log(`Refuerzos Avengers: ${phase12.map((hero) => `${hero.name} ${hero.efficiency.toFixed(3)}`).join(' | ')}`);
+
 if (missionProjection[0] < 800 || missionProjection[4] < 1800) {
     console.error('ERROR: la economia de mision no permite una segunda decision temprana.');
     process.exitCode = 1;
 }
 if (builds[0].power > 2.25) {
     console.error('ERROR: una combinacion de objetos supera el presupuesto de poder 2.25.');
+    process.exitCode = 1;
+}
+if (Math.min(...phase12Efficiencies) < 0.2 || Math.max(...phase12Efficiencies) > 0.42) {
+    console.error('ERROR: un refuerzo Avengers queda fuera del rango de eficiencia 0.20-0.42.');
     process.exitCode = 1;
 }
 

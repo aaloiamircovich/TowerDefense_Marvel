@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hero-td-v1.3.0';
+const CACHE_NAME = 'hero-td-v1.4.0';
 const CORE_ASSETS = [
     './', './index.html', './styles.css', './manifest.webmanifest',
     './data/bootstrapData.js', './data/sprite-atlas.js', './data/heroes.json', './data/enemies.json',
@@ -6,12 +6,15 @@ const CORE_ASSETS = [
     './assets/images/heroes/atlas.png', './assets/images/heroes/iron_man/portrait.png',
     './assets/images/heroes/spiderman/portrait.png', './assets/images/heroes/capitan_america/portrait.png',
     './assets/images/heroes/thor/portrait.png', './assets/images/heroes/doctor_strange/portrait.png',
+    './assets/images/heroes/hulk/portrait.png', './assets/images/heroes/black_widow/portrait.png',
+    './assets/images/heroes/hawkeye/portrait.png', './assets/images/heroes/black_panther/portrait.png',
+    './assets/images/heroes/vision/portrait.png', './assets/images/heroes/falcon/portrait.png',
     './assets/icons/icon-192.png', './assets/icons/icon-512.png',
     './src/main.js', './src/config/AppConfig.js', './src/pwa/register.js',
     './src/audio/AudioManager.js', './src/core/GameLoop.js', './src/core/InputManager.js',
     './src/data/HeroUpgradeCatalog.js', './src/entities/Enemy.js', './src/entities/Hero.js', './src/entities/Projectile.js',
     './src/rendering/CombatVfx.js', './src/rendering/ImageCache.js', './src/rendering/SpriteAnimator.js',
-    './src/systems/CombatSystem.js', './src/systems/EnemyBehaviorSystem.js', './src/systems/HeroAbilitySystem.js',
+    './src/systems/AvengerKitSystem.js', './src/systems/CombatSystem.js', './src/systems/EnemyBehaviorSystem.js', './src/systems/HeroAbilitySystem.js',
     './src/systems/MissionSystem.js', './src/systems/PerformanceMonitor.js', './src/systems/ProgressionManager.js',
     './src/systems/ItemEffectSystem.js', './src/systems/ResourceManager.js', './src/systems/ShopSystem.js', './src/systems/TacticalActionSystem.js',
     './src/systems/UIManager.js', './src/systems/WaveManager.js',

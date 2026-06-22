@@ -55,6 +55,8 @@ Este segundo ciclo parte de una base estable: campaña de siete mapas, cinco her
 
 **Terminado cuando:** los seis se ven, suenan y juegan de forma distinta en los siete mapas.
 
+**Estado:** implementada en la version 1.4.0. Hulk usa furia y salto gamma; Black Widow sabotea soportes y encadena descargas; Hawkeye alterna tres flechas; Black Panther acumula energia, contraataca y proyecta un aura; Vision controla densidad y atraviesa lineas; Falcon dirige a Redwing en reconocimiento o asalto. Los seis incorporan 108 assets, audio, mejoras, controles, balance y pruebas de seguridad de ruta.
+
 ## Fase 13 - Sinergias y formaciones
 
 **Objetivo:** hacer que elegir un equipo sea una decision tactica reconocible.

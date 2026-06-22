@@ -113,6 +113,28 @@ export class Projectile {
             ctx.beginPath();
             ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
             ctx.fill();
+        } else if (this.visualStyle === 'arrow') {
+            const targetAngle = this.target ? Math.atan2(this.target.y - this.y, this.target.x - this.x) : 0;
+            ctx.translate(this.x, this.y);
+            ctx.rotate(targetAngle);
+            ctx.strokeStyle = this.color;
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(-8, 0);
+            ctx.lineTo(8, 0);
+            ctx.lineTo(3, -4);
+            ctx.moveTo(8, 0);
+            ctx.lineTo(3, 4);
+            ctx.stroke();
+        } else if (this.visualStyle === 'density') {
+            ctx.fillStyle = this.color;
+            ctx.beginPath();
+            ctx.moveTo(this.x, this.y - this.radius - 2);
+            ctx.lineTo(this.x + this.radius + 2, this.y);
+            ctx.lineTo(this.x, this.y + this.radius + 2);
+            ctx.lineTo(this.x - this.radius - 2, this.y);
+            ctx.closePath();
+            ctx.fill();
         } else {
             ctx.fillStyle = this.color;
             ctx.beginPath();

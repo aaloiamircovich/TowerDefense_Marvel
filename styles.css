@@ -599,6 +599,10 @@ canvas {
     font-size: 10px;
 }
 
+.stat-delta.negative {
+    color: #ff7b86;
+}
+
 #wave-controls {
     padding: 14px;
     border-top: 1px solid var(--border);
@@ -841,6 +845,54 @@ canvas {
     text-transform: uppercase;
 }
 
+.locked-hero-note {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    width: 100%;
+    margin-top: auto;
+    padding: 10px;
+    border: 1px dashed var(--border);
+    border-radius: 6px;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 800;
+    text-align: center;
+}
+
+.collection-card.locked {
+    border-style: dashed;
+    background: rgba(10, 15, 22, 0.82);
+}
+
+.collection-card.locked img {
+    filter: saturate(0.35) brightness(0.68);
+}
+
+.collection-card p {
+    min-height: 32px;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.collection-card > img {
+    width: 64px;
+    height: 64px;
+    image-rendering: pixelated;
+}
+
+.collection-actions {
+    display: grid;
+    grid-template-columns: 38px minmax(0, 1fr);
+    gap: 7px;
+    width: 100%;
+}
+
+.collection-actions .btn-primary {
+    min-width: 0;
+}
+
 .ability-niche {
     margin-top: 12px;
     color: var(--muted);
@@ -861,6 +913,46 @@ canvas {
 
 .ability-status.ready {
     color: var(--bright-yellow);
+}
+
+.kit-mode-control {
+    display: grid;
+    gap: 8px;
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+}
+
+.kit-mode-control > span {
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.kit-mode-control > div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.kit-mode-btn {
+    min-height: 34px;
+    padding: 7px 11px;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    background: #101a26;
+    color: var(--muted);
+    font: inherit;
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.kit-mode-btn.active {
+    border-color: #40c9ff;
+    color: #ffffff;
+    box-shadow: inset 0 -2px 0 #40c9ff;
 }
 
 .ability-meter {

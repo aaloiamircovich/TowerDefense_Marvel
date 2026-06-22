@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.4.0 - 2026-06-22
+
+- Hulk, Black Widow, Hawkeye, Black Panther, Vision y Falcon reciben kits completos y roles diferenciados.
+- Munición manual para Hawkeye, densidad configurable para Vision y órdenes de reconocimiento o asalto para Redwing.
+- Furia gamma, sabotaje de soportes, energía cinética, contraataque y auras tácticas con indicadores visibles.
+- 108 recursos visuales para los seis Avengers, 198 sprites en atlas y seis señales de audio nuevas.
+- Costes simulados, seguridad de rutas y 96 pruebas automatizadas.
+- La colección permite inspeccionar héroes completos antes de reclutarlos y la caja S.H.I.E.L.D. excluye personajes aún en producción.
+
 ## 1.3.0 - 2026-06-21
 
 - Catálogo ampliado de 10 a 30 objetos con iconos propios.

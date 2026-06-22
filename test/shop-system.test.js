@@ -41,6 +41,7 @@ test('ShopSystem recluta heroes sin duplicados', () => {
 
     assert.equal(result.ok, true);
     assert.notEqual(result.hero.id, 'iron_man');
+    assert.ok(result.hero.visual);
     assert.equal(new Set(progression.state.unlockedHeroIds).size, progression.state.unlockedHeroIds.length);
 });
 

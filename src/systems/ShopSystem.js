@@ -67,6 +67,7 @@ export class ShopSystem {
     recruitHero() {
         const cost = 500;
         const pool = Object.values(this.game.heroDatabase)
+            .filter((hero) => hero.visual)
             .filter((hero) => !this.progression.state.unlockedHeroIds.includes(hero.id));
         if (pool.length === 0) return { ok: false, reason: 'Ya tienes todos los héroes' };
         if (this.progression.state.metaCredits < cost) return { ok: false, reason: 'Fondos S.H.I.E.L.D. insuficientes' };

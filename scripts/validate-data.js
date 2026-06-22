@@ -27,6 +27,7 @@ if (errors.length > 0) process.exitCode = 1;
 function validateHeroes(heroes) {
     validateRecordIds('heroes', heroes);
     const knownIds = new Set(Object.keys(heroes));
+    const phase12Heroes = new Set(['hulk', 'black_widow', 'hawkeye', 'black_panther', 'vision', 'falcon']);
 
     for (const [key, hero] of Object.entries(heroes)) {
         requireText(hero.name, `heroes.${key}.name`);
@@ -41,6 +42,11 @@ function validateHeroes(heroes) {
 
         validateAsset(hero.sprite, `heroes.${key}.sprite`);
         if (hero.visual) validateHeroVisual(key, hero.visual);
+        if (phase12Heroes.has(key)) {
+            if (!hero.visual) errors.push(`heroes.${key}.visual es obligatorio para la Fase 12`);
+            requireText(hero.abilityDesc, `heroes.${key}.abilityDesc`);
+            requireText(hero.niche, `heroes.${key}.niche`);
+        }
 
         if (hero.evolutionId && !knownIds.has(hero.evolutionId)) {
             warnings.push(`heroes.${key}.evolutionId referencia '${hero.evolutionId}', que aun no existe`);

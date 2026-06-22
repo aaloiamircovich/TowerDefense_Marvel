@@ -293,6 +293,8 @@ export class UIManager {
         const activeSets = getActiveSets(items);
         const combat = hero.combatStats || {};
         const abilityState = hero.abilitySystem?.getDisplayState?.() || null;
+        const kitControl = hero.abilitySystem?.getControlState?.() || null;
+        const isUnlocked = this.game.progression?.state.unlockedHeroIds.includes(config.id) ?? true;
         const isDeployed = this.game.heroes.includes(hero);
         const repositionPermission = isDeployed ? this.game.tacticalActions?.canReposition(hero) : null;
         const sellPermission = isDeployed ? this.game.tacticalActions?.canSell(hero) : null;
@@ -304,12 +306,12 @@ export class UIManager {
                     <h2>${hero.name}</h2>
                     <div class="portrait-frame">${this.renderSprite(config.visual?.portrait || config.sprite, hero.name)}</div>
                     <div class="level-chip">Nivel ${level}</div>
-                    <div class="upgrade-list">
+                    ${isUnlocked ? `<div class="upgrade-list">
                         ${[1, 5, 10].map((amount) => {
                             const cost = this.calculateLevelCost(level, amount);
                             return `<button class="modal-btn-upgrade btn-primary ghost" data-amt="${amount}" data-cost="${cost}">+${amount} $${cost}</button>`;
                         }).join('')}
-                    </div>
+                    </div>` : '<div class="locked-hero-note"><i class="fas fa-lock"></i> Recluta al héroe para mejorarlo</div>'}
                     ${isDeployed ? `
                         <div class="tactical-actions">
                             <button id="reposition-hero" class="btn-primary ghost" ${repositionPermission?.ok ? '' : 'disabled'} title="${repositionPermission?.reason || 'Mover una vez por oleada'}"><i class="fas fa-arrows-alt"></i> Reposicionar</button>
@@ -322,10 +324,10 @@ export class UIManager {
                     <div class="stats-grid">
                         <div class="detail-card">
                             <h3>Estadísticas</h3>
-                            <p data-tooltip="Daño por impacto antes de armadura y resistencias"><span>Daño</span><strong>${damage}${damage !== baseDamage ? `<small class="stat-delta">+${damage - baseDamage}</small>` : ''}</strong></p>
-                            <p data-tooltip="Ataques realizados por segundo"><span>Recarga</span><strong>${fireRate}/s${Number(fireRate) !== baseFireRate ? `<small class="stat-delta">+${(Number(fireRate) - baseFireRate).toFixed(1)}</small>` : ''}</strong></p>
-                            <p data-tooltip="Probabilidad de infligir daño crítico"><span>Crítico</span><strong>${critChance}%${critChance !== baseCritChance ? `<small class="stat-delta">+${critChance - baseCritChance}%</small>` : ''}</strong></p>
-                            <p data-tooltip="Distancia máxima de adquisición de objetivos"><span>Alcance</span><strong>${range}${range !== baseRange ? `<small class="stat-delta">+${range - baseRange}</small>` : ''}</strong></p>
+                            <p data-tooltip="Daño por impacto antes de armadura y resistencias"><span>Daño</span><strong>${damage}${this.formatStatDelta(damage, baseDamage)}</strong></p>
+                            <p data-tooltip="Ataques realizados por segundo"><span>Recarga</span><strong>${fireRate}/s${this.formatStatDelta(Number(fireRate), baseFireRate, '', 1)}</strong></p>
+                            <p data-tooltip="Probabilidad de infligir daño crítico"><span>Crítico</span><strong>${critChance}%${this.formatStatDelta(critChance, baseCritChance, '%')}</strong></p>
+                            <p data-tooltip="Distancia máxima de adquisición de objetivos"><span>Alcance</span><strong>${range}${this.formatStatDelta(range, baseRange)}</strong></p>
                         </div>
                         <div class="detail-card">
                             <h3>Táctica</h3>
@@ -355,9 +357,17 @@ export class UIManager {
                                 ${abilityState.progress === null ? '' : `<div class="ability-meter"><i style="width:${Math.round(abilityState.progress * 100)}%"></i></div>`}
                             </div>
                         ` : ''}
+                        ${kitControl ? `
+                            <div class="kit-mode-control" role="group" aria-label="${kitControl.label}">
+                                <span>${kitControl.label}</span>
+                                <div>
+                                    ${kitControl.options.map((option) => `<button class="kit-mode-btn ${option.id === kitControl.value ? 'active' : ''}" data-mode="${option.id}" aria-pressed="${option.id === kitControl.value}">${option.label}</button>`).join('')}
+                                </div>
+                            </div>
+                        ` : ''}
                     </div>
 
-                    ${this.renderUpgradeTree(config)}
+                    ${this.renderUpgradeTree(config, isUnlocked)}
 
                     <div class="equipment-card">
                         <h3>Equipamiento</h3>
@@ -372,7 +382,7 @@ export class UIManager {
                             }).join('')}
                         </div>
                         <div class="set-status ${activeSets.length ? 'active' : ''}">${activeSets.length ? activeSets.map((set) => set.description).join(' · ') : 'Sin bonus de set activo'}</div>
-                        <button id="open-inventory-panel" class="btn-primary ghost"><i class="fas fa-box-open"></i> Gestionar inventario</button>
+                        <button id="open-inventory-panel" class="btn-primary ghost" ${isUnlocked ? '' : 'disabled'}><i class="fas fa-box-open"></i> ${isUnlocked ? 'Gestionar inventario' : 'Recluta para equipar'}</button>
                     </div>
                 </section>
             </div>
@@ -388,6 +398,13 @@ export class UIManager {
                 this.processUpgrade(hero, Number(button.dataset.amt), Number(button.dataset.cost));
             });
         });
+
+        this.panelContent.querySelectorAll('.kit-mode-btn').forEach((button) => button.addEventListener('click', () => {
+            if (!hero.abilitySystem?.setCombatMode?.(button.dataset.mode)) return;
+            this.showToast(`${kitControl.label}: ${button.textContent}`, 'success');
+            this.renderHeroRoster(this.game.activeTeam, (config) => this.game.inputManager.setPlacementMode(config));
+            this.renderHeroDetails(hero);
+        }));
 
         document.getElementById('reposition-hero')?.addEventListener('click', () => {
             if (this.game.inputManager.setRepositionMode(hero)) this.closePanel();
@@ -414,7 +431,7 @@ export class UIManager {
         });
     }
 
-    renderUpgradeTree(hero) {
+    renderUpgradeTree(hero, isUnlocked = true) {
         if (!this.game.progression) return '';
         const purchased = new Set(this.game.progression.state.heroUpgrades[hero.id] || []);
         return `
@@ -430,8 +447,8 @@ export class UIManager {
                             ${branch.nodes.map((node) => {
                                 const owned = purchased.has(node.id);
                                 const locked = node.requires && !purchased.has(node.requires);
-                                return `<button class="skill-node ${owned ? 'owned' : ''}" data-node="${node.id}" ${owned || locked ? 'disabled' : ''}>
-                                    <span>${node.name}</span><small>${node.desc}</small><b>${owned ? 'Adquirida' : locked ? 'Bloqueada' : `${node.cost} F`}</b>
+                                return `<button class="skill-node ${owned ? 'owned' : ''}" data-node="${node.id}" ${owned || locked || !isUnlocked ? 'disabled' : ''}>
+                                    <span>${node.name}</span><small>${node.desc}</small><b>${!isUnlocked ? 'Recluta primero' : owned ? 'Adquirida' : locked ? 'Bloqueada' : `${node.cost} F`}</b>
                                 </button>`;
                             }).join('')}
                         </div>
@@ -532,6 +549,13 @@ export class UIManager {
         });
     }
 
+    formatStatDelta(current, base, suffix = '', decimals = 0) {
+        const difference = current - base;
+        if (Math.abs(difference) < 0.001) return '';
+        const value = Math.abs(difference).toFixed(decimals);
+        return `<small class="stat-delta ${difference < 0 ? 'negative' : ''}">${difference > 0 ? '+' : '-'}${value}${suffix}</small>`;
+    }
+
     renderShopItem(item, purchased = false) {
         if (!item) return '<div class="shop-card empty-copy">Agotado</div>';
         const owned = this.game.progression.getOwnedQuantity(item.id);
@@ -560,19 +584,29 @@ export class UIManager {
     }
 
     renderCollection(title) {
+        const unlockedIds = new Set(this.game.progression.state.unlockedHeroIds);
+        const readyHeroes = Object.values(this.game.heroDatabase)
+            .filter((hero) => hero.visual)
+            .sort((a, b) => Number(unlockedIds.has(b.id)) - Number(unlockedIds.has(a.id)) || a.name.localeCompare(b.name));
+        const readyUnlockedCount = readyHeroes.filter((hero) => unlockedIds.has(hero.id)).length;
         this.panelContent.innerHTML = `
-            <h2>${title}</h2>
+            <div class="panel-title-row"><h2>${title}</h2><strong>${readyUnlockedCount}/${readyHeroes.length} reclutados</strong></div>
             <div class="collection-grid">
-                ${this.game.unlockedHeroes.map((hero) => {
+                ${readyHeroes.map((hero) => {
+                    const unlocked = unlockedIds.has(hero.id);
                     const equipped = this.game.activeTeam.some((active) => active.id === hero.id);
                     return `
-                        <article class="collection-card">
+                        <article class="collection-card ${unlocked ? '' : 'locked'}">
                             ${this.renderSprite(hero.visual?.portrait || hero.sprite, hero.name)}
                             <h3>${hero.name}</h3>
-                            <small>${hero.rarity || 'Common'} | $${hero.cost || 0}</small>
-                            <button class="btn-equip btn-primary ${equipped ? 'danger' : 'ghost'}" data-id="${hero.id}">
-                                ${equipped ? 'Desequipar' : 'Equipar'}
-                            </button>
+                            <small>${hero.category} · ${hero.rarity || 'Common'} · $${hero.cost || 0}</small>
+                            <p>${hero.ability || 'Ataque básico'}</p>
+                            <div class="collection-actions">
+                                <button class="btn-preview-hero icon-command" data-id="${hero.id}" aria-label="Ver ficha de ${hero.name}" title="Ver ficha"><i class="fas fa-eye"></i></button>
+                                <button class="${unlocked ? 'btn-equip' : ''} btn-primary ${equipped ? 'danger' : 'ghost'}" data-id="${hero.id}" ${unlocked ? '' : 'disabled'}>
+                                    ${unlocked ? (equipped ? 'Desequipar' : 'Equipar') : 'Por reclutar'}
+                                </button>
+                            </div>
                         </article>
                     `;
                 }).join('')}
@@ -581,6 +615,9 @@ export class UIManager {
 
         this.panelContent.querySelectorAll('.btn-equip').forEach((button) => {
             button.addEventListener('click', () => this.toggleHeroEquip(button.dataset.id));
+        });
+        this.panelContent.querySelectorAll('.btn-preview-hero').forEach((button) => {
+            button.addEventListener('click', () => this.renderHeroDetails(this.game.heroDatabase[button.dataset.id]));
         });
     }
 
@@ -693,10 +730,10 @@ export class UIManager {
             this.showToast(result.reason, 'warning');
             return;
         }
-        document.getElementById('gacha-res').innerHTML = `Reclutado: <strong>${result.hero.name}</strong>${result.guaranteed ? ' · Garantía activada' : ''}`;
         this.showToast(`${result.hero.name} se unió a la plantilla`, 'success');
         this.renderHeroRoster(this.game.activeTeam, (hero) => this.game.inputManager.setPlacementMode(hero));
-        window.setTimeout(() => this.renderShop('Tienda'), 900);
+        this.renderShop('Tienda');
+        document.getElementById('gacha-res').innerHTML = `Reclutado: <strong>${result.hero.name}</strong>${result.guaranteed ? ' · Garantía activada' : ''}`;
     }
 
     showGameOver() {

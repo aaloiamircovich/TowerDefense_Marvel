@@ -2,9 +2,9 @@
 
 ## Estado actual
 
-Iron Man, Spider-Man, Capitan America, Thor y Doctor Strange usan el contrato `visual` con retrato, ocho direcciones, nueve frames de ataque, precarga y cache compartido. Los heroes nuevos deben copiar este contrato y no agregar rutas sueltas fuera de su carpeta.
+Once heroes, desde Iron Man hasta los seis refuerzos Avengers de la version 1.4.0, usan el contrato `visual` con retrato, ocho direcciones, nueve frames de ataque, precarga y cache compartido. Los heroes nuevos deben copiar este contrato y no agregar rutas sueltas fuera de su carpeta.
 
-Los tres ultimos se generan de forma reproducible con `npm run build:heroes`; el comando tambien reconstruye el atlas y el respaldo de datos.
+Capitan America, Thor, Doctor Strange y los seis refuerzos Avengers se generan de forma reproducible con `npm run build:heroes`; el comando tambien reconstruye contratos, atlas y respaldo de datos.
 
 ## Formato base
 

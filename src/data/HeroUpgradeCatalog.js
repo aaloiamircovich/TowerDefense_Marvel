@@ -24,7 +24,13 @@ const HERO_LABELS = {
     spiderman: ['Fuerza arácnida', 'Impacto acrobático', 'Spider-Sense', 'Fluido mejorado', 'Lanzaredes doble', 'Red multiversal'],
     capitan_america: ['Entrenamiento táctico', 'Golpe de vibranium', 'Voluntad indomable', 'Formación cerrada', 'Liderazgo', 'Vengadores unidos'],
     thor: ['Fuerza de Asgard', 'Mjolnir desatado', 'Digno', 'Ojo de la tormenta', 'Trueno veloz', 'Tormenta del Padre de Todos'],
-    doctor_strange: ['Runas ofensivas', 'Proyección astral', 'Hechicero Supremo', 'Portales estables', 'Tiempo fracturado', 'Ojo de Agamotto']
+    doctor_strange: ['Runas ofensivas', 'Proyección astral', 'Hechicero Supremo', 'Portales estables', 'Tiempo fracturado', 'Ojo de Agamotto'],
+    hulk: ['Puños imparables', 'Furia creciente', 'Hulk aplasta', 'Piel gamma', 'Salto sísmico', 'Más fuerte que nunca'],
+    black_widow: ['Munición táser', 'Sabotaje rojo', 'Viuda letal', 'Red Room', 'Cadena eléctrica', 'Agente perfecta'],
+    hawkeye: ['Puntas calibradas', 'Flecha perforante', 'Tiro imposible', 'Carcaj criogénico', 'Detonación amplia', 'Nunca fallo'],
+    black_panther: ['Garras de vibranium', 'Energía cinética', 'Rey guerrero', 'Manto real', 'Contraataque', 'Wakanda por siempre'],
+    vision: ['Rayo solar', 'Masa crítica', 'Sintetizoide supremo', 'Fase espectral', 'Control de densidad', 'Piedra de la Mente'],
+    falcon: ['Alas de combate', 'Ataque rasante', 'Capitán aéreo', 'Escáner Redwing', 'Marcado táctico', 'Superioridad aérea']
 };
 
 export function getHeroUpgradeTree(hero) {

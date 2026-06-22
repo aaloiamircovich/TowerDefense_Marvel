@@ -151,7 +151,7 @@ export class Hero {
             attacker: this,
             damage: finalDamage,
             attackerType: this.category,
-            effects: this.getProjectileEffects(),
+            effects: this.getProjectileEffects(target),
             ...this.getProjectileProfile(),
             color: this.getProjectileColor(),
             radius: isCrit ? 7 : 5,
@@ -162,11 +162,10 @@ export class Hero {
         this.abilitySystem.onAttack(target, stats, projectileConfig, projectiles);
     }
 
-    getProjectileEffects() {
+    getProjectileEffects(target = null) {
         const effects = [];
 
-        effects.push(...this.abilitySystem.getAttackEffects());
-        if (this.id === 'black_widow') effects.push({ type: 'stun', duration: 0.45, power: 1, chance: 0.18 });
+        effects.push(...this.abilitySystem.getAttackEffects(target));
         if (this.id === 'groot') effects.push({ type: 'slow', duration: 1.8, power: 0.6, chance: 0.5 });
         if (this.id === 'storm') effects.push({ type: 'slow', duration: 1.1, power: 0.35, chance: 0.7 });
         if (this.id === 'ghost_rider') effects.push({ type: 'burn', duration: 3, power: 7, chance: 0.8 });
@@ -186,12 +185,11 @@ export class Hero {
         const profiles = {
             capitan_america: { chainCount: 2, chainRange: 115, chainFactor: 0.6, returning: true },
             thor: { chainCount: 3, chainRange: 130, chainFactor: 0.7 },
-            hawkeye: { splashRadius: 62, splashFactor: 0.55 },
             winter_soldier: { armorPenetration: 0.45 },
             cyclops: { armorPenetration: 0.35 },
             moon_knight: { returning: true }
         };
-        const base = profiles[this.id] || {};
+        const base = { ...(profiles[this.id] || {}), ...this.abilitySystem.getProjectileProfile() };
         const itemEffects = aggregateItemEffects(this.items);
         return {
             ...base,
@@ -228,6 +226,8 @@ export class Hero {
     }
 
     getProjectileVisualStyle() {
+        const kitStyle = this.abilitySystem.getProjectileVisualStyle();
+        if (kitStyle) return kitStyle;
         if (this.id === 'capitan_america') return 'shield';
         if (this.id === 'thor') return 'lightning';
         if (this.id === 'doctor_strange') return 'mystic';
@@ -235,6 +235,8 @@ export class Hero {
     }
 
     getProjectileColor() {
+        const kitColor = this.abilitySystem.getProjectileColor();
+        if (kitColor) return kitColor;
         const colors = {
             Tecnológico: '#40c9ff',
             Místico: '#b865ff',
@@ -272,6 +274,7 @@ export class Hero {
         } else if (!animated) {
             this.renderFallback(ctx);
         }
+        this.abilitySystem.render(ctx);
 
         ctx.fillStyle = '#ffd166';
         ctx.font = 'bold 10px Segoe UI';

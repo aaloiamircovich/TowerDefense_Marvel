@@ -226,67 +226,207 @@ window.__MARVEL_TD_DATA__ = {
       "range": 80,
       "fireRate": 0.5,
       "canSeeStealth": false,
-      "ability": "PISOTÓN GAMMA",
-      "abilityDesc": "Golpea el suelo con furia, creando una onda expansiva verde que aturde a los enemigos cercanos.",
-      "sprite": "assets/images/heroes/hulk.png",
+      "ability": "FURIA GAMMA",
+      "abilityDesc": "Acumula furia al atacar y cuando la defensa pierde vidas. Con 50 de furia salta sobre un grupo, inflige daño en área y aturde sin sacar enemigos de su ruta.",
+      "sprite": "assets/images/heroes/hulk/portrait.png",
       "allowedTerrains": [
         1,
         3
-      ]
+      ],
+      "niche": "tanque cercano, respuesta a fugas y control de grupos",
+      "visual": {
+        "portrait": "assets/images/heroes/hulk/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/hulk/sprites/north.png",
+          "north-east": "assets/images/heroes/hulk/sprites/north-east.png",
+          "east": "assets/images/heroes/hulk/sprites/east.png",
+          "south-east": "assets/images/heroes/hulk/sprites/south-east.png",
+          "south": "assets/images/heroes/hulk/sprites/south.png",
+          "south-west": "assets/images/heroes/hulk/sprites/south-west.png",
+          "west": "assets/images/heroes/hulk/sprites/west.png",
+          "north-west": "assets/images/heroes/hulk/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 14,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/hulk/shoot/0.png",
+            "assets/images/heroes/hulk/shoot/1.png",
+            "assets/images/heroes/hulk/shoot/2.png",
+            "assets/images/heroes/hulk/shoot/3.png",
+            "assets/images/heroes/hulk/shoot/4.png",
+            "assets/images/heroes/hulk/shoot/5.png",
+            "assets/images/heroes/hulk/shoot/6.png",
+            "assets/images/heroes/hulk/shoot/7.png",
+            "assets/images/heroes/hulk/shoot/8.png"
+          ]
+        }
+      }
     },
     "black_widow": {
       "id": "black_widow",
       "name": "Black Widow",
       "category": "Urbano",
       "rarity": "Common",
-      "cost": 140,
+      "cost": 190,
       "damage": 18,
       "range": 130,
       "fireRate": 2,
       "canSeeStealth": true,
-      "ability": "DESCARGA ELÉCTRICA",
-      "abilityDesc": "Sus proyectiles tienen una alta probabilidad de electrocutar y paralizar al enemigo por 1 segundo.",
-      "sprite": "assets/images/heroes/black_widow.png",
+      "ability": "SABOTAJE WIDOW",
+      "abilityDesc": "Prioriza apoyos e invocadores con ruptura de armadura. Cada cuarto ataque libera una descarga que encadena y paraliza varios objetivos.",
+      "sprite": "assets/images/heroes/black_widow/portrait.png",
       "allowedTerrains": [
         1,
         3
-      ]
+      ],
+      "niche": "anti-soporte, detección y control eléctrico",
+      "visual": {
+        "portrait": "assets/images/heroes/black_widow/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/black_widow/sprites/north.png",
+          "north-east": "assets/images/heroes/black_widow/sprites/north-east.png",
+          "east": "assets/images/heroes/black_widow/sprites/east.png",
+          "south-east": "assets/images/heroes/black_widow/sprites/south-east.png",
+          "south": "assets/images/heroes/black_widow/sprites/south.png",
+          "south-west": "assets/images/heroes/black_widow/sprites/south-west.png",
+          "west": "assets/images/heroes/black_widow/sprites/west.png",
+          "north-west": "assets/images/heroes/black_widow/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 14,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/black_widow/shoot/0.png",
+            "assets/images/heroes/black_widow/shoot/1.png",
+            "assets/images/heroes/black_widow/shoot/2.png",
+            "assets/images/heroes/black_widow/shoot/3.png",
+            "assets/images/heroes/black_widow/shoot/4.png",
+            "assets/images/heroes/black_widow/shoot/5.png",
+            "assets/images/heroes/black_widow/shoot/6.png",
+            "assets/images/heroes/black_widow/shoot/7.png",
+            "assets/images/heroes/black_widow/shoot/8.png"
+          ]
+        }
+      }
     },
     "hawkeye": {
       "id": "hawkeye",
       "name": "Hawkeye",
       "category": "Urbano",
       "rarity": "Common",
-      "cost": 130,
+      "cost": 180,
       "damage": 22,
       "range": 220,
       "fireRate": 1.1,
       "canSeeStealth": true,
-      "ability": "FLECHA EXPLOSIVA",
-      "abilityDesc": "Dispara flechas con punta detonante que explotan al impactar, causando daño en área.",
-      "sprite": "assets/images/heroes/hawkeye.png",
+      "ability": "CARCAJ TÁCTICO",
+      "abilityDesc": "Cambia manualmente entre flechas explosivas de área, criogénicas de control y perforantes contra armadura.",
+      "sprite": "assets/images/heroes/hawkeye/portrait.png",
       "allowedTerrains": [
         1,
         3
-      ]
+      ],
+      "niche": "artillería adaptable de muy largo alcance",
+      "visual": {
+        "portrait": "assets/images/heroes/hawkeye/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/hawkeye/sprites/north.png",
+          "north-east": "assets/images/heroes/hawkeye/sprites/north-east.png",
+          "east": "assets/images/heroes/hawkeye/sprites/east.png",
+          "south-east": "assets/images/heroes/hawkeye/sprites/south-east.png",
+          "south": "assets/images/heroes/hawkeye/sprites/south.png",
+          "south-west": "assets/images/heroes/hawkeye/sprites/south-west.png",
+          "west": "assets/images/heroes/hawkeye/sprites/west.png",
+          "north-west": "assets/images/heroes/hawkeye/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 14,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/hawkeye/shoot/0.png",
+            "assets/images/heroes/hawkeye/shoot/1.png",
+            "assets/images/heroes/hawkeye/shoot/2.png",
+            "assets/images/heroes/hawkeye/shoot/3.png",
+            "assets/images/heroes/hawkeye/shoot/4.png",
+            "assets/images/heroes/hawkeye/shoot/5.png",
+            "assets/images/heroes/hawkeye/shoot/6.png",
+            "assets/images/heroes/hawkeye/shoot/7.png",
+            "assets/images/heroes/hawkeye/shoot/8.png"
+          ]
+        }
+      }
     },
     "black_panther": {
       "id": "black_panther",
       "name": "Black Panther",
       "category": "Tecnológico",
       "rarity": "Rare",
-      "cost": 300,
+      "cost": 320,
       "damage": 35,
       "range": 90,
       "fireRate": 1.8,
       "canSeeStealth": true,
-      "ability": "VIBRANIUM",
-      "abilityDesc": "Acumula energía cinética. Su daño aumenta progresivamente por cada ataque consecutivo al mismo objetivo.",
-      "sprite": "assets/images/heroes/black_panther.png",
+      "ability": "CARGA DE VIBRANIUM",
+      "abilityDesc": "Acumula energía cinética al insistir sobre un blanco y contraataca al primero que entra en su guardia. Al máximo libera un pulso y fortalece aliados cercanos.",
+      "sprite": "assets/images/heroes/black_panther/portrait.png",
       "allowedTerrains": [
         1,
         3
-      ]
+      ],
+      "niche": "duelista cercano, contraataque y aura de equipo",
+      "visual": {
+        "portrait": "assets/images/heroes/black_panther/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/black_panther/sprites/north.png",
+          "north-east": "assets/images/heroes/black_panther/sprites/north-east.png",
+          "east": "assets/images/heroes/black_panther/sprites/east.png",
+          "south-east": "assets/images/heroes/black_panther/sprites/south-east.png",
+          "south": "assets/images/heroes/black_panther/sprites/south.png",
+          "south-west": "assets/images/heroes/black_panther/sprites/south-west.png",
+          "west": "assets/images/heroes/black_panther/sprites/west.png",
+          "north-west": "assets/images/heroes/black_panther/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 14,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/black_panther/shoot/0.png",
+            "assets/images/heroes/black_panther/shoot/1.png",
+            "assets/images/heroes/black_panther/shoot/2.png",
+            "assets/images/heroes/black_panther/shoot/3.png",
+            "assets/images/heroes/black_panther/shoot/4.png",
+            "assets/images/heroes/black_panther/shoot/5.png",
+            "assets/images/heroes/black_panther/shoot/6.png",
+            "assets/images/heroes/black_panther/shoot/7.png",
+            "assets/images/heroes/black_panther/shoot/8.png"
+          ]
+        }
+      }
     },
     "doctor_strange": {
       "id": "doctor_strange",
@@ -493,38 +633,108 @@ window.__MARVEL_TD_DATA__ = {
       "name": "Vision",
       "category": "Tecnológico",
       "rarity": "Legendary",
-      "cost": 500,
+      "cost": 520,
       "damage": 50,
       "range": 190,
       "fireRate": 1.3,
       "canSeeStealth": true,
-      "ability": "INTANGIBILIDAD",
-      "abilityDesc": "Dispara rayos láser concentrados que atraviesan a todos los enemigos sin perder potencia.",
-      "sprite": "assets/images/heroes/vision.png",
+      "ability": "CONTROL DE DENSIDAD",
+      "abilityDesc": "Alterna entre fase intangible de alcance y cadencia, y masa densa de gran daño. Cada tercer ataque proyecta un rayo que atraviesa la línea enemiga.",
+      "sprite": "assets/images/heroes/vision/portrait.png",
       "allowedTerrains": [
         0,
         1,
         3
-      ]
+      ],
+      "niche": "daño lineal configurable y cobertura de terrenos",
+      "visual": {
+        "portrait": "assets/images/heroes/vision/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/vision/sprites/north.png",
+          "north-east": "assets/images/heroes/vision/sprites/north-east.png",
+          "east": "assets/images/heroes/vision/sprites/east.png",
+          "south-east": "assets/images/heroes/vision/sprites/south-east.png",
+          "south": "assets/images/heroes/vision/sprites/south.png",
+          "south-west": "assets/images/heroes/vision/sprites/south-west.png",
+          "west": "assets/images/heroes/vision/sprites/west.png",
+          "north-west": "assets/images/heroes/vision/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 14,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/vision/shoot/0.png",
+            "assets/images/heroes/vision/shoot/1.png",
+            "assets/images/heroes/vision/shoot/2.png",
+            "assets/images/heroes/vision/shoot/3.png",
+            "assets/images/heroes/vision/shoot/4.png",
+            "assets/images/heroes/vision/shoot/5.png",
+            "assets/images/heroes/vision/shoot/6.png",
+            "assets/images/heroes/vision/shoot/7.png",
+            "assets/images/heroes/vision/shoot/8.png"
+          ]
+        }
+      }
     },
     "falcon": {
       "id": "falcon",
       "name": "Falcon",
       "category": "Tecnológico",
       "rarity": "Common",
-      "cost": 140,
+      "cost": 210,
       "damage": 16,
       "range": 150,
       "fireRate": 2.1,
       "canSeeStealth": true,
       "ability": "REDWING",
-      "abilityDesc": "Despliega un pequeño dron auxiliar que escanea el mapa y ataca enemigos de forma autónoma.",
-      "sprite": "assets/images/heroes/falcon.png",
+      "abilityDesc": "Ordena a Redwing explorar para revelar y marcar amenazas o atacar con mayor frecuencia. El dron opera fuera del alcance normal de Falcon.",
+      "sprite": "assets/images/heroes/falcon/portrait.png",
       "allowedTerrains": [
         0,
         1,
         3
-      ]
+      ],
+      "niche": "reconocimiento global, marcado y apoyo aéreo",
+      "visual": {
+        "portrait": "assets/images/heroes/falcon/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/falcon/sprites/north.png",
+          "north-east": "assets/images/heroes/falcon/sprites/north-east.png",
+          "east": "assets/images/heroes/falcon/sprites/east.png",
+          "south-east": "assets/images/heroes/falcon/sprites/south-east.png",
+          "south": "assets/images/heroes/falcon/sprites/south.png",
+          "south-west": "assets/images/heroes/falcon/sprites/south-west.png",
+          "west": "assets/images/heroes/falcon/sprites/west.png",
+          "north-west": "assets/images/heroes/falcon/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 14,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/falcon/shoot/0.png",
+            "assets/images/heroes/falcon/shoot/1.png",
+            "assets/images/heroes/falcon/shoot/2.png",
+            "assets/images/heroes/falcon/shoot/3.png",
+            "assets/images/heroes/falcon/shoot/4.png",
+            "assets/images/heroes/falcon/shoot/5.png",
+            "assets/images/heroes/falcon/shoot/6.png",
+            "assets/images/heroes/falcon/shoot/7.png",
+            "assets/images/heroes/falcon/shoot/8.png"
+          ]
+        }
+      }
     },
     "winter_soldier": {
       "id": "winter_soldier",

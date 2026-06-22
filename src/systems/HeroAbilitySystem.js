@@ -1,5 +1,6 @@
 import { Projectile } from '../entities/Projectile.js';
 import { CombatSystem } from './CombatSystem.js';
+import { AvengerKitSystem } from './AvengerKitSystem.js';
 
 const ACTIVE_COOLDOWNS = {
     thor: 11,
@@ -11,10 +12,12 @@ export class HeroAbilitySystem {
         this.hero = hero;
         this.attackCount = 0;
         this.cooldownRemaining = 0;
+        this.avengerKit = new AvengerKitSystem(hero);
     }
 
     update(dt, enemies, stats, projectiles) {
         this.cooldownRemaining = Math.max(0, this.cooldownRemaining - dt);
+        this.avengerKit.update(dt, enemies, stats, projectiles);
         if (this.cooldownRemaining > 0) return;
 
         const targets = this.getTargetsInRange(enemies, stats.range);
@@ -27,6 +30,7 @@ export class HeroAbilitySystem {
 
     onAttack(target, stats, projectileConfig, projectiles) {
         this.attackCount++;
+        this.avengerKit.onAttack(target, stats, projectileConfig, projectiles);
 
         if (this.hero.id === 'iron_man') {
             this.hero.game.audio?.play('repulsor');
@@ -41,11 +45,12 @@ export class HeroAbilitySystem {
         }
     }
 
-    getAttackEffects() {
+    getAttackEffects(target) {
+        const effects = this.avengerKit.getAttackEffects(target);
         if (this.hero.id === 'spiderman') {
-            return [{ type: 'web', duration: 2.6, power: 0.2, chance: 1 }];
+            effects.push({ type: 'web', duration: 2.6, power: 0.2, chance: 1 });
         }
-        return [];
+        return effects;
     }
 
     applyStatModifiers(stats) {
@@ -59,7 +64,7 @@ export class HeroAbilitySystem {
             stats.damage *= 1.1;
             stats.fireRate *= 1.15;
         }
-        return stats;
+        return this.avengerKit.applyStatModifiers(stats);
     }
 
     activateArcOverload(target, stats) {
@@ -176,7 +181,35 @@ export class HeroAbilitySystem {
                 ready
             };
         }
-        return null;
+        return this.avengerKit.getDisplayState();
+    }
+
+    getControlState() {
+        return this.avengerKit.getControlState();
+    }
+
+    setCombatMode(mode) {
+        return this.avengerKit.setMode(mode);
+    }
+
+    getCombatMode() {
+        return this.avengerKit.getMode();
+    }
+
+    getProjectileProfile() {
+        return this.avengerKit.getProjectileProfile();
+    }
+
+    getProjectileColor() {
+        return this.avengerKit.getProjectileColor();
+    }
+
+    getProjectileVisualStyle() {
+        return this.avengerKit.getProjectileVisualStyle();
+    }
+
+    render(ctx) {
+        this.avengerKit.render(ctx);
     }
 
     static getLineEndpoint(origin, target, distance) {

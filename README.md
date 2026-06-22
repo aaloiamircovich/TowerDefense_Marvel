@@ -2,9 +2,9 @@
 
 Tower defense ambientado en escenarios inspirados por Marvel, con siete misiones temáticas, reglas propias por mapa, objetivos secundarios, oleadas escaladas, tienda y colección de héroes.
 
-Incluye mesa táctica, 30 objetos con forja y loadouts, prioridades de objetivo, reposición y venta de héroes, audio por buses, música temática, interfaz responsive, navegación por teclado, alto contraste, reducción de movimiento y escala de UI persistente.
+Incluye once héroes con kits y sprites completos, mesa táctica, 30 objetos con forja y loadouts, prioridades de objetivo, reposición y venta de héroes, audio por buses, música temática, interfaz responsive, navegación por teclado, alto contraste, reducción de movimiento y escala de UI persistente.
 
-La versión 1.3.0 también puede instalarse como PWA, conserva los recursos esenciales para jugar sin conexión y actualiza código y datos al volver a estar en línea.
+La versión 1.4.0 también puede instalarse como PWA, conserva los recursos esenciales para jugar sin conexión y actualiza código y datos al volver a estar en línea.
 
 > Proyecto fan no oficial, educativo y sin fines comerciales. No está afiliado ni respaldado por Marvel Entertainment o The Walt Disney Company. Consulta [NOTICE.md](NOTICE.md).
 
