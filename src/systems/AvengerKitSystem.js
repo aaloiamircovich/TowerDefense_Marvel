@@ -295,13 +295,15 @@ export class AvengerKitSystem {
 
     getPowerScale() {
         const progression = this.hero.game.progression?.getHeroBonuses(this.hero.id);
-        return 1 + Math.min(0.35, Math.max(0, this.hero.level - 1) * 0.035) + (progression?.abilityPower || 0);
+        const synergy = this.hero.game.teamSynergy?.getAbilityModifiers(this.hero);
+        return 1 + Math.min(0.35, Math.max(0, this.hero.level - 1) * 0.035) + (progression?.abilityPower || 0) + (synergy?.abilityPower || 0);
     }
 
     getCooldown(base) {
         const progression = this.hero.game.progression?.getHeroBonuses(this.hero.id);
+        const synergy = this.hero.game.teamSynergy?.getAbilityModifiers(this.hero);
         const levelReduction = Math.min(0.2, Math.max(0, this.hero.level - 1) * 0.015);
-        return base * (1 - levelReduction) * (1 - (progression?.cooldown || 0));
+        return base * (1 - levelReduction) * (1 - (progression?.cooldown || 0)) * (1 - (synergy?.cooldown || 0));
     }
 }
 

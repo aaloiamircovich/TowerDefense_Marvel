@@ -70,6 +70,8 @@ Este segundo ciclo parte de una base estable: campaña de siete mapas, cinco her
 
 **Terminado cuando:** existen varias composiciones competitivas y un equipo mixto sigue siendo valido.
 
+**Estado:** implementada en la version 1.5.0. Ocho familias activan bonus totales de dos o cuatro miembros, cuatro parejas usan un contrato extensible y los equipos mixtos reciben versatilidad. Vanguardia, apoyo y artilleria dependen de radios reales visibles en el mapa. El constructor compara cinco métricas y coste; la simulacion evalua 462 equipos, con 399 competitivos y 337 mixtos.
+
 ## Fase 14 - Expansion cosmica
 
 **Objetivo:** incorporar movilidad, invocaciones y control de grandes grupos.

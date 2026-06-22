@@ -53,7 +53,18 @@ window.__MARVEL_TD_DATA__ = {
         0,
         1,
         3
-      ]
+      ],
+      "tags": [
+        "Avengers",
+        "Tecnología"
+      ],
+      "formationRole": "artillery",
+      "teamMetrics": {
+        "damage": 4,
+        "control": 2,
+        "support": 2,
+        "detection": 3
+      }
     },
     "spiderman": {
       "id": "spiderman",
@@ -107,7 +118,18 @@ window.__MARVEL_TD_DATA__ = {
       "allowedTerrains": [
         1,
         3
-      ]
+      ],
+      "tags": [
+        "Callejero",
+        "Tecnología"
+      ],
+      "formationRole": "support",
+      "teamMetrics": {
+        "damage": 3,
+        "control": 5,
+        "support": 2,
+        "detection": 5
+      }
     },
     "capitan_america": {
       "id": "capitan_america",
@@ -160,7 +182,17 @@ window.__MARVEL_TD_DATA__ = {
       "allowedTerrains": [
         1,
         3
-      ]
+      ],
+      "tags": [
+        "Avengers"
+      ],
+      "formationRole": "vanguard",
+      "teamMetrics": {
+        "damage": 3,
+        "control": 3,
+        "support": 5,
+        "detection": 2
+      }
     },
     "thor": {
       "id": "thor",
@@ -214,7 +246,17 @@ window.__MARVEL_TD_DATA__ = {
         0,
         1,
         3
-      ]
+      ],
+      "tags": [
+        "Avengers"
+      ],
+      "formationRole": "artillery",
+      "teamMetrics": {
+        "damage": 5,
+        "control": 4,
+        "support": 1,
+        "detection": 1
+      }
     },
     "hulk": {
       "id": "hulk",
@@ -267,6 +309,16 @@ window.__MARVEL_TD_DATA__ = {
             "assets/images/heroes/hulk/shoot/8.png"
           ]
         }
+      },
+      "tags": [
+        "Avengers"
+      ],
+      "formationRole": "vanguard",
+      "teamMetrics": {
+        "damage": 5,
+        "control": 4,
+        "support": 1,
+        "detection": 1
       }
     },
     "black_widow": {
@@ -320,6 +372,17 @@ window.__MARVEL_TD_DATA__ = {
             "assets/images/heroes/black_widow/shoot/8.png"
           ]
         }
+      },
+      "tags": [
+        "Avengers",
+        "Callejero"
+      ],
+      "formationRole": "support",
+      "teamMetrics": {
+        "damage": 3,
+        "control": 4,
+        "support": 3,
+        "detection": 5
       }
     },
     "hawkeye": {
@@ -373,6 +436,17 @@ window.__MARVEL_TD_DATA__ = {
             "assets/images/heroes/hawkeye/shoot/8.png"
           ]
         }
+      },
+      "tags": [
+        "Avengers",
+        "Callejero"
+      ],
+      "formationRole": "artillery",
+      "teamMetrics": {
+        "damage": 4,
+        "control": 4,
+        "support": 1,
+        "detection": 4
       }
     },
     "black_panther": {
@@ -426,6 +500,17 @@ window.__MARVEL_TD_DATA__ = {
             "assets/images/heroes/black_panther/shoot/8.png"
           ]
         }
+      },
+      "tags": [
+        "Avengers",
+        "Wakanda"
+      ],
+      "formationRole": "vanguard",
+      "teamMetrics": {
+        "damage": 4,
+        "control": 3,
+        "support": 4,
+        "detection": 4
       }
     },
     "doctor_strange": {
@@ -480,7 +565,17 @@ window.__MARVEL_TD_DATA__ = {
         0,
         1,
         3
-      ]
+      ],
+      "tags": [
+        "Místico"
+      ],
+      "formationRole": "support",
+      "teamMetrics": {
+        "damage": 4,
+        "control": 5,
+        "support": 4,
+        "detection": 3
+      }
     },
     "captain_marvel": {
       "id": "captain_marvel",
@@ -499,7 +594,17 @@ window.__MARVEL_TD_DATA__ = {
         0,
         1,
         3
-      ]
+      ],
+      "tags": [
+        "Avengers"
+      ],
+      "formationRole": "artillery",
+      "teamMetrics": {
+        "damage": 3,
+        "control": 2,
+        "support": 2,
+        "detection": 1
+      }
     },
     "wolverine": {
       "id": "wolverine",
@@ -517,7 +622,17 @@ window.__MARVEL_TD_DATA__ = {
       "allowedTerrains": [
         1,
         3
-      ]
+      ],
+      "tags": [
+        "X-Men"
+      ],
+      "formationRole": "vanguard",
+      "teamMetrics": {
+        "damage": 3,
+        "control": 2,
+        "support": 2,
+        "detection": 4
+      }
     },
     "daredevil": {
       "id": "daredevil",
@@ -535,7 +650,18 @@ window.__MARVEL_TD_DATA__ = {
       "allowedTerrains": [
         1,
         3
-      ]
+      ],
+      "tags": [
+        "Defenders",
+        "Callejero"
+      ],
+      "formationRole": "support",
+      "teamMetrics": {
+        "damage": 3,
+        "control": 2,
+        "support": 2,
+        "detection": 4
+      }
     },
     "ant_man": {
       "id": "ant_man",
@@ -553,7 +679,18 @@ window.__MARVEL_TD_DATA__ = {
       "allowedTerrains": [
         1,
         3
-      ]
+      ],
+      "tags": [
+        "Avengers",
+        "Tecnología"
+      ],
+      "formationRole": "support",
+      "teamMetrics": {
+        "damage": 3,
+        "control": 2,
+        "support": 2,
+        "detection": 4
+      }
     },
     "star_lord": {
       "id": "star_lord",
@@ -571,7 +708,17 @@ window.__MARVEL_TD_DATA__ = {
       "allowedTerrains": [
         1,
         3
-      ]
+      ],
+      "tags": [
+        "Guardianes"
+      ],
+      "formationRole": "artillery",
+      "teamMetrics": {
+        "damage": 3,
+        "control": 2,
+        "support": 2,
+        "detection": 1
+      }
     },
     "groot": {
       "id": "groot",
@@ -589,7 +736,17 @@ window.__MARVEL_TD_DATA__ = {
       "allowedTerrains": [
         1,
         3
-      ]
+      ],
+      "tags": [
+        "Guardianes"
+      ],
+      "formationRole": "support",
+      "teamMetrics": {
+        "damage": 3,
+        "control": 2,
+        "support": 2,
+        "detection": 1
+      }
     },
     "gamora": {
       "id": "gamora",
@@ -607,7 +764,17 @@ window.__MARVEL_TD_DATA__ = {
       "allowedTerrains": [
         1,
         3
-      ]
+      ],
+      "tags": [
+        "Guardianes"
+      ],
+      "formationRole": "vanguard",
+      "teamMetrics": {
+        "damage": 3,
+        "control": 2,
+        "support": 2,
+        "detection": 4
+      }
     },
     "scarlet_witch": {
       "id": "scarlet_witch",
@@ -626,7 +793,18 @@ window.__MARVEL_TD_DATA__ = {
         0,
         1,
         3
-      ]
+      ],
+      "tags": [
+        "Avengers",
+        "Místico"
+      ],
+      "formationRole": "support",
+      "teamMetrics": {
+        "damage": 3,
+        "control": 2,
+        "support": 2,
+        "detection": 4
+      }
     },
     "vision": {
       "id": "vision",
@@ -680,6 +858,17 @@ window.__MARVEL_TD_DATA__ = {
             "assets/images/heroes/vision/shoot/8.png"
           ]
         }
+      },
+      "tags": [
+        "Avengers",
+        "Tecnología"
+      ],
+      "formationRole": "artillery",
+      "teamMetrics": {
+        "damage": 5,
+        "control": 2,
+        "support": 2,
+        "detection": 5
       }
     },
     "falcon": {
@@ -734,6 +923,17 @@ window.__MARVEL_TD_DATA__ = {
             "assets/images/heroes/falcon/shoot/8.png"
           ]
         }
+      },
+      "tags": [
+        "Avengers",
+        "Tecnología"
+      ],
+      "formationRole": "support",
+      "teamMetrics": {
+        "damage": 3,
+        "control": 3,
+        "support": 5,
+        "detection": 5
       }
     },
     "winter_soldier": {
@@ -752,7 +952,18 @@ window.__MARVEL_TD_DATA__ = {
       "allowedTerrains": [
         1,
         3
-      ]
+      ],
+      "tags": [
+        "Callejero",
+        "Tecnología"
+      ],
+      "formationRole": "artillery",
+      "teamMetrics": {
+        "damage": 3,
+        "control": 2,
+        "support": 2,
+        "detection": 4
+      }
     },
     "shang_chi": {
       "id": "shang_chi",
@@ -770,7 +981,17 @@ window.__MARVEL_TD_DATA__ = {
       "allowedTerrains": [
         1,
         3
-      ]
+      ],
+      "tags": [
+        "Callejero"
+      ],
+      "formationRole": "vanguard",
+      "teamMetrics": {
+        "damage": 3,
+        "control": 2,
+        "support": 2,
+        "detection": 1
+      }
     },
     "moon_knight": {
       "id": "moon_knight",
@@ -788,7 +1009,18 @@ window.__MARVEL_TD_DATA__ = {
       "allowedTerrains": [
         1,
         3
-      ]
+      ],
+      "tags": [
+        "Místico",
+        "Callejero"
+      ],
+      "formationRole": "artillery",
+      "teamMetrics": {
+        "damage": 3,
+        "control": 2,
+        "support": 2,
+        "detection": 4
+      }
     },
     "she_hulk": {
       "id": "she_hulk",
@@ -806,7 +1038,17 @@ window.__MARVEL_TD_DATA__ = {
       "allowedTerrains": [
         1,
         3
-      ]
+      ],
+      "tags": [
+        "Callejero"
+      ],
+      "formationRole": "vanguard",
+      "teamMetrics": {
+        "damage": 3,
+        "control": 2,
+        "support": 2,
+        "detection": 1
+      }
     },
     "jean_grey": {
       "id": "jean_grey",
@@ -826,7 +1068,17 @@ window.__MARVEL_TD_DATA__ = {
         0,
         1,
         3
-      ]
+      ],
+      "tags": [
+        "X-Men"
+      ],
+      "formationRole": "support",
+      "teamMetrics": {
+        "damage": 3,
+        "control": 2,
+        "support": 2,
+        "detection": 4
+      }
     },
     "cyclops": {
       "id": "cyclops",
@@ -844,7 +1096,17 @@ window.__MARVEL_TD_DATA__ = {
       "allowedTerrains": [
         1,
         3
-      ]
+      ],
+      "tags": [
+        "X-Men"
+      ],
+      "formationRole": "artillery",
+      "teamMetrics": {
+        "damage": 3,
+        "control": 2,
+        "support": 2,
+        "detection": 4
+      }
     },
     "storm": {
       "id": "storm",
@@ -863,7 +1125,17 @@ window.__MARVEL_TD_DATA__ = {
         0,
         1,
         3
-      ]
+      ],
+      "tags": [
+        "X-Men"
+      ],
+      "formationRole": "support",
+      "teamMetrics": {
+        "damage": 3,
+        "control": 2,
+        "support": 2,
+        "detection": 1
+      }
     },
     "silver_surfer": {
       "id": "silver_surfer",
@@ -882,7 +1154,15 @@ window.__MARVEL_TD_DATA__ = {
         0,
         1,
         3
-      ]
+      ],
+      "tags": [],
+      "formationRole": "artillery",
+      "teamMetrics": {
+        "damage": 3,
+        "control": 2,
+        "support": 2,
+        "detection": 4
+      }
     },
     "blade": {
       "id": "blade",
@@ -900,7 +1180,18 @@ window.__MARVEL_TD_DATA__ = {
       "allowedTerrains": [
         1,
         3
-      ]
+      ],
+      "tags": [
+        "Místico",
+        "Callejero"
+      ],
+      "formationRole": "vanguard",
+      "teamMetrics": {
+        "damage": 3,
+        "control": 2,
+        "support": 2,
+        "detection": 4
+      }
     },
     "ghost_rider": {
       "id": "ghost_rider",
@@ -918,7 +1209,17 @@ window.__MARVEL_TD_DATA__ = {
       "allowedTerrains": [
         1,
         3
-      ]
+      ],
+      "tags": [
+        "Místico"
+      ],
+      "formationRole": "vanguard",
+      "teamMetrics": {
+        "damage": 3,
+        "control": 2,
+        "support": 2,
+        "detection": 4
+      }
     },
     "luke_cage": {
       "id": "luke_cage",
@@ -936,7 +1237,18 @@ window.__MARVEL_TD_DATA__ = {
       "allowedTerrains": [
         1,
         3
-      ]
+      ],
+      "tags": [
+        "Defenders",
+        "Callejero"
+      ],
+      "formationRole": "vanguard",
+      "teamMetrics": {
+        "damage": 3,
+        "control": 2,
+        "support": 2,
+        "detection": 1
+      }
     },
     "domino": {
       "id": "domino",
@@ -954,7 +1266,17 @@ window.__MARVEL_TD_DATA__ = {
       "allowedTerrains": [
         1,
         3
-      ]
+      ],
+      "tags": [
+        "X-Men"
+      ],
+      "formationRole": "support",
+      "teamMetrics": {
+        "damage": 3,
+        "control": 2,
+        "support": 2,
+        "detection": 4
+      }
     }
   },
   "enemies": {

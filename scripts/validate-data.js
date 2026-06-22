@@ -28,6 +28,8 @@ function validateHeroes(heroes) {
     validateRecordIds('heroes', heroes);
     const knownIds = new Set(Object.keys(heroes));
     const phase12Heroes = new Set(['hulk', 'black_widow', 'hawkeye', 'black_panther', 'vision', 'falcon']);
+    const validTags = new Set(['Avengers', 'Defenders', 'Guardianes', 'X-Men', 'Místico', 'Callejero', 'Wakanda', 'Tecnología']);
+    const validRoles = new Set(['vanguard', 'support', 'artillery']);
 
     for (const [key, hero] of Object.entries(heroes)) {
         requireText(hero.name, `heroes.${key}.name`);
@@ -46,6 +48,14 @@ function validateHeroes(heroes) {
             if (!hero.visual) errors.push(`heroes.${key}.visual es obligatorio para la Fase 12`);
             requireText(hero.abilityDesc, `heroes.${key}.abilityDesc`);
             requireText(hero.niche, `heroes.${key}.niche`);
+        }
+        if (!Array.isArray(hero.tags) || hero.tags.some((tag) => !validTags.has(tag))) {
+            errors.push(`heroes.${key}.tags contiene etiquetas no válidas`);
+        }
+        if (!validRoles.has(hero.formationRole)) errors.push(`heroes.${key}.formationRole no es válido`);
+        for (const metric of ['damage', 'control', 'support', 'detection']) {
+            const value = hero.teamMetrics?.[metric];
+            if (!Number.isInteger(value) || value < 1 || value > 5) errors.push(`heroes.${key}.teamMetrics.${metric} debe estar entre 1 y 5`);
         }
 
         if (hero.evolutionId && !knownIds.has(hero.evolutionId)) {

@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.5.0 - 2026-06-22
+
+- Ocho familias Marvel con bonos de dos y cuatro miembros y rendimientos decrecientes.
+- Parejas extensibles para Steve/Tony, Thor/Hulk, Strange/Wanda y T'Challa/Shuri.
+- Formaciones de vanguardia, apoyo y artillería basadas en distancia real, con radios visibles.
+- Constructor de equipo con seis espacios, coste, cobertura, daño, control, detección y apoyo.
+- Bono de versatilidad para composiciones mixtas y simulación de 462 equipos posibles.
+- 101 pruebas automatizadas y telemetría de composición en el perfil.
+
 ## 1.4.0 - 2026-06-22
 
 - Hulk, Black Widow, Hawkeye, Black Panther, Vision y Falcon reciben kits completos y roles diferenciados.

@@ -153,12 +153,14 @@ export class HeroAbilitySystem {
         const base = ACTIVE_COOLDOWNS[this.hero.id] || 0;
         const reduction = Math.min(0.25, Math.max(0, this.hero.level - 1) * 0.02);
         const progression = this.hero.game.progression?.getHeroBonuses(this.hero.id);
-        return base * (1 - reduction) * (1 - (progression?.cooldown || 0));
+        const synergy = this.hero.game.teamSynergy?.getAbilityModifiers(this.hero);
+        return base * (1 - reduction) * (1 - (progression?.cooldown || 0)) * (1 - (synergy?.cooldown || 0));
     }
 
     getPowerScale() {
         const progression = this.hero.game.progression?.getHeroBonuses(this.hero.id);
-        return 1 + Math.min(0.4, Math.max(0, this.hero.level - 1) * 0.04) + (progression?.abilityPower || 0);
+        const synergy = this.hero.game.teamSynergy?.getAbilityModifiers(this.hero);
+        return 1 + Math.min(0.4, Math.max(0, this.hero.level - 1) * 0.04) + (progression?.abilityPower || 0) + (synergy?.abilityPower || 0);
     }
 
     getDisplayState() {

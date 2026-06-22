@@ -4,6 +4,7 @@ import { ProfilePanel } from '../ui/ProfilePanel.js';
 import { SettingsPanel } from '../ui/SettingsPanel.js';
 import { TooltipController } from '../ui/TooltipController.js';
 import { InventoryPanel } from '../ui/InventoryPanel.js';
+import { TeamBuilderPanel } from '../ui/TeamBuilderPanel.js';
 import { getActiveSets, ITEM_SLOTS, SET_BONUSES, SLOT_LABELS } from './ItemEffectSystem.js';
 
 export class UIManager {
@@ -31,6 +32,7 @@ export class UIManager {
         this.campaignPanel = new CampaignPanel(this);
         this.settingsPanel = new SettingsPanel(this);
         this.inventoryPanel = new InventoryPanel(this);
+        this.teamBuilderPanel = new TeamBuilderPanel(this);
         this.tooltipController = new TooltipController();
 
         this.initListeners();
@@ -299,6 +301,7 @@ export class UIManager {
         const repositionPermission = isDeployed ? this.game.tacticalActions?.canReposition(hero) : null;
         const sellPermission = isDeployed ? this.game.tacticalActions?.canSell(hero) : null;
         const sellRefund = isDeployed ? this.game.tacticalActions?.getSellRefund(hero) || 0 : 0;
+        const formationStatus = isDeployed ? this.game.teamSynergy?.getFormationStatus(hero) : null;
 
         this.panelContent.innerHTML = `
             <div class="hero-detail">
@@ -332,6 +335,7 @@ export class UIManager {
                         <div class="detail-card">
                             <h3>Táctica</h3>
                             <p><span>Terreno</span><strong>${terrains}</strong></p>
+                            ${formationStatus ? `<p><span>Formación</span><strong class="formation-state ${formationStatus.active ? 'active' : ''}">${formationStatus.label} · ${formationStatus.active ? 'Activa' : 'En espera'}</strong></p>` : ''}
                             <label class="field-label" for="targeting-select">Apuntar a</label>
                             <select id="targeting-select">
                                 ${['Primero', 'Último', 'Fuerte', 'Débil', 'Rápido', 'Sigilo', 'Jefe'].map((priority) => `<option value="${priority}" ${hero.targetingPriority === priority ? 'selected' : ''}>${priority}</option>`).join('')}
@@ -513,7 +517,7 @@ export class UIManager {
         }[type] || type;
 
         if (type === 'shop') return this.renderShop(title);
-        if (type === 'collection') return this.renderCollection(title);
+        if (type === 'collection') return this.teamBuilderPanel.render('Constructor de equipo');
         if (type === 'inventory') return this.inventoryPanel.render(title);
         if (type === 'map') return this.renderMap(title);
         if (type === 'settings') return this.renderSettings(title);
@@ -581,64 +585,6 @@ export class UIManager {
         }
         this.showToast(`${result.item.name} comprado`, 'success');
         this.renderShop('Tienda');
-    }
-
-    renderCollection(title) {
-        const unlockedIds = new Set(this.game.progression.state.unlockedHeroIds);
-        const readyHeroes = Object.values(this.game.heroDatabase)
-            .filter((hero) => hero.visual)
-            .sort((a, b) => Number(unlockedIds.has(b.id)) - Number(unlockedIds.has(a.id)) || a.name.localeCompare(b.name));
-        const readyUnlockedCount = readyHeroes.filter((hero) => unlockedIds.has(hero.id)).length;
-        this.panelContent.innerHTML = `
-            <div class="panel-title-row"><h2>${title}</h2><strong>${readyUnlockedCount}/${readyHeroes.length} reclutados</strong></div>
-            <div class="collection-grid">
-                ${readyHeroes.map((hero) => {
-                    const unlocked = unlockedIds.has(hero.id);
-                    const equipped = this.game.activeTeam.some((active) => active.id === hero.id);
-                    return `
-                        <article class="collection-card ${unlocked ? '' : 'locked'}">
-                            ${this.renderSprite(hero.visual?.portrait || hero.sprite, hero.name)}
-                            <h3>${hero.name}</h3>
-                            <small>${hero.category} · ${hero.rarity || 'Common'} · $${hero.cost || 0}</small>
-                            <p>${hero.ability || 'Ataque básico'}</p>
-                            <div class="collection-actions">
-                                <button class="btn-preview-hero icon-command" data-id="${hero.id}" aria-label="Ver ficha de ${hero.name}" title="Ver ficha"><i class="fas fa-eye"></i></button>
-                                <button class="${unlocked ? 'btn-equip' : ''} btn-primary ${equipped ? 'danger' : 'ghost'}" data-id="${hero.id}" ${unlocked ? '' : 'disabled'}>
-                                    ${unlocked ? (equipped ? 'Desequipar' : 'Equipar') : 'Por reclutar'}
-                                </button>
-                            </div>
-                        </article>
-                    `;
-                }).join('')}
-            </div>
-        `;
-
-        this.panelContent.querySelectorAll('.btn-equip').forEach((button) => {
-            button.addEventListener('click', () => this.toggleHeroEquip(button.dataset.id));
-        });
-        this.panelContent.querySelectorAll('.btn-preview-hero').forEach((button) => {
-            button.addEventListener('click', () => this.renderHeroDetails(this.game.heroDatabase[button.dataset.id]));
-        });
-    }
-
-    toggleHeroEquip(id) {
-        const equipped = this.game.activeTeam.some((hero) => hero.id === id);
-        let teamIds = this.game.activeTeam.map((hero) => hero.id);
-
-        if (equipped) {
-            teamIds = teamIds.filter((heroId) => heroId !== id);
-        } else {
-            if (this.game.activeTeam.length >= 6) {
-                this.showToast('Tu equipo activo está lleno', 'warning');
-                return;
-            }
-            teamIds.push(id);
-        }
-
-        this.game.progression.setActiveTeam(teamIds);
-
-        this.renderPanel('collection');
-        this.renderHeroRoster(this.game.activeTeam, (hero) => this.game.inputManager.setPlacementMode(hero));
     }
 
     renderProfile(title) {

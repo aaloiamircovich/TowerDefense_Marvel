@@ -6,6 +6,7 @@ import { AudioManager } from '../audio/AudioManager.js';
 import { Projectile } from '../entities/Projectile.js';
 import { ObjectPool } from '../utils/ObjectPool.js';
 import { PerformanceMonitor } from '../systems/PerformanceMonitor.js';
+import { TeamSynergySystem } from '../systems/TeamSynergySystem.js';
 
 export class GameLoop {
     constructor(canvasId, options = {}) {
@@ -32,6 +33,7 @@ export class GameLoop {
             768
         );
         this.performanceMonitor = new PerformanceMonitor();
+        this.teamSynergy = new TeamSynergySystem(this);
 
         this.waveManager = null;
         this.uiManager = null;
@@ -236,6 +238,7 @@ export class GameLoop {
         this.enemies.forEach((enemy) => enemy.render(ctx));
         this.vfx.render(ctx);
         this.heroes.forEach((hero) => hero.render(ctx));
+        this.heroes.forEach((hero) => this.teamSynergy.renderFormationRadius(ctx, hero));
         this.projectiles.forEach((projectile) => projectile.render(ctx));
         if (this.inputManager) this.inputManager.draw(ctx);
     }

@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import { aggregateItemEffects } from '../src/systems/ItemEffectSystem.js';
+import { analyzeTeam, getHeroTeamEffects } from '../src/systems/TeamSynergySystem.js';
 
 const heroes = JSON.parse(fs.readFileSync(new URL('../data/heroes.json', import.meta.url), 'utf8'));
 const items = JSON.parse(fs.readFileSync(new URL('../data/items.json', import.meta.url), 'utf8'));
@@ -61,6 +62,23 @@ const phase12 = ranking.filter((hero) => phase12Ids.includes(hero.id));
 const phase12Efficiencies = phase12.map((hero) => hero.efficiency);
 console.log(`Refuerzos Avengers: ${phase12.map((hero) => `${hero.name} ${hero.efficiency.toFixed(3)}`).join(' | ')}`);
 
+const readyHeroes = Object.values(heroes).filter((hero) => hero.visual);
+const teamCombinations = combinations(readyHeroes, 6).map((team) => {
+    const snapshot = analyzeTeam(team);
+    const multiplier = team.reduce((sum, hero) => {
+        const effects = getHeroTeamEffects(hero, team);
+        return sum + (1 + (effects.damagePct || 0))
+            * (1 + (effects.fireRatePct || 0))
+            * (1 + (effects.rangePct || 0) * 0.4)
+            * (1 + (effects.critChance || 0) / 100);
+    }, 0) / team.length;
+    return { ids: team.map((hero) => hero.id), multiplier, versatile: snapshot.versatile };
+}).sort((a, b) => b.multiplier - a.multiplier);
+const bestTeam = teamCombinations[0];
+const competitiveTeams = teamCombinations.filter((team) => team.multiplier >= bestTeam.multiplier * 0.94);
+const competitiveMixed = competitiveTeams.filter((team) => team.versatile);
+console.log(`Equipos de seis simulados: ${teamCombinations.length} · techo x${bestTeam.multiplier.toFixed(2)} · competitivos ${competitiveTeams.length} (${competitiveMixed.length} mixtos)`);
+
 if (missionProjection[0] < 800 || missionProjection[4] < 1800) {
     console.error('ERROR: la economia de mision no permite una segunda decision temprana.');
     process.exitCode = 1;
@@ -73,9 +91,26 @@ if (Math.min(...phase12Efficiencies) < 0.2 || Math.max(...phase12Efficiencies) >
     console.error('ERROR: un refuerzo Avengers queda fuera del rango de eficiencia 0.20-0.42.');
     process.exitCode = 1;
 }
+if (bestTeam.multiplier > 1.3 || competitiveTeams.length < 8 || competitiveMixed.length < 3) {
+    console.error('ERROR: las sinergias reducen demasiado la variedad competitiva.');
+    process.exitCode = 1;
+}
 
 function median(values) {
     const sorted = [...values].sort((a, b) => a - b);
     const middle = Math.floor(sorted.length / 2);
     return sorted.length % 2 ? sorted[middle] : (sorted[middle - 1] + sorted[middle]) / 2;
+}
+
+function combinations(values, size, start = 0, selected = [], result = []) {
+    if (selected.length === size) {
+        result.push([...selected]);
+        return result;
+    }
+    for (let index = start; index <= values.length - (size - selected.length); index++) {
+        selected.push(values[index]);
+        combinations(values, size, index + 1, selected, result);
+        selected.pop();
+    }
+    return result;
 }

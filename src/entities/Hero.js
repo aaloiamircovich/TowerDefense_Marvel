@@ -76,7 +76,8 @@ export class Hero {
             stats.fireRate *= 1 + (itemEffects.lowLifeFireRatePct || 0);
         }
 
-        return this.abilitySystem.applyStatModifiers(stats);
+        this.abilitySystem.applyStatModifiers(stats);
+        return this.game.teamSynergy?.applyHeroStats(this, stats) || stats;
     }
 
     update(dt, enemies, projectiles) {
