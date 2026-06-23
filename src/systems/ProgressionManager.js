@@ -1,7 +1,9 @@
 import { calculateHeroBonuses, getUpgradeNode } from '../data/HeroUpgradeCatalog.js';
+import { EVOLUTION_CATALOG, getEvolutionForHero } from './EvolutionSystem.js';
+import { CODEX_MECHANICS, completedMasteryChallenges, createCodexSnapshot } from './MasteryCodexSystem.js';
 
 const SAVE_KEY = 'tower-defense-marvel-save';
-const SAVE_VERSION = 6;
+const SAVE_VERSION = 7;
 
 function createMapProgress(progress = {}) {
     return {
@@ -27,6 +29,12 @@ function createDefaultState() {
         heroUpgrades: {},
         mapProgress: {},
         modeRecords: {},
+        selectedEvolutions: {},
+        heroMastery: {},
+        codexDiscovered: { heroes: [], enemies: [], items: [], factions: [], mechanics: [] },
+        achievements: [],
+        statistics: { missions: 0, victories: 0, defeats: 0, waves: 0, enemiesDefeated: 0, damageDealt: 0, creditsEarned: 0 },
+        lastMissionSummary: null,
         lastLevelId: 'level_1',
         shop: { rotationKey: '', slotIds: [], purchasedIds: [], heroPity: 0 },
         settings: {
@@ -38,7 +46,9 @@ function createDefaultState() {
             uiScale: 'normal',
             masterVolume: 0.7,
             musicVolume: 0.25,
-            sfxVolume: 0.75
+            sfxVolume: 0.75,
+            locale: 'es',
+            keyBindings: { pause: 'p', speed: 's', nextWave: 'n', cancel: 'Escape' }
         }
     };
 }
@@ -93,6 +103,12 @@ export class ProgressionManager {
         migrated.heroUpgrades = raw.heroUpgrades || raw.upgrades || {};
         migrated.mapProgress = raw.mapProgress || raw.maps || {};
         migrated.modeRecords = raw.modeRecords || {};
+        migrated.selectedEvolutions = raw.selectedEvolutions || {};
+        migrated.heroMastery = raw.heroMastery || {};
+        migrated.codexDiscovered = raw.codexDiscovered || migrated.codexDiscovered;
+        migrated.achievements = raw.achievements || [];
+        migrated.statistics = { ...migrated.statistics, ...(raw.statistics || {}) };
+        migrated.lastMissionSummary = raw.lastMissionSummary || null;
         migrated.lastLevelId = raw.lastLevelId || 'level_1';
         migrated.shop = raw.shop || migrated.shop;
         migrated.settings = { ...migrated.settings, ...(raw.settings || {}) };
@@ -144,7 +160,27 @@ export class ProgressionManager {
                 lastResult: typeof record?.lastResult === 'string' ? record.lastResult : '',
                 seedKey: typeof record?.seedKey === 'string' ? record.seedKey : ''
             }]));
+        this.state.selectedEvolutions = Object.fromEntries(Object.entries(this.state.selectedEvolutions || {})
+            .filter(([heroId, evolutionId]) => heroIds.has(heroId)
+                && EVOLUTION_CATALOG[evolutionId]?.baseHeroId === heroId));
+        this.state.heroMastery = Object.fromEntries(Object.entries(this.state.heroMastery || {})
+            .filter(([heroId]) => heroIds.has(heroId))
+            .map(([heroId, value]) => [heroId, { completed: [...new Set(value?.completed || [])].filter((id) => ['impacto', 'especialista', 'protector'].includes(id)) }]));
+        const codex = this.state.codexDiscovered || {};
+        this.state.codexDiscovered = {
+            heroes: [...new Set([...(codex.heroes || []), ...this.state.unlockedHeroIds])].filter((id) => heroIds.has(id)),
+            enemies: [...new Set(codex.enemies || [])].filter((id) => this.data.enemies?.[id]),
+            items: [...new Set([...(codex.items || []), ...this.state.ownedItemIds])].filter((id) => itemIds.has(id)),
+            factions: [...new Set(codex.factions || [])].filter((name) => typeof name === 'string'),
+            mechanics: [...new Set(codex.mechanics || [])].filter((id) => CODEX_MECHANICS.includes(id))
+        };
+        this.state.achievements = [...new Set(this.state.achievements || [])].filter((id) => ['primera_defensa', 'intocable', 'cazajefes', 'maestro', 'coleccionista'].includes(id));
+        const statistics = this.state.statistics || {};
+        this.state.statistics = Object.fromEntries(['missions', 'victories', 'defeats', 'waves', 'enemiesDefeated', 'damageDealt', 'creditsEarned']
+            .map((key) => [key, Math.max(0, Math.round(Number(statistics[key]) || 0))]));
         this.state.metaCredits = Math.max(0, Number(this.state.metaCredits) || 0);
+        this.state.settings.keyBindings = { ...createDefaultState().settings.keyBindings, ...(this.state.settings.keyBindings || {}) };
+        this.state.settings.locale = ['es', 'en'].includes(this.state.settings.locale) ? this.state.settings.locale : 'es';
         this.save();
     }
 
@@ -173,6 +209,8 @@ export class ProgressionManager {
         if (!this.data.heroes[heroId]) return false;
         this.state.unlockedHeroIds = [heroId];
         this.state.activeTeamIds = [heroId];
+        this.discoverCodex('heroes', heroId, false);
+        this.discoverCodex('mechanics', 'colocacion', false);
         this.save();
         this.syncGame();
         return true;
@@ -194,6 +232,7 @@ export class ProgressionManager {
     unlockHero(heroId) {
         if (this.state.unlockedHeroIds.includes(heroId) || !this.data.heroes[heroId]) return false;
         this.state.unlockedHeroIds.push(heroId);
+        this.discoverCodex('heroes', heroId, false);
         if (this.state.activeTeamIds.length < 6) this.state.activeTeamIds.push(heroId);
         this.save();
         this.syncGame();
@@ -222,6 +261,94 @@ export class ProgressionManager {
     getHeroBonuses(heroId) {
         const hero = this.data?.heroes?.[heroId] || { id: heroId };
         return calculateHeroBonuses(hero, this.state.heroUpgrades[heroId] || []);
+    }
+
+    getHeroEvolution(heroId) {
+        return getEvolutionForHero(this.data?.heroes?.[heroId], this.state.selectedEvolutions);
+    }
+
+    setHeroEvolution(heroId, evolutionId = null) {
+        const hero = this.data?.heroes?.[heroId];
+        if (!hero || !this.state.unlockedHeroIds.includes(heroId)) return false;
+        if (evolutionId === null) delete this.state.selectedEvolutions[heroId];
+        else if (hero.evolutionId !== evolutionId || EVOLUTION_CATALOG[evolutionId]?.baseHeroId !== heroId) return false;
+        else {
+            this.state.selectedEvolutions[heroId] = evolutionId;
+            this.discoverCodex('mechanics', 'evoluciones', false);
+        }
+        this.save();
+        this.syncGame();
+        return true;
+    }
+
+    evaluateHeroMastery(hero) {
+        if (!hero?.id || !this.state.unlockedHeroIds.includes(hero.id)) return [];
+        const previous = this.state.heroMastery[hero.id]?.completed || [];
+        const completed = [...new Set([...previous, ...completedMasteryChallenges(hero.combatStats)])];
+        const unlocked = completed.filter((id) => !previous.includes(id));
+        this.state.heroMastery[hero.id] = { completed };
+        if (unlocked.length) {
+            this.state.metaCredits += unlocked.length * 100;
+            this.save();
+        }
+        return unlocked;
+    }
+
+    getHeroMastery(heroId) {
+        return { completed: [], ...(this.state.heroMastery[heroId] || {}) };
+    }
+
+    discoverCodex(category, id, save = true) {
+        const list = this.state.codexDiscovered?.[category];
+        const valid = category === 'heroes' ? this.data.heroes?.[id]
+            : category === 'enemies' ? this.data.enemies?.[id]
+                : category === 'items' ? this.data.items?.[id]
+                    : category === 'mechanics' ? CODEX_MECHANICS.includes(id)
+                        : category === 'factions' && Object.values(this.data.enemies || {}).some((enemy) => enemy.faction === id);
+        if (!Array.isArray(list) || !valid || list.includes(id)) return false;
+        list.push(id);
+        if (save) this.save();
+        return true;
+    }
+
+    getCodexSnapshot() {
+        return createCodexSnapshot(this.state, this.data);
+    }
+
+    recordMissionSummary(game, result = 'defeat') {
+        if (!game || game.missionSummaryRecorded) return this.state.lastMissionSummary;
+        game.missionSummaryRecorded = true;
+        const heroes = (game.heroes || []).map((hero) => ({
+            id: hero.id, name: hero.name, ...hero.combatStats
+        })).sort((a, b) => b.damageDealt - a.damageDealt);
+        const totals = heroes.reduce((sum, hero) => ({
+            damage: sum.damage + hero.damageDealt,
+            kills: sum.kills + hero.kills,
+            abilities: sum.abilities + hero.abilityActivations,
+            credits: sum.credits + hero.goldGenerated
+        }), { damage: 0, kills: 0, abilities: 0, credits: 0 });
+        const summary = {
+            result, mode: game.modeSystem?.modeId || 'campaign', map: game.currentLevel?.name || 'Mision',
+            wave: game.waveManager?.currentWave || 1, lives: game.resourceManager?.lives || 0,
+            totals, heroes, bestHero: heroes[0]?.name || 'Sin despliegue', recordedAt: new Date().toISOString()
+        };
+        const stats = this.state.statistics;
+        stats.missions++;
+        stats[result === 'defeat' ? 'defeats' : 'victories']++;
+        stats.waves += Math.max(0, summary.wave - 1);
+        stats.enemiesDefeated += totals.kills;
+        stats.damageDealt += Math.round(totals.damage);
+        stats.creditsEarned += Math.round(totals.credits);
+        const unlocked = new Set(this.state.achievements);
+        unlocked.add('primera_defensa');
+        if (result === 'victory' && summary.lives === game.resourceManager?.maxLives) unlocked.add('intocable');
+        if (summary.wave >= 10) unlocked.add('cazajefes');
+        if (Object.values(this.state.heroMastery).some((entry) => entry.completed?.length >= 3)) unlocked.add('maestro');
+        if (this.state.unlockedHeroIds.length >= 10) unlocked.add('coleccionista');
+        this.state.achievements = [...unlocked];
+        this.state.lastMissionSummary = summary;
+        this.save();
+        return summary;
     }
 
     equipItem(heroId, itemId) {
@@ -263,6 +390,7 @@ export class ProgressionManager {
     addOwnedItem(itemId) {
         if (!this.data.items[itemId]) return false;
         this.state.ownedItemIds.push(itemId);
+        this.discoverCodex('items', itemId, false);
         this.save();
         this.syncGame();
         return true;
@@ -409,11 +537,39 @@ export class ProgressionManager {
             this.state.settings[key] = Math.max(0, Math.min(1, Number(value) || 0));
         } else if (key === 'uiScale' && ['compact', 'normal', 'large'].includes(value)) {
             this.state.settings[key] = value;
+        } else if (key === 'locale' && ['es', 'en'].includes(value)) {
+            this.state.settings.locale = value;
         } else {
             return;
         }
         this.save();
         this.applySettings();
+    }
+
+    updateKeyBinding(action, key) {
+        if (!['pause', 'speed', 'nextWave', 'cancel'].includes(action) || typeof key !== 'string' || !key.trim()) return false;
+        this.state.settings.keyBindings[action] = key;
+        this.save();
+        return true;
+    }
+
+    exportSave() {
+        return JSON.stringify({ format: 'tower-defense-marvel-save', version: SAVE_VERSION, exportedAt: new Date().toISOString(), state: this.state }, null, 2);
+    }
+
+    importSave(source) {
+        const previous = this.state;
+        try {
+            const parsed = typeof source === 'string' ? JSON.parse(source) : source;
+            if (parsed?.format !== 'tower-defense-marvel-save' || !parsed.state) throw new Error('Formato de guardado no valido');
+            this.state = ProgressionManager.migrate(parsed.state);
+            this.sanitize();
+            this.syncGame();
+            return { ok: true };
+        } catch (error) {
+            this.state = previous;
+            return { ok: false, reason: error.message || 'No se pudo importar' };
+        }
     }
 
     applySettings() {

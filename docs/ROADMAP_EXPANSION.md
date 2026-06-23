@@ -178,6 +178,8 @@ Este segundo ciclo parte de una base estable: campaña de siete mapas, cinco her
 
 **Terminado cuando:** un guardado 1.x migra sin perdida, todo el contenido principal es alcanzable jugando y la build 2.0 supera QA funcional, visual y de rendimiento.
 
+**Estado:** implementada en la version 2.0.0. Extremis, Iron Spider y Phoenix alteran combate y son reversibles; la maestria depende de desafios por mision y el codice registra descubrimientos. Logros, estadisticas, informes finales, guardados portables, mando, teclas configurables, base ES/EN, replays por semilla, auditoria accesible y presupuesto de memoria forman parte del control de lanzamiento.
+
 ## Orden recomendado
 
 1. Fases 10 y 11: ergonomia tactica y objetos.

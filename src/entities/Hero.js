@@ -3,6 +3,7 @@ import { getCachedImage } from '../rendering/ImageCache.js';
 import { SpriteAnimator } from '../rendering/SpriteAnimator.js';
 import { HeroAbilitySystem } from '../systems/HeroAbilitySystem.js';
 import { aggregateItemEffects } from '../systems/ItemEffectSystem.js';
+import { applyEvolutionStats } from '../systems/EvolutionSystem.js';
 
 export class Hero {
     constructor(config, x, y, game) {
@@ -55,13 +56,14 @@ export class Hero {
             canSeeStealth: this.config.canSeeStealth || false
         };
 
-        const progression = this.game.progression?.getHeroBonuses(this.id);
+        const progression = this.game.progression?.getHeroBonuses?.(this.id);
         if (progression) {
             stats.damage *= 1 + progression.damage;
             stats.fireRate *= 1 + progression.fireRate;
             stats.range *= 1 + progression.range;
             stats.critChance += progression.critChance;
         }
+        applyEvolutionStats(stats, this.game.progression?.getHeroEvolution?.(this.id));
 
         const itemEffects = aggregateItemEffects(this.items);
         stats.damage *= 1 + (itemEffects.damagePct || 0);

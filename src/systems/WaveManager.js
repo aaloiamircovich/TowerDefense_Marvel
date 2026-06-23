@@ -212,6 +212,7 @@ export class WaveManager {
     chooseBranch(branchId) {
         if (!this.director.getBranchOptions(this.currentWave).some((option) => option.id === branchId)) return false;
         this.selectedBranch = branchId;
+        this.game.replaySystem?.record('branch', { branchId });
         this.prepareNextWave();
         return true;
     }
@@ -333,14 +334,17 @@ export class WaveManager {
             if (this.game.progression && (!this.game.modeSystem || this.game.modeSystem.modeId === 'campaign')) metaReward = this.game.progression.recordWave(this.game, this.currentWave);
             else this.game.stars += this.currentWave % 10 === 0 ? 3 : 1;
         }
+        const masteryUnlocked = (this.game.heroes || []).flatMap((hero) => this.game.progression?.evaluateHeroMastery?.(hero) || []);
 
         const metaCopy = metaReward > 0 ? ` · +${metaReward} Fondos` : '';
-        this.game.uiManager?.showToast(`Oleada superada: +$${waveBounty}${metaCopy}`, 'reward');
+        const masteryCopy = masteryUnlocked.length ? ` · ${masteryUnlocked.length} maestria` : '';
+        this.game.uiManager?.showToast(`Oleada superada: +$${waveBounty}${metaCopy}${masteryCopy}`, 'reward');
         this.currentWave++;
         this.selectedBranch = null;
 
         if (this.currentWave > this.maxWaves) {
             this.game.modeSystem?.finishRun('victory');
+            this.game.progression?.recordMissionSummary?.(this.game, 'victory');
             this.game.uiManager?.showVictory();
             this.game.pause();
             return;

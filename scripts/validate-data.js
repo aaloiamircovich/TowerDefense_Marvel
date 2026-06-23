@@ -3,6 +3,7 @@ import path from 'node:path';
 import { isOrthogonalPath } from '../src/utils/PathUtils.js';
 import { DIRECTIONS, collectVisualSources } from '../src/rendering/SpriteAnimator.js';
 import { buildBootstrapSource, readProjectData } from './lib/project-data.js';
+import { EVOLUTION_CATALOG } from '../src/systems/EvolutionSystem.js';
 
 const root = process.cwd();
 const strictAssets = process.argv.includes('--strict-assets');
@@ -61,7 +62,7 @@ function validateHeroes(heroes) {
             if (!Number.isInteger(value) || value < 1 || value > 5) errors.push(`heroes.${key}.teamMetrics.${metric} debe estar entre 1 y 5`);
         }
 
-        if (hero.evolutionId && !knownIds.has(hero.evolutionId)) {
+        if (hero.evolutionId && !knownIds.has(hero.evolutionId) && !EVOLUTION_CATALOG[hero.evolutionId]) {
             warnings.push(`heroes.${key}.evolutionId referencia '${hero.evolutionId}', que aun no existe`);
         }
     }

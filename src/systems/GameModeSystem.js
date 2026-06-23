@@ -22,6 +22,7 @@ export class GameModeSystem {
         this.seedKey = 'campaign';
         this.draftPool = [];
         this.pendingDraft = [];
+        this.game.replaySystem?.record('draft', { heroId });
         this.convoy = { progress: 0.04, integrity: 100 };
     }
 
@@ -165,6 +166,7 @@ export class GameModeSystem {
         this.finished = true;
         const wave = this.game.waveManager?.currentWave || 1;
         this.progression?.recordModeScore(this.modeId, this.score, wave, result, this.seedKey);
+        this.progression?.recordMissionSummary?.(this.game, result === 'victory' ? 'victory' : result);
         this.publish();
     }
 

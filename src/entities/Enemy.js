@@ -93,7 +93,8 @@ export class Enemy {
                 web.duration = Math.max(web.duration, adjustedDuration);
                 web.stacks = (web.stacks || 0) + 1;
                 web.source = source || web.source;
-                if (web.stacks >= 3) {
+                const webThreshold = source?.game?.progression?.getHeroEvolution?.(source.id)?.id === 'iron_spider' ? 2 : 3;
+                if (web.stacks >= webThreshold) {
                     web.stacks = 0;
                     this.applyStatus({ type: 'stun', duration: 0.7, power: 1 }, source);
                     source?.recordAbility?.();

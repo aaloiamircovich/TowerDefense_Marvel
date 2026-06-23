@@ -208,7 +208,7 @@ export class UIManager {
     showModeResult(title, snapshot) {
         this.overlay.classList.remove('hidden');
         document.getElementById('close-panel-btn')?.classList.add('hidden');
-        this.panelContent.innerHTML = `<div class="end-state"><h2>${title}</h2><p>${snapshot.score} puntos · oleada ${snapshot.wave} · récord ${snapshot.best}</p><button class="btn-primary" id="mode-result-map">Volver a modos</button></div>`;
+        this.panelContent.innerHTML = `<div class="end-state"><h2>${title}</h2><p>${snapshot.score} puntos · oleada ${snapshot.wave} · récord ${snapshot.best}</p>${this.renderMissionSummary(this.game.progression?.state.lastMissionSummary)}<button class="btn-primary" id="mode-result-map">Volver a modos</button></div>`;
         document.getElementById('mode-result-map')?.addEventListener('click', () => {
             document.getElementById('close-panel-btn')?.classList.remove('hidden');
             this.renderMap('Mapa y modos');
@@ -729,6 +729,7 @@ export class UIManager {
             <div class="end-state">
                 <h2>${modeSnapshot ? `${modeSnapshot.name}: finalizada` : 'Base destruida'}</h2>
                 <p>Llegaste hasta la oleada ${this.game.waveManager?.currentWave || 1}.${modeSnapshot ? ` Puntuación ${modeSnapshot.score}.` : ' Ajusta el equipo y vuelve a intentarlo.'}</p>
+                ${this.renderMissionSummary(this.game.progression?.state.lastMissionSummary)}
                 <button class="btn-primary" id="retry-run">Reintentar</button>
             </div>
         `;
@@ -755,6 +756,7 @@ export class UIManager {
             <div class="end-state">
                 <h2>Victoria</h2>
                 <p>Completaste el mapa con ${this.game.stars} estrellas.</p>
+                ${this.renderMissionSummary(this.game.progression?.state.lastMissionSummary)}
                 <button class="btn-primary" id="victory-close">Volver al mapa</button>
             </div>
         `;
@@ -762,6 +764,11 @@ export class UIManager {
             document.getElementById('close-panel-btn')?.classList.remove('hidden');
             this.closePanel();
         });
+    }
+
+    renderMissionSummary(summary) {
+        if (!summary) return '';
+        return `<div class="mission-summary"><strong>Informe de mision</strong><span><b>${Math.round(summary.totals.damage)}</b> dano</span><span><b>${summary.totals.kills}</b> bajas</span><span><b>${summary.totals.abilities}</b> habilidades</span><span><b>$${Math.round(summary.totals.credits)}</b> generados</span><small>Destacado: ${summary.bestHero} · ${summary.lives} vidas restantes</small></div>`;
     }
 
     showFatalError(error) {

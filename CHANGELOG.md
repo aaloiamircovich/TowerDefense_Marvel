@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.0.0 - 2026-06-23
+
+- Evoluciones reversibles Iron Man Extremis, Iron Spider y Phoenix con cambios reales de combate.
+- Maestría por desafíos, códice de descubrimientos, logros y estadísticas históricas.
+- Informes detallados de misión y guardados exportables/importables con migración v7.
+- Soporte base de mando, teclas reasignables y catálogo de textos preparado para ES/EN.
+- Replays por semilla y decisiones, presupuesto de memoria de 128 MB y auditoría accesible.
+- Checklist 2.0 integrado a la validación de lanzamiento; suite ampliada a 178 pruebas.
+
 ## 1.11.0 - 2026-06-23
 
 - Operación diaria comparte mapa, roster y semilla por fecha con ranking local propio.

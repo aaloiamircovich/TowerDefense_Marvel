@@ -2045,3 +2045,21 @@ body.tactical-paused #gameCanvas {
         grid-template-columns: 1fr;
     }
 }
+.evolution-badge { display: block; margin: 4px 0; color: var(--evolution-color); font-size: .76rem; text-transform: uppercase; }
+.btn-evolution { width: 100%; margin-top: 8px; padding: 8px; border: 1px solid var(--evolution-color, #5de4ff); background: rgba(8, 18, 30, .82); color: #fff; cursor: pointer; }
+.btn-evolution:hover { border-color: #fff; }
+.profile-meta-section { margin-top: 18px; }
+.mastery-row { display: grid; grid-template-columns: minmax(110px, 1fr) auto; gap: 4px 12px; padding: 9px 0; border-bottom: 1px solid rgba(255,255,255,.12); }
+.mastery-row small { grid-column: 1 / -1; color: #aebbc9; }
+.codex-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 8px; }
+.codex-summary span { padding: 10px; border-left: 3px solid #56e6ff; background: rgba(7,16,24,.7); }
+.codex-summary b { display: block; font-size: 1.1rem; }
+.achievement-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.achievement-list span { padding: 7px 10px; border: 1px solid #53606d; color: #8e9aa6; }
+.achievement-list .unlocked { border-color: #ffd34d; color: #ffd34d; }
+.mission-summary { display: grid; grid-template-columns: repeat(2, minmax(100px, 1fr)); gap: 8px; margin: 14px auto; max-width: 480px; text-align: left; }
+.mission-summary > strong, .mission-summary small { grid-column: 1 / -1; }
+.mission-summary span { padding: 8px; background: rgba(255,255,255,.06); }
+.key-binding-grid { display: grid; grid-template-columns: repeat(2, minmax(130px, 1fr)); gap: 8px; }
+.key-binding-grid label { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.key-binding-grid input { width: 82px; padding: 7px; background: #08121e; border: 1px solid #53606d; color: #fff; }

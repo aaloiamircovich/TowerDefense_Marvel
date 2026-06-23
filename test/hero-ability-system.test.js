@@ -60,6 +60,36 @@ test('Iron Man activa Sobrecarga ARC cada tres ataques', () => {
     assert.equal(hero.combatStats.abilityActivations, 1);
 });
 
+test('Extremis activa Sobrecarga ARC cada dos ataques', () => {
+    const game = createGame();
+    game.progression = { getHeroBonuses: () => ({}), getHeroEvolution: () => ({ id: 'iron_man_extremis', stats: { damage: 0.18, fireRate: 0.12, range: 0, critChance: 4 } }) };
+    const target = createEnemy(100, 0);
+    game.enemies = [target];
+    const hero = new Hero(createHeroConfig('iron_man'), 0, 0, game);
+    game.heroes = [hero];
+    const config = { damage: 10, attacker: hero, attackerType: 'Tecnologico', effects: [] };
+
+    hero.abilitySystem.onAttack(target, hero.getEffectiveStats(), config, []);
+    hero.abilitySystem.onAttack(target, hero.getEffectiveStats(), config, []);
+
+    assert.equal(hero.combatStats.abilityActivations, 1);
+});
+
+test('Iron Spider inmoviliza con dos redes y detecta sigilo', () => {
+    const game = createGame();
+    game.progression = { getHeroBonuses: () => ({}), getHeroEvolution: () => ({ id: 'iron_spider', stats: { damage: 0.1, fireRate: 0, range: 0.16, critChance: 3 } }) };
+    const hero = new Hero(createHeroConfig('spiderman'), 0, 0, game);
+    const enemy = createEnemy(100, 0);
+    const web = hero.abilitySystem.getAttackEffects(enemy).find((effect) => effect.type === 'web');
+
+    enemy.applyStatus(web, hero);
+    enemy.applyStatus(web, hero);
+    enemy.updateDebuffs(0.1);
+
+    assert.equal(enemy.speed, 0);
+    assert.equal(hero.getEffectiveStats().canSeeStealth, true);
+});
+
 test('Thor activa Tormenta Divina con varios objetivos', () => {
     const game = createGame();
     const targets = [createEnemy(50, 0), createEnemy(90, 0)];

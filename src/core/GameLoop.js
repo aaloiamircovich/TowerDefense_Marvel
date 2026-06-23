@@ -116,6 +116,7 @@ export class GameLoop {
         const hero = new Hero(config, x, y, this);
         this.progression?.applyEquippedItem(hero);
         this.heroes.push(hero);
+        this.progression?.discoverCodex?.('heroes', config.id);
         return hero;
     }
 
@@ -123,6 +124,8 @@ export class GameLoop {
         const enemy = new Enemy(config, this.path, this);
         if (source) enemy.copyPathPosition(source, 24);
         this.enemies.push(enemy);
+        this.progression?.discoverCodex?.('enemies', config.id);
+        if (config.faction) this.progression?.discoverCodex?.('factions', config.faction);
         return enemy;
     }
 
@@ -157,6 +160,7 @@ export class GameLoop {
         if (this.isGameOver) return;
         this.isGameOver = true;
         this.modeSystem?.finishRun('defeat');
+        this.progression?.recordMissionSummary?.(this, 'defeat');
         this.pause();
         if (this.uiManager) this.uiManager.showGameOver();
     }
@@ -174,7 +178,8 @@ export class GameLoop {
 
         const performanceSnapshot = this.performanceMonitor.record(
             frameMs,
-            this.enemies.length + this.projectiles.length + this.vfx.effects.length
+            this.enemies.length + this.projectiles.length + this.vfx.effects.length,
+            globalThis.performance?.memory?.usedJSHeapSize || 0
         );
         if (performanceSnapshot) this.uiManager?.updatePerformance(performanceSnapshot, this.projectilePool.getStats());
 
@@ -183,6 +188,7 @@ export class GameLoop {
     }
 
     update(dt) {
+        this.inputManager?.updateGamepad?.();
         if (this.waveManager) this.waveManager.update(dt);
         this.missionSystem?.update(dt);
         this.modeSystem?.update(dt);

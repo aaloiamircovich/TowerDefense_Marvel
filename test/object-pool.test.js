@@ -50,3 +50,12 @@ test('PerformanceMonitor calcula promedio, p95 y pico de entidades', () => {
     assert.equal(snapshot.p95Ms, 18);
     assert.equal(snapshot.peakEntities, 120);
 });
+
+test('PerformanceMonitor vigila el presupuesto de memoria de 128 MB', () => {
+    const monitor = new PerformanceMonitor(4, 1);
+    monitor.record(16, 20, 96 * 1048576);
+    assert.equal(monitor.lastSnapshot.memoryBudgetOk, true);
+    monitor.record(16, 20, 140 * 1048576);
+    assert.equal(monitor.lastSnapshot.memoryBudgetOk, false);
+    assert.equal(monitor.lastSnapshot.peakMemoryMb, 140);
+});

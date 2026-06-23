@@ -47,7 +47,8 @@ export class MutantKitSystem {
         this.attackCount++;
         if (this.hero.id === 'wolverine') this.resource = Math.min(100, this.resource + 7);
         if (this.hero.id === 'jean_grey') {
-            this.resource = Math.min(100, this.resource + 9);
+            const phoenix = this.hero.game.progression?.getHeroEvolution?.(this.hero.id)?.id === 'phoenix';
+            this.resource = Math.min(100, this.resource + (phoenix ? 14 : 9));
             if (this.attackCount % 4 === 0) this.telekineticPush(target, stats);
         }
         if (this.hero.id === 'cyclops' && this.attackCount % (this.mode === 'focus' ? 3 : 2) === 0) this.fireOpticLine(target, stats);
@@ -58,7 +59,10 @@ export class MutantKitSystem {
 
     onKill() {
         if (this.hero.id === 'wolverine') this.resource = Math.min(100, this.resource + 18);
-        if (this.hero.id === 'jean_grey') this.resource = Math.min(100, this.resource + 16);
+        if (this.hero.id === 'jean_grey') {
+            const phoenix = this.hero.game.progression?.getHeroEvolution?.(this.hero.id)?.id === 'phoenix';
+            this.resource = Math.min(100, this.resource + (phoenix ? 24 : 16));
+        }
     }
 
     applyStatModifiers(stats) {
@@ -233,7 +237,8 @@ export class MutantKitSystem {
         const targets = enemies.filter((enemy) => enemy.isAlive && distance(enemy, this.hero) <= stats.range * 1.2);
         if (!targets.length) return;
         targets.forEach((enemy) => {
-            CombatSystem.applyDamage({ attackerType: this.hero.category, damage: stats.damage * 0.95 * this.getPowerScale(), armorPenetration: 0.35 }, enemy, this.hero, this.hero.game.resourceManager, 1);
+            const phoenix = this.hero.game.progression?.getHeroEvolution?.(this.hero.id)?.id === 'phoenix';
+            CombatSystem.applyDamage({ attackerType: this.hero.category, damage: stats.damage * (phoenix ? 1.25 : 0.95) * this.getPowerScale(), armorPenetration: phoenix ? 0.5 : 0.35 }, enemy, this.hero, this.hero.game.resourceManager, 1);
             if (enemy.isAlive && !enemy.flying) enemy.moveBackward?.(enemy.isBoss ? 20 : 48);
         });
         this.hero.game.vfx?.addRing(this.hero.x, this.hero.y, { color: '#ff5a82', radius: stats.range * 1.2, duration: 0.55 });

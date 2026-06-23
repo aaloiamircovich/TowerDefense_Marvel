@@ -1,6 +1,6 @@
 {
   "name": "towerdefense-marvel",
-  "version": "1.11.0",
+  "version": "2.0.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -19,7 +19,8 @@
     "build:items": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/build-item-icons.ps1 && npm run build:data",
     "balance": "node scripts/simulate-economy.js",
     "benchmark": "node scripts/benchmark-combat.js",
+    "audit:a11y": "node scripts/audit-accessibility.js",
     "release:check": "node scripts/validate-release.js",
-    "check": "npm run validate && npm test && npm run balance && npm run benchmark && npm run release:check"
+    "check": "npm run validate && npm test && npm run balance && npm run benchmark && npm run audit:a11y && npm run release:check"
   }
 }

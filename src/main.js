@@ -11,6 +11,7 @@ import { ProgressionManager } from './systems/ProgressionManager.js';
 import { ShopSystem } from './systems/ShopSystem.js';
 import { MissionSystem } from './systems/MissionSystem.js';
 import { GameModeSystem } from './systems/GameModeSystem.js';
+import { ReplaySystem } from './systems/ReplaySystem.js';
 import { registerPwa } from './pwa/register.js';
 
 async function initGame() {
@@ -52,6 +53,7 @@ async function initGame() {
         game.progression = new ProgressionManager();
         game.progression.initialize(game, data);
         game.modeSystem = new GameModeSystem(game, game.progression);
+        game.replaySystem = new ReplaySystem(game);
         game.shopSystem = new ShopSystem(game, game.progression);
         game.missionSystem = new MissionSystem(game);
 
@@ -79,6 +81,7 @@ async function initGame() {
             game.vfx.clear();
             game.completedWaves = [];
             game.isGameOver = false;
+            game.missionSummaryRecorded = false;
             game.path = normalizePath(levelConfig.path, game.canvas.width, game.canvas.height);
             document.body.dataset.levelTheme = levelConfig.theme?.id || 'new-york';
             game.generateLevelMap();
@@ -86,6 +89,7 @@ async function initGame() {
             game.waveManager = new WaveManager(game, data.enemies, data.waves);
             game.resourceManager.reset(20, 650);
             game.modeSystem.configureRun();
+            game.replaySystem.reset(`${game.modeSystem.getSeed() || 'campaign'}:${levelConfig.id}`, levelConfig.id, game.modeSystem.modeId);
             ui.showToast(`${levelConfig.name} cargado`, 'info');
             ui.updateLevelTheme(levelConfig);
         };

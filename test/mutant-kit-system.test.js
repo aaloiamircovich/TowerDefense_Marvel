@@ -22,6 +22,15 @@ test('Jean Grey empuja por la ruta y libera el medidor Phoenix', () => {
     assert.ok(enemies[0].hp < hp); assert.equal(hero.abilitySystem.mutantKit.resource, 0);
 });
 
+test('Phoenix carga su medidor mas rapido que Jean Grey base', () => {
+    const game = createGame();
+    game.progression = { getHeroBonuses: () => ({}), getHeroEvolution: () => ({ id: 'phoenix', stats: { damage: 0.22, fireRate: 0.08, range: 0.08, critChance: 5 } }) };
+    const hero = createHero('jean_grey', game);
+    const enemy = createEnemy(100);
+    hero.abilitySystem.onAttack(enemy, hero.getEffectiveStats(), {}, []);
+    assert.equal(hero.abilitySystem.mutantKit.resource, 14);
+});
+
 test('Cyclops alterna linea penetrante y rebotes opticos', () => {
     const game = createGame(); const hero = createHero('cyclops', game, { damage: 40, range: 240 }); const enemies = [createEnemy(100), createEnemy(180)];
     game.heroes = [hero]; game.enemies = enemies;

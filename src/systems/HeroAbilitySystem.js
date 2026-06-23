@@ -46,7 +46,8 @@ export class HeroAbilitySystem {
 
         if (this.hero.id === 'iron_man') {
             this.hero.game.audio?.play('repulsor');
-            if (this.attackCount % 3 === 0) this.activateArcOverload(target, stats);
+            const arcInterval = this.hero.game.progression?.getHeroEvolution?.(this.hero.id)?.id === 'iron_man_extremis' ? 2 : 3;
+            if (this.attackCount % arcInterval === 0) this.activateArcOverload(target, stats);
         }
 
         if (this.hero.id === 'spiderman') this.hero.game.audio?.play('web');
@@ -60,7 +61,8 @@ export class HeroAbilitySystem {
     getAttackEffects(target) {
         const effects = [...this.avengerKit.getAttackEffects(target), ...this.cosmicKit.getAttackEffects(target), ...this.streetKit.getAttackEffects(target), ...this.mutantKit.getAttackEffects(target)];
         if (this.hero.id === 'spiderman') {
-            effects.push({ type: 'web', duration: 2.6, power: 0.2, chance: 1 });
+            const evolved = this.hero.game.progression?.getHeroEvolution?.(this.hero.id)?.id === 'iron_spider';
+            effects.push({ type: 'web', duration: evolved ? 3.2 : 2.6, power: evolved ? 0.28 : 0.2, chance: 1 });
         }
         return effects;
     }
@@ -214,7 +216,9 @@ export class HeroAbilitySystem {
     }
 
     getProjectileProfile() {
-        return { ...this.avengerKit.getProjectileProfile(), ...this.cosmicKit.getProjectileProfile(), ...this.streetKit.getProjectileProfile(), ...this.mutantKit.getProjectileProfile() };
+        const profile = { ...this.avengerKit.getProjectileProfile(), ...this.cosmicKit.getProjectileProfile(), ...this.streetKit.getProjectileProfile(), ...this.mutantKit.getProjectileProfile() };
+        if (this.hero.game.progression?.getHeroEvolution?.(this.hero.id)?.id === 'iron_spider') profile.armorPenetration = 0.3;
+        return profile;
     }
 
     getProjectileColor() {

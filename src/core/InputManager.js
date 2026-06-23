@@ -11,15 +11,39 @@ export class InputManager {
         this.placingHero = null;
         this.movingHero = null;
         this.mousePos = { x: 0, y: 0 };
+        this.gamepadButtons = [];
+        this.gamepadHeroIndex = 0;
         this.game.tacticalActions = this.game.tacticalActions || new TacticalActionSystem(this.game);
 
         this.canvas.addEventListener('click', (event) => this.handleCanvasClick(event));
         this.canvas.addEventListener('mousemove', (event) => this.updateMousePos(event));
         this.canvas.addEventListener('mouseleave', () => this.uiManager.setSelectionStatus('Elige un héroe y colócalo junto al camino.'));
         window.addEventListener('keydown', (event) => {
-            if (event.key === 'Escape') this.clearPlacement();
+            const bindings = this.game.progression?.state.settings.keyBindings || {};
+            if (event.key === (bindings.cancel || 'Escape')) this.clearPlacement();
             if (/^[1-6]$/.test(event.key)) this.handleHeroShortcut(event);
+            if (['INPUT', 'SELECT', 'TEXTAREA'].includes(event.target?.tagName)) return;
+            if (event.key.toLowerCase() === bindings.pause?.toLowerCase()) this.uiManager.setManualPause?.(!this.game.isManuallyPaused);
+            if (event.key.toLowerCase() === bindings.speed?.toLowerCase()) document.getElementById('btn-speed')?.click();
+            if (event.key.toLowerCase() === bindings.nextWave?.toLowerCase()) this.game.waveManager?.startNextWave();
         });
+    }
+
+    updateGamepad() {
+        const pad = globalThis.navigator?.getGamepads?.()[0];
+        if (!pad) return;
+        const pressed = pad.buttons.map((button) => button.pressed);
+        const justPressed = (index) => pressed[index] && !this.gamepadButtons[index];
+        if (justPressed(0)) this.game.waveManager?.startNextWave();
+        if (justPressed(1)) this.clearPlacement();
+        if (justPressed(9)) this.uiManager.setManualPause?.(!this.game.isManuallyPaused);
+        if (justPressed(4) || justPressed(5)) {
+            const direction = justPressed(5) ? 1 : -1;
+            this.gamepadHeroIndex = (this.gamepadHeroIndex + direction + this.game.activeTeam.length) % Math.max(1, this.game.activeTeam.length);
+            const hero = this.game.activeTeam[this.gamepadHeroIndex];
+            if (hero) this.setPlacementMode(hero);
+        }
+        this.gamepadButtons = pressed;
     }
 
     updateMousePos(event) {
@@ -168,6 +192,7 @@ export class InputManager {
             return;
         }
         const deployed = this.game.spawnHero(this.placingHero, snapX, snapY);
+        this.game.replaySystem?.record('deploy', { heroId: this.placingHero.id, x: snapX, y: snapY });
         this.game.selectedUnit = deployed;
         this.uiManager.showToast(`${this.placingHero.name} desplegado`, 'success');
         this.uiManager.renderHeroRoster(this.game.activeTeam, (hero) => this.setPlacementMode(hero));

@@ -5,6 +5,7 @@ import { ProgressionManager, SAVE_KEY, SAVE_VERSION } from '../src/systems/Progr
 
 const data = {
     heroes: JSON.parse(fs.readFileSync(new URL('../data/heroes.json', import.meta.url), 'utf8')),
+    enemies: JSON.parse(fs.readFileSync(new URL('../data/enemies.json', import.meta.url), 'utf8')),
     items: JSON.parse(fs.readFileSync(new URL('../data/items.json', import.meta.url), 'utf8')),
     levels: JSON.parse(fs.readFileSync(new URL('../data/levels.json', import.meta.url), 'utf8'))
 };
@@ -168,6 +169,71 @@ test('rankings de modos se guardan separados de campaña', () => {
     assert.equal(manager.getModeRecord('daily').bestScore, 900);
     assert.equal(manager.getModeRecord('survival').bestWave, 12);
     assert.equal(manager.getMapProgress('level_1').bestWave, 0);
+});
+
+test('evoluciones se activan y revierten sin reemplazar al heroe base', () => {
+    const manager = new ProgressionManager(new MemoryStorage());
+    const game = createGame();
+    manager.initialize(game, data);
+    manager.startProfile('iron_man');
+
+    assert.equal(manager.setHeroEvolution('iron_man', 'iron_man_extremis'), true);
+    assert.equal(manager.getHeroEvolution('iron_man').name, 'Iron Man Extremis');
+    assert.deepEqual(game.activeTeam.map((hero) => hero.id), ['iron_man']);
+    assert.equal(manager.setHeroEvolution('iron_man', null), true);
+    assert.equal(manager.getHeroEvolution('iron_man'), null);
+});
+
+test('maestria recompensa desafios una sola vez y el codice persiste hallazgos', () => {
+    const manager = new ProgressionManager(new MemoryStorage());
+    manager.initialize(createGame(), data);
+    manager.startProfile('iron_man');
+    const hero = { id: 'iron_man', combatStats: { damageDealt: 5100, abilityActivations: 6, kills: 30 } };
+
+    assert.equal(manager.evaluateHeroMastery(hero).length, 3);
+    assert.equal(manager.evaluateHeroMastery(hero).length, 0);
+    assert.equal(manager.state.metaCredits, 1500);
+    assert.equal(manager.discoverCodex('enemies', Object.keys(data.enemies)[0]), true);
+    assert.equal(manager.state.codexDiscovered.heroes.includes('iron_man'), true);
+});
+
+test('resumen de mision acumula estadisticas y logros una sola vez', () => {
+    const manager = new ProgressionManager(new MemoryStorage());
+    const game = createGame();
+    manager.initialize(game, data);
+    manager.startProfile('iron_man');
+    game.heroes = [{ id: 'iron_man', name: 'Iron Man', combatStats: { damageDealt: 8200, kills: 31, shots: 60, crits: 8, goldGenerated: 90, abilityActivations: 6 } }];
+    game.waveManager = { currentWave: 10 };
+    game.modeSystem = { modeId: 'campaign' };
+
+    const summary = manager.recordMissionSummary(game, 'victory');
+    manager.recordMissionSummary(game, 'victory');
+
+    assert.equal(summary.bestHero, 'Iron Man');
+    assert.equal(manager.state.statistics.missions, 1);
+    assert.equal(manager.state.statistics.enemiesDefeated, 31);
+    assert.ok(manager.state.achievements.includes('primera_defensa'));
+    assert.ok(manager.state.achievements.includes('intocable'));
+    assert.ok(manager.state.achievements.includes('cazajefes'));
+});
+
+test('exportar e importar conserva progreso y rechaza formatos ajenos', () => {
+    const first = new ProgressionManager(new MemoryStorage());
+    first.initialize(createGame(), data);
+    first.startProfile('spiderman');
+    first.updateKeyBinding('pause', 'q');
+    first.updateSetting('locale', 'en');
+    const exported = first.exportSave();
+
+    const second = new ProgressionManager(new MemoryStorage());
+    const game = createGame();
+    second.initialize(game, data);
+    assert.equal(second.importSave(exported).ok, true);
+    assert.equal(second.state.settings.keyBindings.pause, 'q');
+    assert.equal(second.state.settings.locale, 'en');
+    assert.deepEqual(game.activeTeam.map((hero) => hero.id), ['spiderman']);
+    assert.equal(second.importSave('{"untrusted":true}').ok, false);
+    assert.deepEqual(game.activeTeam.map((hero) => hero.id), ['spiderman']);
 });
 
 function createGame() {

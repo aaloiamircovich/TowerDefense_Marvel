@@ -11,7 +11,7 @@ if (packageData.version !== APP_VERSION) errors.push(`package.json (${packageDat
 if (!manifest.icons?.length) errors.push('manifest.webmanifest no define iconos');
 for (const icon of manifest.icons || []) requireFile(icon.src);
 
-for (const required of ['service-worker.js', 'CHANGELOG.md', 'NOTICE.md', 'data/sprite-atlas.js', 'assets/images/heroes/atlas.png']) {
+for (const required of ['service-worker.js', 'CHANGELOG.md', 'NOTICE.md', 'docs/RELEASE_2_0_CHECKLIST.md', 'data/sprite-atlas.js', 'assets/images/heroes/atlas.png']) {
     requireFile(required);
 }
 

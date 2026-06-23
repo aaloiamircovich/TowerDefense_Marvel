@@ -72,12 +72,14 @@ export class TeamBuilderPanel {
     renderHeroCard(hero, unlocked) {
         const game = this.ui.game;
         const equipped = game.activeTeam.some((active) => active.id === hero.id);
+        const evolution = hero.evolutionId ? game.progression.getHeroEvolution(hero.id) : null;
         const role = FORMATION_DEFINITIONS[hero.formationRole] || FORMATION_DEFINITIONS.artillery;
         return `
             <article class="collection-card team-hero-card ${unlocked ? '' : 'locked'} ${equipped ? 'equipped' : ''}">
                 <div class="formation-role" style="--formation-color:${role.color}">${role.label}</div>
                 ${this.ui.renderSprite(hero.visual?.portrait || hero.sprite, hero.name)}
                 <h3>${hero.name}</h3>
+                ${evolution ? `<strong class="evolution-badge" style="--evolution-color:${evolution.color}">${evolution.name}</strong>` : ''}
                 <small>${hero.category} · ${hero.rarity || 'Common'} · $${hero.cost || 0}</small>
                 <div class="hero-tag-list">${(hero.tags || []).map((tag) => `<span>${tag}</span>`).join('')}</div>
                 <div class="collection-actions">
@@ -86,6 +88,7 @@ export class TeamBuilderPanel {
                         ${unlocked ? (equipped ? 'Quitar' : 'Añadir') : 'Por reclutar'}
                     </button>
                 </div>
+                ${unlocked && hero.evolutionId ? `<button class="btn-evolution" data-id="${hero.id}" data-evolution="${hero.evolutionId}">${evolution ? 'Volver a forma base' : `Activar ${hero.evolutionId === 'phoenix' ? 'Phoenix' : hero.evolutionId === 'iron_spider' ? 'Iron Spider' : 'Extremis'}`}</button>` : ''}
             </article>
         `;
     }
@@ -110,6 +113,12 @@ export class TeamBuilderPanel {
         }));
         this.ui.panelContent.querySelectorAll('.btn-preview-hero').forEach((button) => button.addEventListener('click', () => {
             this.ui.renderHeroDetails(game.heroDatabase[button.dataset.id]);
+        }));
+        this.ui.panelContent.querySelectorAll('.btn-evolution').forEach((button) => button.addEventListener('click', () => {
+            const active = game.progression.getHeroEvolution(button.dataset.id);
+            game.progression.setHeroEvolution(button.dataset.id, active ? null : button.dataset.evolution);
+            this.ui.showToast(active ? 'Forma base restaurada' : `${game.progression.getHeroEvolution(button.dataset.id).name} activado`, 'success');
+            this.syncAndRender();
         }));
     }
 

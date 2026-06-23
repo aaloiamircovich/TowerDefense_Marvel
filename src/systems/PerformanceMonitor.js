@@ -7,16 +7,18 @@ export class PerformanceMonitor {
         this.sampleIndex = 0;
         this.elapsed = 0;
         this.peakEntities = 0;
-        this.lastSnapshot = { averageMs: 0, p95Ms: 0, fps: 0, peakEntities: 0 };
+        this.peakMemoryMb = 0;
+        this.lastSnapshot = { averageMs: 0, p95Ms: 0, fps: 0, peakEntities: 0, peakMemoryMb: 0, memoryBudgetOk: true };
     }
 
-    record(frameMs, entityCount = 0) {
+    record(frameMs, entityCount = 0, heapBytes = 0) {
         if (!Number.isFinite(frameMs) || frameMs <= 0) return null;
         this.samples[this.sampleIndex] = frameMs;
         this.sampleIndex = (this.sampleIndex + 1) % this.sampleSize;
         this.sampleCount = Math.min(this.sampleSize, this.sampleCount + 1);
         this.elapsed += frameMs;
         this.peakEntities = Math.max(this.peakEntities, entityCount);
+        this.peakMemoryMb = Math.max(this.peakMemoryMb, Math.max(0, heapBytes) / 1048576);
         if (this.elapsed < this.reportInterval) return null;
         this.elapsed = 0;
         this.lastSnapshot = this.snapshot();
@@ -25,14 +27,16 @@ export class PerformanceMonitor {
 
     snapshot() {
         const values = this.samples.slice(0, this.sampleCount).filter((value) => value > 0).sort((a, b) => a - b);
-        if (values.length === 0) return { averageMs: 0, p95Ms: 0, fps: 0, peakEntities: this.peakEntities };
+        if (values.length === 0) return { averageMs: 0, p95Ms: 0, fps: 0, peakEntities: this.peakEntities, peakMemoryMb: this.peakMemoryMb, memoryBudgetOk: this.peakMemoryMb <= 128 };
         const averageMs = values.reduce((total, value) => total + value, 0) / values.length;
         const p95Ms = values[Math.min(values.length - 1, Math.floor(values.length * 0.95))];
         return {
             averageMs,
             p95Ms,
             fps: 1000 / averageMs,
-            peakEntities: this.peakEntities
+            peakEntities: this.peakEntities,
+            peakMemoryMb: this.peakMemoryMb,
+            memoryBudgetOk: this.peakMemoryMb <= 128
         };
     }
 }
