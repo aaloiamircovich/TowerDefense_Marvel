@@ -52,6 +52,19 @@ test('Draft heroico ofrece tres refuerzos y suma la elección', () => {
     assert.equal(game.activeTeam.length, initial + 1);
 });
 
+test('Draft registra la eleccion en el replay sin romper el reinicio', () => {
+    const game = createGame();
+    const actions = [];
+    game.replaySystem = { record(type, payload) { actions.push({ type, payload }); } };
+    const modes = attachModes(game);
+    modes.modeId = 'draft';
+    modes.pendingDraft = [game.heroDatabase.iron_man];
+
+    assert.equal(modes.chooseDraft('iron_man'), true);
+    assert.deepEqual(actions, [{ type: 'draft', payload: { heroId: 'iron_man' } }]);
+    assert.doesNotThrow(() => modes.reset());
+});
+
 test('Defensa de convoy mueve el objetivo sobre la ruta y pierde integridad por fugas', () => {
     const game = createGame(); const modes = attachModes(game); modes.modeId = 'convoy'; game.waveManager = { currentWave: 2, isWaveActive: true };
     modes.update(9.5); assert.ok(modes.convoy.progress > 0);

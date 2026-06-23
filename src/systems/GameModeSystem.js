@@ -22,7 +22,6 @@ export class GameModeSystem {
         this.seedKey = 'campaign';
         this.draftPool = [];
         this.pendingDraft = [];
-        this.game.replaySystem?.record('draft', { heroId });
         this.convoy = { progress: 0.04, integrity: 100 };
     }
 
@@ -106,6 +105,7 @@ export class GameModeSystem {
         if (this.game.activeTeam.length < 6) this.game.activeTeam.push(hero);
         else this.game.activeTeam[this.game.activeTeam.length - 1] = hero;
         this.pendingDraft = [];
+        this.game.replaySystem?.record('draft', { heroId });
         this.game.uiManager?.renderHeroRoster(this.game.activeTeam, (config) => this.game.inputManager.setPlacementMode(config));
         this.game.uiManager?.closePanel();
         this.game.start();

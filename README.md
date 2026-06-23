@@ -12,6 +12,7 @@ La versión 2.0.0 puede instalarse como PWA, conserva los recursos esenciales pa
 
 - [Roadmap completo](docs/ROADMAP.md)
 - [Roadmap de expansión 1.2 a 2.0](docs/ROADMAP_EXPANSION.md)
+- [Roadmap profesional 3.0](docs/ROADMAP_PROFESSIONAL_3_0.md)
 - [Pipeline profesional de sprites](docs/SPRITE_PIPELINE.md)
 - [Objetivo y benchmark de rendimiento](docs/PERFORMANCE.md)
 

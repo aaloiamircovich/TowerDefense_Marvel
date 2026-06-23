@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.0.1 - 2026-06-23
+
+- Corrige un bloqueo de arranque causado por el registro de replay del Draft.
+- Agrega una prueba de regresión para reinicio y elección de Draft con replay activo.
+- Incorpora el roadmap profesional 3.0 basado en una auditoría comparativa del producto.
+- Amplía la suite a 179 pruebas automatizadas.
+
 ## 2.0.0 - 2026-06-23
 
 - Evoluciones reversibles Iron Man Extremis, Iron Spider y Phoenix con cambios reales de combate.
