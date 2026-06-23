@@ -24,7 +24,7 @@ export class EncounterDirector {
     compose(pool, wave, branchId = 'safe', capabilities = {}) {
         const branch = this.getBranchOptions(wave).find((option) => option.id === branchId) || { threatFactor: 1, rewardFactor: 1 };
         const candidates = this.filterCounters(pool, capabilities);
-        const random = new RandomSource(`${this.game.currentLevel?.theme?.id || 'new-york'}:${wave}:${branchId}`);
+        const random = new RandomSource(`${this.game.modeSystem?.getSeed?.() || 'campaign'}:${this.game.currentLevel?.theme?.id || 'new-york'}:${wave}:${branchId}`);
         let budget = Math.round((8 + wave * 1.15) * branch.threatFactor);
         const result = [];
         let index = 0;

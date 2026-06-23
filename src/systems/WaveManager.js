@@ -132,8 +132,11 @@ export class WaveManager {
 
         this.faction = this.getFaction();
         this.waveModifier = this.director.sanitizeModifier(this.getWaveModifier(), this.getTeamCapabilities());
+        const modeQueue = this.game.modeSystem?.buildWave(this.currentWave, this);
 
-        if (this.currentWave === this.maxWaves) {
+        if (modeQueue) {
+            this.preparedQueue.push(...modeQueue);
+        } else if (this.currentWave === this.maxWaves) {
             const config = this.data.bosses.thanos_final;
             this.preparedQueue.push({ config: this.scaleEnemy(config, 1.25, true), delay: 0 });
         } else if (this.currentWave % 10 === 0) {
@@ -279,7 +282,7 @@ export class WaveManager {
     }
 
     startNextWave() {
-        if (this.currentWave > this.maxWaves || this.isWaveActive || this.game.isGameOver) return;
+        if (this.currentWave > this.maxWaves || this.isWaveActive || this.game.isGameOver || this.game.modeSystem?.pendingDraft?.length) return;
 
         this.game.missionSystem?.onWaveStart(this.currentWave);
         this.game.audio?.play('wave');
@@ -320,13 +323,14 @@ export class WaveManager {
     finishWave() {
         this.isWaveActive = false;
         this.game.missionSystem?.onWaveFinished(this.currentWave);
+        this.game.modeSystem?.onWaveFinished(this.currentWave);
         const waveBounty = 110 + this.currentWave * 24;
         this.game.resourceManager.addCredits(waveBounty);
 
         let metaReward = 0;
         if (!this.game.completedWaves.includes(this.currentWave)) {
             this.game.completedWaves.push(this.currentWave);
-            if (this.game.progression) metaReward = this.game.progression.recordWave(this.game, this.currentWave);
+            if (this.game.progression && (!this.game.modeSystem || this.game.modeSystem.modeId === 'campaign')) metaReward = this.game.progression.recordWave(this.game, this.currentWave);
             else this.game.stars += this.currentWave % 10 === 0 ? 3 : 1;
         }
 
@@ -336,6 +340,7 @@ export class WaveManager {
         this.selectedBranch = null;
 
         if (this.currentWave > this.maxWaves) {
+            this.game.modeSystem?.finishRun('victory');
             this.game.uiManager?.showVictory();
             this.game.pause();
             return;

@@ -1,3 +1,5 @@
+import { GAME_MODES } from '../systems/GameModeSystem.js';
+
 export class CampaignPanel {
     constructor(ui) {
         this.ui = ui;
@@ -7,10 +9,21 @@ export class CampaignPanel {
         const { game, panelContent } = this.ui;
         panelContent.innerHTML = `
             <h2>${title}</h2>
+            <section class="mode-section">
+                <div class="section-heading"><strong>Modos de juego</strong><span>Progreso y rankings separados de campaña</span></div>
+                <div class="mode-list">${Object.values(GAME_MODES).map((mode) => this.renderModeCard(mode)).join('')}</div>
+            </section>
             <div class="map-list">
                 ${game.levelsData.map((level, index) => this.renderMapCard(level, index)).join('')}
             </div>
         `;
+
+        panelContent.querySelectorAll('.btn-start-mode').forEach((button) => button.addEventListener('click', () => {
+            const mode = GAME_MODES[button.dataset.mode];
+            if (!game.modeSystem.start(mode.id)) return;
+            this.ui.renderHeroRoster(game.activeTeam, (hero) => game.inputManager.setPlacementMode(hero));
+            this.renderModeBriefing(mode);
+        }));
 
         panelContent.querySelectorAll('.difficulty-btn').forEach((button) => {
             button.addEventListener('click', () => {
@@ -27,6 +40,28 @@ export class CampaignPanel {
                 this.renderBriefing(level);
             });
         });
+    }
+
+    renderModeCard(mode) {
+        const record = this.ui.game.progression.getModeRecord(mode.id);
+        return `<article class="mode-card">
+            <i class="fas ${mode.icon}"></i>
+            <div><strong>${mode.name}</strong><span>${mode.description}</span><small>Récord ${record.bestScore} · oleada ${record.bestWave}</small></div>
+            <button class="btn-start-mode btn-primary ghost" data-mode="${mode.id}">Jugar</button>
+        </article>`;
+    }
+
+    renderModeBriefing(mode) {
+        const snapshot = this.ui.game.modeSystem.getSnapshot();
+        this.ui.panelContent.innerHTML = `<section class="mission-briefing">
+            <span class="briefing-kicker">OPERACIÓN ESPECIAL</span>
+            <h2>${mode.name}</h2>
+            <p class="briefing-copy">${mode.description}</p>
+            <div class="briefing-mechanic"><b>Reglas independientes</b><span>La puntuación, oleada y resultado se guardan fuera de la campaña.</span></div>
+            <div class="briefing-objectives"><div><span>Objetivo</span><small>${snapshot.detail}</small><b>Récord ${snapshot.best}</b></div></div>
+            <button class="btn-primary" id="deploy-mode">DESPLEGAR EQUIPO</button>
+        </section>`;
+        document.getElementById('deploy-mode')?.addEventListener('click', () => this.ui.closePanel());
     }
 
     renderMapCard(level, index) {

@@ -184,6 +184,37 @@ export class UIManager {
         `;
     }
 
+    updateModeStatus(snapshot) {
+        const container = document.getElementById('mode-status');
+        if (!container) return;
+        if (!snapshot) {
+            container.classList.add('hidden');
+            container.innerHTML = '';
+            return;
+        }
+        container.classList.remove('hidden');
+        container.innerHTML = `<div><strong>${snapshot.name}</strong><span>${snapshot.detail}</span></div><b>${snapshot.score} pts</b>${snapshot.canExtract ? '<button id="extract-mode" class="btn-mode-action">Extraer</button>' : ''}${snapshot.canRepair ? '<button id="repair-mode" class="btn-mode-action">Reparar +2 · $120</button>' : ''}`;
+        document.getElementById('extract-mode')?.addEventListener('click', () => this.game.modeSystem.extract());
+        document.getElementById('repair-mode')?.addEventListener('click', () => this.game.modeSystem.repair());
+    }
+
+    showDraftChoice(heroes, onChoose) {
+        this.overlay.classList.remove('hidden');
+        document.getElementById('close-panel-btn')?.classList.add('hidden');
+        this.panelContent.innerHTML = `<div class="draft-choice"><span class="briefing-kicker">DRAFT HEROICO</span><h2>Elige un refuerzo</h2><div>${heroes.map((hero) => `<button data-draft="${hero.id}">${this.renderSprite(hero.visual?.portrait || hero.sprite, hero.name)}<strong>${hero.name}</strong><small>${hero.niche || hero.ability}</small></button>`).join('')}</div></div>`;
+        this.panelContent.querySelectorAll('[data-draft]').forEach((button) => button.addEventListener('click', () => onChoose(button.dataset.draft)));
+    }
+
+    showModeResult(title, snapshot) {
+        this.overlay.classList.remove('hidden');
+        document.getElementById('close-panel-btn')?.classList.add('hidden');
+        this.panelContent.innerHTML = `<div class="end-state"><h2>${title}</h2><p>${snapshot.score} puntos · oleada ${snapshot.wave} · récord ${snapshot.best}</p><button class="btn-primary" id="mode-result-map">Volver a modos</button></div>`;
+        document.getElementById('mode-result-map')?.addEventListener('click', () => {
+            document.getElementById('close-panel-btn')?.classList.remove('hidden');
+            this.renderMap('Mapa y modos');
+        });
+    }
+
     showToast(message, type = 'info') {
         if (!this.toastEl) return;
         window.clearTimeout(this.toastTimer);
@@ -693,16 +724,18 @@ export class UIManager {
         this.game.audio?.play('warning');
         this.overlay.classList.remove('hidden');
         document.getElementById('close-panel-btn')?.classList.add('hidden');
+        const modeSnapshot = this.game.modeSystem?.getSnapshot();
         this.panelContent.innerHTML = `
             <div class="end-state">
-                <h2>Base destruida</h2>
-                <p>Llegaste hasta la oleada ${this.game.waveManager?.currentWave || 1}. Ajusta el equipo y vuelve a intentarlo.</p>
+                <h2>${modeSnapshot ? `${modeSnapshot.name}: finalizada` : 'Base destruida'}</h2>
+                <p>Llegaste hasta la oleada ${this.game.waveManager?.currentWave || 1}.${modeSnapshot ? ` Puntuación ${modeSnapshot.score}.` : ' Ajusta el equipo y vuelve a intentarlo.'}</p>
                 <button class="btn-primary" id="retry-run">Reintentar</button>
             </div>
         `;
         document.getElementById('retry-run')?.addEventListener('click', () => {
             this.game.isGameOver = false;
-            this.game.loadLevel(this.game.currentLevel);
+            if (modeSnapshot) this.game.modeSystem.start(modeSnapshot.id);
+            else this.game.loadLevel(this.game.currentLevel);
             this.renderHeroRoster(this.game.activeTeam, (hero) => this.game.inputManager.setPlacementMode(hero));
             this.closePanel();
             this.game.start();
@@ -711,6 +744,11 @@ export class UIManager {
 
     showVictory() {
         this.game.audio?.play('victory');
+        const modeSnapshot = this.game.modeSystem?.getSnapshot();
+        if (modeSnapshot) {
+            this.showModeResult(`${modeSnapshot.name}: completado`, modeSnapshot);
+            return;
+        }
         this.overlay.classList.remove('hidden');
         document.getElementById('close-panel-btn')?.classList.add('hidden');
         this.panelContent.innerHTML = `

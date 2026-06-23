@@ -156,6 +156,7 @@ export class GameLoop {
     gameOver() {
         if (this.isGameOver) return;
         this.isGameOver = true;
+        this.modeSystem?.finishRun('defeat');
         this.pause();
         if (this.uiManager) this.uiManager.showGameOver();
     }
@@ -184,12 +185,14 @@ export class GameLoop {
     update(dt) {
         if (this.waveManager) this.waveManager.update(dt);
         this.missionSystem?.update(dt);
+        this.modeSystem?.update(dt);
 
         this.enemies.forEach((enemy) => {
             enemy.update(dt);
             if (enemy.hasReachedEnd && !enemy.processed) {
-                const absorbed = this.missionSystem?.handleLeak(enemy) || false;
-                if (!absorbed) this.resourceManager.removeLife(enemy.isBoss ? 3 : 1);
+                const missionAbsorbed = this.missionSystem?.handleLeak(enemy) || false;
+                const modeAbsorbed = this.modeSystem?.handleLeak(enemy) || false;
+                if (!missionAbsorbed && !modeAbsorbed) this.resourceManager.removeLife(enemy.isBoss ? 3 : 1);
                 enemy.processed = true;
             }
         });
@@ -234,6 +237,7 @@ export class GameLoop {
         }
 
         this.missionSystem?.render(ctx);
+        this.modeSystem?.render(ctx);
         this.drawPathGuide(ctx);
         this.enemies.forEach((enemy) => enemy.render(ctx));
         this.vfx.render(ctx);

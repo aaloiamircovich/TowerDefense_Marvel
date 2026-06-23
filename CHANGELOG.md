@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.11.0 - 2026-06-23
+
+- Operación diaria comparte mapa, roster y semilla por fecha con ranking local propio.
+- Boss Rush encadena diez jefes y habilita reparación entre combates.
+- Supervivencia agrega hitos, oleadas ilimitadas y extracción voluntaria.
+- Draft heroico comienza con tres héroes y ofrece refuerzos bloqueantes cada tres rondas.
+- Defensa de convoy incorpora un objetivo móvil con integridad visible sobre la ruta.
+- Guardado v6 separa puntuaciones, oleadas y resultados de modo del progreso de campaña.
+- 163 pruebas automatizadas cubren los cinco flujos y su persistencia.
+
 ## 1.10.0 - 2026-06-22
 
 - Director de encuentros reproducible por mapa, oleada y rama elegida.

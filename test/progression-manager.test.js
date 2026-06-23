@@ -159,6 +159,17 @@ test('Ajustes accesibles conservan tipos y límites válidos', () => {
     assert.equal(manager.state.settings.musicVolume, 1);
 });
 
+test('rankings de modos se guardan separados de campaña', () => {
+    const manager = new ProgressionManager(new MemoryStorage());
+    manager.initialize(createGame(), data);
+    manager.recordModeScore('daily', 900, 8, 'defeat', 'daily:2026-06-23');
+    manager.recordModeScore('survival', 1400, 12, 'extracted', 'survival:level_1');
+
+    assert.equal(manager.getModeRecord('daily').bestScore, 900);
+    assert.equal(manager.getModeRecord('survival').bestWave, 12);
+    assert.equal(manager.getMapProgress('level_1').bestWave, 0);
+});
+
 function createGame() {
     return {
         heroes: [], audio: { setEnabled: () => {} }, resourceManager: { lives: 20, maxLives: 20 },

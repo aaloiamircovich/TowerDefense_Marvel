@@ -10,6 +10,7 @@ import { collectVisualSources } from './rendering/SpriteAnimator.js';
 import { ProgressionManager } from './systems/ProgressionManager.js';
 import { ShopSystem } from './systems/ShopSystem.js';
 import { MissionSystem } from './systems/MissionSystem.js';
+import { GameModeSystem } from './systems/GameModeSystem.js';
 import { registerPwa } from './pwa/register.js';
 
 async function initGame() {
@@ -50,18 +51,26 @@ async function initGame() {
         game.completedWaves = [];
         game.progression = new ProgressionManager();
         game.progression.initialize(game, data);
+        game.modeSystem = new GameModeSystem(game, game.progression);
         game.shopSystem = new ShopSystem(game, game.progression);
         game.missionSystem = new MissionSystem(game);
 
         const input = new InputManager(game.canvas, game, ui, resources);
         game.inputManager = input;
 
-        game.loadLevel = (levelConfig) => {
+        game.loadLevel = (levelConfig, options = {}) => {
             if (!levelConfig) throw new Error('Nivel no encontrado.');
 
+            if (!options.preserveMode) {
+                game.modeSystem.setCampaign();
+                game.progression.syncGame();
+            }
+
             game.currentLevel = levelConfig;
-            game.progression.state.lastLevelId = levelConfig.id;
-            game.progression.save();
+            if (!options.preserveMode) {
+                game.progression.state.lastLevelId = levelConfig.id;
+                game.progression.save();
+            }
             game.difficulty = game.progression.getMapProgress(levelConfig.id).difficulty;
             game.heroes = [];
             game.enemies = [];
@@ -69,12 +78,14 @@ async function initGame() {
             game.clearProjectiles();
             game.vfx.clear();
             game.completedWaves = [];
+            game.isGameOver = false;
             game.path = normalizePath(levelConfig.path, game.canvas.width, game.canvas.height);
             document.body.dataset.levelTheme = levelConfig.theme?.id || 'new-york';
             game.generateLevelMap();
             game.missionSystem.loadLevel(levelConfig);
             game.waveManager = new WaveManager(game, data.enemies, data.waves);
             game.resourceManager.reset(20, 650);
+            game.modeSystem.configureRun();
             ui.showToast(`${levelConfig.name} cargado`, 'info');
             ui.updateLevelTheme(levelConfig);
         };

@@ -1,7 +1,7 @@
 import { calculateHeroBonuses, getUpgradeNode } from '../data/HeroUpgradeCatalog.js';
 
 const SAVE_KEY = 'tower-defense-marvel-save';
-const SAVE_VERSION = 5;
+const SAVE_VERSION = 6;
 
 function createMapProgress(progress = {}) {
     return {
@@ -26,6 +26,7 @@ function createDefaultState() {
         loadouts: {},
         heroUpgrades: {},
         mapProgress: {},
+        modeRecords: {},
         lastLevelId: 'level_1',
         shop: { rotationKey: '', slotIds: [], purchasedIds: [], heroPity: 0 },
         settings: {
@@ -91,6 +92,7 @@ export class ProgressionManager {
         migrated.loadouts = raw.loadouts || {};
         migrated.heroUpgrades = raw.heroUpgrades || raw.upgrades || {};
         migrated.mapProgress = raw.mapProgress || raw.maps || {};
+        migrated.modeRecords = raw.modeRecords || {};
         migrated.lastLevelId = raw.lastLevelId || 'level_1';
         migrated.shop = raw.shop || migrated.shop;
         migrated.settings = { ...migrated.settings, ...(raw.settings || {}) };
@@ -133,6 +135,15 @@ export class ProgressionManager {
         this.state.mapProgress = Object.fromEntries(Object.entries(this.state.mapProgress || {})
             .filter(([levelId]) => levelIds.has(levelId))
             .map(([levelId, progress]) => [levelId, createMapProgress(progress)]));
+        const validModes = new Set(['daily', 'boss_rush', 'survival', 'draft', 'convoy']);
+        this.state.modeRecords = Object.fromEntries(Object.entries(this.state.modeRecords || {})
+            .filter(([modeId]) => validModes.has(modeId))
+            .map(([modeId, record]) => [modeId, {
+                bestScore: Math.max(0, Math.floor(Number(record?.bestScore) || 0)),
+                bestWave: Math.max(0, Math.floor(Number(record?.bestWave) || 0)),
+                lastResult: typeof record?.lastResult === 'string' ? record.lastResult : '',
+                seedKey: typeof record?.seedKey === 'string' ? record.seedKey : ''
+            }]));
         this.state.metaCredits = Math.max(0, Number(this.state.metaCredits) || 0);
         this.save();
     }
@@ -351,6 +362,22 @@ export class ProgressionManager {
 
     getMapProgress(levelId) {
         return createMapProgress(this.state.mapProgress[levelId]);
+    }
+
+    recordModeScore(modeId, score, wave, result, seedKey = '') {
+        const previous = this.state.modeRecords[modeId] || { bestScore: 0, bestWave: 0 };
+        this.state.modeRecords[modeId] = {
+            bestScore: Math.max(previous.bestScore || 0, Math.round(score || 0)),
+            bestWave: Math.max(previous.bestWave || 0, Math.round(wave || 0)),
+            lastResult: result,
+            seedKey
+        };
+        this.save();
+        return this.state.modeRecords[modeId];
+    }
+
+    getModeRecord(modeId) {
+        return { bestScore: 0, bestWave: 0, lastResult: '', seedKey: '', ...(this.state.modeRecords[modeId] || {}) };
     }
 
     completeMissionObjective(levelId, objectiveId, reward) {

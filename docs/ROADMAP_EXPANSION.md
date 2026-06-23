@@ -163,6 +163,8 @@ Este segundo ciclo parte de una base estable: campaña de siete mapas, cinco her
 
 **Terminado cuando:** cada modo tiene inicio, progresion, derrota, recompensa y tests de flujo propios.
 
+**Estado:** implementada en la version 1.11.0. Operacion diaria fija mapa, roster y semilla; Boss Rush encadena jefes con reparacion; Supervivencia ofrece hitos y extraccion; Draft bloquea cada tercera ronda para elegir refuerzos; y Defensa de convoy mueve un objetivo con integridad propia. Rankings y resultados usan una seccion separada del guardado v6.
+
 ## Fase 20 - Maestria y lanzamiento 2.0
 
 **Objetivo:** cerrar el ciclo con endgame, calidad de vida y mantenimiento sostenible.

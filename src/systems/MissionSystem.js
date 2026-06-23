@@ -298,6 +298,7 @@ export class MissionSystem {
     }
 
     evaluateObjectives() {
+        if (this.game.modeSystem?.modeId && this.game.modeSystem.modeId !== 'campaign') return;
         for (const objective of this.level.mission?.objectives || []) {
             if (this.state.completed.has(objective.id)) continue;
             if ((this.state.metrics[objective.metric] || 0) < objective.target) continue;
