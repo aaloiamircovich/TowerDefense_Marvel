@@ -293,6 +293,10 @@ export class UIManager {
                         <div><strong>${summary.threatTier?.label || 'Amenaza baja'}</strong><span>${summary.threatTier?.advice || 'Buen momento para ahorrar.'}</span></div>
                         <b>${summary.pressureScore || 0}</b>
                     </div>
+                    <div class="wave-readiness ${summary.readiness?.id || 'empty'}" aria-label="${summary.readiness?.label || 'Sin defensa'}: ${summary.readiness?.advice || 'Despliega al menos un heroe antes de iniciar.'}">
+                        <div><strong>${summary.readiness?.label || 'Sin defensa'}</strong><span>${summary.readiness?.advice || 'Despliega al menos un heroe antes de iniciar.'}</span></div>
+                        <b>${summary.readiness?.score || 0}</b>
+                    </div>
                     <div class="wave-summary">
                         <span><b>${summary.total}</b> enemigos</span>
                         <span><b>$${summary.reward}</b> botín</span>
@@ -604,6 +608,7 @@ export class UIManager {
             this.game.fps,
             this.game.stars
         );
+        this.game.waveManager?.refreshWaveIntel?.();
         return true;
     }
 

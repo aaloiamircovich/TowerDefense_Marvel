@@ -86,6 +86,7 @@ test('WaveManager resume cantidad, botin y counter de la cola preparada', () => 
     assert.equal(typeof summary.counter, 'string');
     assert.equal(summary.pressureScore, 14);
     assert.equal(summary.threatTier.id, 'guarded');
+    assert.equal(summary.readiness.id, 'empty');
 });
 
 test('WaveManager eleva la lectura de amenaza cuando hay barreras y sigilo', () => {
@@ -100,17 +101,62 @@ test('WaveManager eleva la lectura de amenaza cuando hay barreras y sigilo', () 
     assert.equal(summary.threatTier.id, 'critical');
 });
 
-function createGame(theme = 'new-york', activeTeam = []) {
+test('WaveManager evalua preparacion con heroes desplegados y creditos', () => {
+    const game = createGame('new-york', [], [
+        deployedHero({ id: 'iron_man', damage: 58, fireRate: 1.4, range: 180, level: 2 }),
+        deployedHero({ id: 'spiderman', damage: 34, fireRate: 1.8, range: 160, canSeeStealth: true })
+    ]);
+    game.resourceManager.credits = 360;
+    const manager = new WaveManager(game, enemies);
+    const summary = manager.getWaveSummary();
+
+    assert.ok(summary.readiness.score > summary.pressureScore);
+    assert.equal(summary.readiness.id, 'ready');
+    assert.ok(summary.readiness.margin > 0);
+});
+
+test('WaveManager refresca el radar tactico al cambiar heroes desplegados', () => {
+    const rendered = [];
+    const game = createGame();
+    game.uiManager = {
+        renderWavePreview: (...args) => rendered.push(args.at(-1)),
+        setNextWaveEnabled: (_enabled, summary) => rendered.push(summary)
+    };
+    const manager = new WaveManager(game, enemies);
+    assert.equal(manager.getWaveSummary().readiness.id, 'empty');
+
+    game.heroes.push(deployedHero({ id: 'iron_man', damage: 58, fireRate: 1.4, range: 180, level: 2 }));
+    game.resourceManager.credits = 240;
+    const refreshed = manager.refreshWaveIntel();
+
+    assert.notEqual(refreshed.readiness.id, 'empty');
+    assert.equal(rendered.at(-1).readiness.id, refreshed.readiness.id);
+});
+
+function createGame(theme = 'new-york', activeTeam = [], deployed = []) {
     return {
         uiManager: null,
-        heroes: [],
+        heroes: deployed,
         activeTeam,
         enemies: [],
         completedWaves: [],
         stars: 0,
         path: [{ x: 0, y: 0 }, { x: 40, y: 0 }],
         currentLevel: { theme: { id: theme } },
-        resourceManager: { addCredits: () => {} },
+        resourceManager: { credits: 0, addCredits: () => {} },
         pause: () => {}
+    };
+}
+
+function deployedHero({ id, damage, fireRate, range, level = 1, canSeeStealth = false }) {
+    return {
+        id,
+        damage,
+        fireRate,
+        range,
+        level,
+        canSeeStealth,
+        config: { id, level },
+        getEffectiveStats: () => ({ damage, fireRate, range, canSeeStealth })
     };
 }

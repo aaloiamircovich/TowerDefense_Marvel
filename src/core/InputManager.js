@@ -228,6 +228,7 @@ export class InputManager {
             this.game.selectedUnit = this.movingHero;
             this.uiManager.showToast(`${this.movingHero.name} reposicionado`, 'success');
             this.uiManager.renderHeroRoster(this.game.activeTeam, (hero) => this.setPlacementMode(hero));
+            this.game.waveManager?.refreshWaveIntel?.();
             this.clearPlacement();
             return;
         }
@@ -243,6 +244,7 @@ export class InputManager {
         this.game.selectedUnit = deployed;
         this.uiManager.showToast(`${this.placingHero.name} desplegado`, 'success');
         this.uiManager.renderHeroRoster(this.game.activeTeam, (hero) => this.setPlacementMode(hero));
+        this.game.waveManager?.refreshWaveIntel?.();
         this.clearPlacement();
     }
 
@@ -261,6 +263,7 @@ export class InputManager {
             this.game.fps,
             this.game.stars
         );
+        this.game.waveManager?.refreshWaveIntel?.();
         this.clearPlacement();
         return result;
     }

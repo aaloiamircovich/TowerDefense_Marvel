@@ -183,11 +183,7 @@ export class WaveManager {
         }
 
         if (this.game.uiManager) {
-            const summary = {
-                ...this.getWaveSummary(),
-                branchOptions: this.director.getBranchOptions(this.currentWave),
-                selectedBranch: this.selectedBranch || 'safe'
-            };
+            const summary = this.buildPreparedSummary();
             this.game.uiManager.renderWavePreview(
                 this.getUniqueEnemies(),
                 this.waveModifier,
@@ -197,6 +193,28 @@ export class WaveManager {
             );
             this.game.uiManager.setNextWaveEnabled(true, summary);
         }
+    }
+
+    buildPreparedSummary() {
+        return {
+            ...this.getWaveSummary(),
+            branchOptions: this.director.getBranchOptions(this.currentWave),
+            selectedBranch: this.selectedBranch || 'safe'
+        };
+    }
+
+    refreshWaveIntel() {
+        if (!this.game.uiManager || this.isWaveActive || this.currentWave > this.maxWaves) return null;
+        const summary = this.buildPreparedSummary();
+        this.game.uiManager.renderWavePreview(
+            this.getUniqueEnemies(),
+            this.waveModifier,
+            this.faction,
+            this.currentWave,
+            summary
+        );
+        this.game.uiManager.setNextWaveEnabled(true, summary);
+        return summary;
     }
 
     getFaction() {
@@ -388,7 +406,8 @@ export class WaveManager {
             roles: [...roles],
             counter,
             pressureScore,
-            threatTier: this.getThreatTier(pressureScore)
+            threatTier: this.getThreatTier(pressureScore),
+            readiness: this.getReadinessForSummary(pressureScore)
         };
     }
 
@@ -397,6 +416,38 @@ export class WaveManager {
         if (score >= 18) return { id: 'high', label: 'Amenaza alta', advice: 'Refuerza dano o control.' };
         if (score >= 12) return { id: 'guarded', label: 'Amenaza media', advice: 'Revisa counters y cobertura.' };
         return { id: 'low', label: 'Amenaza baja', advice: 'Buen momento para ahorrar.' };
+    }
+
+    getReadinessForSummary(pressureScore) {
+        const heroes = this.game.heroes || [];
+        if (!heroes.length) {
+            return {
+                id: 'empty',
+                label: 'Sin defensa',
+                score: 0,
+                margin: -pressureScore,
+                advice: 'Despliega al menos un heroe antes de iniciar.'
+            };
+        }
+
+        const teamScore = heroes.reduce((total, hero) => {
+            const stats = hero.getEffectiveStats?.() || hero;
+            const damage = Number(stats.damage || hero.damage || 0);
+            const fireRate = Number(stats.fireRate || hero.fireRate || 1);
+            const range = Number(stats.range || hero.range || 100);
+            const level = Number(hero.level || hero.config?.level || 1);
+            const detection = hero.canSeeStealth || stats.canSeeStealth ? 1.6 : 0;
+            const control = (hero.config?.teamMetrics?.control || hero.teamMetrics?.control || 0) >= 4 ? 1.4 : 0;
+            return total + 4 + damage * fireRate / 36 + Math.min(2.4, range / 95) + level * 0.65 + detection + control;
+        }, 0);
+        const creditReserve = Math.min(4, (this.game.resourceManager?.credits || 0) / 180);
+        const score = Math.round(teamScore + creditReserve);
+        const margin = score - pressureScore;
+
+        if (margin >= 7) return { id: 'ready', label: 'Preparado', score, margin, advice: 'Puedes iniciar o ahorrar para escalar.' };
+        if (margin >= 0) return { id: 'stable', label: 'Defensa estable', score, margin, advice: 'Listo, pero vigila counters y fugas.' };
+        if (margin >= -7) return { id: 'thin', label: 'Defensa justa', score, margin, advice: 'Mejora o coloca apoyo si tienes creditos.' };
+        return { id: 'underbuilt', label: 'Defensa debil', score, margin, advice: 'Coloca otro heroe antes de iniciar.' };
     }
 
     startNextWave() {

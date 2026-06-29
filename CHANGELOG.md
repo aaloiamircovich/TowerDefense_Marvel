@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.10.0 - 2026-06-28
+
+- Agrega asesor de preparacion tactica previo a la oleada.
+- El radar compara amenaza con heroes desplegados, dano, alcance, deteccion, control y creditos disponibles.
+- La UI muestra estados Sin defensa, Defensa debil, Defensa justa, Defensa estable y Preparado.
+
 ## 2.9.0 - 2026-06-28
 
 - Conecta el boton de inicio de oleada con el tier de amenaza calculado.
