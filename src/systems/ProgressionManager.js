@@ -39,7 +39,7 @@ function createDefaultState() {
         shop: { rotationKey: '', slotIds: [], purchasedIds: [], heroPity: 0 },
         settings: {
             ranges: true,
-            grid: true,
+            grid: false,
             audio: true,
             highContrast: false,
             reduceMotion: false,

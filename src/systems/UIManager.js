@@ -22,6 +22,9 @@ export class UIManager {
         this.levelNameEl = document.getElementById('ui-level-name');
         this.fpsEl = document.getElementById('fps-display');
         this.starsEl = document.getElementById('ui-stars');
+        this.operationTitleEl = document.getElementById('operation-title');
+        this.operationCopyEl = document.getElementById('operation-copy');
+        this.operationKickerEl = document.getElementById('operation-kicker');
 
         this.shopInitialized = false;
         this.shopSlots = [null, null, null];
@@ -163,6 +166,12 @@ export class UIManager {
     updateLevelTheme(levelConfig) {
         if (this.levelNameEl) this.levelNameEl.textContent = levelConfig.theme?.label || levelConfig.name || 'Mapa';
         document.documentElement.style.setProperty('--level-accent', levelConfig.theme?.accent || '#40c9ff');
+        if (this.operationKickerEl) this.operationKickerEl.textContent = levelConfig.theme?.label || 'Operacion';
+        if (this.operationTitleEl) this.operationTitleEl.textContent = levelConfig.mission?.operation || levelConfig.name || 'Mision tactica';
+        if (this.operationCopyEl) {
+            const speaker = levelConfig.mission?.speaker ? `${levelConfig.mission.speaker}: ` : '';
+            this.operationCopyEl.textContent = `${speaker}${levelConfig.theme?.brief || levelConfig.description || 'Defiende la ruta principal.'}`;
+        }
         this.game.audio?.setTheme(levelConfig.theme?.id || 'new-york');
     }
 

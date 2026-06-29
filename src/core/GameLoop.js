@@ -242,9 +242,11 @@ export class GameLoop {
             }
         }
 
+        this.drawLevelSetDressing(ctx);
         this.missionSystem?.render(ctx);
         this.modeSystem?.render(ctx);
         this.drawPathGuide(ctx);
+        this.drawLevelPathDetails(ctx);
         this.enemies.forEach((enemy) => enemy.render(ctx));
         this.vfx.render(ctx);
         this.heroes.forEach((hero) => hero.render(ctx));
@@ -270,6 +272,102 @@ export class GameLoop {
         ctx.lineWidth = 2;
         ctx.setLineDash([10, 12]);
         ctx.stroke();
+        ctx.restore();
+    }
+
+    drawLevelSetDressing(ctx) {
+        const themeId = this.currentLevel?.theme?.id || 'new-york';
+        if (themeId === 'new-york') {
+            this.drawManhattanSetDressing(ctx);
+            return;
+        }
+        this.drawMissionLandmarkBadges(ctx);
+    }
+
+    drawManhattanSetDressing(ctx) {
+        ctx.save();
+        ctx.globalAlpha = 0.82;
+        ctx.fillStyle = 'rgba(18, 30, 45, 0.86)';
+        [
+            [56, 212, 78, 76], [360, 198, 92, 90], [612, 82, 68, 94],
+            [86, 402, 86, 92], [602, 392, 78, 72], [678, 242, 52, 110]
+        ].forEach(([x, y, width, height]) => {
+            ctx.fillRect(x, y, width, height);
+            ctx.strokeStyle = 'rgba(64, 201, 255, 0.14)';
+            ctx.strokeRect(x + 3, y + 3, width - 6, height - 6);
+        });
+
+        ctx.fillStyle = 'rgba(64, 201, 255, 0.18)';
+        for (let y = 250; y < 560; y += 34) {
+            ctx.fillRect(714, y, 54, 3);
+            ctx.fillRect(734, y + 14, 42, 2);
+        }
+
+        ctx.fillStyle = 'rgba(252, 163, 17, 0.22)';
+        ctx.fillRect(340, 238, 86, 10);
+        ctx.fillRect(344, 252, 62, 8);
+        ctx.fillStyle = '#fca311';
+        ctx.font = '700 10px Segoe UI, sans-serif';
+        ctx.fillText('STARK', 357, 247);
+
+        ctx.fillStyle = 'rgba(230, 57, 70, 0.25)';
+        ctx.fillRect(240, 92, 44, 8);
+        ctx.fillRect(500, 492, 44, 8);
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.34)';
+        ctx.fillText('5TH AVE', 42, 108);
+        ctx.fillText('HUDSON', 710, 226);
+        ctx.restore();
+    }
+
+    drawMissionLandmarkBadges(ctx) {
+        const landmarks = this.currentLevel?.mission?.mechanic?.landmarks || [];
+        if (!landmarks.length) return;
+
+        ctx.save();
+        landmarks.forEach((landmark) => {
+            ctx.fillStyle = `${landmark.color || this.theme.decorLight}33`;
+            ctx.strokeStyle = landmark.color || this.theme.decorLight;
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(landmark.x, landmark.y, landmark.radius || 40, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+            if (landmark.label) {
+                ctx.fillStyle = landmark.color || this.theme.decorLight;
+                ctx.font = '800 11px Segoe UI, sans-serif';
+                ctx.fillText(landmark.label, landmark.x - 18, landmark.y + 4);
+            }
+        });
+        ctx.restore();
+    }
+
+    drawLevelPathDetails(ctx) {
+        if ((this.currentLevel?.theme?.id || 'new-york') !== 'new-york' || !this.path || this.path.length < 2) return;
+
+        ctx.save();
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.45)';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([18, 16]);
+        ctx.beginPath();
+        ctx.moveTo(this.path[0].x, this.path[0].y);
+        for (let index = 1; index < this.path.length; index++) ctx.lineTo(this.path[index].x, this.path[index].y);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.38)';
+        [
+            [272, 98, 6, 46], [282, 98, 6, 46], [292, 98, 6, 46],
+            [502, 338, 6, 46], [512, 338, 6, 46], [522, 338, 6, 46],
+            [500, 488, 48, 5], [500, 502, 48, 5]
+        ].forEach(([x, y, width, height]) => ctx.fillRect(x, y, width, height));
+
+        ctx.fillStyle = '#fca311';
+        ctx.fillRect(146, 103, 20, 10);
+        ctx.fillRect(586, 482, 20, 10);
+        ctx.fillStyle = '#071018';
+        ctx.font = '800 7px Segoe UI, sans-serif';
+        ctx.fillText('TAXI', 148, 111);
+        ctx.fillText('TAXI', 588, 490);
         ctx.restore();
     }
 
@@ -358,7 +456,7 @@ export class GameLoop {
                     3: '#191f2b',
                     4: '#202938'
                 },
-                gridLine: 'rgba(255, 255, 255, 0.055)',
+                gridLine: 'rgba(255, 255, 255, 0.022)',
                 pathCenter: 'rgba(255, 214, 102, 0.22)',
                 pathEdge: 'rgba(10, 14, 22, 0.38)',
                 pathGlow: 'rgba(64, 201, 255, 0.28)',

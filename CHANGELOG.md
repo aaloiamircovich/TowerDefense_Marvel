@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.2.0 - 2026-06-28
+
+- Mejora el vertical slice inicial de Manhattan con set dressing procedimental: agua del Hudson, azoteas, señal Stark, carriles, cruces y taxis.
+- Agrega placa de operación sobre el canvas con mapa, misión, speaker y briefing ambiental.
+- Cambia el grid visible por defecto en perfiles nuevos para que el primer vistazo parezca más producto y menos editor.
+- Mantiene el pathfinding intacto: las mejoras visuales no alteran rutas ni colisiones.
+
 ## 2.1.0 - 2026-06-28
 
 - Inicia la reconstruccion profesional 3.0 con un gate browser real del primer minuto de juego.
