@@ -133,6 +133,22 @@ test('WaveManager refresca el radar tactico al cambiar heroes desplegados', () =
     assert.equal(rendered.at(-1).readiness.id, refreshed.readiness.id);
 });
 
+test('WaveManager limpia presion de combate al cerrar oleada', () => {
+    const pressureCalls = [];
+    const game = createGame();
+    game.uiManager = {
+        renderWavePreview: () => {},
+        setNextWaveEnabled: () => {},
+        showToast: () => {},
+        updateCombatPressure: (...args) => pressureCalls.push(args)
+    };
+    const manager = new WaveManager(game, enemies);
+    manager.isWaveActive = true;
+    manager.finishWave();
+
+    assert.deepEqual(pressureCalls[0], [[], game.path, false]);
+});
+
 function createGame(theme = 'new-york', activeTeam = [], deployed = []) {
     return {
         uiManager: null,

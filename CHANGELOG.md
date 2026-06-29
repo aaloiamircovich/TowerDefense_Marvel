@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.12.0 - 2026-06-28
+
+- Agrega panel de presion de fuga durante oleadas activas.
+- El HUD mide el enemigo mas avanzado, cuantos rivales estan en zona de salida y recomienda pausa tactica si el frente se rompe.
+- La alerta usa progreso real de ruta para mantener la lectura de peligro alineada con la integridad del camino.
+
 ## 2.11.0 - 2026-06-28
 
 - Agrega recomendaciones de counter en las cartas del roster segun la proxima oleada.

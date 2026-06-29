@@ -228,6 +228,7 @@ export class GameLoop {
         if (this.uiManager && this.resourceManager) {
             const currentWave = this.waveManager ? this.waveManager.currentWave : 1;
             this.uiManager.updateUI(this.resourceManager.lives, this.resourceManager.credits, currentWave, this.fps, this.stars);
+            this.uiManager.updateCombatPressure?.(this.enemies, this.path, Boolean(this.waveManager?.isWaveActive));
         }
     }
 

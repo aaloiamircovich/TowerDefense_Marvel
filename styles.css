@@ -696,6 +696,68 @@ canvas {
 #mode-status > b { color: var(--bright-yellow); font-size: 11px; }
 .btn-mode-action { grid-column: 1 / -1; min-height: 30px; border: 1px solid var(--level-accent); border-radius: 6px; color: var(--text); background: transparent; font-weight: 800; }
 
+.combat-pressure {
+    display: grid;
+    gap: 7px;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    border-left: 3px solid var(--pressure-color, var(--level-accent));
+    background: color-mix(in srgb, var(--pressure-color, var(--level-accent)), transparent 91%);
+}
+
+.combat-pressure.hidden {
+    display: none;
+}
+
+.pressure-copy {
+    display: grid;
+    gap: 2px;
+}
+
+.pressure-copy strong {
+    color: var(--pressure-color, var(--level-accent));
+    font-size: 11px;
+    text-transform: uppercase;
+}
+
+.pressure-copy span,
+.pressure-meta {
+    color: var(--muted);
+    font-size: 10px;
+    line-height: 1.35;
+}
+
+.pressure-meter {
+    height: 7px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.pressure-meter i {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: var(--pressure-color, var(--level-accent));
+    transition: width 140ms linear;
+}
+
+.pressure-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px 9px;
+}
+
+.pressure-meta b {
+    color: var(--pressure-color, var(--bright-yellow));
+}
+
+.pressure-clear { --pressure-color: #9daabc; }
+.pressure-holding { --pressure-color: #46d369; }
+.pressure-watch { --pressure-color: #fca311; }
+.pressure-warning { --pressure-color: #ff8f3d; }
+.pressure-critical { --pressure-color: #e63946; }
+
 .mode-section { display: grid; gap: 10px; margin-bottom: 22px; }
 .section-heading { display: flex; justify-content: space-between; gap: 12px; align-items: end; }
 .section-heading strong { color: var(--bright-yellow); font-size: 15px; }

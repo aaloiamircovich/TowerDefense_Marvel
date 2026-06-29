@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildWaveLaunchState, evaluateHeroWaveFit } from '../src/systems/UIManager.js';
+import { buildCombatPressureState, buildWaveLaunchState, evaluateHeroWaveFit } from '../src/systems/UIManager.js';
 
 test('buildWaveLaunchState muestra riesgo critico en el CTA', () => {
     const state = buildWaveLaunchState(true, {
@@ -100,3 +100,51 @@ test('evaluateHeroWaveFit deja neutral a un heroe sin respuesta clara', () => {
 
     assert.equal(fit.id, 'neutral');
 });
+
+test('buildCombatPressureState oculta presion cuando no hay oleada activa', () => {
+    const state = buildCombatPressureState([
+        enemy({ name: 'Hydra', distanceTravelled: 180 })
+    ], path(), false);
+
+    assert.equal(state.id, 'clear');
+    assert.equal(state.progress, 0);
+    assert.equal(state.activeCount, 1);
+});
+
+test('buildCombatPressureState vigila un frente a mitad de ruta', () => {
+    const state = buildCombatPressureState([
+        enemy({ name: 'A.I.M.', distanceTravelled: 220 }),
+        enemy({ name: 'Hydra', distanceTravelled: 80 })
+    ], path(), true);
+
+    assert.equal(state.id, 'watch');
+    assert.equal(state.leadEnemyName, 'A.I.M.');
+    assert.equal(state.progress, 55);
+    assert.equal(state.dangerCount, 0);
+});
+
+test('buildCombatPressureState marca fuga inminente cerca de salida', () => {
+    const state = buildCombatPressureState([
+        enemy({ name: 'Runner', distanceTravelled: 372, uid: 'lead' }),
+        enemy({ name: 'Soldier', distanceTravelled: 330, uid: 'tail' })
+    ], path(), true);
+
+    assert.equal(state.id, 'critical');
+    assert.equal(state.leadEnemyName, 'Runner');
+    assert.equal(state.dangerCount, 2);
+    assert.match(state.advice, /Pausa/);
+});
+
+function path() {
+    return [{ x: 0, y: 0 }, { x: 400, y: 0 }];
+}
+
+function enemy(overrides = {}) {
+    return {
+        uid: overrides.uid || overrides.name || 'enemy',
+        name: overrides.name || 'Enemigo',
+        distanceTravelled: overrides.distanceTravelled || 0,
+        isAlive: overrides.isAlive ?? true,
+        hasReachedEnd: overrides.hasReachedEnd ?? false
+    };
+}

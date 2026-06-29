@@ -116,6 +116,56 @@ export function evaluateHeroWaveFit(hero, summary = null, credits = 0) {
     return { id: 'neutral', label: 'Neutro', score, reasons: reasons.slice(0, 2) };
 }
 
+function getPathLength(path = []) {
+    if (!Array.isArray(path) || path.length < 2) return 0;
+    let total = 0;
+    for (let index = 1; index < path.length; index++) {
+        total += Math.hypot(path[index].x - path[index - 1].x, path[index].y - path[index - 1].y);
+    }
+    return total;
+}
+
+export function buildCombatPressureState(enemies = [], path = [], waveActive = false) {
+    const active = enemies.filter((enemy) => enemy?.isAlive && !enemy.hasReachedEnd);
+    if (!waveActive || active.length === 0) {
+        return {
+            id: 'clear',
+            label: waveActive ? 'Ruta despejada' : 'Sin oleada',
+            advice: waveActive ? 'Mantén la formación.' : 'Prepara la siguiente oleada.',
+            progress: 0,
+            activeCount: active.length,
+            dangerCount: 0,
+            leadEnemyName: '',
+            signature: `clear:${waveActive}:${active.length}`
+        };
+    }
+
+    const pathLength = getPathLength(path);
+    const projected = active.map((enemy) => {
+        const progress = pathLength > 0 ? Math.max(0, Math.min(1, (enemy.distanceTravelled || 0) / pathLength)) : 0;
+        return { enemy, progress };
+    }).sort((a, b) => b.progress - a.progress);
+
+    const lead = projected[0];
+    const dangerCount = projected.filter(({ progress }) => progress >= 0.78).length;
+    const score = lead.progress + dangerCount * 0.08 + Math.min(0.16, active.length * 0.012);
+
+    let state = { id: 'holding', label: 'Controlada', advice: 'Sostén daño y ahorra si puedes.' };
+    if (score >= 0.92 || lead.progress >= 0.9) state = { id: 'critical', label: 'Fuga inminente', advice: 'Pausa, mejora o reposiciona ya.' };
+    else if (score >= 0.72 || dangerCount > 0) state = { id: 'warning', label: 'Presión alta', advice: 'Refuerza la salida o activa control.' };
+    else if (score >= 0.48) state = { id: 'watch', label: 'Vigilar ruta', advice: 'El frente avanza; prepara mejora.' };
+
+    const progress = Math.round(lead.progress * 100);
+    return {
+        ...state,
+        progress,
+        activeCount: active.length,
+        dangerCount,
+        leadEnemyName: lead.enemy.name || 'Enemigo',
+        signature: `${state.id}:${progress}:${active.length}:${dangerCount}:${lead.enemy.uid || lead.enemy.name || ''}`
+    };
+}
+
 export class UIManager {
     constructor(gameInstance) {
         this.game = gameInstance;
@@ -141,6 +191,7 @@ export class UIManager {
         this.toastTimer = null;
         this.lastFocusedElement = null;
         this.nextWaveSummary = null;
+        this.combatPressureSignature = '';
         this.profilePanel = new ProfilePanel(this);
         this.campaignPanel = new CampaignPanel(this);
         this.settingsPanel = new SettingsPanel(this);
@@ -276,6 +327,38 @@ export class UIManager {
         if (this.waveEl) this.waveEl.textContent = wave;
         if (this.fpsEl) this.fpsEl.textContent = `${Math.round(fps || 0)} FPS`;
         if (this.starsEl && stars !== undefined) this.starsEl.textContent = stars;
+    }
+
+    updateCombatPressure(enemies = [], path = [], waveActive = false) {
+        const container = document.getElementById('combat-pressure');
+        if (!container) return null;
+        const state = buildCombatPressureState(enemies, path, waveActive);
+        if (state.signature === this.combatPressureSignature) return state;
+        this.combatPressureSignature = state.signature;
+
+        if (!waveActive && state.id === 'clear') {
+            container.classList.add('hidden');
+            container.innerHTML = '';
+            return state;
+        }
+
+        container.className = `combat-pressure pressure-${state.id}`;
+        container.setAttribute('aria-label', `${state.label}. ${state.advice}`);
+        container.innerHTML = `
+            <div class="pressure-copy">
+                <strong>${state.label}</strong>
+                <span>${state.advice}</span>
+            </div>
+            <div class="pressure-meter" aria-hidden="true"><i style="width:${state.progress}%"></i></div>
+            <div class="pressure-meta">
+                <span>${state.activeCount} activos</span>
+                <span>${state.leadEnemyName || 'Ruta'} ${state.progress}%</span>
+                ${state.dangerCount ? `<b>${state.dangerCount} en salida</b>` : ''}
+            </div>
+            ${state.id === 'warning' || state.id === 'critical' ? '<button id="pressure-pause" class="btn-mode-action">Pausa táctica</button>' : ''}
+        `;
+        document.getElementById('pressure-pause')?.addEventListener('click', () => this.setManualPause(true));
+        return state;
     }
 
     updatePerformance(snapshot, poolStats = {}) {

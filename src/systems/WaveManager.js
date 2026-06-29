@@ -491,6 +491,7 @@ export class WaveManager {
 
     finishWave() {
         this.isWaveActive = false;
+        this.game.uiManager?.updateCombatPressure?.([], this.game.path, false);
         this.game.missionSystem?.onWaveFinished(this.currentWave);
         this.game.modeSystem?.onWaveFinished(this.currentWave);
         const waveBounty = 110 + this.currentWave * 24;
