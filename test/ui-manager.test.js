@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildWaveLaunchState } from '../src/systems/UIManager.js';
+import { buildWaveLaunchState, evaluateHeroWaveFit } from '../src/systems/UIManager.js';
 
 test('buildWaveLaunchState muestra riesgo critico en el CTA', () => {
     const state = buildWaveLaunchState(true, {
@@ -36,4 +36,67 @@ test('buildWaveLaunchState bloquea lectura cuando la oleada esta activa', () => 
     assert.equal(state.tier, 'active');
     assert.equal(state.primary, 'OLEADA EN CURSO');
     assert.equal(state.secondary, 'Defensa activa');
+});
+
+test('evaluateHeroWaveFit recomienda deteccion contra sigilo', () => {
+    const fit = evaluateHeroWaveFit({
+        id: 'spiderman',
+        name: 'Spider-Man',
+        cost: 150,
+        damage: 15,
+        fireRate: 2.2,
+        range: 110,
+        canSeeStealth: true,
+        teamMetrics: { control: 4 }
+    }, {
+        stealthCount: 3,
+        fastest: 92,
+        roles: ['stealth'],
+        pressureScore: 14
+    }, 180);
+
+    assert.equal(fit.id, 'prime');
+    assert.match(fit.reasons.join(' '), /detecta sigilo/);
+    assert.match(fit.reasons.join(' '), /asequible ahora/);
+});
+
+test('evaluateHeroWaveFit detecta antiarmadura y DPS de jefe', () => {
+    const fit = evaluateHeroWaveFit({
+        id: 'iron_man',
+        cost: 250,
+        damage: 30,
+        fireRate: 1.5,
+        range: 165,
+        abilityDesc: 'Laser ARC atraviesa armadura.'
+    }, {
+        armoredCount: 4,
+        barrierCount: 1,
+        hasBoss: true,
+        fastest: 80,
+        roles: ['tank'],
+        pressureScore: 22
+    }, 100);
+
+    assert.equal(fit.id, 'prime');
+    assert.match(fit.reasons.join(' '), /rompe armadura/);
+    assert.match(fit.reasons.join(' '), /DPS de jefe/);
+});
+
+test('evaluateHeroWaveFit deja neutral a un heroe sin respuesta clara', () => {
+    const fit = evaluateHeroWaveFit({
+        id: 'rookie',
+        cost: 90,
+        damage: 8,
+        fireRate: 1,
+        range: 90,
+        teamMetrics: { control: 0, detection: 0 }
+    }, {
+        stealthCount: 0,
+        armoredCount: 0,
+        fastest: 70,
+        roles: ['soldier'],
+        pressureScore: 6
+    }, 200);
+
+    assert.equal(fit.id, 'neutral');
 });

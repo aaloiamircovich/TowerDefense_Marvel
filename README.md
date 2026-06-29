@@ -4,7 +4,7 @@ Tower defense ambientado en escenarios inspirados por Marvel, con once misiones 
 
 Incluye los treinta y un héroes del roster con kits y sprites completos, evoluciones reversibles, maestría, códice, cinco modos de juego, director de encuentros con afijos y ramas de botín, 30 objetos con forja, replays por semilla, mando, controles configurables y estadísticas históricas.
 
-La versión 2.10.0 puede instalarse como PWA, conserva los recursos esenciales para jugar sin conexión, migra guardados 1.x al esquema actual, suma validación browser del primer minuto de juego, mejora el slice visual inicial de Manhattan, agrega mejoras de campo rápidas, refuerza la integridad de rutas enemigas, dirige las primeras oleadas de campaña, aclara costes de mejora en el roster, suma lectura de amenaza por oleada, mide la cobertura real de ruta durante la colocación, conecta el CTA de inicio con el riesgo de la oleada y agrega asesor de preparación táctica.
+La versión 2.11.0 puede instalarse como PWA, conserva los recursos esenciales para jugar sin conexión, migra guardados 1.x al esquema actual, suma validación browser del primer minuto de juego, mejora el slice visual inicial de Manhattan, agrega mejoras de campo rápidas, refuerza la integridad de rutas enemigas, dirige las primeras oleadas de campaña, aclara costes de mejora en el roster, suma lectura de amenaza por oleada, mide la cobertura real de ruta durante la colocación, conecta el CTA de inicio con el riesgo de la oleada, agrega asesor de preparación táctica y recomienda counters directamente en el roster.
 
 > Proyecto fan no oficial, educativo y sin fines comerciales. No está afiliado ni respaldado por Marvel Entertainment o The Walt Disney Company. Consulta [NOTICE.md](NOTICE.md).
 

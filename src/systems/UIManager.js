@@ -36,6 +36,86 @@ export function buildWaveLaunchState(enabled, summary = null) {
     };
 }
 
+const PIERCING_HERO_IDS = new Set(['iron_man', 'vision', 'hawkeye', 'winter_soldier', 'cyclops', 'silver_surfer']);
+
+function hasTextMatch(config, patterns) {
+    const text = [
+        config.niche,
+        config.ability,
+        config.abilityDesc,
+        ...(config.tags || [])
+    ].filter(Boolean).join(' ').toLowerCase();
+    return patterns.some((pattern) => text.includes(pattern));
+}
+
+export function evaluateHeroWaveFit(hero, summary = null, credits = 0) {
+    const config = hero?.config || hero || {};
+    if (!summary || !config.id) {
+        return { id: 'neutral', label: 'Sin lectura', score: 0, reasons: [] };
+    }
+
+    const metrics = config.teamMetrics || {};
+    const roles = new Set(summary.roles || []);
+    const reasons = [];
+    let score = 0;
+    const damage = Number(config.damage || 0);
+    const fireRate = Number(config.fireRate || 1);
+    const range = Number(config.range || 0);
+    const dps = damage * fireRate;
+
+    const detectsStealth = Boolean(config.canSeeStealth)
+        || Number(metrics.detection || 0) >= 4
+        || hasTextMatch(config, ['sigilo', 'deteccion', 'rastreo', 'edith']);
+    const piercesArmor = PIERCING_HERO_IDS.has(config.id)
+        || hasTextMatch(config, ['armadura', 'perfor', 'atraviesa', 'antiarmadura', 'laser']);
+    const controlsCrowd = Number(metrics.control || 0) >= 4
+        || hasTextMatch(config, ['ralent', 'inmovil', 'aturd', 'control', 'red']);
+    const hasReach = range >= 150;
+    const affordable = Number(config.cost || 0) <= Number(credits || 0);
+
+    if ((summary.stealthCount > 0 || roles.has('stealth') || roles.has('phaser')) && detectsStealth) {
+        score += 5;
+        reasons.push('detecta sigilo');
+    }
+
+    if ((summary.armoredCount > 0 || summary.barrierCount > 0 || roles.has('tank') || roles.has('shield')) && piercesArmor) {
+        score += 4;
+        reasons.push('rompe armadura');
+    }
+
+    if ((roles.has('runner') || Number(summary.fastest || 0) >= 95) && controlsCrowd) {
+        score += 4;
+        reasons.push('frena corredores');
+    }
+
+    if ((roles.has('flying') || Number(summary.fastest || 0) >= 110) && hasReach) {
+        score += 2;
+        reasons.push('cubre distancia');
+    }
+
+    if (summary.hasBoss && dps >= 42) {
+        score += 4;
+        reasons.push('DPS de jefe');
+    } else if (Number(summary.pressureScore || 0) >= 12 && dps >= 34) {
+        score += 2;
+        reasons.push('dano sostenido');
+    }
+
+    if (!reasons.length && dps >= 38 && hasReach) {
+        score += 1;
+        reasons.push('perfil versatil');
+    }
+
+    if (affordable && score > 0) {
+        score += 1;
+        reasons.push('asequible ahora');
+    }
+
+    if (score >= 6) return { id: 'prime', label: 'Counter ideal', score, reasons: reasons.slice(0, 3) };
+    if (score >= 3) return { id: 'good', label: 'Buen ajuste', score, reasons: reasons.slice(0, 3) };
+    return { id: 'neutral', label: 'Neutro', score, reasons: reasons.slice(0, 2) };
+}
+
 export class UIManager {
     constructor(gameInstance) {
         this.game = gameInstance;
@@ -310,7 +390,8 @@ export class UIManager {
                 ` : ''}
             `;
             intelEl.querySelectorAll('[data-branch]').forEach((button) => button.addEventListener('click', () => {
-                this.game.waveManager?.chooseBranch(button.dataset.branch);
+                const changed = this.game.waveManager?.chooseBranch(button.dataset.branch);
+                if (changed) this.renderHeroRoster(this.game.activeTeam, (hero) => this.game.inputManager.setPlacementMode(hero));
                 this.game.audio?.play('ui');
             }));
         }
@@ -762,10 +843,13 @@ export class UIManager {
     renderHeroRoster(activeTeam, onSelect) {
         if (!this.heroGrid) return;
         this.heroGrid.innerHTML = '';
+        const waveSummary = this.nextWaveSummary || (!this.game.waveManager?.isWaveActive ? this.game.waveManager?.buildPreparedSummary?.() : null);
+        const credits = this.game.resourceManager?.credits || 0;
 
         activeTeam.forEach((hero) => {
             const deployedHero = this.game.heroes.find((unit) => unit.id === hero.id);
             const deployed = Boolean(deployedHero);
+            const fit = evaluateHeroWaveFit(deployedHero || hero, waveSummary, credits);
             const abilityState = deployedHero?.abilitySystem?.getDisplayState?.();
             const quickUpgradeCost = deployedHero ? this.calculateLevelCost(deployedHero.level || hero.level || 1, 1) : 0;
             const canQuickUpgrade = deployedHero && (this.game.resourceManager?.credits || 0) >= quickUpgradeCost;
@@ -773,13 +857,15 @@ export class UIManager {
                 ? `Nv.${deployedHero.level || hero.level || 1} | Mejora $${quickUpgradeCost}`
                 : `$${hero.cost || 0} | ${hero.rarity || 'Common'}`;
             const card = document.createElement('article');
-            card.className = `hero-card ${deployed ? 'deployed' : ''}`;
+            card.className = `hero-card ${deployed ? 'deployed' : ''} wave-fit-${fit.id}`;
             card.dataset.testid = `hero-card-${hero.id}`;
+            card.dataset.waveFit = fit.id;
             card.innerHTML = `
                 ${this.renderSprite(hero.visual?.portrait || hero.sprite, hero.name)}
                 <div>
                     <strong>${hero.name}</strong>
                     <span class="${deployedHero ? 'field-upgrade-meta' : ''}">${rosterMeta}</span>
+                    ${fit.id !== 'neutral' ? `<small class="roster-wave-fit ${fit.id}" data-tooltip="${fit.reasons.join(' | ')}"><i class="fas fa-crosshairs"></i> ${fit.label}</small>` : ''}
                     ${abilityState ? `<small class="roster-ability ${abilityState.ready ? 'ready' : ''}">${abilityState.label}</small>` : ''}
                 </div>
                 <div class="hero-actions">

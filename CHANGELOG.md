@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.11.0 - 2026-06-28
+
+- Agrega recomendaciones de counter en las cartas del roster segun la proxima oleada.
+- La lectura tactica identifica deteccion, antiarmadura, control, alcance, DPS de jefe y heroes asequibles.
+- Las rutas de encuentro actualizan el roster para convertir el radar de oleada en decisiones inmediatas.
+
 ## 2.10.0 - 2026-06-28
 
 - Agrega asesor de preparacion tactica previo a la oleada.
