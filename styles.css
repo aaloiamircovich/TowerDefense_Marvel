@@ -351,6 +351,11 @@ body[data-level-theme="wakanda"] .panel-header {
     font-size: 12px;
 }
 
+.hero-card .field-upgrade-meta {
+    color: var(--bright-yellow);
+    font-weight: 800;
+}
+
 #fps-display.performance-warning {
     color: var(--bright-yellow);
 }

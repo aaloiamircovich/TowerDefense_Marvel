@@ -718,6 +718,9 @@ export class UIManager {
             const abilityState = deployedHero?.abilitySystem?.getDisplayState?.();
             const quickUpgradeCost = deployedHero ? this.calculateLevelCost(deployedHero.level || hero.level || 1, 1) : 0;
             const canQuickUpgrade = deployedHero && (this.game.resourceManager?.credits || 0) >= quickUpgradeCost;
+            const rosterMeta = deployedHero
+                ? `Nv.${deployedHero.level || hero.level || 1} | Mejora $${quickUpgradeCost}`
+                : `$${hero.cost || 0} | ${hero.rarity || 'Common'}`;
             const card = document.createElement('article');
             card.className = `hero-card ${deployed ? 'deployed' : ''}`;
             card.dataset.testid = `hero-card-${hero.id}`;
@@ -725,7 +728,7 @@ export class UIManager {
                 ${this.renderSprite(hero.visual?.portrait || hero.sprite, hero.name)}
                 <div>
                     <strong>${hero.name}</strong>
-                    <span>$${hero.cost || 0} | ${hero.rarity || 'Common'}</span>
+                    <span class="${deployedHero ? 'field-upgrade-meta' : ''}">${rosterMeta}</span>
                     ${abilityState ? `<small class="roster-ability ${abilityState.ready ? 'ready' : ''}">${abilityState.label}</small>` : ''}
                 </div>
                 <div class="hero-actions">

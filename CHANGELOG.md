@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.6.0 - 2026-06-28
+
+- Mejora la lectura del roster: heroes desplegados muestran nivel actual y coste de la siguiente mejora.
+- El coste de mejora de campo queda resaltado para tomar decisiones sin abrir el modal.
+- Mantiene coste y rareza visibles antes de desplegar.
+
 ## 2.5.0 - 2026-06-28
 
 - Agrega apertura dirigida para las primeras cinco oleadas de campaña.
