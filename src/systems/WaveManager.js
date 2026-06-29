@@ -183,14 +183,19 @@ export class WaveManager {
         }
 
         if (this.game.uiManager) {
+            const summary = {
+                ...this.getWaveSummary(),
+                branchOptions: this.director.getBranchOptions(this.currentWave),
+                selectedBranch: this.selectedBranch || 'safe'
+            };
             this.game.uiManager.renderWavePreview(
                 this.getUniqueEnemies(),
                 this.waveModifier,
                 this.faction,
                 this.currentWave,
-                { ...this.getWaveSummary(), branchOptions: this.director.getBranchOptions(this.currentWave), selectedBranch: this.selectedBranch || 'safe' }
+                summary
             );
-            this.game.uiManager.setNextWaveEnabled(true);
+            this.game.uiManager.setNextWaveEnabled(true, summary);
         }
     }
 

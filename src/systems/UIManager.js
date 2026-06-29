@@ -7,6 +7,35 @@ import { InventoryPanel } from '../ui/InventoryPanel.js';
 import { TeamBuilderPanel } from '../ui/TeamBuilderPanel.js';
 import { getActiveSets, ITEM_SLOTS, SET_BONUSES, SLOT_LABELS } from './ItemEffectSystem.js';
 
+export function buildWaveLaunchState(enabled, summary = null) {
+    if (!enabled) {
+        return {
+            tier: 'active',
+            primary: 'OLEADA EN CURSO',
+            secondary: 'Defensa activa',
+            ariaLabel: 'Oleada en curso',
+            tooltip: 'La oleada actual sigue activa'
+        };
+    }
+
+    const tier = summary?.threatTier?.id || 'low';
+    const tierLabel = summary?.threatTier?.label || 'Amenaza baja';
+    const score = summary?.pressureScore ?? 0;
+    const primary = tier === 'critical'
+        ? 'INICIAR CON RIESGO'
+        : tier === 'high'
+            ? 'INICIAR ALERTA'
+            : 'INICIAR OLEADA';
+
+    return {
+        tier,
+        primary,
+        secondary: `${tierLabel} · ${score}`,
+        ariaLabel: `${primary}. ${tierLabel}. Puntaje ${score}.`,
+        tooltip: summary?.threatTier?.advice || 'Iniciar siguiente oleada'
+    };
+}
+
 export class UIManager {
     constructor(gameInstance) {
         this.game = gameInstance;
@@ -31,6 +60,7 @@ export class UIManager {
         this.itemPool = [];
         this.toastTimer = null;
         this.lastFocusedElement = null;
+        this.nextWaveSummary = null;
         this.profilePanel = new ProfilePanel(this);
         this.campaignPanel = new CampaignPanel(this);
         this.settingsPanel = new SettingsPanel(this);
@@ -141,11 +171,23 @@ export class UIManager {
         return this.game.isManuallyPaused;
     }
 
-    setNextWaveEnabled(enabled) {
+    setNextWaveEnabled(enabled, summary = null) {
         const button = document.getElementById('next-wave-btn');
         if (!button) return;
+        if (summary) this.nextWaveSummary = summary;
+        const state = buildWaveLaunchState(enabled, summary || this.nextWaveSummary);
         button.disabled = !enabled;
-        button.textContent = enabled ? 'INICIAR OLEADA' : 'OLEADA EN CURSO';
+        button.className = `btn-primary next-wave-cta threat-${state.tier}`;
+        button.dataset.threatTier = state.tier;
+        button.dataset.tooltip = state.tooltip;
+        button.title = state.tooltip;
+        button.setAttribute('aria-label', state.ariaLabel);
+
+        const primary = document.createElement('strong');
+        const secondary = document.createElement('small');
+        primary.textContent = state.primary;
+        secondary.textContent = state.secondary;
+        button.replaceChildren(primary, secondary);
     }
 
     updateUI(lives, credits, wave, fps, stars) {

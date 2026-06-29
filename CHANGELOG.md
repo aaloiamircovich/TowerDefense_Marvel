@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.9.0 - 2026-06-28
+
+- Conecta el boton de inicio de oleada con el tier de amenaza calculado.
+- El CTA distingue amenaza baja, media, alta, critica y oleada en curso con copy y color propios.
+- Agrega estado accesible con puntaje y recomendacion tactica en el boton principal.
+
 ## 2.8.0 - 2026-06-28
 
 - Agrega medicion de cobertura real de ruta durante colocacion y reposicion.

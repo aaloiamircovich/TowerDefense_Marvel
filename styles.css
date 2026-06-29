@@ -832,6 +832,62 @@ canvas {
     font-weight: 900;
 }
 
+.next-wave-cta {
+    display: grid;
+    place-items: center;
+    gap: 2px;
+    min-height: 52px;
+    padding: 8px 10px;
+    line-height: 1.05;
+}
+
+.next-wave-cta strong,
+.next-wave-cta small {
+    display: block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.next-wave-cta strong {
+    font-size: 12px;
+    letter-spacing: 0;
+}
+
+.next-wave-cta small {
+    font-size: 10px;
+    font-weight: 800;
+    opacity: 0.82;
+}
+
+.next-wave-cta.threat-low {
+    border-color: rgba(70, 211, 105, 0.55);
+    background: #58dc78;
+}
+
+.next-wave-cta.threat-guarded {
+    border-color: rgba(252, 163, 17, 0.7);
+    background: var(--bright-yellow);
+}
+
+.next-wave-cta.threat-high {
+    border-color: rgba(255, 123, 61, 0.75);
+    background: #ff8f3d;
+}
+
+.next-wave-cta.threat-critical {
+    border-color: rgba(230, 57, 70, 0.85);
+    background: #e63946;
+    color: #ffffff;
+}
+
+.next-wave-cta.threat-active {
+    border-color: #39495c;
+    background: #39495c;
+    color: var(--muted);
+}
+
 .btn-primary:hover {
     filter: brightness(1.05);
 }
