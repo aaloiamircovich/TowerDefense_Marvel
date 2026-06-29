@@ -84,6 +84,20 @@ test('WaveManager resume cantidad, botin y counter de la cola preparada', () => 
     assert.ok(summary.fastest > 0);
     assert.ok(summary.maxThreat >= 1);
     assert.equal(typeof summary.counter, 'string');
+    assert.equal(summary.pressureScore, 14);
+    assert.equal(summary.threatTier.id, 'guarded');
+});
+
+test('WaveManager eleva la lectura de amenaza cuando hay barreras y sigilo', () => {
+    const manager = new WaveManager(createGame(), enemies);
+    manager.currentWave = 9;
+    manager.prepareNextWave();
+    const summary = manager.getWaveSummary();
+
+    assert.equal(manager.waveModifier.id, 'shielded');
+    assert.equal(summary.barrierCount, manager.preparedQueue.length);
+    assert.ok(summary.stealthCount > 0);
+    assert.equal(summary.threatTier.id, 'critical');
 });
 
 function createGame(theme = 'new-york', activeTeam = []) {

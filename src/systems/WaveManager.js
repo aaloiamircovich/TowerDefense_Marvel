@@ -338,6 +338,8 @@ export class WaveManager {
         let fastest = 0;
         let maxThreat = 1;
         let stealthCount = 0;
+        let barrierCount = 0;
+        let armoredCount = 0;
         let hasBoss = false;
 
         this.preparedQueue.forEach(({ config }) => {
@@ -346,6 +348,8 @@ export class WaveManager {
             fastest = Math.max(fastest, config.speed || 0);
             maxThreat = Math.max(maxThreat, config.threat || 1);
             if (config.stealth) stealthCount++;
+            if ((config.barrierRatio || 0) > 0) barrierCount++;
+            if ((config.armor || 0) >= 0.15) armoredCount++;
             if (config.isBoss) hasBoss = true;
         });
 
@@ -357,16 +361,37 @@ export class WaveManager {
         else if (roles.has('runner')) counter = 'Ralentización';
         else if (roles.has('flying')) counter = 'Alcance y cadenas';
 
+        const pressureScore = Math.round(
+            this.preparedQueue.length * 0.65
+            + maxThreat * 2.2
+            + fastest / 34
+            + stealthCount * 1.5
+            + barrierCount * 0.85
+            + armoredCount * 0.75
+            + (hasBoss ? 8 : 0)
+        );
+
         return {
             total: this.preparedQueue.length,
             reward,
             fastest,
             maxThreat,
             stealthCount,
+            barrierCount,
+            armoredCount,
             hasBoss,
             roles: [...roles],
-            counter
+            counter,
+            pressureScore,
+            threatTier: this.getThreatTier(pressureScore)
         };
+    }
+
+    getThreatTier(score) {
+        if (score >= 24) return { id: 'critical', label: 'Amenaza critica', advice: 'Invierte o reposiciona antes de iniciar.' };
+        if (score >= 18) return { id: 'high', label: 'Amenaza alta', advice: 'Refuerza dano o control.' };
+        if (score >= 12) return { id: 'guarded', label: 'Amenaza media', advice: 'Revisa counters y cobertura.' };
+        return { id: 'low', label: 'Amenaza baja', advice: 'Buen momento para ahorrar.' };
     }
 
     startNextWave() {

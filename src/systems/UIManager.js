@@ -247,6 +247,10 @@ export class UIManager {
                 <strong>${faction?.label || 'Amenaza desconocida'}</strong>
                 <span>${modifier?.label || 'Oleada estándar'}: ${modifier?.description || ''}</span>
                 ${summary ? `
+                    <div class="wave-threat ${summary.threatTier?.id || 'low'}" aria-label="${summary.threatTier?.label || 'Amenaza baja'}: ${summary.threatTier?.advice || 'Buen momento para ahorrar.'} Puntaje ${summary.pressureScore || 0}">
+                        <div><strong>${summary.threatTier?.label || 'Amenaza baja'}</strong><span>${summary.threatTier?.advice || 'Buen momento para ahorrar.'}</span></div>
+                        <b>${summary.pressureScore || 0}</b>
+                    </div>
                     <div class="wave-summary">
                         <span><b>${summary.total}</b> enemigos</span>
                         <span><b>$${summary.reward}</b> botín</span>

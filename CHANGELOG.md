@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.7.0 - 2026-06-28
+
+- Agrega Intel de Amenaza por oleada con puntaje y tier visible en el panel tactico.
+- El calculo considera cantidad, velocidad, amenaza base, sigilo, barreras, armadura y jefes.
+- Refuerza la toma de decisiones antes de iniciar oleada sin modificar rutas ni spawn.
+
 ## 2.6.0 - 2026-06-28
 
 - Mejora la lectura del roster: heroes desplegados muestran nivel actual y coste de la siguiente mejora.

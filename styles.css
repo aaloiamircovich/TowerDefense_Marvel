@@ -505,6 +505,46 @@ canvas {
     line-height: 1.35;
 }
 
+.wave-threat {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 8px;
+    margin-top: 6px;
+    padding: 7px 8px;
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-left: 3px solid var(--threat-color, var(--level-accent));
+    border-radius: 7px;
+    background: rgba(5, 7, 11, 0.5);
+}
+
+.wave-threat strong {
+    display: block;
+    color: var(--threat-color, var(--level-accent)) !important;
+    font-size: 11px !important;
+}
+
+.wave-threat span {
+    display: block;
+    margin-top: 2px;
+}
+
+.wave-threat > b {
+    display: inline-grid;
+    place-items: center;
+    min-width: 34px;
+    height: 34px;
+    border-radius: 7px;
+    background: color-mix(in srgb, var(--threat-color, var(--level-accent)), transparent 78%);
+    color: var(--text);
+    font-size: 13px;
+}
+
+.wave-threat.low { --threat-color: #46d369; }
+.wave-threat.guarded { --threat-color: #fca311; }
+.wave-threat.high { --threat-color: #ff7b3d; }
+.wave-threat.critical { --threat-color: #e63946; }
+
 #wave-intel .wave-summary {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
