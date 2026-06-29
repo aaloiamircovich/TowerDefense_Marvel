@@ -46,6 +46,24 @@ test('Enemy retrocede por los segmentos sin salir del camino', () => {
     assert.equal(enemy.distanceTravelled, 70);
 });
 
+test('Enemy corrige desplazamientos externos al punto mas cercano de la ruta', () => {
+    const enemy = new Enemy({ id: 'test', hp: 100, speed: 0 }, [
+        { x: 0, y: 0 },
+        { x: 100, y: 0 },
+        { x: 100, y: 100 }
+    ]);
+
+    enemy.moveForward(120);
+    enemy.x = 220;
+    enemy.y = 80;
+    enemy.update(0);
+
+    assert.equal(enemy.pathIndex, 1);
+    assert.equal(enemy.x, 100);
+    assert.equal(enemy.y, 80);
+    assert.equal(enemy.distanceTravelled, 180);
+});
+
 test('Enemy atribuye una baja por quemadura a su fuente', () => {
     const enemy = new Enemy({ id: 'test', hp: 5, speed: 50 }, [{ x: 0, y: 0 }]);
     const stats = { damage: 0, kills: 0 };

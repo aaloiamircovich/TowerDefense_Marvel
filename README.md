@@ -4,7 +4,7 @@ Tower defense ambientado en escenarios inspirados por Marvel, con once misiones 
 
 Incluye los treinta y un héroes del roster con kits y sprites completos, evoluciones reversibles, maestría, códice, cinco modos de juego, director de encuentros con afijos y ramas de botín, 30 objetos con forja, replays por semilla, mando, controles configurables y estadísticas históricas.
 
-La versión 2.3.0 puede instalarse como PWA, conserva los recursos esenciales para jugar sin conexión, migra guardados 1.x al esquema actual, suma validación browser del primer minuto de juego, mejora el slice visual inicial de Manhattan y agrega mejoras de campo rápidas.
+La versión 2.4.0 puede instalarse como PWA, conserva los recursos esenciales para jugar sin conexión, migra guardados 1.x al esquema actual, suma validación browser del primer minuto de juego, mejora el slice visual inicial de Manhattan, agrega mejoras de campo rápidas y refuerza la integridad de rutas enemigas.
 
 > Proyecto fan no oficial, educativo y sin fines comerciales. No está afiliado ni respaldado por Marvel Entertainment o The Walt Disney Company. Consulta [NOTICE.md](NOTICE.md).
 

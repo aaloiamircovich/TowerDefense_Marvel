@@ -160,6 +160,7 @@ export class Enemy {
 
     update(dt) {
         if (!this.isAlive || this.hasReachedEnd) return;
+        this.enforcePathIntegrity();
         this.updateDebuffs(dt);
         if (!this.isAlive) return;
         this.behavior.update(dt);
@@ -237,6 +238,49 @@ export class Enemy {
         this.y = source.y;
         this.distanceTravelled = source.distanceTravelled;
         if (backwardOffset > 0) this.moveBackward(backwardOffset);
+    }
+
+    enforcePathIntegrity(tolerance = 1) {
+        const closest = this.getClosestPathPoint();
+        if (!closest || closest.distance <= tolerance) return false;
+
+        this.x = closest.x;
+        this.y = closest.y;
+        this.pathIndex = closest.segmentIndex;
+        this.distanceTravelled = closest.distanceTravelled;
+        this.hasReachedEnd = false;
+        return true;
+    }
+
+    getClosestPathPoint() {
+        if (!Array.isArray(this.path) || this.path.length < 2) return null;
+
+        let best = null;
+        let travelledBeforeSegment = 0;
+        for (let index = 0; index < this.path.length - 1; index++) {
+            const start = this.path[index];
+            const end = this.path[index + 1];
+            const dx = end.x - start.x;
+            const dy = end.y - start.y;
+            const segmentLength = Math.hypot(dx, dy);
+            const lengthSquared = dx * dx + dy * dy || 1;
+            const projection = ((this.x - start.x) * dx + (this.y - start.y) * dy) / lengthSquared;
+            const t = Math.max(0, Math.min(1, projection));
+            const x = start.x + dx * t;
+            const y = start.y + dy * t;
+            const distance = Math.hypot(this.x - x, this.y - y);
+            if (!best || distance < best.distance) {
+                best = {
+                    x,
+                    y,
+                    distance,
+                    segmentIndex: index,
+                    distanceTravelled: travelledBeforeSegment + segmentLength * t
+                };
+            }
+            travelledBeforeSegment += segmentLength;
+        }
+        return best;
     }
 
     snapToPathSegment(target) {

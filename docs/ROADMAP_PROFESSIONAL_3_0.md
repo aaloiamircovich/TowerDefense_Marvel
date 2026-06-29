@@ -36,7 +36,7 @@ Los dos demuestran que profundidad no significa llenar la pantalla de datos: las
 | Progresion en partida | La mayor parte ocurre fuera de la mision | Mejoras y evoluciones decisivas durante cada partida |
 | Onboarding | Explica poco y muestra demasiados conceptos juntos | Tutorial jugable de colocar, mejorar, iniciar y reaccionar |
 | Contenido | 31 heroes, 11 mapas y 5 modos con calidad desigual | Menos contenido, pero cada pieza con acabado consistente |
-| QA | 180 pruebas logicas y smoke browser de arranque | Smoke test real por viewport, capturas comparadas y cero errores de consola |
+| QA | 181 pruebas logicas y smoke browser de arranque | Smoke test real por viewport, capturas comparadas y cero errores de consola |
 | Uso comercial | El NOTICE limita el proyecto a fan demo no comercial | Licencia valida o universo original antes de distribuir |
 
 ## Principios de reconstruccion

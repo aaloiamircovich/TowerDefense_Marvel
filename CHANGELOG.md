@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.4.0 - 2026-06-28
+
+- Agrega guardarrail runtime para corregir enemigos que queden fuera de su ruta.
+- El ajuste reubica al enemigo en el punto mas cercano del camino, actualiza segmento y distancia recorrida.
+- Cubre el caso con prueba automatizada para proteger futuras habilidades de empuje, salto o teletransporte.
+- Amplia la suite a 181 pruebas mas smoke browser.
+
 ## 2.3.0 - 2026-06-28
 
 - Agrega mejora de campo rapida desde el roster para heroes desplegados.
