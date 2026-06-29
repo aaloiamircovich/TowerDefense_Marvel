@@ -532,6 +532,36 @@ export class UIManager {
             return;
         }
 
+        this.applyHeroLevelUpgrade(unit, amount);
+        this.game.replaySystem?.record('upgrade', { heroId: unit.id, level: unit.level, cost });
+        this.showToast(`${unit.name} subió a nivel ${unit.level}`, 'success');
+        this.renderHeroDetails(unit);
+    }
+
+    quickUpgradeHero(unit) {
+        if (!unit) return false;
+        const cost = this.calculateLevelCost(unit.level || 1, 1);
+        if (!this.game.resourceManager.removeCredits(cost)) {
+            this.showToast('Creditos insuficientes para mejora de campo', 'warning');
+            this.renderHeroRoster(this.game.activeTeam, (hero) => this.game.inputManager.setPlacementMode(hero));
+            return false;
+        }
+
+        this.applyHeroLevelUpgrade(unit, 1);
+        this.game.replaySystem?.record('upgrade', { heroId: unit.id, level: unit.level, cost, quick: true });
+        this.showToast(`${unit.name} nivel ${unit.level} listo para combate`, 'success');
+        this.renderHeroRoster(this.game.activeTeam, (hero) => this.game.inputManager.setPlacementMode(hero));
+        this.updateUI(
+            this.game.resourceManager.lives,
+            this.game.resourceManager.credits,
+            this.game.waveManager?.currentWave || 1,
+            this.game.fps,
+            this.game.stars
+        );
+        return true;
+    }
+
+    applyHeroLevelUpgrade(unit, amount) {
         const targetData = unit.config || unit;
         targetData.level = (targetData.level || unit.level || 1) + amount;
         targetData.baseDamage = targetData.baseDamage || targetData.damage || unit.damage || 10;
@@ -542,9 +572,6 @@ export class UIManager {
         unit.level = targetData.level;
         unit.damage = targetData.damage;
         unit.range = targetData.range;
-
-        this.showToast(`${unit.name} subió a nivel ${unit.level}`, 'success');
-        this.renderHeroDetails(unit);
     }
 
     refillShop() {
@@ -689,6 +716,8 @@ export class UIManager {
             const deployedHero = this.game.heroes.find((unit) => unit.id === hero.id);
             const deployed = Boolean(deployedHero);
             const abilityState = deployedHero?.abilitySystem?.getDisplayState?.();
+            const quickUpgradeCost = deployedHero ? this.calculateLevelCost(deployedHero.level || hero.level || 1, 1) : 0;
+            const canQuickUpgrade = deployedHero && (this.game.resourceManager?.credits || 0) >= quickUpgradeCost;
             const card = document.createElement('article');
             card.className = `hero-card ${deployed ? 'deployed' : ''}`;
             card.dataset.testid = `hero-card-${hero.id}`;
@@ -701,6 +730,7 @@ export class UIManager {
                 </div>
                 <div class="hero-actions">
                     <button class="btn-action place-btn" data-testid="hero-place-${hero.id}" title="${deployed ? 'Reposicionar' : 'Colocar'}" aria-label="${deployed ? 'Reposicionar' : 'Colocar'}" data-tooltip="${deployed ? 'Mover una vez por oleada' : 'Colocar héroe'}"><i class="fas ${deployed ? 'fa-arrows-alt' : 'fa-map-marker-alt'}"></i></button>
+                    ${deployedHero ? `<button class="btn-action upgrade-btn" data-testid="hero-upgrade-${hero.id}" title="Mejorar en campo" aria-label="Mejorar ${hero.name}" data-tooltip="Mejora rapida $${quickUpgradeCost}" ${canQuickUpgrade ? '' : 'disabled'}><i class="fas fa-arrow-up"></i></button>` : ''}
                     <button class="btn-action stats-btn" title="Mejoras" aria-label="Mejoras" data-tooltip="Estadísticas y mejoras"><i class="fas fa-chart-bar"></i></button>
                 </div>
             `;
@@ -713,6 +743,10 @@ export class UIManager {
                 event.stopPropagation();
                 const deployedHero = this.game.heroes.find((unit) => unit.id === hero.id);
                 this.inspectUnit(deployedHero || hero);
+            });
+            card.querySelector('.upgrade-btn')?.addEventListener('click', (event) => {
+                event.stopPropagation();
+                this.quickUpgradeHero(deployedHero);
             });
             this.heroGrid.appendChild(card);
         });

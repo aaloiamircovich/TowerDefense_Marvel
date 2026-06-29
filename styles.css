@@ -216,6 +216,13 @@ input:focus-visible,
     filter: grayscale(1);
 }
 
+.btn-action:disabled {
+    cursor: not-allowed;
+    color: var(--muted);
+    opacity: 0.55;
+    transform: none;
+}
+
 .speed-btn {
     min-width: 70px;
     color: var(--bright-yellow);

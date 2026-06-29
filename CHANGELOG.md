@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.3.0 - 2026-06-28
+
+- Agrega mejora de campo rapida desde el roster para heroes desplegados.
+- La mejora de campo consume creditos, sube nivel, actualiza dano/alcance, refresca HUD y registra replay.
+- Reutiliza la misma formula del modal de mejoras para evitar diferencias entre flujos.
+- Agrega estado disabled en botones de accion cuando no hay creditos suficientes.
+
 ## 2.2.0 - 2026-06-28
 
 - Mejora el vertical slice inicial de Manhattan con set dressing procedimental: agua del Hudson, azoteas, señal Stark, carriles, cruces y taxis.
