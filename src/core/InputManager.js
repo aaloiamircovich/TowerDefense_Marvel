@@ -2,6 +2,52 @@ import { getSpriteFrame } from '../rendering/ImageCache.js';
 import { TacticalActionSystem } from '../systems/TacticalActionSystem.js';
 import { getClosestPointOnPath } from '../utils/PathUtils.js';
 
+export function measurePathCoverage(origin, range, path = []) {
+    const intervals = [];
+    let coveredLength = 0;
+    const radiusSquared = range * range;
+
+    for (let index = 0; index < path.length - 1; index++) {
+        const start = path[index];
+        const end = path[index + 1];
+        const dx = end.x - start.x;
+        const dy = end.y - start.y;
+        const lengthSquared = dx * dx + dy * dy;
+        if (lengthSquared === 0) continue;
+
+        const fx = start.x - origin.x;
+        const fy = start.y - origin.y;
+        const b = 2 * (fx * dx + fy * dy);
+        const c = fx * fx + fy * fy - radiusSquared;
+        const discriminant = b * b - 4 * lengthSquared * c;
+        if (discriminant < 0) continue;
+
+        const root = Math.sqrt(discriminant);
+        const t1 = (-b - root) / (2 * lengthSquared);
+        const t2 = (-b + root) / (2 * lengthSquared);
+        const startT = Math.max(0, Math.min(t1, t2));
+        const endT = Math.min(1, Math.max(t1, t2));
+        if (endT <= 0 || startT >= 1 || endT <= startT) continue;
+
+        const segmentLength = Math.sqrt(lengthSquared);
+        const from = { x: start.x + dx * startT, y: start.y + dy * startT };
+        const to = { x: start.x + dx * endT, y: start.y + dy * endT };
+        coveredLength += (endT - startT) * segmentLength;
+        intervals.push({ segmentIndex: index, startT, endT, from, to });
+    }
+
+    const ratio = coveredLength / Math.max(80, range);
+    const quality = ratio >= 1.45
+        ? { id: 'excellent', label: 'Cobertura excelente' }
+        : ratio >= 0.95
+            ? { id: 'strong', label: 'Cobertura fuerte' }
+            : ratio >= 0.55
+                ? { id: 'solid', label: 'Cobertura solida' }
+                : { id: 'minimal', label: 'Cobertura minima' };
+
+    return { coveredLength, intervals, quality };
+}
+
 export class InputManager {
     constructor(canvas, gameInstance, uiManager, resourceManager) {
         this.canvas = canvas;
@@ -146,20 +192,21 @@ export class InputManager {
         const pathPoint = getClosestPointOnPath({ x: snapX, y: snapY }, this.game.path);
         const pathDistance = pathPoint?.distance ?? Infinity;
         const range = this.movingHero?.getEffectiveStats?.().range || this.placingHero.range || 100;
+        const coverage = measurePathCoverage({ x: snapX, y: snapY }, range, this.game.path);
         if (pathDistance > range) {
-            return { valid: false, pathDistance, pathPoint, message: `Fuera de alcance: el camino está a ${Math.round(pathDistance)} px.` };
+            return { valid: false, pathDistance, pathPoint, coverage, message: `Fuera de alcance: el camino está a ${Math.round(pathDistance)} px.` };
         }
 
         if (this.movingHero) {
             const permission = this.game.tacticalActions.canReposition(this.movingHero);
-            if (!permission.ok) return { valid: false, pathDistance, pathPoint, message: permission.reason };
-            return { valid: true, pathDistance, pathPoint, message: `${this.movingHero.name} puede cubrir el camino a ${Math.round(pathDistance)} px. Clic para mover.` };
+            if (!permission.ok) return { valid: false, pathDistance, pathPoint, coverage, message: permission.reason };
+            return { valid: true, pathDistance, pathPoint, coverage, message: `${coverage.quality.label}: ${Math.round(coverage.coveredLength)} px de ruta. Clic para mover.` };
         }
 
         const cost = this.placingHero.cost || 0;
         if (this.resources.credits < cost) return { valid: false, message: `Créditos insuficientes. Necesitas $${cost}.` };
 
-        return { valid: true, pathDistance, pathPoint, message: `${this.placingHero.name} cubre el camino a ${Math.round(pathDistance)} px. Clic para colocar por $${cost}.` };
+        return { valid: true, pathDistance, pathPoint, coverage, message: `${coverage.quality.label}: ${Math.round(coverage.coveredLength)} px de ruta. Clic para colocar por $${cost}.` };
     }
 
     placeHero() {
@@ -254,6 +301,7 @@ export class InputManager {
         ctx.arc(centerX, centerY, range, 0, Math.PI * 2);
         ctx.strokeStyle = 'rgba(255, 255, 255, 0.45)';
         ctx.stroke();
+        this.drawCoveredPathSegments(ctx, validation.coverage, validation.valid);
         if (validation.pathPoint) {
             ctx.beginPath();
             ctx.moveTo(centerX, centerY);
@@ -264,6 +312,28 @@ export class InputManager {
             ctx.setLineDash([]);
         }
         this.drawHeroGhost(ctx, centerX, centerY, validation.valid);
+        ctx.restore();
+    }
+
+    drawCoveredPathSegments(ctx, coverage, valid) {
+        if (!coverage?.intervals?.length) return;
+        const colors = {
+            excellent: '#46d369',
+            strong: '#8be36c',
+            solid: '#fca311',
+            minimal: '#e63946'
+        };
+        ctx.save();
+        ctx.globalAlpha = valid ? 0.9 : 0.45;
+        ctx.lineCap = 'round';
+        ctx.lineWidth = 8;
+        ctx.strokeStyle = valid ? colors[coverage.quality.id] || '#46d369' : '#e63946';
+        coverage.intervals.forEach((interval) => {
+            ctx.beginPath();
+            ctx.moveTo(interval.from.x, interval.from.y);
+            ctx.lineTo(interval.to.x, interval.to.y);
+            ctx.stroke();
+        });
         ctx.restore();
     }
 

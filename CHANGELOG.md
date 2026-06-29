@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.8.0 - 2026-06-28
+
+- Agrega medicion de cobertura real de ruta durante colocacion y reposicion.
+- El preview del canvas resalta los segmentos de camino cubiertos por el rango del heroe.
+- Los mensajes de colocacion ahora indican calidad y px de ruta cubierta antes de confirmar.
+
 ## 2.7.0 - 2026-06-28
 
 - Agrega Intel de Amenaza por oleada con puntaje y tier visible en el panel tactico.
