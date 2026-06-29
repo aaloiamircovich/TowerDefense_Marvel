@@ -166,6 +166,60 @@ export function buildCombatPressureState(enemies = [], path = [], waveActive = f
     };
 }
 
+export function buildPressureActionState(pressureState, heroes = [], credits = 0, levelCost = (level) => level * 120) {
+    if (!pressureState || !['watch', 'warning', 'critical'].includes(pressureState.id)) return null;
+    const deployed = heroes.filter((hero) => hero?.isAlive !== false);
+    if (!deployed.length) {
+        return {
+            type: 'hint',
+            label: 'Sin heroes desplegados',
+            reason: 'Coloca defensa antes de que el frente llegue a la salida.',
+            signature: `hint:none:${pressureState.id}`
+        };
+    }
+
+    const candidates = deployed.map((hero) => {
+        const level = Number(hero.level || hero.config?.level || 1);
+        const cost = Number(levelCost(level, 1));
+        const stats = hero.getEffectiveStats?.() || hero;
+        const damage = Number(stats.damage || hero.damage || 0);
+        const fireRate = Number(stats.fireRate || hero.fireRate || 1);
+        const range = Number(stats.range || hero.range || 100);
+        const control = Number(hero.config?.teamMetrics?.control || hero.teamMetrics?.control || 0);
+        const detection = hero.canSeeStealth || stats.canSeeStealth ? 1 : 0;
+        const pressureBonus = pressureState.id === 'critical' ? control * 1.2 + range / 120 : control * 0.8;
+        return {
+            hero,
+            cost,
+            level,
+            score: damage * fireRate + range / 4 + level * 8 + pressureBonus + detection * 10
+        };
+    }).sort((a, b) => b.score - a.score);
+
+    const affordable = candidates.find((candidate) => candidate.cost <= credits);
+    if (affordable) {
+        const name = affordable.hero.name || affordable.hero.config?.name || affordable.hero.id || 'Heroe';
+        return {
+            type: 'upgrade',
+            heroId: affordable.hero.id || affordable.hero.config?.id,
+            heroName: name,
+            cost: affordable.cost,
+            label: `Mejorar ${name}`,
+            reason: pressureState.id === 'critical' ? 'Respuesta recomendada para cortar la fuga.' : 'Refuerzo rapido antes de que escale.',
+            signature: `upgrade:${affordable.hero.id || name}:${affordable.level}:${affordable.cost}:${Math.floor(credits)}`
+        };
+    }
+
+    const cheapest = candidates.reduce((best, candidate) => !best || candidate.cost < best.cost ? candidate : best, null);
+    const missing = Math.max(0, (cheapest?.cost || 0) - credits);
+    return {
+        type: 'hint',
+        label: `Faltan $${Math.ceil(missing)}`,
+        reason: 'Ahorra para la siguiente mejora de campo.',
+        signature: `hint:${cheapest?.hero?.id || 'none'}:${cheapest?.cost || 0}:${Math.floor(credits)}`
+    };
+}
+
 export class UIManager {
     constructor(gameInstance) {
         this.game = gameInstance;
@@ -333,8 +387,15 @@ export class UIManager {
         const container = document.getElementById('combat-pressure');
         if (!container) return null;
         const state = buildCombatPressureState(enemies, path, waveActive);
-        if (state.signature === this.combatPressureSignature) return state;
-        this.combatPressureSignature = state.signature;
+        const action = buildPressureActionState(
+            state,
+            this.game.heroes || [],
+            this.game.resourceManager?.credits || 0,
+            (level, amount) => this.calculateLevelCost(level, amount)
+        );
+        const signature = `${state.signature}:${action?.signature || 'none'}`;
+        if (signature === this.combatPressureSignature) return state;
+        this.combatPressureSignature = signature;
 
         if (!waveActive && state.id === 'clear') {
             container.classList.add('hidden');
@@ -355,8 +416,21 @@ export class UIManager {
                 <span>${state.leadEnemyName || 'Ruta'} ${state.progress}%</span>
                 ${state.dangerCount ? `<b>${state.dangerCount} en salida</b>` : ''}
             </div>
+            ${action ? `<div class="pressure-action pressure-action-${action.type}">
+                <span>${action.reason}</span>
+                ${action.type === 'upgrade'
+                    ? `<button id="pressure-upgrade" class="btn-mode-action">${action.label} $${action.cost}</button>`
+                    : `<small>${action.label}</small>`}
+            </div>` : ''}
             ${state.id === 'warning' || state.id === 'critical' ? '<button id="pressure-pause" class="btn-mode-action">Pausa táctica</button>' : ''}
         `;
+        document.getElementById('pressure-upgrade')?.addEventListener('click', () => {
+            const hero = this.game.heroes.find((unit) => (unit.id || unit.config?.id) === action.heroId);
+            if (this.quickUpgradeHero(hero)) {
+                this.combatPressureSignature = '';
+                this.updateCombatPressure(enemies, path, waveActive);
+            }
+        });
         document.getElementById('pressure-pause')?.addEventListener('click', () => this.setManualPause(true));
         return state;
     }

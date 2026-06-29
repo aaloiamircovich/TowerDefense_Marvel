@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.13.0 - 2026-06-29
+
+- Agrega respuesta tactica de mejora desde el panel de presion de fuga.
+- El HUD recomienda el heroe desplegado mas conveniente si hay creditos suficientes.
+- Si faltan recursos o no hay defensa desplegada, la alerta explica la siguiente accion util.
+
 ## 2.12.0 - 2026-06-28
 
 - Agrega panel de presion de fuga durante oleadas activas.

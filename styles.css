@@ -752,6 +752,32 @@ canvas {
     color: var(--pressure-color, var(--bright-yellow));
 }
 
+.pressure-action {
+    display: grid;
+    gap: 6px;
+    padding: 7px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 7px;
+    background: rgba(5, 7, 11, 0.28);
+}
+
+.pressure-action span,
+.pressure-action small {
+    color: var(--muted);
+    font-size: 10px;
+    line-height: 1.35;
+}
+
+.pressure-action-upgrade .btn-mode-action {
+    border-color: var(--pressure-color, var(--level-accent));
+    background: color-mix(in srgb, var(--pressure-color, var(--level-accent)), transparent 86%);
+}
+
+.pressure-action-hint small {
+    color: var(--pressure-color, var(--bright-yellow));
+    font-weight: 800;
+}
+
 .pressure-clear { --pressure-color: #9daabc; }
 .pressure-holding { --pressure-color: #46d369; }
 .pressure-watch { --pressure-color: #fca311; }

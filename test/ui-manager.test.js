@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildCombatPressureState, buildWaveLaunchState, evaluateHeroWaveFit } from '../src/systems/UIManager.js';
+import { buildCombatPressureState, buildPressureActionState, buildWaveLaunchState, evaluateHeroWaveFit } from '../src/systems/UIManager.js';
 
 test('buildWaveLaunchState muestra riesgo critico en el CTA', () => {
     const state = buildWaveLaunchState(true, {
@@ -135,6 +135,42 @@ test('buildCombatPressureState marca fuga inminente cerca de salida', () => {
     assert.match(state.advice, /Pausa/);
 });
 
+test('buildPressureActionState recomienda mejorar el mejor heroe asequible', () => {
+    const action = buildPressureActionState(
+        { id: 'critical' },
+        [
+            deployedHero({ id: 'spiderman', name: 'Spider-Man', level: 1, damage: 16, fireRate: 2, range: 120, control: 4 }),
+            deployedHero({ id: 'iron_man', name: 'Iron Man', level: 1, damage: 30, fireRate: 1.5, range: 165 })
+        ],
+        140,
+        (level) => level * 120
+    );
+
+    assert.equal(action.type, 'upgrade');
+    assert.equal(action.heroId, 'iron_man');
+    assert.equal(action.cost, 120);
+    assert.match(action.label, /Iron Man/);
+});
+
+test('buildPressureActionState avisa cuanto falta si no alcanza para mejorar', () => {
+    const action = buildPressureActionState(
+        { id: 'warning' },
+        [deployedHero({ id: 'spiderman', name: 'Spider-Man', level: 2, damage: 16, fireRate: 2, range: 120 })],
+        150,
+        (level) => level * 120
+    );
+
+    assert.equal(action.type, 'hint');
+    assert.equal(action.label, 'Faltan $90');
+});
+
+test('buildPressureActionState pide despliegue si no hay heroes', () => {
+    const action = buildPressureActionState({ id: 'watch' }, [], 650);
+
+    assert.equal(action.type, 'hint');
+    assert.equal(action.label, 'Sin heroes desplegados');
+});
+
 function path() {
     return [{ x: 0, y: 0 }, { x: 400, y: 0 }];
 }
@@ -146,5 +182,18 @@ function enemy(overrides = {}) {
         distanceTravelled: overrides.distanceTravelled || 0,
         isAlive: overrides.isAlive ?? true,
         hasReachedEnd: overrides.hasReachedEnd ?? false
+    };
+}
+
+function deployedHero({ id, name, level = 1, damage, fireRate, range, control = 0 }) {
+    return {
+        id,
+        name,
+        level,
+        damage,
+        fireRate,
+        range,
+        config: { id, name, level, teamMetrics: { control } },
+        getEffectiveStats: () => ({ damage, fireRate, range })
     };
 }
