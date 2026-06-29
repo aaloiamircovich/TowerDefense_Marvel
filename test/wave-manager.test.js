@@ -9,7 +9,21 @@ test('WaveManager prepara una primera oleada valida', () => {
     const manager = new WaveManager(createGame(), enemies);
     assert.equal(manager.currentWave, 1);
     assert.equal(manager.preparedQueue.length, 7);
+    assert.equal(manager.waveModifier.id, 'opening-1');
+    assert.equal(manager.waveModifier.label, 'Reconocimiento Hydra');
     assert.ok(manager.getUniqueEnemies().every((enemy) => enemy.previewCount > 0));
+});
+
+test('apertura dirigida no fuerza sigilo sin deteccion disponible', () => {
+    const manager = new WaveManager(createGame('new-york', [{ id: 'iron_man', teamMetrics: { detection: 1 }, canSeeStealth: false }]), enemies);
+    manager.currentWave = 5;
+    manager.prepareNextWave();
+    const ids = new Set(manager.preparedQueue.map((entry) => entry.config.id));
+
+    assert.equal(manager.waveModifier.id, 'opening-5');
+    assert.equal(ids.has('hand_ninja'), false);
+    assert.ok(ids.has('hydra_soldier'));
+    assert.equal(manager.getWaveSummary().counter, 'Mejora un héroe antes del élite');
 });
 
 test('WaveManager prepara un jefe cada diez oleadas', () => {
@@ -45,7 +59,7 @@ test('Knowhere incorpora Kree, Chitauri y Orden Negra por progresión', () => {
 
 test('WaveManager aplica modificadores sin depender solo de salud', () => {
     const manager = new WaveManager(createGame(), enemies);
-    manager.currentWave = 2;
+    manager.currentWave = 8;
     manager.prepareNextWave();
 
     assert.equal(manager.waveModifier.id, 'rush');
@@ -54,7 +68,7 @@ test('WaveManager aplica modificadores sin depender solo de salud', () => {
 
 test('WaveManager prepara barreras globales en la oleada protegida', () => {
     const manager = new WaveManager(createGame(), enemies);
-    manager.currentWave = 3;
+    manager.currentWave = 9;
     manager.prepareNextWave();
 
     assert.equal(manager.waveModifier.id, 'shielded');
@@ -72,10 +86,11 @@ test('WaveManager resume cantidad, botin y counter de la cola preparada', () => 
     assert.equal(typeof summary.counter, 'string');
 });
 
-function createGame(theme = 'new-york') {
+function createGame(theme = 'new-york', activeTeam = []) {
     return {
         uiManager: null,
         heroes: [],
+        activeTeam,
         enemies: [],
         completedWaves: [],
         stars: 0,

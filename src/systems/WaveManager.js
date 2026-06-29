@@ -107,6 +107,23 @@ const DIFFICULTIES = {
     hard: { hp: 1.3, speed: 1.1, count: 1.15, reward: 1.25 }
 };
 
+const OPENING_WAVES = {
+    'new-york': [
+        { label: 'Reconocimiento Hydra', counter: 'Coloca daño temprano junto a la avenida', enemies: [['hydra_soldier', 4], ['aim_scientist', 3]] },
+        { label: 'Tecnicos A.I.M.', counter: 'Prioriza soportes antes de que curen', enemies: [['aim_scientist', 4], ['hydra_soldier', 4]] },
+        { label: 'Escudos en la Quinta', counter: 'Perforacion y dano sostenido', enemies: [['hydra_soldier', 7], ['aim_scientist', 2]] },
+        { label: 'La Mano tantea tejados', counter: 'Detección si está disponible; si no, contención', enemies: [['hand_ninja', 3], ['hydra_soldier', 5], ['aim_scientist', 2]] },
+        { label: 'Bloqueo coordinado', counter: 'Mejora un héroe antes del élite', enemies: [['hydra_soldier', 6], ['aim_scientist', 3], ['hand_ninja', 2]], elite: 'hydra_soldier' }
+    ],
+    avengers: [
+        { label: 'Drones de intrusión', counter: 'Cobertura antiaérea temprana', enemies: [['ultron_drone', 5], ['doombot', 2]] },
+        { label: 'Doombots de apoyo', counter: 'Controla invocadores primero', enemies: [['doombot', 3], ['ultron_drone', 4]] },
+        { label: 'Red sincronizada', counter: 'Daño sostenido contra blindaje', enemies: [['ultron_drone', 6], ['doombot', 3]] },
+        { label: 'Hackeo de hangar', counter: 'Usa la puerta de seguridad', enemies: [['doombot', 4], ['aim_scientist', 3], ['ultron_drone', 3]] },
+        { label: 'Nodo Prime menor', counter: 'Mejora un héroe antes del élite', enemies: [['ultron_drone', 5], ['doombot', 4]], elite: 'doombot' }
+    ]
+};
+
 export class WaveManager {
     constructor(gameInstance, enemiesDb) {
         this.game = gameInstance;
@@ -133,9 +150,12 @@ export class WaveManager {
         this.faction = this.getFaction();
         this.waveModifier = this.director.sanitizeModifier(this.getWaveModifier(), this.getTeamCapabilities());
         const modeQueue = this.game.modeSystem?.buildWave(this.currentWave, this);
+        const scriptedQueue = this.getScriptedOpeningWave();
 
         if (modeQueue) {
             this.preparedQueue.push(...modeQueue);
+        } else if (scriptedQueue) {
+            this.preparedQueue.push(...scriptedQueue);
         } else if (this.currentWave === this.maxWaves) {
             const config = this.data.bosses.thanos_final;
             this.preparedQueue.push({ config: this.scaleEnemy(config, 1.25, true), delay: 0 });
@@ -193,10 +213,76 @@ export class WaveManager {
     }
 
     getWaveModifier() {
+        const scripted = this.getOpeningScript();
+        if (scripted) {
+            return {
+                id: `opening-${this.currentWave}`,
+                label: scripted.label,
+                description: scripted.counter || 'Apertura dirigida de campaña.'
+            };
+        }
         if (this.currentWave % 10 === 0 || this.currentWave === this.maxWaves) {
             return { id: 'boss', label: 'Amenaza máxima', description: 'Jefe con múltiples fases.' };
         }
         return MODIFIERS[(this.currentWave - 1) % MODIFIERS.length];
+    }
+
+    getOpeningScript() {
+        if (this.currentWave > 5 || (this.game.modeSystem?.modeId && this.game.modeSystem.modeId !== 'campaign')) return null;
+        if (this.director.getBranchOptions(this.currentWave).length > 0) return null;
+        const theme = this.game.currentLevel?.theme?.id || 'new-york';
+        const scripted = OPENING_WAVES[theme]?.[this.currentWave - 1];
+        if (scripted) return scripted;
+
+        const roster = this.faction?.roster || FACTIONS['new-york'].roster;
+        const primary = roster[0]?.[0];
+        const secondary = roster[1]?.[0] || primary;
+        return {
+            label: `Apertura ${this.currentWave}`,
+            counter: 'Lee la composición antes de gastar créditos',
+            enemies: [[primary, 4 + this.currentWave], [secondary, 2 + Math.floor(this.currentWave / 2)]],
+            elite: this.currentWave === 5 ? primary : null
+        };
+    }
+
+    getScriptedOpeningWave() {
+        const script = this.getOpeningScript();
+        if (!script) return null;
+
+        const capabilities = this.getTeamCapabilities();
+        const difficulty = DIFFICULTIES[this.game.difficulty || 'normal'];
+        const fallbackId = this.faction.roster[0]?.[0];
+        const queue = [];
+        for (const [enemyId, count] of script.enemies) {
+            const base = this.getCounterSafeEnemy(enemyId, fallbackId, capabilities);
+            if (!base) continue;
+            const adjustedCount = Math.max(1, Math.round(count * difficulty.count));
+            for (let index = 0; index < adjustedCount; index++) {
+                queue.push({
+                    config: this.scaleEnemy(base, 0.88 + this.currentWave * 0.035, false),
+                    delay: index === 0 && queue.length === 0 ? 0.2 : Math.max(0.52, 1.08 - this.currentWave * 0.04)
+                });
+            }
+        }
+
+        if (script.elite) {
+            const eliteBase = this.getCounterSafeEnemy(script.elite, fallbackId, capabilities);
+            if (eliteBase) queue.push({
+                config: this.director.createMiniBoss(eliteBase, { id: 'commander', label: 'Comandante' }, 1),
+                delay: 1.15
+            });
+        }
+
+        return queue.length ? queue : null;
+    }
+
+    getCounterSafeEnemy(enemyId, fallbackId, capabilities) {
+        const isUnsafe = (enemy) => capabilities.detection === false && (enemy?.stealth || enemy?.archetype === 'stealth' || enemy?.archetype === 'phaser');
+        const candidate = this.data.normal[enemyId];
+        if (candidate && !isUnsafe(candidate)) return candidate;
+        const fallback = this.data.normal[fallbackId];
+        if (fallback && !isUnsafe(fallback)) return fallback;
+        return this.getEnemyPoolForWave().find((enemy) => !isUnsafe(enemy));
     }
 
     getTeamCapabilities() {
@@ -264,7 +350,8 @@ export class WaveManager {
         });
 
         let counter = 'Daño equilibrado';
-        if (hasBoss) counter = 'Daño sostenido';
+        if (this.getOpeningScript()?.counter) counter = this.getOpeningScript().counter;
+        else if (hasBoss) counter = 'Daño sostenido';
         else if (stealthCount > 0) counter = 'Detección de sigilo';
         else if (roles.has('shield') || roles.has('tank')) counter = 'Perforación y control';
         else if (roles.has('runner')) counter = 'Ralentización';

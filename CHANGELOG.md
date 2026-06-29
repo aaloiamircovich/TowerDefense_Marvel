@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.5.0 - 2026-06-28
+
+- Agrega apertura dirigida para las primeras cinco oleadas de campaña.
+- Manhattan y Avengers HQ reciben composiciones de inicio con labels y counters propios.
+- El guion respeta capacidades del equipo: no fuerza sigilo si el roster no tiene deteccion.
+- Las oleadas posteriores siguen usando el director dinamico con afijos, ramas y jefes.
+- Amplia la suite a 182 pruebas mas smoke browser.
+
 ## 2.4.0 - 2026-06-28
 
 - Agrega guardarrail runtime para corregir enemigos que queden fuera de su ruta.
