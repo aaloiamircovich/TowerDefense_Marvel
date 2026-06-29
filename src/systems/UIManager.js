@@ -653,7 +653,7 @@ export class UIManager {
             </div>
             <div class="starter-grid">
                 ${starters.map((hero) => `
-                    <button class="starter-card" data-id="${hero.id}">
+                    <button class="starter-card" data-id="${hero.id}" data-testid="starter-${hero.id}">
                         ${this.renderSprite(hero.visual?.portrait || hero.sprite, hero.name)}
                         <strong>${hero.name}</strong>
                         <span>${hero.category} | $${hero.cost}</span>
@@ -682,6 +682,7 @@ export class UIManager {
             const abilityState = deployedHero?.abilitySystem?.getDisplayState?.();
             const card = document.createElement('article');
             card.className = `hero-card ${deployed ? 'deployed' : ''}`;
+            card.dataset.testid = `hero-card-${hero.id}`;
             card.innerHTML = `
                 ${this.renderSprite(hero.visual?.portrait || hero.sprite, hero.name)}
                 <div>
@@ -690,7 +691,7 @@ export class UIManager {
                     ${abilityState ? `<small class="roster-ability ${abilityState.ready ? 'ready' : ''}">${abilityState.label}</small>` : ''}
                 </div>
                 <div class="hero-actions">
-                    <button class="btn-action place-btn" title="${deployed ? 'Reposicionar' : 'Colocar'}" aria-label="${deployed ? 'Reposicionar' : 'Colocar'}" data-tooltip="${deployed ? 'Mover una vez por oleada' : 'Colocar héroe'}"><i class="fas ${deployed ? 'fa-arrows-alt' : 'fa-map-marker-alt'}"></i></button>
+                    <button class="btn-action place-btn" data-testid="hero-place-${hero.id}" title="${deployed ? 'Reposicionar' : 'Colocar'}" aria-label="${deployed ? 'Reposicionar' : 'Colocar'}" data-tooltip="${deployed ? 'Mover una vez por oleada' : 'Colocar héroe'}"><i class="fas ${deployed ? 'fa-arrows-alt' : 'fa-map-marker-alt'}"></i></button>
                     <button class="btn-action stats-btn" title="Mejoras" aria-label="Mejoras" data-tooltip="Estadísticas y mejoras"><i class="fas fa-chart-bar"></i></button>
                 </div>
             `;

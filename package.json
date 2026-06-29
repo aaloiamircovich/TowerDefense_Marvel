@@ -1,6 +1,6 @@
 {
   "name": "towerdefense-marvel",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -21,6 +21,10 @@
     "benchmark": "node scripts/benchmark-combat.js",
     "audit:a11y": "node scripts/audit-accessibility.js",
     "release:check": "node scripts/validate-release.js",
-    "check": "npm run validate && npm test && npm run balance && npm run benchmark && npm run audit:a11y && npm run release:check"
+    "smoke:browser": "node scripts/smoke-browser.js",
+    "check": "npm run validate && npm test && npm run balance && npm run benchmark && npm run audit:a11y && npm run release:check && npm run smoke:browser"
+  },
+  "devDependencies": {
+    "playwright": "^1.61.1"
   }
 }

@@ -16,14 +16,17 @@ import { registerPwa } from './pwa/register.js';
 
 async function initGame() {
     let ui = null;
+    setBootStatus('Preparando nucleo tactico...');
     try {
         const game = new GameLoop('gameCanvas');
+        window.__SUPER_HERO_TD_GAME__ = game;
         ui = new UIManager(game);
         const resources = new ResourceManager(game, 20, 650);
 
         game.uiManager = ui;
         game.resourceManager = resources;
 
+        setBootStatus('Cargando datos de heroes, mapas y oleadas...');
         const data = await Loader.loadManifest({
             heroes: './data/heroes.json',
             enemies: './data/enemies.json',
@@ -36,6 +39,7 @@ async function initGame() {
             throw new Error('Faltan datos esenciales o algún JSON tiene errores de sintaxis.');
         }
 
+        setBootStatus('Precargando retratos y sprites...');
         const visualSources = Object.values(data.heroes)
             .flatMap((hero) => collectVisualSources(hero.visual));
         await preloadImages(visualSources);
@@ -95,7 +99,12 @@ async function initGame() {
         };
 
         const savedLevel = data.levels.find((level) => level.id === game.progression.state.lastLevelId) || data.levels[0];
+        setBootStatus('Abriendo la primera operacion...');
         game.loadLevel(savedLevel);
+
+        if (game.progression.recoveredFromCorruptSave) {
+            ui.showToast('Guardado danado recuperado. Se restauro un perfil seguro.', 'warning');
+        }
 
         const starterPool = [
             data.heroes.iron_man,
@@ -109,6 +118,7 @@ async function initGame() {
 
         if (game.unlockedHeroes.length > 0) {
             ui.renderHeroRoster(game.activeTeam, (hero) => input.setPlacementMode(hero));
+            hideBootScreen();
             game.start();
         } else {
             ui.renderStarterSelector(starterPool, (chosen) => {
@@ -117,11 +127,25 @@ async function initGame() {
                 ui.showToast(`${chosen.name} se unió al equipo`, 'success');
                 game.start();
             });
+            hideBootScreen();
         }
     } catch (error) {
+        hideBootScreen();
+        document.body.dataset.appState = 'fatal';
         ui?.showFatalError(error);
         console.error('Detalle del fallo:', error);
     }
+}
+
+function setBootStatus(message) {
+    document.body.dataset.appState = 'loading';
+    const status = document.getElementById('boot-status');
+    if (status) status.textContent = message;
+}
+
+function hideBootScreen() {
+    document.body.dataset.appState = 'ready';
+    document.getElementById('boot-screen')?.classList.add('hidden');
 }
 
 initGame();

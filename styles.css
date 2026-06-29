@@ -44,6 +44,51 @@ body {
     font-family: "Segoe UI", system-ui, sans-serif;
 }
 
+#boot-screen {
+    position: fixed;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    z-index: 500;
+    background:
+        linear-gradient(135deg, rgba(8, 11, 16, 0.96), rgba(13, 21, 34, 0.98)),
+        radial-gradient(circle at center, rgba(64, 201, 255, 0.18), transparent 42%);
+    color: var(--text);
+}
+
+#boot-screen > div {
+    display: grid;
+    gap: 10px;
+    width: min(420px, calc(100vw - 32px));
+    padding: 24px;
+    border: 1px solid rgba(64, 201, 255, 0.32);
+    border-radius: 8px;
+    background: rgba(8, 11, 16, 0.74);
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
+}
+
+#boot-screen span {
+    color: var(--level-accent);
+    font-size: 12px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+#boot-screen strong {
+    color: var(--bright-yellow);
+    font-size: 24px;
+    line-height: 1.1;
+}
+
+#boot-screen p {
+    color: var(--muted);
+    line-height: 1.45;
+}
+
+#boot-screen.hidden {
+    display: none;
+}
+
 button,
 select {
     font: inherit;

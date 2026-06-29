@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.1.0 - 2026-06-28
+
+- Inicia la reconstruccion profesional 3.0 con un gate browser real del primer minuto de juego.
+- Agrega smoke automatizado en Chromium: carga, seleccion inicial, despliegue, oleada completa y control de enemigos sobre la ruta.
+- Incorpora pantalla de arranque con estados visibles y recuperacion segura de guardados corruptos.
+- Conecta Playwright al pipeline local y a GitHub Actions mediante `npm ci` y Chromium.
+- Amplia la suite a 180 pruebas unitarias mas smoke browser.
+
 ## 2.0.1 - 2026-06-23
 
 - Corrige un bloqueo de arranque causado por el registro de replay del Draft.

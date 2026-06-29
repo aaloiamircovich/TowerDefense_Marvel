@@ -54,6 +54,18 @@ test('ProgressionManager conserva heroes, fondos y equipo al reabrir', () => {
     assert.equal(reopened.state.metaCredits, 1500);
 });
 
+test('ProgressionManager recupera guardados corruptos sin bloquear el arranque', () => {
+    const storage = new MemoryStorage();
+    storage.setItem(SAVE_KEY, '{perfil-roto');
+    const manager = new ProgressionManager(storage);
+    manager.initialize(createGame(), data);
+
+    assert.equal(manager.recoveredFromCorruptSave, true);
+    assert.equal(manager.state.version, SAVE_VERSION);
+    assert.deepEqual(manager.state.unlockedHeroIds, []);
+    assert.equal(JSON.parse(storage.getItem(SAVE_KEY)).version, SAVE_VERSION);
+});
+
 test('Arbol de mejoras exige dependencias y descuenta fondos', () => {
     const manager = new ProgressionManager(new MemoryStorage());
     manager.initialize(createGame(), data);

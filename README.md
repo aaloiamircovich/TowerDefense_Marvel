@@ -4,7 +4,7 @@ Tower defense ambientado en escenarios inspirados por Marvel, con once misiones 
 
 Incluye los treinta y un héroes del roster con kits y sprites completos, evoluciones reversibles, maestría, códice, cinco modos de juego, director de encuentros con afijos y ramas de botín, 30 objetos con forja, replays por semilla, mando, controles configurables y estadísticas históricas.
 
-La versión 2.0.0 puede instalarse como PWA, conserva los recursos esenciales para jugar sin conexión y migra guardados 1.x al esquema actual.
+La versión 2.1.0 puede instalarse como PWA, conserva los recursos esenciales para jugar sin conexión, migra guardados 1.x al esquema actual y suma validación browser del primer minuto de juego.
 
 > Proyecto fan no oficial, educativo y sin fines comerciales. No está afiliado ni respaldado por Marvel Entertainment o The Walt Disney Company. Consulta [NOTICE.md](NOTICE.md).
 
@@ -46,6 +46,7 @@ npm test
 npm run balance
 npm run benchmark
 npm run release:check
+npm run smoke:browser
 npm run check
 ```
 
@@ -63,6 +64,7 @@ npm run check
 - `balance` simula eficiencia de heroes, recompensas por oleada y precios de objetos.
 - `benchmark` mide 150 enemigos, 300 proyectiles y 120 VFX contra un presupuesto de 60 FPS.
 - `release:check` valida versión, PWA, atlas, caché offline y aviso legal.
+- `smoke:browser` abre Chromium, despliega un héroe, completa una oleada y controla que los enemigos sigan la ruta.
 - `check` reproduce el control usado por GitHub Actions.
 
 También puede abrirse `index.html` directamente. En ese modo el juego usa `data/bootstrapData.js` como respaldo para evitar problemas de `fetch` con archivos locales.

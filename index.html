@@ -11,8 +11,16 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
 </head>
-<body>
-    <div id="game-ui">
+<body data-app-state="loading">
+    <div id="boot-screen" data-testid="boot-screen" role="status" aria-live="polite">
+        <div>
+            <span>Super Hero TD</span>
+            <strong>Inicializando operacion</strong>
+            <p id="boot-status">Preparando sistemas tacticos...</p>
+        </div>
+    </div>
+
+    <div id="game-ui" data-testid="game-ui">
         <header id="top-bar">
             <div class="top-section left" aria-label="Estado de partida">
                 <div class="status-item"><i class="fas fa-user-shield"></i> Lv.<span id="ui-player-lv">1</span></div>
@@ -46,8 +54,8 @@
             </aside>
 
             <section id="center-canvas-container">
-                <canvas id="gameCanvas" width="800" height="600"></canvas>
-                <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+                <canvas id="gameCanvas" data-testid="game-canvas" width="800" height="600"></canvas>
+                <div id="toast" class="toast hidden" data-testid="toast" role="status" aria-live="polite"></div>
             </section>
 
             <aside id="right-panel" class="side-panel">
@@ -91,7 +99,7 @@
                         <button id="btn-auto" class="btn-action muted" title="Auto oleada" aria-label="Auto oleada" aria-pressed="false" data-tooltip="Iniciar oleadas automáticamente"><i class="fas fa-forward"></i></button>
                         <button id="btn-speed" class="btn-action speed-btn" title="Velocidad" data-tooltip="Cambiar velocidad de juego">x1 <i class="fas fa-rocket"></i></button>
                     </div>
-                    <button id="next-wave-btn" class="btn-primary">INICIAR OLEADA</button>
+                    <button id="next-wave-btn" class="btn-primary" data-testid="next-wave-btn">INICIAR OLEADA</button>
                 </div>
             </aside>
         </main>

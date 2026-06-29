@@ -59,6 +59,7 @@ export class ProgressionManager {
         this.state = createDefaultState();
         this.game = null;
         this.data = null;
+        this.recoveredFromCorruptSave = false;
     }
 
     initialize(game, data) {
@@ -75,6 +76,7 @@ export class ProgressionManager {
             const raw = this.storage?.getItem(SAVE_KEY);
             return raw ? ProgressionManager.migrate(JSON.parse(raw)) : createDefaultState();
         } catch {
+            this.recoveredFromCorruptSave = true;
             return createDefaultState();
         }
     }
