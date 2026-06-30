@@ -683,16 +683,33 @@ canvas {
 #wave-intel .wave-prep-item {
     display: grid;
     gap: 2px;
+    width: 100%;
     padding: 6px;
     border-left: 3px solid var(--prep-color, var(--level-accent));
     border-radius: 6px;
     background: color-mix(in srgb, var(--prep-color, var(--level-accent)), transparent 90%);
+    text-align: left;
 }
 
 #wave-intel .wave-prep-item.deploy { --prep-color: #40c9ff; }
 #wave-intel .wave-prep-item.upgrade { --prep-color: #46d369; }
 #wave-intel .wave-prep-item.save { --prep-color: #fca311; }
 #wave-intel .wave-prep-item.hold { --prep-color: #9daabc; }
+
+#wave-intel button.wave-prep-item {
+    cursor: pointer;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    color: inherit;
+}
+
+#wave-intel button.wave-prep-item:hover,
+#wave-intel button.wave-prep-item:focus-visible {
+    filter: brightness(1.12);
+    outline: 2px solid color-mix(in srgb, var(--prep-color, var(--level-accent)), transparent 35%);
+    outline-offset: 1px;
+}
 
 #wave-intel .wave-prep-item span {
     color: var(--text);

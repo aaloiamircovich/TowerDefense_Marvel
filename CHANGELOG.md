@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.20.0 - 2026-06-29
+
+- Convierte la preparacion recomendada en acciones directas desde el HUD.
+- Las recomendaciones de colocar heroe activan modo de despliegue y las de mejora ejecutan mejora rapida.
+- Agrega estados accesibles y tests para diferenciar acciones clickeables de notas informativas.
+
 ## 2.19.0 - 2026-06-29
 
 - Agrega preparacion recomendada en el radar previo de oleada.

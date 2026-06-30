@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildCombatPressureState, buildPressureActionState, buildTargetingControlState, buildWaveLaunchState, buildWavePreparationPlan, buildWaveReportActionState, buildWaveReportState, evaluateHeroWaveFit, getNextTargetingPriority } from '../src/systems/UIManager.js';
+import { buildCombatPressureState, buildPressureActionState, buildTargetingControlState, buildWaveLaunchState, buildWavePrepActionControl, buildWavePreparationPlan, buildWaveReportActionState, buildWaveReportState, evaluateHeroWaveFit, getNextTargetingPriority } from '../src/systems/UIManager.js';
 
 test('buildWaveLaunchState muestra riesgo critico en el CTA', () => {
     const state = buildWaveLaunchState(true, {
@@ -186,6 +186,26 @@ test('buildWavePreparationPlan indica ahorro cuando no alcanza para preparar', (
 
     assert.equal(plan[0].type, 'save');
     assert.equal(plan[0].label, 'Faltan $180');
+});
+
+test('buildWavePrepActionControl vuelve clickeables despliegue y mejora', () => {
+    const deploy = buildWavePrepActionControl({ type: 'deploy', heroId: 'iron_man', label: 'Colocar Iron Man', reason: 'DPS', cost: 250 });
+    const upgrade = buildWavePrepActionControl({ type: 'upgrade', heroId: 'spiderman', label: 'Mejorar Spider-Man' });
+
+    assert.equal(deploy.actionable, true);
+    assert.equal(deploy.tag, 'button');
+    assert.match(deploy.ariaLabel, /Preparar colocacion/);
+    assert.match(deploy.title, /250/);
+    assert.equal(upgrade.actionable, true);
+    assert.match(upgrade.ariaLabel, /Mejorar ahora/);
+});
+
+test('buildWavePrepActionControl deja ahorro como nota informativa', () => {
+    const control = buildWavePrepActionControl({ type: 'save', label: 'Faltan $80' });
+
+    assert.equal(control.actionable, false);
+    assert.equal(control.tag, 'div');
+    assert.equal(control.ariaLabel, 'Faltan $80');
 });
 
 test('buildCombatPressureState oculta presion cuando no hay oleada activa', () => {

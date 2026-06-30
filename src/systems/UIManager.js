@@ -309,6 +309,17 @@ export function buildWavePreparationPlan(summary = null, activeTeam = [], deploy
     return plan.slice(0, 3);
 }
 
+export function buildWavePrepActionControl(item = {}) {
+    const actionable = Boolean(item.heroId && ['deploy', 'upgrade'].includes(item.type));
+    const verb = item.type === 'upgrade' ? 'Mejorar ahora' : 'Preparar colocacion';
+    return {
+        actionable,
+        tag: actionable ? 'button' : 'div',
+        ariaLabel: actionable ? `${verb}: ${item.label}` : item.label || 'Preparacion recomendada',
+        title: actionable ? `${item.reason || ''}${item.cost ? ` | $${item.cost}` : ''}`.trim() : ''
+    };
+}
+
 function getPathLength(path = []) {
     if (!Array.isArray(path) || path.length < 2) return 0;
     let total = 0;
@@ -884,16 +895,36 @@ export class UIManager {
                     <small class="wave-counter"><i class="fas fa-crosshairs"></i> Respuesta: ${summary.counter}</small>
                     ${prepPlan.length ? `<div class="wave-prep-plan" data-testid="wave-prep-plan" aria-label="Preparacion recomendada">
                         <strong>Preparacion recomendada</strong>
-                        ${prepPlan.map((item) => `<div class="wave-prep-item ${item.type}">
+                        ${prepPlan.map((item) => {
+                            const control = buildWavePrepActionControl(item);
+                            const attrs = control.actionable
+                                ? `type="button" data-prep-action="${item.type}" data-hero-id="${item.heroId}" aria-label="${control.ariaLabel}" title="${control.title}"`
+                                : `role="note" aria-label="${control.ariaLabel}"`;
+                            return `<${control.tag} class="wave-prep-item ${item.type}" ${attrs}>
                             <span>${item.label}</span>
                             <small>${item.reason}${item.cost ? ` | $${item.cost}` : ''}</small>
-                        </div>`).join('')}
+                        </${control.tag}>`;
+                        }).join('')}
                     </div>` : ''}
                     ${summary.branchOptions?.length ? `<div class="wave-branches" aria-label="Ruta de encuentro">
                         ${summary.branchOptions.map((option) => `<button type="button" data-branch="${option.id}" class="${summary.selectedBranch === option.id ? 'active' : ''}" title="${option.description}">${option.label}</button>`).join('')}
                     </div>` : ''}
                 ` : ''}
             `;
+            intelEl.querySelectorAll('[data-prep-action]').forEach((button) => button.addEventListener('click', () => {
+                const heroId = button.dataset.heroId;
+                if (button.dataset.prepAction === 'deploy') {
+                    const hero = this.game.activeTeam?.find((candidate) => candidate.id === heroId);
+                    if (!hero) return;
+                    this.game.inputManager?.setPlacementMode(hero);
+                    this.showToast(`${hero.name}: elige una posicion`, 'info');
+                    this.game.audio?.play('ui');
+                }
+                if (button.dataset.prepAction === 'upgrade') {
+                    const hero = this.game.heroes?.find((candidate) => candidate.id === heroId || candidate.config?.id === heroId);
+                    if (hero) this.quickUpgradeHero(hero);
+                }
+            }));
             intelEl.querySelectorAll('[data-branch]').forEach((button) => button.addEventListener('click', () => {
                 const changed = this.game.waveManager?.chooseBranch(button.dataset.branch);
                 if (changed) this.renderHeroRoster(this.game.activeTeam, (hero) => this.game.inputManager.setPlacementMode(hero));
