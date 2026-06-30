@@ -49,6 +49,50 @@ export function measurePathCoverage(origin, range, path = []) {
     return { coveredLength, intervals, quality };
 }
 
+export function findBestPlacementCell(heroConfig, game, movingHero = null) {
+    if (!heroConfig || !game?.terrainMap?.length || !game?.path?.length) return null;
+
+    const gridSize = game.gridSize || 40;
+    const range = movingHero?.getEffectiveStats?.().range || heroConfig.range || 100;
+    const allowedTerrains = heroConfig.allowedTerrains || [1, 3, 11, 12];
+    const qualityWeight = { excellent: 220, strong: 140, solid: 70, minimal: 0 };
+    let best = null;
+
+    for (let y = 0; y < game.terrainMap.length; y++) {
+        for (let x = 0; x < game.terrainMap[y].length; x++) {
+            const terrainType = game.terrainMap[y][x];
+            const placementTerrain = terrainType === 11 || terrainType === 12 ? 1 : terrainType;
+            if (!allowedTerrains.includes(placementTerrain)) continue;
+            if (game.missionSystem?.getPlacementBlock?.(x, y)) continue;
+
+            const center = { x: x * gridSize + gridSize / 2, y: y * gridSize + gridSize / 2 };
+            const occupied = game.heroes?.some((hero) => {
+                if (hero === movingHero) return false;
+                return Math.hypot(hero.x - center.x, hero.y - center.y) < gridSize * 0.8;
+            });
+            if (occupied) continue;
+
+            const pathPoint = getClosestPointOnPath(center, game.path);
+            const pathDistance = pathPoint?.distance ?? Infinity;
+            if (pathDistance > range) continue;
+
+            const coverage = measurePathCoverage(center, range, game.path);
+            if (coverage.coveredLength <= 0) continue;
+
+            const score = coverage.coveredLength
+                + (qualityWeight[coverage.quality.id] || 0)
+                - pathDistance * 0.22
+                - Math.abs(x - (game.terrainMap[y].length - 1) / 2) * 1.5;
+
+            if (!best || score > best.score) {
+                best = { x, y, centerX: center.x, centerY: center.y, score, pathDistance, coverage };
+            }
+        }
+    }
+
+    return best;
+}
+
 export class InputManager {
     constructor(canvas, gameInstance, uiManager, resourceManager) {
         this.canvas = canvas;
@@ -57,6 +101,7 @@ export class InputManager {
         this.resources = resourceManager;
         this.placingHero = null;
         this.movingHero = null;
+        this.suggestedPlacement = null;
         this.mousePos = { x: 0, y: 0 };
         this.gamepadButtons = [];
         this.gamepadHeroIndex = 0;
@@ -109,7 +154,9 @@ export class InputManager {
     setPlacementMode(heroConfig) {
         this.movingHero = null;
         this.placingHero = heroConfig;
-        this.uiManager.setSelectionStatus(`Colocando ${heroConfig.name}. Coste: $${heroConfig.cost || 0}. Esc para cancelar.`);
+        this.suggestedPlacement = findBestPlacementCell(heroConfig, this.game);
+        const suggestion = this.suggestedPlacement ? ` Sugerencia: celda ${this.suggestedPlacement.x + 1},${this.suggestedPlacement.y + 1}.` : '';
+        this.uiManager.setSelectionStatus(`Colocando ${heroConfig.name}. Coste: $${heroConfig.cost || 0}.${suggestion} Esc para cancelar.`);
     }
 
     setRepositionMode(hero) {
@@ -121,6 +168,7 @@ export class InputManager {
 
         this.placingHero = hero.config;
         this.movingHero = hero;
+        this.suggestedPlacement = findBestPlacementCell(hero.config, this.game, hero);
         this.game.selectedUnit = hero;
         this.uiManager.setManualPause?.(true, false);
         this.uiManager.setSelectionStatus(`Reposicionando ${hero.name}. Un movimiento por oleada · Esc para cancelar.`);
@@ -130,6 +178,7 @@ export class InputManager {
     clearPlacement() {
         this.placingHero = null;
         this.movingHero = null;
+        this.suggestedPlacement = null;
         this.uiManager.setSelectionStatus('Elige un héroe y colócalo junto al camino.');
     }
 
@@ -314,6 +363,7 @@ export class InputManager {
         const range = this.movingHero?.getEffectiveStats?.().range || this.placingHero.range || 100;
 
         ctx.save();
+        this.drawSuggestedPlacement(ctx, x, y, range);
         ctx.globalAlpha = 0.5;
         ctx.fillStyle = validation.valid ? '#46d369' : '#e63946';
         ctx.fillRect(px, py, this.game.gridSize, this.game.gridSize);
@@ -338,6 +388,28 @@ export class InputManager {
             ctx.setLineDash([]);
         }
         this.drawHeroGhost(ctx, centerX, centerY, validation.valid);
+        ctx.restore();
+    }
+
+    drawSuggestedPlacement(ctx, currentGridX, currentGridY, range) {
+        if (!this.suggestedPlacement || (this.suggestedPlacement.x === currentGridX && this.suggestedPlacement.y === currentGridY)) return;
+        const px = this.suggestedPlacement.x * this.game.gridSize;
+        const py = this.suggestedPlacement.y * this.game.gridSize;
+        ctx.save();
+        ctx.globalAlpha = 0.92;
+        ctx.strokeStyle = '#fca311';
+        ctx.lineWidth = 3;
+        ctx.setLineDash([8, 6]);
+        ctx.strokeRect(px + 4, py + 4, this.game.gridSize - 8, this.game.gridSize - 8);
+        ctx.beginPath();
+        ctx.arc(this.suggestedPlacement.centerX, this.suggestedPlacement.centerY, range, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(252, 163, 17, 0.42)';
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle = '#fca311';
+        ctx.font = '800 10px Segoe UI, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('SUG', this.suggestedPlacement.centerX, this.suggestedPlacement.centerY + 4);
         ctx.restore();
     }
 

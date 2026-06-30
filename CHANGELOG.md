@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.21.0 - 2026-06-29
+
+- Agrega sugerencia visual de celda al entrar en modo colocacion.
+- El recomendador evalua terreno, ocupacion, alcance y cobertura real de ruta antes de marcar una posicion.
+- La sugerencia ayuda a convertir recomendaciones tacticas en despliegues mas rapidos sin quitar control manual.
+
 ## 2.20.0 - 2026-06-29
 
 - Convierte la preparacion recomendada en acciones directas desde el HUD.

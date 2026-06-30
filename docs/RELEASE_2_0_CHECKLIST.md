@@ -24,5 +24,5 @@
 
 - [x] Objetivo de frame p95 inferior a 16,67 ms.
 - [x] Presupuesto de memoria JavaScript fijado en 128 MB y visible en Perfil.
-- [x] Suite de 217 pruebas, smoke browser, balance, benchmark, accesibilidad y validacion integrados en `npm run check`.
-- [x] Service worker y version publica sincronizados en 2.20.0.
+- [x] Suite de 219 pruebas, smoke browser, balance, benchmark, accesibilidad y validacion integrados en `npm run check`.
+- [x] Service worker y version publica sincronizados en 2.21.0.

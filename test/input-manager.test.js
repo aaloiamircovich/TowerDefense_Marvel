@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { InputManager, measurePathCoverage } from '../src/core/InputManager.js';
+import { findBestPlacementCell, InputManager, measurePathCoverage } from '../src/core/InputManager.js';
 
 test('measurePathCoverage mide el tramo de camino dentro del rango', () => {
     const coverage = measurePathCoverage(
@@ -38,6 +38,29 @@ test('measurePathCoverage informa cobertura minima si no alcanza la ruta', () =>
     assert.equal(coverage.coveredLength, 0);
     assert.equal(coverage.intervals.length, 0);
     assert.equal(coverage.quality.id, 'minimal');
+});
+
+test('findBestPlacementCell recomienda una celda valida con cobertura de ruta', () => {
+    const game = placementGame();
+    const hero = { id: 'iron_man', name: 'Iron Man', range: 95, allowedTerrains: [1] };
+
+    const suggestion = findBestPlacementCell(hero, game);
+
+    assert.ok(suggestion);
+    assert.equal(game.terrainMap[suggestion.y][suggestion.x], 1);
+    assert.ok(suggestion.coverage.coveredLength > 0);
+    assert.ok(suggestion.pathDistance <= hero.range);
+});
+
+test('findBestPlacementCell evita una celda ocupada por otro heroe', () => {
+    const game = placementGame();
+    game.heroes.push({ x: 100, y: 60 });
+    const hero = { id: 'spiderman', name: 'Spider-Man', range: 90, allowedTerrains: [1] };
+
+    const suggestion = findBestPlacementCell(hero, game);
+
+    assert.ok(suggestion);
+    assert.notDeepEqual({ x: suggestion.centerX, y: suggestion.centerY }, { x: 100, y: 60 });
 });
 
 test('InputManager cicla prioridad del heroe seleccionado con atajo configurable', () => {
@@ -163,4 +186,19 @@ test('InputManager no consume atajo de mejora sin heroe desplegado seleccionado'
 
 function roundPoint(point) {
     return { x: Math.round(point.x), y: Math.round(point.y) };
+}
+
+function placementGame() {
+    return {
+        gridSize: 40,
+        terrainMap: [
+            [1, 1, 1, 1, 1],
+            [1, 1, 1, 1, 1],
+            [1, 1, 2, 1, 1],
+            [1, 1, 1, 1, 1]
+        ],
+        path: [{ x: 0, y: 100 }, { x: 200, y: 100 }],
+        heroes: [],
+        missionSystem: null
+    };
 }
