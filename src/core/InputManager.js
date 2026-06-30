@@ -115,6 +115,7 @@ export class InputManager {
             if (event.key === (bindings.cancel || 'Escape')) this.clearPlacement();
             if (/^[1-6]$/.test(event.key)) this.handleHeroShortcut(event);
             if (['INPUT', 'SELECT', 'TEXTAREA'].includes(event.target?.tagName)) return;
+            if (event.key === 'Enter' && this.confirmSuggestedPlacement(event)) return;
             if (event.key.toLowerCase() === bindings.pause?.toLowerCase()) this.uiManager.setManualPause?.(!this.game.isManuallyPaused);
             if (event.key.toLowerCase() === bindings.speed?.toLowerCase()) document.getElementById('btn-speed')?.click();
             if (event.key.toLowerCase() === bindings.nextWave?.toLowerCase()) this.game.waveManager?.startNextWave();
@@ -155,7 +156,7 @@ export class InputManager {
         this.movingHero = null;
         this.placingHero = heroConfig;
         this.suggestedPlacement = findBestPlacementCell(heroConfig, this.game);
-        const suggestion = this.suggestedPlacement ? ` Sugerencia: celda ${this.suggestedPlacement.x + 1},${this.suggestedPlacement.y + 1}.` : '';
+        const suggestion = this.suggestedPlacement ? ` Sugerencia: celda ${this.suggestedPlacement.x + 1},${this.suggestedPlacement.y + 1}. Enter confirma sugerida.` : '';
         this.uiManager.setSelectionStatus(`Colocando ${heroConfig.name}. Coste: $${heroConfig.cost || 0}.${suggestion} Esc para cancelar.`);
     }
 
@@ -231,10 +232,15 @@ export class InputManager {
         };
     }
 
-    getPlacementValidation() {
-        const { x, y } = this.getGridPosition();
+    getCellCenter(x, y) {
         const snapX = x * this.game.gridSize + this.game.gridSize / 2;
         const snapY = y * this.game.gridSize + this.game.gridSize / 2;
+        return { snapX, snapY };
+    }
+
+    getPlacementValidation(grid = this.getGridPosition()) {
+        const { x, y } = grid;
+        const { snapX, snapY } = this.getCellCenter(x, y);
         const row = this.game.terrainMap[y];
         const terrainType = row ? row[x] : undefined;
         const placementTerrain = terrainType === 11 || terrainType === 12 ? 1 : terrainType;
@@ -281,7 +287,18 @@ export class InputManager {
         return { valid: true, pathDistance, pathPoint, coverage, message: `${coverage.quality.label}: ${Math.round(coverage.coveredLength)} px de ruta. Clic para colocar por $${cost}.` };
     }
 
-    placeHero() {
+    confirmSuggestedPlacement(event = null) {
+        if (!this.placingHero || !this.suggestedPlacement) return false;
+        event?.preventDefault?.();
+        const previousMouse = { ...this.mousePos };
+        this.mousePos = { x: this.suggestedPlacement.centerX, y: this.suggestedPlacement.centerY };
+        this.placeHero({ fromSuggestion: true });
+        const confirmed = !this.placingHero;
+        if (!confirmed) this.mousePos = previousMouse;
+        return confirmed;
+    }
+
+    placeHero(options = {}) {
         if (!this.placingHero) return;
 
         const validation = this.getPlacementValidation();
@@ -298,7 +315,7 @@ export class InputManager {
             this.movingHero.y = snapY;
             this.game.tacticalActions.markRepositioned(this.movingHero);
             this.game.selectedUnit = this.movingHero;
-            this.uiManager.showToast(`${this.movingHero.name} reposicionado`, 'success');
+            this.uiManager.showToast(`${this.movingHero.name} reposicionado${options.fromSuggestion ? ' en celda sugerida' : ''}`, 'success');
             this.uiManager.renderHeroRoster(this.game.activeTeam, (hero) => this.setPlacementMode(hero));
             this.game.waveManager?.refreshWaveIntel?.();
             this.clearPlacement();
@@ -314,7 +331,7 @@ export class InputManager {
         const deployed = this.game.spawnHero(this.placingHero, snapX, snapY);
         this.game.replaySystem?.record('deploy', { heroId: this.placingHero.id, x: snapX, y: snapY });
         this.game.selectedUnit = deployed;
-        this.uiManager.showToast(`${this.placingHero.name} desplegado`, 'success');
+        this.uiManager.showToast(`${this.placingHero.name} desplegado${options.fromSuggestion ? ' en celda sugerida' : ''}`, 'success');
         this.uiManager.renderHeroRoster(this.game.activeTeam, (hero) => this.setPlacementMode(hero));
         this.game.waveManager?.refreshWaveIntel?.();
         this.clearPlacement();

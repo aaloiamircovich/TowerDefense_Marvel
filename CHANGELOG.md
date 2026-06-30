@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.22.0 - 2026-06-29
+
+- Permite confirmar con Enter la celda sugerida durante colocacion o reposicion.
+- El despliegue recomendado ahora puede ejecutarse con una accion de HUD y una confirmacion de teclado.
+- Agrega prueba automatizada del flujo completo de recomendacion, descuento de creditos y despliegue.
+
 ## 2.21.0 - 2026-06-29
 
 - Agrega sugerencia visual de celda al entrar en modo colocacion.

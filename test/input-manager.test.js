@@ -149,6 +149,68 @@ test('InputManager mejora al heroe seleccionado con atajo configurable', () => {
     }
 });
 
+test('InputManager confirma la celda sugerida con Enter durante colocacion', () => {
+    const previousWindow = globalThis.window;
+    let keydownHandler = null;
+    globalThis.window = {
+        addEventListener(type, handler) {
+            if (type === 'keydown') keydownHandler = handler;
+        }
+    };
+
+    const heroConfig = { id: 'iron_man', name: 'Iron Man', cost: 250, range: 95, allowedTerrains: [1] };
+    const deployed = [];
+    const calls = [];
+    const resources = {
+        credits: 650,
+        removeCredits(amount) {
+            if (this.credits < amount) return false;
+            this.credits -= amount;
+            return true;
+        }
+    };
+    const game = {
+        ...placementGame(),
+        activeTeam: [heroConfig],
+        completedWaves: [],
+        progression: { state: { settings: { keyBindings: {} } } },
+        replaySystem: { record: (...args) => calls.push(['replay', ...args]) },
+        spawnHero(config, x, y) {
+            const hero = { id: config.id, name: config.name, x, y, config };
+            deployed.push(hero);
+            this.heroes.push(hero);
+            return hero;
+        },
+        waveManager: { refreshWaveIntel: () => calls.push(['refresh']) },
+        tacticalActions: null
+    };
+    const ui = {
+        setSelectionStatus: (message) => calls.push(['status', message]),
+        showToast: (message, type) => calls.push(['toast', message, type]),
+        renderHeroRoster: () => calls.push(['roster'])
+    };
+    const canvas = { addEventListener: () => {} };
+
+    try {
+        const input = new InputManager(canvas, game, ui, resources);
+        input.setPlacementMode(heroConfig);
+        const suggestion = input.suggestedPlacement;
+        let prevented = false;
+
+        keydownHandler({ key: 'Enter', target: { tagName: 'BODY' }, preventDefault: () => { prevented = true; } });
+
+        assert.equal(prevented, true);
+        assert.equal(resources.credits, 400);
+        assert.equal(deployed.length, 1);
+        assert.equal(deployed[0].x, suggestion.centerX);
+        assert.equal(deployed[0].y, suggestion.centerY);
+        assert.equal(input.placingHero, null);
+        assert.ok(calls.some((call) => call[0] === 'toast' && /celda sugerida/.test(call[1])));
+    } finally {
+        globalThis.window = previousWindow;
+    }
+});
+
 test('InputManager no consume atajo de mejora sin heroe desplegado seleccionado', () => {
     const previousWindow = globalThis.window;
     let keydownHandler = null;
