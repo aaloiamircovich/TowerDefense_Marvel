@@ -56,7 +56,8 @@ try {
         lives: window.__SUPER_HERO_TD_GAME__?.resourceManager?.lives || 0,
         credits: window.__SUPER_HERO_TD_GAME__?.resourceManager?.credits || 0,
         wave: window.__SUPER_HERO_TD_GAME__?.waveManager?.currentWave || 0,
-        maxEnemyPathDistance: Math.round(window.__SMOKE_MAX_OFF_PATH || 0)
+        maxEnemyPathDistance: Math.round(window.__SMOKE_MAX_OFF_PATH || 0),
+        floatingTextSeen: Number(window.__SMOKE_FLOATING_TEXT_COUNT || 0)
     }));
 
     const failures = [];
@@ -66,6 +67,7 @@ try {
     if (summary.wave < 2) failures.push(`la primera oleada no finalizo, oleada actual ${summary.wave}`);
     if (summary.lives <= 0) failures.push('la base quedo sin vidas durante smoke');
     if (summary.maxEnemyPathDistance > 38) failures.push(`enemigo fuera de ruta: ${summary.maxEnemyPathDistance}px`);
+    if (summary.floatingTextSeen <= 0) failures.push('no se observaron textos flotantes de dano durante la oleada');
     if (pageErrors.length) failures.push(`page errors: ${pageErrors.join(' | ')}`);
     if (consoleErrors.length) failures.push(`console errors: ${consoleErrors.join(' | ')}`);
 
@@ -74,7 +76,7 @@ try {
         failures.forEach((failure) => console.error(`- ${failure}`));
         process.exitCode = 1;
     } else {
-        console.log(`Smoke browser OK: wave ${summary.wave}, vidas ${summary.lives}, desvio maximo ${summary.maxEnemyPathDistance}px.`);
+        console.log(`Smoke browser OK: wave ${summary.wave}, vidas ${summary.lives}, desvio maximo ${summary.maxEnemyPathDistance}px, textos flotantes ${summary.floatingTextSeen}.`);
     }
 } finally {
     await browser?.close().catch(() => {});
@@ -175,6 +177,8 @@ function trackWaveAndPath() {
     const distances = (game.enemies || []).map((enemy) => distanceToCurrentPath(enemy));
     const maxDistance = distances.length ? Math.max(...distances) : 0;
     window.__SMOKE_MAX_OFF_PATH = Math.max(window.__SMOKE_MAX_OFF_PATH || 0, maxDistance);
+    const floatingTextCount = (game.vfx?.effects || []).filter((effect) => effect.type === 'floatingText').length;
+    window.__SMOKE_FLOATING_TEXT_COUNT = Math.max(window.__SMOKE_FLOATING_TEXT_COUNT || 0, floatingTextCount);
     if (window.__SMOKE_MAX_OFF_PATH > 38) throw new Error(`Enemigo fuera de ruta: ${window.__SMOKE_MAX_OFF_PATH}px`);
     return game.waveManager.currentWave >= 2 && !game.waveManager.isWaveActive;
 }

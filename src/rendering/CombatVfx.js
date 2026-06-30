@@ -60,6 +60,20 @@ export class CombatVfx {
         });
     }
 
+    addFloatingText(x, y, text, options = {}) {
+        this.addEffect({
+            type: 'floatingText',
+            x,
+            y,
+            text: String(text),
+            color: options.color || '#ffffff',
+            size: options.size || 14,
+            velocityY: options.velocityY || -34,
+            duration: options.duration || 0.72,
+            maxDuration: options.duration || 0.72
+        });
+    }
+
     update(dt) {
         let writeIndex = 0;
         for (const effect of this.effects) {
@@ -124,6 +138,15 @@ export class CombatVfx {
                 ctx.lineTo(effect.x + Math.cos(angle) * outer, effect.y + Math.sin(angle) * outer);
                 ctx.stroke();
             }
+        } else if (effect.type === 'floatingText') {
+            ctx.font = `900 ${Math.round(effect.size * (1 + progress * 0.12))}px Segoe UI, sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.lineWidth = 4;
+            const y = effect.y + effect.velocityY * progress;
+            ctx.strokeStyle = 'rgba(5, 7, 11, 0.85)';
+            ctx.strokeText(effect.text, effect.x, y);
+            ctx.fillText(effect.text, effect.x, y);
         }
         ctx.restore();
     }

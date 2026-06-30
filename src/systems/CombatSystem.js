@@ -65,9 +65,29 @@ export class CombatSystem {
             attackerType: projectile.attackerType
         });
 
+        CombatSystem.addDamageText(projectile, target, attacker, result);
         attacker?.recordDamage?.(result.damage);
         if (result.killed) CombatSystem.creditKill(target, attacker, resourceManager);
         return result;
+    }
+
+    static addDamageText(projectile, target, attacker, result) {
+        if (!result?.damage || !attacker?.game?.vfx?.addFloatingText || !target) return;
+        const critical = projectile.critical || projectile.isCrit;
+        const killed = result.killed;
+        const color = killed ? '#ffdf6f' : critical ? '#ff6b6b' : projectile.color || '#ffffff';
+        const prefix = killed ? 'KO ' : critical ? 'CRIT ' : '';
+        attacker.game.vfx.addFloatingText(
+            target.x,
+            target.y - 18,
+            `${prefix}${Math.round(result.damage)}`,
+            {
+                color,
+                size: killed || critical ? 17 : 13,
+                duration: killed ? 0.9 : 0.68,
+                velocityY: killed ? -42 : -30
+            }
+        );
     }
 
     static applyEffects(effects = [], target, attacker) {

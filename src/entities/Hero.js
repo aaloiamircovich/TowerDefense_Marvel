@@ -153,6 +153,7 @@ export class Hero {
         const projectileConfig = {
             attacker: this,
             damage: finalDamage,
+            critical: isCrit,
             attackerType: this.category,
             effects: this.getProjectileEffects(target),
             ...this.getProjectileProfile(),

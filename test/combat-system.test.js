@@ -106,6 +106,29 @@ test('CombatSystem usa la fuente aleatoria sembrada para efectos', () => {
     assert.equal(applied, 0);
 });
 
+test('CombatSystem emite texto flotante para impactos criticos y bajas', () => {
+    const floating = [];
+    const target = createPositionedTarget(0, 0);
+    target.hp = 20;
+    const attacker = createAttacker([target]);
+    attacker.game.vfx = {
+        addFloatingText: (...args) => floating.push(args)
+    };
+
+    CombatSystem.applyImpact({
+        attackerType: 'Urbano',
+        damage: 50,
+        critical: true,
+        color: '#40c9ff',
+        effects: []
+    }, target, attacker, null);
+
+    assert.equal(floating.length, 1);
+    assert.equal(floating[0][2], 'KO 20');
+    assert.equal(floating[0][3].color, '#ffdf6f');
+    assert.equal(floating[0][3].size, 17);
+});
+
 function createTarget(category, takeDamage) {
     return {
         category,

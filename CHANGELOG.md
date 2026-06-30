@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.23.0 - 2026-06-29
+
+- Agrega texto flotante de dano, criticos y bajas sobre los impactos de combate.
+- El feedback visual usa el sistema CombatVfx existente, con colores y duracion segun golpe normal, CRIT o KO.
+- El combate emite la lectura desde el dano real aplicado, incluyendo area, cadenas y habilidades que pasan por CombatSystem.
+
 ## 2.22.0 - 2026-06-29
 
 - Permite confirmar con Enter la celda sugerida durante colocacion o reposicion.
