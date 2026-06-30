@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.19.0 - 2026-06-29
+
+- Agrega preparacion recomendada en el radar previo de oleada.
+- El HUD sugiere desplegar counters, mejorar defensas o ahorrar segun sigilo, blindaje, velocidad, amenaza y creditos.
+- La recomendacion se cubre con tests unitarios y queda integrada a la lectura de amenaza existente.
+
 ## 2.18.0 - 2026-06-29
 
 - Agrega atajo configurable para mejorar al heroe seleccionado.

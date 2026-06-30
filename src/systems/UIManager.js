@@ -150,6 +150,165 @@ export function evaluateHeroWaveFit(hero, summary = null, credits = 0) {
     return { id: 'neutral', label: 'Neutro', score, reasons: reasons.slice(0, 2) };
 }
 
+function getHeroConfig(hero = {}) {
+    return hero?.config || hero || {};
+}
+
+function getHeroName(hero = {}) {
+    const config = getHeroConfig(hero);
+    return hero.name || config.name || config.id || 'Heroe';
+}
+
+function getHeroCost(hero = {}) {
+    const config = getHeroConfig(hero);
+    return Number(config.cost ?? hero.cost ?? 0);
+}
+
+function getHeroDps(hero = {}) {
+    const config = getHeroConfig(hero);
+    const stats = hero.getEffectiveStats?.() || hero;
+    const damage = Number(stats.damage || hero.damage || config.damage || 0);
+    const fireRate = Number(stats.fireRate || hero.fireRate || config.fireRate || 1);
+    return damage * fireRate;
+}
+
+function heroDetectsStealth(hero = {}) {
+    const config = getHeroConfig(hero);
+    return Boolean(hero.canSeeStealth || config.canSeeStealth)
+        || Number(config.teamMetrics?.detection || hero.teamMetrics?.detection || 0) >= 4
+        || hasTextMatch(config, ['sigilo', 'deteccion', 'rastreo', 'edith']);
+}
+
+function heroPiercesArmor(hero = {}) {
+    const config = getHeroConfig(hero);
+    return PIERCING_HERO_IDS.has(config.id || hero.id)
+        || hasTextMatch(config, ['armadura', 'perfor', 'atraviesa', 'antiarmadura', 'laser']);
+}
+
+function heroControlsCrowd(hero = {}) {
+    const config = getHeroConfig(hero);
+    return Number(config.teamMetrics?.control || hero.teamMetrics?.control || 0) >= 4
+        || hasTextMatch(config, ['ralent', 'inmovil', 'aturd', 'control', 'red']);
+}
+
+export function buildWavePreparationPlan(summary = null, activeTeam = [], deployedHeroes = [], credits = 0, levelCost = (level) => level * 120) {
+    if (!summary) return [];
+
+    const availableCredits = Number(credits || 0);
+    const deployed = (deployedHeroes || []).filter(Boolean);
+    const deployedIds = new Set(deployed.map((hero) => hero.id || hero.config?.id).filter(Boolean));
+    const bench = (activeTeam || []).filter((hero) => hero && !deployedIds.has(hero.id || hero.config?.id));
+    const plan = [];
+    const used = new Set();
+    const add = (entry) => {
+        if (!entry) return;
+        const key = `${entry.type}:${entry.heroId || entry.label}`;
+        if (used.has(key)) return;
+        used.add(key);
+        plan.push(entry);
+    };
+    const urgency = new Set(['empty', 'underbuilt', 'thin']);
+    const isUrgent = urgency.has(summary.readiness?.id)
+        || ['high', 'critical'].includes(summary.threatTier?.id)
+        || Number(summary.pressureScore || 0) >= 18;
+
+    const pickDeploy = (predicate, reason) => {
+        const candidate = bench
+            .filter((hero) => predicate(hero) && getHeroCost(hero) <= availableCredits)
+            .map((hero) => ({ hero, fit: evaluateHeroWaveFit(hero, summary, availableCredits), cost: getHeroCost(hero) }))
+            .sort((a, b) => b.fit.score - a.fit.score || a.cost - b.cost)[0];
+
+        return candidate ? {
+            type: 'deploy',
+            heroId: candidate.hero.id || candidate.hero.config?.id,
+            label: `Colocar ${getHeroName(candidate.hero)}`,
+            reason,
+            cost: candidate.cost,
+            priority: candidate.fit.id,
+            signature: `deploy:${candidate.hero.id || candidate.hero.config?.id}:${candidate.cost}:${summary.pressureScore}`
+        } : null;
+    };
+
+    if (summary.stealthCount > 0 && !deployed.some(heroDetectsStealth)) {
+        add(pickDeploy(heroDetectsStealth, 'Necesitas deteccion antes de que el sigilo cruce la ruta.'));
+    }
+
+    if ((summary.armoredCount > 0 || summary.barrierCount > 0 || summary.hasBoss) && !deployed.some((hero) => heroPiercesArmor(hero) || getHeroDps(hero) >= 42)) {
+        add(pickDeploy((hero) => heroPiercesArmor(hero) || getHeroDps(hero) >= 42, 'Amenaza blindada: prioriza perforacion o DPS sostenido.'));
+    }
+
+    if ((summary.roles || []).includes('runner') || Number(summary.fastest || 0) >= 90) {
+        add(pickDeploy(heroControlsCrowd, 'Oleada rapida: suma control para cortar corredores.'));
+    }
+
+    const upgrade = deployed
+        .map((hero) => {
+            const level = Number(hero.level || hero.config?.level || 1);
+            const cost = Number(levelCost(level, 1));
+            const fit = evaluateHeroWaveFit(hero, summary, availableCredits);
+            return { hero, level, cost, fit, score: fit.score + getHeroDps(hero) / 12 + level };
+        })
+        .filter((candidate) => candidate.cost <= availableCredits)
+        .sort((a, b) => b.score - a.score || a.cost - b.cost)[0];
+
+    if (isUrgent && upgrade) {
+        add({
+            type: 'upgrade',
+            heroId: upgrade.hero.id || upgrade.hero.config?.id,
+            label: `Mejorar ${getHeroName(upgrade.hero)}`,
+            reason: summary.threatTier?.id === 'critical' ? 'Sube tu mejor defensa antes de iniciar con riesgo.' : 'Convierte tu defensa central en respuesta principal.',
+            cost: upgrade.cost,
+            priority: upgrade.fit.id,
+            signature: `upgrade:${upgrade.hero.id || upgrade.hero.config?.id}:${upgrade.level}:${upgrade.cost}:${summary.pressureScore}`
+        });
+    }
+
+    if (!plan.length && isUrgent) {
+        const fallback = bench
+            .filter((hero) => getHeroCost(hero) <= availableCredits)
+            .map((hero) => ({ hero, fit: evaluateHeroWaveFit(hero, summary, availableCredits), cost: getHeroCost(hero) }))
+            .sort((a, b) => b.fit.score - a.fit.score || a.cost - b.cost)[0];
+        add(fallback ? {
+            type: 'deploy',
+            heroId: fallback.hero.id || fallback.hero.config?.id,
+            label: `Colocar ${getHeroName(fallback.hero)}`,
+            reason: fallback.fit.reasons[0] || 'Aumenta cobertura antes de lanzar la oleada.',
+            cost: fallback.cost,
+            priority: fallback.fit.id,
+            signature: `deploy:${fallback.hero.id || fallback.hero.config?.id}:${fallback.cost}:${summary.pressureScore}`
+        } : null);
+    }
+
+    if (!plan.length && !isUrgent) {
+        add({
+            type: 'hold',
+            label: 'Mantener reserva',
+            reason: summary.readiness?.advice || 'Puedes iniciar y guardar creditos para la siguiente amenaza.',
+            cost: 0,
+            priority: summary.readiness?.id || 'stable',
+            signature: `hold:${summary.pressureScore}:${summary.readiness?.id || 'stable'}`
+        });
+    }
+
+    if (!plan.length) {
+        const deployCosts = bench.map(getHeroCost).filter((cost) => cost > availableCredits);
+        const upgradeCosts = deployed.map((hero) => Number(levelCost(Number(hero.level || hero.config?.level || 1), 1))).filter((cost) => cost > availableCredits);
+        const nextCost = Math.min(...deployCosts, ...upgradeCosts);
+        if (Number.isFinite(nextCost)) {
+            add({
+                type: 'save',
+                label: `Faltan $${Math.ceil(nextCost - availableCredits)}`,
+                reason: 'Reserva creditos para una mejora o counter antes de escalar.',
+                cost: nextCost,
+                priority: summary.readiness?.id || 'save',
+                signature: `save:${nextCost}:${Math.floor(availableCredits)}:${summary.pressureScore}`
+            });
+        }
+    }
+
+    return plan.slice(0, 3);
+}
+
 function getPathLength(path = []) {
     if (!Array.isArray(path) || path.length < 2) return 0;
     let total = 0;
@@ -692,6 +851,15 @@ export class UIManager {
         const numberEl = document.getElementById('next-wave-number');
         const intelEl = document.getElementById('wave-intel');
         if (!container) return;
+        const prepPlan = summary
+            ? buildWavePreparationPlan(
+                summary,
+                this.game.activeTeam || [],
+                this.game.heroes || [],
+                this.game.resourceManager?.credits || 0,
+                (level, amount = 1) => this.calculateLevelCost(level, amount)
+            )
+            : [];
 
         if (numberEl) numberEl.textContent = waveNumber;
         if (intelEl) {
@@ -714,6 +882,13 @@ export class UIManager {
                         <span><b>${summary.maxThreat}/5</b> amenaza</span>
                     </div>
                     <small class="wave-counter"><i class="fas fa-crosshairs"></i> Respuesta: ${summary.counter}</small>
+                    ${prepPlan.length ? `<div class="wave-prep-plan" data-testid="wave-prep-plan" aria-label="Preparacion recomendada">
+                        <strong>Preparacion recomendada</strong>
+                        ${prepPlan.map((item) => `<div class="wave-prep-item ${item.type}">
+                            <span>${item.label}</span>
+                            <small>${item.reason}${item.cost ? ` | $${item.cost}` : ''}</small>
+                        </div>`).join('')}
+                    </div>` : ''}
                     ${summary.branchOptions?.length ? `<div class="wave-branches" aria-label="Ruta de encuentro">
                         ${summary.branchOptions.map((option) => `<button type="button" data-branch="${option.id}" class="${summary.selectedBranch === option.id ? 'active' : ''}" title="${option.description}">${option.label}</button>`).join('')}
                     </div>` : ''}

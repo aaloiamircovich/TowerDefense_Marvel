@@ -118,12 +118,14 @@ async function initGame() {
 
         if (game.unlockedHeroes.length > 0) {
             ui.renderHeroRoster(game.activeTeam, (hero) => input.setPlacementMode(hero));
+            game.waveManager?.refreshWaveIntel?.();
             hideBootScreen();
             game.start();
         } else {
             ui.renderStarterSelector(starterPool, (chosen) => {
                 game.progression.startProfile(chosen.id);
                 ui.renderHeroRoster(game.activeTeam, (hero) => input.setPlacementMode(hero));
+                game.waveManager?.refreshWaveIntel?.();
                 ui.showToast(`${chosen.name} se unió al equipo`, 'success');
                 game.start();
             });

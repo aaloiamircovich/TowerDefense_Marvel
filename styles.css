@@ -665,6 +665,47 @@ canvas {
     line-height: 1.35;
 }
 
+#wave-intel .wave-prep-plan {
+    display: grid;
+    gap: 5px;
+    margin-top: 6px;
+    padding: 7px;
+    border: 1px solid rgba(64, 201, 255, 0.18);
+    border-radius: 7px;
+    background: rgba(5, 7, 11, 0.48);
+}
+
+#wave-intel .wave-prep-plan > strong {
+    color: var(--text);
+    font-size: 10px;
+}
+
+#wave-intel .wave-prep-item {
+    display: grid;
+    gap: 2px;
+    padding: 6px;
+    border-left: 3px solid var(--prep-color, var(--level-accent));
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--prep-color, var(--level-accent)), transparent 90%);
+}
+
+#wave-intel .wave-prep-item.deploy { --prep-color: #40c9ff; }
+#wave-intel .wave-prep-item.upgrade { --prep-color: #46d369; }
+#wave-intel .wave-prep-item.save { --prep-color: #fca311; }
+#wave-intel .wave-prep-item.hold { --prep-color: #9daabc; }
+
+#wave-intel .wave-prep-item span {
+    color: var(--text);
+    font-size: 10px;
+    font-weight: 800;
+}
+
+#wave-intel .wave-prep-item small {
+    color: var(--muted);
+    font-size: 9px;
+    line-height: 1.28;
+}
+
 #wave-intel .wave-branches {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));

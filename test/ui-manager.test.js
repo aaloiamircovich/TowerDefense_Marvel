@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildCombatPressureState, buildPressureActionState, buildTargetingControlState, buildWaveLaunchState, buildWaveReportActionState, buildWaveReportState, evaluateHeroWaveFit, getNextTargetingPriority } from '../src/systems/UIManager.js';
+import { buildCombatPressureState, buildPressureActionState, buildTargetingControlState, buildWaveLaunchState, buildWavePreparationPlan, buildWaveReportActionState, buildWaveReportState, evaluateHeroWaveFit, getNextTargetingPriority } from '../src/systems/UIManager.js';
 
 test('buildWaveLaunchState muestra riesgo critico en el CTA', () => {
     const state = buildWaveLaunchState(true, {
@@ -116,6 +116,76 @@ test('evaluateHeroWaveFit deja neutral a un heroe sin respuesta clara', () => {
     }, 200);
 
     assert.equal(fit.id, 'neutral');
+});
+
+test('buildWavePreparationPlan recomienda desplegar deteccion contra sigilo', () => {
+    const plan = buildWavePreparationPlan(
+        {
+            stealthCount: 3,
+            armoredCount: 0,
+            barrierCount: 0,
+            fastest: 92,
+            roles: ['stealth'],
+            pressureScore: 18,
+            threatTier: { id: 'high' },
+            readiness: { id: 'underbuilt' }
+        },
+        [
+            { id: 'spiderman', name: 'Spider-Man', cost: 150, canSeeStealth: true, damage: 16, fireRate: 2, range: 130, teamMetrics: { detection: 5 } },
+            { id: 'hulk', name: 'Hulk', cost: 260, damage: 40, fireRate: 0.8, range: 90 }
+        ],
+        [],
+        180
+    );
+
+    assert.equal(plan[0].type, 'deploy');
+    assert.equal(plan[0].heroId, 'spiderman');
+    assert.match(plan[0].reason, /deteccion/);
+});
+
+test('buildWavePreparationPlan recomienda mejorar defensa desplegada en riesgo', () => {
+    const plan = buildWavePreparationPlan(
+        {
+            stealthCount: 0,
+            armoredCount: 2,
+            barrierCount: 1,
+            hasBoss: true,
+            fastest: 72,
+            roles: ['tank'],
+            pressureScore: 24,
+            threatTier: { id: 'critical' },
+            readiness: { id: 'thin' }
+        },
+        [],
+        [deployedHero({ id: 'iron_man', name: 'Iron Man', level: 2, damage: 48, fireRate: 1.4, range: 170 })],
+        260,
+        (level) => level * 120
+    );
+
+    assert.equal(plan[0].type, 'upgrade');
+    assert.equal(plan[0].heroId, 'iron_man');
+    assert.equal(plan[0].cost, 240);
+});
+
+test('buildWavePreparationPlan indica ahorro cuando no alcanza para preparar', () => {
+    const plan = buildWavePreparationPlan(
+        {
+            stealthCount: 0,
+            armoredCount: 0,
+            barrierCount: 0,
+            fastest: 70,
+            roles: ['soldier'],
+            pressureScore: 16,
+            threatTier: { id: 'guarded' },
+            readiness: { id: 'underbuilt' }
+        },
+        [{ id: 'thor', name: 'Thor', cost: 300, damage: 44, fireRate: 1, range: 160 }],
+        [],
+        120
+    );
+
+    assert.equal(plan[0].type, 'save');
+    assert.equal(plan[0].label, 'Faltan $180');
 });
 
 test('buildCombatPressureState oculta presion cuando no hay oleada activa', () => {
