@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildCombatPressureState, buildPressureActionState, buildWaveLaunchState, buildWaveReportState, evaluateHeroWaveFit } from '../src/systems/UIManager.js';
+import { buildCombatPressureState, buildPressureActionState, buildWaveLaunchState, buildWaveReportActionState, buildWaveReportState, evaluateHeroWaveFit } from '../src/systems/UIManager.js';
 
 test('buildWaveLaunchState muestra riesgo critico en el CTA', () => {
     const state = buildWaveLaunchState(true, {
@@ -216,6 +216,33 @@ test('buildWaveReportState destaca maestria cuando no hubo fugas', () => {
 
     assert.equal(report.tone, 'mastery');
     assert.equal(report.label, 'Progreso heroico');
+});
+
+test('buildWaveReportActionState recomienda mejorar al MVP si hay creditos', () => {
+    const action = buildWaveReportActionState(
+        { bestHeroId: 'iron_man', bestHero: 'Iron Man', leaks: 0 },
+        [deployedHero({ id: 'iron_man', name: 'Iron Man', level: 2, damage: 48, fireRate: 1.3, range: 170 })],
+        260,
+        (level) => level * 120
+    );
+
+    assert.equal(action.type, 'upgrade');
+    assert.equal(action.heroId, 'iron_man');
+    assert.equal(action.cost, 240);
+    assert.match(action.reason, /MVP/);
+});
+
+test('buildWaveReportActionState indica ahorro si falta para reforzar tras fugas', () => {
+    const action = buildWaveReportActionState(
+        { bestHeroId: 'spiderman', bestHero: 'Spider-Man', leaks: 2 },
+        [deployedHero({ id: 'spiderman', name: 'Spider-Man', level: 2, damage: 20, fireRate: 2, range: 140 })],
+        80,
+        (level) => level * 120
+    );
+
+    assert.equal(action.type, 'saving');
+    assert.equal(action.label, 'Faltan $160');
+    assert.match(action.reason, /fuga/);
 });
 
 function path() {

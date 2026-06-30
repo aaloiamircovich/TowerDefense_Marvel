@@ -592,6 +592,7 @@ export class WaveManager {
             metaReward,
             mastery: masteryUnlocked.length,
             bestHero: best?.score > 0 ? best.name : 'Sin MVP',
+            bestHeroId: best?.score > 0 ? best.id : '',
             bestHeroKills: best?.kills || 0,
             bestHeroDamage: best?.damage || 0,
             pressure: leaks > 0 ? 'thin' : 'stable'

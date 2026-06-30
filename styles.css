@@ -871,6 +871,32 @@ canvas {
     line-height: 1.35;
 }
 
+.wave-report-action {
+    display: grid;
+    gap: 6px;
+    padding: 7px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 7px;
+    background: rgba(5, 7, 11, 0.32);
+}
+
+.wave-report-action span,
+.wave-report-action small {
+    color: var(--muted);
+    font-size: 10px;
+    line-height: 1.35;
+}
+
+.report-action-upgrade .btn-mode-action {
+    border-color: var(--report-color);
+    background: color-mix(in srgb, var(--report-color), transparent 86%);
+}
+
+.report-action-saving small {
+    color: var(--report-color);
+    font-weight: 800;
+}
+
 .report-clean { --report-color: #46d369; }
 .report-leak { --report-color: #fca311; }
 .report-breach { --report-color: #e63946; }

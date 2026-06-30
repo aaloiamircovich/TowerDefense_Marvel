@@ -267,8 +267,44 @@ export function buildWaveReportState(report = {}) {
         metaReward: Math.max(0, Number(report.metaReward || 0)),
         mastery,
         bestHero,
+        bestHeroId: report.bestHeroId || '',
         bestHeroKills: Math.max(0, Number(report.bestHeroKills || 0)),
         bestHeroDamage: Math.round(Math.max(0, Number(report.bestHeroDamage || 0)))
+    };
+}
+
+export function buildWaveReportActionState(report = {}, heroes = [], credits = 0, levelCost = (level) => level * 120) {
+    const heroId = report.bestHeroId;
+    if (!heroId || report.bestHero === 'Sin MVP') return null;
+    const hero = heroes.find((unit) => (unit.id || unit.config?.id) === heroId);
+    if (!hero) return null;
+
+    const level = Number(hero.level || hero.config?.level || 1);
+    const cost = Number(levelCost(level, 1));
+    const name = hero.name || hero.config?.name || report.bestHero || 'Heroe';
+    const available = Number(credits || 0);
+
+    if (cost > available) {
+        return {
+            type: 'saving',
+            heroId,
+            label: `Faltan $${Math.ceil(cost - available)}`,
+            reason: report.leaks > 0
+                ? 'Ahorra para reforzar al heroe que mas sostuvo la fuga.'
+                : 'Guarda creditos para convertir al MVP en carry.',
+            signature: `saving:${heroId}:${cost}:${Math.floor(available)}`
+        };
+    }
+
+    return {
+        type: 'upgrade',
+        heroId,
+        label: `Mejorar ${name}`,
+        cost,
+        reason: report.leaks > 0
+            ? 'Recomendado tras fugas: potencia tu defensa mas efectiva.'
+            : 'Aprovecha el rendimiento del MVP antes de escalar amenaza.',
+        signature: `upgrade:${heroId}:${level}:${cost}:${Math.floor(available)}`
     };
 }
 
@@ -489,6 +525,7 @@ export class UIManager {
 
     clearWaveReport() {
         const container = document.getElementById('wave-report');
+        this.lastWaveReport = null;
         if (!container) return;
         container.classList.add('hidden');
         container.innerHTML = '';
@@ -498,6 +535,13 @@ export class UIManager {
         const container = document.getElementById('wave-report');
         if (!container) return null;
         const state = buildWaveReportState(report);
+        const action = buildWaveReportActionState(
+            state,
+            this.game.heroes || [],
+            this.game.resourceManager?.credits || 0,
+            (level, amount) => this.calculateLevelCost(level, amount)
+        );
+        this.lastWaveReport = report;
         container.className = `wave-report report-${state.tone}`;
         container.setAttribute('aria-label', `${state.label}. ${state.advice}`);
         container.innerHTML = `
@@ -516,7 +560,17 @@ export class UIManager {
                 <span>${state.bestHero}: ${state.bestHeroKills} bajas - ${state.bestHeroDamage} dano</span>
             </div>
             <p>${state.advice}</p>
+            ${action ? `<div class="wave-report-action report-action-${action.type}">
+                <span>${action.reason}</span>
+                ${action.type === 'upgrade'
+                    ? `<button id="wave-report-action" class="btn-mode-action">${action.label} $${action.cost}</button>`
+                    : `<small>${action.label}</small>`}
+            </div>` : ''}
         `;
+        document.getElementById('wave-report-action')?.addEventListener('click', () => {
+            const hero = this.game.heroes.find((unit) => (unit.id || unit.config?.id) === action.heroId);
+            if (this.quickUpgradeHero(hero)) this.renderWaveReport(this.lastWaveReport);
+        });
         return state;
     }
 

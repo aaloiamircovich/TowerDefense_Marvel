@@ -180,6 +180,7 @@ test('WaveManager emite informe tactico con deltas de la oleada', () => {
     assert.equal(reports[0].leaks, 2);
     assert.equal(reports[0].kills, 5);
     assert.equal(reports[0].bestHero, 'Iron Man');
+    assert.equal(reports[0].bestHeroId, 'iron_man');
     assert.ok(reports[0].credits >= 134);
 });
 

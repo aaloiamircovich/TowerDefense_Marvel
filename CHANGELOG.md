@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.15.0 - 2026-06-29
+
+- Convierte el informe de oleada en una accion directa sobre el MVP.
+- Si hay creditos suficientes, el HUD permite mejorar al heroe destacado desde el informe.
+- Si faltan recursos, el informe indica cuanto falta y prioriza refuerzo tras fugas.
+
 ## 2.14.0 - 2026-06-29
 
 - Agrega informe tactico persistente al cerrar cada oleada.
