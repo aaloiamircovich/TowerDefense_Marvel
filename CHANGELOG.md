@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.16.0 - 2026-06-29
+
+- Agrega control rapido de prioridad de objetivo en cartas de heroes desplegados.
+- El roster permite ciclar Primero, Ultimo, Fuerte, Debil, Rapido, Sigilo y Jefe sin abrir modal.
+- Cada prioridad muestra etiqueta, icono, tooltip y refresca el HUD tactico al instante.
+
 ## 2.15.0 - 2026-06-29
 
 - Convierte el informe de oleada en una accion directa sobre el MVP.

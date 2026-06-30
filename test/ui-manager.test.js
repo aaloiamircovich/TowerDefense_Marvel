@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildCombatPressureState, buildPressureActionState, buildWaveLaunchState, buildWaveReportActionState, buildWaveReportState, evaluateHeroWaveFit } from '../src/systems/UIManager.js';
+import { buildCombatPressureState, buildPressureActionState, buildTargetingControlState, buildWaveLaunchState, buildWaveReportActionState, buildWaveReportState, evaluateHeroWaveFit, getNextTargetingPriority } from '../src/systems/UIManager.js';
 
 test('buildWaveLaunchState muestra riesgo critico en el CTA', () => {
     const state = buildWaveLaunchState(true, {
@@ -36,6 +36,23 @@ test('buildWaveLaunchState bloquea lectura cuando la oleada esta activa', () => 
     assert.equal(state.tier, 'active');
     assert.equal(state.primary, 'OLEADA EN CURSO');
     assert.equal(state.secondary, 'Defensa activa');
+});
+
+test('getNextTargetingPriority cicla prioridades tacticas del roster', () => {
+    assert.equal(getNextTargetingPriority('Primero'), 'Último');
+    assert.equal(getNextTargetingPriority('Jefe'), 'Primero');
+    assert.equal(getNextTargetingPriority('Sigilo', -1), 'Rápido');
+    assert.equal(getNextTargetingPriority('Desconocido'), 'Último');
+});
+
+test('buildTargetingControlState resume el modo actual y el siguiente click', () => {
+    const state = buildTargetingControlState('Rápido');
+
+    assert.equal(state.priority, 'Rápido');
+    assert.equal(state.next, 'Sigilo');
+    assert.equal(state.label, 'Rap');
+    assert.match(state.tooltip, /corredores/);
+    assert.match(state.ariaLabel, /Sigilo/);
 });
 
 test('evaluateHeroWaveFit recomienda deteccion contra sigilo', () => {

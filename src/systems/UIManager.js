@@ -37,6 +37,40 @@ export function buildWaveLaunchState(enabled, summary = null) {
 }
 
 const PIERCING_HERO_IDS = new Set(['iron_man', 'vision', 'hawkeye', 'winter_soldier', 'cyclops', 'silver_surfer']);
+export const TARGETING_PRIORITIES = ['Primero', 'Último', 'Fuerte', 'Débil', 'Rápido', 'Sigilo', 'Jefe'];
+
+const TARGETING_PRIORITY_COPY = {
+    Primero: { label: '1ro', icon: 'fa-route', description: 'prioriza al enemigo mas avanzado' },
+    Último: { label: 'Ult', icon: 'fa-backward', description: 'limpia rezagados e invocaciones' },
+    Fuerte: { label: 'Fte', icon: 'fa-shield-alt', description: 'enfoca tanques y elites' },
+    Débil: { label: 'Deb', icon: 'fa-bolt', description: 'remata objetivos bajos' },
+    Rápido: { label: 'Rap', icon: 'fa-running', description: 'corta corredores' },
+    Sigilo: { label: 'Sig', icon: 'fa-eye', description: 'busca infiltrados detectables' },
+    Jefe: { label: 'Jfe', icon: 'fa-skull', description: 'prioriza jefes y amenaza alta' }
+};
+
+export function getNextTargetingPriority(current = 'Primero', direction = 1) {
+    const index = TARGETING_PRIORITIES.indexOf(current);
+    const safeIndex = index >= 0 ? index : 0;
+    const offset = Number(direction || 1);
+    const nextIndex = (safeIndex + offset + TARGETING_PRIORITIES.length) % TARGETING_PRIORITIES.length;
+    return TARGETING_PRIORITIES[nextIndex];
+}
+
+export function buildTargetingControlState(current = 'Primero') {
+    const priority = TARGETING_PRIORITIES.includes(current) ? current : 'Primero';
+    const next = getNextTargetingPriority(priority);
+    const copy = TARGETING_PRIORITY_COPY[priority];
+    return {
+        priority,
+        next,
+        label: copy.label,
+        icon: copy.icon,
+        description: copy.description,
+        tooltip: `Objetivo: ${priority}; ${copy.description}. Click: ${next}.`,
+        ariaLabel: `Cambiar prioridad de objetivo de ${priority} a ${next}`
+    };
+}
 
 function hasTextMatch(config, patterns) {
     const text = [
@@ -812,7 +846,7 @@ export class UIManager {
                             ${formationStatus ? `<p><span>Formación</span><strong class="formation-state ${formationStatus.active ? 'active' : ''}">${formationStatus.label} · ${formationStatus.active ? 'Activa' : 'En espera'}</strong></p>` : ''}
                             <label class="field-label" for="targeting-select">Apuntar a</label>
                             <select id="targeting-select">
-                                ${['Primero', 'Último', 'Fuerte', 'Débil', 'Rápido', 'Sigilo', 'Jefe'].map((priority) => `<option value="${priority}" ${hero.targetingPriority === priority ? 'selected' : ''}>${priority}</option>`).join('')}
+                                ${TARGETING_PRIORITIES.map((priority) => `<option value="${priority}" ${hero.targetingPriority === priority ? 'selected' : ''}>${priority}</option>`).join('')}
                             </select>
                         </div>
                         <div class="detail-card">
@@ -1149,6 +1183,7 @@ export class UIManager {
             const abilityState = deployedHero?.abilitySystem?.getDisplayState?.();
             const quickUpgradeCost = deployedHero ? this.calculateLevelCost(deployedHero.level || hero.level || 1, 1) : 0;
             const canQuickUpgrade = deployedHero && (this.game.resourceManager?.credits || 0) >= quickUpgradeCost;
+            const targetingState = deployedHero ? buildTargetingControlState(deployedHero.targetingPriority || hero.targetingPriority) : null;
             const rosterMeta = deployedHero
                 ? `Nv.${deployedHero.level || hero.level || 1} | Mejora $${quickUpgradeCost}`
                 : `$${hero.cost || 0} | ${hero.rarity || 'Common'}`;
@@ -1167,6 +1202,7 @@ export class UIManager {
                 <div class="hero-actions">
                     <button class="btn-action place-btn" data-testid="hero-place-${hero.id}" title="${deployed ? 'Reposicionar' : 'Colocar'}" aria-label="${deployed ? 'Reposicionar' : 'Colocar'}" data-tooltip="${deployed ? 'Mover una vez por oleada' : 'Colocar héroe'}"><i class="fas ${deployed ? 'fa-arrows-alt' : 'fa-map-marker-alt'}"></i></button>
                     ${deployedHero ? `<button class="btn-action upgrade-btn" data-testid="hero-upgrade-${hero.id}" title="Mejorar en campo" aria-label="Mejorar ${hero.name}" data-tooltip="Mejora rapida $${quickUpgradeCost}" ${canQuickUpgrade ? '' : 'disabled'}><i class="fas fa-arrow-up"></i></button>` : ''}
+                    ${targetingState ? `<button class="btn-action target-btn" data-testid="hero-target-${hero.id}" title="${targetingState.tooltip}" aria-label="${targetingState.ariaLabel}" data-tooltip="${targetingState.tooltip}"><i class="fas ${targetingState.icon}"></i><span>${targetingState.label}</span></button>` : ''}
                     <button class="btn-action stats-btn" title="Mejoras" aria-label="Mejoras" data-tooltip="Estadísticas y mejoras"><i class="fas fa-chart-bar"></i></button>
                 </div>
             `;
@@ -1183,6 +1219,15 @@ export class UIManager {
             card.querySelector('.upgrade-btn')?.addEventListener('click', (event) => {
                 event.stopPropagation();
                 this.quickUpgradeHero(deployedHero);
+            });
+            card.querySelector('.target-btn')?.addEventListener('click', (event) => {
+                event.stopPropagation();
+                const nextPriority = getNextTargetingPriority(deployedHero.targetingPriority || hero.targetingPriority);
+                deployedHero.targetingPriority = nextPriority;
+                if (deployedHero.config) deployedHero.config.targetingPriority = nextPriority;
+                hero.targetingPriority = nextPriority;
+                this.showToast(`${deployedHero.name || hero.name}: objetivo ${nextPriority}`, 'info');
+                this.renderHeroRoster(this.game.activeTeam, (config) => this.game.inputManager.setPlacementMode(config));
             });
             this.heroGrid.appendChild(card);
         });
