@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { measurePathCoverage } from '../src/core/InputManager.js';
+import { InputManager, measurePathCoverage } from '../src/core/InputManager.js';
 
 test('measurePathCoverage mide el tramo de camino dentro del rango', () => {
     const coverage = measurePathCoverage(
@@ -38,6 +38,53 @@ test('measurePathCoverage informa cobertura minima si no alcanza la ruta', () =>
     assert.equal(coverage.coveredLength, 0);
     assert.equal(coverage.intervals.length, 0);
     assert.equal(coverage.quality.id, 'minimal');
+});
+
+test('InputManager cicla prioridad del heroe seleccionado con atajo configurable', () => {
+    const previousWindow = globalThis.window;
+    let keydownHandler = null;
+    globalThis.window = {
+        addEventListener(type, handler) {
+            if (type === 'keydown') keydownHandler = handler;
+        }
+    };
+
+    const hero = {
+        id: 'iron_man',
+        name: 'Iron Man',
+        targetingPriority: 'Primero',
+        config: { id: 'iron_man', targetingPriority: 'Primero' },
+        getEffectiveStats: () => ({ range: 160 })
+    };
+    const calls = [];
+    const game = {
+        selectedUnit: hero,
+        heroes: [hero],
+        activeTeam: [hero.config],
+        progression: { state: { settings: { keyBindings: { targeting: 't' } } } },
+        tacticalActions: null
+    };
+    const ui = {
+        showToast: (message, type) => calls.push(['toast', message, type]),
+        setSelectionStatus: (message) => calls.push(['status', message]),
+        renderHeroRoster: () => calls.push(['roster'])
+    };
+    const canvas = { addEventListener: () => {} };
+    try {
+        const input = new InputManager(canvas, game, ui, {});
+        let prevented = false;
+
+        keydownHandler({ key: 't', target: { tagName: 'BODY' }, preventDefault: () => { prevented = true; } });
+
+        assert.ok(input);
+        assert.equal(prevented, true);
+        assert.equal(hero.targetingPriority, 'Último');
+        assert.equal(hero.config.targetingPriority, 'Último');
+        assert.deepEqual(calls[0], ['toast', 'Iron Man: objetivo Último', 'info']);
+        assert.deepEqual(calls.at(-1), ['roster']);
+    } finally {
+        globalThis.window = previousWindow;
+    }
 });
 
 function roundPoint(point) {

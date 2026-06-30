@@ -48,7 +48,7 @@ function createDefaultState() {
             musicVolume: 0.25,
             sfxVolume: 0.75,
             locale: 'es',
-            keyBindings: { pause: 'p', speed: 's', nextWave: 'n', cancel: 'Escape' }
+            keyBindings: { pause: 'p', speed: 's', nextWave: 'n', cancel: 'Escape', targeting: 't' }
         }
     };
 }
@@ -549,7 +549,7 @@ export class ProgressionManager {
     }
 
     updateKeyBinding(action, key) {
-        if (!['pause', 'speed', 'nextWave', 'cancel'].includes(action) || typeof key !== 'string' || !key.trim()) return false;
+        if (!['pause', 'speed', 'nextWave', 'cancel', 'targeting'].includes(action) || typeof key !== 'string' || !key.trim()) return false;
         this.state.settings.keyBindings[action] = key;
         this.save();
         return true;

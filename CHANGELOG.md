@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.17.0 - 2026-06-29
+
+- Agrega atajo configurable para ciclar prioridad de objetivo del heroe seleccionado.
+- La tecla por defecto `T` cambia el modo de targeting, refresca roster y muestra confirmacion en HUD.
+- Ajustes ahora permite reconfigurar Cambiar objetivo junto a pausa, velocidad, oleada y cancelar.
+
 ## 2.16.0 - 2026-06-29
 
 - Agrega control rapido de prioridad de objetivo en cartas de heroes desplegados.

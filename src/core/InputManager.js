@@ -1,5 +1,6 @@
 import { getSpriteFrame } from '../rendering/ImageCache.js';
 import { TacticalActionSystem } from '../systems/TacticalActionSystem.js';
+import { getNextTargetingPriority } from '../systems/UIManager.js';
 import { getClosestPointOnPath } from '../utils/PathUtils.js';
 
 export function measurePathCoverage(origin, range, path = []) {
@@ -72,6 +73,7 @@ export class InputManager {
             if (event.key.toLowerCase() === bindings.pause?.toLowerCase()) this.uiManager.setManualPause?.(!this.game.isManuallyPaused);
             if (event.key.toLowerCase() === bindings.speed?.toLowerCase()) document.getElementById('btn-speed')?.click();
             if (event.key.toLowerCase() === bindings.nextWave?.toLowerCase()) this.game.waveManager?.startNextWave();
+            if (event.key.toLowerCase() === (bindings.targeting || 't').toLowerCase()) this.cycleSelectedTargetingPriority(event);
         });
     }
 
@@ -142,6 +144,19 @@ export class InputManager {
         } else {
             this.setPlacementMode(config);
         }
+    }
+
+    cycleSelectedTargetingPriority(event = null) {
+        const hero = this.game.selectedUnit;
+        if (!hero || hero.takeDamage !== undefined || !this.game.heroes?.includes(hero)) return false;
+        event?.preventDefault?.();
+        const nextPriority = getNextTargetingPriority(hero.targetingPriority || hero.config?.targetingPriority);
+        hero.targetingPriority = nextPriority;
+        if (hero.config) hero.config.targetingPriority = nextPriority;
+        this.uiManager.showToast?.(`${hero.name}: objetivo ${nextPriority}`, 'info');
+        this.uiManager.setSelectionStatus?.(`${hero.name}: prioridad ${nextPriority}.`);
+        this.uiManager.renderHeroRoster?.(this.game.activeTeam, (config) => this.setPlacementMode(config));
+        return nextPriority;
     }
 
     handleCanvasClick() {
