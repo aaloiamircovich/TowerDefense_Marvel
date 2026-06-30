@@ -220,6 +220,58 @@ export function buildPressureActionState(pressureState, heroes = [], credits = 0
     };
 }
 
+export function buildWaveReportState(report = {}) {
+    const leaks = Math.max(0, Number(report.leaks || 0));
+    const kills = Math.max(0, Number(report.kills || 0));
+    const damage = Math.max(0, Number(report.damage || 0));
+    const credits = Math.max(0, Number(report.credits || 0));
+    const mastery = Math.max(0, Number(report.mastery || 0));
+    const bestHero = report.bestHero || 'Sin MVP';
+    const pressure = report.pressure || 'stable';
+
+    let tone = 'clean';
+    let label = 'Oleada asegurada';
+    let advice = 'Sin fugas: puedes ahorrar o acelerar la siguiente oleada.';
+
+    if (leaks > 0) {
+        tone = leaks >= 3 ? 'breach' : 'leak';
+        label = leaks >= 3 ? 'Brecha seria' : 'Fuga contenida';
+        advice = leaks >= 3
+            ? 'Refuerza la salida y prioriza control antes de iniciar.'
+            : 'Sube una defensa cercana al final del camino.';
+    } else if (kills === 0 && damage === 0) {
+        tone = 'warning';
+        label = 'Sin lectura ofensiva';
+        advice = 'Despliega dano antes de lanzar la proxima oleada.';
+    } else if (mastery > 0) {
+        tone = 'mastery';
+        label = 'Progreso heroico';
+        advice = 'Revisa maestrias desbloqueadas para potenciar el equipo.';
+    } else if (pressure === 'thin') {
+        tone = 'warning';
+        label = 'Defensa justa';
+        advice = 'Gasta creditos en dano o control antes del siguiente salto.';
+    }
+
+    return {
+        wave: Math.max(1, Number(report.wave || 1)),
+        tone,
+        label,
+        advice,
+        leaks,
+        lives: Math.max(0, Number(report.lives || 0)),
+        kills,
+        damage: Math.round(damage),
+        credits: Math.round(credits),
+        bounty: Math.max(0, Number(report.bounty || 0)),
+        metaReward: Math.max(0, Number(report.metaReward || 0)),
+        mastery,
+        bestHero,
+        bestHeroKills: Math.max(0, Number(report.bestHeroKills || 0)),
+        bestHeroDamage: Math.round(Math.max(0, Number(report.bestHeroDamage || 0)))
+    };
+}
+
 export class UIManager {
     constructor(gameInstance) {
         this.game = gameInstance;
@@ -432,6 +484,39 @@ export class UIManager {
             }
         });
         document.getElementById('pressure-pause')?.addEventListener('click', () => this.setManualPause(true));
+        return state;
+    }
+
+    clearWaveReport() {
+        const container = document.getElementById('wave-report');
+        if (!container) return;
+        container.classList.add('hidden');
+        container.innerHTML = '';
+    }
+
+    renderWaveReport(report) {
+        const container = document.getElementById('wave-report');
+        if (!container) return null;
+        const state = buildWaveReportState(report);
+        container.className = `wave-report report-${state.tone}`;
+        container.setAttribute('aria-label', `${state.label}. ${state.advice}`);
+        container.innerHTML = `
+            <div class="wave-report-heading">
+                <span>Informe oleada ${state.wave}</span>
+                <strong>${state.label}</strong>
+            </div>
+            <div class="wave-report-grid">
+                <span><b>${state.leaks}</b> fugas</span>
+                <span><b>${state.kills}</b> bajas</span>
+                <span><b>${state.damage}</b> dano</span>
+                <span><b>$${state.credits}</b> creditos</span>
+            </div>
+            <div class="wave-report-mvp">
+                <i class="fas fa-star"></i>
+                <span>${state.bestHero}: ${state.bestHeroKills} bajas - ${state.bestHeroDamage} dano</span>
+            </div>
+            <p>${state.advice}</p>
+        `;
         return state;
     }
 

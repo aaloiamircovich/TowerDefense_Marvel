@@ -149,7 +149,48 @@ test('WaveManager limpia presion de combate al cerrar oleada', () => {
     assert.deepEqual(pressureCalls[0], [[], game.path, false]);
 });
 
+test('WaveManager emite informe tactico con deltas de la oleada', () => {
+    const reports = [];
+    const cleared = [];
+    const game = createGame('new-york', [], [
+        deployedHero({ id: 'iron_man', name: 'Iron Man', damage: 58, fireRate: 1.4, range: 180, level: 2 })
+    ]);
+    game.resourceManager.credits = 300;
+    game.resourceManager.lives = 20;
+    game.uiManager = {
+        renderWavePreview: () => {},
+        setNextWaveEnabled: () => {},
+        clearWaveReport: () => cleared.push(true),
+        renderWaveReport: (report) => reports.push(report),
+        updateCombatPressure: () => {},
+        showToast: () => {}
+    };
+    const manager = new WaveManager(game, enemies);
+
+    manager.startNextWave();
+    game.heroes[0].combatStats.damageDealt += 640;
+    game.heroes[0].combatStats.kills += 5;
+    game.resourceManager.lives = 18;
+    manager.enemiesQueue = [];
+    manager.finishWave();
+
+    assert.equal(cleared.length, 1);
+    assert.equal(reports.length, 1);
+    assert.equal(reports[0].wave, 1);
+    assert.equal(reports[0].leaks, 2);
+    assert.equal(reports[0].kills, 5);
+    assert.equal(reports[0].bestHero, 'Iron Man');
+    assert.ok(reports[0].credits >= 134);
+});
+
 function createGame(theme = 'new-york', activeTeam = [], deployed = []) {
+    const resourceManager = {
+        credits: 0,
+        lives: 20,
+        addCredits(amount) {
+            this.credits += amount;
+        }
+    };
     return {
         uiManager: null,
         heroes: deployed,
@@ -159,19 +200,22 @@ function createGame(theme = 'new-york', activeTeam = [], deployed = []) {
         stars: 0,
         path: [{ x: 0, y: 0 }, { x: 40, y: 0 }],
         currentLevel: { theme: { id: theme } },
-        resourceManager: { credits: 0, addCredits: () => {} },
+        resourceManager,
         pause: () => {}
     };
 }
 
-function deployedHero({ id, damage, fireRate, range, level = 1, canSeeStealth = false }) {
+function deployedHero({ id, name = id, damage, fireRate, range, level = 1, canSeeStealth = false }) {
     return {
         id,
+        name,
         damage,
         fireRate,
         range,
         level,
         canSeeStealth,
+        items: [],
+        combatStats: { damageDealt: 0, kills: 0, shots: 0, crits: 0, goldGenerated: 0, abilityActivations: 0 },
         config: { id, level },
         getEffectiveStats: () => ({ damage, fireRate, range, canSeeStealth })
     };

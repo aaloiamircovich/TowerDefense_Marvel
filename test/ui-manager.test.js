@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildCombatPressureState, buildPressureActionState, buildWaveLaunchState, evaluateHeroWaveFit } from '../src/systems/UIManager.js';
+import { buildCombatPressureState, buildPressureActionState, buildWaveLaunchState, buildWaveReportState, evaluateHeroWaveFit } from '../src/systems/UIManager.js';
 
 test('buildWaveLaunchState muestra riesgo critico en el CTA', () => {
     const state = buildWaveLaunchState(true, {
@@ -169,6 +169,53 @@ test('buildPressureActionState pide despliegue si no hay heroes', () => {
 
     assert.equal(action.type, 'hint');
     assert.equal(action.label, 'Sin heroes desplegados');
+});
+
+test('buildWaveReportState resume una oleada limpia con consejo de ahorro', () => {
+    const report = buildWaveReportState({
+        wave: 4,
+        leaks: 0,
+        lives: 20,
+        kills: 12,
+        damage: 1840.7,
+        credits: 332,
+        bestHero: 'Iron Man',
+        bestHeroKills: 7,
+        bestHeroDamage: 990
+    });
+
+    assert.equal(report.tone, 'clean');
+    assert.equal(report.label, 'Oleada asegurada');
+    assert.equal(report.damage, 1841);
+    assert.match(report.advice, /ahorrar/);
+});
+
+test('buildWaveReportState convierte fugas en recomendacion tactica', () => {
+    const report = buildWaveReportState({
+        wave: 2,
+        leaks: 4,
+        lives: 12,
+        kills: 5,
+        damage: 700
+    });
+
+    assert.equal(report.tone, 'breach');
+    assert.equal(report.label, 'Brecha seria');
+    assert.match(report.advice, /Refuerza la salida/);
+});
+
+test('buildWaveReportState destaca maestria cuando no hubo fugas', () => {
+    const report = buildWaveReportState({
+        wave: 8,
+        leaks: 0,
+        kills: 18,
+        damage: 2400,
+        mastery: 2,
+        bestHero: 'Spider-Man'
+    });
+
+    assert.equal(report.tone, 'mastery');
+    assert.equal(report.label, 'Progreso heroico');
 });
 
 function path() {

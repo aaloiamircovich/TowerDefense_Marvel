@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.14.0 - 2026-06-29
+
+- Agrega informe tactico persistente al cerrar cada oleada.
+- El HUD resume fugas, bajas, dano, creditos y MVP de la oleada con tono visual propio.
+- El informe recomienda la siguiente accion: ahorrar, reforzar salida, desplegar dano o revisar maestrias.
+
 ## 2.13.0 - 2026-06-29
 
 - Agrega respuesta tactica de mejora desde el panel de presion de fuga.

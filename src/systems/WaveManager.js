@@ -139,6 +139,7 @@ export class WaveManager {
         this.faction = this.getFaction();
         this.director = new EncounterDirector(gameInstance);
         this.selectedBranch = null;
+        this.waveStartSnapshot = null;
 
         this.prepareNextWave();
     }
@@ -453,6 +454,7 @@ export class WaveManager {
     startNextWave() {
         if (this.currentWave > this.maxWaves || this.isWaveActive || this.game.isGameOver || this.game.modeSystem?.pendingDraft?.length) return;
 
+        this.waveStartSnapshot = this.captureWaveSnapshot(this.currentWave);
         this.game.missionSystem?.onWaveStart(this.currentWave);
         this.game.audio?.play('wave');
         this.isWaveActive = true;
@@ -462,6 +464,7 @@ export class WaveManager {
 
         if (this.game.uiManager) {
             this.game.uiManager.setNextWaveEnabled(false);
+            this.game.uiManager.clearWaveReport?.();
             this.game.uiManager.showToast(`Oleada ${this.currentWave}: ${this.waveModifier.label}`, 'info');
         }
     }
@@ -504,6 +507,7 @@ export class WaveManager {
             else this.game.stars += this.currentWave % 10 === 0 ? 3 : 1;
         }
         const masteryUnlocked = (this.game.heroes || []).flatMap((hero) => this.game.progression?.evaluateHeroMastery?.(hero) || []);
+        this.game.uiManager?.renderWaveReport?.(this.buildWaveReport(waveBounty, metaReward, masteryUnlocked));
 
         const metaCopy = metaReward > 0 ? ` · +${metaReward} Fondos` : '';
         const masteryCopy = masteryUnlocked.length ? ` · ${masteryUnlocked.length} maestria` : '';
@@ -525,5 +529,72 @@ export class WaveManager {
                 if (this.autoWave && !this.isWaveActive && !this.game.isGameOver) this.startNextWave();
             }, 1600);
         }
+    }
+
+    captureWaveSnapshot(wave = this.currentWave) {
+        const heroStats = {};
+        for (const hero of this.game.heroes || []) {
+            const stats = hero.combatStats || {};
+            const id = hero.id || hero.config?.id || hero.name;
+            if (!id) continue;
+            heroStats[id] = {
+                name: hero.name || hero.config?.name || id,
+                damage: Number(stats.damageDealt || 0),
+                kills: Number(stats.kills || 0),
+                gold: Number(stats.goldGenerated || 0),
+                abilities: Number(stats.abilityActivations || 0)
+            };
+        }
+
+        return {
+            wave,
+            lives: Number(this.game.resourceManager?.lives || 0),
+            credits: Number(this.game.resourceManager?.credits || 0),
+            heroStats
+        };
+    }
+
+    buildWaveReport(waveBounty = 0, metaReward = 0, masteryUnlocked = []) {
+        const start = this.waveStartSnapshot || this.captureWaveSnapshot(this.currentWave);
+        const currentLives = Number(this.game.resourceManager?.lives || 0);
+        const currentCredits = Number(this.game.resourceManager?.credits || 0);
+        const heroDeltas = (this.game.heroes || []).map((hero) => {
+            const id = hero.id || hero.config?.id || hero.name;
+            const startStats = start.heroStats?.[id] || {};
+            const stats = hero.combatStats || {};
+            const damage = Math.max(0, Number(stats.damageDealt || 0) - Number(startStats.damage || 0));
+            const kills = Math.max(0, Number(stats.kills || 0) - Number(startStats.kills || 0));
+            return {
+                id,
+                name: hero.name || hero.config?.name || startStats.name || id || 'Heroe',
+                damage,
+                kills,
+                score: damage + kills * 120
+            };
+        });
+
+        const totals = heroDeltas.reduce((sum, hero) => ({
+            damage: sum.damage + hero.damage,
+            kills: sum.kills + hero.kills
+        }), { damage: 0, kills: 0 });
+        const best = heroDeltas.sort((a, b) => b.score - a.score)[0];
+        const leaks = Math.max(0, Number(start.lives || currentLives) - currentLives);
+        const credits = Math.max(0, Math.round(currentCredits - Number(start.credits || 0)));
+
+        return {
+            wave: start.wave || this.currentWave,
+            leaks,
+            lives: currentLives,
+            kills: totals.kills,
+            damage: totals.damage,
+            credits,
+            bounty: waveBounty,
+            metaReward,
+            mastery: masteryUnlocked.length,
+            bestHero: best?.score > 0 ? best.name : 'Sin MVP',
+            bestHeroKills: best?.kills || 0,
+            bestHeroDamage: best?.damage || 0,
+            pressure: leaks > 0 ? 'thin' : 'stable'
+        };
     }
 }

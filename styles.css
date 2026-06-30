@@ -259,6 +259,7 @@ input:focus-visible,
 
 #right-panel {
     border-left: 1px solid var(--border);
+    overflow-y: auto;
 }
 
 .panel-header {
@@ -784,6 +785,98 @@ canvas {
 .pressure-warning { --pressure-color: #ff8f3d; }
 .pressure-critical { --pressure-color: #e63946; }
 
+.wave-report {
+    --report-color: var(--level-accent);
+    display: grid;
+    gap: 8px;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    border-left: 3px solid var(--report-color);
+    background: color-mix(in srgb, var(--report-color), transparent 92%);
+}
+
+.wave-report.hidden {
+    display: none;
+}
+
+.wave-report-heading {
+    display: grid;
+    gap: 2px;
+}
+
+.wave-report-heading span {
+    color: var(--muted);
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0;
+    text-transform: uppercase;
+}
+
+.wave-report-heading strong {
+    color: var(--report-color);
+    font-size: 12px;
+    text-transform: uppercase;
+}
+
+.wave-report-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+}
+
+.wave-report-grid span {
+    display: grid;
+    gap: 2px;
+    min-width: 0;
+    padding: 7px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 6px;
+    color: var(--muted);
+    background: rgba(5, 7, 11, 0.3);
+    font-size: 9px;
+    text-transform: uppercase;
+}
+
+.wave-report-grid b {
+    color: var(--text);
+    font-size: 13px;
+}
+
+.wave-report-mvp {
+    display: grid;
+    grid-template-columns: 18px minmax(0, 1fr);
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+    color: var(--text);
+    font-size: 10px;
+}
+
+.wave-report-mvp i {
+    color: var(--bright-yellow);
+    text-align: center;
+}
+
+.wave-report-mvp span {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.wave-report p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 10px;
+    line-height: 1.35;
+}
+
+.report-clean { --report-color: #46d369; }
+.report-leak { --report-color: #fca311; }
+.report-breach { --report-color: #e63946; }
+.report-warning { --report-color: #ff8f3d; }
+.report-mastery { --report-color: #b88cff; }
+
 .mode-section { display: grid; gap: 10px; margin-bottom: 22px; }
 .section-heading { display: flex; justify-content: space-between; gap: 12px; align-items: end; }
 .section-heading strong { color: var(--bright-yellow); font-size: 15px; }
@@ -974,6 +1067,10 @@ canvas {
 }
 
 #wave-controls {
+    position: sticky;
+    bottom: 0;
+    z-index: 4;
+    margin-top: auto;
     padding: 14px;
     border-top: 1px solid var(--border);
     background: var(--bg-dark);
