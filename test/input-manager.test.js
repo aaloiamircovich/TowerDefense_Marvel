@@ -87,6 +87,80 @@ test('InputManager cicla prioridad del heroe seleccionado con atajo configurable
     }
 });
 
+test('InputManager mejora al heroe seleccionado con atajo configurable', () => {
+    const previousWindow = globalThis.window;
+    let keydownHandler = null;
+    globalThis.window = {
+        addEventListener(type, handler) {
+            if (type === 'keydown') keydownHandler = handler;
+        }
+    };
+
+    const hero = { id: 'iron_man', name: 'Iron Man', config: { id: 'iron_man' } };
+    const calls = [];
+    const game = {
+        selectedUnit: hero,
+        heroes: [hero],
+        activeTeam: [hero.config],
+        progression: { state: { settings: { keyBindings: { upgrade: 'u' } } } },
+        tacticalActions: null
+    };
+    const ui = {
+        quickUpgradeHero: (unit) => {
+            calls.push(unit.id);
+            return true;
+        },
+        setSelectionStatus: () => {}
+    };
+    const canvas = { addEventListener: () => {} };
+    try {
+        new InputManager(canvas, game, ui, {});
+        let prevented = false;
+
+        keydownHandler({ key: 'u', target: { tagName: 'BODY' }, preventDefault: () => { prevented = true; } });
+
+        assert.equal(prevented, true);
+        assert.deepEqual(calls, ['iron_man']);
+    } finally {
+        globalThis.window = previousWindow;
+    }
+});
+
+test('InputManager no consume atajo de mejora sin heroe desplegado seleccionado', () => {
+    const previousWindow = globalThis.window;
+    let keydownHandler = null;
+    globalThis.window = {
+        addEventListener(type, handler) {
+            if (type === 'keydown') keydownHandler = handler;
+        }
+    };
+
+    const calls = [];
+    const game = {
+        selectedUnit: null,
+        heroes: [],
+        activeTeam: [],
+        progression: { state: { settings: { keyBindings: { upgrade: 'u' } } } },
+        tacticalActions: null
+    };
+    const ui = {
+        quickUpgradeHero: () => calls.push('upgrade'),
+        setSelectionStatus: () => {}
+    };
+    const canvas = { addEventListener: () => {} };
+    try {
+        new InputManager(canvas, game, ui, {});
+        let prevented = false;
+
+        keydownHandler({ key: 'u', target: { tagName: 'BODY' }, preventDefault: () => { prevented = true; } });
+
+        assert.equal(prevented, false);
+        assert.deepEqual(calls, []);
+    } finally {
+        globalThis.window = previousWindow;
+    }
+});
+
 function roundPoint(point) {
     return { x: Math.round(point.x), y: Math.round(point.y) };
 }

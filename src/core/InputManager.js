@@ -74,6 +74,7 @@ export class InputManager {
             if (event.key.toLowerCase() === bindings.speed?.toLowerCase()) document.getElementById('btn-speed')?.click();
             if (event.key.toLowerCase() === bindings.nextWave?.toLowerCase()) this.game.waveManager?.startNextWave();
             if (event.key.toLowerCase() === (bindings.targeting || 't').toLowerCase()) this.cycleSelectedTargetingPriority(event);
+            if (event.key.toLowerCase() === (bindings.upgrade || 'u').toLowerCase()) this.quickUpgradeSelectedHero(event);
         });
     }
 
@@ -157,6 +158,13 @@ export class InputManager {
         this.uiManager.setSelectionStatus?.(`${hero.name}: prioridad ${nextPriority}.`);
         this.uiManager.renderHeroRoster?.(this.game.activeTeam, (config) => this.setPlacementMode(config));
         return nextPriority;
+    }
+
+    quickUpgradeSelectedHero(event = null) {
+        const hero = this.game.selectedUnit;
+        if (!hero || hero.takeDamage !== undefined || !this.game.heroes?.includes(hero)) return false;
+        event?.preventDefault?.();
+        return Boolean(this.uiManager.quickUpgradeHero?.(hero));
     }
 
     handleCanvasClick() {

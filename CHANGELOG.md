@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.18.0 - 2026-06-29
+
+- Agrega atajo configurable para mejorar al heroe seleccionado.
+- La tecla por defecto `U` ejecuta la mejora rapida existente y respeta creditos disponibles.
+- Ajustes muestra Mejorar seleccionado junto a los demas controles reconfigurables.
+
 ## 2.17.0 - 2026-06-29
 
 - Agrega atajo configurable para ciclar prioridad de objetivo del heroe seleccionado.

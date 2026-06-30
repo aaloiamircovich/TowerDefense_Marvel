@@ -12,7 +12,7 @@ const VOLUME_SETTINGS = [
     ['sfxVolume', 'sfx', 'Efectos y combate']
 ];
 
-const KEY_BINDINGS = [['pause', 'Pausa'], ['speed', 'Velocidad'], ['nextWave', 'Iniciar oleada'], ['cancel', 'Cancelar'], ['targeting', 'Cambiar objetivo']];
+const KEY_BINDINGS = [['pause', 'Pausa'], ['speed', 'Velocidad'], ['nextWave', 'Iniciar oleada'], ['cancel', 'Cancelar'], ['targeting', 'Cambiar objetivo'], ['upgrade', 'Mejorar seleccionado']];
 
 export class SettingsPanel {
     constructor(ui) {
