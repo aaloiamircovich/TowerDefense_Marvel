@@ -49,6 +49,73 @@ const TARGETING_PRIORITY_COPY = {
     Jefe: { label: 'Jfe', icon: 'fa-skull', description: 'prioriza jefes y amenaza alta' }
 };
 
+const ENEMY_ROLE_COPY = {
+    runner: 'Corredor',
+    tank: 'Tanque',
+    shield: 'Escudo',
+    stealth: 'Sigilo',
+    flying: 'Volador',
+    summoner: 'Invocador',
+    support: 'Soporte',
+    commander: 'Comandante',
+    phaser: 'Faseador',
+    boss: 'Jefe',
+    soldier: 'Soldado'
+};
+
+function escapeHtml(value = '') {
+    return String(value)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;');
+}
+
+export function buildEnemyIntel(enemy = {}) {
+    const threat = Math.max(1, Math.min(5, Math.round(Number(enemy.threat || 1))));
+    const roleLabel = ENEMY_ROLE_COPY[enemy.archetype] || (enemy.isBoss ? 'Jefe' : 'Soldado');
+    const traits = [];
+    const addTrait = (condition, label) => {
+        if (condition && !traits.includes(label)) traits.push(label);
+    };
+
+    addTrait(enemy.isBoss, 'Jefe');
+    addTrait(Boolean(enemy.affix?.label), enemy.affix?.label);
+    addTrait(enemy.stealth || enemy.archetype === 'stealth', 'Sigilo');
+    addTrait(enemy.barrierRatio > 0, 'Barrera');
+    addTrait((enemy.armor || 0) >= 0.25 || enemy.archetype === 'tank' || enemy.archetype === 'shield', 'Blindaje');
+    addTrait((enemy.statusResistance || 0) >= 0.25, 'Resiste control');
+    addTrait(enemy.archetype === 'support' || enemy.healPower > 0, 'Cura');
+    addTrait(enemy.archetype === 'summoner' || enemy.summonId, 'Invoca');
+    addTrait(enemy.archetype === 'commander' || enemy.auraPower, 'Aura');
+    addTrait(enemy.archetype === 'phaser', 'Fasea');
+    addTrait(enemy.archetype === 'flying' || enemy.flying, 'Aereo');
+    addTrait(enemy.archetype === 'runner' || Number(enemy.speed || 0) >= 85, 'Rapido');
+
+    let counter = 'Dano estable';
+    if (enemy.isBoss) counter = 'DPS sostenido';
+    else if (enemy.stealth || enemy.archetype === 'stealth' || enemy.archetype === 'phaser') counter = 'Deteccion';
+    else if (enemy.archetype === 'support' || enemy.healPower > 0) counter = 'Foco al soporte';
+    else if (enemy.archetype === 'summoner' || enemy.summonId) counter = 'Corta invocador';
+    else if (enemy.archetype === 'commander' || enemy.auraPower) counter = 'Elimina aura';
+    else if ((enemy.armor || 0) >= 0.25 || enemy.barrierRatio > 0 || ['tank', 'shield'].includes(enemy.archetype)) counter = 'Perforacion';
+    else if (enemy.archetype === 'runner' || Number(enemy.speed || 0) >= 85) counter = 'Control';
+    else if (enemy.archetype === 'flying' || enemy.flying) counter = 'Alcance';
+
+    const danger = enemy.isBoss || threat >= 5 ? 'critical' : threat >= 4 ? 'high' : threat >= 3 ? 'guarded' : 'low';
+    return {
+        name: enemy.name || 'Enemigo',
+        initial: (enemy.name || '?').charAt(0).toUpperCase(),
+        roleLabel,
+        traits: traits.slice(0, 4),
+        counter,
+        danger,
+        threat,
+        pips: '!'.repeat(threat)
+    };
+}
+
 export function getNextTargetingPriority(current = 'Primero', direction = 1) {
     const index = TARGETING_PRIORITIES.indexOf(current);
     const safeIndex = index >= 0 ? index : 0;
@@ -935,24 +1002,27 @@ export class UIManager {
         document.getElementById('enemy-info-content')?.classList.add('hidden');
         container.innerHTML = '';
 
-        const roles = {
-            runner: 'Corredor', tank: 'Tanque', shield: 'Escudo', stealth: 'Sigilo',
-            flying: 'Volador', summoner: 'Invocador', support: 'Soporte', commander: 'Comandante', phaser: 'Faseador', boss: 'Jefe', soldier: 'Soldado'
-        };
         const categoryColors = {
             Tecnológico: '#40c9ff', Místico: '#b865ff', Urbano: '#e63946',
             Cósmico: '#ff8bd1', Mutante: '#c7f464'
         };
 
         uniqueEnemies.forEach((enemy) => {
+            const intel = buildEnemyIntel(enemy);
             const card = document.createElement('button');
-            card.className = 'wave-enemy-card';
+            card.className = `wave-enemy-card ${intel.danger}`;
+            card.dataset.testid = 'wave-enemy-card';
             card.style.setProperty('--enemy-color', categoryColors[enemy.category] || '#fca311');
-            card.title = `${enemy.name} | ${roles[enemy.archetype] || 'Soldado'} | Amenaza ${enemy.threat || 1}/5`;
+            card.title = `${intel.name} | ${intel.roleLabel} | ${intel.counter} | Amenaza ${intel.threat}/5`;
+            card.setAttribute('aria-label', `${intel.name}. ${intel.roleLabel}. Respuesta: ${intel.counter}. Amenaza ${intel.threat} de 5.`);
+            const traitsMarkup = intel.traits.map((trait) => `<b>${escapeHtml(trait)}</b>`).join('');
             card.innerHTML = `
-                <span class="enemy-token">${enemy.name.charAt(0)}</span>
+                <span class="enemy-token">${escapeHtml(intel.initial)}</span>
                 <span class="enemy-count">x${enemy.previewCount || 1}</span>
-                <strong>${roles[enemy.archetype] || (enemy.isBoss ? 'Jefe' : 'Soldado')}</strong>
+                <strong>${escapeHtml(intel.name)}</strong>
+                <span class="enemy-role">${escapeHtml(intel.roleLabel)} | ${escapeHtml(intel.pips)}</span>
+                <small class="enemy-traits">${traitsMarkup}</small>
+                <em><i class="fas fa-crosshairs"></i>${escapeHtml(intel.counter)}</em>
                 <small>${enemy.affix?.label ? `${enemy.affix.label} · ` : ''}${enemy.stealth ? 'Sigilo · ' : ''}${'◆'.repeat(Math.max(1, enemy.threat || 1))}</small>
             `;
             card.addEventListener('click', () => this.inspectUnit(enemy, true));
@@ -1524,11 +1594,7 @@ export class UIManager {
     }
 
     getEnemyRole(archetype, isBoss = false) {
-        const roles = {
-            runner: 'Corredor', tank: 'Tanque', shield: 'Escudo', stealth: 'Sigilo',
-            flying: 'Volador', summoner: 'Invocador', support: 'Soporte', commander: 'Comandante', phaser: 'Faseador', boss: 'Jefe', soldier: 'Soldado'
-        };
-        return roles[archetype] || (isBoss ? 'Jefe' : 'Soldado');
+        return ENEMY_ROLE_COPY[archetype] || (isBoss ? 'Jefe' : 'Soldado');
     }
 
     getResistanceText(unit) {

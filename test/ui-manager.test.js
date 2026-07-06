@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildCombatPressureState, buildPressureActionState, buildTargetingControlState, buildWaveLaunchState, buildWavePrepActionControl, buildWavePreparationPlan, buildWaveReportActionState, buildWaveReportState, evaluateHeroWaveFit, getNextTargetingPriority } from '../src/systems/UIManager.js';
+import { buildCombatPressureState, buildEnemyIntel, buildPressureActionState, buildTargetingControlState, buildWaveLaunchState, buildWavePrepActionControl, buildWavePreparationPlan, buildWaveReportActionState, buildWaveReportState, evaluateHeroWaveFit, getNextTargetingPriority } from '../src/systems/UIManager.js';
 
 test('buildWaveLaunchState muestra riesgo critico en el CTA', () => {
     const state = buildWaveLaunchState(true, {
@@ -53,6 +53,35 @@ test('buildTargetingControlState resume el modo actual y el siguiente click', ()
     assert.equal(state.label, 'Rap');
     assert.match(state.tooltip, /corredores/);
     assert.match(state.ariaLabel, /Sigilo/);
+});
+
+test('buildEnemyIntel resume sigilo y recomienda deteccion', () => {
+    const intel = buildEnemyIntel({ name: 'Ninja de La Mano', archetype: 'stealth', stealth: true, threat: 3, speed: 90 });
+
+    assert.equal(intel.roleLabel, 'Sigilo');
+    assert.equal(intel.counter, 'Deteccion');
+    assert.equal(intel.danger, 'guarded');
+    assert.ok(intel.traits.includes('Sigilo'));
+    assert.ok(intel.traits.includes('Rapido'));
+});
+
+test('buildEnemyIntel prioriza perforacion ante blindaje y barreras', () => {
+    const intel = buildEnemyIntel({ name: 'Centinela', archetype: 'tank', armor: 0.6, barrierRatio: 0.2, threat: 5 });
+
+    assert.equal(intel.counter, 'Perforacion');
+    assert.equal(intel.danger, 'critical');
+    assert.ok(intel.traits.includes('Blindaje'));
+    assert.ok(intel.traits.includes('Barrera'));
+});
+
+test('buildEnemyIntel distingue soporte e invocador', () => {
+    const support = buildEnemyIntel({ name: 'Cientifico A.I.M.', archetype: 'support', healPower: 0.06, threat: 2 });
+    const summoner = buildEnemyIntel({ name: 'Doombot', archetype: 'summoner', summonId: 'ultron_drone', threat: 4 });
+
+    assert.equal(support.counter, 'Foco al soporte');
+    assert.ok(support.traits.includes('Cura'));
+    assert.equal(summoner.counter, 'Corta invocador');
+    assert.equal(summoner.danger, 'high');
 });
 
 test('evaluateHeroWaveFit recomienda deteccion contra sigilo', () => {

@@ -57,6 +57,7 @@ try {
         );
         const toastText = document.querySelector('[data-testid="toast"]')?.textContent || '';
         const effects = game?.vfx?.effects || [];
+        const enemyIntelCards = [...document.querySelectorAll('[data-testid="wave-enemy-card"]')].map((card) => card.textContent || '');
         return {
             appState: document.body.dataset.appState,
             fatalVisible: Boolean(document.querySelector('.error-state')),
@@ -68,7 +69,9 @@ try {
             floatingTextSeen: Number(window.__SMOKE_FLOATING_TEXT_COUNT || 0),
             threatToastVisible: toastText.includes('Elite en ruta: Centinela'),
             threatRingVisible: effects.some((effect) => effect.type === 'ring' && effect.radius === 58),
-            threatTextVisible: effects.some((effect) => effect.type === 'floatingText' && effect.text === 'ELITE')
+            threatTextVisible: effects.some((effect) => effect.type === 'floatingText' && effect.text === 'ELITE'),
+            enemyIntelCards: enemyIntelCards.length,
+            enemyIntelCounterSeen: enemyIntelCards.some((text) => /Perforacion|Deteccion|Control|Dano estable|Foco al soporte|Corta invocador/.test(text))
         };
     });
 
@@ -83,6 +86,8 @@ try {
     if (!summary.threatToastVisible) failures.push('no se observo toast de amenaza elite');
     if (!summary.threatRingVisible) failures.push('no se observo anillo de amenaza elite');
     if (!summary.threatTextVisible) failures.push('no se observo texto flotante de amenaza elite');
+    if (summary.enemyIntelCards <= 0) failures.push('no se observaron tarjetas de intel enemiga');
+    if (!summary.enemyIntelCounterSeen) failures.push('no se observaron counters en tarjetas de intel enemiga');
     if (pageErrors.length) failures.push(`page errors: ${pageErrors.join(' | ')}`);
     if (consoleErrors.length) failures.push(`console errors: ${consoleErrors.join(' | ')}`);
 
@@ -91,7 +96,7 @@ try {
         failures.forEach((failure) => console.error(`- ${failure}`));
         process.exitCode = 1;
     } else {
-        console.log(`Smoke browser OK: wave ${summary.wave}, vidas ${summary.lives}, desvio maximo ${summary.maxEnemyPathDistance}px, textos flotantes ${summary.floatingTextSeen}, alerta elite OK.`);
+        console.log(`Smoke browser OK: wave ${summary.wave}, vidas ${summary.lives}, desvio maximo ${summary.maxEnemyPathDistance}px, textos flotantes ${summary.floatingTextSeen}, alerta elite OK, intel enemiga ${summary.enemyIntelCards}.`);
     }
 } finally {
     await browser?.close().catch(() => {});

@@ -1041,13 +1041,23 @@ canvas {
 
 .wave-enemy-card {
     position: relative;
-    min-height: 92px;
+    display: grid;
+    align-content: start;
+    gap: 5px;
+    min-height: 128px;
     padding: 8px;
     border: 1px solid rgba(255, 255, 255, 0.08);
+    border-left: 3px solid var(--enemy-danger, var(--enemy-color));
     border-radius: 8px;
     background: rgba(8, 11, 16, 0.6);
     color: var(--text);
+    text-align: left;
 }
+
+.wave-enemy-card.low { --enemy-danger: #46d369; }
+.wave-enemy-card.guarded { --enemy-danger: #fca311; }
+.wave-enemy-card.high { --enemy-danger: #ff7b3d; }
+.wave-enemy-card.critical { --enemy-danger: #e63946; }
 
 .enemy-count {
     position: absolute;
@@ -1090,6 +1100,10 @@ canvas {
     white-space: nowrap;
 }
 
+.wave-enemy-card small:not(.enemy-traits) {
+    display: none;
+}
+
 .wave-enemy-card strong {
     display: block;
     margin-top: 5px;
@@ -1098,6 +1112,45 @@ canvas {
     font-size: 11px;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+.wave-enemy-card .enemy-role {
+    color: var(--muted);
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0;
+    text-transform: uppercase;
+}
+
+.wave-enemy-card .enemy-traits {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    min-height: 18px;
+    margin-top: 0;
+    overflow: visible;
+    white-space: normal;
+}
+
+.wave-enemy-card .enemy-traits b {
+    padding: 2px 5px;
+    border: 1px solid color-mix(in srgb, var(--enemy-danger), transparent 52%);
+    border-radius: 5px;
+    background: color-mix(in srgb, var(--enemy-danger), transparent 88%);
+    color: var(--text);
+    font-size: 8px;
+    line-height: 1.2;
+}
+
+.wave-enemy-card em {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--bright-yellow);
+    font-size: 9px;
+    font-style: normal;
+    font-weight: 800;
+    line-height: 1.25;
 }
 
 #enemy-info-panel {

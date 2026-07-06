@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.25.0 - 2026-07-05
+
+- Convierte las tarjetas de preview enemigo en intel accionable con rol, rasgos, nivel de peligro y counter recomendado.
+- Agrega lectura automatica para sigilo, barreras, blindaje, soporte, invocadores, auras, faseadores y corredores.
+- El smoke browser valida que la UI previa de oleada renderice tarjetas de intel con counters visibles.
+
 ## 2.24.0 - 2026-07-05
 
 - Anuncia jefes y elites al entrar en ruta con toast tactico, audio y telegraph visual sobre el spawn.
