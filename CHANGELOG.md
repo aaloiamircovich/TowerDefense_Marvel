@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.39.0 - 2026-07-06
+
+- Agrega calificacion tactica post-oleada con medalla, score y lectura de ejecucion.
+- El informe de oleada muestra una insignia compacta y una recomendacion visual segun el rendimiento.
+- Agrega pruebas para oleadas limpias dominantes y brechas graves en la calificacion.
+
 ## 2.38.0 - 2026-07-06
 
 - Agrega racha limpia para modos especiales, con bonus de score por oleadas sin fugas.

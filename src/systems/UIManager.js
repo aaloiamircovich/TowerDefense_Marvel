@@ -655,6 +655,62 @@ export function buildWaveReportLesson(report = {}) {
     };
 }
 
+export function buildWaveReportGrade(report = {}) {
+    const leaks = Math.max(0, Number(report.leaks || 0));
+    const kills = Math.max(0, Number(report.kills || 0));
+    const damage = Math.max(0, Number(report.damage || 0));
+    const credits = Math.max(0, Number(report.credits || 0));
+    const mastery = Math.max(0, Number(report.mastery || 0));
+    const bestHeroDamage = Math.max(0, Number(report.bestHeroDamage || 0));
+    const bestShare = damage > 0 ? bestHeroDamage / damage : 0;
+
+    const cleanBonus = leaks === 0 && (kills > 0 || damage > 0) ? 18 : 0;
+    const teamBonus = bestShare > 0 && bestShare < 0.6 && kills >= 6 ? 6 : 0;
+    const score = Math.max(0, Math.min(100, Math.round(
+        55
+        + Math.min(18, kills * 1.2)
+        + Math.min(18, damage / 120)
+        + Math.min(10, credits / 55)
+        + cleanBonus
+        + teamBonus
+        + Math.min(6, mastery * 3)
+        - leaks * 24
+        - (leaks >= 3 ? 10 : 0)
+    )));
+
+    let medal = 'D';
+    let tone = 'critical';
+    let label = 'Zona critica';
+    if (score >= 96) {
+        medal = 'S';
+        tone = 'elite';
+        label = 'S.H.I.E.L.D. perfecto';
+    } else if (score >= 86) {
+        medal = 'A';
+        tone = 'strong';
+        label = 'Control superior';
+    } else if (score >= 72) {
+        medal = 'B';
+        tone = 'stable';
+        label = 'Linea estable';
+    } else if (score >= 55) {
+        medal = 'C';
+        tone = 'thin';
+        label = 'Margen fino';
+    }
+
+    let detail = 'Sostuviste la ruta; prepara el proximo salto de amenaza.';
+    if (leaks >= 3) detail = 'La salida quedo expuesta; suma control final antes de acelerar.';
+    else if (leaks > 0) detail = 'Hubo fugas aisladas; una mejora cerca de meta puede sellar la linea.';
+    else if (kills === 0 && damage === 0) detail = 'No hubo lectura ofensiva; despliega dano antes de la siguiente oleada.';
+    else if (medal === 'S') detail = 'Oleada limpia con ejecucion dominante: buen momento para greed de economia.';
+    else if (bestShare >= 0.65) detail = 'El MVP cargo demasiado peso; agrega soporte para evitar dependencia.';
+    else if (teamBonus > 0) detail = 'Dano bien repartido: la composicion esta escalando como escuadron.';
+    else if (credits >= 400) detail = 'Tienes margen economico para tienda, set o mejora clave.';
+
+    return { score, medal, tone, label, detail };
+}
+
 export function buildWaveReportState(report = {}) {
     const leaks = Math.max(0, Number(report.leaks || 0));
     const kills = Math.max(0, Number(report.kills || 0));
@@ -705,7 +761,8 @@ export function buildWaveReportState(report = {}) {
         bestHeroId: report.bestHeroId || '',
         bestHeroKills: Math.max(0, Number(report.bestHeroKills || 0)),
         bestHeroDamage: Math.round(Math.max(0, Number(report.bestHeroDamage || 0))),
-        lesson: buildWaveReportLesson(report)
+        lesson: buildWaveReportLesson(report),
+        grade: buildWaveReportGrade(report)
     };
 }
 
@@ -1028,14 +1085,24 @@ export class UIManager {
         container.setAttribute('aria-label', `${state.label}. ${state.advice}`);
         container.innerHTML = `
             <div class="wave-report-heading">
-                <span>Informe oleada ${state.wave}</span>
-                <strong>${state.label}</strong>
+                <div>
+                    <span>Informe oleada ${state.wave}</span>
+                    <strong>${state.label}</strong>
+                </div>
+                <b class="wave-report-grade grade-${state.grade.tone}" title="${escapeHtml(state.grade.detail)}">
+                    <em>${state.grade.medal}</em>
+                    <small>${state.grade.score}</small>
+                </b>
             </div>
             <div class="wave-report-grid">
                 <span><b>${state.leaks}</b> fugas</span>
                 <span><b>${state.kills}</b> bajas</span>
                 <span><b>${state.damage}</b> dano</span>
                 <span><b>$${state.credits}</b> creditos</span>
+            </div>
+            <div class="wave-report-rating grade-${state.grade.tone}" aria-label="${escapeHtml(state.grade.label)}: ${escapeHtml(state.grade.detail)}">
+                <strong>${escapeHtml(state.grade.label)}</strong>
+                <span>${escapeHtml(state.grade.detail)}</span>
             </div>
             <div class="wave-report-mvp">
                 <i class="fas fa-star"></i>

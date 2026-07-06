@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildBossHudState, buildCombatPressureState, buildEnemyIntel, buildPressureActionState, buildRosterWaveFitView, buildShopItemInsight, buildShopSetProgress, buildSpawnQueueState, buildTargetingControlState, buildWaveLaunchState, buildWavePrepActionControl, buildWavePreparationPlan, buildWaveReportActionState, buildWaveReportLesson, buildWaveReportState, evaluateHeroWaveFit, getNextTargetingPriority } from '../src/systems/UIManager.js';
+import { buildBossHudState, buildCombatPressureState, buildEnemyIntel, buildPressureActionState, buildRosterWaveFitView, buildShopItemInsight, buildShopSetProgress, buildSpawnQueueState, buildTargetingControlState, buildWaveLaunchState, buildWavePrepActionControl, buildWavePreparationPlan, buildWaveReportActionState, buildWaveReportGrade, buildWaveReportLesson, buildWaveReportState, evaluateHeroWaveFit, getNextTargetingPriority } from '../src/systems/UIManager.js';
 
 test('buildWaveLaunchState muestra riesgo critico en el CTA', () => {
     const state = buildWaveLaunchState(true, {
@@ -427,6 +427,7 @@ test('buildWaveReportState resume una oleada limpia con consejo de ahorro', () =
     assert.equal(report.label, 'Oleada asegurada');
     assert.equal(report.damage, 1841);
     assert.match(report.advice, /ahorrar/);
+    assert.equal(report.grade.medal, 'S');
 });
 
 test('buildWaveReportState convierte fugas en recomendacion tactica', () => {
@@ -483,6 +484,34 @@ test('buildWaveReportLesson recomienda economia en oleadas estables repartidas',
 
     assert.equal(lesson.tone, 'economy');
     assert.match(lesson.detail, /set/);
+});
+
+test('buildWaveReportGrade premia ejecucion limpia dominante', () => {
+    const grade = buildWaveReportGrade({
+        leaks: 0,
+        kills: 18,
+        damage: 2400,
+        credits: 520,
+        bestHeroDamage: 900
+    });
+
+    assert.equal(grade.medal, 'S');
+    assert.equal(grade.tone, 'elite');
+    assert.match(grade.detail, /Oleada limpia/);
+});
+
+test('buildWaveReportGrade degrada una brecha grave aunque haya bajas', () => {
+    const grade = buildWaveReportGrade({
+        leaks: 4,
+        kills: 9,
+        damage: 1500,
+        credits: 180,
+        bestHeroDamage: 900
+    });
+
+    assert.equal(grade.medal, 'D');
+    assert.equal(grade.tone, 'critical');
+    assert.match(grade.detail, /salida/);
 });
 
 test('buildWaveReportActionState recomienda mejorar al MVP si hay creditos', () => {
