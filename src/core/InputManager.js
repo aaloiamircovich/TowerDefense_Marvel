@@ -93,6 +93,19 @@ export function findBestPlacementCell(heroConfig, game, movingHero = null) {
     return best;
 }
 
+export function buildHeroCoverageState(hero, path = []) {
+    if (!hero) return null;
+    const range = hero.getEffectiveStats?.().range || hero.range || hero.config?.range || 100;
+    const coverage = measurePathCoverage({ x: hero.x || 0, y: hero.y || 0 }, range, path);
+    return {
+        range,
+        coverage,
+        quality: coverage.quality,
+        coveredLength: Math.round(coverage.coveredLength),
+        label: `${coverage.quality.label}: ${Math.round(coverage.coveredLength)} px de ruta`
+    };
+}
+
 export class InputManager {
     constructor(canvas, gameInstance, uiManager, resourceManager) {
         this.canvas = canvas;
@@ -455,15 +468,28 @@ export class InputManager {
     drawSelectedHero(ctx) {
         const hero = this.game.selectedUnit;
         if (!hero || !this.game.heroes.includes(hero)) return;
-        const range = hero.getEffectiveStats?.().range || hero.range || 100;
+        const state = buildHeroCoverageState(hero, this.game.path);
+        const range = state.range;
+        const colors = {
+            excellent: '#46d369',
+            strong: '#8be36c',
+            solid: '#fca311',
+            minimal: '#e63946'
+        };
+        const coverageColor = colors[state.quality.id] || '#40c9ff';
         ctx.save();
+        this.drawCoveredPathSegments(ctx, state.coverage, state.coveredLength > 0);
         ctx.beginPath();
         ctx.arc(hero.x, hero.y, range, 0, Math.PI * 2);
         ctx.fillStyle = 'rgba(64, 201, 255, 0.035)';
         ctx.fill();
-        ctx.strokeStyle = 'rgba(64, 201, 255, 0.55)';
+        ctx.strokeStyle = coverageColor;
         ctx.lineWidth = 2;
         ctx.stroke();
+        ctx.fillStyle = coverageColor;
+        ctx.font = '800 10px Segoe UI, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(state.quality.label.replace('Cobertura ', '').toUpperCase(), hero.x, hero.y - 34);
         ctx.restore();
     }
 

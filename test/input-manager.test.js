@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { findBestPlacementCell, InputManager, measurePathCoverage } from '../src/core/InputManager.js';
+import { buildHeroCoverageState, findBestPlacementCell, InputManager, measurePathCoverage } from '../src/core/InputManager.js';
 
 test('measurePathCoverage mide el tramo de camino dentro del rango', () => {
     const coverage = measurePathCoverage(
@@ -61,6 +61,15 @@ test('findBestPlacementCell evita una celda ocupada por otro heroe', () => {
 
     assert.ok(suggestion);
     assert.notDeepEqual({ x: suggestion.centerX, y: suggestion.centerY }, { x: 100, y: 60 });
+});
+
+test('buildHeroCoverageState resume cobertura real del heroe seleccionado', () => {
+    const hero = { x: 100, y: 60, range: 100 };
+    const state = buildHeroCoverageState(hero, [{ x: 0, y: 100 }, { x: 240, y: 100 }]);
+
+    assert.equal(state.quality.id, 'excellent');
+    assert.ok(state.coveredLength > 180);
+    assert.match(state.label, /Cobertura excelente/);
 });
 
 test('InputManager cicla prioridad del heroe seleccionado con atajo configurable', () => {

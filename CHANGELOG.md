@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.33.0 - 2026-07-06
+
+- Agrega overlay de cobertura real para el heroe seleccionado durante el combate.
+- El rango seleccionado ahora pinta los tramos de ruta cubiertos y etiqueta la calidad de cobertura.
+- Agrega prueba para el estado de cobertura real del heroe desplegado.
+
 ## 2.32.0 - 2026-07-06
 
 - Agrega una linea de tiempo compacta de salida enemiga antes de iniciar la oleada.
