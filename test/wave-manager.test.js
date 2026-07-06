@@ -102,6 +102,14 @@ test('WaveManager expone cadencia compacta de salida enemiga', () => {
     assert.equal(timeline.overflow, 0);
 });
 
+test('WaveManager anticipa bonus perfecto en el resumen preparado', () => {
+    const manager = new WaveManager(createGame(), enemies);
+    const summary = manager.buildPreparedSummary();
+
+    assert.equal(summary.perfectBonus, 30);
+    assert.equal(manager.getPerfectWaveBonus(), summary.perfectBonus);
+});
+
 test('WaveManager eleva la lectura de amenaza cuando hay barreras y sigilo', () => {
     const manager = new WaveManager(createGame(), enemies);
     manager.currentWave = 9;

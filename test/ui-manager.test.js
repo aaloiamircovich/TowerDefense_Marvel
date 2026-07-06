@@ -27,6 +27,17 @@ test('buildWaveLaunchState diferencia amenaza alta de una oleada normal', () => 
     assert.equal(low.secondary, 'Amenaza baja · 0');
 });
 
+test('buildWaveLaunchState anticipa bonus por oleada perfecta', () => {
+    const state = buildWaveLaunchState(true, {
+        pressureScore: 14,
+        perfectBonus: 30,
+        threatTier: { id: 'guarded', label: 'Amenaza media', advice: 'Cubre salida.' }
+    });
+
+    assert.equal(state.secondary, 'Amenaza media | 14 | Perfecta +$30');
+    assert.match(state.ariaLabel, /Bonus perfecto 30/);
+});
+
 test('buildWaveLaunchState bloquea lectura cuando la oleada esta activa', () => {
     const state = buildWaveLaunchState(false, {
         pressureScore: 99,

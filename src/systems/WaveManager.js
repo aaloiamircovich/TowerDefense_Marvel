@@ -200,6 +200,7 @@ export class WaveManager {
         return {
             ...this.getWaveSummary(),
             spawnTimeline: this.getSpawnTimeline(),
+            perfectBonus: this.getPerfectWaveBonus(),
             branchOptions: this.director.getBranchOptions(this.currentWave),
             selectedBranch: this.selectedBranch || 'safe'
         };
@@ -631,7 +632,11 @@ export class WaveManager {
         const startLives = Number(this.waveStartSnapshot.lives || 0);
         const currentLives = Number(this.game.resourceManager?.lives || 0);
         if (startLives <= 0 || currentLives < startLives) return 0;
-        return Math.min(140, 24 + this.currentWave * 6);
+        return this.getPerfectWaveBonus();
+    }
+
+    getPerfectWaveBonus(wave = this.currentWave) {
+        return Math.min(140, 24 + Math.max(1, Number(wave || 1)) * 6);
     }
 
     captureWaveSnapshot(wave = this.currentWave) {

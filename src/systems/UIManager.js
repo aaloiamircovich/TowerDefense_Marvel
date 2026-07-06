@@ -21,6 +21,8 @@ export function buildWaveLaunchState(enabled, summary = null) {
     const tier = summary?.threatTier?.id || 'low';
     const tierLabel = summary?.threatTier?.label || 'Amenaza baja';
     const score = summary?.pressureScore ?? 0;
+    const perfectBonus = Math.max(0, Number(summary?.perfectBonus || 0));
+    const bonusCopy = perfectBonus > 0 ? ` | Perfecta +$${perfectBonus}` : '';
     const primary = tier === 'critical'
         ? 'INICIAR CON RIESGO'
         : tier === 'high'
@@ -32,7 +34,9 @@ export function buildWaveLaunchState(enabled, summary = null) {
         primary,
         secondary: `${tierLabel} · ${score}`,
         ariaLabel: `${primary}. ${tierLabel}. Puntaje ${score}.`,
-        tooltip: summary?.threatTier?.advice || 'Iniciar siguiente oleada'
+        tooltip: summary?.threatTier?.advice || 'Iniciar siguiente oleada',
+        secondary: perfectBonus > 0 ? `${tierLabel} | ${score}${bonusCopy}` : `${tierLabel} \u00B7 ${score}`,
+        ariaLabel: `${primary}. ${tierLabel}. Puntaje ${score}.${perfectBonus > 0 ? ` Bonus perfecto ${perfectBonus}.` : ''}`
     };
 }
 

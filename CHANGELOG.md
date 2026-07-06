@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.41.0 - 2026-07-06
+
+- Anticipa el bonus de oleada perfecta en el CTA de inicio antes de lanzar la oleada.
+- Reutiliza la misma formula para preview y pago real del bonus perfecto.
+- Agrega pruebas para el resumen preparado y la lectura del CTA con bonus.
+
 ## 2.40.0 - 2026-07-06
 
 - Agrega bonus de creditos por oleada perfecta sin fugas, con escala moderada y tope.
