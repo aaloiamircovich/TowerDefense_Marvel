@@ -1995,6 +1995,42 @@ select {
     white-space: nowrap;
 }
 
+.shop-set-progress {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2px;
+    padding: 6px 8px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 7px;
+    background: rgba(5, 7, 11, 0.38);
+}
+
+.shop-set-progress.ready {
+    border-color: rgba(252, 163, 17, 0.42);
+    background: rgba(252, 163, 17, 0.08);
+}
+
+.shop-set-progress strong {
+    overflow: hidden;
+    color: var(--bright-yellow);
+    font-size: 10px;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.shop-set-progress.building strong {
+    color: #40c9ff;
+}
+
+.shop-set-progress span {
+    overflow: hidden;
+    color: var(--muted);
+    font-size: 9px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 .inventory-card small {
     color: #40c9ff;
 }

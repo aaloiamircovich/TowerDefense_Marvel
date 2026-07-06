@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildCombatPressureState, buildEnemyIntel, buildPressureActionState, buildRosterWaveFitView, buildShopItemInsight, buildTargetingControlState, buildWaveLaunchState, buildWavePrepActionControl, buildWavePreparationPlan, buildWaveReportActionState, buildWaveReportState, evaluateHeroWaveFit, getNextTargetingPriority } from '../src/systems/UIManager.js';
+import { buildCombatPressureState, buildEnemyIntel, buildPressureActionState, buildRosterWaveFitView, buildShopItemInsight, buildShopSetProgress, buildTargetingControlState, buildWaveLaunchState, buildWavePrepActionControl, buildWavePreparationPlan, buildWaveReportActionState, buildWaveReportState, evaluateHeroWaveFit, getNextTargetingPriority } from '../src/systems/UIManager.js';
 
 test('buildWaveLaunchState muestra riesgo critico en el CTA', () => {
     const state = buildWaveLaunchState(true, {
@@ -120,6 +120,38 @@ test('buildShopItemInsight reconoce control, grupos y fallback de set', () => {
     assert.equal(control.tone, 'counter');
     assert.equal(utility.label, 'abre posiciones');
     assert.equal(utility.tone, 'utility');
+});
+
+test('buildShopSetProgress detecta cuando una compra completa un set', () => {
+    const itemDatabase = {
+        reactor_arc: { id: 'reactor_arc', set: 'stark' },
+        lentes_edith: { id: 'lentes_edith', set: 'stark' }
+    };
+    const progress = buildShopSetProgress(
+        { id: 'lentes_edith', name: 'LENTES E.D.I.T.H.', set: 'stark' },
+        ['reactor_arc'],
+        {},
+        itemDatabase
+    );
+
+    assert.equal(progress.status, 'ready');
+    assert.equal(progress.afterPurchase, 2);
+    assert.match(progress.label, /Completa Stark/);
+    assert.match(progress.detail, /2 piezas/);
+});
+
+test('buildShopSetProgress muestra avance hacia bonus de set', () => {
+    const progress = buildShopSetProgress(
+        { id: 'baliza_fury', name: 'BALIZA FURY', set: 'shield' },
+        [],
+        { iron_man: { weapon: 'reactor_arc' } },
+        { reactor_arc: { id: 'reactor_arc', set: 'stark' } }
+    );
+
+    assert.equal(progress.status, 'building');
+    assert.equal(progress.afterPurchase, 1);
+    assert.equal(progress.needed, 1);
+    assert.match(progress.label, /1\/2/);
 });
 
 test('evaluateHeroWaveFit recomienda deteccion contra sigilo', () => {

@@ -431,6 +431,35 @@ export function buildShopItemInsight(item = {}, summary = null) {
     };
 }
 
+export function buildShopSetProgress(item = {}, ownedItemIds = [], equippedItems = {}, itemDatabase = {}) {
+    if (!item?.set) return null;
+    const setItems = [
+        ...(ownedItemIds || []),
+        ...Object.values(equippedItems || {}).flatMap((slots) => Object.values(slots || {}))
+    ].map((id) => itemDatabase[id]).filter((candidate) => candidate?.set === item.set);
+    const uniqueOwned = new Set(setItems.map((candidate) => candidate.id));
+    const alreadyOwned = uniqueOwned.has(item.id);
+    const current = uniqueOwned.size;
+    const afterPurchase = alreadyOwned ? current : current + 1;
+    const needed = Math.max(0, 2 - afterPurchase);
+    const setName = SET_BONUSES[item.set]?.name || item.set;
+    const bonus = SET_BONUSES[item.set]?.description || 'Bonus de set';
+    const status = afterPurchase >= 2 ? 'ready' : 'building';
+
+    return {
+        status,
+        setName,
+        current,
+        afterPurchase,
+        needed,
+        label: status === 'ready' ? `Completa ${setName}` : `${afterPurchase}/2 ${setName}`,
+        detail: status === 'ready' ? bonus : `Falta ${needed} pieza para bonus`,
+        ariaLabel: status === 'ready'
+            ? `${item.name || 'Objeto'} completa el set ${setName}: ${bonus}`
+            : `${item.name || 'Objeto'} deja el set ${setName} en ${afterPurchase} de 2 piezas`
+    };
+}
+
 function getPathLength(path = []) {
     if (!Array.isArray(path) || path.length < 2) return 0;
     let total = 0;
@@ -1421,6 +1450,12 @@ export class UIManager {
         const owned = this.game.progression.getOwnedQuantity(item.id);
         const summary = this.nextWaveSummary || (!this.game.waveManager?.isWaveActive ? this.game.waveManager?.buildPreparedSummary?.() : null);
         const insight = buildShopItemInsight(item, summary);
+        const setProgress = buildShopSetProgress(
+            item,
+            this.game.progression.state.ownedItemIds,
+            this.game.progression.state.equippedItems,
+            this.game.itemDatabase
+        );
         return `
             <div class="shop-card ${purchased ? 'purchased' : ''}">
                 <div class="item-badge">T${item.tier || 1}</div>
@@ -1433,6 +1468,10 @@ export class UIManager {
                     <strong>${escapeHtml(insight.label)}</strong>
                     <span>${insight.reasons.map(escapeHtml).join(' | ')}</span>
                 </div>
+                ${setProgress ? `<div class="shop-set-progress ${setProgress.status}" aria-label="${escapeHtml(setProgress.ariaLabel)}">
+                    <strong>${escapeHtml(setProgress.label)}</strong>
+                    <span>${escapeHtml(setProgress.detail)}</span>
+                </div>` : ''}
                 <small>Copias disponibles: ${owned}</small>
                 <button class="btn-buy-item btn-primary ghost" data-id="${item.id}" ${purchased ? 'disabled' : ''}>${purchased ? 'ADQUIRIDO' : `${item.price} F`}</button>
             </div>

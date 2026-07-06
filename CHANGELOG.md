@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.28.0 - 2026-07-06
+
+- La tienda ahora muestra si un objeto completa o acerca un bonus de set antes de comprarlo.
+- El progreso combina copias disponibles y objetos equipados para marcar estados 1/2 o bonus listo.
+- Agrega pruebas para compras que completan set y compras que solo avanzan hacia el bonus.
+
 ## 2.27.0 - 2026-07-05
 
 - Agrega insight de tienda para explicar por que un objeto responde a la oleada preparada.
