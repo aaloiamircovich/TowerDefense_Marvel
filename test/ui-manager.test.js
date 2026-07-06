@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildCombatPressureState, buildEnemyIntel, buildPressureActionState, buildRosterWaveFitView, buildShopItemInsight, buildShopSetProgress, buildTargetingControlState, buildWaveLaunchState, buildWavePrepActionControl, buildWavePreparationPlan, buildWaveReportActionState, buildWaveReportState, evaluateHeroWaveFit, getNextTargetingPriority } from '../src/systems/UIManager.js';
+import { buildCombatPressureState, buildEnemyIntel, buildPressureActionState, buildRosterWaveFitView, buildShopItemInsight, buildShopSetProgress, buildTargetingControlState, buildWaveLaunchState, buildWavePrepActionControl, buildWavePreparationPlan, buildWaveReportActionState, buildWaveReportLesson, buildWaveReportState, evaluateHeroWaveFit, getNextTargetingPriority } from '../src/systems/UIManager.js';
 
 test('buildWaveLaunchState muestra riesgo critico en el CTA', () => {
     const state = buildWaveLaunchState(true, {
@@ -408,6 +408,7 @@ test('buildWaveReportState convierte fugas en recomendacion tactica', () => {
     assert.equal(report.tone, 'breach');
     assert.equal(report.label, 'Brecha seria');
     assert.match(report.advice, /Refuerza la salida/);
+    assert.equal(report.lesson.label, 'Prioridad: salida');
 });
 
 test('buildWaveReportState destaca maestria cuando no hubo fugas', () => {
@@ -422,6 +423,33 @@ test('buildWaveReportState destaca maestria cuando no hubo fugas', () => {
 
     assert.equal(report.tone, 'mastery');
     assert.equal(report.label, 'Progreso heroico');
+});
+
+test('buildWaveReportLesson detecta dependencia excesiva del MVP', () => {
+    const lesson = buildWaveReportLesson({
+        leaks: 0,
+        kills: 14,
+        damage: 1000,
+        bestHero: 'Iron Man',
+        bestHeroDamage: 760
+    });
+
+    assert.equal(lesson.tone, 'focus');
+    assert.match(lesson.label, /Iron Man/);
+    assert.match(lesson.detail, /segundo carry/);
+});
+
+test('buildWaveReportLesson recomienda economia en oleadas estables repartidas', () => {
+    const lesson = buildWaveReportLesson({
+        leaks: 0,
+        kills: 14,
+        damage: 1800,
+        bestHero: 'Spider-Man',
+        bestHeroDamage: 600
+    });
+
+    assert.equal(lesson.tone, 'economy');
+    assert.match(lesson.detail, /set/);
 });
 
 test('buildWaveReportActionState recomienda mejorar al MVP si hay creditos', () => {

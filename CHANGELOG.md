@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.29.0 - 2026-07-06
+
+- El informe post-oleada ahora muestra una lectura de aprendizaje con prioridad de salida, segundo carry, maestria o economia.
+- La recomendacion distingue fugas graves, fugas menores, falta de despliegue y dependencia excesiva del MVP.
+- Agrega pruebas para lecciones de brecha, dependencia del MVP y economia estable.
+
 ## 2.28.0 - 2026-07-06
 
 - La tienda ahora muestra si un objeto completa o acerca un bonus de set antes de comprarlo.

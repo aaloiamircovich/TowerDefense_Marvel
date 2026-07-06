@@ -564,6 +564,55 @@ export function buildPressureActionState(pressureState, heroes = [], credits = 0
     };
 }
 
+export function buildWaveReportLesson(report = {}) {
+    const leaks = Math.max(0, Number(report.leaks || 0));
+    const kills = Math.max(0, Number(report.kills || 0));
+    const damage = Math.max(0, Number(report.damage || 0));
+    const bestHeroDamage = Math.max(0, Number(report.bestHeroDamage || 0));
+    const bestShare = damage > 0 ? bestHeroDamage / damage : 0;
+
+    if (leaks >= 3) {
+        return {
+            tone: 'breach',
+            label: 'Prioridad: salida',
+            detail: 'Invierte en control o alcance final antes de escalar.'
+        };
+    }
+    if (leaks > 0) {
+        return {
+            tone: 'leak',
+            label: 'Refuerzo final',
+            detail: 'Una mejora cerca de la meta puede convertir fugas en bajas.'
+        };
+    }
+    if (kills === 0 && damage === 0) {
+        return {
+            tone: 'warning',
+            label: 'Falta despliegue',
+            detail: 'Coloca dano antes de iniciar la siguiente oleada.'
+        };
+    }
+    if (bestShare >= 0.65 && report.bestHero && report.bestHero !== 'Sin MVP') {
+        return {
+            tone: 'focus',
+            label: `Dependes de ${report.bestHero}`,
+            detail: 'Acompana al MVP con soporte, control o un segundo carry.'
+        };
+    }
+    if (Number(report.mastery || 0) > 0) {
+        return {
+            tone: 'mastery',
+            label: 'Maestria lista',
+            detail: 'Revisa recompensas heroicas antes de cambiar de mapa.'
+        };
+    }
+    return {
+        tone: 'economy',
+        label: 'Economia estable',
+        detail: 'Puedes ahorrar para set, tienda o siguiente power spike.'
+    };
+}
+
 export function buildWaveReportState(report = {}) {
     const leaks = Math.max(0, Number(report.leaks || 0));
     const kills = Math.max(0, Number(report.kills || 0));
@@ -613,7 +662,8 @@ export function buildWaveReportState(report = {}) {
         bestHero,
         bestHeroId: report.bestHeroId || '',
         bestHeroKills: Math.max(0, Number(report.bestHeroKills || 0)),
-        bestHeroDamage: Math.round(Math.max(0, Number(report.bestHeroDamage || 0)))
+        bestHeroDamage: Math.round(Math.max(0, Number(report.bestHeroDamage || 0))),
+        lesson: buildWaveReportLesson(report)
     };
 }
 
@@ -902,6 +952,10 @@ export class UIManager {
             <div class="wave-report-mvp">
                 <i class="fas fa-star"></i>
                 <span>${state.bestHero}: ${state.bestHeroKills} bajas - ${state.bestHeroDamage} dano</span>
+            </div>
+            <div class="wave-report-lesson lesson-${state.lesson.tone}" aria-label="${escapeHtml(state.lesson.label)}: ${escapeHtml(state.lesson.detail)}">
+                <strong>${escapeHtml(state.lesson.label)}</strong>
+                <span>${escapeHtml(state.lesson.detail)}</span>
             </div>
             <p>${state.advice}</p>
             ${action ? `<div class="wave-report-action report-action-${action.type}">
