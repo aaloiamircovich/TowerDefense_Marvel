@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.31.0 - 2026-07-06
+
+- Agrega HUD compacto de jefe activo con nombre, fase y barra de salud durante la oleada.
+- El panel se oculta sin jefe vivo y marca estado critico cuando la vida cae por debajo de 30%.
+- Agrega pruebas para visibilidad del HUD de jefe y calculo de salud critica.
+
 ## 2.30.0 - 2026-07-06
 
 - Agrega ajuste para activar o desactivar el texto flotante de combate.

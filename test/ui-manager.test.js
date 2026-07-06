@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildCombatPressureState, buildEnemyIntel, buildPressureActionState, buildRosterWaveFitView, buildShopItemInsight, buildShopSetProgress, buildTargetingControlState, buildWaveLaunchState, buildWavePrepActionControl, buildWavePreparationPlan, buildWaveReportActionState, buildWaveReportLesson, buildWaveReportState, evaluateHeroWaveFit, getNextTargetingPriority } from '../src/systems/UIManager.js';
+import { buildBossHudState, buildCombatPressureState, buildEnemyIntel, buildPressureActionState, buildRosterWaveFitView, buildShopItemInsight, buildShopSetProgress, buildTargetingControlState, buildWaveLaunchState, buildWavePrepActionControl, buildWavePreparationPlan, buildWaveReportActionState, buildWaveReportLesson, buildWaveReportState, evaluateHeroWaveFit, getNextTargetingPriority } from '../src/systems/UIManager.js';
 
 test('buildWaveLaunchState muestra riesgo critico en el CTA', () => {
     const state = buildWaveLaunchState(true, {
@@ -339,6 +339,22 @@ test('buildCombatPressureState marca fuga inminente cerca de salida', () => {
     assert.equal(state.leadEnemyName, 'Runner');
     assert.equal(state.dangerCount, 2);
     assert.match(state.advice, /Pausa/);
+});
+
+test('buildBossHudState oculta panel sin jefe activo', () => {
+    assert.equal(buildBossHudState([], true), null);
+    assert.equal(buildBossHudState([{ isBoss: true, isAlive: true, hp: 100, maxHp: 100 }], false), null);
+});
+
+test('buildBossHudState resume jefe activo y estado critico', () => {
+    const state = buildBossHudState([
+        { name: 'Loki', isBoss: true, isAlive: true, hp: 240, maxHp: 1000, currentPhase: 'Ilusiones', threat: 5 }
+    ], true);
+
+    assert.equal(state.name, 'Loki');
+    assert.equal(state.phase, 'Ilusiones');
+    assert.equal(state.hpPct, 24);
+    assert.equal(state.critical, true);
 });
 
 test('buildPressureActionState recomienda mejorar el mejor heroe asequible', () => {

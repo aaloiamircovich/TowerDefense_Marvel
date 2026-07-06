@@ -510,6 +510,29 @@ export function buildCombatPressureState(enemies = [], path = [], waveActive = f
     };
 }
 
+export function buildBossHudState(enemies = [], waveActive = false) {
+    if (!waveActive) return null;
+    const boss = (enemies || [])
+        .filter((enemy) => enemy?.isAlive && !enemy.hasReachedEnd && enemy.isBoss)
+        .sort((a, b) => (b.threat || 0) - (a.threat || 0) || (b.maxHp || 0) - (a.maxHp || 0))[0];
+    if (!boss) return null;
+
+    const maxHp = Math.max(1, Number(boss.maxHp || boss.hp || 1));
+    const hp = Math.max(0, Math.min(maxHp, Number(boss.hp || 0)));
+    const hpPct = Math.round(hp / maxHp * 100);
+    const phase = boss.currentPhase || boss.phaseLabel || (boss.phases?.length ? 'Fase activa' : 'Fase inicial');
+    return {
+        id: boss.uid || boss.id || boss.name || 'boss',
+        name: boss.name || boss.config?.name || 'Jefe',
+        phase,
+        hp,
+        maxHp,
+        hpPct,
+        threat: Math.max(1, Number(boss.threat || 5)),
+        critical: hpPct <= 30
+    };
+}
+
 export function buildPressureActionState(pressureState, heroes = [], credits = 0, levelCost = (level) => level * 120) {
     if (!pressureState || !['watch', 'warning', 'critical'].includes(pressureState.id)) return null;
     const deployed = heroes.filter((hero) => hero?.isAlive !== false);
@@ -914,6 +937,32 @@ export class UIManager {
             }
         });
         document.getElementById('pressure-pause')?.addEventListener('click', () => this.setManualPause(true));
+        return state;
+    }
+
+    updateBossHud(enemies = [], waveActive = false) {
+        const container = document.getElementById('boss-hud');
+        if (!container) return null;
+        const state = buildBossHudState(enemies, waveActive);
+        if (!state) {
+            container.classList.add('hidden');
+            container.innerHTML = '';
+            return null;
+        }
+
+        container.className = `boss-hud ${state.critical ? 'critical' : ''}`;
+        container.setAttribute('aria-label', `${state.name}. ${state.phase}. Salud ${state.hpPct} por ciento.`);
+        container.innerHTML = `
+            <div class="boss-hud-heading">
+                <span>Jefe activo</span>
+                <strong>${escapeHtml(state.name)}</strong>
+            </div>
+            <div class="boss-hud-meter" aria-hidden="true"><i style="width:${state.hpPct}%"></i></div>
+            <div class="boss-hud-meta">
+                <span>${escapeHtml(state.phase)}</span>
+                <b>${state.hpPct}%</b>
+            </div>
+        `;
         return state;
     }
 

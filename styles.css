@@ -885,6 +885,71 @@ canvas {
 .pressure-warning { --pressure-color: #ff8f3d; }
 .pressure-critical { --pressure-color: #e63946; }
 
+.boss-hud {
+    --boss-color: #ffdf6f;
+    display: grid;
+    gap: 7px;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    border-left: 3px solid var(--boss-color);
+    background: color-mix(in srgb, var(--boss-color), transparent 91%);
+}
+
+.boss-hud.hidden {
+    display: none;
+}
+
+.boss-hud.critical {
+    --boss-color: #e63946;
+}
+
+.boss-hud-heading {
+    display: grid;
+    gap: 2px;
+}
+
+.boss-hud-heading span {
+    color: var(--muted);
+    font-size: 9px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.boss-hud-heading strong {
+    overflow: hidden;
+    color: var(--boss-color);
+    font-size: 12px;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.boss-hud-meter {
+    height: 8px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.boss-hud-meter i {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--boss-color), #ffffff);
+}
+
+.boss-hud-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    color: var(--muted);
+    font-size: 10px;
+}
+
+.boss-hud-meta b {
+    color: var(--boss-color);
+}
+
 .wave-report {
     --report-color: var(--level-accent);
     display: grid;
