@@ -3,6 +3,58 @@ import { EnemyBehaviorSystem } from '../systems/EnemyBehaviorSystem.js';
 let enemyUid = 0;
 const imageCache = new Map();
 
+const STATUS_VISUALS = {
+    stun: { color: '#ffd166', symbol: '!' },
+    slow: { color: '#40c9ff', symbol: '~' },
+    burn: { color: '#ff6b35', symbol: 'F' },
+    bleed: { color: '#e63946', symbol: 'B' },
+    armorBreak: { color: '#b8b8b8', symbol: '-' },
+    mark: { color: '#d86cff', symbol: '+' },
+    web: { color: '#f4f7ff', symbol: 'W' },
+    haste: { color: '#46d369', symbol: '>' }
+};
+
+export function buildEnemyStatusPips(debuffs = [], limit = 4) {
+    const active = (debuffs || [])
+        .filter((debuff) => debuff?.duration > 0)
+        .reduce((map, debuff) => {
+            const current = map.get(debuff.type);
+            if (!current) {
+                map.set(debuff.type, {
+                    type: debuff.type,
+                    duration: Number(debuff.duration || 0),
+                    stacks: Number(debuff.stacks || 1),
+                    power: Number(debuff.power || 0)
+                });
+                return map;
+            }
+            current.duration = Math.max(current.duration, Number(debuff.duration || 0));
+            current.stacks += Number(debuff.stacks || 1);
+            current.power = Math.max(current.power, Number(debuff.power || 0));
+            return map;
+        }, new Map());
+
+    const priority = { stun: 9, web: 8, slow: 7, burn: 6, bleed: 6, armorBreak: 5, mark: 4, haste: 3 };
+    const entries = [...active.values()]
+        .sort((a, b) => (priority[b.type] || 1) - (priority[a.type] || 1) || b.duration - a.duration)
+        .map((status) => {
+            const visual = STATUS_VISUALS[status.type] || { color: '#ffffff', symbol: status.type.charAt(0).toUpperCase() || '?' };
+            return {
+                ...status,
+                color: visual.color,
+                symbol: visual.symbol,
+                durationLabel: `${Math.ceil(status.duration)}s`,
+                stackLabel: status.stacks > 1 ? `x${status.stacks}` : ''
+            };
+        });
+
+    return {
+        visible: entries.slice(0, limit),
+        overflow: Math.max(0, entries.length - limit),
+        total: entries.length
+    };
+}
+
 export class Enemy {
     constructor(config, path, game = null) {
         this.uid = `enemy-${enemyUid++}`;
@@ -398,20 +450,30 @@ export class Enemy {
     }
 
     renderDebuffPips(ctx) {
-        const colors = {
-            stun: '#ffd166',
-            slow: '#40c9ff',
-            burn: '#ff6b35',
-            bleed: '#e63946',
-            armorBreak: '#b8b8b8',
-            mark: '#d86cff',
-            web: '#f4f7ff'
-        };
-        this.debuffs.forEach((debuff, index) => {
-            ctx.fillStyle = colors[debuff.type] || '#ffffff';
+        const state = buildEnemyStatusPips(this.debuffs);
+        if (!state.total) return;
+
+        ctx.save();
+        ctx.font = '800 7px Segoe UI';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        state.visible.forEach((status, index) => {
+            const x = this.x - 12 + index * 8;
+            const y = this.y + this.size / 2 + 8;
+            ctx.fillStyle = 'rgba(5, 7, 11, 0.82)';
             ctx.beginPath();
-            ctx.arc(this.x - 8 + index * 8, this.y + this.size / 2 + 7, 3, 0, Math.PI * 2);
+            ctx.arc(x, y, 4, 0, Math.PI * 2);
             ctx.fill();
+            ctx.strokeStyle = status.color;
+            ctx.lineWidth = 1.4;
+            ctx.stroke();
+            ctx.fillStyle = status.color;
+            ctx.fillText(status.symbol, x, y + 0.2);
         });
+        if (state.overflow > 0) {
+            ctx.fillStyle = '#ffffff';
+            ctx.fillText(`+${state.overflow}`, this.x + 24, this.y + this.size / 2 + 8);
+        }
+        ctx.restore();
     }
 }

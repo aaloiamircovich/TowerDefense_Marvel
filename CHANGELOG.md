@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.35.0 - 2026-07-06
+
+- Mejora los indicadores de estados enemigos con simbolos, color por efecto, prioridad y limite de overflow.
+- Los estados repetidos se fusionan para mostrar stacks/duracion sin saturar la lectura del camino.
+- Agrega pruebas para agrupacion, prioridad y overflow de estados.
+
 ## 2.34.0 - 2026-07-06
 
 - Agrega HUD activo de refuerzos con proximo enemigo, ETA y cantidad pendiente durante la oleada.

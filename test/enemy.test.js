@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { Enemy } from '../src/entities/Enemy.js';
+import { buildEnemyStatusPips, Enemy } from '../src/entities/Enemy.js';
 
 test('Enemy permanece fijado a un tramo horizontal', () => {
     const enemy = new Enemy({ id: 'test', hp: 10, speed: 50 }, [
@@ -79,6 +79,35 @@ test('Enemy atribuye una baja por quemadura a su fuente', () => {
     assert.equal(enemy.isAlive, false);
     assert.equal(stats.damage, 5);
     assert.equal(stats.kills, 1);
+});
+
+test('buildEnemyStatusPips fusiona estados repetidos y conserva stacks', () => {
+    const state = buildEnemyStatusPips([
+        { type: 'slow', duration: 1.2, power: 0.2 },
+        { type: 'slow', duration: 2.6, power: 0.4 },
+        { type: 'mark', duration: 1, power: 0.12, stacks: 2 }
+    ]);
+
+    assert.equal(state.total, 2);
+    assert.equal(state.visible[0].type, 'slow');
+    assert.equal(state.visible[0].durationLabel, '3s');
+    assert.equal(state.visible[0].stackLabel, 'x2');
+    assert.equal(state.visible[1].type, 'mark');
+    assert.equal(state.visible[1].stackLabel, 'x2');
+});
+
+test('buildEnemyStatusPips prioriza control y limita overflow visual', () => {
+    const state = buildEnemyStatusPips([
+        { type: 'mark', duration: 5 },
+        { type: 'burn', duration: 2 },
+        { type: 'armorBreak', duration: 4 },
+        { type: 'stun', duration: 0.5 },
+        { type: 'web', duration: 3 },
+        { type: 'haste', duration: 3 }
+    ], 4);
+
+    assert.deepEqual(state.visible.map((status) => status.type), ['stun', 'web', 'burn', 'armorBreak']);
+    assert.equal(state.overflow, 2);
 });
 
 test('Enemy combina marca, ruptura y penetracion de armadura', () => {
