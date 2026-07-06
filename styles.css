@@ -941,6 +941,44 @@ canvas {
 .pressure-warning { --pressure-color: #ff8f3d; }
 .pressure-critical { --pressure-color: #e63946; }
 
+.spawn-queue {
+    --spawn-color: #46d369;
+    display: grid;
+    gap: 3px;
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--border);
+    border-left: 3px solid var(--spawn-color);
+    background: color-mix(in srgb, var(--spawn-color), transparent 92%);
+}
+
+.spawn-queue.hidden {
+    display: none;
+}
+
+.spawn-queue.guarded { --spawn-color: #fca311; }
+.spawn-queue.high { --spawn-color: #ff7b3d; }
+.spawn-queue.critical { --spawn-color: #e63946; }
+
+.spawn-queue span {
+    color: var(--muted);
+    font-size: 9px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.spawn-queue strong {
+    overflow: hidden;
+    color: var(--text);
+    font-size: 12px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.spawn-queue b {
+    color: var(--spawn-color);
+    font-size: 10px;
+}
+
 .boss-hud {
     --boss-color: #ffdf6f;
     display: grid;

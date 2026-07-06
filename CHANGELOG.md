@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.34.0 - 2026-07-06
+
+- Agrega HUD activo de refuerzos con proximo enemigo, ETA y cantidad pendiente durante la oleada.
+- El panel usa color por amenaza para anticipar elites, jefes y picos de presion mientras combate.
+- Agrega pruebas para ocultar el HUD sin cola activa y calcular ETA/peligro del proximo spawn.
+
 ## 2.33.0 - 2026-07-06
 
 - Agrega overlay de cobertura real para el heroe seleccionado durante el combate.

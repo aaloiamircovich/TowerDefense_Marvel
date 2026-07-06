@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildBossHudState, buildCombatPressureState, buildEnemyIntel, buildPressureActionState, buildRosterWaveFitView, buildShopItemInsight, buildShopSetProgress, buildTargetingControlState, buildWaveLaunchState, buildWavePrepActionControl, buildWavePreparationPlan, buildWaveReportActionState, buildWaveReportLesson, buildWaveReportState, evaluateHeroWaveFit, getNextTargetingPriority } from '../src/systems/UIManager.js';
+import { buildBossHudState, buildCombatPressureState, buildEnemyIntel, buildPressureActionState, buildRosterWaveFitView, buildShopItemInsight, buildShopSetProgress, buildSpawnQueueState, buildTargetingControlState, buildWaveLaunchState, buildWavePrepActionControl, buildWavePreparationPlan, buildWaveReportActionState, buildWaveReportLesson, buildWaveReportState, evaluateHeroWaveFit, getNextTargetingPriority } from '../src/systems/UIManager.js';
 
 test('buildWaveLaunchState muestra riesgo critico en el CTA', () => {
     const state = buildWaveLaunchState(true, {
@@ -355,6 +355,23 @@ test('buildBossHudState resume jefe activo y estado critico', () => {
     assert.equal(state.phase, 'Ilusiones');
     assert.equal(state.hpPct, 24);
     assert.equal(state.critical, true);
+});
+
+test('buildSpawnQueueState oculta refuerzos sin cola activa', () => {
+    assert.equal(buildSpawnQueueState([], 0, true), null);
+    assert.equal(buildSpawnQueueState([{ config: { name: 'Hydra' }, delay: 1 }], 0, false), null);
+});
+
+test('buildSpawnQueueState resume proximo refuerzo con ETA y peligro', () => {
+    const state = buildSpawnQueueState([
+        { config: { name: 'Centinela', threat: 5 }, delay: 1.6 },
+        { config: { name: 'Hydra', threat: 2 }, delay: 0.8 }
+    ], 0.4, true);
+
+    assert.equal(state.name, 'Centinela');
+    assert.equal(state.eta, 1.2);
+    assert.equal(state.remaining, 2);
+    assert.equal(state.danger, 'critical');
 });
 
 test('buildPressureActionState recomienda mejorar el mejor heroe asequible', () => {

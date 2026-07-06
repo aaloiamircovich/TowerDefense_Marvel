@@ -533,6 +533,25 @@ export function buildBossHudState(enemies = [], waveActive = false) {
     };
 }
 
+export function buildSpawnQueueState(queue = [], spawnTimer = 0, waveActive = false) {
+    if (!waveActive || !queue?.length) return null;
+    const next = queue[0]?.config || {};
+    const delay = Math.max(0, Number(queue[0]?.delay || 0));
+    const eta = Math.max(0, delay - Math.max(0, Number(spawnTimer || 0)));
+    const threat = Math.max(1, Number(next.threat || 1));
+    const danger = next.isBoss || threat >= 5 ? 'critical' : threat >= 4 ? 'high' : threat >= 3 ? 'guarded' : 'low';
+
+    return {
+        name: next.name || 'Enemigo',
+        eta: Number(eta.toFixed(1)),
+        remaining: queue.length,
+        threat,
+        danger,
+        role: next.archetype || (next.isBoss ? 'boss' : 'soldier'),
+        isBoss: Boolean(next.isBoss)
+    };
+}
+
 export function buildPressureActionState(pressureState, heroes = [], credits = 0, levelCost = (level) => level * 120) {
     if (!pressureState || !['watch', 'warning', 'critical'].includes(pressureState.id)) return null;
     const deployed = heroes.filter((hero) => hero?.isAlive !== false);
@@ -962,6 +981,26 @@ export class UIManager {
                 <span>${escapeHtml(state.phase)}</span>
                 <b>${state.hpPct}%</b>
             </div>
+        `;
+        return state;
+    }
+
+    updateSpawnQueue(queue = [], spawnTimer = 0, waveActive = false) {
+        const container = document.getElementById('spawn-queue');
+        if (!container) return null;
+        const state = buildSpawnQueueState(queue, spawnTimer, waveActive);
+        if (!state) {
+            container.classList.add('hidden');
+            container.innerHTML = '';
+            return null;
+        }
+
+        container.className = `spawn-queue ${state.danger}`;
+        container.setAttribute('aria-label', `Proximo refuerzo ${state.name} en ${state.eta} segundos. Quedan ${state.remaining}.`);
+        container.innerHTML = `
+            <span>Refuerzos</span>
+            <strong>${escapeHtml(state.name)}</strong>
+            <b>${state.eta}s | ${state.remaining} pendientes</b>
         `;
         return state;
     }
