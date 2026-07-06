@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildCombatPressureState, buildEnemyIntel, buildPressureActionState, buildRosterWaveFitView, buildTargetingControlState, buildWaveLaunchState, buildWavePrepActionControl, buildWavePreparationPlan, buildWaveReportActionState, buildWaveReportState, evaluateHeroWaveFit, getNextTargetingPriority } from '../src/systems/UIManager.js';
+import { buildCombatPressureState, buildEnemyIntel, buildPressureActionState, buildRosterWaveFitView, buildShopItemInsight, buildTargetingControlState, buildWaveLaunchState, buildWavePrepActionControl, buildWavePreparationPlan, buildWaveReportActionState, buildWaveReportState, evaluateHeroWaveFit, getNextTargetingPriority } from '../src/systems/UIManager.js';
 
 test('buildWaveLaunchState muestra riesgo critico en el CTA', () => {
     const state = buildWaveLaunchState(true, {
@@ -100,6 +100,26 @@ test('buildRosterWaveFitView expone score y razones visibles', () => {
 
 test('buildRosterWaveFitView oculta perfiles neutros', () => {
     assert.equal(buildRosterWaveFitView({ id: 'neutral', score: 0 }), null);
+});
+
+test('buildShopItemInsight conecta deteccion y blindaje con la oleada', () => {
+    const stealth = buildShopItemInsight({ set: 'stark', tier: 1, effects: { detectStealth: true } }, { stealthCount: 2, roles: ['stealth'] });
+    const armor = buildShopItemInsight({ set: 'shield', tier: 2, effects: { armorPenetration: 0.2 } }, { armoredCount: 3, barrierCount: 1, roles: ['tank'] });
+
+    assert.equal(stealth.label, 'cubre sigilo');
+    assert.equal(stealth.tone, 'counter');
+    assert.equal(armor.label, 'rompe blindaje');
+    assert.equal(armor.tone, 'counter');
+});
+
+test('buildShopItemInsight reconoce control, grupos y fallback de set', () => {
+    const control = buildShopItemInsight({ set: 'pym', tier: 1, effects: { slowChance: 0.3, splashRadius: 40 } }, { fastest: 96, total: 10, roles: ['runner'] });
+    const utility = buildShopItemInsight({ set: 'mystic', tier: 1, effects: { allowWater: true } }, null);
+
+    assert.deepEqual(control.reasons.slice(0, 2), ['frena corredores', 'limpia grupos']);
+    assert.equal(control.tone, 'counter');
+    assert.equal(utility.label, 'abre posiciones');
+    assert.equal(utility.tone, 'utility');
 });
 
 test('evaluateHeroWaveFit recomienda deteccion contra sigilo', () => {

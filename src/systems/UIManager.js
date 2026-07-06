@@ -401,6 +401,36 @@ export function buildRosterWaveFitView(fit = null) {
     };
 }
 
+export function buildShopItemInsight(item = {}, summary = null) {
+    const effects = item.effects || {};
+    const reasons = [];
+    const add = (condition, label) => {
+        if (condition && !reasons.includes(label)) reasons.push(label);
+    };
+
+    add(effects.detectStealth && (summary?.stealthCount > 0 || (summary?.roles || []).includes('stealth')), 'cubre sigilo');
+    add((effects.armorPenetration || effects.armorBreakChance) && (summary?.armoredCount > 0 || summary?.barrierCount > 0 || (summary?.roles || []).some((role) => ['tank', 'shield'].includes(role))), 'rompe blindaje');
+    add(effects.slowChance && ((summary?.roles || []).includes('runner') || Number(summary?.fastest || 0) >= 90), 'frena corredores');
+    add((effects.damagePct || effects.fireRatePct || effects.critChance || effects.consecutiveDamagePct) && (summary?.hasBoss || Number(summary?.pressureScore || 0) >= 16), 'sube DPS');
+    add((effects.chainCount || effects.splashRadius) && Number(summary?.total || 0) >= 8, 'limpia grupos');
+    add(effects.rangePct && ((summary?.roles || []).includes('flying') || Number(summary?.fastest || 0) >= 90), 'mejora cobertura');
+    add(effects.allowWater, 'abre posiciones');
+    add(effects.onHitCredit, 'economia por impacto');
+    add(effects.killHealEvery || effects.lowLifeDamagePct || effects.lowLifeFireRatePct, 'seguro de fuga');
+
+    const setName = SET_BONUSES[item.set]?.name || item.set || 'sin set';
+    if (reasons.length < 3 && item.set) reasons.push(`set ${setName}`);
+    const tone = reasons.some((reason) => ['cubre sigilo', 'rompe blindaje', 'frena corredores', 'sube DPS'].includes(reason))
+        ? 'counter'
+        : item.tier >= 3 ? 'power' : 'utility';
+    return {
+        tone,
+        label: reasons[0] || 'mejora versatil',
+        reasons: reasons.slice(0, 3),
+        setName
+    };
+}
+
 function getPathLength(path = []) {
     if (!Array.isArray(path) || path.length < 2) return 0;
     let total = 0;
@@ -1389,6 +1419,8 @@ export class UIManager {
     renderShopItem(item, purchased = false) {
         if (!item) return '<div class="shop-card empty-copy">Agotado</div>';
         const owned = this.game.progression.getOwnedQuantity(item.id);
+        const summary = this.nextWaveSummary || (!this.game.waveManager?.isWaveActive ? this.game.waveManager?.buildPreparedSummary?.() : null);
+        const insight = buildShopItemInsight(item, summary);
         return `
             <div class="shop-card ${purchased ? 'purchased' : ''}">
                 <div class="item-badge">T${item.tier || 1}</div>
@@ -1397,6 +1429,10 @@ export class UIManager {
                     <div><small>${SLOT_LABELS[item.slot]} · ${SET_BONUSES[item.set]?.name || item.set}</small><h4>${item.name}</h4></div>
                 </div>
                 <p>${item.desc}</p>
+                <div class="shop-insight ${insight.tone}" aria-label="Recomendado por ${escapeHtml(insight.reasons.join(', '))}">
+                    <strong>${escapeHtml(insight.label)}</strong>
+                    <span>${insight.reasons.map(escapeHtml).join(' | ')}</span>
+                </div>
                 <small>Copias disponibles: ${owned}</small>
                 <button class="btn-buy-item btn-primary ghost" data-id="${item.id}" ${purchased ? 'disabled' : ''}>${purchased ? 'ADQUIRIDO' : `${item.price} F`}</button>
             </div>

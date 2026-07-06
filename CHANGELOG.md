@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.27.0 - 2026-07-05
+
+- Agrega insight de tienda para explicar por que un objeto responde a la oleada preparada.
+- Los objetos destacan deteccion, penetracion, control, DPS, limpieza de grupos, cobertura, economia o supervivencia segun sus efectos.
+- Las cartas de tienda muestran el motivo recomendado con tono de counter, potencia o utilidad.
+
 ## 2.26.0 - 2026-07-05
 
 - Hace visibles en el roster el score y las razones de counter de cada heroe contra la oleada preparada.

@@ -1963,6 +1963,38 @@ select {
     font-size: 10px;
 }
 
+.shop-insight {
+    display: grid;
+    gap: 3px;
+    padding: 7px 8px;
+    border: 1px solid color-mix(in srgb, var(--shop-insight-color, var(--level-accent)), transparent 62%);
+    border-left: 3px solid var(--shop-insight-color, var(--level-accent));
+    border-radius: 7px;
+    background: color-mix(in srgb, var(--shop-insight-color, var(--level-accent)), transparent 90%);
+}
+
+.shop-insight.counter { --shop-insight-color: #46d369; }
+.shop-insight.power { --shop-insight-color: #fca311; }
+.shop-insight.utility { --shop-insight-color: #40c9ff; }
+
+.shop-insight strong {
+    overflow: hidden;
+    color: var(--shop-insight-color, var(--level-accent));
+    font-size: 10px;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.shop-insight span {
+    overflow: hidden;
+    color: var(--muted);
+    font-size: 9px;
+    line-height: 1.25;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 .inventory-card small {
     color: #40c9ff;
 }
