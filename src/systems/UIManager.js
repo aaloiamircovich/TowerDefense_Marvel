@@ -755,6 +755,7 @@ export function buildWaveReportState(report = {}) {
         damage: Math.round(damage),
         credits: Math.round(credits),
         bounty: Math.max(0, Number(report.bounty || 0)),
+        cleanBonus: Math.max(0, Number(report.cleanBonus || 0)),
         metaReward: Math.max(0, Number(report.metaReward || 0)),
         mastery,
         bestHero,
@@ -1099,6 +1100,7 @@ export class UIManager {
                 <span><b>${state.kills}</b> bajas</span>
                 <span><b>${state.damage}</b> dano</span>
                 <span><b>$${state.credits}</b> creditos</span>
+                ${state.cleanBonus > 0 ? `<span><b>+$${state.cleanBonus}</b> perfecta</span>` : ''}
             </div>
             <div class="wave-report-rating grade-${state.grade.tone}" aria-label="${escapeHtml(state.grade.label)}: ${escapeHtml(state.grade.detail)}">
                 <strong>${escapeHtml(state.grade.label)}</strong>

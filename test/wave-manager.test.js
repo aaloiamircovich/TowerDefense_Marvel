@@ -205,6 +205,59 @@ test('WaveManager emite informe tactico con deltas de la oleada', () => {
     assert.ok(reports[0].credits >= 134);
 });
 
+test('WaveManager paga bonus moderado por oleada perfecta', () => {
+    const reports = [];
+    const game = createGame('new-york', [], [
+        deployedHero({ id: 'iron_man', name: 'Iron Man', damage: 58, fireRate: 1.4, range: 180, level: 2 })
+    ]);
+    game.resourceManager.credits = 300;
+    game.resourceManager.lives = 20;
+    game.uiManager = {
+        renderWavePreview: () => {},
+        setNextWaveEnabled: () => {},
+        clearWaveReport: () => {},
+        renderWaveReport: (report) => reports.push(report),
+        updateCombatPressure: () => {},
+        showToast: () => {}
+    };
+    const manager = new WaveManager(game, enemies);
+
+    manager.startNextWave();
+    game.heroes[0].combatStats.damageDealt += 900;
+    game.heroes[0].combatStats.kills += 7;
+    manager.enemiesQueue = [];
+    manager.finishWave();
+
+    assert.equal(reports[0].cleanBonus, 30);
+    assert.equal(game.resourceManager.credits, 300 + 134 + 30);
+});
+
+test('WaveManager cancela bonus perfecto cuando hay fugas', () => {
+    const reports = [];
+    const game = createGame('new-york', [], [
+        deployedHero({ id: 'iron_man', name: 'Iron Man', damage: 58, fireRate: 1.4, range: 180, level: 2 })
+    ]);
+    game.resourceManager.credits = 300;
+    game.resourceManager.lives = 20;
+    game.uiManager = {
+        renderWavePreview: () => {},
+        setNextWaveEnabled: () => {},
+        clearWaveReport: () => {},
+        renderWaveReport: (report) => reports.push(report),
+        updateCombatPressure: () => {},
+        showToast: () => {}
+    };
+    const manager = new WaveManager(game, enemies);
+
+    manager.startNextWave();
+    game.resourceManager.lives = 19;
+    manager.enemiesQueue = [];
+    manager.finishWave();
+
+    assert.equal(reports[0].cleanBonus, 0);
+    assert.equal(game.resourceManager.credits, 300 + 134);
+});
+
 test('WaveManager anuncia jefes al entrar en ruta', () => {
     const calls = captureThreatCalls();
     const game = createGame();

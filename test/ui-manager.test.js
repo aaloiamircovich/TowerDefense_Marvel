@@ -418,6 +418,7 @@ test('buildWaveReportState resume una oleada limpia con consejo de ahorro', () =
         kills: 12,
         damage: 1840.7,
         credits: 332,
+        cleanBonus: 42,
         bestHero: 'Iron Man',
         bestHeroKills: 7,
         bestHeroDamage: 990
@@ -426,6 +427,7 @@ test('buildWaveReportState resume una oleada limpia con consejo de ahorro', () =
     assert.equal(report.tone, 'clean');
     assert.equal(report.label, 'Oleada asegurada');
     assert.equal(report.damage, 1841);
+    assert.equal(report.cleanBonus, 42);
     assert.match(report.advice, /ahorrar/);
     assert.equal(report.grade.medal, 'S');
 });

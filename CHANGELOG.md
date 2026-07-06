@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.40.0 - 2026-07-06
+
+- Agrega bonus de creditos por oleada perfecta sin fugas, con escala moderada y tope.
+- El informe post-oleada muestra el bonus perfecto cuando corresponde.
+- Agrega pruebas para pago del bonus, cancelacion por fugas y lectura en UI.
+
 ## 2.39.0 - 2026-07-06
 
 - Agrega calificacion tactica post-oleada con medalla, score y lectura de ejecucion.
