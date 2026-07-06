@@ -162,12 +162,16 @@ test('Objetivos de misión entregan una recompensa una sola vez', () => {
 
 test('Ajustes accesibles conservan tipos y límites válidos', () => {
     const manager = new ProgressionManager(new MemoryStorage());
-    manager.initialize(createGame(), data);
+    const game = createGame();
+    manager.initialize(game, data);
     manager.updateSetting('highContrast', true);
+    manager.updateSetting('combatText', false);
     manager.updateSetting('uiScale', 'large');
     manager.updateSetting('musicVolume', 4);
 
     assert.equal(manager.state.settings.highContrast, true);
+    assert.equal(manager.state.settings.combatText, false);
+    assert.equal(game.showCombatText, false);
     assert.equal(manager.state.settings.uiScale, 'large');
     assert.equal(manager.state.settings.musicVolume, 1);
 });

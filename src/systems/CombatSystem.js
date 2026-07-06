@@ -73,6 +73,7 @@ export class CombatSystem {
 
     static addDamageText(projectile, target, attacker, result) {
         if (!result?.damage || !attacker?.game?.vfx?.addFloatingText || !target) return;
+        if (attacker.game.showCombatText === false) return;
         const critical = projectile.critical || projectile.isCrit;
         const killed = result.killed;
         const color = killed ? '#ffdf6f' : critical ? '#ff6b6b' : projectile.color || '#ffffff';

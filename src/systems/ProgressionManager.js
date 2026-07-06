@@ -40,6 +40,7 @@ function createDefaultState() {
         settings: {
             ranges: true,
             grid: false,
+            combatText: true,
             audio: true,
             highContrast: false,
             reduceMotion: false,
@@ -533,7 +534,7 @@ export class ProgressionManager {
 
     updateSetting(key, value) {
         if (!(key in this.state.settings)) return;
-        if (['ranges', 'grid', 'audio', 'highContrast', 'reduceMotion'].includes(key)) {
+        if (['ranges', 'grid', 'combatText', 'audio', 'highContrast', 'reduceMotion'].includes(key)) {
             this.state.settings[key] = Boolean(value);
         } else if (['masterVolume', 'musicVolume', 'sfxVolume'].includes(key)) {
             this.state.settings[key] = Math.max(0, Math.min(1, Number(value) || 0));
@@ -578,6 +579,7 @@ export class ProgressionManager {
         const settings = this.state.settings;
         this.game.showHeroRanges = settings.ranges;
         this.game.showGrid = settings.grid;
+        this.game.showCombatText = settings.combatText;
         this.game.audio?.setEnabled(settings.audio);
         this.game.audio?.setBusVolume?.('master', settings.masterVolume);
         this.game.audio?.setBusVolume?.('music', settings.musicVolume);

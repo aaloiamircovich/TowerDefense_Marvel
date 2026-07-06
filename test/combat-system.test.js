@@ -129,6 +129,25 @@ test('CombatSystem emite texto flotante para impactos criticos y bajas', () => {
     assert.equal(floating[0][3].size, 17);
 });
 
+test('CombatSystem respeta ajuste para ocultar texto flotante de combate', () => {
+    const floating = [];
+    const target = createPositionedTarget(0, 0);
+    const attacker = createAttacker([target]);
+    attacker.game.showCombatText = false;
+    attacker.game.vfx = {
+        addFloatingText: (...args) => floating.push(args)
+    };
+
+    CombatSystem.applyImpact({
+        attackerType: 'Urbano',
+        damage: 20,
+        color: '#40c9ff',
+        effects: []
+    }, target, attacker, null);
+
+    assert.equal(floating.length, 0);
+});
+
 function createTarget(category, takeDamage) {
     return {
         category,

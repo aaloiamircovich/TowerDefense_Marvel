@@ -1,6 +1,7 @@
 const BOOLEAN_SETTINGS = [
     ['ranges', 'toggle-ranges', 'Mostrar rangos de héroes'],
     ['grid', 'toggle-grid', 'Mostrar cuadrícula táctica'],
+    ['combatText', 'toggle-combat-text', 'Texto flotante de combate'],
     ['audio', 'toggle-audio', 'Audio del juego'],
     ['highContrast', 'toggle-contrast', 'Modo de alto contraste'],
     ['reduceMotion', 'toggle-motion', 'Reducir movimiento']

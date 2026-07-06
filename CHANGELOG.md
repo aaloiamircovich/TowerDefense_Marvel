@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.30.0 - 2026-07-06
+
+- Agrega ajuste para activar o desactivar el texto flotante de combate.
+- El toggle se guarda en el perfil y se aplica al juego sin ocultar alertas tacticas de jefes o elites.
+- Agrega prueba para asegurar que CombatSystem respete el ajuste de ruido visual.
+
 ## 2.29.0 - 2026-07-06
 
 - El informe post-oleada ahora muestra una lectura de aprendizaje con prioridad de salida, segundo carry, maestria o economia.
