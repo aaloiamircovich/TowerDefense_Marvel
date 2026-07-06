@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { Hero } from '../src/entities/Hero.js';
+import { buildHeroTargetIntent, Hero } from '../src/entities/Hero.js';
 
 test('prioridad Rapido elige mayor velocidad', () => {
     const hero = createHero('Rápido');
@@ -22,6 +22,25 @@ test('prioridad Jefe usa amenaza como desempate', () => {
     const lesserBoss = createTarget({ isBoss: true, threat: 3, distanceTravelled: 80 });
     const mainBoss = createTarget({ isBoss: true, threat: 5, distanceTravelled: 10 });
     assert.equal(hero.getBestTarget([soldier, lesserBoss, mainBoss], hero.getEffectiveStats()), mainBoss);
+});
+
+test('buildHeroTargetIntent resume objetivo visible del heroe seleccionado', () => {
+    const hero = createHero('Jefe');
+    const boss = createTarget({ uid: 'boss-1', name: 'Loki', isBoss: true, threat: 5, x: 120, y: 0 });
+    const intent = buildHeroTargetIntent(hero, [createTarget({ distanceTravelled: 100 }), boss]);
+
+    assert.equal(intent.targetId, 'boss-1');
+    assert.equal(intent.targetName, 'Loki');
+    assert.equal(intent.priority, 'Jefe');
+    assert.equal(intent.distance, 120);
+    assert.equal(intent.danger, 'critical');
+});
+
+test('buildHeroTargetIntent se oculta sin enemigos en rango', () => {
+    const hero = createHero('Primero');
+    const far = createTarget({ x: 500, y: 0 });
+
+    assert.equal(buildHeroTargetIntent(hero, [far]), null);
 });
 
 function createHero(priority, canSeeStealth = false) {

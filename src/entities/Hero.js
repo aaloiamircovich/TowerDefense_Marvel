@@ -5,6 +5,27 @@ import { HeroAbilitySystem } from '../systems/HeroAbilitySystem.js';
 import { aggregateItemEffects } from '../systems/ItemEffectSystem.js';
 import { applyEvolutionStats } from '../systems/EvolutionSystem.js';
 
+export function buildHeroTargetIntent(hero, enemies = [], stats = null) {
+    if (!hero?.getBestTarget) return null;
+    const effectiveStats = stats || hero.getEffectiveStats?.();
+    if (!effectiveStats) return null;
+    const target = hero.getBestTarget(enemies, effectiveStats);
+    if (!target) return null;
+
+    const distance = Math.hypot((target.x || 0) - (hero.x || 0), (target.y || 0) - (hero.y || 0));
+    const threat = Math.max(1, Number(target.threat || 1));
+    return {
+        target,
+        targetId: target.uid || target.id || target.name || 'target',
+        targetName: target.name || target.config?.name || 'Enemigo',
+        priority: hero.targetingPriority || hero.config?.targetingPriority || 'Primero',
+        distance: Math.round(distance),
+        inRange: distance <= Number(effectiveStats.range || hero.range || 0),
+        danger: target.isBoss || threat >= 5 ? 'critical' : threat >= 4 ? 'high' : threat >= 3 ? 'guarded' : 'low',
+        color: target.isBoss ? '#ffdf6f' : threat >= 4 ? '#ff7b3d' : '#40c9ff'
+    };
+}
+
 export class Hero {
     constructor(config, x, y, game) {
         this.game = game;

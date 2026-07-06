@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.37.0 - 2026-07-06
+
+- Agrega lectura de intencion de objetivo para el heroe seleccionado durante el combate.
+- El overlay dibuja una linea tactica hacia el enemigo elegido y etiqueta la prioridad activa.
+- Agrega pruebas para objetivo visible y ocultamiento cuando no hay enemigos en rango.
+
 ## 2.36.0 - 2026-07-06
 
 - Agrega feedback visual de impacto por tipo de ataque, critico y KO sin depender del texto flotante.

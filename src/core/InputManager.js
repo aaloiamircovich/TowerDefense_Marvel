@@ -2,6 +2,7 @@ import { getSpriteFrame } from '../rendering/ImageCache.js';
 import { TacticalActionSystem } from '../systems/TacticalActionSystem.js';
 import { getNextTargetingPriority } from '../systems/UIManager.js';
 import { getClosestPointOnPath } from '../utils/PathUtils.js';
+import { buildHeroTargetIntent } from '../entities/Hero.js';
 
 export function measurePathCoverage(origin, range, path = []) {
     const intervals = [];
@@ -469,6 +470,7 @@ export class InputManager {
         const hero = this.game.selectedUnit;
         if (!hero || !this.game.heroes.includes(hero)) return;
         const state = buildHeroCoverageState(hero, this.game.path);
+        const targetIntent = buildHeroTargetIntent(hero, this.game.enemies || []);
         const range = state.range;
         const colors = {
             excellent: '#46d369',
@@ -479,6 +481,7 @@ export class InputManager {
         const coverageColor = colors[state.quality.id] || '#40c9ff';
         ctx.save();
         this.drawCoveredPathSegments(ctx, state.coverage, state.coveredLength > 0);
+        this.drawTargetIntent(ctx, hero, targetIntent);
         ctx.beginPath();
         ctx.arc(hero.x, hero.y, range, 0, Math.PI * 2);
         ctx.fillStyle = 'rgba(64, 201, 255, 0.035)';
@@ -490,6 +493,35 @@ export class InputManager {
         ctx.font = '800 10px Segoe UI, sans-serif';
         ctx.textAlign = 'center';
         ctx.fillText(state.quality.label.replace('Cobertura ', '').toUpperCase(), hero.x, hero.y - 34);
+        ctx.restore();
+    }
+
+    drawTargetIntent(ctx, hero, intent) {
+        if (!intent?.target?.isAlive) return;
+        const target = intent.target;
+        ctx.save();
+        ctx.strokeStyle = intent.color;
+        ctx.lineWidth = intent.danger === 'critical' ? 3 : 2;
+        ctx.globalAlpha = 0.78;
+        ctx.setLineDash([10, 6]);
+        ctx.beginPath();
+        ctx.moveTo(hero.x, hero.y);
+        ctx.lineTo(target.x, target.y);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        ctx.fillStyle = 'rgba(5, 7, 11, 0.82)';
+        ctx.strokeStyle = intent.color;
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.roundRect(target.x - 22, target.y - 35, 44, 15, 5);
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = intent.color;
+        ctx.font = '800 8px Segoe UI, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(intent.priority.toUpperCase().slice(0, 5), target.x, target.y - 27.5);
         ctx.restore();
     }
 
