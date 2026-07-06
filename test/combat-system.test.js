@@ -106,6 +106,39 @@ test('CombatSystem usa la fuente aleatoria sembrada para efectos', () => {
     assert.equal(applied, 0);
 });
 
+test('CombatSystem describe feedback visual de impacto por critico y KO', () => {
+    const critical = CombatSystem.buildImpactVfxState({ attackerType: 'Urbano', critical: true }, { damage: 20, killed: false });
+    const killed = CombatSystem.buildImpactVfxState({ attackerType: 'Urbano', color: '#123456' }, { damage: 20, killed: true });
+
+    assert.equal(critical.kind, 'critical');
+    assert.equal(critical.color, '#ff6b6b');
+    assert.equal(killed.kind, 'ko');
+    assert.equal(killed.color, '#ffdf6f');
+    assert.ok(killed.radius > critical.radius);
+});
+
+test('CombatSystem emite burst de impacto sin depender del texto flotante', () => {
+    const bursts = [];
+    const target = createPositionedTarget(12, 24);
+    const attacker = createAttacker([target]);
+    attacker.game.showCombatText = false;
+    attacker.game.vfx = {
+        addBurst: (...args) => bursts.push(args)
+    };
+
+    CombatSystem.applyImpact({
+        attackerType: 'TecnolÃ³gico',
+        damage: 20,
+        color: '#40c9ff',
+        effects: []
+    }, target, attacker, null);
+
+    assert.equal(bursts.length, 1);
+    assert.deepEqual(bursts[0].slice(0, 2), [12, 24]);
+    assert.equal(bursts[0][2].kind, 'hit');
+    assert.equal(bursts[0][2].color, '#40c9ff');
+});
+
 test('CombatSystem emite texto flotante para impactos criticos y bajas', () => {
     const floating = [];
     const target = createPositionedTarget(0, 0);

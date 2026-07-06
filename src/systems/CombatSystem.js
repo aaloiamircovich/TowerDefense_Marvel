@@ -66,9 +66,45 @@ export class CombatSystem {
         });
 
         CombatSystem.addDamageText(projectile, target, attacker, result);
+        CombatSystem.addImpactVfx(projectile, target, attacker, result, factor);
         attacker?.recordDamage?.(result.damage);
         if (result.killed) CombatSystem.creditKill(target, attacker, resourceManager);
         return result;
+    }
+
+    static buildImpactVfxState(projectile = {}, result = {}, factor = 1) {
+        if (!result?.damage) return null;
+        const typeColors = {
+            Tecnologico: '#40c9ff',
+            'TecnolÃ³gico': '#40c9ff',
+            Tecnológico: '#40c9ff',
+            Mistico: '#b865ff',
+            'MÃ­stico': '#b865ff',
+            Místico: '#b865ff',
+            Urbano: '#e63946',
+            Cosmico: '#ff8bd1',
+            'CÃ³smico': '#ff8bd1',
+            Cósmico: '#ff8bd1',
+            Mutante: '#c7f464'
+        };
+        const killed = Boolean(result.killed);
+        const critical = Boolean(projectile.critical || projectile.isCrit);
+        const baseColor = projectile.color || typeColors[projectile.attackerType] || '#ffffff';
+        const radius = killed ? 34 : critical ? 28 : Math.max(12, 18 * Math.max(0.45, Math.min(1, factor)));
+
+        return {
+            color: killed ? '#ffdf6f' : critical ? '#ff6b6b' : baseColor,
+            radius,
+            duration: killed ? 0.34 : critical ? 0.28 : 0.18,
+            kind: killed ? 'ko' : critical ? 'critical' : 'hit'
+        };
+    }
+
+    static addImpactVfx(projectile, target, attacker, result, factor = 1) {
+        const state = CombatSystem.buildImpactVfxState(projectile, result, factor);
+        if (!state || !target || !attacker?.game?.vfx?.addBurst) return;
+        if (attacker.game.reduceMotion === true) return;
+        attacker.game.vfx.addBurst(target.x, target.y, state);
     }
 
     static addDamageText(projectile, target, attacker, result) {

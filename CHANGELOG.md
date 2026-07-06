@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.36.0 - 2026-07-06
+
+- Agrega feedback visual de impacto por tipo de ataque, critico y KO sin depender del texto flotante.
+- Los impactos normales, criticos y bajas disparan bursts con color/radio diferenciados y respetan reduce motion.
+- Agrega pruebas para el descriptor visual de impacto y emision de burst durante combate.
+
 ## 2.35.0 - 2026-07-06
 
 - Mejora los indicadores de estados enemigos con simbolos, color por efecto, prioridad y limite de overflow.
