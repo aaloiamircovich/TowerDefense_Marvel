@@ -49,16 +49,28 @@ try {
     await page.getByTestId('next-wave-btn').click();
     await page.waitForFunction(trackWaveAndPath, null, { timeout: 45000 });
 
-    const summary = await page.evaluate(() => ({
-        appState: document.body.dataset.appState,
-        fatalVisible: Boolean(document.querySelector('.error-state')),
-        heroes: window.__SUPER_HERO_TD_GAME__?.heroes?.length || 0,
-        lives: window.__SUPER_HERO_TD_GAME__?.resourceManager?.lives || 0,
-        credits: window.__SUPER_HERO_TD_GAME__?.resourceManager?.credits || 0,
-        wave: window.__SUPER_HERO_TD_GAME__?.waveManager?.currentWave || 0,
-        maxEnemyPathDistance: Math.round(window.__SMOKE_MAX_OFF_PATH || 0),
-        floatingTextSeen: Number(window.__SMOKE_FLOATING_TEXT_COUNT || 0)
-    }));
+    const summary = await page.evaluate(() => {
+        const game = window.__SUPER_HERO_TD_GAME__;
+        game?.waveManager?.announceSpawn?.(
+            { name: 'Centinela', x: game.path?.[0]?.x || 0, y: game.path?.[0]?.y || 0, threat: 5 },
+            { name: 'Centinela', threat: 5 }
+        );
+        const toastText = document.querySelector('[data-testid="toast"]')?.textContent || '';
+        const effects = game?.vfx?.effects || [];
+        return {
+            appState: document.body.dataset.appState,
+            fatalVisible: Boolean(document.querySelector('.error-state')),
+            heroes: game?.heroes?.length || 0,
+            lives: game?.resourceManager?.lives || 0,
+            credits: game?.resourceManager?.credits || 0,
+            wave: game?.waveManager?.currentWave || 0,
+            maxEnemyPathDistance: Math.round(window.__SMOKE_MAX_OFF_PATH || 0),
+            floatingTextSeen: Number(window.__SMOKE_FLOATING_TEXT_COUNT || 0),
+            threatToastVisible: toastText.includes('Elite en ruta: Centinela'),
+            threatRingVisible: effects.some((effect) => effect.type === 'ring' && effect.radius === 58),
+            threatTextVisible: effects.some((effect) => effect.type === 'floatingText' && effect.text === 'ELITE')
+        };
+    });
 
     const failures = [];
     if (summary.appState !== 'ready') failures.push(`estado de app inesperado: ${summary.appState}`);
@@ -68,6 +80,9 @@ try {
     if (summary.lives <= 0) failures.push('la base quedo sin vidas durante smoke');
     if (summary.maxEnemyPathDistance > 38) failures.push(`enemigo fuera de ruta: ${summary.maxEnemyPathDistance}px`);
     if (summary.floatingTextSeen <= 0) failures.push('no se observaron textos flotantes de dano durante la oleada');
+    if (!summary.threatToastVisible) failures.push('no se observo toast de amenaza elite');
+    if (!summary.threatRingVisible) failures.push('no se observo anillo de amenaza elite');
+    if (!summary.threatTextVisible) failures.push('no se observo texto flotante de amenaza elite');
     if (pageErrors.length) failures.push(`page errors: ${pageErrors.join(' | ')}`);
     if (consoleErrors.length) failures.push(`console errors: ${consoleErrors.join(' | ')}`);
 
@@ -76,7 +91,7 @@ try {
         failures.forEach((failure) => console.error(`- ${failure}`));
         process.exitCode = 1;
     } else {
-        console.log(`Smoke browser OK: wave ${summary.wave}, vidas ${summary.lives}, desvio maximo ${summary.maxEnemyPathDistance}px, textos flotantes ${summary.floatingTextSeen}.`);
+        console.log(`Smoke browser OK: wave ${summary.wave}, vidas ${summary.lives}, desvio maximo ${summary.maxEnemyPathDistance}px, textos flotantes ${summary.floatingTextSeen}, alerta elite OK.`);
     }
 } finally {
     await browser?.close().catch(() => {});

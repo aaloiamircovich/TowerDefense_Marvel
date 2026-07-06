@@ -184,6 +184,63 @@ test('WaveManager emite informe tactico con deltas de la oleada', () => {
     assert.ok(reports[0].credits >= 134);
 });
 
+test('WaveManager anuncia jefes al entrar en ruta', () => {
+    const calls = captureThreatCalls();
+    const game = createGame();
+    game.uiManager = calls.uiManager;
+    game.audio = calls.audio;
+    game.vfx = calls.vfx;
+    game.spawnEnemy = (config) => ({ ...config, x: 24, y: 36 });
+    const manager = new WaveManager(game, enemies);
+    manager.currentWave = 10;
+    manager.prepareNextWave();
+    manager.startNextWave();
+    manager.update(1);
+
+    const threatToast = calls.toasts.find(([message]) => message.includes('Jefe en ruta'));
+    assert.deepEqual(threatToast, ['Jefe en ruta: Loki', 'warning']);
+    assert.ok(calls.audioEvents.includes('boss'));
+    assert.equal(calls.rings[0][0], 24);
+    assert.equal(calls.rings[0][2].radius, 86);
+    assert.equal(calls.texts[0][2], 'JEFE');
+});
+
+test('WaveManager anuncia elites de amenaza alta', () => {
+    const calls = captureThreatCalls();
+    const game = createGame();
+    game.uiManager = calls.uiManager;
+    game.audio = calls.audio;
+    game.vfx = calls.vfx;
+    game.spawnEnemy = (config) => ({ ...config, x: 14, y: 18 });
+    const manager = new WaveManager(game, enemies);
+    manager.preparedQueue = [{ config: { id: 'sentinel', name: 'Centinela', hp: 400, speed: 1, reward: 30, threat: 5 }, delay: 0 }];
+    manager.startNextWave();
+    manager.update(1);
+
+    const threatToast = calls.toasts.find(([message]) => message.includes('Elite en ruta'));
+    assert.deepEqual(threatToast, ['Elite en ruta: Centinela', 'warning']);
+    assert.ok(calls.audioEvents.includes('warning'));
+    assert.equal(calls.rings[0][2].radius, 58);
+    assert.equal(calls.texts[0][2], 'ELITE');
+});
+
+test('WaveManager no anuncia enemigos comunes', () => {
+    const calls = captureThreatCalls();
+    const game = createGame();
+    game.uiManager = calls.uiManager;
+    game.audio = calls.audio;
+    game.vfx = calls.vfx;
+    game.spawnEnemy = (config) => ({ ...config, x: 14, y: 18 });
+    const manager = new WaveManager(game, enemies);
+    manager.preparedQueue = [{ config: { id: 'hydra_soldier', name: 'Soldado Hydra', hp: 80, speed: 1, reward: 10, threat: 2 }, delay: 0 }];
+    manager.startNextWave();
+    manager.update(1);
+
+    assert.equal(calls.toasts.some(([message]) => message.includes('en ruta')), false);
+    assert.equal(calls.rings.length, 0);
+    assert.equal(calls.texts.length, 0);
+});
+
 function createGame(theme = 'new-york', activeTeam = [], deployed = []) {
     const resourceManager = {
         credits: 0,
@@ -203,6 +260,30 @@ function createGame(theme = 'new-york', activeTeam = [], deployed = []) {
         currentLevel: { theme: { id: theme } },
         resourceManager,
         pause: () => {}
+    };
+}
+
+function captureThreatCalls() {
+    const toasts = [];
+    const audioEvents = [];
+    const rings = [];
+    const texts = [];
+    return {
+        toasts,
+        audioEvents,
+        rings,
+        texts,
+        uiManager: {
+            renderWavePreview: () => {},
+            setNextWaveEnabled: () => {},
+            clearWaveReport: () => {},
+            showToast: (...args) => toasts.push(args)
+        },
+        audio: { play: (event) => audioEvents.push(event) },
+        vfx: {
+            addRing: (...args) => rings.push(args),
+            addFloatingText: (...args) => texts.push(args)
+        }
     };
 }
 

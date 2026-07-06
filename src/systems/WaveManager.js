@@ -483,13 +483,48 @@ export class WaveManager {
 
         if (this.enemiesQueue.length > 0 && this.spawnTimer >= this.enemiesQueue[0].delay) {
             const enemyData = this.enemiesQueue.shift();
-            if (this.game.spawnEnemy) this.game.spawnEnemy(enemyData.config);
-            else this.game.enemies.push(new Enemy(enemyData.config, this.game.path, this.game));
+            let spawnedEnemy;
+            if (this.game.spawnEnemy) {
+                spawnedEnemy = this.game.spawnEnemy(enemyData.config);
+            } else {
+                spawnedEnemy = new Enemy(enemyData.config, this.game.path, this.game);
+                this.game.enemies.push(spawnedEnemy);
+            }
+            this.announceSpawn(spawnedEnemy, enemyData.config);
             this.spawnTimer = 0;
             return;
         }
 
         if (this.enemiesQueue.length === 0 && this.game.enemies.length === 0) this.finishWave();
+    }
+
+    announceSpawn(enemy, config = {}) {
+        if (!enemy && !config) return;
+        const isBoss = Boolean(config.isBoss || enemy?.isBoss);
+        const isElite = Boolean(
+            config.isElite ||
+            config.affix ||
+            config.phaseLabel ||
+            Number(config.threat || enemy?.threat || 0) >= 5
+        );
+        if (!isBoss && !isElite) return;
+
+        const name = config.name || enemy?.name || (isBoss ? 'Jefe' : 'Elite');
+        const label = isBoss ? 'Jefe' : 'Elite';
+        const color = isBoss ? '#ff3b3b' : '#fca311';
+        const radius = isBoss ? 86 : 58;
+        const x = Number.isFinite(enemy?.x) ? enemy.x : this.game.path?.[0]?.x || 0;
+        const y = Number.isFinite(enemy?.y) ? enemy.y : this.game.path?.[0]?.y || 0;
+
+        this.game.uiManager?.showToast(`${label} en ruta: ${name}`, 'warning');
+        this.game.audio?.play(isBoss ? 'boss' : 'warning');
+        this.game.vfx?.addRing?.(x, y, { color, radius, duration: isBoss ? 0.82 : 0.55 });
+        this.game.vfx?.addFloatingText?.(x, y - 28, label.toUpperCase(), {
+            color,
+            size: isBoss ? 20 : 16,
+            velocityY: -26,
+            duration: 0.92
+        });
     }
 
     finishWave() {

@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.24.0 - 2026-07-05
+
+- Anuncia jefes y elites al entrar en ruta con toast tactico, audio y telegraph visual sobre el spawn.
+- La alerta usa anillo y texto flotante del sistema CombatVfx para mejorar lectura sin modificar balance ni caminos.
+- El smoke browser ahora valida que la alerta de elite renderice toast, anillo y texto dentro de la app real.
+
 ## 2.23.0 - 2026-06-29
 
 - Agrega texto flotante de dano, criticos y bajas sobre los impactos de combate.
