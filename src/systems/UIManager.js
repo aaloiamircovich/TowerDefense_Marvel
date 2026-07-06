@@ -1136,6 +1136,16 @@ export class UIManager {
                         <span><b>${summary.maxThreat}/5</b> amenaza</span>
                     </div>
                     <small class="wave-counter"><i class="fas fa-crosshairs"></i> Respuesta: ${summary.counter}</small>
+                    ${summary.spawnTimeline?.entries?.length ? `<div class="wave-timeline" data-testid="wave-timeline" aria-label="Cadencia de salida enemiga">
+                        <strong>Salida enemiga</strong>
+                        <div>
+                            ${summary.spawnTimeline.entries.map((entry) => `<span class="${entry.danger}">
+                                <b>${escapeHtml(entry.etaLabel)}</b>
+                                <em>${entry.count > 1 ? `x${entry.count} ` : ''}${escapeHtml(entry.name)}</em>
+                            </span>`).join('')}
+                            ${summary.spawnTimeline.overflow > 0 ? `<small>+${summary.spawnTimeline.overflow} entradas mas</small>` : ''}
+                        </div>
+                    </div>` : ''}
                     ${prepPlan.length ? `<div class="wave-prep-plan" data-testid="wave-prep-plan" aria-label="Preparacion recomendada">
                         <strong>Preparacion recomendada</strong>
                         ${prepPlan.map((item) => {

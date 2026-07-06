@@ -199,6 +199,7 @@ export class WaveManager {
     buildPreparedSummary() {
         return {
             ...this.getWaveSummary(),
+            spawnTimeline: this.getSpawnTimeline(),
             branchOptions: this.director.getBranchOptions(this.currentWave),
             selectedBranch: this.selectedBranch || 'safe'
         };
@@ -354,6 +355,63 @@ export class WaveManager {
             }
         });
         return unique;
+    }
+
+    getSpawnTimeline(limit = 5) {
+        const groups = [];
+        let elapsed = 0;
+        let overflow = 0;
+
+        for (const entry of this.preparedQueue) {
+            elapsed += Math.max(0, Number(entry.delay || 0));
+            const config = entry.config || {};
+            const id = config.id || config.name || 'enemy';
+            const previous = groups.at(-1);
+
+            if (previous && previous.id === id) {
+                previous.count++;
+                previous.lastEta = Number(elapsed.toFixed(1));
+                previous.maxThreat = Math.max(previous.maxThreat, Number(config.threat || 1));
+                previous.danger = this.getTimelineDanger(previous);
+                continue;
+            }
+
+            if (groups.length >= limit) {
+                overflow++;
+                continue;
+            }
+
+            const group = {
+                id,
+                name: config.name || 'Enemigo',
+                count: 1,
+                firstEta: Number(elapsed.toFixed(1)),
+                lastEta: Number(elapsed.toFixed(1)),
+                maxThreat: Math.max(1, Number(config.threat || 1)),
+                role: config.archetype || (config.isBoss ? 'boss' : 'soldier'),
+                isBoss: Boolean(config.isBoss),
+                isElite: Boolean(config.isElite || config.affix || config.phaseLabel || Number(config.threat || 0) >= 5)
+            };
+            group.danger = this.getTimelineDanger(group);
+            groups.push(group);
+        }
+
+        return {
+            entries: groups.map((group) => ({
+                ...group,
+                etaLabel: group.firstEta === group.lastEta ? `${group.firstEta}s` : `${group.firstEta}-${group.lastEta}s`
+            })),
+            overflow,
+            totalEnemies: this.preparedQueue.length,
+            totalDuration: Number(elapsed.toFixed(1))
+        };
+    }
+
+    getTimelineDanger(group) {
+        if (group.isBoss) return 'critical';
+        if (group.isElite || group.maxThreat >= 5) return 'high';
+        if (group.maxThreat >= 3) return 'guarded';
+        return 'low';
     }
 
     getWaveSummary() {

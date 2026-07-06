@@ -89,6 +89,19 @@ test('WaveManager resume cantidad, botin y counter de la cola preparada', () => 
     assert.equal(summary.readiness.id, 'empty');
 });
 
+test('WaveManager expone cadencia compacta de salida enemiga', () => {
+    const manager = new WaveManager(createGame(), enemies);
+    const timeline = manager.getSpawnTimeline();
+
+    assert.equal(timeline.totalEnemies, manager.preparedQueue.length);
+    assert.equal(timeline.entries.length, 2);
+    assert.equal(timeline.entries[0].name, 'Soldado de Hydra');
+    assert.equal(timeline.entries[0].count, 4);
+    assert.equal(timeline.entries[0].etaLabel, '0.2-3.3s');
+    assert.equal(timeline.entries[1].count, 3);
+    assert.equal(timeline.overflow, 0);
+});
+
 test('WaveManager eleva la lectura de amenaza cuando hay barreras y sigilo', () => {
     const manager = new WaveManager(createGame(), enemies);
     manager.currentWave = 9;
@@ -131,6 +144,14 @@ test('WaveManager refresca el radar tactico al cambiar heroes desplegados', () =
 
     assert.notEqual(refreshed.readiness.id, 'empty');
     assert.equal(rendered.at(-1).readiness.id, refreshed.readiness.id);
+});
+
+test('WaveManager incluye cadencia de salida en el resumen preparado', () => {
+    const manager = new WaveManager(createGame(), enemies);
+    const summary = manager.buildPreparedSummary();
+
+    assert.equal(summary.spawnTimeline.totalEnemies, manager.preparedQueue.length);
+    assert.ok(summary.spawnTimeline.entries[0].etaLabel.includes('s'));
 });
 
 test('WaveManager limpia presion de combate al cerrar oleada', () => {

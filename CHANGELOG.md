@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.32.0 - 2026-07-06
+
+- Agrega una linea de tiempo compacta de salida enemiga antes de iniciar la oleada.
+- Agrupa enemigos consecutivos con ETA, cantidad y color de peligro para anticipar aperturas, elites y jefes.
+- Agrega pruebas para la cadencia de spawn y su inclusion en el resumen preparado.
+
 ## 2.31.0 - 2026-07-06
 
 - Agrega HUD compacto de jefe activo con nombre, fase y barra de salud durante la oleada.

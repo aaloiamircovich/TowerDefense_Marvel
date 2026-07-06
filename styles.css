@@ -692,6 +692,62 @@ canvas {
     line-height: 1.35;
 }
 
+#wave-intel .wave-timeline {
+    display: grid;
+    gap: 5px;
+    margin-top: 6px;
+    padding: 7px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 7px;
+    background: rgba(5, 7, 11, 0.5);
+}
+
+#wave-intel .wave-timeline > strong {
+    color: var(--text);
+    font-size: 10px;
+}
+
+#wave-intel .wave-timeline > div {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(92px, 1fr));
+    gap: 5px;
+}
+
+#wave-intel .wave-timeline span {
+    --timeline-color: #46d369;
+    display: grid;
+    min-height: 39px;
+    padding: 6px;
+    border-left: 3px solid var(--timeline-color);
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--timeline-color), transparent 91%);
+}
+
+#wave-intel .wave-timeline span.guarded { --timeline-color: #fca311; }
+#wave-intel .wave-timeline span.high { --timeline-color: #ff7b3d; }
+#wave-intel .wave-timeline span.critical { --timeline-color: #e63946; }
+
+#wave-intel .wave-timeline b {
+    color: var(--timeline-color);
+    font-size: 10px;
+}
+
+#wave-intel .wave-timeline em {
+    overflow: hidden;
+    color: var(--text);
+    font-size: 9px;
+    font-style: normal;
+    font-weight: 800;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#wave-intel .wave-timeline small {
+    align-self: center;
+    color: var(--muted);
+    font-size: 9px;
+}
+
 #wave-intel .wave-prep-plan {
     display: grid;
     gap: 5px;
