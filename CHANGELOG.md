@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.26.0 - 2026-07-05
+
+- Hace visibles en el roster el score y las razones de counter de cada heroe contra la oleada preparada.
+- Convierte el badge de ajuste en una mini ficha con label, puntaje y razones principales sin depender del tooltip.
+- Agrega pruebas puras para la vista de counter del roster y mantiene la lectura previa de enemigos.
+
 ## 2.25.0 - 2026-07-05
 
 - Convierte las tarjetas de preview enemigo en intel accionable con rol, rasgos, nivel de peligro y counter recomendado.

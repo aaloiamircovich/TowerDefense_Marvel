@@ -387,6 +387,20 @@ export function buildWavePrepActionControl(item = {}) {
     };
 }
 
+export function buildRosterWaveFitView(fit = null) {
+    if (!fit || fit.id === 'neutral') return null;
+    const reasons = (fit.reasons || []).filter(Boolean).slice(0, 2);
+    const reasonText = reasons.length ? reasons.join(' + ') : 'respuesta flexible';
+    const score = Math.max(0, Math.round(Number(fit.score || 0)));
+    return {
+        id: fit.id,
+        label: fit.label || 'Buen ajuste',
+        reasonText,
+        scoreLabel: `${score} pts`,
+        ariaLabel: `${fit.label || 'Buen ajuste'} contra esta oleada: ${reasonText}. Puntaje ${score}.`
+    };
+}
+
 function getPathLength(path = []) {
     if (!Array.isArray(path) || path.length < 2) return 0;
     let total = 0;
@@ -1456,6 +1470,7 @@ export class UIManager {
             const deployedHero = this.game.heroes.find((unit) => unit.id === hero.id);
             const deployed = Boolean(deployedHero);
             const fit = evaluateHeroWaveFit(deployedHero || hero, waveSummary, credits);
+            const fitView = buildRosterWaveFitView(fit);
             const abilityState = deployedHero?.abilitySystem?.getDisplayState?.();
             const quickUpgradeCost = deployedHero ? this.calculateLevelCost(deployedHero.level || hero.level || 1, 1) : 0;
             const canQuickUpgrade = deployedHero && (this.game.resourceManager?.credits || 0) >= quickUpgradeCost;
@@ -1472,7 +1487,11 @@ export class UIManager {
                 <div>
                     <strong>${hero.name}</strong>
                     <span class="${deployedHero ? 'field-upgrade-meta' : ''}">${rosterMeta}</span>
-                    ${fit.id !== 'neutral' ? `<small class="roster-wave-fit ${fit.id}" data-tooltip="${fit.reasons.join(' | ')}"><i class="fas fa-crosshairs"></i> ${fit.label}</small>` : ''}
+                    ${fitView ? `<small class="roster-wave-fit ${fitView.id}" aria-label="${escapeHtml(fitView.ariaLabel)}" data-tooltip="${escapeHtml(fitView.reasonText)}">
+                        <span><i class="fas fa-crosshairs"></i>${escapeHtml(fitView.label)}</span>
+                        <b>${escapeHtml(fitView.scoreLabel)}</b>
+                        <em>${escapeHtml(fitView.reasonText)}</em>
+                    </small>` : ''}
                     ${abilityState ? `<small class="roster-ability ${abilityState.ready ? 'ready' : ''}">${abilityState.label}</small>` : ''}
                 </div>
                 <div class="hero-actions">

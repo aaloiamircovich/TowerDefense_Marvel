@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildCombatPressureState, buildEnemyIntel, buildPressureActionState, buildTargetingControlState, buildWaveLaunchState, buildWavePrepActionControl, buildWavePreparationPlan, buildWaveReportActionState, buildWaveReportState, evaluateHeroWaveFit, getNextTargetingPriority } from '../src/systems/UIManager.js';
+import { buildCombatPressureState, buildEnemyIntel, buildPressureActionState, buildRosterWaveFitView, buildTargetingControlState, buildWaveLaunchState, buildWavePrepActionControl, buildWavePreparationPlan, buildWaveReportActionState, buildWaveReportState, evaluateHeroWaveFit, getNextTargetingPriority } from '../src/systems/UIManager.js';
 
 test('buildWaveLaunchState muestra riesgo critico en el CTA', () => {
     const state = buildWaveLaunchState(true, {
@@ -82,6 +82,24 @@ test('buildEnemyIntel distingue soporte e invocador', () => {
     assert.ok(support.traits.includes('Cura'));
     assert.equal(summoner.counter, 'Corta invocador');
     assert.equal(summoner.danger, 'high');
+});
+
+test('buildRosterWaveFitView expone score y razones visibles', () => {
+    const view = buildRosterWaveFitView({
+        id: 'prime',
+        label: 'Counter ideal',
+        score: 8.4,
+        reasons: ['detecta sigilo', 'asequible ahora', 'frena corredores']
+    });
+
+    assert.equal(view.id, 'prime');
+    assert.equal(view.scoreLabel, '8 pts');
+    assert.equal(view.reasonText, 'detecta sigilo + asequible ahora');
+    assert.match(view.ariaLabel, /Puntaje 8/);
+});
+
+test('buildRosterWaveFitView oculta perfiles neutros', () => {
+    assert.equal(buildRosterWaveFitView({ id: 'neutral', score: 0 }), null);
 });
 
 test('evaluateHeroWaveFit recomienda deteccion contra sigilo', () => {

@@ -385,22 +385,49 @@ body[data-level-theme="wakanda"] .panel-header {
 }
 
 .roster-wave-fit {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 3px 7px;
     max-width: 100%;
-    width: fit-content;
     margin-top: 5px;
-    padding: 3px 6px;
+    padding: 5px 6px;
     border-radius: 6px;
     color: var(--fit-color, var(--level-accent));
     background: color-mix(in srgb, var(--fit-color, var(--level-accent)), transparent 86%);
     font-size: 10px;
     font-weight: 900;
-    line-height: 1;
+    line-height: 1.15;
     overflow: hidden;
-    text-overflow: ellipsis;
     text-transform: uppercase;
+}
+
+.roster-wave-fit span {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    min-width: 0;
+    margin: 0;
+    overflow: hidden;
+    color: inherit;
+    font-size: 10px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.roster-wave-fit b {
+    color: var(--text);
+    font-size: 9px;
+}
+
+.roster-wave-fit em {
+    grid-column: 1 / -1;
+    overflow: hidden;
+    color: var(--muted);
+    font-size: 9px;
+    font-style: normal;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    text-transform: none;
     white-space: nowrap;
 }
 
