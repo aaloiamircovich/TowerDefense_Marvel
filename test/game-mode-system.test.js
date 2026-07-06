@@ -80,6 +80,33 @@ test('rankings de modo permanecen separados', () => {
     assert.deepEqual(game.recorded.map((entry) => entry.modeId), ['daily', 'survival']);
 });
 
+test('modos especiales bonifican racha de oleadas limpias', () => {
+    const game = createGame(); const modes = attachModes(game); modes.modeId = 'survival';
+    game.waveManager = { currentWave: 3, isWaveActive: false, waveStartSnapshot: { lives: 20 } };
+
+    modes.onWaveFinished(1);
+    modes.onWaveFinished(2);
+
+    const snapshot = modes.getSnapshot();
+    assert.equal(snapshot.cleanStreak, 2);
+    assert.equal(snapshot.lastStreakBonus, 70);
+    assert.match(snapshot.streakDetail, /Racha limpia x2/);
+});
+
+test('modos especiales reinician racha cuando hay fugas', () => {
+    const game = createGame(); const modes = attachModes(game); modes.modeId = 'daily';
+    game.waveManager = { currentWave: 2, isWaveActive: false, waveStartSnapshot: { lives: 20 } };
+    modes.onWaveFinished(1);
+
+    game.resourceManager.lives = 18;
+    game.waveManager.waveStartSnapshot = { lives: 20 };
+    modes.onWaveFinished(2);
+
+    assert.equal(modes.cleanStreak, 0);
+    assert.equal(modes.lastStreakBonus, 0);
+    assert.equal(modes.getSnapshot().streakDetail, null);
+});
+
 function attachModes(game) { const modes = new GameModeSystem(game, game.progression); game.modeSystem = modes; return modes; }
 function createGame() {
     const game = {

@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.38.0 - 2026-07-06
+
+- Agrega racha limpia para modos especiales, con bonus de score por oleadas sin fugas.
+- El panel de modo prioriza la lectura de racha cuando hay momentum activo.
+- Agrega pruebas para bonus de racha y reinicio al sufrir fugas.
+
 ## 2.37.0 - 2026-07-06
 
 - Agrega lectura de intencion de objetivo para el heroe seleccionado durante el combate.

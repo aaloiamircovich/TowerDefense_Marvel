@@ -1106,7 +1106,9 @@ export class UIManager {
             return;
         }
         container.classList.remove('hidden');
+        const detail = snapshot.streakDetail || snapshot.detail;
         container.innerHTML = `<div><strong>${snapshot.name}</strong><span>${snapshot.detail}</span></div><b>${snapshot.score} pts</b>${snapshot.canExtract ? '<button id="extract-mode" class="btn-mode-action">Extraer</button>' : ''}${snapshot.canRepair ? '<button id="repair-mode" class="btn-mode-action">Reparar +2 · $120</button>' : ''}`;
+        container.querySelector('span').textContent = detail;
         document.getElementById('extract-mode')?.addEventListener('click', () => this.game.modeSystem.extract());
         document.getElementById('repair-mode')?.addEventListener('click', () => this.game.modeSystem.repair());
     }
