@@ -27,7 +27,6 @@ export class MissionSystem {
             waveStartLives: this.game.resourceManager?.lives || 0,
             civilianActive: false,
             civilianProgress: 0,
-            barricadeActive: false,
             doorReady: false,
             blackout: 0,
             turretCooldown: 0,
@@ -56,10 +55,9 @@ export class MissionSystem {
             this.switchRoute(sewerWave ? 1 : 0);
             this.state.civilianActive = waveNumber % 3 === 0;
             this.state.civilianProgress = 0;
-            this.state.barricadeActive = true;
             this.state.message = this.state.civilianActive
                 ? 'Convoy civil en tránsito. Evita cualquier fuga.'
-                : sewerWave ? 'Calles bloqueadas: Hydra emerge por las alcantarillas.' : 'Barricada Stark ralentizando la avenida.';
+                : sewerWave ? 'Hydra emerge por las alcantarillas.' : 'Avenida despejada: mantén la salida cubierta.';
         } else if (type === 'security') {
             this.state.doorReady = true;
             this.state.blackout = waveNumber % 4 === 0 ? 8 : 0;
@@ -105,16 +103,6 @@ export class MissionSystem {
 
     updateStreets(dt) {
         if (this.state.civilianActive) this.state.civilianProgress = Math.min(1, this.state.civilianProgress + dt / 12);
-        if (!this.state.barricadeActive) return;
-        const zone = this.level.mission.mechanic.zone;
-        this.game.enemies.forEach((enemy) => {
-            if (!enemy.isAlive || distanceTo(enemy, zone) > (zone.radius || 72)) return;
-            enemy.applyStatus({ type: 'slow', duration: 0.35, power: 0.18 });
-            if (!this.state.affectedEnemies.has(enemy.uid)) {
-                this.state.affectedEnemies.add(enemy.uid);
-                this.state.metrics.mechanicUses++;
-            }
-        });
     }
 
     updateSecurity(dt) {

@@ -94,6 +94,14 @@ export class Hero {
         if (itemEffects.detectStealth) stats.canSeeStealth = true;
         if (itemEffects.allowWater && !this.allowedTerrains.includes(0)) this.allowedTerrains.push(0);
 
+        const specialStats = this.config.special?.statModifiers || {};
+        stats.damage *= 1 + (specialStats.damagePct || 0);
+        stats.fireRate *= 1 + (specialStats.fireRatePct || 0);
+        stats.range *= 1 + (specialStats.rangePct || 0);
+        stats.critChance += specialStats.critChance || 0;
+        if (specialStats.detectStealth) stats.canSeeStealth = true;
+        if (specialStats.allowWater && !this.allowedTerrains.includes(0)) this.allowedTerrains.push(0);
+
         if (this.game.resourceManager.lives <= 10) {
             stats.damage *= 1 + (itemEffects.lowLifeDamagePct || 0);
             stats.fireRate *= 1 + (itemEffects.lowLifeFireRatePct || 0);
@@ -192,6 +200,7 @@ export class Hero {
 
         effects.push(...this.abilitySystem.getAttackEffects(target));
         if (this.id === 'groot') effects.push({ type: 'slow', duration: 1.8, power: 0.6, chance: 0.5 });
+        effects.push(...(this.config.special?.attackEffects || []).map((effect) => ({ ...effect })));
         const itemEffects = aggregateItemEffects(this.items);
         if (itemEffects.slowChance) effects.push({ type: 'slow', duration: 1.2, power: itemEffects.slowPower || 0.2, chance: itemEffects.slowChance });
         if (itemEffects.armorBreakChance) effects.push({ type: 'armorBreak', duration: 3, power: itemEffects.armorBreakPower || 0.15, chance: itemEffects.armorBreakChance });
@@ -205,7 +214,7 @@ export class Hero {
             thor: { chainCount: 3, chainRange: 130, chainFactor: 0.7 },
             moon_knight: { returning: true }
         };
-        const base = { ...(profiles[this.id] || {}), ...this.abilitySystem.getProjectileProfile() };
+        const base = { ...(profiles[this.id] || {}), ...(this.config.special?.projectileProfile || {}), ...this.abilitySystem.getProjectileProfile() };
         const itemEffects = aggregateItemEffects(this.items);
         return {
             ...base,
@@ -248,7 +257,7 @@ export class Hero {
         if (this.id === 'capitan_america') return 'shield';
         if (this.id === 'thor') return 'lightning';
         if (this.id === 'doctor_strange') return 'mystic';
-        return 'energy';
+        return this.config.special?.visualStyle || 'energy';
     }
 
     getProjectileColor() {
@@ -261,7 +270,7 @@ export class Hero {
             Cósmico: '#ff8bd1',
             Mutante: '#d7ff57'
         };
-        return colors[this.category] || '#ffd166';
+        return this.config.special?.projectileColor || colors[this.category] || '#ffd166';
     }
 
     render(ctx) {

@@ -4,6 +4,13 @@
     "name": "Calles de Nueva York",
     "description": "Hydra y A.I.M. avanzan por Manhattan rumbo a la Torre Stark. Defiende las avenidas entre taxis, asfalto y neón.",
     "thumbnail": "city_streets",
+    "rendering": {
+      "style": "pixelart",
+      "camera": "top-down-rpg",
+      "source": "manual-grid",
+      "tileSize": 32,
+      "targetSpriteSize": 64
+    },
     "difficulty": "Fácil",
     "theme": {
       "id": "new-york",
@@ -14,18 +21,13 @@
     "mission": {
       "operation": "Operación Puente Seguro",
       "speaker": "Spider-Man",
-      "briefing": "Hydra cerró varias calles y los equipos de emergencia quedaron atrapados. La barricada Stark controla el acceso principal, pero cada tres oleadas cruzará un convoy civil.",
+      "briefing": "Hydra cerró varias calles y los equipos de emergencia quedaron atrapados. Cada tres oleadas cruzará un convoy civil y cada quinta oleada Hydra intentará emerger por alcantarillas.",
       "dialogue": "Mantengan despejada la avenida. Yo vigilo los tejados; ustedes hagan que nadie llegue a la salida.",
       "mechanic": {
         "type": "streets",
-        "label": "Barricada y evacuación",
-        "description": "La barricada ralentiza enemigos y cada quinta oleada el bloqueo desvía la invasión por alcantarillas. Los convoyes aparecen cada tres oleadas.",
-        "status": "Barricada Stark preparada en la Quinta Avenida.",
-        "zone": {
-          "x": 280,
-          "y": 240,
-          "radius": 70
-        },
+        "label": "Evacuación urbana",
+        "description": "Cada quinta oleada Hydra cambia a una ruta por alcantarillas. Los convoyes civiles aparecen cada tres oleadas y exigen cerrar la salida sin fugas.",
+        "status": "Convoyes S.H.I.E.L.D. esperando una ventana segura.",
         "convoyStart": {
           "x": 80,
           "y": 65
@@ -57,88 +59,80 @@
     "path": [
       {
         "x": 0,
-        "y": 120
+        "y": 432
       },
       {
-        "x": 280,
-        "y": 120
+        "x": 208,
+        "y": 432
       },
       {
-        "x": 280,
-        "y": 360
+        "x": 208,
+        "y": 112
       },
       {
-        "x": 520,
-        "y": 360
+        "x": 400,
+        "y": 112
       },
       {
-        "x": 520,
-        "y": 500
+        "x": 400,
+        "y": 304
       },
       {
         "x": 800,
-        "y": 500
+        "y": 304
       }
     ],
     "alternatePaths": [
       [
         {
           "x": 0,
-          "y": 120
+          "y": 432
         },
         {
-          "x": 280,
-          "y": 120
+          "x": 208,
+          "y": 432
         },
         {
-          "x": 280,
-          "y": 360
+          "x": 208,
+          "y": 112
         },
         {
-          "x": 520,
-          "y": 360
+          "x": 400,
+          "y": 112
         },
         {
-          "x": 520,
-          "y": 500
+          "x": 400,
+          "y": 304
         },
         {
           "x": 800,
-          "y": 500
+          "y": 304
         }
       ],
       [
         {
           "x": 0,
-          "y": 120
+          "y": 432
         },
         {
-          "x": 160,
-          "y": 120
+          "x": 208,
+          "y": 432
         },
         {
-          "x": 160,
-          "y": 480
-        },
-        {
-          "x": 400,
-          "y": 480
+          "x": 208,
+          "y": 112
         },
         {
           "x": 400,
-          "y": 280
+          "y": 112
         },
         {
-          "x": 680,
-          "y": 280
-        },
-        {
-          "x": 680,
-          "y": 500
+          "x": 400,
+          "y": 304
         },
         {
           "x": 800,
-          "y": 500
+          "y": 304
         }
       ]
     ]

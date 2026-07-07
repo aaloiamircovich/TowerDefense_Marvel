@@ -111,7 +111,7 @@ Este roadmap convierte el prototipo actual en un tower defense pulido, escalable
 
 **Terminado cuando:** cada mapa exige una composicion y colocacion distinta.
 
-**Estado:** implementada. Manhattan incorpora barricadas, desvios por alcantarillas y convoyes civiles; Avengers HQ combina puerta, torreta y cortes de energia; Wakanda alterna rutas y usa pulsos y escudos de Vibranium. Sanctum, Instituto Xavier, Knowhere y Latveria amplian la campana con facciones, rutas, briefings, objetivos, recompensas y reglas propias.
+**Estado:** implementada. Manhattan incorpora desvios por alcantarillas y convoyes civiles; Avengers HQ combina puerta, torreta y cortes de energia; Wakanda alterna rutas y usa pulsos y escudos de Vibranium. Sanctum, Instituto Xavier, Knowhere y Latveria amplian la campana con facciones, rutas, briefings, objetivos, recompensas y reglas propias.
 
 ## Fase 7 - UI, audio y accesibilidad
 

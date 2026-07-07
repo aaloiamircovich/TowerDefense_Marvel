@@ -9,7 +9,7 @@ const heroes = JSON.parse(fs.readFileSync(path.join(root, 'data', 'heroes.json')
 const atlasSource = fs.readFileSync(path.join(root, 'data', 'sprite-atlas.js'), 'utf8');
 const atlas = JSON.parse(atlasSource.replace(/^window\.__MARVEL_TD_ATLAS__\s*=\s*/, '').replace(/;\s*$/, ''));
 
-for (const heroId of ['capitan_america', 'thor', 'doctor_strange', 'hulk', 'black_widow', 'hawkeye', 'black_panther', 'vision', 'falcon', 'captain_marvel', 'star_lord', 'groot', 'gamora', 'silver_surfer', 'daredevil', 'moon_knight', 'blade', 'ghost_rider', 'luke_cage', 'shang_chi', 'she_hulk', 'wolverine', 'jean_grey', 'cyclops', 'storm', 'domino', 'scarlet_witch', 'ant_man', 'winter_soldier']) {
+for (const heroId of ['capitan_america', 'thor', 'doctor_strange', 'hulk', 'black_widow', 'hawkeye', 'black_panther', 'vision', 'falcon', 'captain_marvel', 'star_lord', 'groot', 'gamora', 'silver_surfer', 'daredevil', 'moon_knight', 'blade', 'ghost_rider', 'luke_cage', 'shang_chi', 'she_hulk', 'wolverine', 'jean_grey', 'cyclops', 'storm', 'domino', 'scarlet_witch', 'ant_man', 'winter_soldier', 'war_machine', 'nick_fury', 'wasp', 'nova', 'quake', 'medusa', 'namor', 'iron_fist', 'punisher', 'elektra', 'jessica_jones', 'cloak', 'dagger', 'magik', 'iceman']) {
     test(`${heroId} tiene contrato visual completo y exportado al atlas`, () => {
         const hero = heroes[heroId];
         assert.ok(hero.visual);

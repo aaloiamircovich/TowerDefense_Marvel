@@ -7,6 +7,7 @@ import { Projectile } from '../entities/Projectile.js';
 import { ObjectPool } from '../utils/ObjectPool.js';
 import { PerformanceMonitor } from '../systems/PerformanceMonitor.js';
 import { TeamSynergySystem } from '../systems/TeamSynergySystem.js';
+import { buildPixelTerrainMap, drawPixelMapOverlays, drawPixelTerrainTile, isPixelMapLevel, usesManualManhattanMap } from '../rendering/PixelMapRenderer.js';
 
 export class GameLoop {
     constructor(canvasId, options = {}) {
@@ -58,6 +59,12 @@ export class GameLoop {
         const rows = Math.ceil(this.canvas.height / this.gridSize);
         this.terrainMap = [];
         this.theme = this.getLevelTheme();
+
+        if (isPixelMapLevel(this.currentLevel)) {
+            this.terrainMap = buildPixelTerrainMap(this.currentLevel, this.canvas, this.gridSize);
+            this.paintPathTiles();
+            return;
+        }
 
         for (let y = 0; y < rows; y++) {
             this.terrainMap[y] = [];
@@ -260,9 +267,10 @@ export class GameLoop {
 
     drawPathGuide(ctx) {
         if (!this.path || this.path.length < 2) return;
+        if (usesManualManhattanMap(this.currentLevel)) return;
         ctx.save();
         ctx.strokeStyle = this.theme.pathGlow;
-        ctx.lineWidth = 7;
+        ctx.lineWidth = isPixelMapLevel(this.currentLevel) ? 3 : 7;
         ctx.setLineDash([]);
         ctx.beginPath();
         ctx.moveTo(this.path[0].x, this.path[0].y);
@@ -272,7 +280,7 @@ export class GameLoop {
         ctx.stroke();
 
         ctx.strokeStyle = this.theme.pathStripe;
-        ctx.lineWidth = 2;
+        ctx.lineWidth = isPixelMapLevel(this.currentLevel) ? 1.5 : 2;
         ctx.setLineDash([10, 12]);
         ctx.stroke();
         ctx.restore();
@@ -280,6 +288,11 @@ export class GameLoop {
 
     drawLevelSetDressing(ctx) {
         const themeId = this.currentLevel?.theme?.id || 'new-york';
+        if (isPixelMapLevel(this.currentLevel)) {
+            drawPixelMapOverlays(ctx, this);
+            this.drawMissionLandmarkBadges(ctx);
+            return;
+        }
         if (themeId === 'new-york') {
             this.drawManhattanSetDressing(ctx);
             return;
@@ -346,6 +359,7 @@ export class GameLoop {
 
     drawLevelPathDetails(ctx) {
         if ((this.currentLevel?.theme?.id || 'new-york') !== 'new-york' || !this.path || this.path.length < 2) return;
+        if (isPixelMapLevel(this.currentLevel)) return;
 
         ctx.save();
         ctx.strokeStyle = 'rgba(255, 255, 255, 0.45)';
@@ -375,6 +389,11 @@ export class GameLoop {
     }
 
     drawTerrainTile(ctx, x, y, terrainType) {
+        if (isPixelMapLevel(this.currentLevel)) {
+            drawPixelTerrainTile(ctx, x, y, terrainType, this);
+            return;
+        }
+
         const px = x * this.gridSize;
         const py = y * this.gridSize;
         const size = this.gridSize;

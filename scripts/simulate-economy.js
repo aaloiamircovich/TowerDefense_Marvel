@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import { aggregateItemEffects } from '../src/systems/ItemEffectSystem.js';
-import { analyzeTeam, getHeroTeamEffects } from '../src/systems/TeamSynergySystem.js';
+import { analyzeTeam } from '../src/systems/TeamSynergySystem.js';
 
 const heroes = JSON.parse(fs.readFileSync(new URL('../data/heroes.json', import.meta.url), 'utf8'));
 const items = JSON.parse(fs.readFileSync(new URL('../data/items.json', import.meta.url), 'utf8'));
@@ -80,20 +80,11 @@ const phase16Efficiencies = phase16.map((hero) => hero.efficiency);
 console.log(`Reserva mutante: ${phase16.map((hero) => `${hero.name} ${hero.efficiency.toFixed(3)}`).join(' | ')}`);
 
 const readyHeroes = Object.values(heroes).filter((hero) => hero.visual);
-const teamCombinations = combinations(readyHeroes, 6).map((team) => {
-    const snapshot = analyzeTeam(team);
-    const multiplier = team.reduce((sum, hero) => {
-        const effects = getHeroTeamEffects(hero, team);
-        return sum + (1 + (effects.damagePct || 0))
-            * (1 + (effects.fireRatePct || 0))
-            * (1 + (effects.rangePct || 0) * 0.4)
-            * (1 + (effects.critChance || 0) / 100);
-    }, 0) / team.length;
-    return { ids: team.map((hero) => hero.id), multiplier, versatile: snapshot.versatile };
-}).sort((a, b) => b.multiplier - a.multiplier);
-const bestTeam = teamCombinations[0];
-const competitiveTeams = teamCombinations.filter((team) => team.multiplier >= bestTeam.multiplier * 0.94);
-const competitiveMixed = competitiveTeams.filter((team) => team.versatile);
+const teamStats = evaluateTeamCombinations(readyHeroes, 6);
+const teamCombinations = { length: teamStats.label || teamStats.total };
+const bestTeam = teamStats.best;
+const competitiveTeams = { length: teamStats.competitive };
+const competitiveMixed = { length: teamStats.competitiveMixed };
 console.log(`Equipos de seis simulados: ${teamCombinations.length} · techo x${bestTeam.multiplier.toFixed(2)} · competitivos ${competitiveTeams.length} (${competitiveMixed.length} mixtos)`);
 
 if (missionProjection[0] < 800 || missionProjection[4] < 1800) {
@@ -131,15 +122,130 @@ function median(values) {
     return sorted.length % 2 ? sorted[middle] : (sorted[middle - 1] + sorted[middle]) / 2;
 }
 
-function combinations(values, size, start = 0, selected = [], result = []) {
+function evaluateTeamCombinations(values, size) {
+    const capacity = combinationCount(values.length, size);
+    const sampleLimit = Number(process.env.BALANCE_TEAM_SAMPLE || 1600000);
+    if (!process.env.BALANCE_EXACT && capacity > sampleLimit) return evaluateSampledTeamCombinations(values, size, capacity, sampleLimit);
+
+    const multipliers = new Float32Array(capacity);
+    const versatile = new Uint8Array(capacity);
+    let total = 0;
+    let best = { ids: [], multiplier: 0, versatile: false };
+
+    visitCombinations(values, size, (team) => {
+        const entry = evaluateTeam(team);
+        multipliers[total] = entry.multiplier;
+        versatile[total] = entry.versatile ? 1 : 0;
+        total++;
+        if (entry.multiplier > best.multiplier) best = { ...entry, ids: team.map((hero) => hero.id) };
+    });
+
+    const threshold = best.multiplier * 0.94;
+    let competitive = 0;
+    let competitiveMixed = 0;
+    for (let index = 0; index < total; index++) {
+        if (multipliers[index] < threshold) continue;
+        competitive++;
+        if (versatile[index]) competitiveMixed++;
+    }
+
+    return { total, best, competitive, competitiveMixed };
+}
+
+function evaluateSampledTeamCombinations(values, size, universe, sampleLimit) {
+    let seed = 0x9e3779b9;
+    let best = { ids: [], multiplier: 0, versatile: false };
+    const multipliers = new Float32Array(sampleLimit);
+    const versatile = new Uint8Array(sampleLimit);
+
+    for (let index = 0; index < sampleLimit; index++) {
+        const team = sampleTeam(values, size, seed);
+        seed = nextSeed(seed);
+        const entry = evaluateTeam(team);
+        multipliers[index] = entry.multiplier;
+        versatile[index] = entry.versatile ? 1 : 0;
+        if (entry.multiplier > best.multiplier) best = { ...entry, ids: team.map((hero) => hero.id) };
+    }
+
+    const threshold = best.multiplier * 0.94;
+    let competitive = 0;
+    let competitiveMixed = 0;
+    for (let index = 0; index < sampleLimit; index++) {
+        if (multipliers[index] < threshold) continue;
+        competitive++;
+        if (versatile[index]) competitiveMixed++;
+    }
+
+    return {
+        total: sampleLimit,
+        label: `${sampleLimit}/${universe} muestras`,
+        best,
+        competitive,
+        competitiveMixed
+    };
+}
+
+function sampleTeam(values, size, seed) {
+    const selected = new Set();
+    while (selected.size < size) {
+        seed = nextSeed(seed);
+        selected.add(seed % values.length);
+    }
+    return [...selected].map((index) => values[index]);
+}
+
+function nextSeed(seed) {
+    return (Math.imul(seed ^ (seed >>> 15), 2246822519) + 3266489917) >>> 0;
+}
+
+function evaluateTeam(team) {
+    const snapshot = analyzeTeam(team);
+    const multiplier = team.reduce((sum, hero) => {
+        const effects = getTeamEffectsFromSnapshot(hero, snapshot);
+        return sum + (1 + (effects.damagePct || 0))
+            * (1 + (effects.fireRatePct || 0))
+            * (1 + (effects.rangePct || 0) * 0.4)
+            * (1 + (effects.critChance || 0) / 100);
+    }, 0) / team.length;
+    return { multiplier, versatile: snapshot.versatile };
+}
+
+function getTeamEffectsFromSnapshot(hero, snapshot) {
+    let effects = {};
+    snapshot.families.forEach((familySnapshot) => {
+        if (familySnapshot.activeTier && hero.tags?.includes(familySnapshot.tag)) {
+            effects = mergeEffects(effects, familySnapshot.activeTier.effects);
+        }
+    });
+    snapshot.pairs.forEach((pairSnapshot) => {
+        if (pairSnapshot.active && pairSnapshot.heroIds.includes(hero.id)) effects = mergeEffects(effects, pairSnapshot.effects);
+    });
+    if (snapshot.versatile) effects = mergeEffects(effects, { damagePct: 0.025, rangePct: 0.025 });
+    return effects;
+}
+
+function mergeEffects(...sources) {
+    const result = {};
+    sources.forEach((source) => Object.entries(source || {}).forEach(([key, value]) => {
+        result[key] = typeof value === 'boolean' ? Boolean(result[key] || value) : (result[key] || 0) + value;
+    }));
+    return result;
+}
+
+function combinationCount(total, size) {
+    let result = 1;
+    for (let index = 1; index <= size; index++) result = result * (total - size + index) / index;
+    return Math.round(result);
+}
+
+function visitCombinations(values, size, onTeam, start = 0, selected = []) {
     if (selected.length === size) {
-        result.push([...selected]);
-        return result;
+        onTeam(selected);
+        return;
     }
     for (let index = start; index <= values.length - (size - selected.length); index++) {
         selected.push(values[index]);
-        combinations(values, size, index + 1, selected, result);
+        visitCombinations(values, size, onTeam, index + 1, selected);
         selected.pop();
     }
-    return result;
 }

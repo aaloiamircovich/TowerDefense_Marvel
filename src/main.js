@@ -86,6 +86,7 @@ async function initGame() {
             game.completedWaves = [];
             game.isGameOver = false;
             game.missionSummaryRecorded = false;
+            game.gridSize = levelConfig.rendering?.tileSize || 40;
             game.path = normalizePath(levelConfig.path, game.canvas.width, game.canvas.height);
             document.body.dataset.levelTheme = levelConfig.theme?.id || 'new-york';
             game.generateLevelMap();

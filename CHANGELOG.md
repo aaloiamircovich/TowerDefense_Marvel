@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.42.0 - 2026-07-07
+
+- Elimina la barricada de Manhattan y deja la mision centrada en convoyes civiles y rutas por alcantarilla.
+- Agrega 15 heroes Marvel con sprites completos, perfiles especiales declarativos y contrato visual en atlas.
+- Agrega 8 objetos nuevos, iconos generados y optimiza el balance para roster ampliado con muestreo deterministico.
+
 ## 2.41.0 - 2026-07-06
 
 - Anticipa el bonus de oleada perfecta en el CTA de inicio antes de lanzar la oleada.
