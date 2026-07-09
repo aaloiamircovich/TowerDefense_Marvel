@@ -105,6 +105,24 @@ test('menu de agrupaciones expone entre diez y quince grupos con progreso', () =
     assert.match(wakanda.effectLabel, /dano|poder|critico/);
 });
 
+test('Rivales recompensa equipos mixtos de la nueva lista', () => {
+    const team = [
+        hero('black_cat', ['Rivales', 'Callejero']),
+        hero('gambit', ['Rivales', 'Mutantes']),
+        hero('rocket_raccoon', ['Rivales', 'Guardianes']),
+        hero('loki', ['Rivales', 'Místico']),
+        hero('invisible_woman', ['Rivales', 'Tecnología'])
+    ];
+    const snapshot = analyzeTeam(team);
+    const rivals = snapshot.families.find((family) => family.tag === 'Rivales');
+    const effects = getHeroTeamEffects(team[0], team);
+
+    assert.equal(rivals.activeTier.count, 5);
+    assert.ok(Math.abs(effects.damagePct - 0.04) < 0.0001);
+    assert.ok(Math.abs(effects.rangePct - 0.04) < 0.0001);
+    assert.equal(effects.detectStealth, true);
+});
+
 function hero(id, tags, cost = 200, range = 150) {
     return {
         id,

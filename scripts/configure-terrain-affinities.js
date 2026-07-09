@@ -36,6 +36,13 @@ const terrainProfiles = {
     dagger: 'flyer',
     black_bolt: 'flyer',
     crystal: 'flyer',
+    human_torch: 'flyer',
+    hela: 'flyer',
+    angela: 'flyer',
+    adam_warlock: 'flyer',
+    invisible_woman: 'flyer',
+    loki: 'flyer',
+    magneto: 'flyer',
 
     namor: 'aquatic',
     namora: 'aquatic',
@@ -46,6 +53,8 @@ const terrainProfiles = {
     cyclops: 'high',
     war_machine: 'high',
     nick_fury: 'high',
+    elsa_bloodstone: 'high',
+    rocket_raccoon: 'high',
 
     spiderman: 'ground',
     hulk: 'ground',
@@ -67,6 +76,19 @@ const terrainProfiles = {
     magik: 'ground',
     iceman: 'ground',
     okoye: 'ground',
+    black_cat: 'ground',
+    gambit: 'ground',
+    the_hood: 'ground',
+    psylocke: 'ground',
+    venom: 'ground',
+    devil_dinosaur: 'ground',
+    emma_frost: 'ground',
+    peni_parker: 'ground',
+    deadpool: 'ground',
+    jubilee: 'ground',
+    luna_snow: 'ground',
+    mantis: 'ground',
+    mister_fantastic: 'ground',
 
     capitan_america: 'grass',
     black_widow: 'grass',
@@ -75,7 +97,10 @@ const terrainProfiles = {
     groot: 'grass',
     daredevil: 'grass',
     moon_knight: 'grass',
-    shuri: 'grass'
+    shuri: 'grass',
+    squirrel_girl: 'grass',
+
+    jeff_the_land_shark: 'amphibious'
 };
 
 for (const hero of Object.values(heroes)) {

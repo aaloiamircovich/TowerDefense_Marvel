@@ -35,7 +35,8 @@ function validateHeroes(heroes) {
     const phase16Heroes = new Set(['wolverine', 'jean_grey', 'cyclops', 'storm', 'domino', 'scarlet_witch', 'ant_man', 'winter_soldier']);
     const frontierHeroes = new Set(['war_machine', 'nick_fury', 'wasp', 'nova', 'quake', 'medusa', 'namor', 'iron_fist', 'punisher', 'elektra', 'jessica_jones', 'cloak', 'dagger', 'magik', 'iceman']);
     const allegianceHeroes = new Set(['shuri', 'okoye', 'black_bolt', 'crystal', 'namora', 'triton']);
-    const validTags = new Set(['Avengers', 'Defenders', 'Guardianes', 'X-Men', 'Mutantes', 'Místico', 'Callejero', 'Wakanda', 'Tecnología', 'Cósmico', 'Espías', 'Oscuros', 'Marciales', 'Inhumanos', 'Atlánticos']);
+    const rivalsHeroes = new Set(['black_cat', 'elsa_bloodstone', 'gambit', 'hela', 'human_torch', 'the_hood', 'psylocke', 'squirrel_girl', 'venom', 'angela', 'devil_dinosaur', 'emma_frost', 'magneto', 'peni_parker', 'adam_warlock', 'deadpool', 'invisible_woman', 'jeff_the_land_shark', 'jubilee', 'loki', 'luna_snow', 'mantis', 'mister_fantastic', 'rocket_raccoon']);
+    const validTags = new Set(['Avengers', 'Defenders', 'Guardianes', 'X-Men', 'Mutantes', 'Místico', 'Callejero', 'Wakanda', 'Tecnología', 'Cósmico', 'Espías', 'Oscuros', 'Marciales', 'Inhumanos', 'Atlánticos', 'Rivales']);
     const validRoles = new Set(['vanguard', 'support', 'artillery']);
     const validPlacementTerrains = new Set([TERRAIN.water, TERRAIN.grass, TERRAIN.mountain]);
     const validTerrainRoles = new Set(['grass', 'ground', 'high', 'flyer', 'aquatic', 'amphibious']);
@@ -56,7 +57,7 @@ function validateHeroes(heroes) {
 
         validateAsset(hero.sprite, `heroes.${key}.sprite`);
         if (hero.visual) validateHeroVisual(key, hero.visual);
-        if (phase12Heroes.has(key) || phase14Heroes.has(key) || phase15Heroes.has(key) || phase16Heroes.has(key) || frontierHeroes.has(key) || allegianceHeroes.has(key)) {
+        if (phase12Heroes.has(key) || phase14Heroes.has(key) || phase15Heroes.has(key) || phase16Heroes.has(key) || frontierHeroes.has(key) || allegianceHeroes.has(key) || rivalsHeroes.has(key)) {
             if (!hero.visual) errors.push(`heroes.${key}.visual es obligatorio para las expansiones de roster`);
             requireText(hero.abilityDesc, `heroes.${key}.abilityDesc`);
             requireText(hero.niche, `heroes.${key}.niche`);

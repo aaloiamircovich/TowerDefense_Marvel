@@ -56,7 +56,8 @@ window.__MARVEL_TD_DATA__ = {
       ],
       "tags": [
         "Avengers",
-        "Tecnología"
+        "Tecnología",
+        "Rivales"
       ],
       "formationRole": "artillery",
       "teamMetrics": {
@@ -122,7 +123,8 @@ window.__MARVEL_TD_DATA__ = {
       ],
       "tags": [
         "Callejero",
-        "Tecnología"
+        "Tecnología",
+        "Rivales"
       ],
       "formationRole": "support",
       "teamMetrics": {
@@ -185,7 +187,8 @@ window.__MARVEL_TD_DATA__ = {
         1
       ],
       "tags": [
-        "Avengers"
+        "Avengers",
+        "Rivales"
       ],
       "formationRole": "vanguard",
       "teamMetrics": {
@@ -251,7 +254,8 @@ window.__MARVEL_TD_DATA__ = {
       ],
       "tags": [
         "Avengers",
-        "Cósmico"
+        "Cósmico",
+        "Rivales"
       ],
       "formationRole": "artillery",
       "teamMetrics": {
@@ -315,7 +319,8 @@ window.__MARVEL_TD_DATA__ = {
         }
       },
       "tags": [
-        "Avengers"
+        "Avengers",
+        "Rivales"
       ],
       "formationRole": "vanguard",
       "teamMetrics": {
@@ -380,7 +385,8 @@ window.__MARVEL_TD_DATA__ = {
       "tags": [
         "Avengers",
         "Callejero",
-        "Espías"
+        "Espías",
+        "Rivales"
       ],
       "formationRole": "support",
       "teamMetrics": {
@@ -445,7 +451,8 @@ window.__MARVEL_TD_DATA__ = {
       "tags": [
         "Avengers",
         "Callejero",
-        "Espías"
+        "Espías",
+        "Rivales"
       ],
       "formationRole": "artillery",
       "teamMetrics": {
@@ -511,7 +518,8 @@ window.__MARVEL_TD_DATA__ = {
       "tags": [
         "Avengers",
         "Wakanda",
-        "Marciales"
+        "Marciales",
+        "Rivales"
       ],
       "formationRole": "vanguard",
       "teamMetrics": {
@@ -577,7 +585,8 @@ window.__MARVEL_TD_DATA__ = {
       ],
       "tags": [
         "Místico",
-        "Oscuros"
+        "Oscuros",
+        "Rivales"
       ],
       "formationRole": "support",
       "teamMetrics": {
@@ -673,7 +682,8 @@ window.__MARVEL_TD_DATA__ = {
       ],
       "tags": [
         "X-Men",
-        "Mutantes"
+        "Mutantes",
+        "Rivales"
       ],
       "formationRole": "vanguard",
       "teamMetrics": {
@@ -738,7 +748,8 @@ window.__MARVEL_TD_DATA__ = {
       "tags": [
         "Defenders",
         "Callejero",
-        "Marciales"
+        "Marciales",
+        "Rivales"
       ],
       "formationRole": "support",
       "teamMetrics": {
@@ -866,7 +877,8 @@ window.__MARVEL_TD_DATA__ = {
       ],
       "tags": [
         "Guardianes",
-        "Cósmico"
+        "Cósmico",
+        "Rivales"
       ],
       "formationRole": "artillery",
       "teamMetrics": {
@@ -930,7 +942,8 @@ window.__MARVEL_TD_DATA__ = {
       ],
       "tags": [
         "Guardianes",
-        "Cósmico"
+        "Cósmico",
+        "Rivales"
       ],
       "formationRole": "support",
       "teamMetrics": {
@@ -1064,7 +1077,8 @@ window.__MARVEL_TD_DATA__ = {
         "Avengers",
         "Místico",
         "Mutantes",
-        "Oscuros"
+        "Oscuros",
+        "Rivales"
       ],
       "formationRole": "support",
       "teamMetrics": {
@@ -1262,7 +1276,8 @@ window.__MARVEL_TD_DATA__ = {
       "tags": [
         "Callejero",
         "Tecnología",
-        "Espías"
+        "Espías",
+        "Rivales"
       ],
       "formationRole": "artillery",
       "teamMetrics": {
@@ -1392,7 +1407,8 @@ window.__MARVEL_TD_DATA__ = {
       "tags": [
         "Místico",
         "Callejero",
-        "Oscuros"
+        "Oscuros",
+        "Rivales"
       ],
       "formationRole": "artillery",
       "teamMetrics": {
@@ -1523,7 +1539,8 @@ window.__MARVEL_TD_DATA__ = {
       ],
       "tags": [
         "X-Men",
-        "Mutantes"
+        "Mutantes",
+        "Rivales"
       ],
       "formationRole": "support",
       "teamMetrics": {
@@ -1587,7 +1604,8 @@ window.__MARVEL_TD_DATA__ = {
       ],
       "tags": [
         "X-Men",
-        "Mutantes"
+        "Mutantes",
+        "Rivales"
       ],
       "formationRole": "artillery",
       "teamMetrics": {
@@ -1653,7 +1671,8 @@ window.__MARVEL_TD_DATA__ = {
       ],
       "tags": [
         "X-Men",
-        "Mutantes"
+        "Mutantes",
+        "Rivales"
       ],
       "formationRole": "support",
       "teamMetrics": {
@@ -1784,7 +1803,8 @@ window.__MARVEL_TD_DATA__ = {
       "tags": [
         "Místico",
         "Callejero",
-        "Oscuros"
+        "Oscuros",
+        "Rivales"
       ],
       "formationRole": "vanguard",
       "teamMetrics": {
@@ -2526,7 +2546,8 @@ window.__MARVEL_TD_DATA__ = {
       "tags": [
         "Avengers",
         "Mutantes",
-        "Atlánticos"
+        "Atlánticos",
+        "Rivales"
       ],
       "formationRole": "vanguard",
       "teamMetrics": {
@@ -2603,7 +2624,8 @@ window.__MARVEL_TD_DATA__ = {
       "tags": [
         "Defenders",
         "Callejero",
-        "Marciales"
+        "Marciales",
+        "Rivales"
       ],
       "formationRole": "vanguard",
       "teamMetrics": {
@@ -2682,7 +2704,8 @@ window.__MARVEL_TD_DATA__ = {
       ],
       "tags": [
         "Callejero",
-        "Espías"
+        "Espías",
+        "Rivales"
       ],
       "formationRole": "artillery",
       "teamMetrics": {
@@ -2920,7 +2943,8 @@ window.__MARVEL_TD_DATA__ = {
       "tags": [
         "Defenders",
         "Místico",
-        "Oscuros"
+        "Oscuros",
+        "Rivales"
       ],
       "formationRole": "support",
       "teamMetrics": {
@@ -3003,7 +3027,8 @@ window.__MARVEL_TD_DATA__ = {
       "tags": [
         "Defenders",
         "Místico",
-        "Oscuros"
+        "Oscuros",
+        "Rivales"
       ],
       "formationRole": "artillery",
       "teamMetrics": {
@@ -3090,7 +3115,8 @@ window.__MARVEL_TD_DATA__ = {
         "X-Men",
         "Místico",
         "Mutantes",
-        "Oscuros"
+        "Oscuros",
+        "Rivales"
       ],
       "formationRole": "vanguard",
       "teamMetrics": {
@@ -3727,6 +3753,1990 @@ window.__MARVEL_TD_DATA__ = {
         }
       },
       "terrainRole": "aquatic"
+    },
+    "black_cat": {
+      "id": "black_cat",
+      "name": "Black Cat",
+      "category": "Urbano",
+      "rarity": "Rare",
+      "cost": 245,
+      "damage": 31,
+      "range": 135,
+      "fireRate": 2.05,
+      "canSeeStealth": true,
+      "ability": "GOLPE DE SUERTE",
+      "abilityDesc": "Roba tempo de los corredores: criticos altos, marca breve y deteccion callejera.",
+      "niche": "critico, sigilo y control ligero",
+      "allowedTerrains": [
+        1,
+        3
+      ],
+      "tags": [
+        "Callejero",
+        "Espías",
+        "Rivales"
+      ],
+      "formationRole": "support",
+      "teamMetrics": {
+        "damage": 4,
+        "control": 3,
+        "support": 3,
+        "detection": 5
+      },
+      "special": {
+        "statModifiers": {
+          "critChance": 8,
+          "detectStealth": true
+        },
+        "attackEffects": [
+          {
+            "type": "mark",
+            "duration": 1.8,
+            "power": 0.12,
+            "chance": 0.36
+          }
+        ],
+        "visualStyle": "blade",
+        "projectileColor": "#f8fafc"
+      },
+      "sprite": "assets/images/heroes/black_cat/portrait.png",
+      "visual": {
+        "portrait": "assets/images/heroes/black_cat/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/black_cat/sprites/north.png",
+          "north-east": "assets/images/heroes/black_cat/sprites/north-east.png",
+          "east": "assets/images/heroes/black_cat/sprites/east.png",
+          "south-east": "assets/images/heroes/black_cat/sprites/south-east.png",
+          "south": "assets/images/heroes/black_cat/sprites/south.png",
+          "south-west": "assets/images/heroes/black_cat/sprites/south-west.png",
+          "west": "assets/images/heroes/black_cat/sprites/west.png",
+          "north-west": "assets/images/heroes/black_cat/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 14,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/black_cat/shoot/0.png",
+            "assets/images/heroes/black_cat/shoot/1.png",
+            "assets/images/heroes/black_cat/shoot/2.png",
+            "assets/images/heroes/black_cat/shoot/3.png",
+            "assets/images/heroes/black_cat/shoot/4.png",
+            "assets/images/heroes/black_cat/shoot/5.png",
+            "assets/images/heroes/black_cat/shoot/6.png",
+            "assets/images/heroes/black_cat/shoot/7.png",
+            "assets/images/heroes/black_cat/shoot/8.png"
+          ]
+        }
+      },
+      "terrainRole": "ground"
+    },
+    "elsa_bloodstone": {
+      "id": "elsa_bloodstone",
+      "name": "Elsa Bloodstone",
+      "category": "Místico",
+      "rarity": "Rare",
+      "cost": 330,
+      "damage": 44,
+      "range": 170,
+      "fireRate": 1.3,
+      "canSeeStealth": true,
+      "ability": "BLOODSTONE",
+      "abilityDesc": "Dispara municion anti monstruos con ruptura de armadura y dano sostenido contra elites.",
+      "niche": "cazadora anti elite con deteccion",
+      "allowedTerrains": [
+        3
+      ],
+      "tags": [
+        "Oscuros",
+        "Callejero",
+        "Rivales"
+      ],
+      "formationRole": "artillery",
+      "teamMetrics": {
+        "damage": 5,
+        "control": 3,
+        "support": 2,
+        "detection": 5
+      },
+      "special": {
+        "projectileProfile": {
+          "armorPenetration": 0.22
+        },
+        "attackEffects": [
+          {
+            "type": "armorBreak",
+            "duration": 3,
+            "power": 0.16,
+            "chance": 0.34
+          }
+        ],
+        "statModifiers": {
+          "detectStealth": true
+        },
+        "visualStyle": "ballistic",
+        "projectileColor": "#ff3b5f"
+      },
+      "sprite": "assets/images/heroes/elsa_bloodstone/portrait.png",
+      "visual": {
+        "portrait": "assets/images/heroes/elsa_bloodstone/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/elsa_bloodstone/sprites/north.png",
+          "north-east": "assets/images/heroes/elsa_bloodstone/sprites/north-east.png",
+          "east": "assets/images/heroes/elsa_bloodstone/sprites/east.png",
+          "south-east": "assets/images/heroes/elsa_bloodstone/sprites/south-east.png",
+          "south": "assets/images/heroes/elsa_bloodstone/sprites/south.png",
+          "south-west": "assets/images/heroes/elsa_bloodstone/sprites/south-west.png",
+          "west": "assets/images/heroes/elsa_bloodstone/sprites/west.png",
+          "north-west": "assets/images/heroes/elsa_bloodstone/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 14,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/elsa_bloodstone/shoot/0.png",
+            "assets/images/heroes/elsa_bloodstone/shoot/1.png",
+            "assets/images/heroes/elsa_bloodstone/shoot/2.png",
+            "assets/images/heroes/elsa_bloodstone/shoot/3.png",
+            "assets/images/heroes/elsa_bloodstone/shoot/4.png",
+            "assets/images/heroes/elsa_bloodstone/shoot/5.png",
+            "assets/images/heroes/elsa_bloodstone/shoot/6.png",
+            "assets/images/heroes/elsa_bloodstone/shoot/7.png",
+            "assets/images/heroes/elsa_bloodstone/shoot/8.png"
+          ]
+        }
+      },
+      "terrainRole": "high"
+    },
+    "gambit": {
+      "id": "gambit",
+      "name": "Gambit",
+      "category": "Mutante",
+      "rarity": "Rare",
+      "cost": 335,
+      "damage": 37,
+      "range": 165,
+      "fireRate": 1.55,
+      "canSeeStealth": false,
+      "ability": "CARGA CINETICA",
+      "abilityDesc": "Cartas cargadas encadenan entre enemigos cercanos y castigan grupos compactos.",
+      "niche": "rebote mutante para oleadas medias",
+      "allowedTerrains": [
+        1,
+        3
+      ],
+      "tags": [
+        "Mutantes",
+        "X-Men",
+        "Rivales"
+      ],
+      "formationRole": "artillery",
+      "teamMetrics": {
+        "damage": 4,
+        "control": 4,
+        "support": 2,
+        "detection": 3
+      },
+      "special": {
+        "projectileProfile": {
+          "chainCount": 2,
+          "chainRange": 95,
+          "chainFactor": 0.45
+        },
+        "statModifiers": {
+          "critChance": 4
+        },
+        "visualStyle": "energy",
+        "projectileColor": "#d86cff"
+      },
+      "sprite": "assets/images/heroes/gambit/portrait.png",
+      "visual": {
+        "portrait": "assets/images/heroes/gambit/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/gambit/sprites/north.png",
+          "north-east": "assets/images/heroes/gambit/sprites/north-east.png",
+          "east": "assets/images/heroes/gambit/sprites/east.png",
+          "south-east": "assets/images/heroes/gambit/sprites/south-east.png",
+          "south": "assets/images/heroes/gambit/sprites/south.png",
+          "south-west": "assets/images/heroes/gambit/sprites/south-west.png",
+          "west": "assets/images/heroes/gambit/sprites/west.png",
+          "north-west": "assets/images/heroes/gambit/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 14,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/gambit/shoot/0.png",
+            "assets/images/heroes/gambit/shoot/1.png",
+            "assets/images/heroes/gambit/shoot/2.png",
+            "assets/images/heroes/gambit/shoot/3.png",
+            "assets/images/heroes/gambit/shoot/4.png",
+            "assets/images/heroes/gambit/shoot/5.png",
+            "assets/images/heroes/gambit/shoot/6.png",
+            "assets/images/heroes/gambit/shoot/7.png",
+            "assets/images/heroes/gambit/shoot/8.png"
+          ]
+        }
+      },
+      "terrainRole": "ground"
+    },
+    "hela": {
+      "id": "hela",
+      "name": "Hela",
+      "category": "Místico",
+      "rarity": "Legendary",
+      "cost": 620,
+      "damage": 70,
+      "range": 180,
+      "fireRate": 0.85,
+      "canSeeStealth": false,
+      "ability": "ESPINAS DE HEL",
+      "abilityDesc": "Lanzas necroticas perforan armadura y aplican sangrado persistente a jefes y tanques.",
+      "niche": "artilleria mistica anti jefe",
+      "allowedTerrains": [
+        0,
+        1,
+        3
+      ],
+      "tags": [
+        "Místico",
+        "Oscuros",
+        "Rivales"
+      ],
+      "formationRole": "artillery",
+      "teamMetrics": {
+        "damage": 5,
+        "control": 3,
+        "support": 2,
+        "detection": 2
+      },
+      "special": {
+        "projectileProfile": {
+          "armorPenetration": 0.32,
+          "chainCount": 1,
+          "chainRange": 90,
+          "chainFactor": 0.5
+        },
+        "attackEffects": [
+          {
+            "type": "bleed",
+            "duration": 3.2,
+            "power": 0.24,
+            "chance": 0.42
+          }
+        ],
+        "visualStyle": "mystic",
+        "projectileColor": "#69e58c"
+      },
+      "sprite": "assets/images/heroes/hela/portrait.png",
+      "visual": {
+        "portrait": "assets/images/heroes/hela/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/hela/sprites/north.png",
+          "north-east": "assets/images/heroes/hela/sprites/north-east.png",
+          "east": "assets/images/heroes/hela/sprites/east.png",
+          "south-east": "assets/images/heroes/hela/sprites/south-east.png",
+          "south": "assets/images/heroes/hela/sprites/south.png",
+          "south-west": "assets/images/heroes/hela/sprites/south-west.png",
+          "west": "assets/images/heroes/hela/sprites/west.png",
+          "north-west": "assets/images/heroes/hela/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 14,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/hela/shoot/0.png",
+            "assets/images/heroes/hela/shoot/1.png",
+            "assets/images/heroes/hela/shoot/2.png",
+            "assets/images/heroes/hela/shoot/3.png",
+            "assets/images/heroes/hela/shoot/4.png",
+            "assets/images/heroes/hela/shoot/5.png",
+            "assets/images/heroes/hela/shoot/6.png",
+            "assets/images/heroes/hela/shoot/7.png",
+            "assets/images/heroes/hela/shoot/8.png"
+          ]
+        }
+      },
+      "terrainRole": "flyer"
+    },
+    "human_torch": {
+      "id": "human_torch",
+      "name": "Human Torch",
+      "category": "Cósmico",
+      "rarity": "Rare",
+      "cost": 360,
+      "damage": 36,
+      "range": 175,
+      "fireRate": 1.65,
+      "canSeeStealth": false,
+      "ability": "NOVA FLAME",
+      "abilityDesc": "Flamas de area queman grupos y sostienen dano en curvas largas.",
+      "niche": "area aerea y quemadura",
+      "allowedTerrains": [
+        0,
+        1,
+        3
+      ],
+      "tags": [
+        "Cósmico",
+        "Rivales"
+      ],
+      "formationRole": "artillery",
+      "teamMetrics": {
+        "damage": 4,
+        "control": 4,
+        "support": 2,
+        "detection": 2
+      },
+      "special": {
+        "projectileProfile": {
+          "splashRadius": 48,
+          "splashFactor": 0.32
+        },
+        "attackEffects": [
+          {
+            "type": "burn",
+            "duration": 2.5,
+            "power": 12,
+            "chance": 0.34
+          }
+        ],
+        "statModifiers": {
+          "rangePct": 0.04
+        },
+        "visualStyle": "fire",
+        "projectileColor": "#ff7b3d"
+      },
+      "sprite": "assets/images/heroes/human_torch/portrait.png",
+      "visual": {
+        "portrait": "assets/images/heroes/human_torch/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/human_torch/sprites/north.png",
+          "north-east": "assets/images/heroes/human_torch/sprites/north-east.png",
+          "east": "assets/images/heroes/human_torch/sprites/east.png",
+          "south-east": "assets/images/heroes/human_torch/sprites/south-east.png",
+          "south": "assets/images/heroes/human_torch/sprites/south.png",
+          "south-west": "assets/images/heroes/human_torch/sprites/south-west.png",
+          "west": "assets/images/heroes/human_torch/sprites/west.png",
+          "north-west": "assets/images/heroes/human_torch/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 14,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/human_torch/shoot/0.png",
+            "assets/images/heroes/human_torch/shoot/1.png",
+            "assets/images/heroes/human_torch/shoot/2.png",
+            "assets/images/heroes/human_torch/shoot/3.png",
+            "assets/images/heroes/human_torch/shoot/4.png",
+            "assets/images/heroes/human_torch/shoot/5.png",
+            "assets/images/heroes/human_torch/shoot/6.png",
+            "assets/images/heroes/human_torch/shoot/7.png",
+            "assets/images/heroes/human_torch/shoot/8.png"
+          ]
+        }
+      },
+      "terrainRole": "flyer"
+    },
+    "the_hood": {
+      "id": "the_hood",
+      "name": "The Hood",
+      "category": "Místico",
+      "rarity": "Rare",
+      "cost": 310,
+      "damage": 40,
+      "range": 155,
+      "fireRate": 1.35,
+      "canSeeStealth": true,
+      "ability": "PACTO DEMONICO",
+      "abilityDesc": "Balas malditas revelan infiltrados, marcan soportes y aumentan el dano recibido.",
+      "niche": "marca oscura y deteccion",
+      "allowedTerrains": [
+        1,
+        3
+      ],
+      "tags": [
+        "Oscuros",
+        "Callejero",
+        "Rivales"
+      ],
+      "formationRole": "support",
+      "teamMetrics": {
+        "damage": 4,
+        "control": 3,
+        "support": 3,
+        "detection": 5
+      },
+      "special": {
+        "attackEffects": [
+          {
+            "type": "mark",
+            "duration": 2.4,
+            "power": 0.16,
+            "chance": 0.4
+          }
+        ],
+        "statModifiers": {
+          "detectStealth": true
+        },
+        "visualStyle": "mystic",
+        "projectileColor": "#b865ff"
+      },
+      "sprite": "assets/images/heroes/the_hood/portrait.png",
+      "visual": {
+        "portrait": "assets/images/heroes/the_hood/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/the_hood/sprites/north.png",
+          "north-east": "assets/images/heroes/the_hood/sprites/north-east.png",
+          "east": "assets/images/heroes/the_hood/sprites/east.png",
+          "south-east": "assets/images/heroes/the_hood/sprites/south-east.png",
+          "south": "assets/images/heroes/the_hood/sprites/south.png",
+          "south-west": "assets/images/heroes/the_hood/sprites/south-west.png",
+          "west": "assets/images/heroes/the_hood/sprites/west.png",
+          "north-west": "assets/images/heroes/the_hood/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 14,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/the_hood/shoot/0.png",
+            "assets/images/heroes/the_hood/shoot/1.png",
+            "assets/images/heroes/the_hood/shoot/2.png",
+            "assets/images/heroes/the_hood/shoot/3.png",
+            "assets/images/heroes/the_hood/shoot/4.png",
+            "assets/images/heroes/the_hood/shoot/5.png",
+            "assets/images/heroes/the_hood/shoot/6.png",
+            "assets/images/heroes/the_hood/shoot/7.png",
+            "assets/images/heroes/the_hood/shoot/8.png"
+          ]
+        }
+      },
+      "terrainRole": "ground"
+    },
+    "psylocke": {
+      "id": "psylocke",
+      "name": "Psylocke",
+      "category": "Mutante",
+      "rarity": "Legendary",
+      "cost": 455,
+      "damage": 48,
+      "range": 135,
+      "fireRate": 1.55,
+      "canSeeStealth": true,
+      "ability": "KATANA PSIQUICA",
+      "abilityDesc": "Cortes psiquicos rompen defensa, revelan sigilo y rematan amenazas avanzadas.",
+      "niche": "duelista mutante anti sigilo",
+      "allowedTerrains": [
+        1,
+        3
+      ],
+      "tags": [
+        "Mutantes",
+        "X-Men",
+        "Marciales",
+        "Rivales"
+      ],
+      "formationRole": "vanguard",
+      "teamMetrics": {
+        "damage": 5,
+        "control": 4,
+        "support": 2,
+        "detection": 5
+      },
+      "special": {
+        "projectileProfile": {
+          "armorPenetration": 0.22
+        },
+        "attackEffects": [
+          {
+            "type": "armorBreak",
+            "duration": 2.6,
+            "power": 0.18,
+            "chance": 0.38
+          }
+        ],
+        "statModifiers": {
+          "detectStealth": true,
+          "critChance": 5
+        },
+        "visualStyle": "blade",
+        "projectileColor": "#ff8cff"
+      },
+      "sprite": "assets/images/heroes/psylocke/portrait.png",
+      "visual": {
+        "portrait": "assets/images/heroes/psylocke/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/psylocke/sprites/north.png",
+          "north-east": "assets/images/heroes/psylocke/sprites/north-east.png",
+          "east": "assets/images/heroes/psylocke/sprites/east.png",
+          "south-east": "assets/images/heroes/psylocke/sprites/south-east.png",
+          "south": "assets/images/heroes/psylocke/sprites/south.png",
+          "south-west": "assets/images/heroes/psylocke/sprites/south-west.png",
+          "west": "assets/images/heroes/psylocke/sprites/west.png",
+          "north-west": "assets/images/heroes/psylocke/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 14,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/psylocke/shoot/0.png",
+            "assets/images/heroes/psylocke/shoot/1.png",
+            "assets/images/heroes/psylocke/shoot/2.png",
+            "assets/images/heroes/psylocke/shoot/3.png",
+            "assets/images/heroes/psylocke/shoot/4.png",
+            "assets/images/heroes/psylocke/shoot/5.png",
+            "assets/images/heroes/psylocke/shoot/6.png",
+            "assets/images/heroes/psylocke/shoot/7.png",
+            "assets/images/heroes/psylocke/shoot/8.png"
+          ]
+        }
+      },
+      "terrainRole": "ground"
+    },
+    "squirrel_girl": {
+      "id": "squirrel_girl",
+      "name": "Squirrel Girl",
+      "category": "Urbano",
+      "rarity": "Rare",
+      "cost": 255,
+      "damage": 24,
+      "range": 150,
+      "fireRate": 2.15,
+      "canSeeStealth": false,
+      "ability": "EMBOSCADA IMPROBABLE",
+      "abilityDesc": "Invoca una rafaga de golpes rapidos que ralentiza corredores y limpia rezagados.",
+      "niche": "cadencia alta y control economico",
+      "allowedTerrains": [
+        1
+      ],
+      "tags": [
+        "Callejero",
+        "Rivales"
+      ],
+      "formationRole": "support",
+      "teamMetrics": {
+        "damage": 3,
+        "control": 4,
+        "support": 4,
+        "detection": 2
+      },
+      "special": {
+        "attackEffects": [
+          {
+            "type": "slow",
+            "duration": 1.4,
+            "power": 0.28,
+            "chance": 0.36
+          }
+        ],
+        "statModifiers": {
+          "fireRatePct": 0.08
+        },
+        "visualStyle": "impact",
+        "projectileColor": "#f59e0b"
+      },
+      "sprite": "assets/images/heroes/squirrel_girl/portrait.png",
+      "visual": {
+        "portrait": "assets/images/heroes/squirrel_girl/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/squirrel_girl/sprites/north.png",
+          "north-east": "assets/images/heroes/squirrel_girl/sprites/north-east.png",
+          "east": "assets/images/heroes/squirrel_girl/sprites/east.png",
+          "south-east": "assets/images/heroes/squirrel_girl/sprites/south-east.png",
+          "south": "assets/images/heroes/squirrel_girl/sprites/south.png",
+          "south-west": "assets/images/heroes/squirrel_girl/sprites/south-west.png",
+          "west": "assets/images/heroes/squirrel_girl/sprites/west.png",
+          "north-west": "assets/images/heroes/squirrel_girl/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 14,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/squirrel_girl/shoot/0.png",
+            "assets/images/heroes/squirrel_girl/shoot/1.png",
+            "assets/images/heroes/squirrel_girl/shoot/2.png",
+            "assets/images/heroes/squirrel_girl/shoot/3.png",
+            "assets/images/heroes/squirrel_girl/shoot/4.png",
+            "assets/images/heroes/squirrel_girl/shoot/5.png",
+            "assets/images/heroes/squirrel_girl/shoot/6.png",
+            "assets/images/heroes/squirrel_girl/shoot/7.png",
+            "assets/images/heroes/squirrel_girl/shoot/8.png"
+          ]
+        }
+      },
+      "terrainRole": "grass"
+    },
+    "venom": {
+      "id": "venom",
+      "name": "Venom",
+      "category": "Mutante",
+      "rarity": "Legendary",
+      "cost": 500,
+      "damage": 58,
+      "range": 120,
+      "fireRate": 1.18,
+      "canSeeStealth": false,
+      "ability": "SIMBIONTE DEPREDADOR",
+      "abilityDesc": "Golpes de masa simbionte atraviesan armadura y ralentizan objetivos marcados.",
+      "niche": "vanguardia anti blindaje",
+      "allowedTerrains": [
+        1,
+        3
+      ],
+      "tags": [
+        "Oscuros",
+        "Callejero",
+        "Rivales"
+      ],
+      "formationRole": "vanguard",
+      "teamMetrics": {
+        "damage": 5,
+        "control": 4,
+        "support": 2,
+        "detection": 2
+      },
+      "special": {
+        "projectileProfile": {
+          "armorPenetration": 0.2,
+          "splashRadius": 36,
+          "splashFactor": 0.25
+        },
+        "attackEffects": [
+          {
+            "type": "slow",
+            "duration": 1.5,
+            "power": 0.34,
+            "chance": 0.34
+          }
+        ],
+        "statModifiers": {
+          "damagePct": 0.06
+        },
+        "visualStyle": "web",
+        "projectileColor": "#111827"
+      },
+      "sprite": "assets/images/heroes/venom/portrait.png",
+      "visual": {
+        "portrait": "assets/images/heroes/venom/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/venom/sprites/north.png",
+          "north-east": "assets/images/heroes/venom/sprites/north-east.png",
+          "east": "assets/images/heroes/venom/sprites/east.png",
+          "south-east": "assets/images/heroes/venom/sprites/south-east.png",
+          "south": "assets/images/heroes/venom/sprites/south.png",
+          "south-west": "assets/images/heroes/venom/sprites/south-west.png",
+          "west": "assets/images/heroes/venom/sprites/west.png",
+          "north-west": "assets/images/heroes/venom/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 14,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/venom/shoot/0.png",
+            "assets/images/heroes/venom/shoot/1.png",
+            "assets/images/heroes/venom/shoot/2.png",
+            "assets/images/heroes/venom/shoot/3.png",
+            "assets/images/heroes/venom/shoot/4.png",
+            "assets/images/heroes/venom/shoot/5.png",
+            "assets/images/heroes/venom/shoot/6.png",
+            "assets/images/heroes/venom/shoot/7.png",
+            "assets/images/heroes/venom/shoot/8.png"
+          ]
+        }
+      },
+      "terrainRole": "ground"
+    },
+    "angela": {
+      "id": "angela",
+      "name": "Angela",
+      "category": "Cósmico",
+      "rarity": "Legendary",
+      "cost": 540,
+      "damage": 62,
+      "range": 150,
+      "fireRate": 1.05,
+      "canSeeStealth": false,
+      "ability": "HOJAS DE HEVEN",
+      "abilityDesc": "Lanzas celestiales perforan lineas y castigan jefes con criticos consistentes.",
+      "niche": "duelista cosmica anti jefe",
+      "allowedTerrains": [
+        0,
+        1,
+        3
+      ],
+      "tags": [
+        "Cósmico",
+        "Marciales",
+        "Rivales"
+      ],
+      "formationRole": "vanguard",
+      "teamMetrics": {
+        "damage": 5,
+        "control": 3,
+        "support": 2,
+        "detection": 2
+      },
+      "special": {
+        "projectileProfile": {
+          "armorPenetration": 0.26,
+          "chainCount": 1,
+          "chainRange": 80,
+          "chainFactor": 0.48
+        },
+        "statModifiers": {
+          "critChance": 6
+        },
+        "visualStyle": "blade",
+        "projectileColor": "#ffd166"
+      },
+      "sprite": "assets/images/heroes/angela/portrait.png",
+      "visual": {
+        "portrait": "assets/images/heroes/angela/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/angela/sprites/north.png",
+          "north-east": "assets/images/heroes/angela/sprites/north-east.png",
+          "east": "assets/images/heroes/angela/sprites/east.png",
+          "south-east": "assets/images/heroes/angela/sprites/south-east.png",
+          "south": "assets/images/heroes/angela/sprites/south.png",
+          "south-west": "assets/images/heroes/angela/sprites/south-west.png",
+          "west": "assets/images/heroes/angela/sprites/west.png",
+          "north-west": "assets/images/heroes/angela/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 14,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/angela/shoot/0.png",
+            "assets/images/heroes/angela/shoot/1.png",
+            "assets/images/heroes/angela/shoot/2.png",
+            "assets/images/heroes/angela/shoot/3.png",
+            "assets/images/heroes/angela/shoot/4.png",
+            "assets/images/heroes/angela/shoot/5.png",
+            "assets/images/heroes/angela/shoot/6.png",
+            "assets/images/heroes/angela/shoot/7.png",
+            "assets/images/heroes/angela/shoot/8.png"
+          ]
+        }
+      },
+      "terrainRole": "flyer"
+    },
+    "devil_dinosaur": {
+      "id": "devil_dinosaur",
+      "name": "Devil Dinosaur",
+      "category": "Mutante",
+      "rarity": "Legendary",
+      "cost": 575,
+      "damage": 68,
+      "range": 105,
+      "fireRate": 0.92,
+      "canSeeStealth": false,
+      "ability": "ESTAMPIDA ROJA",
+      "abilityDesc": "Impactos enormes aturden brevemente y salpican grupos sin moverlos fuera del camino.",
+      "niche": "tanque de impacto y area",
+      "allowedTerrains": [
+        1,
+        3
+      ],
+      "tags": [
+        "Rivales"
+      ],
+      "formationRole": "vanguard",
+      "teamMetrics": {
+        "damage": 5,
+        "control": 4,
+        "support": 3,
+        "detection": 1
+      },
+      "special": {
+        "projectileProfile": {
+          "splashRadius": 58,
+          "splashFactor": 0.35
+        },
+        "attackEffects": [
+          {
+            "type": "stun",
+            "duration": 0.24,
+            "power": 1,
+            "chance": 0.18
+          }
+        ],
+        "statModifiers": {
+          "damagePct": 0.05
+        },
+        "visualStyle": "impact",
+        "projectileColor": "#ef4444"
+      },
+      "sprite": "assets/images/heroes/devil_dinosaur/portrait.png",
+      "visual": {
+        "portrait": "assets/images/heroes/devil_dinosaur/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/devil_dinosaur/sprites/north.png",
+          "north-east": "assets/images/heroes/devil_dinosaur/sprites/north-east.png",
+          "east": "assets/images/heroes/devil_dinosaur/sprites/east.png",
+          "south-east": "assets/images/heroes/devil_dinosaur/sprites/south-east.png",
+          "south": "assets/images/heroes/devil_dinosaur/sprites/south.png",
+          "south-west": "assets/images/heroes/devil_dinosaur/sprites/south-west.png",
+          "west": "assets/images/heroes/devil_dinosaur/sprites/west.png",
+          "north-west": "assets/images/heroes/devil_dinosaur/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 14,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/devil_dinosaur/shoot/0.png",
+            "assets/images/heroes/devil_dinosaur/shoot/1.png",
+            "assets/images/heroes/devil_dinosaur/shoot/2.png",
+            "assets/images/heroes/devil_dinosaur/shoot/3.png",
+            "assets/images/heroes/devil_dinosaur/shoot/4.png",
+            "assets/images/heroes/devil_dinosaur/shoot/5.png",
+            "assets/images/heroes/devil_dinosaur/shoot/6.png",
+            "assets/images/heroes/devil_dinosaur/shoot/7.png",
+            "assets/images/heroes/devil_dinosaur/shoot/8.png"
+          ]
+        }
+      },
+      "terrainRole": "ground"
+    },
+    "emma_frost": {
+      "id": "emma_frost",
+      "name": "Emma Frost",
+      "category": "Mutante",
+      "rarity": "Legendary",
+      "cost": 470,
+      "damage": 34,
+      "range": 180,
+      "fireRate": 1.45,
+      "canSeeStealth": true,
+      "ability": "DIAMANTE PSIQUICO",
+      "abilityDesc": "Control mental que marca elites, revela sigilo y aumenta el critico del frente.",
+      "niche": "soporte mutante de control",
+      "allowedTerrains": [
+        1,
+        3
+      ],
+      "tags": [
+        "Mutantes",
+        "X-Men",
+        "Rivales"
+      ],
+      "formationRole": "support",
+      "teamMetrics": {
+        "damage": 3,
+        "control": 5,
+        "support": 5,
+        "detection": 5
+      },
+      "special": {
+        "attackEffects": [
+          {
+            "type": "mark",
+            "duration": 2.8,
+            "power": 0.17,
+            "chance": 0.42
+          },
+          {
+            "type": "slow",
+            "duration": 1.6,
+            "power": 0.28,
+            "chance": 0.28
+          }
+        ],
+        "statModifiers": {
+          "detectStealth": true,
+          "critChance": 4,
+          "rangePct": 0.05
+        },
+        "visualStyle": "ice",
+        "projectileColor": "#e0f2fe"
+      },
+      "sprite": "assets/images/heroes/emma_frost/portrait.png",
+      "visual": {
+        "portrait": "assets/images/heroes/emma_frost/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/emma_frost/sprites/north.png",
+          "north-east": "assets/images/heroes/emma_frost/sprites/north-east.png",
+          "east": "assets/images/heroes/emma_frost/sprites/east.png",
+          "south-east": "assets/images/heroes/emma_frost/sprites/south-east.png",
+          "south": "assets/images/heroes/emma_frost/sprites/south.png",
+          "south-west": "assets/images/heroes/emma_frost/sprites/south-west.png",
+          "west": "assets/images/heroes/emma_frost/sprites/west.png",
+          "north-west": "assets/images/heroes/emma_frost/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 14,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/emma_frost/shoot/0.png",
+            "assets/images/heroes/emma_frost/shoot/1.png",
+            "assets/images/heroes/emma_frost/shoot/2.png",
+            "assets/images/heroes/emma_frost/shoot/3.png",
+            "assets/images/heroes/emma_frost/shoot/4.png",
+            "assets/images/heroes/emma_frost/shoot/5.png",
+            "assets/images/heroes/emma_frost/shoot/6.png",
+            "assets/images/heroes/emma_frost/shoot/7.png",
+            "assets/images/heroes/emma_frost/shoot/8.png"
+          ]
+        }
+      },
+      "terrainRole": "ground"
+    },
+    "magneto": {
+      "id": "magneto",
+      "name": "Magneto",
+      "category": "Mutante",
+      "rarity": "Legendary",
+      "cost": 590,
+      "damage": 55,
+      "range": 205,
+      "fireRate": 0.95,
+      "canSeeStealth": false,
+      "ability": "CAMPO MAGNETICO",
+      "abilityDesc": "Aplasta blindajes con area magnetica y penetracion superior desde posiciones elevadas.",
+      "niche": "artilleria anti blindaje",
+      "allowedTerrains": [
+        0,
+        1,
+        3
+      ],
+      "tags": [
+        "Mutantes",
+        "X-Men",
+        "Rivales"
+      ],
+      "formationRole": "artillery",
+      "teamMetrics": {
+        "damage": 5,
+        "control": 4,
+        "support": 3,
+        "detection": 2
+      },
+      "special": {
+        "projectileProfile": {
+          "splashRadius": 52,
+          "splashFactor": 0.34,
+          "armorPenetration": 0.34
+        },
+        "attackEffects": [
+          {
+            "type": "armorBreak",
+            "duration": 3.4,
+            "power": 0.22,
+            "chance": 0.36
+          }
+        ],
+        "visualStyle": "mystic",
+        "projectileColor": "#d946ef"
+      },
+      "sprite": "assets/images/heroes/magneto/portrait.png",
+      "visual": {
+        "portrait": "assets/images/heroes/magneto/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/magneto/sprites/north.png",
+          "north-east": "assets/images/heroes/magneto/sprites/north-east.png",
+          "east": "assets/images/heroes/magneto/sprites/east.png",
+          "south-east": "assets/images/heroes/magneto/sprites/south-east.png",
+          "south": "assets/images/heroes/magneto/sprites/south.png",
+          "south-west": "assets/images/heroes/magneto/sprites/south-west.png",
+          "west": "assets/images/heroes/magneto/sprites/west.png",
+          "north-west": "assets/images/heroes/magneto/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 14,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/magneto/shoot/0.png",
+            "assets/images/heroes/magneto/shoot/1.png",
+            "assets/images/heroes/magneto/shoot/2.png",
+            "assets/images/heroes/magneto/shoot/3.png",
+            "assets/images/heroes/magneto/shoot/4.png",
+            "assets/images/heroes/magneto/shoot/5.png",
+            "assets/images/heroes/magneto/shoot/6.png",
+            "assets/images/heroes/magneto/shoot/7.png",
+            "assets/images/heroes/magneto/shoot/8.png"
+          ]
+        }
+      },
+      "terrainRole": "flyer"
+    },
+    "peni_parker": {
+      "id": "peni_parker",
+      "name": "Peni Parker",
+      "category": "Tecnológico",
+      "rarity": "Rare",
+      "cost": 345,
+      "damage": 29,
+      "range": 165,
+      "fireRate": 1.9,
+      "canSeeStealth": true,
+      "ability": "SP//DR LINK",
+      "abilityDesc": "Dron aracnido con red electrica: detecta sigilo y frena oleadas rapidas.",
+      "niche": "tecnologia anti corredores",
+      "allowedTerrains": [
+        1,
+        3
+      ],
+      "tags": [
+        "Tecnología",
+        "Callejero",
+        "Rivales"
+      ],
+      "formationRole": "support",
+      "teamMetrics": {
+        "damage": 3,
+        "control": 5,
+        "support": 4,
+        "detection": 5
+      },
+      "special": {
+        "attackEffects": [
+          {
+            "type": "web",
+            "duration": 2,
+            "power": 0.18,
+            "chance": 0.45
+          }
+        ],
+        "statModifiers": {
+          "detectStealth": true,
+          "fireRatePct": 0.06
+        },
+        "visualStyle": "web",
+        "projectileColor": "#40c9ff"
+      },
+      "sprite": "assets/images/heroes/peni_parker/portrait.png",
+      "visual": {
+        "portrait": "assets/images/heroes/peni_parker/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/peni_parker/sprites/north.png",
+          "north-east": "assets/images/heroes/peni_parker/sprites/north-east.png",
+          "east": "assets/images/heroes/peni_parker/sprites/east.png",
+          "south-east": "assets/images/heroes/peni_parker/sprites/south-east.png",
+          "south": "assets/images/heroes/peni_parker/sprites/south.png",
+          "south-west": "assets/images/heroes/peni_parker/sprites/south-west.png",
+          "west": "assets/images/heroes/peni_parker/sprites/west.png",
+          "north-west": "assets/images/heroes/peni_parker/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 14,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/peni_parker/shoot/0.png",
+            "assets/images/heroes/peni_parker/shoot/1.png",
+            "assets/images/heroes/peni_parker/shoot/2.png",
+            "assets/images/heroes/peni_parker/shoot/3.png",
+            "assets/images/heroes/peni_parker/shoot/4.png",
+            "assets/images/heroes/peni_parker/shoot/5.png",
+            "assets/images/heroes/peni_parker/shoot/6.png",
+            "assets/images/heroes/peni_parker/shoot/7.png",
+            "assets/images/heroes/peni_parker/shoot/8.png"
+          ]
+        }
+      },
+      "terrainRole": "ground"
+    },
+    "adam_warlock": {
+      "id": "adam_warlock",
+      "name": "Adam Warlock",
+      "category": "Cósmico",
+      "rarity": "Legendary",
+      "cost": 610,
+      "damage": 52,
+      "range": 205,
+      "fireRate": 1,
+      "canSeeStealth": false,
+      "ability": "CAPULLO CUANTICO",
+      "abilityDesc": "Energia cosmica encadena objetivos y potencia el sosten de equipos largos.",
+      "niche": "soporte cosmico de alcance",
+      "allowedTerrains": [
+        0,
+        1,
+        3
+      ],
+      "tags": [
+        "Cósmico",
+        "Rivales"
+      ],
+      "formationRole": "support",
+      "teamMetrics": {
+        "damage": 4,
+        "control": 4,
+        "support": 5,
+        "detection": 3
+      },
+      "special": {
+        "projectileProfile": {
+          "chainCount": 2,
+          "chainRange": 125,
+          "chainFactor": 0.48
+        },
+        "statModifiers": {
+          "rangePct": 0.08,
+          "damagePct": 0.04
+        },
+        "visualStyle": "energy",
+        "projectileColor": "#facc15"
+      },
+      "sprite": "assets/images/heroes/adam_warlock/portrait.png",
+      "visual": {
+        "portrait": "assets/images/heroes/adam_warlock/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/adam_warlock/sprites/north.png",
+          "north-east": "assets/images/heroes/adam_warlock/sprites/north-east.png",
+          "east": "assets/images/heroes/adam_warlock/sprites/east.png",
+          "south-east": "assets/images/heroes/adam_warlock/sprites/south-east.png",
+          "south": "assets/images/heroes/adam_warlock/sprites/south.png",
+          "south-west": "assets/images/heroes/adam_warlock/sprites/south-west.png",
+          "west": "assets/images/heroes/adam_warlock/sprites/west.png",
+          "north-west": "assets/images/heroes/adam_warlock/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 14,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/adam_warlock/shoot/0.png",
+            "assets/images/heroes/adam_warlock/shoot/1.png",
+            "assets/images/heroes/adam_warlock/shoot/2.png",
+            "assets/images/heroes/adam_warlock/shoot/3.png",
+            "assets/images/heroes/adam_warlock/shoot/4.png",
+            "assets/images/heroes/adam_warlock/shoot/5.png",
+            "assets/images/heroes/adam_warlock/shoot/6.png",
+            "assets/images/heroes/adam_warlock/shoot/7.png",
+            "assets/images/heroes/adam_warlock/shoot/8.png"
+          ]
+        }
+      },
+      "terrainRole": "flyer"
+    },
+    "deadpool": {
+      "id": "deadpool",
+      "name": "Deadpool",
+      "category": "Urbano",
+      "rarity": "Legendary",
+      "cost": 390,
+      "damage": 34,
+      "range": 155,
+      "fireRate": 2.05,
+      "canSeeStealth": false,
+      "ability": "MERCENARIO REGENERATIVO",
+      "abilityDesc": "Doble cadencia, sangrado y criticos caoticos para sostener oleadas densas.",
+      "niche": "DPS urbano con sangrado",
+      "allowedTerrains": [
+        1,
+        3
+      ],
+      "tags": [
+        "Callejero",
+        "Espías",
+        "Rivales"
+      ],
+      "formationRole": "vanguard",
+      "teamMetrics": {
+        "damage": 5,
+        "control": 3,
+        "support": 3,
+        "detection": 3
+      },
+      "special": {
+        "attackEffects": [
+          {
+            "type": "bleed",
+            "duration": 2.4,
+            "power": 0.2,
+            "chance": 0.38
+          }
+        ],
+        "statModifiers": {
+          "critChance": 6,
+          "fireRatePct": 0.06
+        },
+        "visualStyle": "ballistic",
+        "projectileColor": "#ef4444"
+      },
+      "sprite": "assets/images/heroes/deadpool/portrait.png",
+      "visual": {
+        "portrait": "assets/images/heroes/deadpool/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/deadpool/sprites/north.png",
+          "north-east": "assets/images/heroes/deadpool/sprites/north-east.png",
+          "east": "assets/images/heroes/deadpool/sprites/east.png",
+          "south-east": "assets/images/heroes/deadpool/sprites/south-east.png",
+          "south": "assets/images/heroes/deadpool/sprites/south.png",
+          "south-west": "assets/images/heroes/deadpool/sprites/south-west.png",
+          "west": "assets/images/heroes/deadpool/sprites/west.png",
+          "north-west": "assets/images/heroes/deadpool/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 14,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/deadpool/shoot/0.png",
+            "assets/images/heroes/deadpool/shoot/1.png",
+            "assets/images/heroes/deadpool/shoot/2.png",
+            "assets/images/heroes/deadpool/shoot/3.png",
+            "assets/images/heroes/deadpool/shoot/4.png",
+            "assets/images/heroes/deadpool/shoot/5.png",
+            "assets/images/heroes/deadpool/shoot/6.png",
+            "assets/images/heroes/deadpool/shoot/7.png",
+            "assets/images/heroes/deadpool/shoot/8.png"
+          ]
+        }
+      },
+      "terrainRole": "ground"
+    },
+    "invisible_woman": {
+      "id": "invisible_woman",
+      "name": "Invisible Woman",
+      "category": "Tecnológico",
+      "rarity": "Legendary",
+      "cost": 430,
+      "damage": 28,
+      "range": 185,
+      "fireRate": 1.55,
+      "canSeeStealth": true,
+      "ability": "CAMPO INVISIBLE",
+      "abilityDesc": "Campos de fuerza revelan infiltrados, marcan elites y amplian cobertura segura.",
+      "niche": "soporte defensivo de rango",
+      "allowedTerrains": [
+        0,
+        1,
+        3
+      ],
+      "tags": [
+        "Tecnología",
+        "Rivales"
+      ],
+      "formationRole": "support",
+      "teamMetrics": {
+        "damage": 3,
+        "control": 4,
+        "support": 5,
+        "detection": 5
+      },
+      "special": {
+        "attackEffects": [
+          {
+            "type": "mark",
+            "duration": 2.6,
+            "power": 0.14,
+            "chance": 0.38
+          }
+        ],
+        "statModifiers": {
+          "detectStealth": true,
+          "rangePct": 0.1
+        },
+        "visualStyle": "energy",
+        "projectileColor": "#a7f3ff"
+      },
+      "sprite": "assets/images/heroes/invisible_woman/portrait.png",
+      "visual": {
+        "portrait": "assets/images/heroes/invisible_woman/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/invisible_woman/sprites/north.png",
+          "north-east": "assets/images/heroes/invisible_woman/sprites/north-east.png",
+          "east": "assets/images/heroes/invisible_woman/sprites/east.png",
+          "south-east": "assets/images/heroes/invisible_woman/sprites/south-east.png",
+          "south": "assets/images/heroes/invisible_woman/sprites/south.png",
+          "south-west": "assets/images/heroes/invisible_woman/sprites/south-west.png",
+          "west": "assets/images/heroes/invisible_woman/sprites/west.png",
+          "north-west": "assets/images/heroes/invisible_woman/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 14,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/invisible_woman/shoot/0.png",
+            "assets/images/heroes/invisible_woman/shoot/1.png",
+            "assets/images/heroes/invisible_woman/shoot/2.png",
+            "assets/images/heroes/invisible_woman/shoot/3.png",
+            "assets/images/heroes/invisible_woman/shoot/4.png",
+            "assets/images/heroes/invisible_woman/shoot/5.png",
+            "assets/images/heroes/invisible_woman/shoot/6.png",
+            "assets/images/heroes/invisible_woman/shoot/7.png",
+            "assets/images/heroes/invisible_woman/shoot/8.png"
+          ]
+        }
+      },
+      "terrainRole": "flyer"
+    },
+    "jeff_the_land_shark": {
+      "id": "jeff_the_land_shark",
+      "name": "Jeff The Land Shark",
+      "category": "Mutante",
+      "rarity": "Rare",
+      "cost": 260,
+      "damage": 26,
+      "range": 135,
+      "fireRate": 1.75,
+      "canSeeStealth": true,
+      "ability": "MAREA AMABLE",
+      "abilityDesc": "Control anfibio que opera en agua, detecta sigilo y ralentiza fugas.",
+      "niche": "soporte anfibio de control",
+      "allowedTerrains": [
+        0,
+        1
+      ],
+      "tags": [
+        "Rivales"
+      ],
+      "formationRole": "support",
+      "teamMetrics": {
+        "damage": 2,
+        "control": 5,
+        "support": 5,
+        "detection": 5
+      },
+      "special": {
+        "attackEffects": [
+          {
+            "type": "slow",
+            "duration": 2,
+            "power": 0.42,
+            "chance": 0.48
+          }
+        ],
+        "statModifiers": {
+          "allowWater": true,
+          "detectStealth": true
+        },
+        "visualStyle": "water",
+        "projectileColor": "#67e8f9"
+      },
+      "sprite": "assets/images/heroes/jeff_the_land_shark/portrait.png",
+      "visual": {
+        "portrait": "assets/images/heroes/jeff_the_land_shark/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/jeff_the_land_shark/sprites/north.png",
+          "north-east": "assets/images/heroes/jeff_the_land_shark/sprites/north-east.png",
+          "east": "assets/images/heroes/jeff_the_land_shark/sprites/east.png",
+          "south-east": "assets/images/heroes/jeff_the_land_shark/sprites/south-east.png",
+          "south": "assets/images/heroes/jeff_the_land_shark/sprites/south.png",
+          "south-west": "assets/images/heroes/jeff_the_land_shark/sprites/south-west.png",
+          "west": "assets/images/heroes/jeff_the_land_shark/sprites/west.png",
+          "north-west": "assets/images/heroes/jeff_the_land_shark/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 14,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/jeff_the_land_shark/shoot/0.png",
+            "assets/images/heroes/jeff_the_land_shark/shoot/1.png",
+            "assets/images/heroes/jeff_the_land_shark/shoot/2.png",
+            "assets/images/heroes/jeff_the_land_shark/shoot/3.png",
+            "assets/images/heroes/jeff_the_land_shark/shoot/4.png",
+            "assets/images/heroes/jeff_the_land_shark/shoot/5.png",
+            "assets/images/heroes/jeff_the_land_shark/shoot/6.png",
+            "assets/images/heroes/jeff_the_land_shark/shoot/7.png",
+            "assets/images/heroes/jeff_the_land_shark/shoot/8.png"
+          ]
+        }
+      },
+      "terrainRole": "amphibious"
+    },
+    "jubilee": {
+      "id": "jubilee",
+      "name": "Jubilee",
+      "category": "Mutante",
+      "rarity": "Rare",
+      "cost": 300,
+      "damage": 30,
+      "range": 170,
+      "fireRate": 1.75,
+      "canSeeStealth": false,
+      "ability": "FUEGOS PLASMOIDES",
+      "abilityDesc": "Explosiones luminosas encadenan dano leve y ralentizan grupos cerca de curvas.",
+      "niche": "control mutante de area",
+      "allowedTerrains": [
+        1,
+        3
+      ],
+      "tags": [
+        "Mutantes",
+        "X-Men",
+        "Rivales"
+      ],
+      "formationRole": "support",
+      "teamMetrics": {
+        "damage": 3,
+        "control": 5,
+        "support": 4,
+        "detection": 3
+      },
+      "special": {
+        "projectileProfile": {
+          "splashRadius": 42,
+          "splashFactor": 0.28
+        },
+        "attackEffects": [
+          {
+            "type": "slow",
+            "duration": 1.3,
+            "power": 0.3,
+            "chance": 0.34
+          }
+        ],
+        "visualStyle": "energy",
+        "projectileColor": "#f472b6"
+      },
+      "sprite": "assets/images/heroes/jubilee/portrait.png",
+      "visual": {
+        "portrait": "assets/images/heroes/jubilee/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/jubilee/sprites/north.png",
+          "north-east": "assets/images/heroes/jubilee/sprites/north-east.png",
+          "east": "assets/images/heroes/jubilee/sprites/east.png",
+          "south-east": "assets/images/heroes/jubilee/sprites/south-east.png",
+          "south": "assets/images/heroes/jubilee/sprites/south.png",
+          "south-west": "assets/images/heroes/jubilee/sprites/south-west.png",
+          "west": "assets/images/heroes/jubilee/sprites/west.png",
+          "north-west": "assets/images/heroes/jubilee/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 14,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/jubilee/shoot/0.png",
+            "assets/images/heroes/jubilee/shoot/1.png",
+            "assets/images/heroes/jubilee/shoot/2.png",
+            "assets/images/heroes/jubilee/shoot/3.png",
+            "assets/images/heroes/jubilee/shoot/4.png",
+            "assets/images/heroes/jubilee/shoot/5.png",
+            "assets/images/heroes/jubilee/shoot/6.png",
+            "assets/images/heroes/jubilee/shoot/7.png",
+            "assets/images/heroes/jubilee/shoot/8.png"
+          ]
+        }
+      },
+      "terrainRole": "ground"
+    },
+    "loki": {
+      "id": "loki",
+      "name": "Loki",
+      "category": "Místico",
+      "rarity": "Legendary",
+      "cost": 560,
+      "damage": 42,
+      "range": 190,
+      "fireRate": 1.25,
+      "canSeeStealth": true,
+      "ability": "ILUSION REAL",
+      "abilityDesc": "Ilusiones marcan amenazas y ralentizan la vanguardia enemiga sin romper la ruta.",
+      "niche": "control mistico y deteccion",
+      "allowedTerrains": [
+        0,
+        1,
+        3
+      ],
+      "tags": [
+        "Místico",
+        "Oscuros",
+        "Cósmico",
+        "Rivales"
+      ],
+      "formationRole": "support",
+      "teamMetrics": {
+        "damage": 4,
+        "control": 5,
+        "support": 5,
+        "detection": 5
+      },
+      "special": {
+        "attackEffects": [
+          {
+            "type": "slow",
+            "duration": 2.4,
+            "power": 0.42,
+            "chance": 0.45
+          },
+          {
+            "type": "mark",
+            "duration": 2.2,
+            "power": 0.13,
+            "chance": 0.34
+          }
+        ],
+        "statModifiers": {
+          "detectStealth": true,
+          "cooldown": 0.04
+        },
+        "visualStyle": "mystic",
+        "projectileColor": "#7ee081"
+      },
+      "sprite": "assets/images/heroes/loki/portrait.png",
+      "visual": {
+        "portrait": "assets/images/heroes/loki/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/loki/sprites/north.png",
+          "north-east": "assets/images/heroes/loki/sprites/north-east.png",
+          "east": "assets/images/heroes/loki/sprites/east.png",
+          "south-east": "assets/images/heroes/loki/sprites/south-east.png",
+          "south": "assets/images/heroes/loki/sprites/south.png",
+          "south-west": "assets/images/heroes/loki/sprites/south-west.png",
+          "west": "assets/images/heroes/loki/sprites/west.png",
+          "north-west": "assets/images/heroes/loki/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 14,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/loki/shoot/0.png",
+            "assets/images/heroes/loki/shoot/1.png",
+            "assets/images/heroes/loki/shoot/2.png",
+            "assets/images/heroes/loki/shoot/3.png",
+            "assets/images/heroes/loki/shoot/4.png",
+            "assets/images/heroes/loki/shoot/5.png",
+            "assets/images/heroes/loki/shoot/6.png",
+            "assets/images/heroes/loki/shoot/7.png",
+            "assets/images/heroes/loki/shoot/8.png"
+          ]
+        }
+      },
+      "terrainRole": "flyer"
+    },
+    "luna_snow": {
+      "id": "luna_snow",
+      "name": "Luna Snow",
+      "category": "Cósmico",
+      "rarity": "Rare",
+      "cost": 340,
+      "damage": 31,
+      "range": 180,
+      "fireRate": 1.55,
+      "canSeeStealth": true,
+      "ability": "HIELO POP",
+      "abilityDesc": "Proyectiles de hielo ralentizan corredores y estabilizan el tramo final.",
+      "niche": "slow a distancia y deteccion",
+      "allowedTerrains": [
+        1,
+        3
+      ],
+      "tags": [
+        "Cósmico",
+        "Rivales"
+      ],
+      "formationRole": "support",
+      "teamMetrics": {
+        "damage": 3,
+        "control": 5,
+        "support": 4,
+        "detection": 5
+      },
+      "special": {
+        "projectileProfile": {
+          "splashRadius": 38,
+          "splashFactor": 0.25
+        },
+        "attackEffects": [
+          {
+            "type": "slow",
+            "duration": 2.2,
+            "power": 0.46,
+            "chance": 0.52
+          }
+        ],
+        "statModifiers": {
+          "detectStealth": true
+        },
+        "visualStyle": "ice",
+        "projectileColor": "#93c5fd"
+      },
+      "sprite": "assets/images/heroes/luna_snow/portrait.png",
+      "visual": {
+        "portrait": "assets/images/heroes/luna_snow/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/luna_snow/sprites/north.png",
+          "north-east": "assets/images/heroes/luna_snow/sprites/north-east.png",
+          "east": "assets/images/heroes/luna_snow/sprites/east.png",
+          "south-east": "assets/images/heroes/luna_snow/sprites/south-east.png",
+          "south": "assets/images/heroes/luna_snow/sprites/south.png",
+          "south-west": "assets/images/heroes/luna_snow/sprites/south-west.png",
+          "west": "assets/images/heroes/luna_snow/sprites/west.png",
+          "north-west": "assets/images/heroes/luna_snow/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 14,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/luna_snow/shoot/0.png",
+            "assets/images/heroes/luna_snow/shoot/1.png",
+            "assets/images/heroes/luna_snow/shoot/2.png",
+            "assets/images/heroes/luna_snow/shoot/3.png",
+            "assets/images/heroes/luna_snow/shoot/4.png",
+            "assets/images/heroes/luna_snow/shoot/5.png",
+            "assets/images/heroes/luna_snow/shoot/6.png",
+            "assets/images/heroes/luna_snow/shoot/7.png",
+            "assets/images/heroes/luna_snow/shoot/8.png"
+          ]
+        }
+      },
+      "terrainRole": "ground"
+    },
+    "mantis": {
+      "id": "mantis",
+      "name": "Mantis",
+      "category": "Cósmico",
+      "rarity": "Rare",
+      "cost": 305,
+      "damage": 24,
+      "range": 175,
+      "fireRate": 1.65,
+      "canSeeStealth": true,
+      "ability": "EMPATIA PSIQUICA",
+      "abilityDesc": "Calma grupos peligrosos con ralentizacion y marca tactica desde gran distancia.",
+      "niche": "soporte guardian de control",
+      "allowedTerrains": [
+        1,
+        3
+      ],
+      "tags": [
+        "Guardianes",
+        "Rivales"
+      ],
+      "formationRole": "support",
+      "teamMetrics": {
+        "damage": 2,
+        "control": 5,
+        "support": 5,
+        "detection": 5
+      },
+      "special": {
+        "attackEffects": [
+          {
+            "type": "slow",
+            "duration": 2.6,
+            "power": 0.44,
+            "chance": 0.5
+          },
+          {
+            "type": "mark",
+            "duration": 2,
+            "power": 0.1,
+            "chance": 0.3
+          }
+        ],
+        "statModifiers": {
+          "detectStealth": true,
+          "rangePct": 0.05
+        },
+        "visualStyle": "mystic",
+        "projectileColor": "#86efac"
+      },
+      "sprite": "assets/images/heroes/mantis/portrait.png",
+      "visual": {
+        "portrait": "assets/images/heroes/mantis/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/mantis/sprites/north.png",
+          "north-east": "assets/images/heroes/mantis/sprites/north-east.png",
+          "east": "assets/images/heroes/mantis/sprites/east.png",
+          "south-east": "assets/images/heroes/mantis/sprites/south-east.png",
+          "south": "assets/images/heroes/mantis/sprites/south.png",
+          "south-west": "assets/images/heroes/mantis/sprites/south-west.png",
+          "west": "assets/images/heroes/mantis/sprites/west.png",
+          "north-west": "assets/images/heroes/mantis/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 14,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/mantis/shoot/0.png",
+            "assets/images/heroes/mantis/shoot/1.png",
+            "assets/images/heroes/mantis/shoot/2.png",
+            "assets/images/heroes/mantis/shoot/3.png",
+            "assets/images/heroes/mantis/shoot/4.png",
+            "assets/images/heroes/mantis/shoot/5.png",
+            "assets/images/heroes/mantis/shoot/6.png",
+            "assets/images/heroes/mantis/shoot/7.png",
+            "assets/images/heroes/mantis/shoot/8.png"
+          ]
+        }
+      },
+      "terrainRole": "ground"
+    },
+    "mister_fantastic": {
+      "id": "mister_fantastic",
+      "name": "Mister Fantastic",
+      "category": "Tecnológico",
+      "rarity": "Legendary",
+      "cost": 415,
+      "damage": 35,
+      "range": 175,
+      "fireRate": 1.45,
+      "canSeeStealth": false,
+      "ability": "ELASTICIDAD TACTICA",
+      "abilityDesc": "Golpes elasticos alcanzan curvas, rebotan una vez y rompen formaciones densas.",
+      "niche": "alcance flexible y rebote",
+      "allowedTerrains": [
+        1,
+        3
+      ],
+      "tags": [
+        "Tecnología",
+        "Rivales"
+      ],
+      "formationRole": "support",
+      "teamMetrics": {
+        "damage": 4,
+        "control": 4,
+        "support": 5,
+        "detection": 3
+      },
+      "special": {
+        "projectileProfile": {
+          "chainCount": 1,
+          "chainRange": 100,
+          "chainFactor": 0.55
+        },
+        "statModifiers": {
+          "rangePct": 0.12
+        },
+        "visualStyle": "impact",
+        "projectileColor": "#5be7ff"
+      },
+      "sprite": "assets/images/heroes/mister_fantastic/portrait.png",
+      "visual": {
+        "portrait": "assets/images/heroes/mister_fantastic/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/mister_fantastic/sprites/north.png",
+          "north-east": "assets/images/heroes/mister_fantastic/sprites/north-east.png",
+          "east": "assets/images/heroes/mister_fantastic/sprites/east.png",
+          "south-east": "assets/images/heroes/mister_fantastic/sprites/south-east.png",
+          "south": "assets/images/heroes/mister_fantastic/sprites/south.png",
+          "south-west": "assets/images/heroes/mister_fantastic/sprites/south-west.png",
+          "west": "assets/images/heroes/mister_fantastic/sprites/west.png",
+          "north-west": "assets/images/heroes/mister_fantastic/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 14,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/mister_fantastic/shoot/0.png",
+            "assets/images/heroes/mister_fantastic/shoot/1.png",
+            "assets/images/heroes/mister_fantastic/shoot/2.png",
+            "assets/images/heroes/mister_fantastic/shoot/3.png",
+            "assets/images/heroes/mister_fantastic/shoot/4.png",
+            "assets/images/heroes/mister_fantastic/shoot/5.png",
+            "assets/images/heroes/mister_fantastic/shoot/6.png",
+            "assets/images/heroes/mister_fantastic/shoot/7.png",
+            "assets/images/heroes/mister_fantastic/shoot/8.png"
+          ]
+        }
+      },
+      "terrainRole": "ground"
+    },
+    "rocket_raccoon": {
+      "id": "rocket_raccoon",
+      "name": "Rocket Raccoon",
+      "category": "Tecnológico",
+      "rarity": "Rare",
+      "cost": 335,
+      "damage": 36,
+      "range": 185,
+      "fireRate": 1.65,
+      "canSeeStealth": true,
+      "ability": "ARSENAL GUARDIAN",
+      "abilityDesc": "Torretas portatiles con splash pequeno, deteccion y cadencia estable.",
+      "niche": "artilleria tecnologica versatil",
+      "allowedTerrains": [
+        3
+      ],
+      "tags": [
+        "Guardianes",
+        "Tecnología",
+        "Rivales"
+      ],
+      "formationRole": "artillery",
+      "teamMetrics": {
+        "damage": 4,
+        "control": 4,
+        "support": 3,
+        "detection": 5
+      },
+      "special": {
+        "projectileProfile": {
+          "splashRadius": 44,
+          "splashFactor": 0.3,
+          "armorPenetration": 0.14
+        },
+        "statModifiers": {
+          "detectStealth": true,
+          "fireRatePct": 0.05
+        },
+        "visualStyle": "explosive",
+        "projectileColor": "#f97316"
+      },
+      "sprite": "assets/images/heroes/rocket_raccoon/portrait.png",
+      "visual": {
+        "portrait": "assets/images/heroes/rocket_raccoon/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/rocket_raccoon/sprites/north.png",
+          "north-east": "assets/images/heroes/rocket_raccoon/sprites/north-east.png",
+          "east": "assets/images/heroes/rocket_raccoon/sprites/east.png",
+          "south-east": "assets/images/heroes/rocket_raccoon/sprites/south-east.png",
+          "south": "assets/images/heroes/rocket_raccoon/sprites/south.png",
+          "south-west": "assets/images/heroes/rocket_raccoon/sprites/south-west.png",
+          "west": "assets/images/heroes/rocket_raccoon/sprites/west.png",
+          "north-west": "assets/images/heroes/rocket_raccoon/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 14,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/rocket_raccoon/shoot/0.png",
+            "assets/images/heroes/rocket_raccoon/shoot/1.png",
+            "assets/images/heroes/rocket_raccoon/shoot/2.png",
+            "assets/images/heroes/rocket_raccoon/shoot/3.png",
+            "assets/images/heroes/rocket_raccoon/shoot/4.png",
+            "assets/images/heroes/rocket_raccoon/shoot/5.png",
+            "assets/images/heroes/rocket_raccoon/shoot/6.png",
+            "assets/images/heroes/rocket_raccoon/shoot/7.png",
+            "assets/images/heroes/rocket_raccoon/shoot/8.png"
+          ]
+        }
+      },
+      "terrainRole": "high"
     }
   },
   "enemies": {

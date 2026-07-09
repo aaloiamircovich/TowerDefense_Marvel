@@ -6,7 +6,7 @@ import { SYNERGY_DEFINITIONS, analyzeTeam, getHeroTeamEffects } from '../src/sys
 const heroes = JSON.parse(fs.readFileSync(new URL('../data/heroes.json', import.meta.url), 'utf8'));
 
 const allegianceHeroes = ['shuri', 'okoye', 'black_bolt', 'crystal', 'namora', 'triton'];
-const requiredGroups = ['Avengers', 'Mutantes', 'Defenders', 'Guardianes', 'Místico', 'Callejero', 'Wakanda', 'Tecnología', 'Cósmico', 'Espías', 'Oscuros', 'Marciales', 'Inhumanos', 'Atlánticos'];
+const requiredGroups = ['Avengers', 'Mutantes', 'Defenders', 'Guardianes', 'Místico', 'Callejero', 'Wakanda', 'Tecnología', 'Cósmico', 'Espías', 'Oscuros', 'Marciales', 'Inhumanos', 'Atlánticos', 'Rivales'];
 
 test('agrupaciones tienen catalogo completo y umbral jugable', () => {
     assert.deepEqual(Object.keys(SYNERGY_DEFINITIONS).sort(), requiredGroups.sort());

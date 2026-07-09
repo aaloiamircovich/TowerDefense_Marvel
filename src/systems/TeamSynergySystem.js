@@ -37,7 +37,10 @@ export const SYNERGY_DEFINITIONS = {
     Inhumanos: family('Inhumanos', '#38bdf8', 'Control elemental y presion de area.',
         tier(3, 'Consejo de Attilan', { abilityPower: 0.06, rangePct: 0.05, cooldown: 0.03 })),
     Atlánticos: family('Atlánticos', '#22d3ee', 'Defensa anfibia y ruptura de blindaje.',
-        tier(3, 'Marea real', { damagePct: 0.07, rangePct: 0.04, allowWater: true }))
+        tier(3, 'Marea real', { damagePct: 0.07, rangePct: 0.04, allowWater: true })),
+    Rivales: family('Rivales', '#ff4fd8', 'Equipos mixtos de choque que convierten variedad en tempo.',
+        tier(3, 'Choque coordinado', { abilityPower: 0.04, fireRatePct: 0.01 }),
+        tier(5, 'Convergencia rival', { damagePct: 0.015, rangePct: 0.015, detectStealth: true }))
 };
 
 export const PAIR_SYNERGIES = [
