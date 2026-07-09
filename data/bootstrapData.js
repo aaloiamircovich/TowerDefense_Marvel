@@ -248,7 +248,8 @@ window.__MARVEL_TD_DATA__ = {
         3
       ],
       "tags": [
-        "Avengers"
+        "Avengers",
+        "Cósmico"
       ],
       "formationRole": "artillery",
       "teamMetrics": {
@@ -375,7 +376,8 @@ window.__MARVEL_TD_DATA__ = {
       },
       "tags": [
         "Avengers",
-        "Callejero"
+        "Callejero",
+        "Espías"
       ],
       "formationRole": "support",
       "teamMetrics": {
@@ -439,7 +441,8 @@ window.__MARVEL_TD_DATA__ = {
       },
       "tags": [
         "Avengers",
-        "Callejero"
+        "Callejero",
+        "Espías"
       ],
       "formationRole": "artillery",
       "teamMetrics": {
@@ -503,7 +506,8 @@ window.__MARVEL_TD_DATA__ = {
       },
       "tags": [
         "Avengers",
-        "Wakanda"
+        "Wakanda",
+        "Marciales"
       ],
       "formationRole": "vanguard",
       "teamMetrics": {
@@ -567,7 +571,8 @@ window.__MARVEL_TD_DATA__ = {
         3
       ],
       "tags": [
-        "Místico"
+        "Místico",
+        "Oscuros"
       ],
       "formationRole": "support",
       "teamMetrics": {
@@ -596,7 +601,8 @@ window.__MARVEL_TD_DATA__ = {
         3
       ],
       "tags": [
-        "Avengers"
+        "Avengers",
+        "Cósmico"
       ],
       "formationRole": "artillery",
       "teamMetrics": {
@@ -659,7 +665,8 @@ window.__MARVEL_TD_DATA__ = {
         3
       ],
       "tags": [
-        "X-Men"
+        "X-Men",
+        "Mutantes"
       ],
       "formationRole": "vanguard",
       "teamMetrics": {
@@ -723,7 +730,8 @@ window.__MARVEL_TD_DATA__ = {
       ],
       "tags": [
         "Defenders",
-        "Callejero"
+        "Callejero",
+        "Marciales"
       ],
       "formationRole": "support",
       "teamMetrics": {
@@ -850,7 +858,8 @@ window.__MARVEL_TD_DATA__ = {
         3
       ],
       "tags": [
-        "Guardianes"
+        "Guardianes",
+        "Cósmico"
       ],
       "formationRole": "artillery",
       "teamMetrics": {
@@ -913,7 +922,8 @@ window.__MARVEL_TD_DATA__ = {
         3
       ],
       "tags": [
-        "Guardianes"
+        "Guardianes",
+        "Cósmico"
       ],
       "formationRole": "support",
       "teamMetrics": {
@@ -976,7 +986,9 @@ window.__MARVEL_TD_DATA__ = {
         3
       ],
       "tags": [
-        "Guardianes"
+        "Guardianes",
+        "Cósmico",
+        "Marciales"
       ],
       "formationRole": "vanguard",
       "teamMetrics": {
@@ -1041,7 +1053,9 @@ window.__MARVEL_TD_DATA__ = {
       ],
       "tags": [
         "Avengers",
-        "Místico"
+        "Místico",
+        "Mutantes",
+        "Oscuros"
       ],
       "formationRole": "support",
       "teamMetrics": {
@@ -1235,7 +1249,8 @@ window.__MARVEL_TD_DATA__ = {
       ],
       "tags": [
         "Callejero",
-        "Tecnología"
+        "Tecnología",
+        "Espías"
       ],
       "formationRole": "artillery",
       "teamMetrics": {
@@ -1298,7 +1313,8 @@ window.__MARVEL_TD_DATA__ = {
         3
       ],
       "tags": [
-        "Callejero"
+        "Callejero",
+        "Marciales"
       ],
       "formationRole": "vanguard",
       "teamMetrics": {
@@ -1362,7 +1378,8 @@ window.__MARVEL_TD_DATA__ = {
       ],
       "tags": [
         "Místico",
-        "Callejero"
+        "Callejero",
+        "Oscuros"
       ],
       "formationRole": "artillery",
       "teamMetrics": {
@@ -1490,7 +1507,8 @@ window.__MARVEL_TD_DATA__ = {
         3
       ],
       "tags": [
-        "X-Men"
+        "X-Men",
+        "Mutantes"
       ],
       "formationRole": "support",
       "teamMetrics": {
@@ -1553,7 +1571,8 @@ window.__MARVEL_TD_DATA__ = {
         3
       ],
       "tags": [
-        "X-Men"
+        "X-Men",
+        "Mutantes"
       ],
       "formationRole": "artillery",
       "teamMetrics": {
@@ -1617,7 +1636,8 @@ window.__MARVEL_TD_DATA__ = {
         3
       ],
       "tags": [
-        "X-Men"
+        "X-Men",
+        "Mutantes"
       ],
       "formationRole": "support",
       "teamMetrics": {
@@ -1680,7 +1700,9 @@ window.__MARVEL_TD_DATA__ = {
         1,
         3
       ],
-      "tags": [],
+      "tags": [
+        "Cósmico"
+      ],
       "formationRole": "artillery",
       "teamMetrics": {
         "damage": 5,
@@ -1743,7 +1765,8 @@ window.__MARVEL_TD_DATA__ = {
       ],
       "tags": [
         "Místico",
-        "Callejero"
+        "Callejero",
+        "Oscuros"
       ],
       "formationRole": "vanguard",
       "teamMetrics": {
@@ -1806,7 +1829,8 @@ window.__MARVEL_TD_DATA__ = {
         3
       ],
       "tags": [
-        "Místico"
+        "Místico",
+        "Oscuros"
       ],
       "formationRole": "vanguard",
       "teamMetrics": {
@@ -1933,7 +1957,8 @@ window.__MARVEL_TD_DATA__ = {
         3
       ],
       "tags": [
-        "X-Men"
+        "X-Men",
+        "Mutantes"
       ],
       "formationRole": "support",
       "teamMetrics": {
@@ -2070,7 +2095,8 @@ window.__MARVEL_TD_DATA__ = {
       ],
       "tags": [
         "Callejero",
-        "Tecnología"
+        "Tecnología",
+        "Espías"
       ],
       "formationRole": "support",
       "teamMetrics": {
@@ -2231,7 +2257,8 @@ window.__MARVEL_TD_DATA__ = {
       ],
       "tags": [
         "Guardianes",
-        "Tecnología"
+        "Tecnología",
+        "Cósmico"
       ],
       "formationRole": "artillery",
       "teamMetrics": {
@@ -2389,7 +2416,8 @@ window.__MARVEL_TD_DATA__ = {
         3
       ],
       "tags": [
-        "Místico"
+        "Místico",
+        "Inhumanos"
       ],
       "formationRole": "support",
       "teamMetrics": {
@@ -2470,7 +2498,9 @@ window.__MARVEL_TD_DATA__ = {
         3
       ],
       "tags": [
-        "Avengers"
+        "Avengers",
+        "Mutantes",
+        "Atlánticos"
       ],
       "formationRole": "vanguard",
       "teamMetrics": {
@@ -2545,7 +2575,8 @@ window.__MARVEL_TD_DATA__ = {
       ],
       "tags": [
         "Defenders",
-        "Callejero"
+        "Callejero",
+        "Marciales"
       ],
       "formationRole": "vanguard",
       "teamMetrics": {
@@ -2623,7 +2654,8 @@ window.__MARVEL_TD_DATA__ = {
         3
       ],
       "tags": [
-        "Callejero"
+        "Callejero",
+        "Espías"
       ],
       "formationRole": "artillery",
       "teamMetrics": {
@@ -2696,7 +2728,9 @@ window.__MARVEL_TD_DATA__ = {
       ],
       "tags": [
         "Defenders",
-        "Callejero"
+        "Callejero",
+        "Espías",
+        "Marciales"
       ],
       "formationRole": "vanguard",
       "teamMetrics": {
@@ -2854,7 +2888,8 @@ window.__MARVEL_TD_DATA__ = {
       ],
       "tags": [
         "Defenders",
-        "Místico"
+        "Místico",
+        "Oscuros"
       ],
       "formationRole": "support",
       "teamMetrics": {
@@ -2934,7 +2969,8 @@ window.__MARVEL_TD_DATA__ = {
       ],
       "tags": [
         "Defenders",
-        "Místico"
+        "Místico",
+        "Oscuros"
       ],
       "formationRole": "artillery",
       "teamMetrics": {
@@ -3018,7 +3054,9 @@ window.__MARVEL_TD_DATA__ = {
       ],
       "tags": [
         "X-Men",
-        "Místico"
+        "Místico",
+        "Mutantes",
+        "Oscuros"
       ],
       "formationRole": "vanguard",
       "teamMetrics": {
@@ -3099,7 +3137,8 @@ window.__MARVEL_TD_DATA__ = {
         3
       ],
       "tags": [
-        "X-Men"
+        "X-Men",
+        "Mutantes"
       ],
       "formationRole": "support",
       "teamMetrics": {
@@ -3156,6 +3195,496 @@ window.__MARVEL_TD_DATA__ = {
             "assets/images/heroes/iceman/shoot/6.png",
             "assets/images/heroes/iceman/shoot/7.png",
             "assets/images/heroes/iceman/shoot/8.png"
+          ]
+        }
+      }
+    },
+    "shuri": {
+      "id": "shuri",
+      "name": "Shuri",
+      "category": "Tecnologico",
+      "rarity": "Legendary",
+      "cost": 420,
+      "damage": 38,
+      "range": 190,
+      "fireRate": 1.45,
+      "canSeeStealth": true,
+      "ability": "GUANTELETES VIBRANIUM",
+      "abilityDesc": "Dispara rafagas de vibranium que marcan objetivos y amplifican el dano tactico.",
+      "niche": "soporte Wakanda con marca y tecnologia",
+      "allowedTerrains": [
+        1,
+        3
+      ],
+      "tags": [
+        "Wakanda",
+        "Tecnología"
+      ],
+      "formationRole": "support",
+      "teamMetrics": {
+        "damage": 4,
+        "control": 3,
+        "support": 5,
+        "detection": 5
+      },
+      "special": {
+        "attackEffects": [
+          {
+            "type": "mark",
+            "duration": 2.6,
+            "power": 0.15,
+            "chance": 0.42
+          }
+        ],
+        "statModifiers": {
+          "rangePct": 0.06,
+          "detectStealth": true
+        },
+        "visualStyle": "energy",
+        "projectileColor": "#9c7cff"
+      },
+      "sprite": "assets/images/heroes/shuri/portrait.png",
+      "visual": {
+        "portrait": "assets/images/heroes/shuri/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/shuri/sprites/north.png",
+          "north-east": "assets/images/heroes/shuri/sprites/north-east.png",
+          "east": "assets/images/heroes/shuri/sprites/east.png",
+          "south-east": "assets/images/heroes/shuri/sprites/south-east.png",
+          "south": "assets/images/heroes/shuri/sprites/south.png",
+          "south-west": "assets/images/heroes/shuri/sprites/south-west.png",
+          "west": "assets/images/heroes/shuri/sprites/west.png",
+          "north-west": "assets/images/heroes/shuri/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 14,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/shuri/shoot/0.png",
+            "assets/images/heroes/shuri/shoot/1.png",
+            "assets/images/heroes/shuri/shoot/2.png",
+            "assets/images/heroes/shuri/shoot/3.png",
+            "assets/images/heroes/shuri/shoot/4.png",
+            "assets/images/heroes/shuri/shoot/5.png",
+            "assets/images/heroes/shuri/shoot/6.png",
+            "assets/images/heroes/shuri/shoot/7.png",
+            "assets/images/heroes/shuri/shoot/8.png"
+          ]
+        }
+      }
+    },
+    "okoye": {
+      "id": "okoye",
+      "name": "Okoye",
+      "category": "Urbano",
+      "rarity": "Rare",
+      "cost": 260,
+      "damage": 40,
+      "range": 110,
+      "fireRate": 1.55,
+      "canSeeStealth": false,
+      "ability": "LANZA DORA MILAJE",
+      "abilityDesc": "Controla la primera linea con critico alto y ruptura breve de armadura.",
+      "niche": "vanguardia Wakanda anti elite",
+      "allowedTerrains": [
+        1,
+        3
+      ],
+      "tags": [
+        "Wakanda",
+        "Marciales"
+      ],
+      "formationRole": "vanguard",
+      "teamMetrics": {
+        "damage": 4,
+        "control": 4,
+        "support": 4,
+        "detection": 2
+      },
+      "special": {
+        "attackEffects": [
+          {
+            "type": "armorBreak",
+            "duration": 2.4,
+            "power": 0.14,
+            "chance": 0.32
+          }
+        ],
+        "statModifiers": {
+          "critChance": 5
+        },
+        "visualStyle": "blade",
+        "projectileColor": "#f6c453"
+      },
+      "sprite": "assets/images/heroes/okoye/portrait.png",
+      "visual": {
+        "portrait": "assets/images/heroes/okoye/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/okoye/sprites/north.png",
+          "north-east": "assets/images/heroes/okoye/sprites/north-east.png",
+          "east": "assets/images/heroes/okoye/sprites/east.png",
+          "south-east": "assets/images/heroes/okoye/sprites/south-east.png",
+          "south": "assets/images/heroes/okoye/sprites/south.png",
+          "south-west": "assets/images/heroes/okoye/sprites/south-west.png",
+          "west": "assets/images/heroes/okoye/sprites/west.png",
+          "north-west": "assets/images/heroes/okoye/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 14,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/okoye/shoot/0.png",
+            "assets/images/heroes/okoye/shoot/1.png",
+            "assets/images/heroes/okoye/shoot/2.png",
+            "assets/images/heroes/okoye/shoot/3.png",
+            "assets/images/heroes/okoye/shoot/4.png",
+            "assets/images/heroes/okoye/shoot/5.png",
+            "assets/images/heroes/okoye/shoot/6.png",
+            "assets/images/heroes/okoye/shoot/7.png",
+            "assets/images/heroes/okoye/shoot/8.png"
+          ]
+        }
+      }
+    },
+    "black_bolt": {
+      "id": "black_bolt",
+      "name": "Black Bolt",
+      "category": "Cosmico",
+      "rarity": "Legendary",
+      "cost": 560,
+      "damage": 66,
+      "range": 170,
+      "fireRate": 0.9,
+      "canSeeStealth": false,
+      "ability": "SUSURRO DE ATTILAN",
+      "abilityDesc": "Ondas sonicas atraviesan blindaje y golpean grupos compactos.",
+      "niche": "artilleria inhumana de area",
+      "allowedTerrains": [
+        1,
+        3
+      ],
+      "tags": [
+        "Inhumanos",
+        "Cósmico"
+      ],
+      "formationRole": "artillery",
+      "teamMetrics": {
+        "damage": 5,
+        "control": 5,
+        "support": 2,
+        "detection": 2
+      },
+      "special": {
+        "projectileProfile": {
+          "splashRadius": 58,
+          "splashFactor": 0.36,
+          "armorPenetration": 0.2
+        },
+        "attackEffects": [
+          {
+            "type": "slow",
+            "duration": 1.1,
+            "power": 0.2,
+            "chance": 0.28
+          }
+        ],
+        "visualStyle": "sonic",
+        "projectileColor": "#38bdf8"
+      },
+      "sprite": "assets/images/heroes/black_bolt/portrait.png",
+      "visual": {
+        "portrait": "assets/images/heroes/black_bolt/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/black_bolt/sprites/north.png",
+          "north-east": "assets/images/heroes/black_bolt/sprites/north-east.png",
+          "east": "assets/images/heroes/black_bolt/sprites/east.png",
+          "south-east": "assets/images/heroes/black_bolt/sprites/south-east.png",
+          "south": "assets/images/heroes/black_bolt/sprites/south.png",
+          "south-west": "assets/images/heroes/black_bolt/sprites/south-west.png",
+          "west": "assets/images/heroes/black_bolt/sprites/west.png",
+          "north-west": "assets/images/heroes/black_bolt/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 14,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/black_bolt/shoot/0.png",
+            "assets/images/heroes/black_bolt/shoot/1.png",
+            "assets/images/heroes/black_bolt/shoot/2.png",
+            "assets/images/heroes/black_bolt/shoot/3.png",
+            "assets/images/heroes/black_bolt/shoot/4.png",
+            "assets/images/heroes/black_bolt/shoot/5.png",
+            "assets/images/heroes/black_bolt/shoot/6.png",
+            "assets/images/heroes/black_bolt/shoot/7.png",
+            "assets/images/heroes/black_bolt/shoot/8.png"
+          ]
+        }
+      }
+    },
+    "crystal": {
+      "id": "crystal",
+      "name": "Crystal",
+      "category": "Cosmico",
+      "rarity": "Rare",
+      "cost": 330,
+      "damage": 32,
+      "range": 175,
+      "fireRate": 1.35,
+      "canSeeStealth": false,
+      "ability": "ELEMENTOS DE ATTILAN",
+      "abilityDesc": "Alterna control elemental con area moderada para sostener curvas.",
+      "niche": "control inhumano de area",
+      "allowedTerrains": [
+        1,
+        3
+      ],
+      "tags": [
+        "Inhumanos",
+        "Cósmico"
+      ],
+      "formationRole": "support",
+      "teamMetrics": {
+        "damage": 3,
+        "control": 5,
+        "support": 4,
+        "detection": 2
+      },
+      "special": {
+        "projectileProfile": {
+          "splashRadius": 46,
+          "splashFactor": 0.28
+        },
+        "attackEffects": [
+          {
+            "type": "slow",
+            "duration": 1.7,
+            "power": 0.36,
+            "chance": 0.45
+          }
+        ],
+        "statModifiers": {
+          "rangePct": 0.04
+        },
+        "visualStyle": "elemental",
+        "projectileColor": "#f97316"
+      },
+      "sprite": "assets/images/heroes/crystal/portrait.png",
+      "visual": {
+        "portrait": "assets/images/heroes/crystal/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/crystal/sprites/north.png",
+          "north-east": "assets/images/heroes/crystal/sprites/north-east.png",
+          "east": "assets/images/heroes/crystal/sprites/east.png",
+          "south-east": "assets/images/heroes/crystal/sprites/south-east.png",
+          "south": "assets/images/heroes/crystal/sprites/south.png",
+          "south-west": "assets/images/heroes/crystal/sprites/south-west.png",
+          "west": "assets/images/heroes/crystal/sprites/west.png",
+          "north-west": "assets/images/heroes/crystal/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 14,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/crystal/shoot/0.png",
+            "assets/images/heroes/crystal/shoot/1.png",
+            "assets/images/heroes/crystal/shoot/2.png",
+            "assets/images/heroes/crystal/shoot/3.png",
+            "assets/images/heroes/crystal/shoot/4.png",
+            "assets/images/heroes/crystal/shoot/5.png",
+            "assets/images/heroes/crystal/shoot/6.png",
+            "assets/images/heroes/crystal/shoot/7.png",
+            "assets/images/heroes/crystal/shoot/8.png"
+          ]
+        }
+      }
+    },
+    "namora": {
+      "id": "namora",
+      "name": "Namora",
+      "category": "Atlantico",
+      "rarity": "Rare",
+      "cost": 300,
+      "damage": 44,
+      "range": 125,
+      "fireRate": 1.35,
+      "canSeeStealth": false,
+      "ability": "HOJA ATLANTE",
+      "abilityDesc": "Puede operar en agua y castiga enemigos blindados cerca de la salida.",
+      "niche": "duelista anfibia anti blindaje",
+      "allowedTerrains": [
+        0,
+        1,
+        3
+      ],
+      "tags": [
+        "Atlánticos",
+        "Marciales"
+      ],
+      "formationRole": "vanguard",
+      "teamMetrics": {
+        "damage": 4,
+        "control": 3,
+        "support": 3,
+        "detection": 2
+      },
+      "special": {
+        "projectileProfile": {
+          "armorPenetration": 0.22
+        },
+        "attackEffects": [
+          {
+            "type": "armorBreak",
+            "duration": 2.8,
+            "power": 0.16,
+            "chance": 0.3
+          }
+        ],
+        "statModifiers": {
+          "allowWater": true,
+          "damagePct": 0.04
+        },
+        "visualStyle": "water",
+        "projectileColor": "#22d3ee"
+      },
+      "sprite": "assets/images/heroes/namora/portrait.png",
+      "visual": {
+        "portrait": "assets/images/heroes/namora/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/namora/sprites/north.png",
+          "north-east": "assets/images/heroes/namora/sprites/north-east.png",
+          "east": "assets/images/heroes/namora/sprites/east.png",
+          "south-east": "assets/images/heroes/namora/sprites/south-east.png",
+          "south": "assets/images/heroes/namora/sprites/south.png",
+          "south-west": "assets/images/heroes/namora/sprites/south-west.png",
+          "west": "assets/images/heroes/namora/sprites/west.png",
+          "north-west": "assets/images/heroes/namora/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 14,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/namora/shoot/0.png",
+            "assets/images/heroes/namora/shoot/1.png",
+            "assets/images/heroes/namora/shoot/2.png",
+            "assets/images/heroes/namora/shoot/3.png",
+            "assets/images/heroes/namora/shoot/4.png",
+            "assets/images/heroes/namora/shoot/5.png",
+            "assets/images/heroes/namora/shoot/6.png",
+            "assets/images/heroes/namora/shoot/7.png",
+            "assets/images/heroes/namora/shoot/8.png"
+          ]
+        }
+      }
+    },
+    "triton": {
+      "id": "triton",
+      "name": "Triton",
+      "category": "Atlantico",
+      "rarity": "Rare",
+      "cost": 280,
+      "damage": 30,
+      "range": 160,
+      "fireRate": 1.45,
+      "canSeeStealth": true,
+      "ability": "RASTREADOR ABISAL",
+      "abilityDesc": "Detecta sigilo desde agua y ralentiza corredores con presion submarina.",
+      "niche": "soporte anfibio de deteccion",
+      "allowedTerrains": [
+        0,
+        1,
+        3
+      ],
+      "tags": [
+        "Atlánticos",
+        "Inhumanos",
+        "Cósmico"
+      ],
+      "formationRole": "support",
+      "teamMetrics": {
+        "damage": 3,
+        "control": 5,
+        "support": 4,
+        "detection": 5
+      },
+      "special": {
+        "attackEffects": [
+          {
+            "type": "slow",
+            "duration": 2,
+            "power": 0.4,
+            "chance": 0.45
+          }
+        ],
+        "statModifiers": {
+          "allowWater": true,
+          "detectStealth": true,
+          "rangePct": 0.06
+        },
+        "visualStyle": "water",
+        "projectileColor": "#67e8f9"
+      },
+      "sprite": "assets/images/heroes/triton/portrait.png",
+      "visual": {
+        "portrait": "assets/images/heroes/triton/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/triton/sprites/north.png",
+          "north-east": "assets/images/heroes/triton/sprites/north-east.png",
+          "east": "assets/images/heroes/triton/sprites/east.png",
+          "south-east": "assets/images/heroes/triton/sprites/south-east.png",
+          "south": "assets/images/heroes/triton/sprites/south.png",
+          "south-west": "assets/images/heroes/triton/sprites/south-west.png",
+          "west": "assets/images/heroes/triton/sprites/west.png",
+          "north-west": "assets/images/heroes/triton/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 14,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/triton/shoot/0.png",
+            "assets/images/heroes/triton/shoot/1.png",
+            "assets/images/heroes/triton/shoot/2.png",
+            "assets/images/heroes/triton/shoot/3.png",
+            "assets/images/heroes/triton/shoot/4.png",
+            "assets/images/heroes/triton/shoot/5.png",
+            "assets/images/heroes/triton/shoot/6.png",
+            "assets/images/heroes/triton/shoot/7.png",
+            "assets/images/heroes/triton/shoot/8.png"
           ]
         }
       }

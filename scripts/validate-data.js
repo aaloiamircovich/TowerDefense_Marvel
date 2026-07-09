@@ -33,7 +33,8 @@ function validateHeroes(heroes) {
     const phase15Heroes = new Set(['daredevil', 'moon_knight', 'blade', 'ghost_rider', 'luke_cage', 'shang_chi', 'she_hulk']);
     const phase16Heroes = new Set(['wolverine', 'jean_grey', 'cyclops', 'storm', 'domino', 'scarlet_witch', 'ant_man', 'winter_soldier']);
     const frontierHeroes = new Set(['war_machine', 'nick_fury', 'wasp', 'nova', 'quake', 'medusa', 'namor', 'iron_fist', 'punisher', 'elektra', 'jessica_jones', 'cloak', 'dagger', 'magik', 'iceman']);
-    const validTags = new Set(['Avengers', 'Defenders', 'Guardianes', 'X-Men', 'Místico', 'Callejero', 'Wakanda', 'Tecnología']);
+    const allegianceHeroes = new Set(['shuri', 'okoye', 'black_bolt', 'crystal', 'namora', 'triton']);
+    const validTags = new Set(['Avengers', 'Defenders', 'Guardianes', 'X-Men', 'Mutantes', 'Místico', 'Callejero', 'Wakanda', 'Tecnología', 'Cósmico', 'Espías', 'Oscuros', 'Marciales', 'Inhumanos', 'Atlánticos']);
     const validRoles = new Set(['vanguard', 'support', 'artillery']);
 
     for (const [key, hero] of Object.entries(heroes)) {
@@ -49,7 +50,7 @@ function validateHeroes(heroes) {
 
         validateAsset(hero.sprite, `heroes.${key}.sprite`);
         if (hero.visual) validateHeroVisual(key, hero.visual);
-        if (phase12Heroes.has(key) || phase14Heroes.has(key) || phase15Heroes.has(key) || phase16Heroes.has(key) || frontierHeroes.has(key)) {
+        if (phase12Heroes.has(key) || phase14Heroes.has(key) || phase15Heroes.has(key) || phase16Heroes.has(key) || frontierHeroes.has(key) || allegianceHeroes.has(key)) {
             if (!hero.visual) errors.push(`heroes.${key}.visual es obligatorio para las expansiones de roster`);
             requireText(hero.abilityDesc, `heroes.${key}.abilityDesc`);
             requireText(hero.niche, `heroes.${key}.niche`);

@@ -1,4 +1,4 @@
-import { FORMATION_DEFINITIONS } from '../systems/TeamSynergySystem.js';
+import { FORMATION_DEFINITIONS, formatEffectSummary, getSynergyMenuModel } from '../systems/TeamSynergySystem.js';
 
 const METRIC_LABELS = {
     coverage: 'Cobertura',
@@ -39,12 +39,13 @@ export class TeamBuilderPanel {
                 <div class="synergy-overview">
                     ${snapshot.families.filter((family) => family.count > 0).map((family) => `
                         <span class="synergy-chip ${family.activeTier ? 'active' : ''}" style="--synergy-color:${family.definition.color}">
-                            <b>${family.tag}</b> ${family.count}/4${family.activeTier ? ` · ${family.activeTier.label}` : ''}
+                            <b>${family.tag}</b> ${family.nextTier ? `${family.count}/${family.nextTier.count}` : `${family.count}/${family.activeTier?.count || 0}`}${family.activeTier ? ` · ${family.activeTier.label}` : ''}
                         </span>
                     `).join('')}
                     ${snapshot.pairs.filter((pair) => pair.active).map((pair) => `<span class="synergy-chip pair active"><b>${pair.label}</b></span>`).join('')}
                     ${snapshot.versatile ? '<span class="synergy-chip versatile active"><b>Equipo versátil</b> · +2.5% daño y alcance</span>' : ''}
                 </div>
+                ${this.renderSynergyMenu(snapshot, readyHeroes, unlockedIds)}
                 <div class="formation-summary">
                     ${Object.entries(FORMATION_DEFINITIONS).map(([role, definition]) => `<span style="--formation-color:${definition.color}"><i></i>${definition.label} <b>${snapshot.formationCounts[role] || 0}</b></span>`).join('')}
                 </div>
@@ -66,6 +67,42 @@ export class TeamBuilderPanel {
                 <span>${hero.name}</span>
                 <i class="fas fa-xmark"></i>
             </button>
+        `;
+    }
+
+    renderSynergyMenu(snapshot, readyHeroes, unlockedIds) {
+        const groups = getSynergyMenuModel(snapshot, readyHeroes, unlockedIds);
+        const activeCount = groups.filter((group) => group.state === 'active').length;
+        return `
+            <section class="allegiance-menu" aria-label="Agrupaciones">
+                <div class="allegiance-heading">
+                    <h3>Agrupaciones</h3>
+                    <strong>${activeCount}/${groups.length} activas</strong>
+                </div>
+                <div class="allegiance-grid">
+                    ${groups.map((group) => this.renderSynergyGroup(group)).join('')}
+                </div>
+            </section>
+        `;
+    }
+
+    renderSynergyGroup(group) {
+        const tier = group.activeTier || group.nextTier;
+        const members = group.selectedNames.length
+            ? group.selectedNames.slice(0, 3).join(', ')
+            : group.unlockedNames.slice(0, 3).join(', ');
+        const memberLabel = members || 'Sin reclutas';
+        const stateLabel = group.activeTier ? group.activeTier.label : group.needed === 1 ? 'A un heroe' : `${group.needed} faltan`;
+        return `
+            <article class="allegiance-card ${group.state}" style="--synergy-color:${group.color}">
+                <div>
+                    <span>${group.progressLabel}</span>
+                    <strong>${group.label}</strong>
+                </div>
+                <p>${group.description}</p>
+                <small>${tier?.label || 'Sin umbral'} · ${formatEffectSummary(tier?.effects || {})}</small>
+                <em>${stateLabel} · ${memberLabel}</em>
+            </article>
         `;
     }
 

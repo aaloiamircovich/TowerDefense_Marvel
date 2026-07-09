@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.43.0 - 2026-07-09
+
+- Agrega menu de agrupaciones al constructor de equipo con progreso, estado activo y efectos de cada buff.
+- Amplia las sinergias a 14 grupos con activacion por tres o mas miembros, incluyendo Mutantes, Wakanda, Inhumanos, Atlanticos, Espias, Oscuros y Marciales.
+- Agrega 6 heroes para completar grupos: Shuri, Okoye, Black Bolt, Crystal, Namora y Triton, con sprites completos y perfiles especiales.
+
 ## 2.42.0 - 2026-07-07
 
 - Elimina la barricada de Manhattan y deja la mision centrada en convoyes civiles y rutas por alcantarilla.

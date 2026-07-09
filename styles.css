@@ -1973,6 +1973,100 @@ canvas {
     --synergy-color: #69e6a6;
 }
 
+.allegiance-menu {
+    display: grid;
+    gap: 10px;
+}
+
+.allegiance-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.allegiance-heading h3 {
+    margin: 0;
+    font-size: 13px;
+    text-transform: uppercase;
+}
+
+.allegiance-heading strong {
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.allegiance-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(178px, 1fr));
+    gap: 8px;
+}
+
+.allegiance-card {
+    display: grid;
+    gap: 6px;
+    min-height: 118px;
+    padding: 10px;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    background: #0c141f;
+    box-shadow: inset 3px 0 0 transparent;
+}
+
+.allegiance-card.active {
+    border-color: var(--synergy-color, #40c9ff);
+    box-shadow: inset 3px 0 0 var(--synergy-color, #40c9ff);
+}
+
+.allegiance-card.near {
+    border-color: color-mix(in srgb, var(--synergy-color, #40c9ff), var(--border) 35%);
+}
+
+.allegiance-card > div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.allegiance-card span {
+    display: inline-grid;
+    min-width: 42px;
+    min-height: 24px;
+    place-items: center;
+    border: 1px solid var(--synergy-color, #40c9ff);
+    border-radius: 5px;
+    color: var(--synergy-color, #40c9ff);
+    font-size: 11px;
+    font-weight: 900;
+}
+
+.allegiance-card strong {
+    overflow: hidden;
+    font-size: 12px;
+    text-align: right;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.allegiance-card p,
+.allegiance-card small,
+.allegiance-card em {
+    margin: 0;
+    color: var(--muted);
+    font-size: 10px;
+    line-height: 1.35;
+}
+
+.allegiance-card small {
+    color: var(--text);
+    font-weight: 800;
+}
+
+.allegiance-card em {
+    font-style: normal;
+}
+
 .formation-summary span {
     display: inline-flex;
     align-items: center;
