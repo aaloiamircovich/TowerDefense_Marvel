@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hero-td-v2.43.0';
+const CACHE_NAME = 'hero-td-v2.44.0';
 const CORE_ASSETS = [
     './', './index.html', './styles.css', './manifest.webmanifest',
     './data/bootstrapData.js', './data/sprite-atlas.js', './data/heroes.json', './data/enemies.json',

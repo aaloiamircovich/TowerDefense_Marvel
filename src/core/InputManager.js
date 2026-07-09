@@ -3,6 +3,16 @@ import { TacticalActionSystem } from '../systems/TacticalActionSystem.js';
 import { getNextTargetingPriority } from '../systems/UIManager.js';
 import { getClosestPointOnPath } from '../utils/PathUtils.js';
 import { buildHeroTargetIntent } from '../entities/Hero.js';
+import {
+    canPlaceOnTerrain,
+    getAllowedTerrainLabels,
+    getPlacementTerrain,
+    getPlacementTerrainLabel,
+    getTerrainLabel,
+    getTerrainPlacementTone,
+    isBlockedPlacementTerrain,
+    TERRAIN
+} from '../utils/TerrainRules.js';
 
 export function measurePathCoverage(origin, range, path = []) {
     const intervals = [];
@@ -55,14 +65,15 @@ export function findBestPlacementCell(heroConfig, game, movingHero = null) {
 
     const gridSize = game.gridSize || 40;
     const range = movingHero?.getEffectiveStats?.().range || heroConfig.range || 100;
-    const allowedTerrains = heroConfig.allowedTerrains || [1, 3, 11, 12];
+    const allowedTerrains = heroConfig.allowedTerrains || [TERRAIN.grass];
     const qualityWeight = { excellent: 220, strong: 140, solid: 70, minimal: 0 };
     let best = null;
 
     for (let y = 0; y < game.terrainMap.length; y++) {
         for (let x = 0; x < game.terrainMap[y].length; x++) {
             const terrainType = game.terrainMap[y][x];
-            const placementTerrain = terrainType === 11 || terrainType === 12 ? 1 : terrainType;
+            if (isBlockedPlacementTerrain(terrainType)) continue;
+            const placementTerrain = getPlacementTerrain(terrainType);
             if (!allowedTerrains.includes(placementTerrain)) continue;
             if (game.missionSystem?.getPlacementBlock?.(x, y)) continue;
 
@@ -86,7 +97,7 @@ export function findBestPlacementCell(heroConfig, game, movingHero = null) {
                 - Math.abs(x - (game.terrainMap[y].length - 1) / 2) * 1.5;
 
             if (!best || score > best.score) {
-                best = { x, y, centerX: center.x, centerY: center.y, score, pathDistance, coverage };
+                best = { x, y, centerX: center.x, centerY: center.y, score, pathDistance, coverage, terrainType, placementTerrain };
             }
         }
     }
@@ -171,7 +182,8 @@ export class InputManager {
         this.placingHero = heroConfig;
         this.suggestedPlacement = findBestPlacementCell(heroConfig, this.game);
         const suggestion = this.suggestedPlacement ? ` Sugerencia: celda ${this.suggestedPlacement.x + 1},${this.suggestedPlacement.y + 1}. Enter confirma sugerida.` : '';
-        this.uiManager.setSelectionStatus(`Colocando ${heroConfig.name}. Coste: $${heroConfig.cost || 0}.${suggestion} Esc para cancelar.`);
+        const terrainText = getAllowedTerrainLabels(heroConfig.allowedTerrains || [TERRAIN.grass]);
+        this.uiManager.setSelectionStatus(`Colocando ${heroConfig.name}. Terreno: ${terrainText}. Coste: $${heroConfig.cost || 0}.${suggestion} Esc para cancelar.`);
     }
 
     setRepositionMode(hero) {
@@ -257,17 +269,17 @@ export class InputManager {
         const { snapX, snapY } = this.getCellCenter(x, y);
         const row = this.game.terrainMap[y];
         const terrainType = row ? row[x] : undefined;
-        const placementTerrain = terrainType === 11 || terrainType === 12 ? 1 : terrainType;
-        const terrainNames = { 0: 'agua', 1: 'hierba', 2: 'camino', 3: 'montaña', 4: 'arbusto', 11: 'hierba', 12: 'hierba alta' };
-
+        const placementTerrain = getPlacementTerrain(terrainType);
         if (terrainType === undefined) return { valid: false, message: 'Fuera del mapa.' };
 
         const missionBlock = this.game.missionSystem?.getPlacementBlock?.(x, y);
         if (missionBlock) return { valid: false, message: missionBlock };
 
-        const allowedTerrains = this.placingHero.allowedTerrains || [1, 3, 11, 12];
-        if (!allowedTerrains.includes(placementTerrain)) {
-            return { valid: false, message: `${this.placingHero.name} no puede ir sobre ${terrainNames[terrainType] || 'ese terreno'}.` };
+        const allowedTerrains = this.placingHero.allowedTerrains || [TERRAIN.grass];
+        if (!canPlaceOnTerrain(this.placingHero, terrainType)) {
+            const allowedText = getAllowedTerrainLabels(allowedTerrains);
+            const terrainText = isBlockedPlacementTerrain(terrainType) ? getTerrainLabel(terrainType) : getPlacementTerrainLabel(terrainType);
+            return { valid: false, terrainType, placementTerrain, message: `${this.placingHero.name} requiere ${allowedText}; esta celda es ${terrainText}.` };
         }
 
         const alreadyDeployed = !this.movingHero && this.game.heroes.some((hero) => hero.id === this.placingHero.id);
@@ -286,19 +298,19 @@ export class InputManager {
         const range = this.movingHero?.getEffectiveStats?.().range || this.placingHero.range || 100;
         const coverage = measurePathCoverage({ x: snapX, y: snapY }, range, this.game.path);
         if (pathDistance > range) {
-            return { valid: false, pathDistance, pathPoint, coverage, message: `Fuera de alcance: el camino está a ${Math.round(pathDistance)} px.` };
+            return { valid: false, terrainType, placementTerrain, pathDistance, pathPoint, coverage, message: `Fuera de alcance: el camino está a ${Math.round(pathDistance)} px.` };
         }
 
         if (this.movingHero) {
             const permission = this.game.tacticalActions.canReposition(this.movingHero);
-            if (!permission.ok) return { valid: false, pathDistance, pathPoint, coverage, message: permission.reason };
-            return { valid: true, pathDistance, pathPoint, coverage, message: `${coverage.quality.label}: ${Math.round(coverage.coveredLength)} px de ruta. Clic para mover.` };
+            if (!permission.ok) return { valid: false, terrainType, placementTerrain, pathDistance, pathPoint, coverage, message: permission.reason };
+            return { valid: true, terrainType, placementTerrain, pathDistance, pathPoint, coverage, message: `${getPlacementTerrainLabel(terrainType)} · ${coverage.quality.label}: ${Math.round(coverage.coveredLength)} px de ruta. Clic para mover.` };
         }
 
         const cost = this.placingHero.cost || 0;
         if (this.resources.credits < cost) return { valid: false, message: `Créditos insuficientes. Necesitas $${cost}.` };
 
-        return { valid: true, pathDistance, pathPoint, coverage, message: `${coverage.quality.label}: ${Math.round(coverage.coveredLength)} px de ruta. Clic para colocar por $${cost}.` };
+        return { valid: true, terrainType, placementTerrain, pathDistance, pathPoint, coverage, message: `${getPlacementTerrainLabel(terrainType)} · ${coverage.quality.label}: ${Math.round(coverage.coveredLength)} px de ruta. Clic para colocar por $${cost}.` };
     }
 
     confirmSuggestedPlacement(event = null) {
@@ -394,13 +406,14 @@ export class InputManager {
         const range = this.movingHero?.getEffectiveStats?.().range || this.placingHero.range || 100;
 
         ctx.save();
+        this.drawTerrainCompatibilityOverlay(ctx, range);
         this.drawSuggestedPlacement(ctx, x, y, range);
         ctx.globalAlpha = 0.5;
-        ctx.fillStyle = validation.valid ? '#46d369' : '#e63946';
+        ctx.fillStyle = validation.valid ? getTerrainPlacementTone(validation.terrainType) : '#e63946';
         ctx.fillRect(px, py, this.game.gridSize, this.game.gridSize);
 
         ctx.globalAlpha = 1;
-        ctx.strokeStyle = validation.valid ? 'rgba(70, 211, 105, 0.9)' : 'rgba(230, 57, 70, 0.9)';
+        ctx.strokeStyle = validation.valid ? getTerrainPlacementTone(validation.terrainType) : 'rgba(230, 57, 70, 0.9)';
         ctx.lineWidth = 2;
         ctx.strokeRect(px + 2, py + 2, this.game.gridSize - 4, this.game.gridSize - 4);
 
@@ -414,11 +427,38 @@ export class InputManager {
             ctx.moveTo(centerX, centerY);
             ctx.lineTo(validation.pathPoint.x, validation.pathPoint.y);
             ctx.setLineDash([5, 5]);
-            ctx.strokeStyle = validation.valid ? '#46d369' : '#e63946';
+            ctx.strokeStyle = validation.valid ? getTerrainPlacementTone(validation.terrainType) : '#e63946';
             ctx.stroke();
             ctx.setLineDash([]);
         }
         this.drawHeroGhost(ctx, centerX, centerY, validation.valid);
+        ctx.restore();
+    }
+
+    drawTerrainCompatibilityOverlay(ctx, range) {
+        if (!this.placingHero || !this.game.terrainMap?.length) return;
+        const gridSize = this.game.gridSize;
+        const rows = this.game.terrainMap.length;
+        const cols = this.game.terrainMap[0]?.length || 0;
+        ctx.save();
+        for (let y = 0; y < rows; y++) {
+            for (let x = 0; x < cols; x++) {
+                const terrainType = this.game.terrainMap[y]?.[x];
+                if (!canPlaceOnTerrain(this.placingHero, terrainType)) continue;
+                const center = { x: x * gridSize + gridSize / 2, y: y * gridSize + gridSize / 2 };
+                const pathPoint = getClosestPointOnPath(center, this.game.path);
+                if ((pathPoint?.distance ?? Infinity) > range) continue;
+                const color = getTerrainPlacementTone(terrainType);
+                const px = x * gridSize;
+                const py = y * gridSize;
+                ctx.globalAlpha = 0.12;
+                ctx.fillStyle = color;
+                ctx.fillRect(px + 3, py + 3, gridSize - 6, gridSize - 6);
+                ctx.globalAlpha = 0.38;
+                ctx.strokeStyle = color;
+                ctx.strokeRect(px + 4, py + 4, gridSize - 8, gridSize - 8);
+            }
+        }
         ctx.restore();
     }
 

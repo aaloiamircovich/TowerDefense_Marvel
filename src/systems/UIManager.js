@@ -6,6 +6,7 @@ import { TooltipController } from '../ui/TooltipController.js';
 import { InventoryPanel } from '../ui/InventoryPanel.js';
 import { TeamBuilderPanel } from '../ui/TeamBuilderPanel.js';
 import { getActiveSets, ITEM_SLOTS, SET_BONUSES, SLOT_LABELS } from './ItemEffectSystem.js';
+import { getAllowedTerrainLabels } from '../utils/TerrainRules.js';
 
 export function buildWaveLaunchState(enabled, summary = null) {
     if (!enabled) {
@@ -1910,8 +1911,7 @@ export class UIManager {
     }
 
     getTerrainText(terrains) {
-        const names = { 0: 'Agua', 1: 'Hierba', 2: 'Camino', 3: 'Montaña', 4: 'Arbusto', 11: 'Hierba', 12: 'Hierba alta' };
-        return terrains.map((terrain) => names[terrain] || terrain).join(', ');
+        return getAllowedTerrainLabels(terrains);
     }
 
     getEnemyRole(archetype, isBoss = false) {

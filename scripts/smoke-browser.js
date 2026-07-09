@@ -154,13 +154,13 @@ function findPlacementPoint() {
         return best;
     };
 
-    const allowed = new Set(hero.allowedTerrains || [1, 3, 11, 12]);
+    const allowed = new Set(hero.allowedTerrains || [1]);
     const range = hero.range || 120;
     for (let y = 1; y < game.terrainMap.length - 1; y++) {
         for (let x = 1; x < game.terrainMap[y].length - 1; x++) {
             const terrain = game.terrainMap[y][x];
-            const placementTerrain = terrain === 11 || terrain === 12 ? 1 : terrain;
-            if (!allowed.has(placementTerrain) || terrain === 2) continue;
+            const placementTerrain = terrain === 4 || terrain === 11 || terrain === 12 ? 1 : terrain;
+            if (!allowed.has(placementTerrain) || terrain === 2 || terrain === 5) continue;
             const centerX = x * game.gridSize + game.gridSize / 2;
             const centerY = y * game.gridSize + game.gridSize / 2;
             const distance = distanceToCurrentPath({ x: centerX, y: centerY });

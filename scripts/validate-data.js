@@ -4,6 +4,7 @@ import { isOrthogonalPath } from '../src/utils/PathUtils.js';
 import { DIRECTIONS, collectVisualSources } from '../src/rendering/SpriteAnimator.js';
 import { buildBootstrapSource, readProjectData } from './lib/project-data.js';
 import { EVOLUTION_CATALOG } from '../src/systems/EvolutionSystem.js';
+import { TERRAIN } from '../src/utils/TerrainRules.js';
 
 const root = process.cwd();
 const strictAssets = process.argv.includes('--strict-assets');
@@ -36,6 +37,8 @@ function validateHeroes(heroes) {
     const allegianceHeroes = new Set(['shuri', 'okoye', 'black_bolt', 'crystal', 'namora', 'triton']);
     const validTags = new Set(['Avengers', 'Defenders', 'Guardianes', 'X-Men', 'Mutantes', 'Místico', 'Callejero', 'Wakanda', 'Tecnología', 'Cósmico', 'Espías', 'Oscuros', 'Marciales', 'Inhumanos', 'Atlánticos']);
     const validRoles = new Set(['vanguard', 'support', 'artillery']);
+    const validPlacementTerrains = new Set([TERRAIN.water, TERRAIN.grass, TERRAIN.mountain]);
+    const validTerrainRoles = new Set(['grass', 'ground', 'high', 'flyer', 'aquatic', 'amphibious']);
 
     for (const [key, hero] of Object.entries(heroes)) {
         requireText(hero.name, `heroes.${key}.name`);
@@ -46,7 +49,10 @@ function validateHeroes(heroes) {
 
         if (!Array.isArray(hero.allowedTerrains) || hero.allowedTerrains.length === 0) {
             errors.push(`heroes.${key}.allowedTerrains debe ser un array no vacio`);
+        } else if (hero.allowedTerrains.some((terrain) => !validPlacementTerrains.has(terrain))) {
+            errors.push(`heroes.${key}.allowedTerrains solo puede usar agua, pasto o montana`);
         }
+        if (!validTerrainRoles.has(hero.terrainRole)) errors.push(`heroes.${key}.terrainRole no es valido`);
 
         validateAsset(hero.sprite, `heroes.${key}.sprite`);
         if (hero.visual) validateHeroVisual(key, hero.visual);

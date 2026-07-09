@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { buildHeroCoverageState, findBestPlacementCell, InputManager, measurePathCoverage } from '../src/core/InputManager.js';
+import { TERRAIN } from '../src/utils/TerrainRules.js';
 
 test('measurePathCoverage mide el tramo de camino dentro del rango', () => {
     const coverage = measurePathCoverage(
@@ -61,6 +62,27 @@ test('findBestPlacementCell evita una celda ocupada por otro heroe', () => {
 
     assert.ok(suggestion);
     assert.notDeepEqual({ x: suggestion.centerX, y: suggestion.centerY }, { x: 100, y: 60 });
+});
+
+test('findBestPlacementCell respeta heroes solo de montana', () => {
+    const game = terrainPlacementGame();
+    const hero = { id: 'hawkeye', name: 'Hawkeye', range: 120, allowedTerrains: [TERRAIN.mountain] };
+
+    const suggestion = findBestPlacementCell(hero, game);
+
+    assert.ok(suggestion);
+    assert.equal(game.terrainMap[suggestion.y][suggestion.x], TERRAIN.mountain);
+    assert.notEqual(game.terrainMap[suggestion.y][suggestion.x], TERRAIN.blocked);
+});
+
+test('findBestPlacementCell respeta heroes solo de agua', () => {
+    const game = terrainPlacementGame();
+    const hero = { id: 'namor', name: 'Namor', range: 140, allowedTerrains: [TERRAIN.water] };
+
+    const suggestion = findBestPlacementCell(hero, game);
+
+    assert.ok(suggestion);
+    assert.equal(game.terrainMap[suggestion.y][suggestion.x], TERRAIN.water);
 });
 
 test('buildHeroCoverageState resume cobertura real del heroe seleccionado', () => {
@@ -269,6 +291,21 @@ function placementGame() {
             [1, 1, 1, 1, 1]
         ],
         path: [{ x: 0, y: 100 }, { x: 200, y: 100 }],
+        heroes: [],
+        missionSystem: null
+    };
+}
+
+function terrainPlacementGame() {
+    return {
+        gridSize: 40,
+        terrainMap: [
+            [TERRAIN.grass, TERRAIN.blocked, TERRAIN.mountain, TERRAIN.mountain, TERRAIN.grass],
+            [TERRAIN.water, TERRAIN.water, TERRAIN.path, TERRAIN.grass, TERRAIN.blocked],
+            [TERRAIN.grass, TERRAIN.grass, TERRAIN.path, TERRAIN.mountain, TERRAIN.grass],
+            [TERRAIN.grass, TERRAIN.blocked, TERRAIN.grass, TERRAIN.grass, TERRAIN.grass]
+        ],
+        path: [{ x: 80, y: 0 }, { x: 80, y: 160 }],
         heroes: [],
         missionSystem: null
     };

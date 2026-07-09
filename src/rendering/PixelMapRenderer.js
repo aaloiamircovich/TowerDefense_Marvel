@@ -4,16 +4,9 @@ import {
     MANHATTAN_MANUAL_ROWS,
     MANHATTAN_MANUAL_TILE_IMAGES
 } from './ManhattanManualMap.js';
+import { TERRAIN } from '../utils/TerrainRules.js';
 
-export const TERRAIN = {
-    water: 0,
-    buildable: 1,
-    street: 2,
-    blocked: 3,
-    park: 4,
-    sidewalk: 11,
-    detail: 12
-};
+export { TERRAIN };
 
 const MANHATTAN_TILES = [
     'BBBBBBSSSSSSSSBBBWBBBBBB',
@@ -42,8 +35,8 @@ const MANHATTAN_LEGEND = {
     B: TERRAIN.blocked,
     T: TERRAIN.park,
     S: TERRAIN.sidewalk,
-    P: TERRAIN.street,
-    G: TERRAIN.buildable
+    P: TERRAIN.path,
+    G: TERRAIN.grass
 };
 
 const TILESET_SRC = 'assets/images/tiles/kenney-modern-city.png?v=2';
@@ -114,7 +107,7 @@ export function buildPixelTerrainMap(level, canvas, tileSize) {
         const row = source[y] || '';
         terrainMap[y] = [];
         for (let x = 0; x < cols; x++) {
-            terrainMap[y][x] = MANHATTAN_LEGEND[row[x]] ?? TERRAIN.buildable;
+            terrainMap[y][x] = MANHATTAN_LEGEND[row[x]] ?? TERRAIN.grass;
         }
     }
 
@@ -142,17 +135,17 @@ export function drawPixelTerrainTile(ctx, x, y, terrainType, game) {
     if (tilesetReady()) {
         drawKenneyBaseTile(ctx, px, py, size, terrainType, x, y, game.terrainMap);
     } else {
-        ctx.fillStyle = theme.terrain[terrainType] || theme.terrain[TERRAIN.buildable];
+        ctx.fillStyle = theme.terrain[terrainType] || theme.terrain[TERRAIN.grass];
         ctx.fillRect(px, py, size, size);
     }
 
     if (!tilesetReady()) {
         if (terrainType === TERRAIN.water) drawWater(ctx, px, py, size, variant);
-        else if (terrainType === TERRAIN.street) drawStreet(ctx, px, py, size, game.terrainMap, x, y);
+        else if (terrainType === TERRAIN.path) drawStreet(ctx, px, py, size, game.terrainMap, x, y);
         else if (terrainType === TERRAIN.sidewalk) drawSidewalk(ctx, px, py, size, variant);
         else if (terrainType === TERRAIN.blocked) drawBuilding(ctx, px, py, size, variant);
         else if (terrainType === TERRAIN.park) drawTreeCanopy(ctx, px, py, size, variant);
-        else if (terrainType === TERRAIN.buildable) drawGrassLot(ctx, px, py, size, variant);
+        else if (terrainType === TERRAIN.grass) drawGrassLot(ctx, px, py, size, variant);
         else if (terrainType === TERRAIN.detail) drawStreetDetail(ctx, px, py, size);
     }
 
@@ -191,12 +184,13 @@ function getManualTileKey(level, x, y) {
 }
 
 function getTerrainForManualTile(tileKey) {
-    if (MANHATTAN_MANUAL_ROAD_TILES.has(tileKey)) return TERRAIN.street;
+    if (MANHATTAN_MANUAL_ROAD_TILES.has(tileKey)) return TERRAIN.path;
+    if (tileKey === 'water') return TERRAIN.water;
+    if (tileKey === 'mountain') return TERRAIN.mountain;
     if (MANHATTAN_MANUAL_BLOCKED_TILES.has(tileKey)) {
-        if (tileKey === 'water') return TERRAIN.water;
         return TERRAIN.blocked;
     }
-    return TERRAIN.buildable;
+    return TERRAIN.grass;
 }
 
 function drawManualTile(ctx, tileKey, dx, dy, size) {
@@ -240,7 +234,7 @@ function drawKenneyBaseTile(ctx, px, py, size, terrainType, x, y, map) {
         return;
     }
 
-    if (terrainType === TERRAIN.street) {
+    if (terrainType === TERRAIN.path) {
         drawSheetTile(ctx, pickTile('street', x, y), px, py, size);
         drawStreetMarkings(ctx, px, py, size, map, x, y);
         return;
@@ -263,7 +257,7 @@ function drawKenneyBaseTile(ctx, px, py, size, terrainType, x, y, map) {
         return;
     }
 
-    if (terrainType === TERRAIN.buildable) {
+    if (terrainType === TERRAIN.grass) {
         drawSheetTile(ctx, pickTile('grass', x, y), px, py, size);
         return;
     }
@@ -272,8 +266,8 @@ function drawKenneyBaseTile(ctx, px, py, size, terrainType, x, y, map) {
 }
 
 function drawStreetMarkings(ctx, px, py, size, map, x, y) {
-    const horizontal = map[y]?.[x - 1] === TERRAIN.street || map[y]?.[x + 1] === TERRAIN.street;
-    const vertical = map[y - 1]?.[x] === TERRAIN.street || map[y + 1]?.[x] === TERRAIN.street;
+    const horizontal = map[y]?.[x - 1] === TERRAIN.path || map[y]?.[x + 1] === TERRAIN.path;
+    const vertical = map[y - 1]?.[x] === TERRAIN.path || map[y + 1]?.[x] === TERRAIN.path;
     ctx.save();
     ctx.fillStyle = 'rgba(255, 224, 80, 0.84)';
     if (horizontal) ctx.fillRect(px + 6, py + size / 2 - 1, size - 12, 2);
@@ -345,8 +339,8 @@ function drawWater(ctx, px, py, size, variant) {
 }
 
 function drawStreet(ctx, px, py, size, map, x, y) {
-    const horizontal = map[y]?.[x - 1] === TERRAIN.street || map[y]?.[x + 1] === TERRAIN.street;
-    const vertical = map[y - 1]?.[x] === TERRAIN.street || map[y + 1]?.[x] === TERRAIN.street;
+    const horizontal = map[y]?.[x - 1] === TERRAIN.path || map[y]?.[x + 1] === TERRAIN.path;
+    const vertical = map[y - 1]?.[x] === TERRAIN.path || map[y + 1]?.[x] === TERRAIN.path;
     ctx.fillStyle = '#4f5965';
     ctx.fillRect(px, py, size, size);
     ctx.fillStyle = '#697482';

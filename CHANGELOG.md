@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.44.0 - 2026-07-09
+
+- Perfecciona la colocacion por terreno separando agua, pasto, montana, camino y bloqueados en una regla compartida.
+- Asigna afinidades de terreno reproducibles al roster: acuaticos al agua, tiradores a altura, voladores a agua/pasto/montana y heroes de calle al suelo.
+- Agrega overlay de compatibilidad durante colocacion y tests para evitar que montana y edificios se confundan.
+
 ## 2.43.0 - 2026-07-09
 
 - Agrega menu de agrupaciones al constructor de equipo con progreso, estado activo y efectos de cada buff.

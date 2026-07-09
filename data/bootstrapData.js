@@ -64,7 +64,8 @@ window.__MARVEL_TD_DATA__ = {
         "control": 2,
         "support": 2,
         "detection": 3
-      }
+      },
+      "terrainRole": "flyer"
     },
     "spiderman": {
       "id": "spiderman",
@@ -129,7 +130,8 @@ window.__MARVEL_TD_DATA__ = {
         "control": 5,
         "support": 2,
         "detection": 5
-      }
+      },
+      "terrainRole": "ground"
     },
     "capitan_america": {
       "id": "capitan_america",
@@ -180,8 +182,7 @@ window.__MARVEL_TD_DATA__ = {
         }
       },
       "allowedTerrains": [
-        1,
-        3
+        1
       ],
       "tags": [
         "Avengers"
@@ -192,7 +193,8 @@ window.__MARVEL_TD_DATA__ = {
         "control": 3,
         "support": 5,
         "detection": 2
-      }
+      },
+      "terrainRole": "grass"
     },
     "thor": {
       "id": "thor",
@@ -257,7 +259,8 @@ window.__MARVEL_TD_DATA__ = {
         "control": 4,
         "support": 1,
         "detection": 1
-      }
+      },
+      "terrainRole": "flyer"
     },
     "hulk": {
       "id": "hulk",
@@ -320,7 +323,8 @@ window.__MARVEL_TD_DATA__ = {
         "control": 4,
         "support": 1,
         "detection": 1
-      }
+      },
+      "terrainRole": "ground"
     },
     "black_widow": {
       "id": "black_widow",
@@ -336,8 +340,7 @@ window.__MARVEL_TD_DATA__ = {
       "abilityDesc": "Prioriza apoyos e invocadores con ruptura de armadura. Cada cuarto ataque libera una descarga que encadena y paraliza varios objetivos.",
       "sprite": "assets/images/heroes/black_widow/portrait.png",
       "allowedTerrains": [
-        1,
-        3
+        1
       ],
       "niche": "anti-soporte, detección y control eléctrico",
       "visual": {
@@ -385,7 +388,8 @@ window.__MARVEL_TD_DATA__ = {
         "control": 4,
         "support": 3,
         "detection": 5
-      }
+      },
+      "terrainRole": "grass"
     },
     "hawkeye": {
       "id": "hawkeye",
@@ -401,7 +405,6 @@ window.__MARVEL_TD_DATA__ = {
       "abilityDesc": "Cambia manualmente entre flechas explosivas de área, criogénicas de control y perforantes contra armadura.",
       "sprite": "assets/images/heroes/hawkeye/portrait.png",
       "allowedTerrains": [
-        1,
         3
       ],
       "niche": "artillería adaptable de muy largo alcance",
@@ -450,7 +453,8 @@ window.__MARVEL_TD_DATA__ = {
         "control": 4,
         "support": 1,
         "detection": 4
-      }
+      },
+      "terrainRole": "high"
     },
     "black_panther": {
       "id": "black_panther",
@@ -515,7 +519,8 @@ window.__MARVEL_TD_DATA__ = {
         "control": 3,
         "support": 4,
         "detection": 4
-      }
+      },
+      "terrainRole": "ground"
     },
     "doctor_strange": {
       "id": "doctor_strange",
@@ -580,7 +585,8 @@ window.__MARVEL_TD_DATA__ = {
         "control": 5,
         "support": 4,
         "detection": 3
-      }
+      },
+      "terrainRole": "flyer"
     },
     "captain_marvel": {
       "id": "captain_marvel",
@@ -645,7 +651,8 @@ window.__MARVEL_TD_DATA__ = {
             "assets/images/heroes/captain_marvel/shoot/8.png"
           ]
         }
-      }
+      },
+      "terrainRole": "flyer"
     },
     "wolverine": {
       "id": "wolverine",
@@ -709,7 +716,8 @@ window.__MARVEL_TD_DATA__ = {
             "assets/images/heroes/wolverine/shoot/8.png"
           ]
         }
-      }
+      },
+      "terrainRole": "ground"
     },
     "daredevil": {
       "id": "daredevil",
@@ -725,8 +733,7 @@ window.__MARVEL_TD_DATA__ = {
       "abilityDesc": "Emite pulsos que revelan sigilo para todo el equipo y responde cada cuatro ataques con un contraataque preciso.",
       "sprite": "assets/images/heroes/daredevil/portrait.png",
       "allowedTerrains": [
-        1,
-        3
+        1
       ],
       "tags": [
         "Defenders",
@@ -774,7 +781,8 @@ window.__MARVEL_TD_DATA__ = {
             "assets/images/heroes/daredevil/shoot/8.png"
           ]
         }
-      }
+      },
+      "terrainRole": "grass"
     },
     "ant_man": {
       "id": "ant_man",
@@ -790,8 +798,7 @@ window.__MARVEL_TD_DATA__ = {
       "abilityDesc": "Alterna manualmente forma diminuta de alta cadencia y forma gigante con impacto y retroceso de área.",
       "sprite": "assets/images/heroes/ant_man/portrait.png",
       "allowedTerrains": [
-        1,
-        3
+        1
       ],
       "tags": [
         "Avengers",
@@ -838,7 +845,8 @@ window.__MARVEL_TD_DATA__ = {
             "assets/images/heroes/ant_man/shoot/8.png"
           ]
         }
-      }
+      },
+      "terrainRole": "grass"
     },
     "star_lord": {
       "id": "star_lord",
@@ -854,8 +862,7 @@ window.__MARVEL_TD_DATA__ = {
       "abilityDesc": "Dispara a dos blancos y alterna plasma perforante, munición criogénica o cargas incendiarias.",
       "sprite": "assets/images/heroes/star_lord/portrait.png",
       "allowedTerrains": [
-        1,
-        3
+        1
       ],
       "tags": [
         "Guardianes",
@@ -902,7 +909,8 @@ window.__MARVEL_TD_DATA__ = {
             "assets/images/heroes/star_lord/shoot/8.png"
           ]
         }
-      }
+      },
+      "terrainRole": "grass"
     },
     "groot": {
       "id": "groot",
@@ -918,8 +926,7 @@ window.__MARVEL_TD_DATA__ = {
       "abilityDesc": "Levanta una barrera temporal sobre la ruta que ralentiza grupos sin desplazarlos. Con otro Guardián recupera una vida cada veinte segundos.",
       "sprite": "assets/images/heroes/groot/portrait.png",
       "allowedTerrains": [
-        1,
-        3
+        1
       ],
       "tags": [
         "Guardianes",
@@ -966,7 +973,8 @@ window.__MARVEL_TD_DATA__ = {
             "assets/images/heroes/groot/shoot/8.png"
           ]
         }
-      }
+      },
+      "terrainRole": "grass"
     },
     "gamora": {
       "id": "gamora",
@@ -1031,7 +1039,8 @@ window.__MARVEL_TD_DATA__ = {
             "assets/images/heroes/gamora/shoot/8.png"
           ]
         }
-      }
+      },
+      "terrainRole": "ground"
     },
     "scarlet_witch": {
       "id": "scarlet_witch",
@@ -1098,7 +1107,8 @@ window.__MARVEL_TD_DATA__ = {
             "assets/images/heroes/scarlet_witch/shoot/8.png"
           ]
         }
-      }
+      },
+      "terrainRole": "flyer"
     },
     "vision": {
       "id": "vision",
@@ -1163,7 +1173,8 @@ window.__MARVEL_TD_DATA__ = {
         "control": 2,
         "support": 2,
         "detection": 5
-      }
+      },
+      "terrainRole": "flyer"
     },
     "falcon": {
       "id": "falcon",
@@ -1228,7 +1239,8 @@ window.__MARVEL_TD_DATA__ = {
         "control": 3,
         "support": 5,
         "detection": 5
-      }
+      },
+      "terrainRole": "flyer"
     },
     "winter_soldier": {
       "id": "winter_soldier",
@@ -1293,7 +1305,8 @@ window.__MARVEL_TD_DATA__ = {
             "assets/images/heroes/winter_soldier/shoot/8.png"
           ]
         }
-      }
+      },
+      "terrainRole": "ground"
     },
     "shang_chi": {
       "id": "shang_chi",
@@ -1357,7 +1370,8 @@ window.__MARVEL_TD_DATA__ = {
             "assets/images/heroes/shang_chi/shoot/8.png"
           ]
         }
-      }
+      },
+      "terrainRole": "ground"
     },
     "moon_knight": {
       "id": "moon_knight",
@@ -1373,8 +1387,7 @@ window.__MARVEL_TD_DATA__ = {
       "abilityDesc": "Alterna luna creciente para alcance, luna llena para dano y menguante para cadencia y control.",
       "sprite": "assets/images/heroes/moon_knight/portrait.png",
       "allowedTerrains": [
-        1,
-        3
+        1
       ],
       "tags": [
         "Místico",
@@ -1422,7 +1435,8 @@ window.__MARVEL_TD_DATA__ = {
             "assets/images/heroes/moon_knight/shoot/8.png"
           ]
         }
-      }
+      },
+      "terrainRole": "grass"
     },
     "she_hulk": {
       "id": "she_hulk",
@@ -1485,7 +1499,8 @@ window.__MARVEL_TD_DATA__ = {
             "assets/images/heroes/she_hulk/shoot/8.png"
           ]
         }
-      }
+      },
+      "terrainRole": "ground"
     },
     "jean_grey": {
       "id": "jean_grey",
@@ -1551,7 +1566,8 @@ window.__MARVEL_TD_DATA__ = {
             "assets/images/heroes/jean_grey/shoot/8.png"
           ]
         }
-      }
+      },
+      "terrainRole": "flyer"
     },
     "cyclops": {
       "id": "cyclops",
@@ -1567,7 +1583,6 @@ window.__MARVEL_TD_DATA__ = {
       "abilityDesc": "Orienta rayos en línea y alterna un haz penetrante con rebotes ópticos de alta cadencia.",
       "sprite": "assets/images/heroes/cyclops/portrait.png",
       "allowedTerrains": [
-        1,
         3
       ],
       "tags": [
@@ -1615,7 +1630,8 @@ window.__MARVEL_TD_DATA__ = {
             "assets/images/heroes/cyclops/shoot/8.png"
           ]
         }
-      }
+      },
+      "terrainRole": "high"
     },
     "storm": {
       "id": "storm",
@@ -1680,7 +1696,8 @@ window.__MARVEL_TD_DATA__ = {
             "assets/images/heroes/storm/shoot/8.png"
           ]
         }
-      }
+      },
+      "terrainRole": "flyer"
     },
     "silver_surfer": {
       "id": "silver_surfer",
@@ -1744,7 +1761,8 @@ window.__MARVEL_TD_DATA__ = {
             "assets/images/heroes/silver_surfer/shoot/8.png"
           ]
         }
-      }
+      },
+      "terrainRole": "flyer"
     },
     "blade": {
       "id": "blade",
@@ -1809,7 +1827,8 @@ window.__MARVEL_TD_DATA__ = {
             "assets/images/heroes/blade/shoot/8.png"
           ]
         }
-      }
+      },
+      "terrainRole": "ground"
     },
     "ghost_rider": {
       "id": "ghost_rider",
@@ -1873,7 +1892,8 @@ window.__MARVEL_TD_DATA__ = {
             "assets/images/heroes/ghost_rider/shoot/8.png"
           ]
         }
-      }
+      },
+      "terrainRole": "ground"
     },
     "luke_cage": {
       "id": "luke_cage",
@@ -1937,7 +1957,8 @@ window.__MARVEL_TD_DATA__ = {
             "assets/images/heroes/luke_cage/shoot/8.png"
           ]
         }
-      }
+      },
+      "terrainRole": "ground"
     },
     "domino": {
       "id": "domino",
@@ -2001,7 +2022,8 @@ window.__MARVEL_TD_DATA__ = {
             "assets/images/heroes/domino/shoot/8.png"
           ]
         }
-      }
+      },
+      "terrainRole": "ground"
     },
     "war_machine": {
       "id": "war_machine",
@@ -2017,7 +2039,6 @@ window.__MARVEL_TD_DATA__ = {
       "abilityDesc": "Misiles de hombro: disparos con area moderada y penetracion parcial contra blindaje.",
       "niche": "splash antiarmadura para grupos densos",
       "allowedTerrains": [
-        1,
         3
       ],
       "tags": [
@@ -2074,7 +2095,8 @@ window.__MARVEL_TD_DATA__ = {
             "assets/images/heroes/war_machine/shoot/8.png"
           ]
         }
-      }
+      },
+      "terrainRole": "high"
     },
     "nick_fury": {
       "id": "nick_fury",
@@ -2090,7 +2112,6 @@ window.__MARVEL_TD_DATA__ = {
       "abilityDesc": "Marca objetivos prioritarios y mejora la lectura contra sigilo desde larga distancia.",
       "niche": "deteccion, marca y soporte tactico",
       "allowedTerrains": [
-        1,
         3
       ],
       "tags": [
@@ -2155,7 +2176,8 @@ window.__MARVEL_TD_DATA__ = {
             "assets/images/heroes/nick_fury/shoot/8.png"
           ]
         }
-      }
+      },
+      "terrainRole": "high"
     },
     "wasp": {
       "id": "wasp",
@@ -2171,6 +2193,7 @@ window.__MARVEL_TD_DATA__ = {
       "abilityDesc": "Alta cadencia, criticos rapidos y microdescargas que frenan corredores.",
       "niche": "cadencia, critico y anti runners",
       "allowedTerrains": [
+        0,
         1,
         3
       ],
@@ -2236,7 +2259,8 @@ window.__MARVEL_TD_DATA__ = {
             "assets/images/heroes/wasp/shoot/8.png"
           ]
         }
-      }
+      },
+      "terrainRole": "flyer"
     },
     "nova": {
       "id": "nova",
@@ -2252,6 +2276,7 @@ window.__MARVEL_TD_DATA__ = {
       "abilityDesc": "Proyectiles cosmicos atraviesan parte de la linea y encadenan energia residual.",
       "niche": "linea cosmica y rebotes",
       "allowedTerrains": [
+        0,
         1,
         3
       ],
@@ -2314,7 +2339,8 @@ window.__MARVEL_TD_DATA__ = {
             "assets/images/heroes/nova/shoot/8.png"
           ]
         }
-      }
+      },
+      "terrainRole": "flyer"
     },
     "quake": {
       "id": "quake",
@@ -2396,7 +2422,8 @@ window.__MARVEL_TD_DATA__ = {
             "assets/images/heroes/quake/shoot/8.png"
           ]
         }
-      }
+      },
+      "terrainRole": "ground"
     },
     "medusa": {
       "id": "medusa",
@@ -2477,7 +2504,8 @@ window.__MARVEL_TD_DATA__ = {
             "assets/images/heroes/medusa/shoot/8.png"
           ]
         }
-      }
+      },
+      "terrainRole": "ground"
     },
     "namor": {
       "id": "namor",
@@ -2493,9 +2521,7 @@ window.__MARVEL_TD_DATA__ = {
       "abilityDesc": "Puede defender desde agua, rompe armadura y golpea elites de frente.",
       "niche": "vanguardia acuatica anti elite",
       "allowedTerrains": [
-        0,
-        1,
-        3
+        0
       ],
       "tags": [
         "Avengers",
@@ -2554,7 +2580,8 @@ window.__MARVEL_TD_DATA__ = {
             "assets/images/heroes/namor/shoot/8.png"
           ]
         }
-      }
+      },
+      "terrainRole": "aquatic"
     },
     "iron_fist": {
       "id": "iron_fist",
@@ -2634,7 +2661,8 @@ window.__MARVEL_TD_DATA__ = {
             "assets/images/heroes/iron_fist/shoot/8.png"
           ]
         }
-      }
+      },
+      "terrainRole": "ground"
     },
     "punisher": {
       "id": "punisher",
@@ -2650,7 +2678,6 @@ window.__MARVEL_TD_DATA__ = {
       "abilityDesc": "Rafagas largas con municion perforante y splash minimo contra grupos.",
       "niche": "DPS sostenido y perforacion",
       "allowedTerrains": [
-        1,
         3
       ],
       "tags": [
@@ -2707,7 +2734,8 @@ window.__MARVEL_TD_DATA__ = {
             "assets/images/heroes/punisher/shoot/8.png"
           ]
         }
-      }
+      },
+      "terrainRole": "high"
     },
     "elektra": {
       "id": "elektra",
@@ -2788,7 +2816,8 @@ window.__MARVEL_TD_DATA__ = {
             "assets/images/heroes/elektra/shoot/8.png"
           ]
         }
-      }
+      },
+      "terrainRole": "ground"
     },
     "jessica_jones": {
       "id": "jessica_jones",
@@ -2867,7 +2896,8 @@ window.__MARVEL_TD_DATA__ = {
             "assets/images/heroes/jessica_jones/shoot/8.png"
           ]
         }
-      }
+      },
+      "terrainRole": "ground"
     },
     "cloak": {
       "id": "cloak",
@@ -2883,6 +2913,7 @@ window.__MARVEL_TD_DATA__ = {
       "abilityDesc": "Revela sigilo y ralentiza enemigos marcados por sombras.",
       "niche": "deteccion mistica y control",
       "allowedTerrains": [
+        0,
         1,
         3
       ],
@@ -2948,7 +2979,8 @@ window.__MARVEL_TD_DATA__ = {
             "assets/images/heroes/cloak/shoot/8.png"
           ]
         }
-      }
+      },
+      "terrainRole": "flyer"
     },
     "dagger": {
       "id": "dagger",
@@ -2964,6 +2996,7 @@ window.__MARVEL_TD_DATA__ = {
       "abilityDesc": "Lanza luz que marca y salta a un segundo objetivo cercano.",
       "niche": "marca y rebote luminoso",
       "allowedTerrains": [
+        0,
         1,
         3
       ],
@@ -3033,7 +3066,8 @@ window.__MARVEL_TD_DATA__ = {
             "assets/images/heroes/dagger/shoot/8.png"
           ]
         }
-      }
+      },
+      "terrainRole": "flyer"
     },
     "magik": {
       "id": "magik",
@@ -3117,7 +3151,8 @@ window.__MARVEL_TD_DATA__ = {
             "assets/images/heroes/magik/shoot/8.png"
           ]
         }
-      }
+      },
+      "terrainRole": "ground"
     },
     "iceman": {
       "id": "iceman",
@@ -3197,7 +3232,8 @@ window.__MARVEL_TD_DATA__ = {
             "assets/images/heroes/iceman/shoot/8.png"
           ]
         }
-      }
+      },
+      "terrainRole": "ground"
     },
     "shuri": {
       "id": "shuri",
@@ -3213,8 +3249,7 @@ window.__MARVEL_TD_DATA__ = {
       "abilityDesc": "Dispara rafagas de vibranium que marcan objetivos y amplifican el dano tactico.",
       "niche": "soporte Wakanda con marca y tecnologia",
       "allowedTerrains": [
-        1,
-        3
+        1
       ],
       "tags": [
         "Wakanda",
@@ -3277,7 +3312,8 @@ window.__MARVEL_TD_DATA__ = {
             "assets/images/heroes/shuri/shoot/8.png"
           ]
         }
-      }
+      },
+      "terrainRole": "grass"
     },
     "okoye": {
       "id": "okoye",
@@ -3356,7 +3392,8 @@ window.__MARVEL_TD_DATA__ = {
             "assets/images/heroes/okoye/shoot/8.png"
           ]
         }
-      }
+      },
+      "terrainRole": "ground"
     },
     "black_bolt": {
       "id": "black_bolt",
@@ -3372,6 +3409,7 @@ window.__MARVEL_TD_DATA__ = {
       "abilityDesc": "Ondas sonicas atraviesan blindaje y golpean grupos compactos.",
       "niche": "artilleria inhumana de area",
       "allowedTerrains": [
+        0,
         1,
         3
       ],
@@ -3437,7 +3475,8 @@ window.__MARVEL_TD_DATA__ = {
             "assets/images/heroes/black_bolt/shoot/8.png"
           ]
         }
-      }
+      },
+      "terrainRole": "flyer"
     },
     "crystal": {
       "id": "crystal",
@@ -3453,6 +3492,7 @@ window.__MARVEL_TD_DATA__ = {
       "abilityDesc": "Alterna control elemental con area moderada para sostener curvas.",
       "niche": "control inhumano de area",
       "allowedTerrains": [
+        0,
         1,
         3
       ],
@@ -3520,7 +3560,8 @@ window.__MARVEL_TD_DATA__ = {
             "assets/images/heroes/crystal/shoot/8.png"
           ]
         }
-      }
+      },
+      "terrainRole": "flyer"
     },
     "namora": {
       "id": "namora",
@@ -3536,9 +3577,7 @@ window.__MARVEL_TD_DATA__ = {
       "abilityDesc": "Puede operar en agua y castiga enemigos blindados cerca de la salida.",
       "niche": "duelista anfibia anti blindaje",
       "allowedTerrains": [
-        0,
-        1,
-        3
+        0
       ],
       "tags": [
         "Atlánticos",
@@ -3604,7 +3643,8 @@ window.__MARVEL_TD_DATA__ = {
             "assets/images/heroes/namora/shoot/8.png"
           ]
         }
-      }
+      },
+      "terrainRole": "aquatic"
     },
     "triton": {
       "id": "triton",
@@ -3620,9 +3660,7 @@ window.__MARVEL_TD_DATA__ = {
       "abilityDesc": "Detecta sigilo desde agua y ralentiza corredores con presion submarina.",
       "niche": "soporte anfibio de deteccion",
       "allowedTerrains": [
-        0,
-        1,
-        3
+        0
       ],
       "tags": [
         "Atlánticos",
@@ -3687,7 +3725,8 @@ window.__MARVEL_TD_DATA__ = {
             "assets/images/heroes/triton/shoot/8.png"
           ]
         }
-      }
+      },
+      "terrainRole": "aquatic"
     }
   },
   "enemies": {

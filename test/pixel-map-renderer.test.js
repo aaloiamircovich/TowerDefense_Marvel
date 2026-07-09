@@ -31,3 +31,14 @@ test('Manhattan manual conserva 25 por 19 cuadros', () => {
     assert.equal(MANHATTAN_MANUAL_ROWS[9][24], 'road-horizontal');
     assert.equal(MANHATTAN_MANUAL_ROWS[18][24], 'mountain');
 });
+
+test('Manhattan manual separa edificios bloqueados de montana colocable', () => {
+    const level = { theme: { id: 'new-york' }, rendering: { style: 'pixelart', source: 'manual-grid', tileSize: 32 } };
+    const canvas = { width: 800, height: 600 };
+    const map = buildPixelTerrainMap(level, canvas, 32);
+
+    assert.equal(map[0][0], TERRAIN.water);
+    assert.equal(map[0][15], TERRAIN.blocked);
+    assert.equal(map[14][12], TERRAIN.mountain);
+    assert.notEqual(map[0][15], map[14][12]);
+});
