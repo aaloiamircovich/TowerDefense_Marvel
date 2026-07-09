@@ -368,6 +368,16 @@ test('buildBossHudState resume jefe activo y estado critico', () => {
     assert.equal(state.critical, true);
 });
 
+test('buildBossHudState e intel distinguen al jefe final', () => {
+    const boss = { name: 'Thanos', isBoss: true, isFinalBoss: true, isAlive: true, hp: 900, maxHp: 1000, threat: 5 };
+    const state = buildBossHudState([boss], true);
+    const intel = buildEnemyIntel(boss);
+
+    assert.equal(state.isFinalBoss, true);
+    assert.equal(state.critical, false);
+    assert.ok(intel.traits.includes('Jefe final'));
+});
+
 test('buildSpawnQueueState oculta refuerzos sin cola activa', () => {
     assert.equal(buildSpawnQueueState([], 0, true), null);
     assert.equal(buildSpawnQueueState([{ config: { name: 'Hydra' }, delay: 1 }], 0, false), null);

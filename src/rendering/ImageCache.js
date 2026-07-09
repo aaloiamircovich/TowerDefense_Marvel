@@ -35,7 +35,3 @@ export async function preloadImages(sources) {
         });
     }));
 }
-
-export function clearImageCache() {
-    imageCache.clear();
-}

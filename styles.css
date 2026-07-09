@@ -997,6 +997,15 @@ canvas {
     --boss-color: #e63946;
 }
 
+.boss-hud.final-boss {
+    --boss-color: #b865ff;
+    border-left-width: 4px;
+}
+
+.boss-hud.final-boss.critical {
+    --boss-color: #ff3b74;
+}
+
 .boss-hud-heading {
     display: grid;
     gap: 2px;

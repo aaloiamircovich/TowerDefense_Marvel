@@ -341,6 +341,7 @@ export class WaveManager {
             stealth: modifier.stealth || config.stealth || false,
             reward: Math.round((config.reward ?? 10) * (isBoss ? 1 : 1 + this.currentWave * 0.02) * difficulty.reward),
             isBoss: isBoss || config.isBoss || false,
+            isFinalBoss: Boolean(config.isFinalBoss),
             waveModifier: this.waveModifier.id
         };
     }

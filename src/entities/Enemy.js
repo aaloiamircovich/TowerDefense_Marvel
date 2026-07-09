@@ -75,6 +75,7 @@ export class Enemy {
         this.stealth = Boolean(config.stealth);
         this.flying = Boolean(config.flying || this.archetype === 'flying');
         this.isBoss = Boolean(config.isBoss);
+        this.isFinalBoss = Boolean(config.isFinalBoss);
         this.sprite = config.sprite;
         this.debuffs = [];
 

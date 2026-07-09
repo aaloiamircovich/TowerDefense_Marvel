@@ -1,19 +1,30 @@
+import { getSupportedLocales, translate } from '../utils/I18n.js';
+
 const BOOLEAN_SETTINGS = [
-    ['ranges', 'toggle-ranges', 'Mostrar rangos de héroes'],
-    ['grid', 'toggle-grid', 'Mostrar cuadrícula táctica'],
-    ['combatText', 'toggle-combat-text', 'Texto flotante de combate'],
-    ['audio', 'toggle-audio', 'Audio del juego'],
-    ['highContrast', 'toggle-contrast', 'Modo de alto contraste'],
-    ['reduceMotion', 'toggle-motion', 'Reducir movimiento']
+    ['ranges', 'toggle-ranges', 'showRanges'],
+    ['grid', 'toggle-grid', 'showGrid'],
+    ['combatText', 'toggle-combat-text', 'combatText'],
+    ['audio', 'toggle-audio', 'gameAudio'],
+    ['highContrast', 'toggle-contrast', 'highContrast'],
+    ['reduceMotion', 'toggle-motion', 'reduceMotion']
 ];
 
 const VOLUME_SETTINGS = [
-    ['masterVolume', 'master', 'Volumen general'],
-    ['musicVolume', 'music', 'Música ambiental'],
-    ['sfxVolume', 'sfx', 'Efectos y combate']
+    ['masterVolume', 'master', 'masterVolume'],
+    ['musicVolume', 'music', 'musicVolume'],
+    ['sfxVolume', 'sfx', 'sfxVolume']
 ];
 
-const KEY_BINDINGS = [['pause', 'Pausa'], ['speed', 'Velocidad'], ['nextWave', 'Iniciar oleada'], ['cancel', 'Cancelar'], ['targeting', 'Cambiar objetivo'], ['upgrade', 'Mejorar seleccionado']];
+const KEY_BINDINGS = [
+    ['pause', 'pause'],
+    ['speed', 'speed'],
+    ['nextWave', 'nextWave'],
+    ['cancel', 'cancel'],
+    ['targeting', 'targeting'],
+    ['upgrade', 'upgrade']
+];
+
+const UI_SCALES = [['compact', 'compact'], ['normal', 'normal'], ['large', 'large']];
 
 export class SettingsPanel {
     constructor(ui) {
@@ -22,43 +33,49 @@ export class SettingsPanel {
 
     render(title = 'Ajustes') {
         const settings = this.ui.game.progression.state.settings;
+        const locale = settings.locale || 'es';
+        const t = (key) => translate(key, locale);
+        const panelTitle = title === 'Ajustes' ? t('settings') : title;
+
         this.ui.panelContent.innerHTML = `
-            <h2>${title}</h2>
+            <h2>${panelTitle}</h2>
             <div class="settings-layout">
                 <section class="settings-section">
-                    <h3>Juego y accesibilidad</h3>
+                    <h3>${t('gameplayAccessibility')}</h3>
                     <div class="settings-grid">
-                        ${BOOLEAN_SETTINGS.map(([key, id, label]) => `<label class="setting-toggle"><input type="checkbox" id="${id}" data-setting="${key}" ${settings[key] ? 'checked' : ''}><span>${label}</span></label>`).join('')}
+                        ${BOOLEAN_SETTINGS.map(([key, id, labelKey]) => `<label class="setting-toggle"><input type="checkbox" id="${id}" data-setting="${key}" ${settings[key] ? 'checked' : ''}><span>${t(labelKey)}</span></label>`).join('')}
                     </div>
                 </section>
                 <section class="settings-section">
-                    <h3>Controles</h3>
-                    <div class="key-binding-grid">${KEY_BINDINGS.map(([key, label]) => `<label><span>${label}</span><input data-key-binding="${key}" maxlength="12" value="${settings.keyBindings[key]}"></label>`).join('')}</div>
-                    <small>Mando: A inicia oleada, B cancela, Start pausa y LB/RB cambia de heroe.</small>
+                    <h3>${t('controls')}</h3>
+                    <div class="key-binding-grid">${KEY_BINDINGS.map(([key, labelKey]) => `<label><span>${t(labelKey)}</span><input data-key-binding="${key}" maxlength="12" value="${settings.keyBindings[key]}"></label>`).join('')}</div>
+                    <small>${t('controllerHint')}</small>
                 </section>
                 <section class="settings-section">
-                    <h3>Idioma</h3>
-                    <div class="ui-scale-switch" role="group" aria-label="Idioma"><button data-locale="es" class="${settings.locale === 'es' ? 'active' : ''}">ES</button><button data-locale="en" class="${settings.locale === 'en' ? 'active' : ''}">EN</button></div>
+                    <h3>${t('language')}</h3>
+                    <div class="ui-scale-switch" role="group" aria-label="${t('language')}">
+                        ${getSupportedLocales().map((supportedLocale) => `<button data-locale="${supportedLocale}" class="${settings.locale === supportedLocale ? 'active' : ''}">${supportedLocale.toUpperCase()}</button>`).join('')}
+                    </div>
                 </section>
                 <section class="settings-section">
-                    <h3>Guardado</h3>
-                    <div class="settings-actions"><button class="btn-primary ghost" id="export-save"><i class="fas fa-download"></i> Exportar</button><button class="btn-primary ghost" id="import-save"><i class="fas fa-upload"></i> Importar</button><button class="btn-primary ghost" id="export-replay"><i class="fas fa-film"></i> Replay</button><input id="import-save-file" type="file" accept="application/json,.json" hidden></div>
+                    <h3>${t('saveData')}</h3>
+                    <div class="settings-actions"><button class="btn-primary ghost" id="export-save"><i class="fas fa-download"></i> ${t('export')}</button><button class="btn-primary ghost" id="import-save"><i class="fas fa-upload"></i> ${t('import')}</button><button class="btn-primary ghost" id="export-replay"><i class="fas fa-film"></i> ${t('replay')}</button><input id="import-save-file" type="file" accept="application/json,.json" hidden></div>
                 </section>
                 <section class="settings-section">
-                    <h3>Mezcla de audio</h3>
+                    <h3>${t('audioMix')}</h3>
                     <div class="audio-mixer">
-                        ${VOLUME_SETTINGS.map(([key, bus, label]) => `<label class="volume-control"><span>${label}</span><input type="range" min="0" max="100" value="${Math.round(settings[key] * 100)}" data-setting="${key}" data-bus="${bus}"><output>${Math.round(settings[key] * 100)}%</output></label>`).join('')}
+                        ${VOLUME_SETTINGS.map(([key, bus, labelKey]) => `<label class="volume-control"><span>${t(labelKey)}</span><input type="range" min="0" max="100" value="${Math.round(settings[key] * 100)}" data-setting="${key}" data-bus="${bus}"><output>${Math.round(settings[key] * 100)}%</output></label>`).join('')}
                     </div>
                 </section>
                 <section class="settings-section">
-                    <h3>Tamaño de interfaz</h3>
-                    <div class="ui-scale-switch" role="group" aria-label="Tamaño de interfaz">
-                        ${[['compact', 'Compacta'], ['normal', 'Normal'], ['large', 'Grande']].map(([value, label]) => `<button data-scale="${value}" class="${settings.uiScale === value ? 'active' : ''}" aria-pressed="${settings.uiScale === value}">${label}</button>`).join('')}
+                    <h3>${t('uiSize')}</h3>
+                    <div class="ui-scale-switch" role="group" aria-label="${t('uiSize')}">
+                        ${UI_SCALES.map(([value, labelKey]) => `<button data-scale="${value}" class="${settings.uiScale === value ? 'active' : ''}" aria-pressed="${settings.uiScale === value}">${t(labelKey)}</button>`).join('')}
                     </div>
                 </section>
                 <div class="settings-actions">
-                    <button class="btn-primary ghost" id="reset-placement"><i class="fas fa-ban"></i> Cancelar colocación</button>
-                    <button class="btn-primary danger" id="clear-run"><i class="fas fa-rotate-left"></i> Reiniciar nivel</button>
+                    <button class="btn-primary ghost" id="reset-placement"><i class="fas fa-ban"></i> ${t('cancelPlacement')}</button>
+                    <button class="btn-primary danger" id="clear-run"><i class="fas fa-rotate-left"></i> ${t('restartLevel')}</button>
                 </div>
             </div>
         `;
@@ -84,15 +101,15 @@ export class SettingsPanel {
         this.ui.panelContent.querySelectorAll('[data-scale]').forEach((button) => {
             button.addEventListener('click', () => {
                 game.progression.updateSetting('uiScale', button.dataset.scale);
-                this.render('Ajustes');
+                this.render();
             });
         });
         this.ui.panelContent.querySelectorAll('[data-key-binding]').forEach((input) => input.addEventListener('change', () => {
-            if (!game.progression.updateKeyBinding(input.dataset.keyBinding, input.value)) this.render('Ajustes');
+            if (!game.progression.updateKeyBinding(input.dataset.keyBinding, input.value)) this.render();
         }));
         this.ui.panelContent.querySelectorAll('[data-locale]').forEach((button) => button.addEventListener('click', () => {
             game.progression.updateSetting('locale', button.dataset.locale);
-            this.render('Ajustes');
+            this.render();
         }));
         document.getElementById('export-save')?.addEventListener('click', () => {
             const blob = new Blob([game.progression.exportSave()], { type: 'application/json' });
@@ -117,7 +134,7 @@ export class SettingsPanel {
             if (!file) return;
             const result = game.progression.importSave(await file.text());
             this.ui.showToast(result.ok ? 'Guardado importado' : result.reason, result.ok ? 'success' : 'warning');
-            if (result.ok) this.render('Ajustes');
+            if (result.ok) this.render();
         });
         document.getElementById('reset-placement')?.addEventListener('click', () => {
             game.inputManager.clearPlacement();

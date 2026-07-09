@@ -36,6 +36,17 @@ test('WaveManager prepara un jefe cada diez oleadas', () => {
     assert.equal(manager.preparedQueue[0].config.id, 'loki');
 });
 
+test('WaveManager conserva la marca de jefe final en la ultima oleada', () => {
+    const manager = new WaveManager(createGame(), enemies);
+    manager.currentWave = manager.maxWaves;
+    manager.prepareNextWave();
+
+    assert.equal(manager.preparedQueue.length, 1);
+    assert.equal(manager.preparedQueue[0].config.id, 'thanos_final');
+    assert.equal(manager.preparedQueue[0].config.isBoss, true);
+    assert.equal(manager.preparedQueue[0].config.isFinalBoss, true);
+});
+
 test('WaveManager usa la faccion correspondiente al mapa', () => {
     const game = createGame('avengers');
     const manager = new WaveManager(game, enemies);

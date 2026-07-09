@@ -85,6 +85,7 @@ export function buildEnemyIntel(enemy = {}) {
         if (condition && !traits.includes(label)) traits.push(label);
     };
 
+    addTrait(enemy.isFinalBoss, 'Jefe final');
     addTrait(enemy.isBoss, 'Jefe');
     addTrait(Boolean(enemy.affix?.label), enemy.affix?.label);
     addTrait(enemy.stealth || enemy.archetype === 'stealth', 'Sigilo');
@@ -530,6 +531,7 @@ export function buildBossHudState(enemies = [], waveActive = false) {
         id: boss.uid || boss.id || boss.name || 'boss',
         name: boss.name || boss.config?.name || 'Jefe',
         phase,
+        isFinalBoss: Boolean(boss.isFinalBoss || boss.config?.isFinalBoss),
         hp,
         maxHp,
         hpPct,
@@ -1032,11 +1034,11 @@ export class UIManager {
             return null;
         }
 
-        container.className = `boss-hud ${state.critical ? 'critical' : ''}`;
+        container.className = `boss-hud ${state.critical ? 'critical' : ''} ${state.isFinalBoss ? 'final-boss' : ''}`;
         container.setAttribute('aria-label', `${state.name}. ${state.phase}. Salud ${state.hpPct} por ciento.`);
         container.innerHTML = `
             <div class="boss-hud-heading">
-                <span>Jefe activo</span>
+                <span>${state.isFinalBoss ? 'Jefe final' : 'Jefe activo'}</span>
                 <strong>${escapeHtml(state.name)}</strong>
             </div>
             <div class="boss-hud-meter" aria-hidden="true"><i style="width:${state.hpPct}%"></i></div>
