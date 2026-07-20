@@ -22,7 +22,8 @@ export class ProfilePanel {
         const weekly = progression.getWeeklyContractSnapshot();
         const synergyChallenges = progression.getSynergyChallengeSnapshot(team);
         const statistics = progression.state.statistics;
-        const completion = game.levelsData.length ? Math.round((game.stars / (game.levelsData.length * 3)) * 100) : 0;
+        const starTarget = Math.max(1, game.levelsData.length * (game.waveManager?.maxWaves || 50));
+        const completion = Math.min(100, Math.round((game.stars / starTarget) * 100));
         const masteryRows = game.unlockedHeroes.map((hero) => {
             const completed = progression.getHeroMastery(hero.id).completed;
             const challengeLabels = MASTERY_CHALLENGES
@@ -44,7 +45,7 @@ export class ProfilePanel {
                 </div>
             </section>
             <div class="profile-grid">
-                <div class="detail-card profile-stat-card"><h3>Progreso</h3><p><span>Mejores oleadas</span><strong>${bestWaves}</strong></p><p><span>Estrellas</span><strong>${game.stars}/${game.levelsData.length * 3}</strong></p><p><span>Desafios</span><strong>${challenges}/${game.levelsData.length * 2}</strong></p></div>
+                <div class="detail-card profile-stat-card"><h3>Progreso</h3><p><span>Mejores oleadas</span><strong>${bestWaves}</strong></p><p><span>Estrellas</span><strong>${game.stars}</strong></p><p><span>Desafios</span><strong>${challenges}/${game.levelsData.length * 2}</strong></p></div>
                 <div class="detail-card profile-stat-card"><h3>Plantilla</h3><p><span>Heroes</span><strong>${game.unlockedHeroes.length}</strong></p><p><span>Equipo activo</span><strong>${game.activeTeam.length}/6</strong></p></div>
                 <div class="detail-card profile-stat-card"><h3>Composicion</h3><p><span>Sinergias</span><strong>${activeSynergies}</strong></p><p><span>Familias</span><strong>${team.distinctTags || 0}</strong></p><p><span>Despliegue</span><strong>Libre</strong></p></div>
                 <div class="detail-card profile-stat-card"><h3>Economia</h3><p><span>Fondos S.H.I.E.L.D.</span><strong>${progression.state.metaCredits} F</strong></p><p><span>Creditos de mision</span><strong>$${Math.floor(game.resourceManager.credits)}</strong></p></div>

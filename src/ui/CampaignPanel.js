@@ -1,4 +1,5 @@
 import { GAME_MODES } from '../systems/GameModeSystem.js';
+import { getFixedDifficultyKey, getLevelUnlockRequirement, isLevelUnlockedByStars } from '../utils/LevelProgression.js';
 
 export class CampaignPanel {
     constructor(ui) {
@@ -25,16 +26,13 @@ export class CampaignPanel {
             this.renderModeBriefing(mode);
         }));
 
-        panelContent.querySelectorAll('.difficulty-btn').forEach((button) => {
-            button.addEventListener('click', () => {
-                game.progression.setDifficulty(button.dataset.level, button.dataset.value);
-                game.audio?.play('ui');
-                this.render(title);
-            });
-        });
         panelContent.querySelectorAll('.btn-load-map').forEach((button) => {
             button.addEventListener('click', () => {
                 const level = game.levelsData[Number(button.dataset.index)];
+                if (!this.isLevelUnlocked(Number(button.dataset.index))) {
+                    game.uiManager?.showToast(`Necesitas ${getLevelUnlockRequirement(Number(button.dataset.index))} estrellas para desbloquear este mapa.`, 'warning');
+                    return;
+                }
                 game.loadLevel(level);
                 this.ui.renderHeroRoster(game.activeTeam, (hero) => game.inputManager.setPlacementMode(hero));
                 this.renderBriefing(level);
@@ -77,17 +75,21 @@ export class CampaignPanel {
     renderMapCard(level, index) {
         const progress = this.ui.game.progression.getMapProgress(level.id);
         const themeClass = this.getThemeClass(level);
-        return `<article class="map-card ${themeClass} ${this.ui.game.currentLevel?.id === level.id ? 'active' : ''}">
+        const requirement = getLevelUnlockRequirement(index);
+        const unlocked = this.isLevelUnlocked(index);
+        const fixedDifficulty = getFixedDifficultyKey(level);
+        return `<article class="map-card ${themeClass} ${this.ui.game.currentLevel?.id === level.id ? 'active' : ''} ${unlocked ? '' : 'locked'}">
             <strong>${level.name}</strong>
-            <span>Mejor oleada ${progress.bestWave} · ${'★'.repeat(progress.stars)}${'☆'.repeat(3 - progress.stars)}</span>
+            <span>Mejor oleada ${progress.bestWave} · ${progress.stars || 0} estrellas</span>
             <small>${level.description}</small>
             <em>${level.theme?.brief || ''}</em>
             <div class="map-mechanic"><b>${level.mission?.mechanic?.label || 'Defensa táctica'}</b><span>${level.mission?.mechanic?.description || ''}</span></div>
-            <div class="difficulty-switch" aria-label="Dificultad">
-                ${[['easy', 'Fácil'], ['normal', 'Normal'], ['hard', 'Difícil']].map(([value, label]) => `<button class="difficulty-btn ${progress.difficulty === value ? 'active' : ''}" data-level="${level.id}" data-value="${value}" aria-pressed="${progress.difficulty === value}">${label}</button>`).join('')}
+            <div class="map-unlock-row">
+                <span class="map-difficulty ${fixedDifficulty}">Dificultad fija: ${level.difficulty}</span>
+                <span class="${unlocked ? 'map-unlocked' : 'map-locked'}">${unlocked ? 'Desbloqueado' : `Requiere ${requirement} estrellas`}</span>
             </div>
             <div class="challenge-row"><span class="${progress.challenges.includes('sin_danos') ? 'done' : ''}">Sin daños</span><span class="${progress.challenges.includes('cazajefes') ? 'done' : ''}">Cazajefes</span>${(level.mission?.objectives || []).map((objective) => `<span class="${progress.missionObjectives.includes(objective.id) ? 'done' : ''}">${objective.label} · ${objective.reward} F</span>`).join('')}</div>
-            <button class="btn-load-map btn-primary ghost" data-index="${index}">Jugar</button>
+            <button class="btn-load-map btn-primary ghost" data-index="${index}" ${unlocked ? '' : 'disabled'}>${unlocked ? 'Jugar' : 'Bloqueado'}</button>
         </article>`;
     }
 
@@ -147,8 +149,12 @@ export class CampaignPanel {
         return [
             { icon: 'fa-location-dot', label: 'Zona', value: level.theme?.label || level.name },
             { icon: 'fa-shield-halved', label: 'Sistema', value: mission.mechanic?.label || 'Defensa' },
-            { icon: 'fa-star', label: 'Estrellas', value: `${progress.stars || 0}/3` },
+            { icon: 'fa-star', label: 'Estrellas', value: progress.stars || 0 },
             { icon: 'fa-flag-checkered', label: 'Mejor', value: `Oleada ${progress.bestWave || 0}` }
         ];
+    }
+
+    isLevelUnlocked(index) {
+        return isLevelUnlockedByStars(index, this.ui.game.stars || this.ui.game.progression?.getTotalStars?.() || 0);
     }
 }

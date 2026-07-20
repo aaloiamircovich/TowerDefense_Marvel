@@ -14,7 +14,7 @@ export const ACHIEVEMENT_CATALOG = {
     maestro: achievement('Maestro heroico', 'Completa una maestria entera con un heroe.'),
     coleccionista: achievement('Coleccionista', 'Recluta al menos 10 heroes.'),
     tactico_superior: achievement('Tactico superior', 'Acumula 2500 de valor tactico en una mision.'),
-    protector: achievement('Protector de civiles', 'Salva 5 vidas con efectos defensivos en una mision.'),
+    protector: achievement('Protector', 'Evita 5 fugas con efectos defensivos en una mision.'),
     controlador: achievement('Control de masas', 'Acumula 30 segundos de control en una mision.'),
     arsenal_vivo: achievement('Arsenal vivo', 'Activa 6 habilidades en una mision.'),
     sinergia_activa: achievement('Sinergia activa', 'Termina una mision con una agrupacion activa.'),
@@ -25,9 +25,11 @@ const ACHIEVEMENT_IDS = Object.keys(ACHIEVEMENT_CATALOG);
 const WEEKLY_FACTIONS = ['Hydra', 'A.I.M.', 'La Mano', 'Ultron', 'Kang', 'Thanos'];
 
 function createMapProgress(progress = {}) {
+    const bestWave = Math.max(0, Number(progress.bestWave) || 0);
+    const rawStars = Math.max(0, Number(progress.stars) || 0);
     return {
-        bestWave: Math.max(0, Number(progress.bestWave) || 0),
-        stars: Math.max(0, Math.min(3, Number(progress.stars) || 0)),
+        bestWave,
+        stars: Math.max(rawStars, bestWave),
         difficulty: ['easy', 'normal', 'hard'].includes(progress.difficulty) ? progress.difficulty : 'normal',
         challenges: [...new Set(progress.challenges || [])],
         missionObjectives: [...new Set(progress.missionObjectives || [])]
@@ -763,7 +765,7 @@ export class ProgressionManager {
         const levelId = game.currentLevel?.id || 'level_1';
         const progress = createMapProgress(this.state.mapProgress[levelId]);
         progress.bestWave = Math.max(progress.bestWave, waveNumber);
-        progress.stars = Math.max(progress.stars, waveNumber >= 50 ? 3 : waveNumber >= 20 ? 2 : waveNumber >= 5 ? 1 : 0);
+        progress.stars = Math.max(progress.stars, waveNumber);
         if (waveNumber >= 5 && game.resourceManager.lives === game.resourceManager.maxLives) {
             progress.challenges = [...new Set([...progress.challenges, 'sin_danos'])];
         }

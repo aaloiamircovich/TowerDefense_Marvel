@@ -12,6 +12,7 @@ import { MissionSystem } from './systems/MissionSystem.js';
 import { GameModeSystem } from './systems/GameModeSystem.js';
 import { ReplaySystem } from './systems/ReplaySystem.js';
 import { registerPwa } from './pwa/register.js';
+import { getFixedDifficultyKey, isLevelUnlockedByStars } from './utils/LevelProgression.js';
 
 async function initGame() {
     let ui = null;
@@ -55,12 +56,20 @@ async function initGame() {
         game.shopSystem = new ShopSystem(game, game.progression);
         game.missionSystem = new MissionSystem(game);
         game.assetPreloader = new AssetPreloader();
+        game.isLevelUnlocked = (levelConfig) => {
+            const index = game.levelsData.findIndex((level) => level.id === levelConfig?.id);
+            return index <= 0 || isLevelUnlockedByStars(index, game.stars || game.progression?.getTotalStars?.() || 0);
+        };
 
         const input = new InputManager(game.canvas, game, ui, resources);
         game.inputManager = input;
 
         game.loadLevel = (levelConfig, options = {}) => {
             if (!levelConfig) throw new Error('Nivel no encontrado.');
+            if (!options.ignoreUnlock && !game.isLevelUnlocked(levelConfig)) {
+                ui.showToast('Mapa bloqueado: consigue más estrellas en la campaña.', 'warning');
+                levelConfig = game.levelsData[0];
+            }
 
             if (!options.preserveMode) {
                 game.modeSystem.setCampaign();
@@ -72,7 +81,7 @@ async function initGame() {
                 game.progression.state.lastLevelId = levelConfig.id;
                 game.progression.save();
             }
-            game.difficulty = game.progression.getMapProgress(levelConfig.id).difficulty;
+            game.difficulty = getFixedDifficultyKey(levelConfig);
             game.heroes = [];
             game.enemies = [];
             game.selectedUnit = null;
@@ -101,7 +110,8 @@ async function initGame() {
             data.heroes.capitan_america
         ].filter(Boolean);
 
-        const savedLevel = data.levels.find((level) => level.id === game.progression.state.lastLevelId) || data.levels[0];
+        const rawSavedLevel = data.levels.find((level) => level.id === game.progression.state.lastLevelId);
+        const savedLevel = rawSavedLevel && game.isLevelUnlocked(rawSavedLevel) ? rawSavedLevel : data.levels[0];
         setBootStatus('Precargando equipo inicial...');
         await game.assetPreloader.preloadTeamForLevel([...game.activeTeam, ...starterPool], savedLevel);
 

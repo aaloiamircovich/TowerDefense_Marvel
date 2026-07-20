@@ -24,9 +24,19 @@ function assertEnemyVisual(enemy, expected) {
         assert.equal(frames.length, count, `${enemy.id} walk ${direction} debe tener ${count} frames`);
         frames.forEach((source) => assert.ok(fs.existsSync(path.join(projectRoot, source)), `${enemy.id} frame no existe: ${source}`));
     }
+
+    if (expected.attackCount) {
+        const frames = enemy.visual?.attack?.frames || [];
+        assert.equal(frames.length, expected.attackCount, `${enemy.id} ataque debe tener ${expected.attackCount} frames`);
+        frames.forEach((source) => assert.ok(fs.existsSync(path.join(projectRoot, source)), `${enemy.id} ataque no existe: ${source}`));
+    }
 }
 
-test('Ultron, Kang y Ninja de La Mano usan sprites importados', () => {
+test('A.I.M., Ultron, Kang y Ninja de La Mano usan sprites configurados', () => {
+    assertEnemyVisual(enemies.normal.aim_scientist, {
+        size: 72,
+        walkCounts: { south: 4, north: 4, east: 4, west: 4 }
+    });
     assertEnemyVisual(enemies.bosses.ultron_prime, {
         size: 96,
         walkCounts: { south: 6, north: 9, east: 7, west: 7 }
@@ -40,4 +50,14 @@ test('Ultron, Kang y Ninja de La Mano usan sprites importados', () => {
         walkCounts: { south: 4, north: 4, east: 4, west: 4 }
     });
     assert.equal(enemies.normal.hand_ninja.visual.attack, undefined);
+});
+
+test('Loki, Magneto y Hela usan sprites de villano configurados', () => {
+    for (const id of ['loki', 'magneto', 'hela']) {
+        assertEnemyVisual(enemies.bosses[id], {
+            size: 96,
+            walkCounts: { south: 4, north: 4, east: 4, west: 4 },
+            attackCount: 9
+        });
+    }
 });

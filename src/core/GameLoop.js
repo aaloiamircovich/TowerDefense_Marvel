@@ -203,13 +203,7 @@ export class GameLoop {
         this.enemies.forEach((enemy) => {
             enemy.update(dt);
             if (enemy.hasReachedEnd && !enemy.processed) {
-                const missionAbsorbed = this.missionSystem?.handleLeak(enemy) || false;
-                const modeAbsorbed = this.modeSystem?.handleLeak(enemy) || false;
-                const absorbed = missionAbsorbed || modeAbsorbed;
-                const lifeLoss = absorbed ? 0 : (enemy.isBoss ? 3 : 1);
-                this.waveManager?.recordLeak?.(enemy, { lifeLoss, absorbed });
-                if (!absorbed) this.resourceManager.removeLife(lifeLoss);
-                enemy.processed = true;
+                this.handleEnemyReachedEnd(enemy);
             }
         });
 
@@ -242,6 +236,29 @@ export class GameLoop {
             this.uiManager.updateSpawnQueue?.(this.waveManager?.enemiesQueue || [], this.waveManager?.spawnTimer || 0, Boolean(this.waveManager?.isWaveActive));
             this.uiManager.updateBossHud?.(this.enemies, Boolean(this.waveManager?.isWaveActive));
         }
+    }
+
+    handleEnemyReachedEnd(enemy) {
+        if (!enemy || enemy.processed) return null;
+
+        const isBoss = Boolean(enemy.isBoss || enemy.config?.isBoss);
+        const missionAbsorbed = isBoss ? false : (this.missionSystem?.handleLeak(enemy) || false);
+        const modeAbsorbed = isBoss ? false : (this.modeSystem?.handleLeak(enemy) || false);
+        const absorbed = missionAbsorbed || modeAbsorbed;
+        const remainingLives = Math.max(0, Number(this.resourceManager?.lives || 0));
+        const lifeLoss = isBoss ? Math.max(1, remainingLives || 1) : (absorbed ? 0 : 1);
+
+        this.waveManager?.recordLeak?.(enemy, { lifeLoss, absorbed });
+        if (isBoss) {
+            this.uiManager?.showToast?.(`${enemy.name || enemy.config?.name || 'El jefe'} cruzo la linea: derrota inmediata`, 'danger');
+            if (this.resourceManager && remainingLives > 0) this.resourceManager.removeLife(remainingLives);
+            if (!this.isGameOver) this.gameOver();
+        } else if (!absorbed) {
+            this.resourceManager?.removeLife?.(lifeLoss);
+        }
+
+        enemy.processed = true;
+        return { isBoss, absorbed, lifeLoss };
     }
 
     render(ctx) {

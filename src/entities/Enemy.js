@@ -122,7 +122,7 @@ export class Enemy {
         this.currentPhase = config.phaseLabel || (this.isBoss ? 'Fase inicial' : null);
         this.behavior = new EnemyBehaviorSystem(this, game);
 
-        if (this.sprite && !imageCache.has(this.sprite)) {
+        if (this.sprite && typeof Image !== 'undefined' && !imageCache.has(this.sprite)) {
             const img = new Image();
             img.src = this.sprite;
             imageCache.set(this.sprite, img);

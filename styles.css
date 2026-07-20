@@ -1899,6 +1899,18 @@ canvas {
     background: color-mix(in srgb, var(--enemy-color), #071018 22%);
 }
 
+.wave-enemy-card .enemy-token-sprite {
+    overflow: hidden;
+    background: radial-gradient(circle at 50% 35%, rgba(255, 255, 255, 0.14), rgba(7, 16, 24, 0.86));
+}
+
+.wave-enemy-card .enemy-token-sprite img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    image-rendering: pixelated;
+}
+
 .wave-enemy-card small {
     display: block;
     margin-top: 6px;
@@ -3493,10 +3505,54 @@ select {
     line-height: 1.35;
 }
 
-.map-card .difficulty-switch,
+.map-card .map-unlock-row,
 .map-card .challenge-row,
 .map-card .btn-load-map {
     grid-column: 1 / -1;
+}
+
+.map-unlock-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+}
+
+.map-difficulty,
+.map-unlocked,
+.map-locked {
+    width: fit-content;
+    padding: 5px 8px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.map-difficulty.easy {
+    border-color: rgba(70, 211, 105, 0.5);
+    color: #69e58c;
+}
+
+.map-difficulty.normal {
+    border-color: rgba(64, 201, 255, 0.5);
+    color: #40c9ff;
+}
+
+.map-difficulty.hard {
+    border-color: rgba(252, 163, 17, 0.55);
+    color: var(--bright-yellow);
+}
+
+.map-unlocked {
+    border-color: rgba(70, 211, 105, 0.45);
+    color: #69e58c;
+}
+
+.map-locked {
+    border-color: rgba(255, 107, 107, 0.45);
+    color: #ff9b9b;
 }
 
 .challenge-row span {
@@ -3519,6 +3575,15 @@ select {
 .map-card.active {
     border-color: var(--level-accent);
     box-shadow: inset 3px 0 0 var(--level-accent);
+}
+
+.map-card.locked {
+    opacity: 0.72;
+}
+
+.map-card.locked .btn-load-map {
+    cursor: not-allowed;
+    filter: grayscale(0.35);
 }
 
 .mission-briefing {

@@ -1,4 +1,4 @@
-import test from 'node:test';
+﻿import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { WaveManager } from '../src/systems/WaveManager.js';
@@ -22,8 +22,9 @@ test('apertura dirigida no fuerza sigilo sin deteccion disponible', () => {
 
     assert.equal(manager.waveModifier.id, 'opening-5');
     assert.equal(ids.has('hand_ninja'), false);
+    assert.equal(ids.has('chitauri_warrior'), true);
     assert.ok(ids.has('hydra_soldier'));
-    assert.equal(manager.getWaveSummary().counter, 'Mejora un héroe antes del élite');
+    assert.equal(manager.getWaveSummary().counter, 'Mejora un heroe antes del elite');
 });
 
 test('WaveManager prepara un jefe cada diez oleadas', () => {
@@ -122,7 +123,7 @@ test('WaveManager anticipa bonus perfecto en el resumen preparado', () => {
 });
 
 test('WaveManager eleva la lectura de amenaza cuando hay barreras y sigilo', () => {
-    const manager = new WaveManager(createGame(), enemies);
+    const manager = new WaveManager(createGame('sanctum'), enemies);
     manager.currentWave = 9;
     manager.prepareNextWave();
     const summary = manager.getWaveSummary();
@@ -439,3 +440,14 @@ function deployedHero({ id, name = id, damage, fireRate, range, level = 1, canSe
         getEffectiveStats: () => ({ damage, fireRate, range, canSeeStealth })
     };
 }
+
+test('Manhattan usa amenazas urbanas coherentes con Hydra, A.I.M., Chitauri y Loki', () => {
+    const manager = new WaveManager(createGame('new-york'), enemies);
+    manager.currentWave = 25;
+    manager.prepareNextWave();
+    const allowed = new Set(['hydra_soldier', 'aim_scientist', 'chitauri_warrior', 'chitauri_skimmer', 'chitauri_phaser']);
+    const pool = new Set(manager.getEnemyPoolForWave().map((enemy) => enemy.id));
+
+    assert.deepEqual(pool, allowed);
+    assert.deepEqual(manager.faction.bosses, ['loki']);
+});

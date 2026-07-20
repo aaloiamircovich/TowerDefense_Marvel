@@ -5878,7 +5878,56 @@ window.__MARVEL_TD_DATA__ = {
         "archetype": "support",
         "healPower": 0.06,
         "behaviorCooldown": 4,
-        "threat": 2
+        "threat": 2,
+        "sprite": "assets/images/enemies/aim_scientist/portrait.png",
+        "visual": {
+          "size": 72,
+          "anchor": {
+            "x": 0.5,
+            "y": 0.62
+          },
+          "defaultDirection": "south",
+          "portrait": "assets/images/enemies/aim_scientist/portrait.png",
+          "idle": {
+            "south": "assets/images/enemies/aim_scientist/idle/south.png",
+            "south-east": "assets/images/enemies/aim_scientist/idle/south-east.png",
+            "east": "assets/images/enemies/aim_scientist/idle/east.png",
+            "north-east": "assets/images/enemies/aim_scientist/idle/north-east.png",
+            "north": "assets/images/enemies/aim_scientist/idle/north.png",
+            "north-west": "assets/images/enemies/aim_scientist/idle/north-west.png",
+            "west": "assets/images/enemies/aim_scientist/idle/west.png",
+            "south-west": "assets/images/enemies/aim_scientist/idle/south-west.png"
+          },
+          "walk": {
+            "fps": 7,
+            "frames": {
+              "south": [
+                "assets/images/enemies/aim_scientist/walk/south/0.png",
+                "assets/images/enemies/aim_scientist/walk/south/1.png",
+                "assets/images/enemies/aim_scientist/walk/south/2.png",
+                "assets/images/enemies/aim_scientist/walk/south/3.png"
+              ],
+              "north": [
+                "assets/images/enemies/aim_scientist/walk/north/0.png",
+                "assets/images/enemies/aim_scientist/walk/north/1.png",
+                "assets/images/enemies/aim_scientist/walk/north/2.png",
+                "assets/images/enemies/aim_scientist/walk/north/3.png"
+              ],
+              "east": [
+                "assets/images/enemies/aim_scientist/walk/east/0.png",
+                "assets/images/enemies/aim_scientist/walk/east/1.png",
+                "assets/images/enemies/aim_scientist/walk/east/2.png",
+                "assets/images/enemies/aim_scientist/walk/east/3.png"
+              ],
+              "west": [
+                "assets/images/enemies/aim_scientist/walk/west/0.png",
+                "assets/images/enemies/aim_scientist/walk/west/1.png",
+                "assets/images/enemies/aim_scientist/walk/west/2.png",
+                "assets/images/enemies/aim_scientist/walk/west/3.png"
+              ]
+            }
+          }
+        }
       },
       "sentinel": {
         "id": "sentinel",
@@ -6346,6 +6395,69 @@ window.__MARVEL_TD_DATA__ = {
         "resistances": {
           "Místico": 0.25
         },
+        "sprite": "assets/images/heroes/loki/portrait.png",
+        "visual": {
+          "size": 96,
+          "anchor": {
+            "x": 0.5,
+            "y": 0.62
+          },
+          "defaultDirection": "south",
+          "portrait": "assets/images/heroes/loki/portrait.png",
+          "idle": {
+            "south": "assets/images/heroes/loki/sprites/south.png",
+            "south-east": "assets/images/heroes/loki/sprites/south-east.png",
+            "east": "assets/images/heroes/loki/sprites/east.png",
+            "north-east": "assets/images/heroes/loki/sprites/north-east.png",
+            "north": "assets/images/heroes/loki/sprites/north.png",
+            "north-west": "assets/images/heroes/loki/sprites/north-west.png",
+            "west": "assets/images/heroes/loki/sprites/west.png",
+            "south-west": "assets/images/heroes/loki/sprites/south-west.png"
+          },
+          "walk": {
+            "fps": 6,
+            "frames": {
+              "south": [
+                "assets/images/heroes/loki/sprites/south.png",
+                "assets/images/heroes/loki/sprites/south-east.png",
+                "assets/images/heroes/loki/sprites/south.png",
+                "assets/images/heroes/loki/sprites/south-west.png"
+              ],
+              "north": [
+                "assets/images/heroes/loki/sprites/north.png",
+                "assets/images/heroes/loki/sprites/north-east.png",
+                "assets/images/heroes/loki/sprites/north.png",
+                "assets/images/heroes/loki/sprites/north-west.png"
+              ],
+              "east": [
+                "assets/images/heroes/loki/sprites/east.png",
+                "assets/images/heroes/loki/sprites/south-east.png",
+                "assets/images/heroes/loki/sprites/east.png",
+                "assets/images/heroes/loki/sprites/north-east.png"
+              ],
+              "west": [
+                "assets/images/heroes/loki/sprites/west.png",
+                "assets/images/heroes/loki/sprites/south-west.png",
+                "assets/images/heroes/loki/sprites/west.png",
+                "assets/images/heroes/loki/sprites/north-west.png"
+              ]
+            }
+          },
+          "attack": {
+            "fps": 10,
+            "frames": [
+              "assets/images/heroes/loki/shoot/0.png",
+              "assets/images/heroes/loki/shoot/1.png",
+              "assets/images/heroes/loki/shoot/2.png",
+              "assets/images/heroes/loki/shoot/3.png",
+              "assets/images/heroes/loki/shoot/4.png",
+              "assets/images/heroes/loki/shoot/5.png",
+              "assets/images/heroes/loki/shoot/6.png",
+              "assets/images/heroes/loki/shoot/7.png",
+              "assets/images/heroes/loki/shoot/8.png"
+            ]
+          }
+        },
         "phases": [
           {
             "threshold": 0.7,
@@ -6394,6 +6506,69 @@ window.__MARVEL_TD_DATA__ = {
         "threat": 5,
         "resistances": {
           "Tecnológico": 0.35
+        },
+        "sprite": "assets/images/heroes/magneto/portrait.png",
+        "visual": {
+          "size": 96,
+          "anchor": {
+            "x": 0.5,
+            "y": 0.62
+          },
+          "defaultDirection": "south",
+          "portrait": "assets/images/heroes/magneto/portrait.png",
+          "idle": {
+            "south": "assets/images/heroes/magneto/sprites/south.png",
+            "south-east": "assets/images/heroes/magneto/sprites/south-east.png",
+            "east": "assets/images/heroes/magneto/sprites/east.png",
+            "north-east": "assets/images/heroes/magneto/sprites/north-east.png",
+            "north": "assets/images/heroes/magneto/sprites/north.png",
+            "north-west": "assets/images/heroes/magneto/sprites/north-west.png",
+            "west": "assets/images/heroes/magneto/sprites/west.png",
+            "south-west": "assets/images/heroes/magneto/sprites/south-west.png"
+          },
+          "walk": {
+            "fps": 6,
+            "frames": {
+              "south": [
+                "assets/images/heroes/magneto/sprites/south.png",
+                "assets/images/heroes/magneto/sprites/south-east.png",
+                "assets/images/heroes/magneto/sprites/south.png",
+                "assets/images/heroes/magneto/sprites/south-west.png"
+              ],
+              "north": [
+                "assets/images/heroes/magneto/sprites/north.png",
+                "assets/images/heroes/magneto/sprites/north-east.png",
+                "assets/images/heroes/magneto/sprites/north.png",
+                "assets/images/heroes/magneto/sprites/north-west.png"
+              ],
+              "east": [
+                "assets/images/heroes/magneto/sprites/east.png",
+                "assets/images/heroes/magneto/sprites/south-east.png",
+                "assets/images/heroes/magneto/sprites/east.png",
+                "assets/images/heroes/magneto/sprites/north-east.png"
+              ],
+              "west": [
+                "assets/images/heroes/magneto/sprites/west.png",
+                "assets/images/heroes/magneto/sprites/south-west.png",
+                "assets/images/heroes/magneto/sprites/west.png",
+                "assets/images/heroes/magneto/sprites/north-west.png"
+              ]
+            }
+          },
+          "attack": {
+            "fps": 10,
+            "frames": [
+              "assets/images/heroes/magneto/shoot/0.png",
+              "assets/images/heroes/magneto/shoot/1.png",
+              "assets/images/heroes/magneto/shoot/2.png",
+              "assets/images/heroes/magneto/shoot/3.png",
+              "assets/images/heroes/magneto/shoot/4.png",
+              "assets/images/heroes/magneto/shoot/5.png",
+              "assets/images/heroes/magneto/shoot/6.png",
+              "assets/images/heroes/magneto/shoot/7.png",
+              "assets/images/heroes/magneto/shoot/8.png"
+            ]
+          }
         },
         "phases": [
           {
@@ -6644,7 +6819,70 @@ window.__MARVEL_TD_DATA__ = {
         "reward": 2500,
         "armor": 0.3,
         "stealth": false,
-        "immuneToStun": true
+        "immuneToStun": true,
+        "sprite": "assets/images/heroes/hela/portrait.png",
+        "visual": {
+          "size": 96,
+          "anchor": {
+            "x": 0.5,
+            "y": 0.62
+          },
+          "defaultDirection": "south",
+          "portrait": "assets/images/heroes/hela/portrait.png",
+          "idle": {
+            "south": "assets/images/heroes/hela/sprites/south.png",
+            "south-east": "assets/images/heroes/hela/sprites/south-east.png",
+            "east": "assets/images/heroes/hela/sprites/east.png",
+            "north-east": "assets/images/heroes/hela/sprites/north-east.png",
+            "north": "assets/images/heroes/hela/sprites/north.png",
+            "north-west": "assets/images/heroes/hela/sprites/north-west.png",
+            "west": "assets/images/heroes/hela/sprites/west.png",
+            "south-west": "assets/images/heroes/hela/sprites/south-west.png"
+          },
+          "walk": {
+            "fps": 6,
+            "frames": {
+              "south": [
+                "assets/images/heroes/hela/sprites/south.png",
+                "assets/images/heroes/hela/sprites/south-east.png",
+                "assets/images/heroes/hela/sprites/south.png",
+                "assets/images/heroes/hela/sprites/south-west.png"
+              ],
+              "north": [
+                "assets/images/heroes/hela/sprites/north.png",
+                "assets/images/heroes/hela/sprites/north-east.png",
+                "assets/images/heroes/hela/sprites/north.png",
+                "assets/images/heroes/hela/sprites/north-west.png"
+              ],
+              "east": [
+                "assets/images/heroes/hela/sprites/east.png",
+                "assets/images/heroes/hela/sprites/south-east.png",
+                "assets/images/heroes/hela/sprites/east.png",
+                "assets/images/heroes/hela/sprites/north-east.png"
+              ],
+              "west": [
+                "assets/images/heroes/hela/sprites/west.png",
+                "assets/images/heroes/hela/sprites/south-west.png",
+                "assets/images/heroes/hela/sprites/west.png",
+                "assets/images/heroes/hela/sprites/north-west.png"
+              ]
+            }
+          },
+          "attack": {
+            "fps": 10,
+            "frames": [
+              "assets/images/heroes/hela/shoot/0.png",
+              "assets/images/heroes/hela/shoot/1.png",
+              "assets/images/heroes/hela/shoot/2.png",
+              "assets/images/heroes/hela/shoot/3.png",
+              "assets/images/heroes/hela/shoot/4.png",
+              "assets/images/heroes/hela/shoot/5.png",
+              "assets/images/heroes/hela/shoot/6.png",
+              "assets/images/heroes/hela/shoot/7.png",
+              "assets/images/heroes/hela/shoot/8.png"
+            ]
+          }
+        }
       },
       "killmonger": {
         "id": "killmonger",
@@ -7099,23 +7337,15 @@ window.__MARVEL_TD_DATA__ = {
         "brief": "Avenidas urbanas, alcantarillas, agua del Hudson y tecnología Stark."
       },
       "mission": {
-        "operation": "Operación Puente Seguro",
+        "operation": "Invasión de Manhattan",
         "speaker": "Spider-Man",
-        "briefing": "Hydra cerró varias calles y los equipos de emergencia quedaron atrapados. Cada tres oleadas cruzará un convoy civil y cada quinta oleada Hydra intentará emerger por alcantarillas.",
-        "dialogue": "Mantengan despejada la avenida. Yo vigilo los tejados; ustedes hagan que nadie llegue a la salida.",
+        "briefing": "Hydra, A.I.M. y células Chitauri avanzan por Manhattan rumbo a la Torre Stark. Controla las avenidas y corta la invasión antes de que crucen la ciudad.",
+        "dialogue": "Mantengan cubierta la avenida. Yo vigilo los tejados; ustedes hagan que nadie llegue a la salida.",
         "mechanic": {
-          "type": "streets",
-          "label": "Evacuación urbana",
-          "description": "Cada quinta oleada Hydra cambia a una ruta por alcantarillas. Los convoyes civiles aparecen cada tres oleadas y exigen cerrar la salida sin fugas.",
-          "status": "Convoyes S.H.I.E.L.D. esperando una ventana segura.",
-          "convoyStart": {
-            "x": 80,
-            "y": 65
-          },
-          "convoyEnd": {
-            "x": 720,
-            "y": 65
-          }
+          "type": "urban_assault",
+          "label": "Frente de Manhattan",
+          "description": "Oleadas de Hydra, A.I.M. y Chitauri presionan una ruta fija. El objetivo es sostener la línea sin mecánicas de evacuación ni barricadas.",
+          "status": "Manhattan resiste; todas las defensas cubren la avenida principal."
         },
         "objectives": [
           {
@@ -7127,11 +7357,11 @@ window.__MARVEL_TD_DATA__ = {
             "reward": 180
           },
           {
-            "id": "ny_rescue",
-            "label": "Héroe del barrio",
-            "description": "Evacua a 9 civiles.",
-            "metric": "civiliansSaved",
-            "target": 9,
+            "id": "ny_first_contact",
+            "label": "Primer contacto",
+            "description": "Derrota a 80 invasores en Manhattan.",
+            "metric": "kills",
+            "target": 80,
             "reward": 260
           }
         ]

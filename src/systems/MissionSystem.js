@@ -5,7 +5,6 @@ const DEFAULT_METRICS = {
     bosses: 0,
     leaks: 0,
     noLeakWaves: 0,
-    civiliansSaved: 0,
     mechanicUses: 0
 };
 
@@ -25,8 +24,6 @@ export class MissionSystem {
             metrics: { ...DEFAULT_METRICS },
             completed: new Set(this.game.progression?.getMapProgress(level.id).missionObjectives || []),
             waveStartLives: this.game.resourceManager?.lives || 0,
-            civilianActive: false,
-            civilianProgress: 0,
             doorReady: false,
             blackout: 0,
             turretCooldown: 0,
@@ -50,15 +47,7 @@ export class MissionSystem {
         this.state.affectedEnemies.clear();
         this.state.activeLandmarks.clear();
 
-        if (type === 'streets') {
-            const sewerWave = waveNumber % 5 === 0;
-            this.switchRoute(sewerWave ? 1 : 0);
-            this.state.civilianActive = waveNumber % 3 === 0;
-            this.state.civilianProgress = 0;
-            this.state.message = this.state.civilianActive
-                ? 'Convoy civil en tránsito. Evita cualquier fuga.'
-                : sewerWave ? 'Hydra emerge por las alcantarillas.' : 'Avenida despejada: mantén la salida cubierta.';
-        } else if (type === 'security') {
+        if (type === 'security') {
             this.state.doorReady = true;
             this.state.blackout = waveNumber % 4 === 0 ? 8 : 0;
             this.state.message = this.state.blackout > 0
@@ -92,17 +81,12 @@ export class MissionSystem {
     update(dt) {
         if (!this.state) return;
         const type = this.level.mission?.mechanic?.type;
-        if (type === 'streets') this.updateStreets(dt);
         if (type === 'security') this.updateSecurity(dt);
         if (type === 'ward' || type === 'academy') this.updateLandmarks(type);
         if (type === 'bifrost') this.updateBifrost();
         if (type === 'inversion') this.updateInversion(dt);
         if (type === 'jungle') this.updateJungle();
         if (type === 'raft') this.updateRaft();
-    }
-
-    updateStreets(dt) {
-        if (this.state.civilianActive) this.state.civilianProgress = Math.min(1, this.state.civilianProgress + dt / 12);
     }
 
     updateSecurity(dt) {
@@ -272,15 +256,6 @@ export class MissionSystem {
         if (!this.state) return;
         const flawless = this.game.resourceManager.lives === this.state.waveStartLives;
         if (flawless) this.state.metrics.noLeakWaves++;
-        if (this.state.civilianActive) {
-            if (flawless) {
-                this.state.metrics.civiliansSaved += 3;
-                this.state.message = 'Convoy evacuado: 3 civiles a salvo.';
-            } else {
-                this.state.message = 'Evacuación interrumpida por una fuga enemiga.';
-            }
-            this.state.civilianActive = false;
-        }
         this.evaluateObjectives();
         this.publish();
     }
@@ -351,17 +326,6 @@ export class MissionSystem {
         ctx.save();
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-
-        if (mechanic.type === 'streets') {
-            drawZone(ctx, mechanic.zone, '#fca311', 'BARRICADA');
-            if (this.state.civilianActive) {
-                const start = mechanic.convoyStart || { x: 80, y: 70 };
-                const end = mechanic.convoyEnd || { x: 720, y: 70 };
-                const x = start.x + (end.x - start.x) * this.state.civilianProgress;
-                const y = start.y + (end.y - start.y) * this.state.civilianProgress;
-                drawToken(ctx, x, y, '#69e58c', 'CIV');
-            }
-        }
 
         if (mechanic.type === 'security') {
             drawZone(ctx, mechanic.door, this.state.blackout > 0 ? '#e63946' : '#fca311', 'PUERTA');

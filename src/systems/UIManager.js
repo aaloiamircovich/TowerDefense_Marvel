@@ -1644,8 +1644,11 @@ export class UIManager {
             card.title = `${intel.name} | ${intel.roleLabel} | ${intel.counter} | Amenaza ${intel.threat}/5`;
             card.setAttribute('aria-label', `${intel.name}. ${intel.roleLabel}. Respuesta: ${intel.counter}. Amenaza ${intel.threat} de 5.`);
             const traitsMarkup = intel.traits.map((trait) => `<b>${escapeHtml(trait)}</b>`).join('');
+            const portrait = enemy.visual?.portrait || enemy.sprite;
             card.innerHTML = `
-                <span class="enemy-token">${escapeHtml(intel.initial)}</span>
+                ${portrait
+                    ? `<span class="enemy-token enemy-token-sprite"><img src="${escapeHtml(portrait)}" alt="" loading="lazy"></span>`
+                    : `<span class="enemy-token">${escapeHtml(intel.initial)}</span>`}
                 <span class="enemy-count">x${enemy.previewCount || 1}</span>
                 <strong>${escapeHtml(intel.name)}</strong>
                 <span class="enemy-role">${escapeHtml(intel.roleLabel)} | ${escapeHtml(intel.pips)}</span>

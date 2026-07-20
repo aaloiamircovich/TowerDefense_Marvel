@@ -155,29 +155,42 @@ test('Loadout restaura un solo objeto de forma atomica', () => {
     assert.deepEqual(manager.state.equippedItems.iron_man, { weapon: 'reactor_arc' });
 });
 
-test('Progreso de mapa guarda estrellas, desafio y dificultad', () => {
+test('Progreso de mapa guarda estrellas y desafios', () => {
     const manager = new ProgressionManager(new MemoryStorage());
     const game = createGame();
     manager.initialize(game, data);
     game.progression = manager;
-    manager.setDifficulty('level_1', 'hard');
     manager.recordWave(game, 10);
 
     const progress = manager.getMapProgress('level_1');
     assert.equal(progress.bestWave, 10);
-    assert.equal(progress.stars, 1);
-    assert.equal(progress.difficulty, 'hard');
+    assert.equal(progress.stars, 10);
     assert.deepEqual(progress.challenges.sort(), ['cazajefes', 'sin_danos']);
+});
+
+test('Cada oleada nueva superada cuenta como una estrella', () => {
+    const manager = new ProgressionManager(new MemoryStorage());
+    const game = createGame();
+    manager.initialize(game, data);
+    game.progression = manager;
+
+    for (let wave = 1; wave <= 50; wave++) manager.recordWave(game, wave);
+    manager.recordWave(game, 25);
+
+    const progress = manager.getMapProgress('level_1');
+    assert.equal(progress.bestWave, 50);
+    assert.equal(progress.stars, 50);
+    assert.equal(game.stars, 50);
 });
 
 test('Objetivos de misión entregan una recompensa una sola vez', () => {
     const manager = new ProgressionManager(new MemoryStorage());
     manager.initialize(createGame(), data);
 
-    assert.equal(manager.completeMissionObjective('level_1', 'ny_rescue', 200), true);
-    assert.equal(manager.completeMissionObjective('level_1', 'ny_rescue', 200), false);
+    assert.equal(manager.completeMissionObjective('level_1', 'ny_first_contact', 200), true);
+    assert.equal(manager.completeMissionObjective('level_1', 'ny_first_contact', 200), false);
     assert.equal(manager.state.metaCredits, 1400);
-    assert.deepEqual(manager.getMapProgress('level_1').missionObjectives, ['ny_rescue']);
+    assert.deepEqual(manager.getMapProgress('level_1').missionObjectives, ['ny_first_contact']);
 });
 
 test('Ajustes accesibles conservan tipos y límites válidos', () => {

@@ -1,14 +1,14 @@
-import { Enemy } from '../entities/Enemy.js';
+﻿import { Enemy } from '../entities/Enemy.js';
 import { EncounterDirector } from './EncounterDirector.js';
 
 const FACTIONS = {
     'new-york': {
-        label: 'Hydra / A.I.M.',
+        label: 'Hydra / A.I.M. / Chitauri',
         roster: [
-            ['hydra_soldier', 1], ['aim_scientist', 1], ['hand_ninja', 4],
-            ['doombot', 8], ['dark_elf', 14], ['sentinel', 22]
+            ['hydra_soldier', 1], ['aim_scientist', 1], ['chitauri_warrior', 6],
+            ['chitauri_skimmer', 12], ['chitauri_phaser', 18]
         ],
-        bosses: ['loki', 'magneto']
+        bosses: ['loki']
     },
     avengers: {
         label: 'Legión de Ultrón',
@@ -112,8 +112,8 @@ const OPENING_WAVES = {
         { label: 'Reconocimiento Hydra', counter: 'Coloca daño temprano junto a la avenida', enemies: [['hydra_soldier', 4], ['aim_scientist', 3]] },
         { label: 'Tecnicos A.I.M.', counter: 'Prioriza soportes antes de que curen', enemies: [['aim_scientist', 4], ['hydra_soldier', 4]] },
         { label: 'Escudos en la Quinta', counter: 'Perforacion y dano sostenido', enemies: [['hydra_soldier', 7], ['aim_scientist', 2]] },
-        { label: 'La Mano tantea tejados', counter: 'Detección si está disponible; si no, contención', enemies: [['hand_ninja', 3], ['hydra_soldier', 5], ['aim_scientist', 2]] },
-        { label: 'Bloqueo coordinado', counter: 'Mejora un héroe antes del élite', enemies: [['hydra_soldier', 6], ['aim_scientist', 3], ['hand_ninja', 2]], elite: 'hydra_soldier' }
+        { label: 'Brecha Chitauri', counter: 'Combina control y dano sostenido antes del portal', enemies: [['chitauri_warrior', 4], ['hydra_soldier', 4], ['aim_scientist', 2]] },
+        { label: 'Bloqueo de la Avenida Stark', counter: 'Mejora un heroe antes del elite', enemies: [['hydra_soldier', 6], ['aim_scientist', 3], ['chitauri_warrior', 2]], elite: 'hydra_soldier' }
     ],
     avengers: [
         { label: 'Drones de intrusión', counter: 'Cobertura antiaérea temprana', enemies: [['ultron_drone', 5], ['doombot', 2]] },
@@ -669,7 +669,7 @@ export class WaveManager {
         if (!this.game.completedWaves.includes(this.currentWave)) {
             this.game.completedWaves.push(this.currentWave);
             if (this.game.progression && (!this.game.modeSystem || this.game.modeSystem.modeId === 'campaign')) metaReward = this.game.progression.recordWave(this.game, this.currentWave);
-            else this.game.stars += this.currentWave % 10 === 0 ? 3 : 1;
+            else this.game.stars += 1;
         }
         const masteryUnlocked = (this.game.heroes || []).flatMap((hero) => this.game.progression?.evaluateHeroMastery?.(hero) || []);
         this.game.uiManager?.renderWaveReport?.(this.buildWaveReport(waveBounty, metaReward, masteryUnlocked, cleanBonus));

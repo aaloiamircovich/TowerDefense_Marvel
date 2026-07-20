@@ -19,23 +19,15 @@
       "brief": "Avenidas urbanas, alcantarillas, agua del Hudson y tecnología Stark."
     },
     "mission": {
-      "operation": "Operación Puente Seguro",
+      "operation": "Invasión de Manhattan",
       "speaker": "Spider-Man",
-      "briefing": "Hydra cerró varias calles y los equipos de emergencia quedaron atrapados. Cada tres oleadas cruzará un convoy civil y cada quinta oleada Hydra intentará emerger por alcantarillas.",
-      "dialogue": "Mantengan despejada la avenida. Yo vigilo los tejados; ustedes hagan que nadie llegue a la salida.",
+      "briefing": "Hydra, A.I.M. y células Chitauri avanzan por Manhattan rumbo a la Torre Stark. Controla las avenidas y corta la invasión antes de que crucen la ciudad.",
+      "dialogue": "Mantengan cubierta la avenida. Yo vigilo los tejados; ustedes hagan que nadie llegue a la salida.",
       "mechanic": {
-        "type": "streets",
-        "label": "Evacuación urbana",
-        "description": "Cada quinta oleada Hydra cambia a una ruta por alcantarillas. Los convoyes civiles aparecen cada tres oleadas y exigen cerrar la salida sin fugas.",
-        "status": "Convoyes S.H.I.E.L.D. esperando una ventana segura.",
-        "convoyStart": {
-          "x": 80,
-          "y": 65
-        },
-        "convoyEnd": {
-          "x": 720,
-          "y": 65
-        }
+        "type": "urban_assault",
+        "label": "Frente de Manhattan",
+        "description": "Oleadas de Hydra, A.I.M. y Chitauri presionan una ruta fija. El objetivo es sostener la línea sin mecánicas de evacuación ni barricadas.",
+        "status": "Manhattan resiste; todas las defensas cubren la avenida principal."
       },
       "objectives": [
         {
@@ -47,11 +39,11 @@
           "reward": 180
         },
         {
-          "id": "ny_rescue",
-          "label": "Héroe del barrio",
-          "description": "Evacua a 9 civiles.",
-          "metric": "civiliansSaved",
-          "target": 9,
+          "id": "ny_first_contact",
+          "label": "Primer contacto",
+          "description": "Derrota a 80 invasores en Manhattan.",
+          "metric": "kills",
+          "target": 80,
           "reward": 260
         }
       ]

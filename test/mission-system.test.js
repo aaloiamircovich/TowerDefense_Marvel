@@ -6,21 +6,29 @@ import { isOrthogonalPath } from '../src/utils/PathUtils.js';
 
 const levels = JSON.parse(fs.readFileSync(new URL('../data/levels.json', import.meta.url), 'utf8'));
 
-test('Manhattan rescata civiles solo al cerrar la oleada sin fugas', () => {
+test('Manhattan ya no activa evacuacion civil ni barricada', () => {
     const game = createGame();
     const mission = new MissionSystem(game);
     mission.loadLevel(levels[0]);
     mission.onWaveStart(3);
     mission.onWaveFinished(3);
 
-    assert.equal(mission.state.metrics.civiliansSaved, 3);
+    assert.equal(levels[0].mission.mechanic.type, 'urban_assault');
+    assert.equal('civiliansSaved' in mission.state.metrics, false);
+    assert.equal('civilianActive' in mission.state, false);
     assert.equal(mission.state.metrics.noLeakWaves, 1);
+});
 
-    game.resourceManager.lives = 19;
-    mission.onWaveStart(6);
-    game.resourceManager.lives = 18;
-    mission.onWaveFinished(6);
-    assert.equal(mission.state.metrics.civiliansSaved, 3);
+test('Manhattan no dibuja tokens CIV ni BARRICADA en el campo', () => {
+    const labels = [];
+    const mission = new MissionSystem(createGame());
+    mission.loadLevel(levels[0]);
+    mission.onWaveStart(3);
+    mission.update(1);
+    mission.render(createCanvasContext(labels));
+
+    assert.equal(labels.includes('CIV'), false);
+    assert.equal(labels.includes('BARRICADA'), false);
 });
 
 test('Avengers HQ activa la puerta una vez por oleada', () => {
@@ -88,5 +96,23 @@ function createGame() {
         },
         uiManager: { updateMissionStatus: () => {}, showToast: () => {} },
         vfx: null
+    };
+}
+
+function createCanvasContext(labels) {
+    return {
+        save() {},
+        restore() {},
+        beginPath() {},
+        arc() {},
+        fill() {},
+        stroke() {},
+        fillText(label) { labels.push(label); },
+        set fillStyle(value) {},
+        set strokeStyle(value) {},
+        set lineWidth(value) {},
+        set textAlign(value) {},
+        set textBaseline(value) {},
+        set font(value) {}
     };
 }
