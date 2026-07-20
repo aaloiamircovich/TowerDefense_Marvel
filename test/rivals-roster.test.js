@@ -5,7 +5,7 @@ import path from 'node:path';
 import { Hero } from '../src/entities/Hero.js';
 import { DIRECTIONS, collectVisualSources } from '../src/rendering/SpriteAnimator.js';
 import { EVOLUTION_CATALOG } from '../src/systems/EvolutionSystem.js';
-import { analyzeTeam, getHeroTeamEffects } from '../src/systems/TeamSynergySystem.js';
+import { SYNERGY_DEFINITIONS, analyzeTeam, getHeroTeamEffects } from '../src/systems/TeamSynergySystem.js';
 
 const root = process.cwd();
 const heroes = JSON.parse(fs.readFileSync(path.join(root, 'data', 'heroes.json'), 'utf8'));
@@ -49,13 +49,15 @@ test('lista solicitada queda cubierta por heroes jugables o evolucion existente'
     assert.equal(EVOLUTION_CATALOG.phoenix.baseHeroId, 'jean_grey');
 });
 
-test('roster Rivales agrega veinticuatro heroes con contrato tactico y visual', () => {
+test('roster Rivales agrega veinticuatro heroes con contrato tactico, visual y taxonomia acotada', () => {
     assert.equal(rivalsHeroes.length, 24);
+    const validTags = new Set(Object.keys(SYNERGY_DEFINITIONS));
     for (const id of rivalsHeroes) {
         const hero = heroes[id];
         assert.ok(hero, `Falta ${id}`);
         assert.equal(hero.id, id);
-        assert.ok(hero.tags.includes('Rivales'), `${id} no pertenece a Rivales`);
+        assert.ok(hero.tags.length >= 1 && hero.tags.length <= 2, `${id} debe tener una o dos agrupaciones`);
+        assert.ok(hero.tags.every((tag) => validTags.has(tag)), `${id} tiene tags invalidos`);
         assert.ok(hero.visual?.portrait);
         assert.equal(hero.sprite, hero.visual.portrait);
         assert.deepEqual(Object.keys(hero.visual.idle).sort(), [...DIRECTIONS].sort());
@@ -73,14 +75,15 @@ test('roster Rivales agrega veinticuatro heroes con contrato tactico y visual', 
 });
 
 test('agrupacion Rivales activa buff de cinco miembros', () => {
-    const team = ['black_cat', 'gambit', 'rocket_raccoon', 'loki', 'invisible_woman'].map((id) => heroes[id]);
+    const team = ['hela', 'the_hood', 'venom', 'magneto', 'deadpool'].map((id) => heroes[id]);
     const snapshot = analyzeTeam(team);
     const rivals = snapshot.families.find((family) => family.tag === 'Rivales');
-    const effects = getHeroTeamEffects(heroes.black_cat, team);
+    const effects = getHeroTeamEffects(heroes.hela, team);
 
     assert.equal(rivals.activeTier.count, 5);
-    assert.ok(Math.abs(effects.damagePct - 0.04) < 0.0001);
-    assert.ok(Math.abs(effects.rangePct - 0.04) < 0.0001);
+    assert.ok(Math.abs(effects.damagePct - 0.135) < 0.0001);
+    assert.ok(Math.abs(effects.rangePct - 0.085) < 0.0001);
+    assert.ok(Math.abs(effects.abilityPower - 0.07) < 0.0001);
     assert.equal(effects.detectStealth, true);
 });
 

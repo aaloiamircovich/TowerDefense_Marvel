@@ -23,9 +23,12 @@ for (const heroId of ['capitan_america', 'thor', 'doctor_strange', 'hulk', 'blac
             assert.ok(atlas.frames[source], `El atlas no contiene ${source}`);
             const png = fs.readFileSync(file);
             assert.equal(png.toString('ascii', 1, 4), 'PNG');
-            const expectedSize = source.endsWith('/portrait.png') ? 56 : 124;
-            assert.equal(png.readUInt32BE(16), expectedSize);
-            assert.equal(png.readUInt32BE(20), expectedSize);
+            const width = png.readUInt32BE(16);
+            const height = png.readUInt32BE(20);
+            assert.equal(width, height, `${source} debe ser cuadrado`);
+            assert.ok(width >= 32 && width <= 128, `${source} debe estar entre 32px y 128px`);
+            assert.equal(atlas.frames[source].width, width);
+            assert.equal(atlas.frames[source].height, height);
         }
     });
 }

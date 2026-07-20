@@ -28,6 +28,7 @@ const terrainProfiles = {
     vision: 'flyer',
     storm: 'flyer',
     nova: 'flyer',
+    ms_marvel: 'flyer',
     wasp: 'flyer',
     doctor_strange: 'flyer',
     scarlet_witch: 'flyer',
@@ -57,6 +58,7 @@ const terrainProfiles = {
     rocket_raccoon: 'high',
 
     spiderman: 'ground',
+    nightcrawler: 'ground',
     hulk: 'ground',
     black_panther: 'ground',
     wolverine: 'ground',

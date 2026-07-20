@@ -1,16 +1,25 @@
-import { FORMATION_DEFINITIONS, formatEffectSummary, getSynergyMenuModel } from '../systems/TeamSynergySystem.js';
+import { formatEffectSummary, getSynergyMenuModel } from '../systems/TeamSynergySystem.js';
+import { EVOLUTION_CATALOG } from '../systems/EvolutionSystem.js';
+import { HERO_RARITIES, getRarityClass, normalizeRarity } from '../utils/Rarity.js';
 
 const METRIC_LABELS = {
     coverage: 'Cobertura',
     control: 'Control',
     damage: 'Daño',
     detection: 'Detección',
-    support: 'Apoyo'
 };
 
 export class TeamBuilderPanel {
     constructor(ui) {
         this.ui = ui;
+        this.searchQuery = '';
+        this.sortMode = 'az';
+        this.rarityFilter = 'all';
+        this.synergyExpanded = false;
+    }
+
+    getCollectionSprite(hero) {
+        return this.ui.getHeroDisplaySprite?.(hero) || hero.visual?.portrait || hero.sprite;
     }
 
     render(title = 'Equipo') {
@@ -19,12 +28,13 @@ export class TeamBuilderPanel {
         const readyHeroes = Object.values(game.heroDatabase)
             .filter((hero) => hero.visual)
             .sort((a, b) => Number(unlockedIds.has(b.id)) - Number(unlockedIds.has(a.id)) || a.name.localeCompare(b.name));
+        const filteredHeroes = this.getFilteredHeroes(readyHeroes);
         const snapshot = game.teamSynergy.getSnapshot();
 
         this.ui.panelContent.innerHTML = `
             <div class="panel-title-row">
                 <h2>${title}</h2>
-                <strong>${game.activeTeam.length}/6 activos · $${snapshot.cost}</strong>
+                <strong>${game.activeTeam.length}/6 activos · despliegue libre</strong>
             </div>
 
             <section class="team-builder-summary">
@@ -37,22 +47,26 @@ export class TeamBuilderPanel {
                     `).join('')}
                 </div>
                 <div class="synergy-overview">
-                    ${snapshot.families.filter((family) => family.count > 0).map((family) => `
-                        <span class="synergy-chip ${family.activeTier ? 'active' : ''}" style="--synergy-color:${family.definition.color}">
-                            <b>${family.tag}</b> ${family.nextTier ? `${family.count}/${family.nextTier.count}` : `${family.count}/${family.activeTier?.count || 0}`}${family.activeTier ? ` · ${family.activeTier.label}` : ''}
+                    ${snapshot.families.filter((family) => family.count > 0).map((family) => {
+                        const rarity = normalizeRarity(family.definition.rarity);
+                        const rarityClass = getRarityClass(rarity);
+                        return `
+                        <span class="synergy-chip ${rarityClass} ${family.activeTier ? 'active' : ''}" style="--synergy-color:${family.definition.color}">
+                            <b>${family.tag}</b> ${family.nextTier ? `${family.count}/${family.nextTier.count}` : `${family.count}/${family.activeTier?.count || 0}`}${family.activeTier ? ` · ${family.activeTier.label}` : ''} <i>${rarity}</i>
                         </span>
-                    `).join('')}
+                    `;
+                    }).join('')}
                     ${snapshot.pairs.filter((pair) => pair.active).map((pair) => `<span class="synergy-chip pair active"><b>${pair.label}</b></span>`).join('')}
                     ${snapshot.versatile ? '<span class="synergy-chip versatile active"><b>Equipo versátil</b> · +2.5% daño y alcance</span>' : ''}
                 </div>
                 ${this.renderSynergyMenu(snapshot, readyHeroes, unlockedIds)}
-                <div class="formation-summary">
-                    ${Object.entries(FORMATION_DEFINITIONS).map(([role, definition]) => `<span style="--formation-color:${definition.color}"><i></i>${definition.label} <b>${snapshot.formationCounts[role] || 0}</b></span>`).join('')}
-                </div>
             </section>
 
+            ${this.renderCollectionFilters(filteredHeroes.length, readyHeroes.length)}
             <div class="collection-grid team-collection-grid">
-                ${readyHeroes.map((hero) => this.renderHeroCard(hero, unlockedIds.has(hero.id))).join('')}
+                ${filteredHeroes.length
+                    ? filteredHeroes.map((hero) => this.renderHeroCard(hero, unlockedIds.has(hero.id))).join('')
+                    : '<p class="empty-copy collection-empty">No hay heroes con esos filtros.</p>'}
             </div>
         `;
 
@@ -63,7 +77,7 @@ export class TeamBuilderPanel {
         if (!hero) return `<div class="team-slot-empty" aria-label="Espacio ${index + 1} libre"><span>${index + 1}</span><i class="fas fa-plus"></i></div>`;
         return `
             <button class="team-slot-filled remove-team-hero" data-id="${hero.id}" aria-label="Quitar a ${hero.name}" title="Quitar del equipo">
-                ${this.ui.renderSprite(hero.visual?.portrait || hero.sprite, hero.name)}
+                ${this.ui.renderSprite(this.getCollectionSprite(hero), hero.name)}
                 <span>${hero.name}</span>
                 <i class="fas fa-xmark"></i>
             </button>
@@ -73,13 +87,20 @@ export class TeamBuilderPanel {
     renderSynergyMenu(snapshot, readyHeroes, unlockedIds) {
         const groups = getSynergyMenuModel(snapshot, readyHeroes, unlockedIds);
         const activeCount = groups.filter((group) => group.state === 'active').length;
+        const collapsed = !this.synergyExpanded;
         return `
-            <section class="allegiance-menu" aria-label="Agrupaciones">
+            <section class="allegiance-menu ${collapsed ? 'collapsed' : 'expanded'}" aria-label="Agrupaciones">
                 <div class="allegiance-heading">
-                    <h3>Agrupaciones</h3>
+                    <div>
+                        <h3>Agrupaciones</h3>
+                        <span>${collapsed ? 'Minimizadas para ver heroes' : 'Vista completa de bonus'}</span>
+                    </div>
                     <strong>${activeCount}/${groups.length} activas</strong>
+                    <button class="icon-command toggle-synergies" type="button" aria-expanded="${this.synergyExpanded}" aria-label="${this.synergyExpanded ? 'Minimizar agrupaciones' : 'Expandir agrupaciones'}" title="${this.synergyExpanded ? 'Minimizar agrupaciones' : 'Expandir agrupaciones'}">
+                        <i class="fas fa-chevron-${this.synergyExpanded ? 'up' : 'down'}"></i>
+                    </button>
                 </div>
-                <div class="allegiance-grid">
+                <div class="allegiance-grid" ${collapsed ? 'hidden' : ''}>
                     ${groups.map((group) => this.renderSynergyGroup(group)).join('')}
                 </div>
             </section>
@@ -88,21 +109,83 @@ export class TeamBuilderPanel {
 
     renderSynergyGroup(group) {
         const tier = group.activeTier || group.nextTier;
-        const members = group.selectedNames.length
-            ? group.selectedNames.slice(0, 3).join(', ')
-            : group.unlockedNames.slice(0, 3).join(', ');
-        const memberLabel = members || 'Sin reclutas';
+        const memberLabel = group.memberNames.length ? group.memberNames.join(', ') : 'Sin heroes asociados';
+        const selectedLabel = group.selectedNames.length ? group.selectedNames.join(', ') : 'Ninguno';
+        const missingLabel = group.missingNames.length ? group.missingNames.join(', ') : 'Completa';
         const stateLabel = group.activeTier ? group.activeTier.label : group.needed === 1 ? 'A un heroe' : `${group.needed} faltan`;
         return `
-            <article class="allegiance-card ${group.state}" style="--synergy-color:${group.color}">
+            <article class="allegiance-card ${group.state} ${group.rarityClass}" data-rarity="${group.rarity}" style="--synergy-color:${group.color}">
                 <div>
                     <span>${group.progressLabel}</span>
                     <strong>${group.label}</strong>
                 </div>
+                <b class="rarity-badge ${group.rarityClass}">${group.rarity}</b>
                 <p>${group.description}</p>
-                <small>${tier?.label || 'Sin umbral'} · ${formatEffectSummary(tier?.effects || {})}</small>
-                <em>${stateLabel} · ${memberLabel}</em>
+                <small>${tier?.label || 'Sin umbral'} - ${formatEffectSummary(tier?.effects || {})}</small>
+                <em><b>Necesitas:</b> ${memberLabel}</em>
+                <em><b>En equipo:</b> ${selectedLabel}</em>
+                <em><b>${group.needed > 0 ? 'Faltan' : 'Estado'}:</b> ${group.needed > 0 ? missingLabel : stateLabel}</em>
             </article>
+        `;
+    }
+    getRarityRank(hero) {
+        return HERO_RARITIES.indexOf(normalizeRarity(hero.rarity));
+    }
+
+    getFilteredHeroes(heroes) {
+        const query = this.searchQuery.trim().toLowerCase();
+        return [...heroes]
+            .filter((hero) => {
+                const rarity = normalizeRarity(hero.rarity);
+                if (this.rarityFilter !== 'all' && rarity !== this.rarityFilter) return false;
+                if (!query) return true;
+
+                return [
+                    hero.name,
+                    hero.category,
+                    hero.ability,
+                    hero.niche,
+                    ...(hero.tags || [])
+                ]
+                    .filter(Boolean)
+                    .join(' ')
+                    .toLowerCase()
+                    .includes(query);
+            })
+            .sort((a, b) => {
+                if (this.sortMode === 'za') return b.name.localeCompare(a.name);
+                if (this.sortMode === 'rarity-desc') return this.getRarityRank(b) - this.getRarityRank(a) || a.name.localeCompare(b.name);
+                if (this.sortMode === 'rarity-asc') return this.getRarityRank(a) - this.getRarityRank(b) || a.name.localeCompare(b.name);
+                return a.name.localeCompare(b.name);
+            });
+    }
+
+    renderCollectionFilters(visibleCount, totalCount) {
+        return `
+            <section class="collection-toolbar" aria-label="Filtros de coleccion">
+                <label class="collection-search">
+                    <i class="fas fa-search"></i>
+                    <input id="collection-search-input" type="search" value="${this.escapeAttribute(this.searchQuery)}" placeholder="Buscar heroe, rol o grupo" autocomplete="off">
+                </label>
+                <label class="collection-sort">
+                    <span>Orden</span>
+                    <select id="collection-sort-select">
+                        <option value="az" ${this.sortMode === 'az' ? 'selected' : ''}>A-Z</option>
+                        <option value="za" ${this.sortMode === 'za' ? 'selected' : ''}>Z-A</option>
+                        <option value="rarity-desc" ${this.sortMode === 'rarity-desc' ? 'selected' : ''}>Rareza alta</option>
+                        <option value="rarity-asc" ${this.sortMode === 'rarity-asc' ? 'selected' : ''}>Rareza baja</option>
+                    </select>
+                </label>
+                <div class="collection-rarity-filters" aria-label="Filtrar por rareza">
+                    ${['all', ...HERO_RARITIES].map((rarity) => {
+                        const active = this.rarityFilter === rarity;
+                        const label = rarity === 'all' ? 'Todas' : rarity;
+                        const rarityClass = rarity === 'all' ? '' : getRarityClass(rarity);
+                        return `<button class="rarity-filter ${rarityClass} ${active ? 'active' : ''}" data-rarity="${rarity}" aria-pressed="${active}">${label}</button>`;
+                    }).join('')}
+                </div>
+                <strong>${visibleCount}/${totalCount}</strong>
+            </section>
         `;
     }
 
@@ -110,14 +193,15 @@ export class TeamBuilderPanel {
         const game = this.ui.game;
         const equipped = game.activeTeam.some((active) => active.id === hero.id);
         const evolution = hero.evolutionId ? game.progression.getHeroEvolution(hero.id) : null;
-        const role = FORMATION_DEFINITIONS[hero.formationRole] || FORMATION_DEFINITIONS.artillery;
+        const availableEvolution = hero.evolutionId ? EVOLUTION_CATALOG[hero.evolutionId] : null;
+        const rarity = normalizeRarity(hero.rarity);
+        const rarityClass = getRarityClass(rarity);
         return `
-            <article class="collection-card team-hero-card ${unlocked ? '' : 'locked'} ${equipped ? 'equipped' : ''}">
-                <div class="formation-role" style="--formation-color:${role.color}">${role.label}</div>
-                ${this.ui.renderSprite(hero.visual?.portrait || hero.sprite, hero.name)}
+            <article class="collection-card team-hero-card ${rarityClass} ${unlocked ? '' : 'locked'} ${equipped ? 'equipped' : ''}" data-rarity="${rarity}">
+                ${this.ui.renderSprite(this.getCollectionSprite(hero), hero.name)}
                 <h3>${hero.name}</h3>
                 ${evolution ? `<strong class="evolution-badge" style="--evolution-color:${evolution.color}">${evolution.name}</strong>` : ''}
-                <small>${hero.category} · ${hero.rarity || 'Common'} · $${hero.cost || 0}</small>
+                <small>${hero.category} · <b class="rarity-badge ${rarityClass}">${rarity}</b></small>
                 <div class="hero-tag-list">${(hero.tags || []).map((tag) => `<span>${tag}</span>`).join('')}</div>
                 <div class="collection-actions">
                     <button class="btn-preview-hero icon-command" data-id="${hero.id}" aria-label="Ver ficha de ${hero.name}" title="Ver ficha"><i class="fas fa-eye"></i></button>
@@ -125,13 +209,32 @@ export class TeamBuilderPanel {
                         ${unlocked ? (equipped ? 'Quitar' : 'Añadir') : 'Por reclutar'}
                     </button>
                 </div>
-                ${unlocked && hero.evolutionId ? `<button class="btn-evolution" data-id="${hero.id}" data-evolution="${hero.evolutionId}">${evolution ? 'Volver a forma base' : `Activar ${hero.evolutionId === 'phoenix' ? 'Phoenix' : hero.evolutionId === 'iron_spider' ? 'Iron Spider' : 'Extremis'}`}</button>` : ''}
+                ${unlocked && availableEvolution ? `<button class="btn-evolution" data-id="${hero.id}" data-evolution="${availableEvolution.id}">${evolution ? 'Volver a forma base' : `Activar ${availableEvolution.shortName || availableEvolution.name}`}</button>` : ''}
             </article>
         `;
     }
 
     bindListeners() {
         const game = this.ui.game;
+        this.ui.panelContent.querySelector('#collection-search-input')?.addEventListener('input', (event) => {
+            this.searchQuery = event.target.value;
+            this.render('Constructor de equipo');
+            const input = this.ui.panelContent.querySelector('#collection-search-input');
+            input?.focus();
+            input?.setSelectionRange(input.value.length, input.value.length);
+        });
+        this.ui.panelContent.querySelector('#collection-sort-select')?.addEventListener('change', (event) => {
+            this.sortMode = event.target.value;
+            this.render('Constructor de equipo');
+        });
+        this.ui.panelContent.querySelectorAll('.rarity-filter').forEach((button) => button.addEventListener('click', () => {
+            this.rarityFilter = button.dataset.rarity || 'all';
+            this.render('Constructor de equipo');
+        }));
+        this.ui.panelContent.querySelector('.toggle-synergies')?.addEventListener('click', () => {
+            this.synergyExpanded = !this.synergyExpanded;
+            this.render('Constructor de equipo');
+        });
         this.ui.panelContent.querySelectorAll('.btn-equip').forEach((button) => button.addEventListener('click', () => {
             const teamIds = game.activeTeam.map((hero) => hero.id);
             const equipped = teamIds.includes(button.dataset.id);
@@ -164,5 +267,13 @@ export class TeamBuilderPanel {
         this.ui.renderHeroRoster(game.activeTeam, (hero) => game.inputManager.setPlacementMode(hero));
         this.ui.showToast('Composición actualizada', 'success');
         this.render('Constructor de equipo');
+    }
+
+    escapeAttribute(value = '') {
+        return String(value)
+            .replaceAll('&', '&amp;')
+            .replaceAll('"', '&quot;')
+            .replaceAll('<', '&lt;')
+            .replaceAll('>', '&gt;');
     }
 }

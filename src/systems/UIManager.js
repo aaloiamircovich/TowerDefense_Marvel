@@ -5,8 +5,17 @@ import { SettingsPanel } from '../ui/SettingsPanel.js';
 import { TooltipController } from '../ui/TooltipController.js';
 import { InventoryPanel } from '../ui/InventoryPanel.js';
 import { TeamBuilderPanel } from '../ui/TeamBuilderPanel.js';
-import { getActiveSets, ITEM_SLOTS, SET_BONUSES, SLOT_LABELS } from './ItemEffectSystem.js';
+import { ModePanel } from '../ui/ModePanel.js';
+import { SET_BONUSES, SLOT_LABELS } from './ItemEffectSystem.js';
 import { getAllowedTerrainLabels } from '../utils/TerrainRules.js';
+import { getRarityClass, normalizeRarity } from '../utils/Rarity.js';
+
+const ASSET_VERSION = 'battle-sprites-20260713';
+
+function versionAssetSource(source) {
+    if (!source?.startsWith?.('assets/images/')) return source;
+    return `${source}${source.includes('?') ? '&' : '?'}v=${ASSET_VERSION}`;
+}
 
 export function buildWaveLaunchState(enabled, summary = null) {
     if (!enabled) {
@@ -178,8 +187,6 @@ export function evaluateHeroWaveFit(hero, summary = null, credits = 0) {
     const controlsCrowd = Number(metrics.control || 0) >= 4
         || hasTextMatch(config, ['ralent', 'inmovil', 'aturd', 'control', 'red']);
     const hasReach = range >= 150;
-    const affordable = Number(config.cost || 0) <= Number(credits || 0);
-
     if ((summary.stealthCount > 0 || roles.has('stealth') || roles.has('phaser')) && detectsStealth) {
         score += 5;
         reasons.push('detecta sigilo');
@@ -211,11 +218,6 @@ export function evaluateHeroWaveFit(hero, summary = null, credits = 0) {
     if (!reasons.length && dps >= 38 && hasReach) {
         score += 1;
         reasons.push('perfil versatil');
-    }
-
-    if (affordable && score > 0) {
-        score += 1;
-        reasons.push('asequible ahora');
     }
 
     if (score >= 6) return { id: 'prime', label: 'Counter ideal', score, reasons: reasons.slice(0, 3) };
@@ -264,6 +266,150 @@ function heroControlsCrowd(hero = {}) {
         || hasTextMatch(config, ['ralent', 'inmovil', 'aturd', 'control', 'red']);
 }
 
+export const TACTICAL_COUNTER_LEGEND = [
+    { id: 'detection', label: 'Deteccion', detail: 'revela sigilo y faseadores', icon: 'fa-eye' },
+    { id: 'piercing', label: 'Perforacion', detail: 'rompe blindaje y barreras', icon: 'fa-bullseye' },
+    { id: 'control', label: 'Control', detail: 'corta corredores antes de meta', icon: 'fa-hand-paper' },
+    { id: 'reach', label: 'Alcance', detail: 'cubre voladores y rutas largas', icon: 'fa-location-arrow' },
+    { id: 'focus', label: 'Foco', detail: 'elimina soporte e invocadores', icon: 'fa-crosshairs' },
+    { id: 'dps', label: 'DPS', detail: 'sostiene jefes y elites', icon: 'fa-bolt' }
+];
+
+export function buildStatusLegendModel(summary = null) {
+    if (!summary) return null;
+    const roles = new Set(summary.roles || []);
+    const entries = [];
+    const add = (id) => {
+        const entry = TACTICAL_COUNTER_LEGEND.find((candidate) => candidate.id === id);
+        if (entry && !entries.some((candidate) => candidate.id === id)) entries.push(entry);
+    };
+
+    if (summary.stealthCount > 0 || roles.has('stealth') || roles.has('phaser')) add('detection');
+    if (summary.armoredCount > 0 || summary.barrierCount > 0 || roles.has('tank') || roles.has('shield')) add('piercing');
+    if (roles.has('runner') || Number(summary.fastest || 0) >= 90) add('control');
+    if (roles.has('flying')) add('reach');
+    if (roles.has('support') || roles.has('summoner') || roles.has('commander')) add('focus');
+    if (summary.hasBoss || Number(summary.maxThreat || 0) >= 5) add('dps');
+
+    if (!entries.length && summary.counter) add('dps');
+    if (!entries.length) return null;
+
+    return {
+        label: 'Counters clave',
+        entries: entries.slice(0, 4)
+    };
+}
+
+export function buildStealthCoverageState(summary = null, activeTeam = [], deployedHeroes = [], credits = 0) {
+    const roles = new Set(summary?.roles || []);
+    const needsDetection = Number(summary?.stealthCount || 0) > 0 || roles.has('stealth') || roles.has('phaser');
+    if (!needsDetection) return null;
+
+    const deployed = (deployedHeroes || []).filter(Boolean);
+    const deployedDetectors = deployed.filter(heroDetectsStealth);
+    if (deployedDetectors.length) {
+        const names = deployedDetectors.slice(0, 2).map(getHeroName).join(' + ');
+        return {
+            tone: 'ready',
+            label: 'Sigilo cubierto',
+            detail: `Detectores en campo: ${names}.`,
+            detectorCount: deployedDetectors.length
+        };
+    }
+
+    const deployedIds = new Set(deployed.map((hero) => hero.id || hero.config?.id).filter(Boolean));
+    const benchDetectors = (activeTeam || [])
+        .filter((hero) => hero && !deployedIds.has(hero.id || hero.config?.id) && heroDetectsStealth(hero))
+        .sort((a, b) => getHeroCost(a) - getHeroCost(b));
+
+    if (benchDetectors.length) {
+        const detector = benchDetectors[0];
+        return {
+            tone: 'warning',
+            label: 'Sigilo sin desplegar',
+            detail: `Coloca ${getHeroName(detector)} antes de iniciar.`,
+            detectorCount: 0,
+            heroId: detector.id || detector.config?.id || ''
+        };
+    }
+
+    return {
+        tone: 'danger',
+        label: 'Sigilo descubierto',
+        detail: 'No hay detector disponible; prioriza control y salida.',
+        detectorCount: 0
+    };
+}
+
+export function buildLeakIntel(events = [], fallbackLeaks = 0) {
+    const cleanEvents = (events || [])
+        .filter(Boolean)
+        .map((event) => {
+            const segment = Number.isFinite(Number(event.segmentPct)) ? Math.max(0, Math.min(100, Math.round(Number(event.segmentPct)))) : null;
+            const lifeLoss = Math.max(0, Number(event.lifeLoss || 0));
+            const absorbed = Boolean(event.absorbed);
+            const counter = event.counter || 'Cubre salida';
+            const name = event.name || 'Enemigo';
+            const lossCopy = absorbed ? 'absorbida' : lifeLoss > 0 ? `-${lifeLoss} vida` : 'sin dano';
+            return {
+                name,
+                counter,
+                tone: absorbed ? 'absorbed' : lifeLoss >= 3 ? 'boss' : 'leak',
+                detail: `${counter} | ${segment ?? 100}% ruta | ${lossCopy}`,
+                traits: (event.traits || []).filter(Boolean).slice(0, 3)
+            };
+        });
+
+    if (!cleanEvents.length && fallbackLeaks > 0) {
+        cleanEvents.push({
+            name: 'Fugas registradas',
+            counter: 'Cubre salida',
+            tone: fallbackLeaks >= 3 ? 'boss' : 'leak',
+            detail: `${fallbackLeaks} vida perdida; falta detalle de enemigo.`,
+            traits: []
+        });
+    }
+
+    return {
+        label: cleanEvents.length ? 'Lectura de fugas' : 'Sin fugas',
+        items: cleanEvents.slice(0, 3),
+        overflow: Math.max(0, cleanEvents.length - 3)
+    };
+}
+
+export function buildTacticalContributionModel(tactical = {}) {
+    const metrics = [
+        { id: 'control', label: 'Control', value: Math.round(Number(tactical.controlSeconds || 0)), suffix: 's', icon: 'fa-hand-paper' },
+        { id: 'armor', label: 'Rupturas', value: Math.round(Number(tactical.armorBreaks || 0)), suffix: '', icon: 'fa-shield-halved' },
+        { id: 'marks', label: 'Marcas', value: Math.round(Number(tactical.marks || 0)), suffix: '', icon: 'fa-crosshairs' },
+        { id: 'detect', label: 'Deteccion', value: Math.round(Number(tactical.detectionReveals || 0)), suffix: '', icon: 'fa-eye' },
+        { id: 'saved', label: 'Vidas salvadas', value: Math.round(Number(tactical.livesSaved || 0)), suffix: '', icon: 'fa-heart-pulse' }
+    ].filter((metric) => metric.value > 0);
+
+    const heroes = (tactical.heroes || [])
+        .filter((hero) => Number(hero.tacticalScore || 0) > 0)
+        .map((hero) => ({
+            id: hero.id || '',
+            name: hero.name || 'Heroe',
+            score: Math.round(Number(hero.tacticalScore || 0)),
+            detail: [
+                hero.controlSeconds > 0 ? `${Math.round(hero.controlSeconds)}s control` : '',
+                hero.armorBreaks > 0 ? `${Math.round(hero.armorBreaks)} ruptura` : '',
+                hero.marks > 0 ? `${Math.round(hero.marks)} marca` : '',
+                hero.detectionReveals > 0 ? `${Math.round(hero.detectionReveals)} deteccion` : '',
+                hero.livesSaved > 0 ? `${Math.round(hero.livesSaved)} vida` : ''
+            ].filter(Boolean).join(' | ')
+        }));
+
+    return {
+        active: metrics.length > 0 || heroes.length > 0,
+        score: Math.round(Number(tactical.score || 0)),
+        mvp: tactical.mvp || '',
+        metrics,
+        heroes
+    };
+}
+
 export function buildWavePreparationPlan(summary = null, activeTeam = [], deployedHeroes = [], credits = 0, levelCost = (level) => level * 120) {
     if (!summary) return [];
 
@@ -287,7 +433,7 @@ export function buildWavePreparationPlan(summary = null, activeTeam = [], deploy
 
     const pickDeploy = (predicate, reason) => {
         const candidate = bench
-            .filter((hero) => predicate(hero) && getHeroCost(hero) <= availableCredits)
+            .filter((hero) => predicate(hero))
             .map((hero) => ({ hero, fit: evaluateHeroWaveFit(hero, summary, availableCredits), cost: getHeroCost(hero) }))
             .sort((a, b) => b.fit.score - a.fit.score || a.cost - b.cost)[0];
 
@@ -296,9 +442,9 @@ export function buildWavePreparationPlan(summary = null, activeTeam = [], deploy
             heroId: candidate.hero.id || candidate.hero.config?.id,
             label: `Colocar ${getHeroName(candidate.hero)}`,
             reason,
-            cost: candidate.cost,
+            cost: 0,
             priority: candidate.fit.id,
-            signature: `deploy:${candidate.hero.id || candidate.hero.config?.id}:${candidate.cost}:${summary.pressureScore}`
+            signature: `deploy:${candidate.hero.id || candidate.hero.config?.id}:free:${summary.pressureScore}`
         } : null;
     };
 
@@ -338,7 +484,6 @@ export function buildWavePreparationPlan(summary = null, activeTeam = [], deploy
 
     if (!plan.length && isUrgent) {
         const fallback = bench
-            .filter((hero) => getHeroCost(hero) <= availableCredits)
             .map((hero) => ({ hero, fit: evaluateHeroWaveFit(hero, summary, availableCredits), cost: getHeroCost(hero) }))
             .sort((a, b) => b.fit.score - a.fit.score || a.cost - b.cost)[0];
         add(fallback ? {
@@ -346,9 +491,9 @@ export function buildWavePreparationPlan(summary = null, activeTeam = [], deploy
             heroId: fallback.hero.id || fallback.hero.config?.id,
             label: `Colocar ${getHeroName(fallback.hero)}`,
             reason: fallback.fit.reasons[0] || 'Aumenta cobertura antes de lanzar la oleada.',
-            cost: fallback.cost,
+            cost: 0,
             priority: fallback.fit.id,
-            signature: `deploy:${fallback.hero.id || fallback.hero.config?.id}:${fallback.cost}:${summary.pressureScore}`
+            signature: `deploy:${fallback.hero.id || fallback.hero.config?.id}:free:${summary.pressureScore}`
         } : null);
     }
 
@@ -364,9 +509,8 @@ export function buildWavePreparationPlan(summary = null, activeTeam = [], deploy
     }
 
     if (!plan.length) {
-        const deployCosts = bench.map(getHeroCost).filter((cost) => cost > availableCredits);
         const upgradeCosts = deployed.map((hero) => Number(levelCost(Number(hero.level || hero.config?.level || 1), 1))).filter((cost) => cost > availableCredits);
-        const nextCost = Math.min(...deployCosts, ...upgradeCosts);
+        const nextCost = Math.min(...upgradeCosts);
         if (Number.isFinite(nextCost)) {
             add({
                 type: 'save',
@@ -438,32 +582,7 @@ export function buildShopItemInsight(item = {}, summary = null) {
 }
 
 export function buildShopSetProgress(item = {}, ownedItemIds = [], equippedItems = {}, itemDatabase = {}) {
-    if (!item?.set) return null;
-    const setItems = [
-        ...(ownedItemIds || []),
-        ...Object.values(equippedItems || {}).flatMap((slots) => Object.values(slots || {}))
-    ].map((id) => itemDatabase[id]).filter((candidate) => candidate?.set === item.set);
-    const uniqueOwned = new Set(setItems.map((candidate) => candidate.id));
-    const alreadyOwned = uniqueOwned.has(item.id);
-    const current = uniqueOwned.size;
-    const afterPurchase = alreadyOwned ? current : current + 1;
-    const needed = Math.max(0, 2 - afterPurchase);
-    const setName = SET_BONUSES[item.set]?.name || item.set;
-    const bonus = SET_BONUSES[item.set]?.description || 'Bonus de set';
-    const status = afterPurchase >= 2 ? 'ready' : 'building';
-
-    return {
-        status,
-        setName,
-        current,
-        afterPurchase,
-        needed,
-        label: status === 'ready' ? `Completa ${setName}` : `${afterPurchase}/2 ${setName}`,
-        detail: status === 'ready' ? bonus : `Falta ${needed} pieza para bonus`,
-        ariaLabel: status === 'ready'
-            ? `${item.name || 'Objeto'} completa el set ${setName}: ${bonus}`
-            : `${item.name || 'Objeto'} deja el set ${setName} en ${afterPurchase} de 2 piezas`
-    };
+    return null;
 }
 
 function getPathLength(path = []) {
@@ -770,7 +889,9 @@ export function buildWaveReportState(report = {}) {
         bestHeroKills: Math.max(0, Number(report.bestHeroKills || 0)),
         bestHeroDamage: Math.round(Math.max(0, Number(report.bestHeroDamage || 0))),
         lesson: buildWaveReportLesson(report),
-        grade: buildWaveReportGrade(report)
+        grade: buildWaveReportGrade(report),
+        leakIntel: buildLeakIntel(report.leakEvents || [], leaks),
+        tacticalContribution: buildTacticalContributionModel(report.tactical || {})
     };
 }
 
@@ -809,6 +930,74 @@ export function buildWaveReportActionState(report = {}, heroes = [], credits = 0
     };
 }
 
+export const ONBOARDING_STEPS = [
+    {
+        id: 'squad',
+        label: 'Escuadron listo',
+        detail: 'Elige tu nucleo inicial y piensa en roles: dano, control y deteccion.',
+        actionLabel: 'Abrir equipo',
+        icon: 'fa-users'
+    },
+    {
+        id: 'deploy',
+        label: 'Primera defensa',
+        detail: 'Coloca un heroe donde cubra la mayor cantidad de ruta posible.',
+        actionLabel: 'Preparar heroe',
+        icon: 'fa-map-marker-alt'
+    },
+    {
+        id: 'suggestion',
+        label: 'Celda recomendada',
+        detail: 'Usa la sugerencia cuando priorice cobertura, terreno valido y distancia al camino.',
+        actionLabel: 'Usar sugerida',
+        icon: 'fa-location-crosshairs'
+    },
+    {
+        id: 'radar',
+        label: 'Lee el radar',
+        detail: 'Antes de iniciar, revisa counters clave y cobertura contra sigilo o blindaje.',
+        actionLabel: 'Ver radar',
+        icon: 'fa-satellite-dish'
+    },
+    {
+        id: 'report',
+        label: 'Ajuste post-oleada',
+        detail: 'Tras cada oleada, refuerza lo que fallo: fugas, DPS, control o deteccion.',
+        actionLabel: 'Revisar informe',
+        icon: 'fa-clipboard-list'
+    }
+];
+
+export function buildOnboardingCoachState(snapshot = {}, settings = {}) {
+    if (settings.tutorialHints === false) return null;
+    const dismissed = new Set(snapshot.dismissedSteps || []);
+    const activeTeamCount = Number(snapshot.activeTeamCount || 0);
+    const deployedCount = Number(snapshot.deployedCount || 0);
+    const currentWave = Math.max(1, Number(snapshot.currentWave || 1));
+    const waveActive = Boolean(snapshot.waveActive);
+    const hasReport = Boolean(snapshot.hasReport);
+    const placingHero = Boolean(snapshot.placingHero);
+    const hasSuggestion = Boolean(snapshot.hasSuggestion);
+
+    let id = 'radar';
+    if (activeTeamCount === 0) id = 'squad';
+    else if (placingHero && hasSuggestion) id = 'suggestion';
+    else if (deployedCount === 0) id = 'deploy';
+    else if (hasReport || currentWave > 1) id = 'report';
+    else if (!waveActive) id = 'radar';
+
+    if (dismissed.has(id)) return null;
+    const index = ONBOARDING_STEPS.findIndex((step) => step.id === id);
+    const step = ONBOARDING_STEPS[index] || ONBOARDING_STEPS[0];
+    return {
+        ...step,
+        index: index + 1,
+        total: ONBOARDING_STEPS.length,
+        progressLabel: `${index + 1}/${ONBOARDING_STEPS.length}`,
+        tone: id === 'report' ? 'report' : id === 'suggestion' ? 'action' : 'guide'
+    };
+}
+
 export class UIManager {
     constructor(gameInstance) {
         this.game = gameInstance;
@@ -835,14 +1024,17 @@ export class UIManager {
         this.lastFocusedElement = null;
         this.nextWaveSummary = null;
         this.combatPressureSignature = '';
+        this.dismissedOnboardingSteps = new Set();
         this.profilePanel = new ProfilePanel(this);
         this.campaignPanel = new CampaignPanel(this);
         this.settingsPanel = new SettingsPanel(this);
         this.inventoryPanel = new InventoryPanel(this);
         this.teamBuilderPanel = new TeamBuilderPanel(this);
+        this.modePanel = new ModePanel(this);
         this.tooltipController = new TooltipController();
 
         this.initListeners();
+        this.renderOnboardingCoach();
     }
 
     initListeners() {
@@ -879,6 +1071,15 @@ export class UIManager {
             btnSpeed.innerHTML = `x${this.game.gameSpeed} <i class="fas fa-rocket"></i>`;
         });
 
+        this.heroGrid?.addEventListener('click', (event) => {
+            const quickUpgradeButton = event.target.closest('[data-quick-upgrade-id]');
+            if (!quickUpgradeButton || !this.heroGrid.contains(quickUpgradeButton)) return;
+
+            event.preventDefault();
+            event.stopPropagation();
+            this.quickUpgradeHeroById(quickUpgradeButton.dataset.quickUpgradeId);
+        });
+
         window.addEventListener('pointerdown', () => this.game.audio?.unlock(), { once: true });
         window.addEventListener('keydown', () => this.game.audio?.unlock(), { once: true });
         window.addEventListener('keydown', (event) => this.handleDialogKeydown(event));
@@ -888,17 +1089,27 @@ export class UIManager {
         this.tooltipController.hide();
         this.lastFocusedElement = document.activeElement;
         this.game.pause();
-        this.overlay.classList.remove('hidden');
-        document.getElementById('close-panel-btn').classList.remove('hidden');
+        this.showPanelOverlay(true);
         this.game.audio?.play('ui');
         this.renderPanel(type);
         window.requestAnimationFrame(() => document.getElementById('close-panel-btn')?.focus());
     }
 
     closePanel() {
-        this.overlay.classList.add('hidden');
+        this.hidePanelOverlay();
         if (!this.game.isManuallyPaused && !this.game.isGameOver) this.game.start();
         this.lastFocusedElement?.focus?.();
+    }
+
+    showPanelOverlay(showCloseButton = true) {
+        document.body.classList.add('panel-open');
+        this.overlay.classList.remove('hidden');
+        document.getElementById('close-panel-btn')?.classList.toggle('hidden', !showCloseButton);
+    }
+
+    hidePanelOverlay() {
+        this.overlay.classList.add('hidden');
+        document.body.classList.remove('panel-open');
     }
 
     handleDialogKeydown(event) {
@@ -962,6 +1173,73 @@ export class UIManager {
         primary.textContent = state.primary;
         secondary.textContent = state.secondary;
         button.replaceChildren(primary, secondary);
+        this.renderOnboardingCoach();
+    }
+
+    updatePlacementSuggestion(state = null) {
+        const button = document.getElementById('suggested-placement-action');
+        if (!button) return;
+        if (!state) {
+            button.classList.add('hidden');
+            button.innerHTML = '';
+            button.onclick = null;
+            this.renderOnboardingCoach();
+            return;
+        }
+
+        button.className = `suggested-placement-action ${state.qualityId || 'solid'}`;
+        button.setAttribute('aria-label', `${state.label}. ${state.detail}`);
+        button.innerHTML = `
+            <i class="fas fa-location-crosshairs"></i>
+            <span><strong>${escapeHtml(state.label)}</strong><small>${escapeHtml(state.detail)}</small></span>
+            <b>${escapeHtml(state.actionLabel || 'Usar')}</b>
+        `;
+        button.onclick = () => this.game.inputManager?.confirmSuggestedPlacement?.();
+        this.renderOnboardingCoach();
+    }
+
+    getOnboardingSnapshot() {
+        return {
+            activeTeamCount: this.game.activeTeam?.length || 0,
+            deployedCount: this.game.heroes?.length || 0,
+            currentWave: this.game.waveManager?.currentWave || 1,
+            waveActive: this.game.waveManager?.isWaveActive || false,
+            placingHero: Boolean(this.game.inputManager?.placingHero),
+            hasSuggestion: Boolean(this.game.inputManager?.suggestedPlacement),
+            hasReport: Boolean(this.lastWaveReport),
+            dismissedSteps: [...this.dismissedOnboardingSteps]
+        };
+    }
+
+    renderOnboardingCoach() {
+        const coach = document.getElementById('onboarding-coach');
+        if (coach) coach.remove();
+        return null;
+    }
+
+    handleOnboardingAction(state) {
+        if (!state) return false;
+        if (state.id === 'squad') {
+            this.openPanel('collection');
+            return true;
+        }
+        if (state.id === 'deploy') {
+            const candidate = (this.game.activeTeam || []).find((hero) => !this.game.heroes?.some((unit) => unit.id === hero.id));
+            if (candidate) {
+                this.game.inputManager?.setPlacementMode(candidate);
+                return true;
+            }
+        }
+        if (state.id === 'suggestion') return Boolean(this.game.inputManager?.confirmSuggestedPlacement?.());
+        if (state.id === 'radar') {
+            this.openPanel('radar');
+            return true;
+        }
+        if (state.id === 'report') {
+            this.openPanel('radar');
+            return true;
+        }
+        return false;
     }
 
     updateUI(lives, credits, wave, fps, stars) {
@@ -973,6 +1251,15 @@ export class UIManager {
     }
 
     updateCombatPressure(enemies = [], path = [], waveActive = false) {
+        const container = document.getElementById('combat-pressure');
+        if (container) {
+            container.classList.add('hidden');
+            container.innerHTML = '';
+        }
+        return buildCombatPressureState(enemies, path, waveActive);
+    }
+
+    renderCombatPressurePanel(enemies = [], path = [], waveActive = false) {
         const container = document.getElementById('combat-pressure');
         if (!container) return null;
         const state = buildCombatPressureState(enemies, path, waveActive);
@@ -1014,10 +1301,9 @@ export class UIManager {
             ${state.id === 'warning' || state.id === 'critical' ? '<button id="pressure-pause" class="btn-mode-action">Pausa táctica</button>' : ''}
         `;
         document.getElementById('pressure-upgrade')?.addEventListener('click', () => {
-            const hero = this.game.heroes.find((unit) => (unit.id || unit.config?.id) === action.heroId);
-            if (this.quickUpgradeHero(hero)) {
+            if (this.quickUpgradeHeroById(action.heroId)) {
                 this.combatPressureSignature = '';
-                this.updateCombatPressure(enemies, path, waveActive);
+                this.renderCombatPressurePanel(enemies, path, waveActive);
             }
         });
         document.getElementById('pressure-pause')?.addEventListener('click', () => this.setManualPause(true));
@@ -1076,6 +1362,7 @@ export class UIManager {
         if (!container) return;
         container.classList.add('hidden');
         container.innerHTML = '';
+        this.renderOnboardingCoach();
     }
 
     renderWaveReport(report) {
@@ -1117,10 +1404,29 @@ export class UIManager {
                 <i class="fas fa-star"></i>
                 <span>${state.bestHero}: ${state.bestHeroKills} bajas - ${state.bestHeroDamage} dano</span>
             </div>
+            ${state.tacticalContribution.active ? `<div class="wave-tactical-contribution" aria-label="Contribucion tactica de la oleada">
+                <strong><i class="fas fa-chart-line"></i> Valor tactico ${state.tacticalContribution.score}</strong>
+                <div>
+                    ${state.tacticalContribution.metrics.map((metric) => `<span class="${escapeHtml(metric.id)}">
+                        <i class="fas ${escapeHtml(metric.icon)}"></i>
+                        <b>${metric.value}${escapeHtml(metric.suffix)}</b>
+                        <small>${escapeHtml(metric.label)}</small>
+                    </span>`).join('')}
+                </div>
+                ${state.tacticalContribution.heroes.length ? `<em>${state.tacticalContribution.heroes.map((hero) => `${escapeHtml(hero.name)}: ${escapeHtml(hero.detail)}`).join(' / ')}</em>` : ''}
+            </div>` : ''}
             <div class="wave-report-lesson lesson-${state.lesson.tone}" aria-label="${escapeHtml(state.lesson.label)}: ${escapeHtml(state.lesson.detail)}">
                 <strong>${escapeHtml(state.lesson.label)}</strong>
                 <span>${escapeHtml(state.lesson.detail)}</span>
             </div>
+            ${state.leakIntel.items.length ? `<div class="wave-leak-intel" aria-label="${escapeHtml(state.leakIntel.label)}">
+                <strong><i class="fas fa-route"></i> ${escapeHtml(state.leakIntel.label)}</strong>
+                ${state.leakIntel.items.map((item) => `<span class="${escapeHtml(item.tone)}">
+                    <b>${escapeHtml(item.name)}</b>
+                    <small>${escapeHtml(item.detail)}</small>
+                </span>`).join('')}
+                ${state.leakIntel.overflow > 0 ? `<em>+${state.leakIntel.overflow} mas</em>` : ''}
+            </div>` : ''}
             <p>${state.advice}</p>
             ${action ? `<div class="wave-report-action report-action-${action.type}">
                 <span>${action.reason}</span>
@@ -1130,9 +1436,9 @@ export class UIManager {
             </div>` : ''}
         `;
         document.getElementById('wave-report-action')?.addEventListener('click', () => {
-            const hero = this.game.heroes.find((unit) => (unit.id || unit.config?.id) === action.heroId);
-            if (this.quickUpgradeHero(hero)) this.renderWaveReport(this.lastWaveReport);
+            if (this.quickUpgradeHeroById(action.heroId)) this.renderWaveReport(this.lastWaveReport);
         });
+        this.renderOnboardingCoach();
         return state;
     }
 
@@ -1146,12 +1452,7 @@ export class UIManager {
     updateLevelTheme(levelConfig) {
         if (this.levelNameEl) this.levelNameEl.textContent = levelConfig.theme?.label || levelConfig.name || 'Mapa';
         document.documentElement.style.setProperty('--level-accent', levelConfig.theme?.accent || '#40c9ff');
-        if (this.operationKickerEl) this.operationKickerEl.textContent = levelConfig.theme?.label || 'Operacion';
-        if (this.operationTitleEl) this.operationTitleEl.textContent = levelConfig.mission?.operation || levelConfig.name || 'Mision tactica';
-        if (this.operationCopyEl) {
-            const speaker = levelConfig.mission?.speaker ? `${levelConfig.mission.speaker}: ` : '';
-            this.operationCopyEl.textContent = `${speaker}${levelConfig.theme?.brief || levelConfig.description || 'Defiende la ruta principal.'}`;
-        }
+        if (this.operationTitleEl) this.operationTitleEl.textContent = levelConfig.theme?.label || levelConfig.name || 'Mapa';
         this.game.audio?.setTheme(levelConfig.theme?.id || 'new-york');
     }
 
@@ -1174,6 +1475,7 @@ export class UIManager {
     }
 
     updateModeStatus(snapshot) {
+        return this.modePanel.updateStatus(snapshot);
         const container = document.getElementById('mode-status');
         if (!container) return;
         if (!snapshot) {
@@ -1190,13 +1492,15 @@ export class UIManager {
     }
 
     showDraftChoice(heroes, onChoose) {
+        return this.modePanel.showDraftChoice(heroes, onChoose);
         this.overlay.classList.remove('hidden');
         document.getElementById('close-panel-btn')?.classList.add('hidden');
-        this.panelContent.innerHTML = `<div class="draft-choice"><span class="briefing-kicker">DRAFT HEROICO</span><h2>Elige un refuerzo</h2><div>${heroes.map((hero) => `<button data-draft="${hero.id}">${this.renderSprite(hero.visual?.portrait || hero.sprite, hero.name)}<strong>${hero.name}</strong><small>${hero.niche || hero.ability}</small></button>`).join('')}</div></div>`;
+        this.panelContent.innerHTML = `<div class="draft-choice"><span class="briefing-kicker">DRAFT HEROICO</span><h2>Elige un refuerzo</h2><div>${heroes.map((hero) => `<button data-draft="${hero.id}">${this.renderSprite(this.getHeroDisplaySprite(hero), hero.name)}<strong>${hero.name}</strong><small>${hero.niche || hero.ability}</small></button>`).join('')}</div></div>`;
         this.panelContent.querySelectorAll('[data-draft]').forEach((button) => button.addEventListener('click', () => onChoose(button.dataset.draft)));
     }
 
     showModeResult(title, snapshot) {
+        return this.modePanel.showResult(title, snapshot);
         this.overlay.classList.remove('hidden');
         document.getElementById('close-panel-btn')?.classList.add('hidden');
         this.panelContent.innerHTML = `<div class="end-state"><h2>${title}</h2><p>${snapshot.score} puntos · oleada ${snapshot.wave} · récord ${snapshot.best}</p>${this.renderMissionSummary(this.game.progression?.state.lastMissionSummary)}<button class="btn-primary" id="mode-result-map">Volver a modos</button></div>`;
@@ -1231,6 +1535,15 @@ export class UIManager {
                 (level, amount = 1) => this.calculateLevelCost(level, amount)
             )
             : [];
+        const stealthCoverage = summary
+            ? buildStealthCoverageState(
+                summary,
+                this.game.activeTeam || [],
+                this.game.heroes || [],
+                this.game.resourceManager?.credits || 0
+            )
+            : null;
+        const statusLegend = buildStatusLegendModel(summary);
 
         if (numberEl) numberEl.textContent = waveNumber;
         if (intelEl) {
@@ -1253,6 +1566,19 @@ export class UIManager {
                         <span><b>${summary.maxThreat}/5</b> amenaza</span>
                     </div>
                     <small class="wave-counter"><i class="fas fa-crosshairs"></i> Respuesta: ${summary.counter}</small>
+                    ${stealthCoverage ? `<div class="wave-stealth-coverage ${stealthCoverage.tone}" aria-label="${escapeHtml(stealthCoverage.label)}: ${escapeHtml(stealthCoverage.detail)}">
+                        <i class="fas fa-eye"></i>
+                        <div><strong>${escapeHtml(stealthCoverage.label)}</strong><span>${escapeHtml(stealthCoverage.detail)}</span></div>
+                    </div>` : ''}
+                    ${statusLegend ? `<div class="wave-status-legend" aria-label="${escapeHtml(statusLegend.label)}">
+                        <strong>${escapeHtml(statusLegend.label)}</strong>
+                        <div>
+                            ${statusLegend.entries.map((entry) => `<span title="${escapeHtml(entry.detail)}">
+                                <i class="fas ${escapeHtml(entry.icon)}"></i>
+                                <b>${escapeHtml(entry.label)}</b>
+                            </span>`).join('')}
+                        </div>
+                    </div>` : ''}
                     ${summary.spawnTimeline?.entries?.length ? `<div class="wave-timeline" data-testid="wave-timeline" aria-label="Cadencia de salida enemiga">
                         <strong>Salida enemiga</strong>
                         <div>
@@ -1291,8 +1617,7 @@ export class UIManager {
                     this.game.audio?.play('ui');
                 }
                 if (button.dataset.prepAction === 'upgrade') {
-                    const hero = this.game.heroes?.find((candidate) => candidate.id === heroId || candidate.config?.id === heroId);
-                    if (hero) this.quickUpgradeHero(hero);
+                    this.quickUpgradeHeroById(heroId);
                 }
             }));
             intelEl.querySelectorAll('[data-branch]').forEach((button) => button.addEventListener('click', () => {
@@ -1355,14 +1680,13 @@ export class UIManager {
         }
 
         this.game.pause();
-        this.overlay.classList.remove('hidden');
-        document.getElementById('close-panel-btn')?.classList.remove('hidden');
+        this.showPanelOverlay(true);
         this.renderHeroDetails(unit);
     }
 
     renderHeroDetails(hero) {
         const config = hero.config || hero;
-        const level = hero.level || config.level || 1;
+        const level = this.getHeroLevel(hero);
         const bonuses = this.game.progression?.getHeroBonuses(config.id) || {};
         const effectiveStats = hero.getEffectiveStats?.();
         const baseDamage = Math.round(hero.damage || config.damage || 0);
@@ -1378,34 +1702,35 @@ export class UIManager {
         const items = hero.items?.length
             ? hero.items
             : Object.values(equippedSlots).map((itemId) => this.game.itemDatabase?.[itemId]).filter(Boolean);
-        const itemBySlot = Object.fromEntries(items.map((item) => [item.slot, item]));
-        const activeSets = getActiveSets(items);
+        const equippedItem = items[0] || null;
+        const equippedSlot = Object.keys(equippedSlots)[0] || equippedItem?.slot || null;
         const combat = hero.combatStats || {};
         const abilityState = hero.abilitySystem?.getDisplayState?.() || null;
         const kitControl = hero.abilitySystem?.getControlState?.() || null;
         const isUnlocked = this.game.progression?.state.unlockedHeroIds.includes(config.id) ?? true;
+        const rarity = normalizeRarity(config.rarity);
+        const rarityClass = getRarityClass(rarity);
         const isDeployed = this.game.heroes.includes(hero);
         const repositionPermission = isDeployed ? this.game.tacticalActions?.canReposition(hero) : null;
         const sellPermission = isDeployed ? this.game.tacticalActions?.canSell(hero) : null;
-        const sellRefund = isDeployed ? this.game.tacticalActions?.getSellRefund(hero) || 0 : 0;
-        const formationStatus = isDeployed ? this.game.teamSynergy?.getFormationStatus(hero) : null;
 
         this.panelContent.innerHTML = `
             <div class="hero-detail">
-                <section class="hero-portrait">
+                <section class="hero-portrait ${rarityClass}" data-rarity="${rarity}">
                     <h2>${hero.name}</h2>
-                    <div class="portrait-frame">${this.renderSprite(config.visual?.portrait || config.sprite, hero.name)}</div>
+                    <b class="rarity-badge ${rarityClass}">${rarity}</b>
+                    <div class="portrait-frame">${this.renderSprite(this.getHeroDisplaySprite(config), hero.name)}</div>
                     <div class="level-chip">Nivel ${level}</div>
                     ${isUnlocked ? `<div class="upgrade-list">
                         ${[1, 5, 10].map((amount) => {
-                            const cost = this.calculateLevelCost(level, amount);
+                            const cost = this.getHeroUpgradeCost(hero, amount);
                             return `<button class="modal-btn-upgrade btn-primary ghost" data-amt="${amount}" data-cost="${cost}">+${amount} $${cost}</button>`;
                         }).join('')}
                     </div>` : '<div class="locked-hero-note"><i class="fas fa-lock"></i> Recluta al héroe para mejorarlo</div>'}
                     ${isDeployed ? `
                         <div class="tactical-actions">
-                            <button id="reposition-hero" class="btn-primary ghost" ${repositionPermission?.ok ? '' : 'disabled'} title="${repositionPermission?.reason || 'Mover una vez por oleada'}"><i class="fas fa-arrows-alt"></i> Reposicionar</button>
-                            <button id="sell-hero" class="btn-primary danger" ${sellPermission?.ok ? '' : 'disabled'} title="${sellPermission?.reason || 'Retirar héroe'}"><i class="fas fa-coins"></i> Vender $${sellRefund}</button>
+                            <button id="reposition-hero" class="btn-primary ghost" ${repositionPermission?.ok ? '' : 'disabled'} title="${repositionPermission?.reason || 'Mover libremente'}"><i class="fas fa-arrows-alt"></i> Reposicionar</button>
+                            <button id="sell-hero" class="btn-primary danger" ${sellPermission?.ok ? '' : 'disabled'} title="${sellPermission?.reason || 'Retirar héroe'}"><i class="fas fa-eject"></i> Retirar</button>
                         </div>
                     ` : ''}
                 </section>
@@ -1422,7 +1747,6 @@ export class UIManager {
                         <div class="detail-card">
                             <h3>Táctica</h3>
                             <p><span>Terreno</span><strong>${terrains}</strong></p>
-                            ${formationStatus ? `<p><span>Formación</span><strong class="formation-state ${formationStatus.active ? 'active' : ''}">${formationStatus.label} · ${formationStatus.active ? 'Activa' : 'En espera'}</strong></p>` : ''}
                             <label class="field-label" for="targeting-select">Apuntar a</label>
                             <select id="targeting-select">
                                 ${TARGETING_PRIORITIES.map((priority) => `<option value="${priority}" ${hero.targetingPriority === priority ? 'selected' : ''}>${priority}</option>`).join('')}
@@ -1462,17 +1786,13 @@ export class UIManager {
 
                     <div class="equipment-card">
                         <h3>Equipamiento</h3>
-                        <div class="hero-equipment-slots">
-                            ${ITEM_SLOTS.map((slot) => {
-                                const item = itemBySlot[slot];
-                                return `<div class="item-slot ${item ? 'filled' : ''}">
-                                    <span>${SLOT_LABELS[slot]}</span>
-                                    <strong>${item?.name || 'Ranura libre'}</strong>
-                                    ${item ? `<small>Nivel ${item.forgeLevel || 1}</small><button class="btn-unequip-modal icon-command" data-slot="${slot}" title="Desequipar"><i class="fas fa-eject"></i></button>` : ''}
-                                </div>`;
-                            }).join('')}
+                        <div class="hero-equipment-slots single-equipment-slot">
+                            <div class="item-slot ${equippedItem ? 'filled' : ''}">
+                                <span>${equippedItem ? `${SLOT_LABELS[equippedItem.slot]} | ${SET_BONUSES[equippedItem.set]?.name || 'Sin familia'}` : 'Objeto'}</span>
+                                <strong>${equippedItem?.name || 'Ranura libre'}</strong>
+                                ${equippedItem ? `<small>${equippedItem.desc}</small><button class="btn-unequip-modal icon-command" data-slot="${equippedSlot}" title="Desequipar"><i class="fas fa-eject"></i></button>` : '<small>Un solo objeto equipado por heroe.</small>'}
+                            </div>
                         </div>
-                        <div class="set-status ${activeSets.length ? 'active' : ''}">${activeSets.length ? activeSets.map((set) => set.description).join(' · ') : 'Sin bonus de set activo'}</div>
                         <button id="open-inventory-panel" class="btn-primary ghost" ${isUnlocked ? '' : 'disabled'}><i class="fas fa-box-open"></i> ${isUnlocked ? 'Gestionar inventario' : 'Recluta para equipar'}</button>
                     </div>
                 </section>
@@ -1486,7 +1806,7 @@ export class UIManager {
 
         this.panelContent.querySelectorAll('.modal-btn-upgrade').forEach((button) => {
             button.addEventListener('click', () => {
-                this.processUpgrade(hero, Number(button.dataset.amt), Number(button.dataset.cost));
+                this.processUpgrade(hero, Number(button.dataset.amt));
             });
         });
 
@@ -1560,14 +1880,77 @@ export class UIManager {
         this.renderHeroDetails(deployed || hero);
     }
 
-    calculateLevelCost(currentLevel, amount) {
+    getHeroLevel(unit) {
+        return Math.max(1, Math.floor(Number(unit?.level ?? unit?.config?.level ?? 1) || 1));
+    }
+
+    calculateLevelCost(currentLevel, amount = 1) {
         let total = 0;
-        for (let i = 0; i < amount; i++) total += (currentLevel + i) * 120;
+        const level = Math.max(1, Math.floor(Number(currentLevel) || 1));
+        const steps = Math.max(1, Math.floor(Number(amount) || 1));
+        for (let i = 0; i < steps; i++) total += (level + i) * 120;
         return total;
     }
 
-    processUpgrade(unit, amount, cost) {
-        if (!this.game.resourceManager.removeCredits(cost)) {
+    getHeroUpgradeCost(unit, amount = 1) {
+        return this.calculateLevelCost(this.getHeroLevel(unit), amount);
+    }
+
+    getMissionCredits() {
+        const rawCredits = Number(this.game.resourceManager?.credits);
+        if (Number.isFinite(rawCredits)) return rawCredits;
+
+        const hudCredits = Number(String(this.creditsEl?.textContent || '').replace(/[^\d.-]/g, ''));
+        return Number.isFinite(hudCredits) ? hudCredits : 0;
+    }
+
+    canAffordHeroUpgrade(unit, amount = 1) {
+        return Boolean(unit) && this.getMissionCredits() >= this.getHeroUpgradeCost(unit, amount);
+    }
+
+    findDeployedHeroById(heroId) {
+        if (!heroId) return null;
+        return this.game.heroes?.find((unit) => (unit.id || unit.config?.id) === heroId) || null;
+    }
+
+    quickUpgradeHeroById(heroId) {
+        return this.quickUpgradeHero(this.findDeployedHeroById(heroId));
+    }
+
+    spendMissionCredits(cost) {
+        const resources = this.game.resourceManager;
+        const amount = Number(cost);
+        if (!Number.isFinite(amount) || amount <= 0 || !resources) return false;
+
+        if (resources.removeCredits?.(amount)) return true;
+
+        const visibleCredits = this.getMissionCredits();
+        if (visibleCredits < amount) return false;
+
+        resources.credits = visibleCredits;
+        if (resources.removeCredits?.(amount)) return true;
+
+        resources.credits = visibleCredits - amount;
+        return true;
+    }
+
+    refreshHeroUpgradeUi(unit) {
+        const resources = this.game.resourceManager || {};
+        this.renderHeroRoster(this.game.activeTeam, (hero) => this.game.inputManager.setPlacementMode(hero));
+        this.updateUI(
+            resources.lives,
+            this.getMissionCredits(),
+            this.game.waveManager?.currentWave || 1,
+            this.game.fps,
+            this.game.stars
+        );
+        this.game.waveManager?.refreshWaveIntel?.();
+        if (unit && !this.overlay?.classList.contains('hidden')) this.renderHeroDetails(unit);
+    }
+
+    processUpgrade(unit, amount) {
+        const cost = this.getHeroUpgradeCost(unit, amount);
+        if (!this.spendMissionCredits(cost)) {
             this.showToast('Créditos insuficientes para esta mejora', 'warning');
             return;
         }
@@ -1575,42 +1958,35 @@ export class UIManager {
         this.applyHeroLevelUpgrade(unit, amount);
         this.game.replaySystem?.record('upgrade', { heroId: unit.id, level: unit.level, cost });
         this.showToast(`${unit.name} subió a nivel ${unit.level}`, 'success');
-        this.renderHeroDetails(unit);
+        this.refreshHeroUpgradeUi(unit);
     }
 
     quickUpgradeHero(unit) {
         if (!unit) return false;
-        const cost = this.calculateLevelCost(unit.level || 1, 1);
-        if (!this.game.resourceManager.removeCredits(cost)) {
+        const cost = this.getHeroUpgradeCost(unit, 1);
+        if (!this.spendMissionCredits(cost)) {
             this.showToast('Creditos insuficientes para mejora de campo', 'warning');
-            this.renderHeroRoster(this.game.activeTeam, (hero) => this.game.inputManager.setPlacementMode(hero));
+            this.refreshHeroUpgradeUi(unit);
             return false;
         }
 
         this.applyHeroLevelUpgrade(unit, 1);
         this.game.replaySystem?.record('upgrade', { heroId: unit.id, level: unit.level, cost, quick: true });
         this.showToast(`${unit.name} nivel ${unit.level} listo para combate`, 'success');
-        this.renderHeroRoster(this.game.activeTeam, (hero) => this.game.inputManager.setPlacementMode(hero));
-        this.updateUI(
-            this.game.resourceManager.lives,
-            this.game.resourceManager.credits,
-            this.game.waveManager?.currentWave || 1,
-            this.game.fps,
-            this.game.stars
-        );
-        this.game.waveManager?.refreshWaveIntel?.();
+        this.refreshHeroUpgradeUi(unit);
         return true;
     }
 
     applyHeroLevelUpgrade(unit, amount) {
         const targetData = unit.config || unit;
-        targetData.level = (targetData.level || unit.level || 1) + amount;
+        const nextLevel = this.getHeroLevel(unit) + Math.max(1, Math.floor(Number(amount) || 1));
+        targetData.level = nextLevel;
         targetData.baseDamage = targetData.baseDamage || targetData.damage || unit.damage || 10;
         targetData.baseRange = targetData.baseRange || targetData.range || unit.range || 100;
         targetData.damage = Math.floor(targetData.baseDamage * Math.pow(1.18, targetData.level - 1));
         targetData.range = targetData.baseRange + targetData.level * 3;
 
-        unit.level = targetData.level;
+        unit.level = nextLevel;
         unit.damage = targetData.damage;
         unit.range = targetData.range;
     }
@@ -1624,6 +2000,7 @@ export class UIManager {
     renderPanel(type) {
         const title = {
             profile: 'Perfil',
+            radar: 'Radar tactico',
             collection: 'Colección',
             inventory: 'Inventario',
             shop: 'Tienda',
@@ -1632,11 +2009,105 @@ export class UIManager {
         }[type] || type;
 
         if (type === 'shop') return this.renderShop(title);
+        if (type === 'radar') return this.renderRadarPanel(title);
         if (type === 'collection') return this.teamBuilderPanel.render('Constructor de equipo');
         if (type === 'inventory') return this.inventoryPanel.render(title);
         if (type === 'map') return this.renderMap(title);
         if (type === 'settings') return this.renderSettings(title);
         return this.renderProfile(title);
+    }
+
+    renderRadarPanel(title = 'Radar tactico') {
+        const wave = this.game.waveManager?.currentWave || 1;
+        const map = this.game.currentLevel?.theme?.label || this.game.currentLevel?.name || 'Mapa';
+        const sections = [
+            this.renderRadarSection('wave-intel', 'Inteligencia de oleada', 'fa-satellite-dish', 'La siguiente oleada aun no tiene lectura.'),
+            this.renderRadarSection('mission-status', 'Estado de mision', 'fa-flag', 'Sin objetivos especiales activos.'),
+            this.renderRadarSection('mode-status', 'Modo especial', 'fa-layer-group', 'Modo campaña estándar.'),
+            this.renderRadarSection('spawn-queue', 'Refuerzos en cola', 'fa-person-running', 'No hay refuerzos pendientes.'),
+            this.renderRadarSection('boss-hud', 'Jefe activo', 'fa-skull-crossbones', 'No hay jefe activo.'),
+            this.renderRadarSection('wave-report', 'Informe de oleada', 'fa-chart-line', 'Completa una oleada para generar informe.'),
+            this.renderRadarSection('enemy-info-panel', 'Archivo enemigo', 'fa-skull', 'Selecciona una carta de enemigo en el panel derecho para inspeccionarlo.')
+        ].join('');
+
+        this.panelContent.innerHTML = `
+            <section class="radar-panel">
+                <div class="radar-hero">
+                    <div>
+                        <span class="briefing-kicker">CONSOLA DE RADAR</span>
+                        <h2>${escapeHtml(title)}</h2>
+                        <p>Lecturas tacticas, ayudas, reportes y sistemas que antes ocupaban el panel derecho.</p>
+                    </div>
+                    <div class="radar-readout">
+                        <span><small>Mapa</small><b>${escapeHtml(map)}</b></span>
+                        <span><small>Oleada</small><b>${wave}</b></span>
+                    </div>
+                </div>
+                <div class="radar-grid">
+                    ${sections}
+                </div>
+            </section>
+        `;
+        this.bindRadarPanelActions();
+    }
+
+    renderRadarSection(sourceId, title, icon, emptyMessage) {
+        const source = document.getElementById(sourceId);
+        const hidden = source?.classList.contains('hidden');
+        const content = source?.innerHTML?.trim();
+        const isEmptyEnemyPanel = sourceId === 'enemy-info-panel'
+            && !source?.querySelector('#enemy-info-content:not(.hidden)');
+        const hasContent = Boolean(content) && !hidden && !isEmptyEnemyPanel;
+
+        return `
+            <article class="radar-section radar-section-${sourceId}">
+                <header>
+                    <i class="fas ${icon}"></i>
+                    <strong>${escapeHtml(title)}</strong>
+                </header>
+                <div class="radar-section-body">
+                    ${hasContent ? content : `<p class="radar-empty">${escapeHtml(emptyMessage)}</p>`}
+                </div>
+            </article>
+        `;
+    }
+
+    bindRadarPanelActions() {
+        this.panelContent.querySelectorAll('[data-prep-action]').forEach((button) => button.addEventListener('click', () => {
+            const heroId = button.dataset.heroId;
+            if (button.dataset.prepAction === 'deploy') {
+                const hero = this.game.activeTeam?.find((candidate) => candidate.id === heroId);
+                if (!hero) return;
+                this.closePanel();
+                this.game.inputManager?.setPlacementMode(hero);
+                this.showToast(`${hero.name}: elige una posicion`, 'info');
+                this.game.audio?.play('ui');
+            }
+            if (button.dataset.prepAction === 'upgrade' && this.quickUpgradeHeroById(heroId)) {
+                this.renderRadarPanel('Radar tactico');
+            }
+        }));
+        this.panelContent.querySelectorAll('[data-branch]').forEach((button) => button.addEventListener('click', () => {
+            const changed = this.game.waveManager?.chooseBranch(button.dataset.branch);
+            if (changed) {
+                this.renderHeroRoster(this.game.activeTeam, (hero) => this.game.inputManager.setPlacementMode(hero));
+                this.renderRadarPanel('Radar tactico');
+            }
+            this.game.audio?.play('ui');
+        }));
+        this.panelContent.querySelector('#wave-report-action')?.addEventListener('click', () => {
+            const report = this.lastWaveReport;
+            if (!report) return;
+            const action = buildWaveReportActionState(
+                buildWaveReportState(report),
+                this.game.heroes || [],
+                this.game.resourceManager?.credits || 0,
+                (level, amount) => this.calculateLevelCost(level, amount)
+            );
+            if (action?.heroId && this.quickUpgradeHeroById(action.heroId)) this.renderRadarPanel('Radar tactico');
+        });
+        this.panelContent.querySelector('#extract-mode')?.addEventListener('click', () => this.game.modeSystem.extract());
+        this.panelContent.querySelector('#repair-mode')?.addEventListener('click', () => this.game.modeSystem.repair());
     }
 
     renderShop(title) {
@@ -1648,13 +2119,14 @@ export class UIManager {
             <div class="shop-layout">
                 <section class="shop-feature">
                     <h3>Caja S.H.I.E.L.D.</h3>
-                    <p>Recluta un héroe sin duplicados. Tras cuatro aperturas comunes, la siguiente garantiza Rare o Legendary.</p>
+                    <p>Recluta un héroe sin duplicados. Tras cuatro aperturas comunes, la siguiente garantiza Rare o superior.</p>
                     <div class="pity-track">Garantía: ${Math.min(4, this.game.progression.state.shop.heroPity)}/4</div>
                     <button class="btn-primary" id="gacha-btn">RECLUTAR POR 500 F</button>
                     <div id="gacha-res" class="result-copy"></div>
                 </section>
                 <section>
-                    <h3>Rotación diaria · ${this.game.shopSystem.getRotationKey()}</h3>
+                    <h3>Arsenal progresivo</h3>
+                    <p class="empty-copy">Se muestran los 3 objetos mas basicos disponibles. Al comprar uno, entra el siguiente del arsenal.</p>
                     <div class="shop-grid">
                         ${rotation.map((slot) => this.renderShopItem(slot.item, slot.purchased)).join('') || '<p class="empty-copy">Arsenal completado.</p>'}
                     </div>
@@ -1736,8 +2208,7 @@ export class UIManager {
 
     renderStarterSelector(starters, onSelect) {
         this.game.pause();
-        this.overlay.classList.remove('hidden');
-        document.getElementById('close-panel-btn')?.classList.add('hidden');
+        this.showPanelOverlay(false);
 
         this.panelContent.innerHTML = `
             <div class="starter-header">
@@ -1745,13 +2216,17 @@ export class UIManager {
                 <p>Tu primera defensa define el ritmo de las primeras oleadas.</p>
             </div>
             <div class="starter-grid">
-                ${starters.map((hero) => `
-                    <button class="starter-card" data-id="${hero.id}" data-testid="starter-${hero.id}">
-                        ${this.renderSprite(hero.visual?.portrait || hero.sprite, hero.name)}
+                ${starters.map((hero) => {
+                    const rarity = normalizeRarity(hero.rarity);
+                    const rarityClass = getRarityClass(rarity);
+                    return `
+                    <button class="starter-card ${rarityClass}" data-id="${hero.id}" data-testid="starter-${hero.id}" data-rarity="${rarity}">
+                        ${this.renderSprite(this.getHeroDisplaySprite(hero), hero.name)}
                         <strong>${hero.name}</strong>
-                        <span>${hero.category} | $${hero.cost}</span>
+                        <span>${hero.category} | <b class="rarity-badge ${rarityClass}">${rarity}</b> | despliegue libre</span>
                     </button>
-                `).join('')}
+                `;
+                }).join('')}
             </div>
         `;
 
@@ -1775,33 +2250,27 @@ export class UIManager {
             const deployedHero = this.game.heroes.find((unit) => unit.id === hero.id);
             const deployed = Boolean(deployedHero);
             const fit = evaluateHeroWaveFit(deployedHero || hero, waveSummary, credits);
-            const fitView = buildRosterWaveFitView(fit);
-            const abilityState = deployedHero?.abilitySystem?.getDisplayState?.();
-            const quickUpgradeCost = deployedHero ? this.calculateLevelCost(deployedHero.level || hero.level || 1, 1) : 0;
-            const canQuickUpgrade = deployedHero && (this.game.resourceManager?.credits || 0) >= quickUpgradeCost;
+            const quickUpgradeCost = deployedHero ? this.getHeroUpgradeCost(deployedHero, 1) : 0;
+            const canQuickUpgrade = this.canAffordHeroUpgrade(deployedHero, 1);
             const targetingState = deployedHero ? buildTargetingControlState(deployedHero.targetingPriority || hero.targetingPriority) : null;
-            const rosterMeta = deployedHero
-                ? `Nv.${deployedHero.level || hero.level || 1} | Mejora $${quickUpgradeCost}`
-                : `$${hero.cost || 0} | ${hero.rarity || 'Common'}`;
+            const rarity = normalizeRarity(hero.rarity);
+            const rarityClass = getRarityClass(rarity);
             const card = document.createElement('article');
-            card.className = `hero-card ${deployed ? 'deployed' : ''} wave-fit-${fit.id}`;
+            card.className = `hero-card ${rarityClass} ${deployed ? 'deployed' : ''} wave-fit-${fit.id}`;
             card.dataset.testid = `hero-card-${hero.id}`;
+            card.dataset.rarity = rarity;
             card.dataset.waveFit = fit.id;
             card.innerHTML = `
-                ${this.renderSprite(hero.visual?.portrait || hero.sprite, hero.name)}
+                <div class="hero-card-sprite">${this.renderSprite(this.getHeroDisplaySprite(hero), hero.name)}</div>
                 <div>
-                    <strong>${hero.name}</strong>
-                    <span class="${deployedHero ? 'field-upgrade-meta' : ''}">${rosterMeta}</span>
-                    ${fitView ? `<small class="roster-wave-fit ${fitView.id}" aria-label="${escapeHtml(fitView.ariaLabel)}" data-tooltip="${escapeHtml(fitView.reasonText)}">
-                        <span><i class="fas fa-crosshairs"></i>${escapeHtml(fitView.label)}</span>
-                        <b>${escapeHtml(fitView.scoreLabel)}</b>
-                        <em>${escapeHtml(fitView.reasonText)}</em>
-                    </small>` : ''}
-                    ${abilityState ? `<small class="roster-ability ${abilityState.ready ? 'ready' : ''}">${abilityState.label}</small>` : ''}
+                    <div class="hero-card-heading">
+                        <strong>${hero.name}</strong>
+                        <span class="rarity-badge ${rarityClass}">${rarity}</span>
+                    </div>
                 </div>
                 <div class="hero-actions">
-                    <button class="btn-action place-btn" data-testid="hero-place-${hero.id}" title="${deployed ? 'Reposicionar' : 'Colocar'}" aria-label="${deployed ? 'Reposicionar' : 'Colocar'}" data-tooltip="${deployed ? 'Mover una vez por oleada' : 'Colocar héroe'}"><i class="fas ${deployed ? 'fa-arrows-alt' : 'fa-map-marker-alt'}"></i></button>
-                    ${deployedHero ? `<button class="btn-action upgrade-btn" data-testid="hero-upgrade-${hero.id}" title="Mejorar en campo" aria-label="Mejorar ${hero.name}" data-tooltip="Mejora rapida $${quickUpgradeCost}" ${canQuickUpgrade ? '' : 'disabled'}><i class="fas fa-arrow-up"></i></button>` : ''}
+                    <button class="btn-action place-btn" data-testid="hero-place-${hero.id}" title="${deployed ? 'Reposicionar' : 'Colocar'}" aria-label="${deployed ? 'Reposicionar' : 'Colocar'}" data-tooltip="${deployed ? 'Mover libremente' : 'Colocar héroe gratis'}"><i class="fas ${deployed ? 'fa-arrows-alt' : 'fa-map-marker-alt'}"></i></button>
+                    ${deployedHero ? `<button class="btn-action upgrade-btn ${canQuickUpgrade ? '' : 'is-unaffordable'}" data-testid="hero-upgrade-${hero.id}" data-quick-upgrade-id="${hero.id}" data-affordable="${canQuickUpgrade ? 'true' : 'false'}" title="Mejorar en campo" aria-label="Mejorar ${hero.name}" data-tooltip="Mejora rapida $${quickUpgradeCost}"><i class="fas fa-arrow-up"></i></button>` : ''}
                     ${targetingState ? `<button class="btn-action target-btn" data-testid="hero-target-${hero.id}" title="${targetingState.tooltip}" aria-label="${targetingState.ariaLabel}" data-tooltip="${targetingState.tooltip}"><i class="fas ${targetingState.icon}"></i><span>${targetingState.label}</span></button>` : ''}
                     <button class="btn-action stats-btn" title="Mejoras" aria-label="Mejoras" data-tooltip="Estadísticas y mejoras"><i class="fas fa-chart-bar"></i></button>
                 </div>
@@ -1813,12 +2282,8 @@ export class UIManager {
             });
             card.querySelector('.stats-btn').addEventListener('click', (event) => {
                 event.stopPropagation();
-                const deployedHero = this.game.heroes.find((unit) => unit.id === hero.id);
+                const deployedHero = this.findDeployedHeroById(hero.id);
                 this.inspectUnit(deployedHero || hero);
-            });
-            card.querySelector('.upgrade-btn')?.addEventListener('click', (event) => {
-                event.stopPropagation();
-                this.quickUpgradeHero(deployedHero);
             });
             card.querySelector('.target-btn')?.addEventListener('click', (event) => {
                 event.stopPropagation();
@@ -1831,6 +2296,80 @@ export class UIManager {
             });
             this.heroGrid.appendChild(card);
         });
+        this.renderOnboardingCoach();
+    }
+
+    buildGachaRevealSequence(finalHero, count = 12) {
+        const roster = Object.values(this.game.heroDatabase || {})
+            .filter((hero) => hero.visual && hero.id !== finalHero.id);
+        const seed = `${finalHero.id}:${Date.now()}`;
+        const score = (hero) => [...`${seed}:${hero.id}`]
+            .reduce((hash, char) => Math.imul(hash ^ char.charCodeAt(0), 16777619), 2166136261) >>> 0;
+        const ordered = [...roster].sort((a, b) => score(a) - score(b));
+        return [...ordered.slice(0, count - 1), finalHero];
+    }
+
+    renderGachaReveal(result) {
+        const hero = result.hero;
+        const rarity = normalizeRarity(hero.rarity);
+        const rarityClass = getRarityClass(rarity);
+        const sequence = this.buildGachaRevealSequence(hero);
+        const firstPreview = sequence[0] || hero;
+        const firstRarity = normalizeRarity(firstPreview.rarity);
+        const firstRarityClass = getRarityClass(firstRarity);
+        return `
+            <div class="gacha-reveal ${firstRarityClass}" data-final-rarity-class="${rarityClass}" data-rarity="${firstRarity}" data-final-rarity="${rarity}">
+                <div class="gacha-aura"></div>
+                <div class="gacha-case">
+                    <i class="fas fa-box-open"></i>
+                    <span>Caja S.H.I.E.L.D.</span>
+                </div>
+                <div class="gacha-roller" aria-hidden="true">
+                    <div class="gacha-roll-sprite">${this.renderSprite(this.getHeroDisplaySprite(firstPreview), firstPreview.name)}</div>
+                </div>
+                <div class="gacha-final">
+                    <span class="rarity-badge ${rarityClass}">${rarity}</span>
+                    <strong>${hero.name}</strong>
+                    <small>${result.guaranteed ? 'Garantia activada' : 'Nuevo recluta'}</small>
+                </div>
+            </div>
+        `;
+    }
+
+    startGachaRevealAnimation(result) {
+        const reveal = document.querySelector('#gacha-res .gacha-reveal');
+        const slot = reveal?.querySelector('.gacha-roll-sprite');
+        const finalCopy = reveal?.querySelector('.gacha-final');
+        if (!reveal || !slot || !finalCopy) return;
+
+        const sequence = this.buildGachaRevealSequence(result.hero);
+        const delays = [140, 150, 160, 170, 185, 200, 220, 245, 275, 310, 360, 430];
+        let index = 0;
+
+        const showEntry = () => {
+            const entry = sequence[Math.min(index, sequence.length - 1)];
+            const rarity = normalizeRarity(entry.rarity);
+            const rarityClass = getRarityClass(rarity);
+            reveal.classList.remove('rarity-common', 'rarity-rare', 'rarity-epic', 'rarity-legendary', 'rarity-mythic', 'rarity-secret');
+            reveal.classList.add(rarityClass);
+            reveal.dataset.rarity = rarity;
+            slot.innerHTML = this.renderSprite(this.getHeroDisplaySprite(entry), entry.name);
+            slot.classList.remove('tick');
+            void slot.offsetWidth;
+            slot.classList.add('tick');
+
+            if (index >= sequence.length - 1) {
+                reveal.classList.add('is-final');
+                finalCopy.classList.add('is-visible');
+                return;
+            }
+
+            const delay = delays[Math.min(index, delays.length - 1)];
+            index += 1;
+            window.setTimeout(showEntry, delay);
+        };
+
+        showEntry();
     }
 
     handleGacha() {
@@ -1839,16 +2378,34 @@ export class UIManager {
             this.showToast(result.reason, 'warning');
             return;
         }
-        this.showToast(`${result.hero.name} se unió a la plantilla`, 'success');
-        this.renderHeroRoster(this.game.activeTeam, (hero) => this.game.inputManager.setPlacementMode(hero));
-        this.renderShop('Tienda');
-        document.getElementById('gacha-res').innerHTML = `Reclutado: <strong>${result.hero.name}</strong>${result.guaranteed ? ' · Garantía activada' : ''}`;
-    }
 
+        const button = document.getElementById('gacha-btn');
+        const resultNode = document.getElementById('gacha-res');
+        if (button) button.disabled = true;
+        if (resultNode) resultNode.innerHTML = this.renderGachaReveal(result);
+        this.startGachaRevealAnimation(result);
+
+        this.showToast(`${result.hero.name} se unio a la plantilla`, 'success');
+        this.renderHeroRoster(this.game.activeTeam, (hero) => this.game.inputManager.setPlacementMode(hero));
+
+        const fundsLabel = this.panelContent.querySelector('.panel-title-row strong');
+        if (fundsLabel) fundsLabel.textContent = `${this.game.progression.state.metaCredits} Fondos S.H.I.E.L.D.`;
+        const pityTrack = this.panelContent.querySelector('.pity-track');
+        if (pityTrack) pityTrack.textContent = `Garantia: ${Math.min(4, this.game.progression.state.shop.heroPity)}/4`;
+
+        window.setTimeout(() => {
+            const nextPool = Object.values(this.game.heroDatabase || {})
+                .filter((hero) => hero.visual)
+                .filter((hero) => !this.game.progression.state.unlockedHeroIds.includes(hero.id));
+            if (button) {
+                button.disabled = nextPool.length === 0;
+                button.textContent = nextPool.length === 0 ? 'PLANTILLA COMPLETA' : 'RECLUTAR POR 500 F';
+            }
+        }, 4800);
+    }
     showGameOver() {
         this.game.audio?.play('warning');
-        this.overlay.classList.remove('hidden');
-        document.getElementById('close-panel-btn')?.classList.add('hidden');
+        this.showPanelOverlay(false);
         const modeSnapshot = this.game.modeSystem?.getSnapshot();
         this.panelContent.innerHTML = `
             <div class="end-state">
@@ -1875,8 +2432,7 @@ export class UIManager {
             this.showModeResult(`${modeSnapshot.name}: completado`, modeSnapshot);
             return;
         }
-        this.overlay.classList.remove('hidden');
-        document.getElementById('close-panel-btn')?.classList.add('hidden');
+        this.showPanelOverlay(false);
         this.panelContent.innerHTML = `
             <div class="end-state">
                 <h2>Victoria</h2>
@@ -1898,8 +2454,7 @@ export class UIManager {
 
     showFatalError(error) {
         this.game?.pause?.();
-        this.overlay.classList.remove('hidden');
-        document.getElementById('close-panel-btn')?.classList.add('hidden');
+        this.showPanelOverlay(false);
         this.panelContent.innerHTML = `
             <div class="end-state error-state" role="alert">
                 <i class="fas fa-triangle-exclamation"></i>
@@ -1931,6 +2486,18 @@ export class UIManager {
 
     renderSprite(src, name) {
         if (!src) return `<span class="sprite-fallback">${name.charAt(0)}</span>`;
-        return `<img src="${src}" alt="${name}" onerror="this.replaceWith(Object.assign(document.createElement('span'), { className: 'sprite-fallback', textContent: '${name.charAt(0)}' }))">`;
+        return `<img src="${versionAssetSource(src)}" alt="${name}" onerror="this.replaceWith(Object.assign(document.createElement('span'), { className: 'sprite-fallback', textContent: '${name.charAt(0)}' }))">`;
+    }
+
+    getHeroDisplaySprite(hero) {
+        if (!hero) return null;
+        const config = hero.config || hero;
+        if (config.id === 'iron_man' || config.id === 'spiderman') {
+            return config.visual?.idle?.south
+                || config.visual?.sprites?.south
+                || config.visual?.portrait
+                || config.sprite;
+        }
+        return config.visual?.portrait || config.sprite;
     }
 }

@@ -4,10 +4,15 @@ export class CombatVfx {
     constructor() {
         this.effects = [];
         this.pool = new ObjectPool(() => ({}), clearEffect, 384);
+        this.reduced = false;
+    }
+
+    setReduced(enabled) {
+        this.reduced = Boolean(enabled);
     }
 
     addBeam(from, to, options = {}) {
-        this.addEffect({
+        return this.addEffect({
             type: 'beam',
             from: { x: from.x, y: from.y },
             to: { x: to.x, y: to.y },
@@ -19,7 +24,7 @@ export class CombatVfx {
     }
 
     addRing(x, y, options = {}) {
-        this.addEffect({
+        return this.addEffect({
             type: 'ring',
             x,
             y,
@@ -39,7 +44,7 @@ export class CombatVfx {
             points.push({ x: x + offset, y: y * progress });
         }
         points.push({ x, y });
-        this.addEffect({
+        return this.addEffect({
             type: 'lightning',
             points,
             color: options.color || '#dff6ff',
@@ -49,7 +54,7 @@ export class CombatVfx {
     }
 
     addBurst(x, y, options = {}) {
-        this.addEffect({
+        return this.addEffect({
             type: 'burst',
             x,
             y,
@@ -61,7 +66,7 @@ export class CombatVfx {
     }
 
     addFloatingText(x, y, text, options = {}) {
-        this.addEffect({
+        return this.addEffect({
             type: 'floatingText',
             x,
             y,
@@ -85,7 +90,9 @@ export class CombatVfx {
     }
 
     addEffect(config) {
-        const effect = this.pool.acquire((target) => Object.assign(target, config));
+        if (this.reduced && config.type === 'lightning') return null;
+        const effectConfig = this.reduced ? reduceEffect(config) : config;
+        const effect = this.pool.acquire((target) => Object.assign(target, effectConfig));
         this.effects.push(effect);
         return effect;
     }
@@ -107,7 +114,7 @@ export class CombatVfx {
         ctx.strokeStyle = effect.color;
         ctx.fillStyle = effect.color;
         ctx.shadowColor = effect.color;
-        ctx.shadowBlur = 14;
+        ctx.shadowBlur = effect.reduced ? 0 : 14;
 
         if (effect.type === 'beam') {
             ctx.lineWidth = Math.max(1, effect.width * (1 - progress * 0.55));
@@ -150,6 +157,14 @@ export class CombatVfx {
         }
         ctx.restore();
     }
+}
+
+function reduceEffect(config) {
+    if (config.type === 'floatingText') return { ...config, duration: Math.min(config.duration, 0.55), maxDuration: Math.min(config.maxDuration, 0.55), reduced: true };
+    if (config.type === 'beam') return { ...config, width: Math.max(1, config.width * 0.62), duration: Math.min(config.duration, 0.16), maxDuration: Math.min(config.maxDuration, 0.16), reduced: true };
+    if (config.type === 'ring') return { ...config, radius: Math.max(18, config.radius * 0.72), duration: Math.min(config.duration, 0.32), maxDuration: Math.min(config.maxDuration, 0.32), reduced: true };
+    if (config.type === 'burst') return { ...config, radius: Math.max(14, config.radius * 0.66), duration: Math.min(config.duration, 0.2), maxDuration: Math.min(config.maxDuration, 0.2), reduced: true };
+    return { ...config, reduced: true };
 }
 
 function clearEffect(effect) {

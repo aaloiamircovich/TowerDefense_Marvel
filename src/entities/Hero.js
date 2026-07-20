@@ -44,7 +44,7 @@ export class Hero {
         this.baseAllowedTerrains = [...(config.allowedTerrains || [1])];
         this.allowedTerrains = [...this.baseAllowedTerrains];
         this.targetingPriority = config.targetingPriority || 'Primero';
-        this.deployedCost = config.cost || 0;
+        this.deployedCost = 0;
         this.lastRepositionWave = -1;
         this.timer = 0;
         this.items = [];
@@ -57,10 +57,16 @@ export class Hero {
             shots: 0,
             crits: 0,
             goldGenerated: 0,
-            abilityActivations: 0
+            abilityActivations: 0,
+            controlSeconds: 0,
+            armorBreaks: 0,
+            marks: 0,
+            detectionReveals: 0,
+            livesSaved: 0
         };
         this.size = 36;
         this.flashTimer = 0;
+        this.stunTimer = 0;
         this.visualTime = 0;
         this.animator = config.visual ? new SpriteAnimator(config.visual) : null;
         this.legacyImage = getCachedImage(config.sprite);
@@ -114,8 +120,11 @@ export class Hero {
     update(dt, enemies, projectiles) {
         this.timer += dt;
         this.flashTimer = Math.max(0, this.flashTimer - dt);
+        this.stunTimer = Math.max(0, this.stunTimer - dt);
         this.visualTime += dt;
         this.animator?.update(dt);
+        if (this.stunTimer > 0) return;
+
         const stats = this.getEffectiveStats();
         this.abilitySystem.update(dt, enemies, stats, projectiles);
 
@@ -239,8 +248,14 @@ export class Hero {
         const healEvery = aggregateItemEffects(this.items).killHealEvery;
         if (healEvery && this.killCount >= healEvery) {
             resourceManager?.addLife(1);
+            this.recordLifeSaved(1);
             this.killCount = 0;
         }
+    }
+
+    applyStun(duration = 1) {
+        this.stunTimer = Math.max(this.stunTimer, Math.max(0, duration));
+        this.timer = 0;
     }
 
     recordGold(amount) {
@@ -249,6 +264,21 @@ export class Hero {
 
     recordAbility() {
         this.combatStats.abilityActivations++;
+    }
+
+    recordStatusApplied(effect = {}, target = null) {
+        const type = effect.type;
+        const duration = Math.max(0, Number(effect.duration || 0));
+        if (['slow', 'stun', 'web', 'knockback'].includes(type)) {
+            this.combatStats.controlSeconds += duration || (type === 'knockback' ? 0.8 : 0);
+        }
+        if (type === 'armorBreak') this.combatStats.armorBreaks++;
+        if (type === 'mark') this.combatStats.marks++;
+        if (target?.stealth && (type === 'mark' || this.getEffectiveStats?.().canSeeStealth)) this.combatStats.detectionReveals++;
+    }
+
+    recordLifeSaved(amount = 1) {
+        this.combatStats.livesSaved += Math.max(0, Number(amount || 0));
     }
 
     getProjectileVisualStyle() {
@@ -274,29 +304,32 @@ export class Hero {
     }
 
     render(ctx) {
-        const stats = this.getEffectiveStats();
-
         ctx.save();
-        if (this.game.showHeroRanges) {
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, stats.range, 0, Math.PI * 2);
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.035)';
-            ctx.fill();
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
-            ctx.stroke();
-        }
-
         if (this.flashTimer > 0) {
             ctx.beginPath();
             ctx.arc(this.x, this.y, 25, 0, Math.PI * 2);
             ctx.fillStyle = 'rgba(252, 163, 17, 0.25)';
             ctx.fill();
         }
+        if (this.stunTimer > 0) {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, 25, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(255, 209, 102, 0.2)';
+            ctx.fill();
+            ctx.strokeStyle = '#ffd166';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+        }
 
         const animated = this.animator?.render(ctx, this.x, this.y) || false;
         if (!animated && this.legacyImage?.complete && this.legacyImage.naturalWidth > 0) {
-            ctx.imageSmoothingEnabled = false;
+            const previousSmoothing = ctx.imageSmoothingEnabled;
+            const previousQuality = ctx.imageSmoothingQuality;
+            ctx.imageSmoothingEnabled = !ctx.__pixelArtCrisp;
+            ctx.imageSmoothingQuality = ctx.__pixelArtCrisp ? 'low' : 'high';
             ctx.drawImage(this.legacyImage, this.x - this.size / 2, this.y - this.size / 2, this.size, this.size);
+            ctx.imageSmoothingEnabled = previousSmoothing;
+            ctx.imageSmoothingQuality = previousQuality;
         } else if (!animated) {
             this.renderFallback(ctx);
         }
@@ -306,6 +339,11 @@ export class Hero {
         ctx.font = 'bold 10px Segoe UI';
         ctx.textAlign = 'center';
         ctx.fillText(`Lv.${this.level}`, this.x, this.y - 24);
+        if (this.stunTimer > 0) {
+            ctx.fillStyle = '#ffd166';
+            ctx.font = '800 9px Segoe UI';
+            ctx.fillText('STUN', this.x, this.y - 34);
+        }
         this.renderAbilityIndicator(ctx);
         ctx.restore();
     }

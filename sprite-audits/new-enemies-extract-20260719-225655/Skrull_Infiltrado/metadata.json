@@ -1,0 +1,63 @@
+{
+  "group_id": null,
+  "states": [
+    {
+      "character": {
+        "id": "ae148d17-31fb-4ee1-857a-ae41bf9cbcd9",
+        "name": "Create a professional 64x64 pixel",
+        "prompt": "Create a professional 64x64 pixel art sprite of a Skrull Infiltrator from Marvel Comics for a 2D Tower Defense/RPG game. Use the classic Marvel Comics Skrull appearance, not a specific named character. Athletic humanoid alien with green skin, pointed ears, a ridged chin, sharp facial features, glowing yellow-green eyes, and no facial hair. Wear a sleek dark green and black infiltration suit with segmented light armor on the shoulders, chest, forearms, and legs, designed for stealth rather than heavy combat. Add a black tactical harness, utility belt with small pouches, fingerless gloves, armored boots, and a short dark cape hanging behind. Hold two compact alien energy daggers with glowing green edges, one in each hand, angled downward. Stand in a low stealth-ready stance with knees bent, torso leaning slightly forward, and head focused on the target. Use dark green, black, metallic gray, glowing green accents, and subtle highlights. Professional high-quality pixel art with clean outlines, strong shading, high contrast, crisp silhouette, consistent lighting from the upper left, and excellent readability at small size. Transparent background, centered character, no text, no UI, no logos, no extra characters, and no visual effects. The final image must be a single game-ready 64x64 pixel sprite.",
+        "size": {
+          "width": 128,
+          "height": 128
+        },
+        "template_id": "mannequin",
+        "directions": 8,
+        "view": "low top-down",
+        "created_at": "2026-07-20T01:26:05.43764+00:00"
+      },
+      "folder": "Create_a_professional_64x64_pixel",
+      "frames": {
+        "rotations": {
+          "south": "Create_a_professional_64x64_pixel/rotations/south.png",
+          "south-east": "Create_a_professional_64x64_pixel/rotations/south-east.png",
+          "east": "Create_a_professional_64x64_pixel/rotations/east.png",
+          "north-east": "Create_a_professional_64x64_pixel/rotations/north-east.png",
+          "north": "Create_a_professional_64x64_pixel/rotations/north.png",
+          "north-west": "Create_a_professional_64x64_pixel/rotations/north-west.png",
+          "west": "Create_a_professional_64x64_pixel/rotations/west.png",
+          "south-west": "Create_a_professional_64x64_pixel/rotations/south-west.png"
+        },
+        "animations": {
+          "Walking": {
+            "north": [
+              "Create_a_professional_64x64_pixel/animations/Walking/north/frame_000.png",
+              "Create_a_professional_64x64_pixel/animations/Walking/north/frame_001.png",
+              "Create_a_professional_64x64_pixel/animations/Walking/north/frame_002.png",
+              "Create_a_professional_64x64_pixel/animations/Walking/north/frame_003.png"
+            ],
+            "west": [
+              "Create_a_professional_64x64_pixel/animations/Walking/west/frame_000.png",
+              "Create_a_professional_64x64_pixel/animations/Walking/west/frame_001.png",
+              "Create_a_professional_64x64_pixel/animations/Walking/west/frame_002.png",
+              "Create_a_professional_64x64_pixel/animations/Walking/west/frame_003.png"
+            ],
+            "south": [
+              "Create_a_professional_64x64_pixel/animations/Walking/south/frame_000.png",
+              "Create_a_professional_64x64_pixel/animations/Walking/south/frame_001.png",
+              "Create_a_professional_64x64_pixel/animations/Walking/south/frame_002.png",
+              "Create_a_professional_64x64_pixel/animations/Walking/south/frame_003.png"
+            ],
+            "east": [
+              "Create_a_professional_64x64_pixel/animations/Walking/east/frame_000.png",
+              "Create_a_professional_64x64_pixel/animations/Walking/east/frame_001.png",
+              "Create_a_professional_64x64_pixel/animations/Walking/east/frame_002.png",
+              "Create_a_professional_64x64_pixel/animations/Walking/east/frame_003.png"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "export_version": "3.1",
+  "export_date": "2026-07-20T01:37:09.403422"
+}

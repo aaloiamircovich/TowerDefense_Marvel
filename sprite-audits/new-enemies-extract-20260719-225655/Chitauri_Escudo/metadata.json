@@ -1,0 +1,63 @@
+{
+  "group_id": null,
+  "states": [
+    {
+      "character": {
+        "id": "cc273f0a-1376-4acf-b4d1-5d347ddaa0df",
+        "name": "Create a professional 64x64 pixel",
+        "prompt": "Create a professional 64x64 pixel art sprite of a Chitauri Warrior from Marvel Comics for a 2D Tower Defense/RPG game. Use the classic Chitauri soldier appearance from Marvel. Tall, lean humanoid alien with pale gray-blue skin, elongated facial features, sunken cheeks, glowing blue eyes, and a biomechanical appearance. Wear dark metallic biomechanical armor with layered chest plates, segmented shoulder armor, armored forearms, reinforced legs, and heavy alien boots integrated into the armor. The helmet should blend seamlessly with the armor, exposing only the face. Hold a large oval Chitauri energy shield on the left arm, made of dark alien metal with glowing blue energy lines around its edges. The right hand remains free, clenched into a fist. Stand in a defensive combat-ready stance with the shield raised slightly in front of the body. Use gunmetal gray, black, pale gray-blue skin, glowing blue energy accents, and metallic highlights. Professional high-quality pixel art with clean outlines, strong shading, high contrast, crisp silhouette, consistent lighting from the upper left, and excellent readability at small size. Transparent background, centered character, no text, no UI, no logos, no extra characters, and no visual effects. The final image must be a single game-ready 64x64 pixel sprite.",
+        "size": {
+          "width": 124,
+          "height": 124
+        },
+        "template_id": "mannequin",
+        "directions": 8,
+        "view": "low top-down",
+        "created_at": "2026-07-20T01:39:08.421151+00:00"
+      },
+      "folder": "Create_a_professional_64x64_pixel",
+      "frames": {
+        "rotations": {
+          "south": "Create_a_professional_64x64_pixel/rotations/south.png",
+          "south-east": "Create_a_professional_64x64_pixel/rotations/south-east.png",
+          "east": "Create_a_professional_64x64_pixel/rotations/east.png",
+          "north-east": "Create_a_professional_64x64_pixel/rotations/north-east.png",
+          "north": "Create_a_professional_64x64_pixel/rotations/north.png",
+          "north-west": "Create_a_professional_64x64_pixel/rotations/north-west.png",
+          "west": "Create_a_professional_64x64_pixel/rotations/west.png",
+          "south-west": "Create_a_professional_64x64_pixel/rotations/south-west.png"
+        },
+        "animations": {
+          "Walking": {
+            "south": [
+              "Create_a_professional_64x64_pixel/animations/Walking/south/frame_000.png",
+              "Create_a_professional_64x64_pixel/animations/Walking/south/frame_001.png",
+              "Create_a_professional_64x64_pixel/animations/Walking/south/frame_002.png",
+              "Create_a_professional_64x64_pixel/animations/Walking/south/frame_003.png"
+            ],
+            "north": [
+              "Create_a_professional_64x64_pixel/animations/Walking/north/frame_000.png",
+              "Create_a_professional_64x64_pixel/animations/Walking/north/frame_001.png",
+              "Create_a_professional_64x64_pixel/animations/Walking/north/frame_002.png",
+              "Create_a_professional_64x64_pixel/animations/Walking/north/frame_003.png"
+            ],
+            "east": [
+              "Create_a_professional_64x64_pixel/animations/Walking/east/frame_000.png",
+              "Create_a_professional_64x64_pixel/animations/Walking/east/frame_001.png",
+              "Create_a_professional_64x64_pixel/animations/Walking/east/frame_002.png",
+              "Create_a_professional_64x64_pixel/animations/Walking/east/frame_003.png"
+            ],
+            "west": [
+              "Create_a_professional_64x64_pixel/animations/Walking/west/frame_000.png",
+              "Create_a_professional_64x64_pixel/animations/Walking/west/frame_001.png",
+              "Create_a_professional_64x64_pixel/animations/Walking/west/frame_002.png",
+              "Create_a_professional_64x64_pixel/animations/Walking/west/frame_003.png"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "export_version": "3.1",
+  "export_date": "2026-07-20T01:52:11.021020"
+}

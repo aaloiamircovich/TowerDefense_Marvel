@@ -205,7 +205,10 @@ export class GameLoop {
             if (enemy.hasReachedEnd && !enemy.processed) {
                 const missionAbsorbed = this.missionSystem?.handleLeak(enemy) || false;
                 const modeAbsorbed = this.modeSystem?.handleLeak(enemy) || false;
-                if (!missionAbsorbed && !modeAbsorbed) this.resourceManager.removeLife(enemy.isBoss ? 3 : 1);
+                const absorbed = missionAbsorbed || modeAbsorbed;
+                const lifeLoss = absorbed ? 0 : (enemy.isBoss ? 3 : 1);
+                this.waveManager?.recordLeak?.(enemy, { lifeLoss, absorbed });
+                if (!absorbed) this.resourceManager.removeLife(lifeLoss);
                 enemy.processed = true;
             }
         });
@@ -242,6 +245,11 @@ export class GameLoop {
     }
 
     render(ctx) {
+        const previousSmoothing = ctx.imageSmoothingEnabled;
+        const previousCrispFlag = ctx.__pixelArtCrisp;
+        ctx.__pixelArtCrisp = Boolean(this.pixelArtCrisp);
+        ctx.imageSmoothingEnabled = !this.pixelArtCrisp;
+
         ctx.fillStyle = this.theme.void;
         ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
@@ -263,6 +271,8 @@ export class GameLoop {
         this.heroes.forEach((hero) => this.teamSynergy.renderFormationRadius(ctx, hero));
         this.projectiles.forEach((projectile) => projectile.render(ctx));
         if (this.inputManager) this.inputManager.draw(ctx);
+        ctx.imageSmoothingEnabled = previousSmoothing;
+        ctx.__pixelArtCrisp = previousCrispFlag;
     }
 
     drawPathGuide(ctx) {
@@ -297,7 +307,336 @@ export class GameLoop {
             this.drawManhattanSetDressing(ctx);
             return;
         }
+        this.drawThemedSetDressing(ctx, themeId);
         this.drawMissionLandmarkBadges(ctx);
+    }
+
+    drawThemedSetDressing(ctx, themeId) {
+        const accent = this.theme.decorLight || '#40c9ff';
+        const shadow = this.theme.decorDark || '#1d2734';
+        ctx.save();
+        ctx.globalCompositeOperation = 'source-over';
+        this.drawMapVignette(ctx, accent, shadow);
+
+        const drawers = {
+            avengers: () => this.drawAvengersSetDressing(ctx, accent, shadow),
+            wakanda: () => this.drawWakandaSetDressing(ctx, accent, shadow),
+            sanctum: () => this.drawSanctumSetDressing(ctx, accent, shadow),
+            'x-mansion': () => this.drawXMansionSetDressing(ctx, accent, shadow),
+            knowhere: () => this.drawKnowhereSetDressing(ctx, accent, shadow),
+            latveria: () => this.drawLatveriaSetDressing(ctx, accent, shadow),
+            asgard: () => this.drawAsgardSetDressing(ctx, accent, shadow),
+            'dark-dimension': () => this.drawDarkDimensionSetDressing(ctx, accent, shadow),
+            'savage-land': () => this.drawSavageLandSetDressing(ctx, accent, shadow),
+            'the-raft': () => this.drawRaftSetDressing(ctx, accent, shadow)
+        };
+
+        drawers[themeId]?.();
+        ctx.restore();
+    }
+
+    drawMapVignette(ctx, accent, shadow) {
+        const gradient = ctx.createLinearGradient(0, 0, this.canvas.width, this.canvas.height);
+        gradient.addColorStop(0, `${accent}18`);
+        gradient.addColorStop(0.45, 'rgba(0, 0, 0, 0)');
+        gradient.addColorStop(1, `${shadow}30`);
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        ctx.strokeStyle = `${accent}2c`;
+        ctx.lineWidth = 2;
+        ctx.strokeRect(10, 10, this.canvas.width - 20, this.canvas.height - 20);
+    }
+
+    drawAvengersSetDressing(ctx, accent, shadow) {
+        this.drawPanelArray(ctx, [[58, 58, 156, 82], [584, 66, 128, 92], [88, 430, 164, 76], [612, 386, 126, 110]], accent, shadow);
+        this.drawConduit(ctx, [[96, 100], [278, 100], [278, 260], [506, 260], [506, 468], [700, 468]], accent);
+        this.drawCanvasLabel(ctx, 'A', 374, 318, 82, accent, 0.2);
+    }
+
+    drawWakandaSetDressing(ctx, accent, shadow) {
+        this.drawChevronField(ctx, 42, 56, 180, 120, accent);
+        this.drawChevronField(ctx, 562, 362, 182, 142, accent);
+        this.drawConduit(ctx, [[112, 500], [254, 438], [420, 438], [596, 308], [724, 308]], '#b865ff');
+        this.drawCanvasLabel(ctx, 'W', 372, 310, 86, accent, 0.18);
+    }
+
+    drawSanctumSetDressing(ctx, accent, shadow) {
+        this.drawMysticSeal(ctx, 178, 168, 58, accent);
+        this.drawMysticSeal(ctx, 620, 440, 72, '#b865ff');
+        this.drawConduit(ctx, [[54, 528], [202, 426], [330, 426], [520, 188], [742, 188]], accent);
+        this.drawCanvasLabel(ctx, 'III', 380, 314, 46, '#ffcf7a', 0.16);
+    }
+
+    drawXMansionSetDressing(ctx, accent, shadow) {
+        this.drawTrainingLanes(ctx, 58, 82, 258, 116, accent);
+        this.drawTrainingLanes(ctx, 490, 386, 244, 116, '#245493');
+        this.drawCanvasLabel(ctx, 'X', 382, 320, 92, '#f4d35e', 0.2);
+    }
+
+    drawKnowhereSetDressing(ctx, accent, shadow) {
+        this.drawScrapPlates(ctx, [[50, 70, 138, 96], [570, 80, 160, 88], [82, 420, 190, 82], [546, 390, 154, 124]], accent);
+        this.drawConduit(ctx, [[76, 224], [210, 182], [384, 224], [556, 176], [724, 216]], '#ff6bd6');
+        this.drawCanvasLabel(ctx, 'K', 384, 320, 86, accent, 0.16);
+    }
+
+    drawLatveriaSetDressing(ctx, accent, shadow) {
+        this.drawFortressPlates(ctx, [[54, 52, 168, 122], [584, 66, 136, 128], [92, 392, 146, 120], [556, 396, 172, 92]], accent);
+        this.drawConduit(ctx, [[120, 116], [260, 116], [260, 330], [512, 330], [512, 500], [692, 500]], '#7be06d');
+        this.drawCanvasLabel(ctx, 'LV', 360, 320, 58, '#7be06d', 0.17);
+    }
+
+    drawAsgardSetDressing(ctx, accent, shadow) {
+        this.drawBridgeRails(ctx, accent);
+        this.drawRunicSlabs(ctx, [[74, 80, 128, 56], [582, 78, 142, 58], [86, 456, 162, 58], [556, 430, 170, 72]], accent);
+        this.drawCanvasLabel(ctx, 'A', 384, 310, 92, '#65cdff', 0.18);
+    }
+
+    drawDarkDimensionSetDressing(ctx, accent, shadow) {
+        this.drawShardField(ctx, [[70, 76], [198, 468], [564, 120], [684, 428], [374, 78], [458, 512]], accent);
+        this.drawConduit(ctx, [[44, 330], [210, 250], [370, 300], [528, 210], [754, 272]], '#8b5cff');
+        this.drawCanvasLabel(ctx, 'VOID', 330, 324, 44, accent, 0.13);
+    }
+
+    drawSavageLandSetDressing(ctx, accent, shadow) {
+        this.drawVines(ctx, '#7ee081');
+        this.drawRockShelves(ctx, [[58, 74, 140, 70], [570, 88, 152, 82], [92, 408, 170, 72], [572, 420, 150, 88]], '#8a4f32');
+        this.drawCanvasLabel(ctx, 'SL', 366, 322, 58, accent, 0.14);
+    }
+
+    drawRaftSetDressing(ctx, accent, shadow) {
+        this.drawSecurityGrid(ctx, accent);
+        this.drawSearchlightBands(ctx, '#dcecf5');
+        this.drawPanelArray(ctx, [[54, 72, 154, 82], [584, 82, 128, 90], [70, 424, 170, 88], [570, 410, 146, 112]], '#ff6b6b', shadow);
+        this.drawCanvasLabel(ctx, 'R', 386, 320, 86, accent, 0.16);
+    }
+
+    drawPanelArray(ctx, rects, accent, shadow) {
+        rects.forEach(([x, y, width, height]) => {
+            ctx.fillStyle = `${shadow}88`;
+            ctx.fillRect(x, y, width, height);
+            ctx.strokeStyle = `${accent}55`;
+            ctx.lineWidth = 2;
+            ctx.strokeRect(x + 4, y + 4, width - 8, height - 8);
+            ctx.fillStyle = `${accent}22`;
+            for (let cellX = x + 14; cellX < x + width - 14; cellX += 28) ctx.fillRect(cellX, y + 14, 10, height - 28);
+        });
+    }
+
+    drawConduit(ctx, points, color) {
+        if (!points.length) return;
+        ctx.save();
+        ctx.strokeStyle = `${color}44`;
+        ctx.lineWidth = 8;
+        ctx.lineJoin = 'round';
+        ctx.beginPath();
+        ctx.moveTo(points[0][0], points[0][1]);
+        points.slice(1).forEach(([x, y]) => ctx.lineTo(x, y));
+        ctx.stroke();
+        ctx.strokeStyle = `${color}aa`;
+        ctx.lineWidth = 2;
+        ctx.setLineDash([16, 12]);
+        ctx.stroke();
+        ctx.restore();
+    }
+
+    drawCanvasLabel(ctx, text, x, y, size, color, alpha) {
+        ctx.save();
+        ctx.globalAlpha = alpha;
+        ctx.fillStyle = color;
+        ctx.font = `900 ${size}px Segoe UI, sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(text, x, y);
+        ctx.restore();
+    }
+
+    drawChevronField(ctx, x, y, width, height, color) {
+        ctx.save();
+        ctx.strokeStyle = `${color}72`;
+        ctx.lineWidth = 3;
+        for (let row = y; row < y + height; row += 24) {
+            for (let col = x; col < x + width; col += 28) {
+                ctx.beginPath();
+                ctx.moveTo(col, row + 16);
+                ctx.lineTo(col + 12, row + 4);
+                ctx.lineTo(col + 24, row + 16);
+                ctx.stroke();
+            }
+        }
+        ctx.restore();
+    }
+
+    drawMysticSeal(ctx, x, y, radius, color) {
+        ctx.save();
+        ctx.strokeStyle = `${color}88`;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(x, y, radius, 0, Math.PI * 2);
+        ctx.arc(x, y, radius * 0.62, 0, Math.PI * 2);
+        ctx.stroke();
+        for (let index = 0; index < 8; index++) {
+            const angle = (Math.PI * 2 * index) / 8;
+            ctx.beginPath();
+            ctx.moveTo(x + Math.cos(angle) * radius * 0.35, y + Math.sin(angle) * radius * 0.35);
+            ctx.lineTo(x + Math.cos(angle) * radius, y + Math.sin(angle) * radius);
+            ctx.stroke();
+        }
+        ctx.restore();
+    }
+
+    drawTrainingLanes(ctx, x, y, width, height, color) {
+        ctx.save();
+        ctx.strokeStyle = `${color}66`;
+        ctx.lineWidth = 2;
+        ctx.strokeRect(x, y, width, height);
+        for (let offset = 20; offset < height; offset += 20) {
+            ctx.beginPath();
+            ctx.moveTo(x + 8, y + offset);
+            ctx.lineTo(x + width - 8, y + offset);
+            ctx.stroke();
+        }
+        ctx.restore();
+    }
+
+    drawScrapPlates(ctx, rects, color) {
+        rects.forEach(([x, y, width, height], index) => {
+            ctx.fillStyle = index % 2 ? 'rgba(42, 38, 50, 0.72)' : 'rgba(52, 52, 62, 0.72)';
+            ctx.fillRect(x, y, width, height);
+            ctx.strokeStyle = `${color}66`;
+            ctx.strokeRect(x + 5, y + 5, width - 10, height - 10);
+            ctx.fillStyle = `${color}33`;
+            ctx.fillRect(x + 16, y + 18, width - 32, 4);
+            ctx.fillRect(x + 18, y + height - 24, width - 36, 3);
+        });
+    }
+
+    drawFortressPlates(ctx, rects, color) {
+        rects.forEach(([x, y, width, height]) => {
+            ctx.fillStyle = 'rgba(14, 25, 16, 0.76)';
+            ctx.fillRect(x, y, width, height);
+            ctx.strokeStyle = `${color}55`;
+            ctx.strokeRect(x + 4, y + 4, width - 8, height - 8);
+            for (let notch = x + 12; notch < x + width - 8; notch += 22) {
+                ctx.fillStyle = `${color}30`;
+                ctx.fillRect(notch, y + 8, 10, 18);
+            }
+        });
+    }
+
+    drawBridgeRails(ctx, color) {
+        ctx.save();
+        ctx.strokeStyle = `${color}66`;
+        ctx.lineWidth = 4;
+        [[72, 142, 728, 142], [72, 466, 728, 466]].forEach(([x1, y1, x2, y2]) => {
+            ctx.beginPath();
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(x2, y2);
+            ctx.stroke();
+        });
+        ctx.lineWidth = 1.5;
+        for (let x = 88; x < 730; x += 36) {
+            ctx.beginPath();
+            ctx.moveTo(x, 128);
+            ctx.lineTo(x + 20, 156);
+            ctx.moveTo(x, 452);
+            ctx.lineTo(x + 20, 480);
+            ctx.stroke();
+        }
+        ctx.restore();
+    }
+
+    drawRunicSlabs(ctx, rects, color) {
+        rects.forEach(([x, y, width, height]) => {
+            ctx.fillStyle = 'rgba(101, 81, 44, 0.68)';
+            ctx.fillRect(x, y, width, height);
+            ctx.strokeStyle = `${color}55`;
+            ctx.strokeRect(x + 4, y + 4, width - 8, height - 8);
+            ctx.fillStyle = `${color}55`;
+            ctx.fillRect(x + 16, y + height / 2 - 2, width - 32, 4);
+        });
+    }
+
+    drawShardField(ctx, points, color) {
+        ctx.save();
+        ctx.fillStyle = `${color}38`;
+        points.forEach(([x, y], index) => {
+            const size = 26 + (index % 3) * 12;
+            ctx.beginPath();
+            ctx.moveTo(x, y - size);
+            ctx.lineTo(x + size * 0.45, y + size * 0.15);
+            ctx.lineTo(x - size * 0.24, y + size);
+            ctx.lineTo(x - size * 0.52, y - size * 0.04);
+            ctx.closePath();
+            ctx.fill();
+        });
+        ctx.restore();
+    }
+
+    drawVines(ctx, color) {
+        ctx.save();
+        ctx.strokeStyle = `${color}66`;
+        ctx.lineWidth = 3;
+        for (let index = 0; index < 6; index++) {
+            const y = 54 + index * 92;
+            ctx.beginPath();
+            ctx.moveTo(0, y);
+            ctx.bezierCurveTo(180, y + 54, 300, y - 54, 480, y + 20);
+            ctx.bezierCurveTo(600, y + 64, 690, y - 26, 800, y + 12);
+            ctx.stroke();
+        }
+        ctx.restore();
+    }
+
+    drawRockShelves(ctx, rects, color) {
+        rects.forEach(([x, y, width, height]) => {
+            ctx.fillStyle = `${color}88`;
+            ctx.beginPath();
+            ctx.moveTo(x + 8, y);
+            ctx.lineTo(x + width - 12, y + 8);
+            ctx.lineTo(x + width, y + height - 10);
+            ctx.lineTo(x + 12, y + height);
+            ctx.closePath();
+            ctx.fill();
+        });
+    }
+
+    drawSecurityGrid(ctx, color) {
+        ctx.save();
+        ctx.strokeStyle = `${color}2f`;
+        ctx.lineWidth = 1;
+        for (let x = 40; x < this.canvas.width; x += 80) {
+            ctx.beginPath();
+            ctx.moveTo(x, 0);
+            ctx.lineTo(x, this.canvas.height);
+            ctx.stroke();
+        }
+        for (let y = 40; y < this.canvas.height; y += 80) {
+            ctx.beginPath();
+            ctx.moveTo(0, y);
+            ctx.lineTo(this.canvas.width, y);
+            ctx.stroke();
+        }
+        ctx.restore();
+    }
+
+    drawSearchlightBands(ctx, color) {
+        ctx.save();
+        ctx.fillStyle = `${color}12`;
+        ctx.beginPath();
+        ctx.moveTo(64, 0);
+        ctx.lineTo(216, 0);
+        ctx.lineTo(388, this.canvas.height);
+        ctx.lineTo(250, this.canvas.height);
+        ctx.closePath();
+        ctx.fill();
+        ctx.beginPath();
+        ctx.moveTo(614, 0);
+        ctx.lineTo(764, 0);
+        ctx.lineTo(548, this.canvas.height);
+        ctx.lineTo(412, this.canvas.height);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
     }
 
     drawManhattanSetDressing(ctx) {

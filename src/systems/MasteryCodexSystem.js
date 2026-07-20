@@ -12,7 +12,7 @@ export function completedMasteryChallenges(stats = {}) {
 
 export function createCodexSnapshot(state, data) {
     const discovered = state.codexDiscovered;
-    const enemies = data.enemies || {};
+    const enemies = flattenEnemyDatabase(data.enemies || {});
     const factionTotal = new Set(Object.values(enemies).map((enemy) => enemy.faction).filter(Boolean)).size;
     return {
         heroes: { found: discovered.heroes.length, total: Object.keys(data.heroes).length },
@@ -21,4 +21,11 @@ export function createCodexSnapshot(state, data) {
         factions: { found: discovered.factions.length, total: factionTotal },
         mechanics: { found: discovered.mechanics.length, total: CODEX_MECHANICS.length }
     };
+}
+
+export function flattenEnemyDatabase(enemies = {}) {
+    if (enemies.normal || enemies.bosses) {
+        return { ...(enemies.normal || {}), ...(enemies.bosses || {}) };
+    }
+    return enemies;
 }

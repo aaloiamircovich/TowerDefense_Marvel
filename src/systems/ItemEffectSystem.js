@@ -19,25 +19,17 @@ const NON_SCALING = new Set(['killHealEvery', 'chainCount']);
 const MAXIMUM_EFFECTS = new Set(['chainRange', 'chainFactor', 'splashRadius', 'splashFactor']);
 
 export function getForgeMultiplier(level = 1) {
-    return 1 + Math.max(0, Math.min(2, Number(level) - 1)) * 0.2;
+    return 1;
 }
 
 export function aggregateItemEffects(items = []) {
     const total = {};
-    items.filter(Boolean).forEach((item) => mergeEffects(total, item.effects || {}, getForgeMultiplier(item.forgeLevel)));
-    getActiveSets(items).forEach((set) => mergeEffects(total, set.effects, 1));
+    items.filter(Boolean).slice(0, 1).forEach((item) => mergeEffects(total, item.effects || {}, 1));
     return total;
 }
 
 export function getActiveSets(items = []) {
-    const counts = items.reduce((result, item) => {
-        if (item?.set) result[item.set] = (result[item.set] || 0) + 1;
-        return result;
-    }, {});
-    return Object.entries(counts)
-        .filter(([, count]) => count >= 2)
-        .map(([id]) => ({ id, ...SET_BONUSES[id] }))
-        .filter((set) => set.name);
+    return [];
 }
 
 function mergeEffects(target, effects, multiplier) {

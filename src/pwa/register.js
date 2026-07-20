@@ -6,8 +6,9 @@ export function registerPwa() {
 
     const register = () => {
         navigator.serviceWorker.register('./service-worker.js')
-            .then(() => {
+            .then((registration) => {
                 document.documentElement.dataset.pwaStatus = 'registered';
+                registration.update?.();
             })
             .catch((error) => {
                 document.documentElement.dataset.pwaStatus = 'error';

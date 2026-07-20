@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hero-td-v2.44.0';
+const CACHE_NAME = 'hero-td-v2.44.0-battle-sprites-20260713';
 const CORE_ASSETS = [
     './', './index.html', './styles.css', './manifest.webmanifest',
     './data/bootstrapData.js', './data/sprite-atlas.js', './data/heroes.json', './data/enemies.json',
@@ -55,7 +55,7 @@ self.addEventListener('fetch', (event) => {
 
     const isImage = event.request.destination === 'image';
     if (isImage) {
-        event.respondWith(caches.match(event.request).then((cached) => cached || fetchAndCache(event.request)));
+        event.respondWith(fetchAndCache(event.request).catch(() => caches.match(event.request).then((cached) => cached || Response.error())));
         return;
     }
 

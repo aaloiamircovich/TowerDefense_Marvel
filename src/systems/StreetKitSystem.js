@@ -1,4 +1,5 @@
 import { CombatSystem } from './CombatSystem.js';
+import { applyCooldownReductions } from '../utils/AbilityModifiers.js';
 
 const STREET_CONTROLS = {
     shang_chi: {
@@ -267,6 +268,7 @@ export class StreetKitSystem {
         this.hero.game.vfx?.addBeam(this.hero, target, { color: '#f2c94c', width: 7, duration: 0.28 });
         this.hero.game.audio?.play('intercept');
         this.hero.recordAbility();
+        this.hero.recordLifeSaved?.(target.isBoss ? 3 : 1);
         this.cooldownRemaining = this.getCooldown(10);
     }
 
@@ -308,9 +310,7 @@ export class StreetKitSystem {
     }
 
     getCooldown(base) {
-        const progression = this.hero.game.progression?.getHeroBonuses(this.hero.id);
-        const synergy = this.hero.game.teamSynergy?.getAbilityModifiers(this.hero);
-        return base * (1 - (progression?.cooldown || 0)) * (1 - (synergy?.cooldown || 0));
+        return applyCooldownReductions(this.hero, base);
     }
 
     getModeLabel() {

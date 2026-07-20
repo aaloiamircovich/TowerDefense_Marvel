@@ -36,6 +36,7 @@
             <div class="top-section right">
                 <nav id="hub-menu" aria-label="Paneles">
                     <button class="hub-btn" data-panel="profile" title="Perfil" aria-label="Perfil" data-tooltip="Perfil y progreso"><i class="fas fa-id-card"></i></button>
+                    <button class="hub-btn" data-panel="radar" title="Radar" aria-label="Radar tactico" data-tooltip="Radar tactico e inteligencia"><i class="fas fa-satellite-dish"></i></button>
                     <button class="hub-btn" data-panel="collection" title="Colección" aria-label="Colección" data-tooltip="Colección de héroes"><i class="fas fa-grip"></i></button>
                     <button class="hub-btn" data-panel="inventory" title="Inventario" aria-label="Inventario" data-tooltip="Inventario y equipamiento"><i class="fas fa-box-open"></i></button>
                     <button class="hub-btn" data-panel="shop" title="Tienda" aria-label="Tienda" data-tooltip="Tienda S.H.I.E.L.D."><i class="fas fa-shopping-cart"></i></button>
@@ -56,24 +57,21 @@
             <section id="center-canvas-container">
                 <canvas id="gameCanvas" data-testid="game-canvas" width="800" height="600"></canvas>
                 <div id="operation-banner" data-testid="operation-banner" aria-live="polite">
-                    <span id="operation-kicker">OPERACION</span>
-                    <strong id="operation-title">Mision tactica</strong>
-                    <p id="operation-copy">Defiende la ruta principal.</p>
+                    <strong id="operation-title">Mapa</strong>
                 </div>
+                <button id="suggested-placement-action" class="suggested-placement-action hidden" type="button" aria-label="Usar celda sugerida" aria-live="polite"></button>
                 <div id="toast" class="toast hidden" data-testid="toast" role="status" aria-live="polite"></div>
             </section>
 
             <aside id="right-panel" class="side-panel">
                 <div class="panel-header split-header">
-                    <span>Radar de Oleada</span>
+                    <span>Oleada</span>
                     <span id="next-wave-number">1</span>
                 </div>
 
                 <div id="wave-intel" aria-live="polite"></div>
 
                 <div id="mode-status" class="hidden" aria-live="polite"></div>
-
-                <div id="combat-pressure" class="hidden" aria-live="polite"></div>
 
                 <div id="spawn-queue" class="hidden" aria-live="polite"></div>
 

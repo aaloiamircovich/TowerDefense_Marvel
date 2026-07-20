@@ -14,7 +14,6 @@ window.__MARVEL_TD_DATA__ = {
       "abilityDesc": "Cada tercer ataque activa un láser ARC que atraviesa la línea de tiro, inflige 90% de daño adicional e ignora 35% de armadura.",
       "niche": "daño lineal y antiarmadura",
       "sprite": "assets/images/heroes/iron_man/portrait.png",
-      "evolutionId": "iron_man_extremis",
       "visual": {
         "portrait": "assets/images/heroes/iron_man/portrait.png",
         "size": 96,
@@ -56,8 +55,7 @@ window.__MARVEL_TD_DATA__ = {
       ],
       "tags": [
         "Avengers",
-        "Tecnología",
-        "Rivales"
+        "Tecnología"
       ],
       "formationRole": "artillery",
       "teamMetrics": {
@@ -82,7 +80,6 @@ window.__MARVEL_TD_DATA__ = {
       "abilityDesc": "Cada impacto acumula una red y reduce 20% la velocidad. Al llegar a tres redes, inmoviliza al objetivo durante 0.7 segundos.",
       "niche": "control constante y detección de sigilo",
       "sprite": "assets/images/heroes/spiderman/portrait.png",
-      "evolutionId": "iron_spider",
       "visual": {
         "portrait": "assets/images/heroes/spiderman/portrait.png",
         "size": 96,
@@ -123,8 +120,7 @@ window.__MARVEL_TD_DATA__ = {
       ],
       "tags": [
         "Callejero",
-        "Tecnología",
-        "Rivales"
+        "Arácnidos"
       ],
       "formationRole": "support",
       "teamMetrics": {
@@ -188,7 +184,7 @@ window.__MARVEL_TD_DATA__ = {
       ],
       "tags": [
         "Avengers",
-        "Rivales"
+        "Operaciones"
       ],
       "formationRole": "vanguard",
       "teamMetrics": {
@@ -254,8 +250,7 @@ window.__MARVEL_TD_DATA__ = {
       ],
       "tags": [
         "Avengers",
-        "Cósmico",
-        "Rivales"
+        "Asgardianos"
       ],
       "formationRole": "artillery",
       "teamMetrics": {
@@ -270,7 +265,7 @@ window.__MARVEL_TD_DATA__ = {
       "id": "hulk",
       "name": "Hulk",
       "category": "Mutante",
-      "rarity": "Rare",
+      "rarity": "Epic",
       "cost": 400,
       "damage": 80,
       "range": 80,
@@ -320,7 +315,7 @@ window.__MARVEL_TD_DATA__ = {
       },
       "tags": [
         "Avengers",
-        "Rivales"
+        "Mutantes"
       ],
       "formationRole": "vanguard",
       "teamMetrics": {
@@ -384,9 +379,7 @@ window.__MARVEL_TD_DATA__ = {
       },
       "tags": [
         "Avengers",
-        "Callejero",
-        "Espías",
-        "Rivales"
+        "Espías"
       ],
       "formationRole": "support",
       "teamMetrics": {
@@ -450,9 +443,7 @@ window.__MARVEL_TD_DATA__ = {
       },
       "tags": [
         "Avengers",
-        "Callejero",
-        "Espías",
-        "Rivales"
+        "Espías"
       ],
       "formationRole": "artillery",
       "teamMetrics": {
@@ -516,10 +507,8 @@ window.__MARVEL_TD_DATA__ = {
         }
       },
       "tags": [
-        "Avengers",
         "Wakanda",
-        "Marciales",
-        "Rivales"
+        "Marciales"
       ],
       "formationRole": "vanguard",
       "teamMetrics": {
@@ -585,8 +574,7 @@ window.__MARVEL_TD_DATA__ = {
       ],
       "tags": [
         "Místico",
-        "Oscuros",
-        "Rivales"
+        "Nexo Caótico"
       ],
       "formationRole": "support",
       "teamMetrics": {
@@ -667,7 +655,7 @@ window.__MARVEL_TD_DATA__ = {
       "id": "wolverine",
       "name": "Wolverine",
       "category": "Mutante",
-      "rarity": "Rare",
+      "rarity": "Legendary",
       "cost": 420,
       "damage": 40,
       "range": 70,
@@ -682,8 +670,7 @@ window.__MARVEL_TD_DATA__ = {
       ],
       "tags": [
         "X-Men",
-        "Mutantes",
-        "Rivales"
+        "Mutantes"
       ],
       "formationRole": "vanguard",
       "teamMetrics": {
@@ -733,7 +720,7 @@ window.__MARVEL_TD_DATA__ = {
       "id": "daredevil",
       "name": "Daredevil",
       "category": "Urbano",
-      "rarity": "Common",
+      "rarity": "Rare",
       "cost": 150,
       "damage": 20,
       "range": 100,
@@ -747,9 +734,7 @@ window.__MARVEL_TD_DATA__ = {
       ],
       "tags": [
         "Defenders",
-        "Callejero",
-        "Marciales",
-        "Rivales"
+        "Callejero"
       ],
       "formationRole": "support",
       "teamMetrics": {
@@ -799,7 +784,7 @@ window.__MARVEL_TD_DATA__ = {
       "id": "ant_man",
       "name": "Ant-Man",
       "category": "Tecnológico",
-      "rarity": "Rare",
+      "rarity": "Common",
       "cost": 190,
       "damage": 28,
       "range": 110,
@@ -877,8 +862,7 @@ window.__MARVEL_TD_DATA__ = {
       ],
       "tags": [
         "Guardianes",
-        "Cósmico",
-        "Rivales"
+        "Cósmico"
       ],
       "formationRole": "artillery",
       "teamMetrics": {
@@ -928,7 +912,7 @@ window.__MARVEL_TD_DATA__ = {
       "id": "groot",
       "name": "Groot",
       "category": "Cósmico",
-      "rarity": "Rare",
+      "rarity": "Common",
       "cost": 300,
       "damage": 45,
       "range": 120,
@@ -942,8 +926,7 @@ window.__MARVEL_TD_DATA__ = {
       ],
       "tags": [
         "Guardianes",
-        "Cósmico",
-        "Rivales"
+        "Cósmico"
       ],
       "formationRole": "support",
       "teamMetrics": {
@@ -1008,7 +991,6 @@ window.__MARVEL_TD_DATA__ = {
       ],
       "tags": [
         "Guardianes",
-        "Cósmico",
         "Marciales"
       ],
       "formationRole": "vanguard",
@@ -1059,7 +1041,7 @@ window.__MARVEL_TD_DATA__ = {
       "id": "scarlet_witch",
       "name": "Scarlet Witch",
       "category": "Místico",
-      "rarity": "Legendary",
+      "rarity": "Secret",
       "cost": 650,
       "damage": 65,
       "range": 220,
@@ -1074,11 +1056,8 @@ window.__MARVEL_TD_DATA__ = {
         3
       ],
       "tags": [
-        "Avengers",
         "Místico",
-        "Mutantes",
-        "Oscuros",
-        "Rivales"
+        "Nexo Caótico"
       ],
       "formationRole": "support",
       "teamMetrics": {
@@ -1274,10 +1253,8 @@ window.__MARVEL_TD_DATA__ = {
         3
       ],
       "tags": [
-        "Callejero",
-        "Tecnología",
         "Espías",
-        "Rivales"
+        "Operaciones"
       ],
       "formationRole": "artillery",
       "teamMetrics": {
@@ -1341,8 +1318,8 @@ window.__MARVEL_TD_DATA__ = {
         3
       ],
       "tags": [
-        "Callejero",
-        "Marciales"
+        "Marciales",
+        "Callejero"
       ],
       "formationRole": "vanguard",
       "teamMetrics": {
@@ -1405,10 +1382,8 @@ window.__MARVEL_TD_DATA__ = {
         1
       ],
       "tags": [
-        "Místico",
         "Callejero",
-        "Oscuros",
-        "Rivales"
+        "Oscuros"
       ],
       "formationRole": "artillery",
       "teamMetrics": {
@@ -1472,7 +1447,8 @@ window.__MARVEL_TD_DATA__ = {
         3
       ],
       "tags": [
-        "Callejero"
+        "Avengers",
+        "Mutantes"
       ],
       "formationRole": "vanguard",
       "teamMetrics": {
@@ -1522,7 +1498,7 @@ window.__MARVEL_TD_DATA__ = {
       "id": "jean_grey",
       "name": "Jean Grey",
       "category": "Mutante",
-      "rarity": "Legendary",
+      "rarity": "Mythic",
       "cost": 600,
       "damage": 60,
       "range": 210,
@@ -1531,7 +1507,6 @@ window.__MARVEL_TD_DATA__ = {
       "ability": "FUERZA PHOENIX",
       "abilityDesc": "Usa telequinesis para retroceder grupos y carga un medidor Phoenix que libera una onda de poder controlada.",
       "sprite": "assets/images/heroes/jean_grey/portrait.png",
-      "evolutionId": "phoenix",
       "allowedTerrains": [
         0,
         1,
@@ -1539,8 +1514,7 @@ window.__MARVEL_TD_DATA__ = {
       ],
       "tags": [
         "X-Men",
-        "Mutantes",
-        "Rivales"
+        "Nexo Caótico"
       ],
       "formationRole": "support",
       "teamMetrics": {
@@ -1604,8 +1578,7 @@ window.__MARVEL_TD_DATA__ = {
       ],
       "tags": [
         "X-Men",
-        "Mutantes",
-        "Rivales"
+        "Operaciones"
       ],
       "formationRole": "artillery",
       "teamMetrics": {
@@ -1655,7 +1628,7 @@ window.__MARVEL_TD_DATA__ = {
       "id": "storm",
       "name": "Storm",
       "category": "Mutante",
-      "rarity": "Rare",
+      "rarity": "Epic",
       "cost": 300,
       "damage": 35,
       "range": 200,
@@ -1671,8 +1644,7 @@ window.__MARVEL_TD_DATA__ = {
       ],
       "tags": [
         "X-Men",
-        "Mutantes",
-        "Rivales"
+        "Mutantes"
       ],
       "formationRole": "support",
       "teamMetrics": {
@@ -1722,7 +1694,7 @@ window.__MARVEL_TD_DATA__ = {
       "id": "silver_surfer",
       "name": "Silver Surfer",
       "category": "Cósmico",
-      "rarity": "Legendary",
+      "rarity": "Mythic",
       "cost": 760,
       "damage": 100,
       "range": 300,
@@ -1737,7 +1709,8 @@ window.__MARVEL_TD_DATA__ = {
         3
       ],
       "tags": [
-        "Cósmico"
+        "Cósmico",
+        "Nexo Caótico"
       ],
       "formationRole": "artillery",
       "teamMetrics": {
@@ -1801,10 +1774,8 @@ window.__MARVEL_TD_DATA__ = {
         3
       ],
       "tags": [
-        "Místico",
-        "Callejero",
         "Oscuros",
-        "Rivales"
+        "Callejero"
       ],
       "formationRole": "vanguard",
       "teamMetrics": {
@@ -1868,8 +1839,8 @@ window.__MARVEL_TD_DATA__ = {
         3
       ],
       "tags": [
-        "Místico",
-        "Oscuros"
+        "Oscuros",
+        "Místico"
       ],
       "formationRole": "vanguard",
       "teamMetrics": {
@@ -1999,7 +1970,7 @@ window.__MARVEL_TD_DATA__ = {
       ],
       "tags": [
         "X-Men",
-        "Mutantes"
+        "Espías"
       ],
       "formationRole": "support",
       "teamMetrics": {
@@ -2049,7 +2020,7 @@ window.__MARVEL_TD_DATA__ = {
       "id": "war_machine",
       "name": "War Machine",
       "category": "Tecnológico",
-      "rarity": "Rare",
+      "rarity": "Epic",
       "cost": 360,
       "damage": 48,
       "range": 175,
@@ -2135,9 +2106,8 @@ window.__MARVEL_TD_DATA__ = {
         3
       ],
       "tags": [
-        "Callejero",
-        "Tecnología",
-        "Espías"
+        "Espías",
+        "Operaciones"
       ],
       "formationRole": "support",
       "teamMetrics": {
@@ -2203,7 +2173,7 @@ window.__MARVEL_TD_DATA__ = {
       "id": "wasp",
       "name": "Wasp",
       "category": "Tecnológico",
-      "rarity": "Rare",
+      "rarity": "Epic",
       "cost": 230,
       "damage": 18,
       "range": 135,
@@ -2302,7 +2272,6 @@ window.__MARVEL_TD_DATA__ = {
       ],
       "tags": [
         "Guardianes",
-        "Tecnología",
         "Cósmico"
       ],
       "formationRole": "artillery",
@@ -2366,7 +2335,7 @@ window.__MARVEL_TD_DATA__ = {
       "id": "quake",
       "name": "Quake",
       "category": "Tecnológico",
-      "rarity": "Rare",
+      "rarity": "Epic",
       "cost": 290,
       "damage": 32,
       "range": 165,
@@ -2380,7 +2349,7 @@ window.__MARVEL_TD_DATA__ = {
         3
       ],
       "tags": [
-        "Callejero",
+        "Espías",
         "Tecnología"
       ],
       "formationRole": "support",
@@ -2463,8 +2432,8 @@ window.__MARVEL_TD_DATA__ = {
         3
       ],
       "tags": [
-        "Místico",
-        "Inhumanos"
+        "Inhumanos",
+        "Místico"
       ],
       "formationRole": "support",
       "teamMetrics": {
@@ -2544,10 +2513,8 @@ window.__MARVEL_TD_DATA__ = {
         0
       ],
       "tags": [
-        "Avengers",
-        "Mutantes",
         "Atlánticos",
-        "Rivales"
+        "Mutantes"
       ],
       "formationRole": "vanguard",
       "teamMetrics": {
@@ -2623,9 +2590,7 @@ window.__MARVEL_TD_DATA__ = {
       ],
       "tags": [
         "Defenders",
-        "Callejero",
-        "Marciales",
-        "Rivales"
+        "Marciales"
       ],
       "formationRole": "vanguard",
       "teamMetrics": {
@@ -2704,8 +2669,7 @@ window.__MARVEL_TD_DATA__ = {
       ],
       "tags": [
         "Callejero",
-        "Espías",
-        "Rivales"
+        "Operaciones"
       ],
       "formationRole": "artillery",
       "teamMetrics": {
@@ -2764,7 +2728,7 @@ window.__MARVEL_TD_DATA__ = {
       "id": "elektra",
       "name": "Elektra",
       "category": "Urbano",
-      "rarity": "Rare",
+      "rarity": "Epic",
       "cost": 235,
       "damage": 36,
       "range": 115,
@@ -2779,8 +2743,6 @@ window.__MARVEL_TD_DATA__ = {
       ],
       "tags": [
         "Defenders",
-        "Callejero",
-        "Espías",
         "Marciales"
       ],
       "formationRole": "vanguard",
@@ -2926,7 +2888,7 @@ window.__MARVEL_TD_DATA__ = {
       "id": "cloak",
       "name": "Cloak",
       "category": "Místico",
-      "rarity": "Rare",
+      "rarity": "Epic",
       "cost": 300,
       "damage": 22,
       "range": 170,
@@ -2942,9 +2904,7 @@ window.__MARVEL_TD_DATA__ = {
       ],
       "tags": [
         "Defenders",
-        "Místico",
-        "Oscuros",
-        "Rivales"
+        "Místico"
       ],
       "formationRole": "support",
       "teamMetrics": {
@@ -3010,7 +2970,7 @@ window.__MARVEL_TD_DATA__ = {
       "id": "dagger",
       "name": "Dagger",
       "category": "Místico",
-      "rarity": "Rare",
+      "rarity": "Epic",
       "cost": 285,
       "damage": 33,
       "range": 175,
@@ -3026,9 +2986,7 @@ window.__MARVEL_TD_DATA__ = {
       ],
       "tags": [
         "Defenders",
-        "Místico",
-        "Oscuros",
-        "Rivales"
+        "Místico"
       ],
       "formationRole": "artillery",
       "teamMetrics": {
@@ -3113,10 +3071,7 @@ window.__MARVEL_TD_DATA__ = {
       ],
       "tags": [
         "X-Men",
-        "Místico",
-        "Mutantes",
-        "Oscuros",
-        "Rivales"
+        "Místico"
       ],
       "formationRole": "vanguard",
       "teamMetrics": {
@@ -3184,7 +3139,7 @@ window.__MARVEL_TD_DATA__ = {
       "id": "iceman",
       "name": "Iceman",
       "category": "Mutante",
-      "rarity": "Rare",
+      "rarity": "Epic",
       "cost": 310,
       "damage": 28,
       "range": 165,
@@ -3676,7 +3631,7 @@ window.__MARVEL_TD_DATA__ = {
       "id": "triton",
       "name": "Triton",
       "category": "Atlantico",
-      "rarity": "Rare",
+      "rarity": "Epic",
       "cost": 280,
       "damage": 30,
       "range": 160,
@@ -3690,8 +3645,7 @@ window.__MARVEL_TD_DATA__ = {
       ],
       "tags": [
         "Atlánticos",
-        "Inhumanos",
-        "Cósmico"
+        "Inhumanos"
       ],
       "formationRole": "support",
       "teamMetrics": {
@@ -3758,7 +3712,7 @@ window.__MARVEL_TD_DATA__ = {
       "id": "black_cat",
       "name": "Black Cat",
       "category": "Urbano",
-      "rarity": "Rare",
+      "rarity": "Epic",
       "cost": 245,
       "damage": 31,
       "range": 135,
@@ -3773,8 +3727,7 @@ window.__MARVEL_TD_DATA__ = {
       ],
       "tags": [
         "Callejero",
-        "Espías",
-        "Rivales"
+        "Arácnidos"
       ],
       "formationRole": "support",
       "teamMetrics": {
@@ -3840,7 +3793,7 @@ window.__MARVEL_TD_DATA__ = {
       "id": "elsa_bloodstone",
       "name": "Elsa Bloodstone",
       "category": "Místico",
-      "rarity": "Rare",
+      "rarity": "Epic",
       "cost": 330,
       "damage": 44,
       "range": 170,
@@ -3854,8 +3807,7 @@ window.__MARVEL_TD_DATA__ = {
       ],
       "tags": [
         "Oscuros",
-        "Callejero",
-        "Rivales"
+        "Operaciones"
       ],
       "formationRole": "artillery",
       "teamMetrics": {
@@ -3923,7 +3875,7 @@ window.__MARVEL_TD_DATA__ = {
       "id": "gambit",
       "name": "Gambit",
       "category": "Mutante",
-      "rarity": "Rare",
+      "rarity": "Epic",
       "cost": 335,
       "damage": 37,
       "range": 165,
@@ -3937,9 +3889,8 @@ window.__MARVEL_TD_DATA__ = {
         3
       ],
       "tags": [
-        "Mutantes",
         "X-Men",
-        "Rivales"
+        "Mercenarios"
       ],
       "formationRole": "artillery",
       "teamMetrics": {
@@ -4001,7 +3952,7 @@ window.__MARVEL_TD_DATA__ = {
       "id": "hela",
       "name": "Hela",
       "category": "Místico",
-      "rarity": "Legendary",
+      "rarity": "Secret",
       "cost": 620,
       "damage": 70,
       "range": 180,
@@ -4016,8 +3967,7 @@ window.__MARVEL_TD_DATA__ = {
         3
       ],
       "tags": [
-        "Místico",
-        "Oscuros",
+        "Asgardianos",
         "Rivales"
       ],
       "formationRole": "artillery",
@@ -4086,7 +4036,7 @@ window.__MARVEL_TD_DATA__ = {
       "id": "human_torch",
       "name": "Human Torch",
       "category": "Cósmico",
-      "rarity": "Rare",
+      "rarity": "Epic",
       "cost": 360,
       "damage": 36,
       "range": 175,
@@ -4101,8 +4051,8 @@ window.__MARVEL_TD_DATA__ = {
         3
       ],
       "tags": [
-        "Cósmico",
-        "Rivales"
+        "Fantásticos",
+        "Cósmico"
       ],
       "formationRole": "artillery",
       "teamMetrics": {
@@ -4171,7 +4121,7 @@ window.__MARVEL_TD_DATA__ = {
       "id": "the_hood",
       "name": "The Hood",
       "category": "Místico",
-      "rarity": "Rare",
+      "rarity": "Epic",
       "cost": 310,
       "damage": 40,
       "range": 155,
@@ -4186,7 +4136,6 @@ window.__MARVEL_TD_DATA__ = {
       ],
       "tags": [
         "Oscuros",
-        "Callejero",
         "Rivales"
       ],
       "formationRole": "support",
@@ -4252,7 +4201,7 @@ window.__MARVEL_TD_DATA__ = {
       "id": "psylocke",
       "name": "Psylocke",
       "category": "Mutante",
-      "rarity": "Legendary",
+      "rarity": "Mythic",
       "cost": 455,
       "damage": 48,
       "range": 135,
@@ -4266,10 +4215,8 @@ window.__MARVEL_TD_DATA__ = {
         3
       ],
       "tags": [
-        "Mutantes",
         "X-Men",
-        "Marciales",
-        "Rivales"
+        "Marciales"
       ],
       "formationRole": "vanguard",
       "teamMetrics": {
@@ -4338,7 +4285,7 @@ window.__MARVEL_TD_DATA__ = {
       "id": "squirrel_girl",
       "name": "Squirrel Girl",
       "category": "Urbano",
-      "rarity": "Rare",
+      "rarity": "Common",
       "cost": 255,
       "damage": 24,
       "range": 150,
@@ -4352,7 +4299,7 @@ window.__MARVEL_TD_DATA__ = {
       ],
       "tags": [
         "Callejero",
-        "Rivales"
+        "Bestias"
       ],
       "formationRole": "support",
       "teamMetrics": {
@@ -4431,8 +4378,7 @@ window.__MARVEL_TD_DATA__ = {
         3
       ],
       "tags": [
-        "Oscuros",
-        "Callejero",
+        "Arácnidos",
         "Rivales"
       ],
       "formationRole": "vanguard",
@@ -4518,9 +4464,8 @@ window.__MARVEL_TD_DATA__ = {
         3
       ],
       "tags": [
-        "Cósmico",
-        "Marciales",
-        "Rivales"
+        "Asgardianos",
+        "Marciales"
       ],
       "formationRole": "vanguard",
       "teamMetrics": {
@@ -4583,7 +4528,7 @@ window.__MARVEL_TD_DATA__ = {
       "id": "devil_dinosaur",
       "name": "Devil Dinosaur",
       "category": "Mutante",
-      "rarity": "Legendary",
+      "rarity": "Mythic",
       "cost": 575,
       "damage": 68,
       "range": 105,
@@ -4597,7 +4542,8 @@ window.__MARVEL_TD_DATA__ = {
         3
       ],
       "tags": [
-        "Rivales"
+        "Mutantes",
+        "Bestias"
       ],
       "formationRole": "vanguard",
       "teamMetrics": {
@@ -4666,7 +4612,7 @@ window.__MARVEL_TD_DATA__ = {
       "id": "emma_frost",
       "name": "Emma Frost",
       "category": "Mutante",
-      "rarity": "Legendary",
+      "rarity": "Mythic",
       "cost": 470,
       "damage": 34,
       "range": 180,
@@ -4680,9 +4626,8 @@ window.__MARVEL_TD_DATA__ = {
         3
       ],
       "tags": [
-        "Mutantes",
         "X-Men",
-        "Rivales"
+        "Nexo Caótico"
       ],
       "formationRole": "support",
       "teamMetrics": {
@@ -4755,7 +4700,7 @@ window.__MARVEL_TD_DATA__ = {
       "id": "magneto",
       "name": "Magneto",
       "category": "Mutante",
-      "rarity": "Legendary",
+      "rarity": "Mythic",
       "cost": 590,
       "damage": 55,
       "range": 205,
@@ -4771,7 +4716,6 @@ window.__MARVEL_TD_DATA__ = {
       ],
       "tags": [
         "Mutantes",
-        "X-Men",
         "Rivales"
       ],
       "formationRole": "artillery",
@@ -4839,7 +4783,7 @@ window.__MARVEL_TD_DATA__ = {
       "id": "peni_parker",
       "name": "Peni Parker",
       "category": "Tecnológico",
-      "rarity": "Rare",
+      "rarity": "Epic",
       "cost": 345,
       "damage": 29,
       "range": 165,
@@ -4853,9 +4797,8 @@ window.__MARVEL_TD_DATA__ = {
         3
       ],
       "tags": [
-        "Tecnología",
-        "Callejero",
-        "Rivales"
+        "Arácnidos",
+        "Tecnología"
       ],
       "formationRole": "support",
       "teamMetrics": {
@@ -4921,7 +4864,7 @@ window.__MARVEL_TD_DATA__ = {
       "id": "adam_warlock",
       "name": "Adam Warlock",
       "category": "Cósmico",
-      "rarity": "Legendary",
+      "rarity": "Mythic",
       "cost": 610,
       "damage": 52,
       "range": 205,
@@ -4937,7 +4880,7 @@ window.__MARVEL_TD_DATA__ = {
       ],
       "tags": [
         "Cósmico",
-        "Rivales"
+        "Nexo Caótico"
       ],
       "formationRole": "support",
       "teamMetrics": {
@@ -5014,8 +4957,7 @@ window.__MARVEL_TD_DATA__ = {
         3
       ],
       "tags": [
-        "Callejero",
-        "Espías",
+        "Mercenarios",
         "Rivales"
       ],
       "formationRole": "vanguard",
@@ -5097,8 +5039,8 @@ window.__MARVEL_TD_DATA__ = {
         3
       ],
       "tags": [
-        "Tecnología",
-        "Rivales"
+        "Fantásticos",
+        "Tecnología"
       ],
       "formationRole": "support",
       "teamMetrics": {
@@ -5164,7 +5106,7 @@ window.__MARVEL_TD_DATA__ = {
       "id": "jeff_the_land_shark",
       "name": "Jeff The Land Shark",
       "category": "Mutante",
-      "rarity": "Rare",
+      "rarity": "Epic",
       "cost": 260,
       "damage": 26,
       "range": 135,
@@ -5178,7 +5120,8 @@ window.__MARVEL_TD_DATA__ = {
         1
       ],
       "tags": [
-        "Rivales"
+        "Atlánticos",
+        "Bestias"
       ],
       "formationRole": "support",
       "teamMetrics": {
@@ -5244,7 +5187,7 @@ window.__MARVEL_TD_DATA__ = {
       "id": "jubilee",
       "name": "Jubilee",
       "category": "Mutante",
-      "rarity": "Rare",
+      "rarity": "Epic",
       "cost": 300,
       "damage": 30,
       "range": 170,
@@ -5258,9 +5201,8 @@ window.__MARVEL_TD_DATA__ = {
         3
       ],
       "tags": [
-        "Mutantes",
         "X-Men",
-        "Rivales"
+        "Mutantes"
       ],
       "formationRole": "support",
       "teamMetrics": {
@@ -5326,7 +5268,7 @@ window.__MARVEL_TD_DATA__ = {
       "id": "loki",
       "name": "Loki",
       "category": "Místico",
-      "rarity": "Legendary",
+      "rarity": "Secret",
       "cost": 560,
       "damage": 42,
       "range": 190,
@@ -5341,9 +5283,7 @@ window.__MARVEL_TD_DATA__ = {
         3
       ],
       "tags": [
-        "Místico",
-        "Oscuros",
-        "Cósmico",
+        "Asgardianos",
         "Rivales"
       ],
       "formationRole": "support",
@@ -5416,7 +5356,7 @@ window.__MARVEL_TD_DATA__ = {
       "id": "luna_snow",
       "name": "Luna Snow",
       "category": "Cósmico",
-      "rarity": "Rare",
+      "rarity": "Epic",
       "cost": 340,
       "damage": 31,
       "range": 180,
@@ -5431,7 +5371,7 @@ window.__MARVEL_TD_DATA__ = {
       ],
       "tags": [
         "Cósmico",
-        "Rivales"
+        "Místico"
       ],
       "formationRole": "support",
       "teamMetrics": {
@@ -5500,7 +5440,7 @@ window.__MARVEL_TD_DATA__ = {
       "id": "mantis",
       "name": "Mantis",
       "category": "Cósmico",
-      "rarity": "Rare",
+      "rarity": "Epic",
       "cost": 305,
       "damage": 24,
       "range": 175,
@@ -5515,7 +5455,7 @@ window.__MARVEL_TD_DATA__ = {
       ],
       "tags": [
         "Guardianes",
-        "Rivales"
+        "Cósmico"
       ],
       "formationRole": "support",
       "teamMetrics": {
@@ -5601,8 +5541,8 @@ window.__MARVEL_TD_DATA__ = {
         3
       ],
       "tags": [
-        "Tecnología",
-        "Rivales"
+        "Fantásticos",
+        "Tecnología"
       ],
       "formationRole": "support",
       "teamMetrics": {
@@ -5664,7 +5604,7 @@ window.__MARVEL_TD_DATA__ = {
       "id": "rocket_raccoon",
       "name": "Rocket Raccoon",
       "category": "Tecnológico",
-      "rarity": "Rare",
+      "rarity": "Epic",
       "cost": 335,
       "damage": 36,
       "range": 185,
@@ -5678,8 +5618,7 @@ window.__MARVEL_TD_DATA__ = {
       ],
       "tags": [
         "Guardianes",
-        "Tecnología",
-        "Rivales"
+        "Tecnología"
       ],
       "formationRole": "artillery",
       "teamMetrics": {
@@ -5737,6 +5676,177 @@ window.__MARVEL_TD_DATA__ = {
         }
       },
       "terrainRole": "high"
+    },
+    "nightcrawler": {
+      "id": "nightcrawler",
+      "name": "Nightcrawler",
+      "category": "Mutante",
+      "rarity": "Secret",
+      "cost": 330,
+      "damage": 30,
+      "range": 145,
+      "fireRate": 1.85,
+      "canSeeStealth": true,
+      "ability": "SALTO BAMF",
+      "abilityDesc": "Teletransporta golpes entre objetivos cercanos, marca amenazas ocultas y deja una nube breve que ralentiza la ruta.",
+      "niche": "movilidad mutante, deteccion y control corto",
+      "allowedTerrains": [
+        1,
+        3
+      ],
+      "tags": [
+        "X-Men",
+        "Mutantes"
+      ],
+      "formationRole": "support",
+      "teamMetrics": {
+        "damage": 3,
+        "control": 5,
+        "support": 4,
+        "detection": 5
+      },
+      "terrainRole": "ground",
+      "special": {
+        "projectileProfile": {
+          "chainCount": 2,
+          "chainRange": 90,
+          "chainFactor": 0.42
+        },
+        "attackEffects": [
+          {
+            "type": "slow",
+            "duration": 1.8,
+            "power": 0.34,
+            "chance": 0.42
+          },
+          {
+            "type": "mark",
+            "duration": 2,
+            "power": 0.12,
+            "chance": 0.3
+          }
+        ],
+        "statModifiers": {
+          "detectStealth": true,
+          "critChance": 4
+        },
+        "visualStyle": "mystic",
+        "projectileColor": "#7c5cff"
+      },
+      "sprite": "assets/images/heroes/nightcrawler/portrait.png",
+      "visual": {
+        "portrait": "assets/images/heroes/nightcrawler/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/nightcrawler/sprites/north.png",
+          "north-east": "assets/images/heroes/nightcrawler/sprites/north-east.png",
+          "east": "assets/images/heroes/nightcrawler/sprites/east.png",
+          "south-east": "assets/images/heroes/nightcrawler/sprites/south-east.png",
+          "south": "assets/images/heroes/nightcrawler/sprites/south.png",
+          "south-west": "assets/images/heroes/nightcrawler/sprites/south-west.png",
+          "west": "assets/images/heroes/nightcrawler/sprites/west.png",
+          "north-west": "assets/images/heroes/nightcrawler/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 14,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/nightcrawler/shoot/0.png",
+            "assets/images/heroes/nightcrawler/shoot/1.png",
+            "assets/images/heroes/nightcrawler/shoot/2.png",
+            "assets/images/heroes/nightcrawler/shoot/3.png",
+            "assets/images/heroes/nightcrawler/shoot/4.png",
+            "assets/images/heroes/nightcrawler/shoot/5.png",
+            "assets/images/heroes/nightcrawler/shoot/6.png",
+            "assets/images/heroes/nightcrawler/shoot/7.png",
+            "assets/images/heroes/nightcrawler/shoot/8.png"
+          ]
+        }
+      }
+    },
+    "ms_marvel": {
+      "id": "ms_marvel",
+      "name": "Ms. Marvel",
+      "category": "Cósmico",
+      "rarity": "Epic",
+      "cost": 410,
+      "damage": 44,
+      "range": 180,
+      "fireRate": 1.35,
+      "canSeeStealth": false,
+      "ability": "DESCARGA FOTONICA",
+      "abilityDesc": "Rafagas de energia que encadenan entre enemigos y cargan impactos concentrados contra grupos medianos.",
+      "niche": "artilleria cosmica de rebote y DPS sostenido",
+      "allowedTerrains": [
+        0,
+        1,
+        3
+      ],
+      "tags": [
+        "Avengers",
+        "Cósmico"
+      ],
+      "formationRole": "artillery",
+      "teamMetrics": {
+        "damage": 4,
+        "control": 3,
+        "support": 3,
+        "detection": 3
+      },
+      "terrainRole": "flyer",
+      "special": {
+        "projectileProfile": {
+          "chainCount": 1,
+          "chainRange": 105,
+          "chainFactor": 0.58,
+          "armorPenetration": 0.12
+        },
+        "statModifiers": {
+          "rangePct": 0.05
+        },
+        "visualStyle": "energy",
+        "projectileColor": "#ffd447"
+      },
+      "sprite": "assets/images/heroes/ms_marvel/portrait.png",
+      "visual": {
+        "portrait": "assets/images/heroes/ms_marvel/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/ms_marvel/sprites/north.png",
+          "north-east": "assets/images/heroes/ms_marvel/sprites/north-east.png",
+          "east": "assets/images/heroes/ms_marvel/sprites/east.png",
+          "south-east": "assets/images/heroes/ms_marvel/sprites/south-east.png",
+          "south": "assets/images/heroes/ms_marvel/sprites/south.png",
+          "south-west": "assets/images/heroes/ms_marvel/sprites/south-west.png",
+          "west": "assets/images/heroes/ms_marvel/sprites/west.png",
+          "north-west": "assets/images/heroes/ms_marvel/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 14,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/ms_marvel/shoot/0.png",
+            "assets/images/heroes/ms_marvel/shoot/1.png",
+            "assets/images/heroes/ms_marvel/shoot/2.png",
+            "assets/images/heroes/ms_marvel/shoot/3.png",
+            "assets/images/heroes/ms_marvel/shoot/4.png",
+            "assets/images/heroes/ms_marvel/shoot/5.png",
+            "assets/images/heroes/ms_marvel/shoot/6.png",
+            "assets/images/heroes/ms_marvel/shoot/7.png",
+            "assets/images/heroes/ms_marvel/shoot/8.png"
+          ]
+        }
+      }
     }
   },
   "enemies": {
@@ -5854,7 +5964,56 @@ window.__MARVEL_TD_DATA__ = {
         "stealth": true,
         "faction": "Hydra",
         "archetype": "runner",
-        "threat": 3
+        "threat": 3,
+        "sprite": "assets/images/enemies/hand_ninja/portrait.png",
+        "visual": {
+          "size": 72,
+          "anchor": {
+            "x": 0.5,
+            "y": 0.62
+          },
+          "defaultDirection": "south",
+          "portrait": "assets/images/enemies/hand_ninja/portrait.png",
+          "idle": {
+            "south": "assets/images/enemies/hand_ninja/idle/south.png",
+            "south-east": "assets/images/enemies/hand_ninja/idle/south-east.png",
+            "east": "assets/images/enemies/hand_ninja/idle/east.png",
+            "north-east": "assets/images/enemies/hand_ninja/idle/north-east.png",
+            "north": "assets/images/enemies/hand_ninja/idle/north.png",
+            "north-west": "assets/images/enemies/hand_ninja/idle/north-west.png",
+            "west": "assets/images/enemies/hand_ninja/idle/west.png",
+            "south-west": "assets/images/enemies/hand_ninja/idle/south-west.png"
+          },
+          "walk": {
+            "fps": 8,
+            "frames": {
+              "south": [
+                "assets/images/enemies/hand_ninja/walk/south/0.png",
+                "assets/images/enemies/hand_ninja/walk/south/1.png",
+                "assets/images/enemies/hand_ninja/walk/south/2.png",
+                "assets/images/enemies/hand_ninja/walk/south/3.png"
+              ],
+              "north": [
+                "assets/images/enemies/hand_ninja/walk/north/0.png",
+                "assets/images/enemies/hand_ninja/walk/north/1.png",
+                "assets/images/enemies/hand_ninja/walk/north/2.png",
+                "assets/images/enemies/hand_ninja/walk/north/3.png"
+              ],
+              "east": [
+                "assets/images/enemies/hand_ninja/walk/east/0.png",
+                "assets/images/enemies/hand_ninja/walk/east/1.png",
+                "assets/images/enemies/hand_ninja/walk/east/2.png",
+                "assets/images/enemies/hand_ninja/walk/east/3.png"
+              ],
+              "west": [
+                "assets/images/enemies/hand_ninja/walk/west/0.png",
+                "assets/images/enemies/hand_ninja/walk/west/1.png",
+                "assets/images/enemies/hand_ninja/walk/west/2.png",
+                "assets/images/enemies/hand_ninja/walk/west/3.png"
+              ]
+            }
+          }
+        }
       },
       "symbiote_spawn": {
         "id": "symbiote_spawn",
@@ -6313,7 +6472,69 @@ window.__MARVEL_TD_DATA__ = {
             "speed": 1.25,
             "color": "#e63946"
           }
-        ]
+        ],
+        "sprite": "assets/images/enemies/ultron_prime/portrait.png",
+        "visual": {
+          "size": 96,
+          "anchor": {
+            "x": 0.5,
+            "y": 0.62
+          },
+          "defaultDirection": "south",
+          "portrait": "assets/images/enemies/ultron_prime/portrait.png",
+          "idle": {
+            "south": "assets/images/enemies/ultron_prime/idle/south.png",
+            "south-east": "assets/images/enemies/ultron_prime/idle/south-east.png",
+            "east": "assets/images/enemies/ultron_prime/idle/east.png",
+            "north-east": "assets/images/enemies/ultron_prime/idle/north-east.png",
+            "north": "assets/images/enemies/ultron_prime/idle/north.png",
+            "north-west": "assets/images/enemies/ultron_prime/idle/north-west.png",
+            "west": "assets/images/enemies/ultron_prime/idle/west.png",
+            "south-west": "assets/images/enemies/ultron_prime/idle/south-west.png"
+          },
+          "walk": {
+            "fps": 8,
+            "frames": {
+              "south": [
+                "assets/images/enemies/ultron_prime/walk/south/0.png",
+                "assets/images/enemies/ultron_prime/walk/south/1.png",
+                "assets/images/enemies/ultron_prime/walk/south/2.png",
+                "assets/images/enemies/ultron_prime/walk/south/3.png",
+                "assets/images/enemies/ultron_prime/walk/south/4.png",
+                "assets/images/enemies/ultron_prime/walk/south/5.png"
+              ],
+              "north": [
+                "assets/images/enemies/ultron_prime/walk/north/0.png",
+                "assets/images/enemies/ultron_prime/walk/north/1.png",
+                "assets/images/enemies/ultron_prime/walk/north/2.png",
+                "assets/images/enemies/ultron_prime/walk/north/3.png",
+                "assets/images/enemies/ultron_prime/walk/north/4.png",
+                "assets/images/enemies/ultron_prime/walk/north/5.png",
+                "assets/images/enemies/ultron_prime/walk/north/6.png",
+                "assets/images/enemies/ultron_prime/walk/north/7.png",
+                "assets/images/enemies/ultron_prime/walk/north/8.png"
+              ],
+              "east": [
+                "assets/images/enemies/ultron_prime/walk/east/0.png",
+                "assets/images/enemies/ultron_prime/walk/east/1.png",
+                "assets/images/enemies/ultron_prime/walk/east/2.png",
+                "assets/images/enemies/ultron_prime/walk/east/3.png",
+                "assets/images/enemies/ultron_prime/walk/east/4.png",
+                "assets/images/enemies/ultron_prime/walk/east/5.png",
+                "assets/images/enemies/ultron_prime/walk/east/6.png"
+              ],
+              "west": [
+                "assets/images/enemies/ultron_prime/walk/west/0.png",
+                "assets/images/enemies/ultron_prime/walk/west/1.png",
+                "assets/images/enemies/ultron_prime/walk/west/2.png",
+                "assets/images/enemies/ultron_prime/walk/west/3.png",
+                "assets/images/enemies/ultron_prime/walk/west/4.png",
+                "assets/images/enemies/ultron_prime/walk/west/5.png",
+                "assets/images/enemies/ultron_prime/walk/west/6.png"
+              ]
+            }
+          }
+        }
       },
       "kingpin": {
         "id": "kingpin",
@@ -6337,7 +6558,56 @@ window.__MARVEL_TD_DATA__ = {
         "reward": 1800,
         "armor": 0.35,
         "stealth": false,
-        "immuneToStun": true
+        "immuneToStun": true,
+        "sprite": "assets/images/enemies/kang/portrait.png",
+        "visual": {
+          "size": 96,
+          "anchor": {
+            "x": 0.5,
+            "y": 0.62
+          },
+          "defaultDirection": "south",
+          "portrait": "assets/images/enemies/kang/portrait.png",
+          "idle": {
+            "south": "assets/images/enemies/kang/idle/south.png",
+            "south-east": "assets/images/enemies/kang/idle/south-east.png",
+            "east": "assets/images/enemies/kang/idle/east.png",
+            "north-east": "assets/images/enemies/kang/idle/north-east.png",
+            "north": "assets/images/enemies/kang/idle/north.png",
+            "north-west": "assets/images/enemies/kang/idle/north-west.png",
+            "west": "assets/images/enemies/kang/idle/west.png",
+            "south-west": "assets/images/enemies/kang/idle/south-west.png"
+          },
+          "walk": {
+            "fps": 7,
+            "frames": {
+              "south": [
+                "assets/images/enemies/kang/walk/south/0.png",
+                "assets/images/enemies/kang/walk/south/1.png",
+                "assets/images/enemies/kang/walk/south/2.png",
+                "assets/images/enemies/kang/walk/south/3.png"
+              ],
+              "north": [
+                "assets/images/enemies/kang/walk/north/0.png",
+                "assets/images/enemies/kang/walk/north/1.png",
+                "assets/images/enemies/kang/walk/north/2.png",
+                "assets/images/enemies/kang/walk/north/3.png"
+              ],
+              "east": [
+                "assets/images/enemies/kang/walk/east/0.png",
+                "assets/images/enemies/kang/walk/east/1.png",
+                "assets/images/enemies/kang/walk/east/2.png",
+                "assets/images/enemies/kang/walk/east/3.png"
+              ],
+              "west": [
+                "assets/images/enemies/kang/walk/west/0.png",
+                "assets/images/enemies/kang/walk/west/1.png",
+                "assets/images/enemies/kang/walk/west/2.png",
+                "assets/images/enemies/kang/walk/west/3.png"
+              ]
+            }
+          }
+        }
       },
       "apocalypse": {
         "id": "apocalypse",
@@ -6469,11 +6739,13 @@ window.__MARVEL_TD_DATA__ = {
           },
           {
             "threshold": 0.5,
-            "name": "Ejército Outrider",
-            "telegraph": 1.4,
-            "summonId": "outrider",
-            "summonCount": 4,
-            "color": "#ff8bd1"
+            "name": "Guantelete del Infinito",
+            "telegraph": 0.8,
+            "animation": "gauntlet",
+            "stunHeroes": true,
+            "stunDuration": 4,
+            "stunRadius": 260,
+            "color": "#ffd166"
           },
           {
             "threshold": 0.25,
@@ -6484,7 +6756,174 @@ window.__MARVEL_TD_DATA__ = {
             "heal": 0.08,
             "color": "#ffd166"
           }
-        ]
+        ],
+        "sprite": "assets/images/enemies/thanos_final/portrait.png",
+        "visual": {
+          "portrait": "assets/images/enemies/thanos_final/portrait.png",
+          "size": 96,
+          "anchor": {
+            "x": 0.5,
+            "y": 0.62
+          },
+          "defaultDirection": "south",
+          "idle": {
+            "north": "assets/images/enemies/thanos_final/idle/north.png",
+            "north-east": "assets/images/enemies/thanos_final/idle/north-east.png",
+            "east": "assets/images/enemies/thanos_final/idle/east.png",
+            "south-east": "assets/images/enemies/thanos_final/idle/south-east.png",
+            "south": "assets/images/enemies/thanos_final/idle/south.png",
+            "south-west": "assets/images/enemies/thanos_final/idle/south-west.png",
+            "west": "assets/images/enemies/thanos_final/idle/west.png",
+            "north-west": "assets/images/enemies/thanos_final/idle/north-west.png"
+          },
+          "walk": {
+            "fps": 7,
+            "frames": {
+              "north": [
+                "assets/images/enemies/thanos_final/walk/north/0.png",
+                "assets/images/enemies/thanos_final/walk/north/1.png",
+                "assets/images/enemies/thanos_final/walk/north/2.png",
+                "assets/images/enemies/thanos_final/walk/north/3.png"
+              ],
+              "north-east": [
+                "assets/images/enemies/thanos_final/walk/north/0.png",
+                "assets/images/enemies/thanos_final/walk/north/1.png",
+                "assets/images/enemies/thanos_final/walk/north/2.png",
+                "assets/images/enemies/thanos_final/walk/north/3.png"
+              ],
+              "east": [
+                "assets/images/enemies/thanos_final/walk/east/0.png",
+                "assets/images/enemies/thanos_final/walk/east/1.png",
+                "assets/images/enemies/thanos_final/walk/east/2.png",
+                "assets/images/enemies/thanos_final/walk/east/3.png"
+              ],
+              "south-east": [
+                "assets/images/enemies/thanos_final/walk/south/0.png",
+                "assets/images/enemies/thanos_final/walk/south/1.png",
+                "assets/images/enemies/thanos_final/walk/south/2.png",
+                "assets/images/enemies/thanos_final/walk/south/3.png"
+              ],
+              "south": [
+                "assets/images/enemies/thanos_final/walk/south/0.png",
+                "assets/images/enemies/thanos_final/walk/south/1.png",
+                "assets/images/enemies/thanos_final/walk/south/2.png",
+                "assets/images/enemies/thanos_final/walk/south/3.png"
+              ],
+              "south-west": [
+                "assets/images/enemies/thanos_final/walk/south/0.png",
+                "assets/images/enemies/thanos_final/walk/south/1.png",
+                "assets/images/enemies/thanos_final/walk/south/2.png",
+                "assets/images/enemies/thanos_final/walk/south/3.png"
+              ],
+              "west": [
+                "assets/images/enemies/thanos_final/walk/west/0.png",
+                "assets/images/enemies/thanos_final/walk/west/1.png",
+                "assets/images/enemies/thanos_final/walk/west/2.png",
+                "assets/images/enemies/thanos_final/walk/west/3.png"
+              ],
+              "north-west": [
+                "assets/images/enemies/thanos_final/walk/north/0.png",
+                "assets/images/enemies/thanos_final/walk/north/1.png",
+                "assets/images/enemies/thanos_final/walk/north/2.png",
+                "assets/images/enemies/thanos_final/walk/north/3.png"
+              ]
+            }
+          },
+          "attack": {
+            "fps": 12,
+            "loop": false,
+            "frames": {
+              "north": [
+                "assets/images/enemies/thanos_final/gauntlet/north/0.png",
+                "assets/images/enemies/thanos_final/gauntlet/north/1.png",
+                "assets/images/enemies/thanos_final/gauntlet/north/2.png",
+                "assets/images/enemies/thanos_final/gauntlet/north/3.png",
+                "assets/images/enemies/thanos_final/gauntlet/north/4.png",
+                "assets/images/enemies/thanos_final/gauntlet/north/5.png",
+                "assets/images/enemies/thanos_final/gauntlet/north/6.png",
+                "assets/images/enemies/thanos_final/gauntlet/north/7.png",
+                "assets/images/enemies/thanos_final/gauntlet/north/8.png"
+              ],
+              "north-east": [
+                "assets/images/enemies/thanos_final/gauntlet/north/0.png",
+                "assets/images/enemies/thanos_final/gauntlet/north/1.png",
+                "assets/images/enemies/thanos_final/gauntlet/north/2.png",
+                "assets/images/enemies/thanos_final/gauntlet/north/3.png",
+                "assets/images/enemies/thanos_final/gauntlet/north/4.png",
+                "assets/images/enemies/thanos_final/gauntlet/north/5.png",
+                "assets/images/enemies/thanos_final/gauntlet/north/6.png",
+                "assets/images/enemies/thanos_final/gauntlet/north/7.png",
+                "assets/images/enemies/thanos_final/gauntlet/north/8.png"
+              ],
+              "east": [
+                "assets/images/enemies/thanos_final/gauntlet/east/0.png",
+                "assets/images/enemies/thanos_final/gauntlet/east/1.png",
+                "assets/images/enemies/thanos_final/gauntlet/east/2.png",
+                "assets/images/enemies/thanos_final/gauntlet/east/3.png",
+                "assets/images/enemies/thanos_final/gauntlet/east/4.png",
+                "assets/images/enemies/thanos_final/gauntlet/east/5.png",
+                "assets/images/enemies/thanos_final/gauntlet/east/6.png",
+                "assets/images/enemies/thanos_final/gauntlet/east/7.png",
+                "assets/images/enemies/thanos_final/gauntlet/east/8.png"
+              ],
+              "south-east": [
+                "assets/images/enemies/thanos_final/gauntlet/south/0.png",
+                "assets/images/enemies/thanos_final/gauntlet/south/1.png",
+                "assets/images/enemies/thanos_final/gauntlet/south/2.png",
+                "assets/images/enemies/thanos_final/gauntlet/south/3.png",
+                "assets/images/enemies/thanos_final/gauntlet/south/4.png",
+                "assets/images/enemies/thanos_final/gauntlet/south/5.png",
+                "assets/images/enemies/thanos_final/gauntlet/south/6.png",
+                "assets/images/enemies/thanos_final/gauntlet/south/7.png",
+                "assets/images/enemies/thanos_final/gauntlet/south/8.png"
+              ],
+              "south": [
+                "assets/images/enemies/thanos_final/gauntlet/south/0.png",
+                "assets/images/enemies/thanos_final/gauntlet/south/1.png",
+                "assets/images/enemies/thanos_final/gauntlet/south/2.png",
+                "assets/images/enemies/thanos_final/gauntlet/south/3.png",
+                "assets/images/enemies/thanos_final/gauntlet/south/4.png",
+                "assets/images/enemies/thanos_final/gauntlet/south/5.png",
+                "assets/images/enemies/thanos_final/gauntlet/south/6.png",
+                "assets/images/enemies/thanos_final/gauntlet/south/7.png",
+                "assets/images/enemies/thanos_final/gauntlet/south/8.png"
+              ],
+              "south-west": [
+                "assets/images/enemies/thanos_final/gauntlet/south/0.png",
+                "assets/images/enemies/thanos_final/gauntlet/south/1.png",
+                "assets/images/enemies/thanos_final/gauntlet/south/2.png",
+                "assets/images/enemies/thanos_final/gauntlet/south/3.png",
+                "assets/images/enemies/thanos_final/gauntlet/south/4.png",
+                "assets/images/enemies/thanos_final/gauntlet/south/5.png",
+                "assets/images/enemies/thanos_final/gauntlet/south/6.png",
+                "assets/images/enemies/thanos_final/gauntlet/south/7.png",
+                "assets/images/enemies/thanos_final/gauntlet/south/8.png"
+              ],
+              "west": [
+                "assets/images/enemies/thanos_final/gauntlet/west/0.png",
+                "assets/images/enemies/thanos_final/gauntlet/west/1.png",
+                "assets/images/enemies/thanos_final/gauntlet/west/2.png",
+                "assets/images/enemies/thanos_final/gauntlet/west/3.png",
+                "assets/images/enemies/thanos_final/gauntlet/west/4.png",
+                "assets/images/enemies/thanos_final/gauntlet/west/5.png",
+                "assets/images/enemies/thanos_final/gauntlet/west/6.png",
+                "assets/images/enemies/thanos_final/gauntlet/west/7.png",
+                "assets/images/enemies/thanos_final/gauntlet/west/8.png"
+              ],
+              "north-west": [
+                "assets/images/enemies/thanos_final/gauntlet/north/0.png",
+                "assets/images/enemies/thanos_final/gauntlet/north/1.png",
+                "assets/images/enemies/thanos_final/gauntlet/north/2.png",
+                "assets/images/enemies/thanos_final/gauntlet/north/3.png",
+                "assets/images/enemies/thanos_final/gauntlet/north/4.png",
+                "assets/images/enemies/thanos_final/gauntlet/north/5.png",
+                "assets/images/enemies/thanos_final/gauntlet/north/6.png",
+                "assets/images/enemies/thanos_final/gauntlet/north/7.png",
+                "assets/images/enemies/thanos_final/gauntlet/north/8.png"
+              ]
+            }
+          }
+        }
       },
       "malekith": {
         "id": "malekith",

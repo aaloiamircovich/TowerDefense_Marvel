@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildEnemyStatusPips, Enemy } from '../src/entities/Enemy.js';
+import { buildBossTelegraphTheme, buildEnemyStatusPips, Enemy } from '../src/entities/Enemy.js';
 
 test('Enemy permanece fijado a un tramo horizontal', () => {
     const enemy = new Enemy({ id: 'test', hp: 10, speed: 50 }, [
@@ -64,6 +64,40 @@ test('Enemy corrige desplazamientos externos al punto mas cercano de la ruta', (
     assert.equal(enemy.distanceTravelled, 180);
 });
 
+test('Enemigos voladores se dibujan centrados sobre la ruta', () => {
+    const enemy = new Enemy({ id: 'flyer', name: 'Centinela Nova', hp: 100, speed: 0, flying: true }, [
+        { x: 0, y: 40 },
+        { x: 160, y: 40 }
+    ]);
+    enemy.x = 75;
+    enemy.distanceTravelled = 75;
+    const calls = [];
+    const ctx = {
+        save: () => calls.push(['save']),
+        restore: () => calls.push(['restore']),
+        translate: (x, y) => calls.push(['translate', x, y]),
+        beginPath: () => calls.push(['beginPath']),
+        arc: (x, y, radius) => calls.push(['arc', x, y, radius]),
+        ellipse: (x, y, radiusX, radiusY) => calls.push(['ellipse', x, y, radiusX, radiusY]),
+        fill: () => calls.push(['fill']),
+        stroke: () => calls.push(['stroke']),
+        fillRect: (x, y, width, height) => calls.push(['fillRect', x, y, width, height]),
+        fillText: (text, x, y) => calls.push(['fillText', text, x, y]),
+        set fillStyle(value) { calls.push(['fillStyle', value]); },
+        set strokeStyle(value) { calls.push(['strokeStyle', value]); },
+        set lineWidth(value) { calls.push(['lineWidth', value]); },
+        set font(value) { calls.push(['font', value]); },
+        set textAlign(value) { calls.push(['textAlign', value]); },
+        set textBaseline(value) { calls.push(['textBaseline', value]); },
+        set globalAlpha(value) { calls.push(['globalAlpha', value]); }
+    };
+
+    enemy.render(ctx);
+
+    assert.equal(calls.some((call) => call[0] === 'translate'), false);
+    assert.ok(calls.some((call) => call[0] === 'arc' && call[1] === 75 && call[2] === 40 && call[3] === 15));
+});
+
 test('Enemy atribuye una baja por quemadura a su fuente', () => {
     const enemy = new Enemy({ id: 'test', hp: 5, speed: 50 }, [{ x: 0, y: 0 }]);
     const stats = { damage: 0, kills: 0 };
@@ -79,6 +113,22 @@ test('Enemy atribuye una baja por quemadura a su fuente', () => {
     assert.equal(enemy.isAlive, false);
     assert.equal(stats.damage, 5);
     assert.equal(stats.kills, 1);
+});
+
+test('Enemy registra contribucion tactica al aplicar estados', () => {
+    const enemy = new Enemy({ id: 'stealth', hp: 100, speed: 50, stealth: true }, [{ x: 0, y: 0 }]);
+    const applied = [];
+    const source = {
+        recordStatusApplied: (effect, target) => applied.push({ effect, target })
+    };
+
+    enemy.applyStatus({ type: 'slow', duration: 2.4, power: 0.3 }, source);
+    enemy.applyStatus({ type: 'armorBreak', duration: 3, power: 0.2 }, source);
+    enemy.applyStatus({ type: 'mark', duration: 2, power: 0.12 }, source);
+
+    assert.equal(applied.length, 3);
+    assert.deepEqual(applied.map((entry) => entry.effect.type), ['slow', 'armorBreak', 'mark']);
+    assert.equal(applied[0].target, enemy);
 });
 
 test('buildEnemyStatusPips fusiona estados repetidos y conserva stacks', () => {
@@ -204,6 +254,44 @@ test('Jefe anuncia y activa una fase por umbral de salud', () => {
     boss.update(0.2);
     assert.equal(boss.currentPhase, 'Fase de prueba');
     assert.equal(boss.behavior.barrier, 20);
+});
+
+test('Jefes tienen silueta ampliada y telegraph tematico', () => {
+    const boss = new Enemy({ id: 'ultron', hp: 100, speed: 1, isBoss: true, category: 'Tecnológico' }, [{ x: 0, y: 0 }]);
+    const finalBoss = new Enemy({ id: 'thanos', hp: 100, speed: 1, isBoss: true, isFinalBoss: true, category: 'Cósmico' }, [{ x: 0, y: 0 }]);
+    const theme = buildBossTelegraphTheme(boss, { name: 'Protocolo' });
+
+    assert.equal(boss.size, 54);
+    assert.equal(finalBoss.size, 62);
+    assert.equal(theme.color, '#40c9ff');
+    assert.equal(theme.label, 'PROTOCOLO');
+    assert.deepEqual(theme.dash, [12, 7]);
+});
+
+test('Thanos activa guantelete y aturde heroes al cincuenta por ciento', () => {
+    const game = createEnemyGame();
+    const heroes = [{ stunTimer: 0, applyStun(duration) { this.stunTimer = duration; } }, { stunTimer: 0, applyStun(duration) { this.stunTimer = duration; } }];
+    game.heroes = heroes;
+    const boss = new Enemy({
+        id: 'thanos_final',
+        name: 'Thanos',
+        hp: 100,
+        speed: 1,
+        isBoss: true,
+        isFinalBoss: true,
+        archetype: 'boss',
+        phases: [{ threshold: 0.5, name: 'Guantelete del Infinito', telegraph: 0.1, stunHeroes: true, stunDuration: 4 }]
+    }, game.path, game);
+    boss.playPhaseAnimation = () => { boss.phaseAnimationPlayed = true; };
+
+    boss.takeDamage(50);
+    boss.update(0.05);
+    assert.equal(boss.telegraph.label, 'Guantelete del Infinito');
+    boss.update(0.1);
+
+    assert.equal(boss.currentPhase, 'Guantelete del Infinito');
+    assert.equal(boss.phaseAnimationPlayed, true);
+    assert.deepEqual(heroes.map((hero) => hero.stunTimer), [4, 4]);
 });
 
 test('Refuerzo aparece detras del invocador y permanece sobre un giro', () => {

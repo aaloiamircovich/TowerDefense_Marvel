@@ -21,7 +21,6 @@ test('flujo completo selecciona héroe, lo coloca, supera oleada y cobra recompe
     game.progression.startProfile('iron_man');
 
     const hero = data.heroes.iron_man;
-    assert.equal(game.resourceManager.removeCredits(hero.cost), true);
     game.spawnHero(hero, 200, 220);
     assert.equal(game.heroes.length, 1);
 
@@ -36,7 +35,7 @@ test('flujo completo selecciona héroe, lo coloca, supera oleada y cobra recompe
 
     assert.equal(game.waveManager.currentWave, 2);
     assert.deepEqual(game.completedWaves, [1]);
-    assert.ok(game.resourceManager.credits > 650 - hero.cost);
+    assert.ok(game.resourceManager.credits > 650);
     assert.ok(game.progression.state.metaCredits > 1200);
 });
 

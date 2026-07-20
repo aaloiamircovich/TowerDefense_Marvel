@@ -1,0 +1,63 @@
+{
+  "group_id": null,
+  "states": [
+    {
+      "character": {
+        "id": "2eecbf5e-8b01-4350-82c4-6a9963bef03d",
+        "name": "Create a professional 64x64 pixel",
+        "prompt": "Create a professional 64x64 pixel art sprite of a Dark Elf from Marvel Comics for a 2D Tower Defense/RPG game. Use the classic Svartalfheim Dark Elf appearance inspired by Marvel Comics, not a specific named character. Tall, slim, agile humanoid with pale bluish-gray skin, sharp angular facial features, pointed ears, glowing pale blue eyes, and long straight white hair flowing behind. Wear elegant black and dark charcoal elven armor with layered shoulder guards, segmented chest armor, dark leather straps, black gauntlets, armored boots, and a long dark cape with subtle crimson accents inside. Add intricate silver runic details engraved into the armor to emphasize ancient magical craftsmanship. Place the character in a graceful combat-ready stance with knees slightly bent, torso upright, and one hand extended as if preparing to cast dark magic while the other remains close to the body. Use black, charcoal gray, silver, pale blue, white hair, crimson accents, and subtle gray shadows. Professional high-quality pixel art with clean outlines, strong shading, high contrast, crisp silhouette, consistent lighting from the upper left, and excellent readability at small size. Transparent background, centered character, no text, no UI, no logos, no extra characters, no weapons, and no visual effects. The final image must be a single game-ready 64x64 pixel sprite.",
+        "size": {
+          "width": 124,
+          "height": 124
+        },
+        "template_id": "mannequin",
+        "directions": 8,
+        "view": "low top-down",
+        "created_at": "2026-07-20T00:27:44.475834+00:00"
+      },
+      "folder": "Create_a_professional_64x64_pixel",
+      "frames": {
+        "rotations": {
+          "south": "Create_a_professional_64x64_pixel/rotations/south.png",
+          "south-east": "Create_a_professional_64x64_pixel/rotations/south-east.png",
+          "east": "Create_a_professional_64x64_pixel/rotations/east.png",
+          "north-east": "Create_a_professional_64x64_pixel/rotations/north-east.png",
+          "north": "Create_a_professional_64x64_pixel/rotations/north.png",
+          "north-west": "Create_a_professional_64x64_pixel/rotations/north-west.png",
+          "west": "Create_a_professional_64x64_pixel/rotations/west.png",
+          "south-west": "Create_a_professional_64x64_pixel/rotations/south-west.png"
+        },
+        "animations": {
+          "Walking": {
+            "north": [
+              "Create_a_professional_64x64_pixel/animations/Walking/north/frame_000.png",
+              "Create_a_professional_64x64_pixel/animations/Walking/north/frame_001.png",
+              "Create_a_professional_64x64_pixel/animations/Walking/north/frame_002.png",
+              "Create_a_professional_64x64_pixel/animations/Walking/north/frame_003.png"
+            ],
+            "west": [
+              "Create_a_professional_64x64_pixel/animations/Walking/west/frame_000.png",
+              "Create_a_professional_64x64_pixel/animations/Walking/west/frame_001.png",
+              "Create_a_professional_64x64_pixel/animations/Walking/west/frame_002.png",
+              "Create_a_professional_64x64_pixel/animations/Walking/west/frame_003.png"
+            ],
+            "south": [
+              "Create_a_professional_64x64_pixel/animations/Walking/south/frame_000.png",
+              "Create_a_professional_64x64_pixel/animations/Walking/south/frame_001.png",
+              "Create_a_professional_64x64_pixel/animations/Walking/south/frame_002.png",
+              "Create_a_professional_64x64_pixel/animations/Walking/south/frame_003.png"
+            ],
+            "east": [
+              "Create_a_professional_64x64_pixel/animations/Walking/east/frame_000.png",
+              "Create_a_professional_64x64_pixel/animations/Walking/east/frame_001.png",
+              "Create_a_professional_64x64_pixel/animations/Walking/east/frame_002.png",
+              "Create_a_professional_64x64_pixel/animations/Walking/east/frame_003.png"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "export_version": "3.1",
+  "export_date": "2026-07-20T00:39:47.799805"
+}

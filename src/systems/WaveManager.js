@@ -140,6 +140,7 @@ export class WaveManager {
         this.director = new EncounterDirector(gameInstance);
         this.selectedBranch = null;
         this.waveStartSnapshot = null;
+        this.waveLeakEvents = [];
 
         this.prepareNextWave();
     }
@@ -515,6 +516,7 @@ export class WaveManager {
         if (this.currentWave > this.maxWaves || this.isWaveActive || this.game.isGameOver || this.game.modeSystem?.pendingDraft?.length) return;
 
         this.waveStartSnapshot = this.captureWaveSnapshot(this.currentWave);
+        this.waveLeakEvents = [];
         this.game.missionSystem?.onWaveStart(this.currentWave);
         this.game.audio?.play('wave');
         this.isWaveActive = true;
@@ -587,6 +589,72 @@ export class WaveManager {
         });
     }
 
+    recordLeak(enemy, { lifeLoss = 0, absorbed = false } = {}) {
+        if (!enemy) return null;
+        const segmentPct = this.getEnemyPathProgress(enemy);
+        const traits = this.getLeakTraits(enemy);
+        const event = {
+            id: enemy.id || enemy.config?.id || enemy.name || 'enemy',
+            name: enemy.name || enemy.config?.name || 'Enemigo',
+            counter: this.getLeakCounter(enemy),
+            lifeLoss: Math.max(0, Number(lifeLoss || 0)),
+            absorbed: Boolean(absorbed),
+            segmentPct,
+            traits
+        };
+        this.waveLeakEvents.push(event);
+        if (this.waveLeakEvents.length > 8) this.waveLeakEvents.shift();
+        return event;
+    }
+
+    getLeakCounter(enemy = {}) {
+        const archetype = enemy.archetype || enemy.config?.archetype;
+        const speed = Number(enemy.speed || enemy.config?.speed || 0);
+        if (enemy.isBoss || enemy.config?.isBoss) return 'DPS sostenido';
+        if (enemy.stealth || enemy.config?.stealth || archetype === 'stealth' || archetype === 'phaser') return 'Deteccion';
+        if (archetype === 'support' || enemy.healPower > 0 || enemy.config?.healPower > 0) return 'Foco al soporte';
+        if (archetype === 'summoner' || enemy.summonId || enemy.config?.summonId) return 'Corta invocador';
+        if (archetype === 'commander' || enemy.auraPower || enemy.config?.auraPower) return 'Elimina aura';
+        if ((enemy.armor || enemy.config?.armor || 0) >= 0.25 || (enemy.barrierRatio || enemy.config?.barrierRatio || 0) > 0 || ['tank', 'shield'].includes(archetype)) return 'Perforacion';
+        if (archetype === 'runner' || speed >= 85) return 'Control';
+        if (archetype === 'flying' || enemy.flying || enemy.config?.flying) return 'Alcance';
+        return 'Cubre salida';
+    }
+
+    getLeakTraits(enemy = {}) {
+        const archetype = enemy.archetype || enemy.config?.archetype;
+        const traits = [];
+        const add = (condition, label) => {
+            if (condition && !traits.includes(label)) traits.push(label);
+        };
+        add(enemy.isBoss || enemy.config?.isBoss, 'Jefe');
+        add(enemy.stealth || enemy.config?.stealth || archetype === 'stealth', 'Sigilo');
+        add(archetype === 'phaser', 'Fasea');
+        add((enemy.armor || enemy.config?.armor || 0) >= 0.25, 'Blindaje');
+        add((enemy.barrierRatio || enemy.config?.barrierRatio || 0) > 0, 'Barrera');
+        add(archetype === 'runner' || Number(enemy.speed || enemy.config?.speed || 0) >= 85, 'Rapido');
+        add(archetype === 'flying' || enemy.flying || enemy.config?.flying, 'Aereo');
+        return traits.slice(0, 3);
+    }
+
+    getEnemyPathProgress(enemy = {}) {
+        const total = this.getPathLength(this.game.path || enemy.path || []);
+        if (total <= 0) return 100;
+        const travelled = Math.max(0, Number(enemy.distanceTravelled || enemy.distanceTraveled || total));
+        return Math.max(0, Math.min(100, Math.round((travelled / total) * 100)));
+    }
+
+    getPathLength(path = []) {
+        let total = 0;
+        for (let index = 1; index < path.length; index++) {
+            total += Math.hypot(
+                Number(path[index].x || 0) - Number(path[index - 1].x || 0),
+                Number(path[index].y || 0) - Number(path[index - 1].y || 0)
+            );
+        }
+        return total;
+    }
+
     finishWave() {
         this.isWaveActive = false;
         this.game.uiManager?.updateCombatPressure?.([], this.game.path, false);
@@ -651,7 +719,12 @@ export class WaveManager {
                 damage: Number(stats.damageDealt || 0),
                 kills: Number(stats.kills || 0),
                 gold: Number(stats.goldGenerated || 0),
-                abilities: Number(stats.abilityActivations || 0)
+                abilities: Number(stats.abilityActivations || 0),
+                controlSeconds: Number(stats.controlSeconds || 0),
+                armorBreaks: Number(stats.armorBreaks || 0),
+                marks: Number(stats.marks || 0),
+                detectionReveals: Number(stats.detectionReveals || 0),
+                livesSaved: Number(stats.livesSaved || 0)
             };
         }
 
@@ -673,20 +746,45 @@ export class WaveManager {
             const stats = hero.combatStats || {};
             const damage = Math.max(0, Number(stats.damageDealt || 0) - Number(startStats.damage || 0));
             const kills = Math.max(0, Number(stats.kills || 0) - Number(startStats.kills || 0));
+            const controlSeconds = Math.max(0, Number(stats.controlSeconds || 0) - Number(startStats.controlSeconds || 0));
+            const armorBreaks = Math.max(0, Number(stats.armorBreaks || 0) - Number(startStats.armorBreaks || 0));
+            const marks = Math.max(0, Number(stats.marks || 0) - Number(startStats.marks || 0));
+            const detectionReveals = Math.max(0, Number(stats.detectionReveals || 0) - Number(startStats.detectionReveals || 0));
+            const livesSaved = Math.max(0, Number(stats.livesSaved || 0) - Number(startStats.livesSaved || 0));
+            const tacticalScore = Math.round(
+                controlSeconds * 18
+                + armorBreaks * 42
+                + marks * 32
+                + detectionReveals * 55
+                + livesSaved * 180
+            );
             return {
                 id,
                 name: hero.name || hero.config?.name || startStats.name || id || 'Heroe',
                 damage,
                 kills,
-                score: damage + kills * 120
+                controlSeconds,
+                armorBreaks,
+                marks,
+                detectionReveals,
+                livesSaved,
+                tacticalScore,
+                score: damage + kills * 120 + tacticalScore
             };
         });
 
         const totals = heroDeltas.reduce((sum, hero) => ({
             damage: sum.damage + hero.damage,
-            kills: sum.kills + hero.kills
-        }), { damage: 0, kills: 0 });
+            kills: sum.kills + hero.kills,
+            controlSeconds: sum.controlSeconds + hero.controlSeconds,
+            armorBreaks: sum.armorBreaks + hero.armorBreaks,
+            marks: sum.marks + hero.marks,
+            detectionReveals: sum.detectionReveals + hero.detectionReveals,
+            livesSaved: sum.livesSaved + hero.livesSaved,
+            tacticalScore: sum.tacticalScore + hero.tacticalScore
+        }), { damage: 0, kills: 0, controlSeconds: 0, armorBreaks: 0, marks: 0, detectionReveals: 0, livesSaved: 0, tacticalScore: 0 });
         const best = heroDeltas.sort((a, b) => b.score - a.score)[0];
+        const tacticalMvp = [...heroDeltas].sort((a, b) => b.tacticalScore - a.tacticalScore || b.score - a.score)[0];
         const leaks = Math.max(0, Number(start.lives || currentLives) - currentLives);
         const credits = Math.max(0, Math.round(currentCredits - Number(start.credits || 0)));
 
@@ -705,7 +803,22 @@ export class WaveManager {
             bestHeroId: best?.score > 0 ? best.id : '',
             bestHeroKills: best?.kills || 0,
             bestHeroDamage: best?.damage || 0,
-            pressure: leaks > 0 ? 'thin' : 'stable'
+            tactical: {
+                controlSeconds: totals.controlSeconds,
+                armorBreaks: totals.armorBreaks,
+                marks: totals.marks,
+                detectionReveals: totals.detectionReveals,
+                livesSaved: totals.livesSaved,
+                score: totals.tacticalScore,
+                mvp: tacticalMvp?.tacticalScore > 0 ? tacticalMvp.name : '',
+                mvpId: tacticalMvp?.tacticalScore > 0 ? tacticalMvp.id : '',
+                heroes: heroDeltas
+                    .filter((hero) => hero.tacticalScore > 0)
+                    .sort((a, b) => b.tacticalScore - a.tacticalScore)
+                    .slice(0, 3)
+            },
+            pressure: leaks > 0 ? 'thin' : 'stable',
+            leakEvents: this.waveLeakEvents.slice(-4)
         };
     }
 }

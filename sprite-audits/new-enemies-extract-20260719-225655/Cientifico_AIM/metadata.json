@@ -1,0 +1,63 @@
+{
+  "group_id": null,
+  "states": [
+    {
+      "character": {
+        "id": "fa42c955-9848-47ae-8f3f-d4e8516be47e",
+        "name": "Create a professional 64x64 pixel",
+        "prompt": "Create a professional 64x64 pixel art sprite of an A.I.M. Scientist from Marvel Comics for a 2D Tower Defense/RPG game. Use the classic Advanced Idea Mechanics appearance from Marvel Comics. Adult human of average build completely covered by the iconic bright yellow hazmat suit. The suit has a large rounded hood with a smooth faceplate featuring two circular black eye lenses and a round black respirator filter over the mouth area. Wear a yellow padded jumpsuit with reinforced seams, black gloves, black utility belt with small pouches, black boots, and subtle gray protective padding around the knees and elbows. Hold a compact futuristic energy pistol in one hand pointed downward while the other hand is slightly raised as if operating advanced technology. Stand in a cautious combat-ready stance with feet apart and body slightly turned. Use bright yellow, black, dark gray, metallic silver, and subtle shadows. Professional high-quality pixel art with clean outlines, strong shading, high contrast, crisp silhouette, consistent lighting from the upper left, and excellent readability at small size. Transparent background, centered character, no text, no UI, no logos, no extra characters, and no visual effects. The final image must be a single game-ready 64x64 pixel sprite.",
+        "size": {
+          "width": 128,
+          "height": 128
+        },
+        "template_id": "mannequin",
+        "directions": 8,
+        "view": "low top-down",
+        "created_at": "2026-07-20T01:03:15.837475+00:00"
+      },
+      "folder": "Create_a_professional_64x64_pixel",
+      "frames": {
+        "rotations": {
+          "south": "Create_a_professional_64x64_pixel/rotations/south.png",
+          "south-east": "Create_a_professional_64x64_pixel/rotations/south-east.png",
+          "east": "Create_a_professional_64x64_pixel/rotations/east.png",
+          "north-east": "Create_a_professional_64x64_pixel/rotations/north-east.png",
+          "north": "Create_a_professional_64x64_pixel/rotations/north.png",
+          "north-west": "Create_a_professional_64x64_pixel/rotations/north-west.png",
+          "west": "Create_a_professional_64x64_pixel/rotations/west.png",
+          "south-west": "Create_a_professional_64x64_pixel/rotations/south-west.png"
+        },
+        "animations": {
+          "Walking": {
+            "south": [
+              "Create_a_professional_64x64_pixel/animations/Walking/south/frame_000.png",
+              "Create_a_professional_64x64_pixel/animations/Walking/south/frame_001.png",
+              "Create_a_professional_64x64_pixel/animations/Walking/south/frame_002.png",
+              "Create_a_professional_64x64_pixel/animations/Walking/south/frame_003.png"
+            ],
+            "north": [
+              "Create_a_professional_64x64_pixel/animations/Walking/north/frame_000.png",
+              "Create_a_professional_64x64_pixel/animations/Walking/north/frame_001.png",
+              "Create_a_professional_64x64_pixel/animations/Walking/north/frame_002.png",
+              "Create_a_professional_64x64_pixel/animations/Walking/north/frame_003.png"
+            ],
+            "west": [
+              "Create_a_professional_64x64_pixel/animations/Walking/west/frame_000.png",
+              "Create_a_professional_64x64_pixel/animations/Walking/west/frame_001.png",
+              "Create_a_professional_64x64_pixel/animations/Walking/west/frame_002.png",
+              "Create_a_professional_64x64_pixel/animations/Walking/west/frame_003.png"
+            ],
+            "east": [
+              "Create_a_professional_64x64_pixel/animations/Walking/east/frame_000.png",
+              "Create_a_professional_64x64_pixel/animations/Walking/east/frame_001.png",
+              "Create_a_professional_64x64_pixel/animations/Walking/east/frame_002.png",
+              "Create_a_professional_64x64_pixel/animations/Walking/east/frame_003.png"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "export_version": "3.1",
+  "export_date": "2026-07-20T01:12:18.563143"
+}

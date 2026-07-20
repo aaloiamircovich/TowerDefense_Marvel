@@ -1,4 +1,6 @@
 import { CombatSystem } from './CombatSystem.js';
+import { getLineEndpoint, getLineTargets } from '../utils/LineTargeting.js';
+import { applyCooldownReductions } from '../utils/AbilityModifiers.js';
 
 const CONTROL_MODES = {
     hawkeye: {
@@ -259,9 +261,9 @@ export class AvengerKitSystem {
         const distanceLimit = stats.range * (this.mode === 'dense' ? 1.05 : 1.35);
         const width = this.mode === 'dense' ? 18 : 28;
         const damage = stats.damage * (this.mode === 'dense' ? 1.1 : 0.7) * this.getPowerScale();
-        const targets = lineTargets(this.hero, target, this.hero.game.enemies || [], distanceLimit, width);
+        const targets = getLineTargets(this.hero, target, this.hero.game.enemies || [], distanceLimit, width);
         targets.forEach((enemy) => CombatSystem.applyDamage({ attackerType: this.hero.category, damage, armorPenetration: this.mode === 'dense' ? 0.7 : 0.35 }, enemy, this.hero, this.hero.game.resourceManager, 1));
-        const endpoint = lineEndpoint(this.hero, target, distanceLimit);
+        const endpoint = getLineEndpoint(this.hero, target, distanceLimit);
         this.hero.game.vfx?.addBeam(this.hero, endpoint, { color: this.mode === 'dense' ? '#ffd84a' : '#65f5d1', width: this.mode === 'dense' ? 12 : 7, duration: 0.24 });
         this.hero.game.audio?.play('density');
         this.hero.recordAbility();
@@ -300,10 +302,8 @@ export class AvengerKitSystem {
     }
 
     getCooldown(base) {
-        const progression = this.hero.game.progression?.getHeroBonuses(this.hero.id);
-        const synergy = this.hero.game.teamSynergy?.getAbilityModifiers(this.hero);
         const levelReduction = Math.min(0.2, Math.max(0, this.hero.level - 1) * 0.015);
-        return base * (1 - levelReduction) * (1 - (progression?.cooldown || 0)) * (1 - (synergy?.cooldown || 0));
+        return applyCooldownReductions(this.hero, base, levelReduction);
     }
 }
 
@@ -317,26 +317,6 @@ function meterState(label, percent, ready = percent >= 100) {
 
 function staticState(label) {
     return { label, progress: null, ready: true };
-}
-
-function lineEndpoint(origin, target, length) {
-    const dx = target.x - origin.x;
-    const dy = target.y - origin.y;
-    const magnitude = Math.hypot(dx, dy) || 1;
-    return { x: origin.x + dx / magnitude * length, y: origin.y + dy / magnitude * length };
-}
-
-function lineTargets(origin, target, enemies, length, width) {
-    const endpoint = lineEndpoint(origin, target, length);
-    const vx = endpoint.x - origin.x;
-    const vy = endpoint.y - origin.y;
-    const lengthSquared = vx * vx + vy * vy;
-    return enemies.filter((enemy) => {
-        if (!enemy.isAlive) return false;
-        const projection = ((enemy.x - origin.x) * vx + (enemy.y - origin.y) * vy) / lengthSquared;
-        if (projection < 0 || projection > 1) return false;
-        return distance(enemy, { x: origin.x + projection * vx, y: origin.y + projection * vy }) <= width;
-    });
 }
 
 export { CONTROL_MODES };

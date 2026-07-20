@@ -5,8 +5,7 @@ import { InputManager } from './core/InputManager.js';
 import { ResourceManager } from './systems/ResourceManager.js';
 import { WaveManager } from './systems/WaveManager.js';
 import { normalizePath } from './utils/PathUtils.js';
-import { preloadImages } from './rendering/ImageCache.js';
-import { collectVisualSources } from './rendering/SpriteAnimator.js';
+import { AssetPreloader } from './rendering/AssetPreloader.js';
 import { ProgressionManager } from './systems/ProgressionManager.js';
 import { ShopSystem } from './systems/ShopSystem.js';
 import { MissionSystem } from './systems/MissionSystem.js';
@@ -39,11 +38,6 @@ async function initGame() {
             throw new Error('Faltan datos esenciales o algún JSON tiene errores de sintaxis.');
         }
 
-        setBootStatus('Precargando retratos y sprites...');
-        const visualSources = Object.values(data.heroes)
-            .flatMap((hero) => collectVisualSources(hero.visual));
-        await preloadImages(visualSources);
-
         game.heroDatabase = data.heroes;
         game.enemyDatabase = data.enemies;
         game.itemDatabase = data.items;
@@ -60,6 +54,7 @@ async function initGame() {
         game.replaySystem = new ReplaySystem(game);
         game.shopSystem = new ShopSystem(game, game.progression);
         game.missionSystem = new MissionSystem(game);
+        game.assetPreloader = new AssetPreloader();
 
         const input = new InputManager(game.canvas, game, ui, resources);
         game.inputManager = input;
@@ -91,6 +86,7 @@ async function initGame() {
             document.body.dataset.levelTheme = levelConfig.theme?.id || 'new-york';
             game.generateLevelMap();
             game.missionSystem.loadLevel(levelConfig);
+            game.assetPreloader?.preloadTeamForLevel(game.activeTeam, levelConfig);
             game.waveManager = new WaveManager(game, data.enemies, data.waves);
             game.resourceManager.reset(20, 650);
             game.modeSystem.configureRun();
@@ -99,19 +95,22 @@ async function initGame() {
             ui.updateLevelTheme(levelConfig);
         };
 
+        const starterPool = [
+            data.heroes.iron_man,
+            data.heroes.spiderman,
+            data.heroes.capitan_america
+        ].filter(Boolean);
+
         const savedLevel = data.levels.find((level) => level.id === game.progression.state.lastLevelId) || data.levels[0];
+        setBootStatus('Precargando equipo inicial...');
+        await game.assetPreloader.preloadTeamForLevel([...game.activeTeam, ...starterPool], savedLevel);
+
         setBootStatus('Abriendo la primera operacion...');
         game.loadLevel(savedLevel);
 
         if (game.progression.recoveredFromCorruptSave) {
             ui.showToast('Guardado danado recuperado. Se restauro un perfil seguro.', 'warning');
         }
-
-        const starterPool = [
-            data.heroes.iron_man,
-            data.heroes.spiderman,
-            data.heroes.capitan_america
-        ].filter(Boolean);
 
         if (starterPool.length === 0) {
             throw new Error('No se encontraron héroes iniciales.');
@@ -125,6 +124,7 @@ async function initGame() {
         } else {
             ui.renderStarterSelector(starterPool, (chosen) => {
                 game.progression.startProfile(chosen.id);
+                game.assetPreloader?.preloadHeroes([chosen]);
                 ui.renderHeroRoster(game.activeTeam, (hero) => input.setPlacementMode(hero));
                 game.waveManager?.refreshWaveIntel?.();
                 ui.showToast(`${chosen.name} se unió al equipo`, 'success');

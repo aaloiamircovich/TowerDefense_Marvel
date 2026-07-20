@@ -1,4 +1,6 @@
 import { CombatSystem } from './CombatSystem.js';
+import { getLineEndpoint, getLineTargets } from '../utils/LineTargeting.js';
+import { applyCooldownReductions } from '../utils/AbilityModifiers.js';
 
 const MUTANT_CONTROLS = {
     cyclops: {
@@ -308,9 +310,9 @@ export class MutantKitSystem {
 
     fireOpticLine(target, stats) {
         const length = stats.range * 1.3;
-        const victims = lineTargets(this.hero, target, this.hero.game.enemies || [], length, this.mode === 'focus' ? 24 : 38);
+        const victims = getLineTargets(this.hero, target, this.hero.game.enemies || [], length, this.mode === 'focus' ? 24 : 38);
         victims.forEach((enemy) => CombatSystem.applyDamage({ attackerType: this.hero.category, damage: stats.damage * (this.mode === 'focus' ? 0.86 : 0.55) * this.getPowerScale(), armorPenetration: this.mode === 'focus' ? 0.6 : 0.25 }, enemy, this.hero, this.hero.game.resourceManager, 1));
-        this.hero.game.vfx?.addBeam(this.hero, lineEndpoint(this.hero, target, length), { color: '#ff3535', width: this.mode === 'focus' ? 8 : 5, duration: 0.2 });
+        this.hero.game.vfx?.addBeam(this.hero, getLineEndpoint(this.hero, target, length), { color: '#ff3535', width: this.mode === 'focus' ? 8 : 5, duration: 0.2 });
         this.hero.game.audio?.play('optic');
         this.hero.recordAbility();
     }
@@ -348,9 +350,7 @@ export class MutantKitSystem {
     }
 
     getCooldown(base) {
-        const progression = this.hero.game.progression?.getHeroBonuses(this.hero.id);
-        const synergy = this.hero.game.teamSynergy?.getAbilityModifiers(this.hero);
-        return base * (1 - (progression?.cooldown || 0)) * (1 - (synergy?.cooldown || 0));
+        return applyCooldownReductions(this.hero, base);
     }
 
     getModeLabel() {
@@ -365,8 +365,6 @@ function meter(label, value, readyAt) {
 function staticState(label) { return { label, progress: null, ready: true }; }
 function cooldownState(label, remaining, total) { return { label: remaining <= 0 ? `${label} lista` : `${label} ${remaining.toFixed(1)} s`, progress: remaining <= 0 ? 1 : 1 - remaining / total, ready: remaining <= 0 }; }
 function distance(a, b) { return Math.hypot(a.x - b.x, a.y - b.y); }
-function lineEndpoint(origin, target, length) { const dx = target.x - origin.x; const dy = target.y - origin.y; const magnitude = Math.hypot(dx, dy) || 1; return { x: origin.x + dx / magnitude * length, y: origin.y + dy / magnitude * length }; }
-function lineTargets(origin, target, enemies, length, width) { const endpoint = lineEndpoint(origin, target, length); const vx = endpoint.x - origin.x; const vy = endpoint.y - origin.y; const squared = vx * vx + vy * vy; return enemies.filter((enemy) => { if (!enemy.isAlive) return false; const projection = ((enemy.x - origin.x) * vx + (enemy.y - origin.y) * vy) / squared; if (projection < 0 || projection > 1) return false; return distance(enemy, { x: origin.x + projection * vx, y: origin.y + projection * vy }) <= width; }); }
 function pathProgress(enemy) { if (!enemy.path?.length) return 0; let total = 0; for (let index = 1; index < enemy.path.length; index++) total += distance(enemy.path[index - 1], enemy.path[index]); return total > 0 ? enemy.distanceTravelled / total : 0; }
 
 export { MUTANT_CONTROLS };

@@ -48,15 +48,15 @@ const allegianceHeroes = {
 };
 
 const allegianceTags = {
-    Avengers: ['iron_man', 'capitan_america', 'thor', 'hulk', 'black_widow', 'hawkeye', 'black_panther', 'captain_marvel', 'ant_man', 'scarlet_witch', 'vision', 'falcon', 'war_machine', 'wasp', 'namor'],
-    Mutantes: ['wolverine', 'jean_grey', 'cyclops', 'storm', 'domino', 'scarlet_witch', 'magik', 'iceman', 'namor'],
+    Avengers: ['iron_man', 'capitan_america', 'thor', 'hulk', 'black_widow', 'hawkeye', 'black_panther', 'captain_marvel', 'ms_marvel', 'ant_man', 'scarlet_witch', 'vision', 'falcon', 'war_machine', 'wasp', 'namor'],
+    Mutantes: ['wolverine', 'jean_grey', 'cyclops', 'storm', 'domino', 'nightcrawler', 'scarlet_witch', 'magik', 'iceman', 'namor'],
     Defenders: ['daredevil', 'luke_cage', 'iron_fist', 'elektra', 'jessica_jones', 'cloak', 'dagger'],
     Guardianes: ['star_lord', 'groot', 'gamora', 'nova'],
-    Mistico: ['doctor_strange', 'scarlet_witch', 'moon_knight', 'blade', 'ghost_rider', 'medusa', 'cloak', 'dagger', 'magik'],
+    Mistico: ['doctor_strange', 'scarlet_witch', 'moon_knight', 'blade', 'ghost_rider', 'nightcrawler', 'medusa', 'cloak', 'dagger', 'magik'],
     Callejero: ['spiderman', 'black_widow', 'hawkeye', 'daredevil', 'winter_soldier', 'shang_chi', 'moon_knight', 'she_hulk', 'blade', 'luke_cage', 'nick_fury', 'quake', 'iron_fist', 'punisher', 'elektra', 'jessica_jones'],
     Wakanda: ['black_panther', 'shuri', 'okoye'],
     Tecnologia: ['iron_man', 'spiderman', 'ant_man', 'vision', 'falcon', 'winter_soldier', 'war_machine', 'nick_fury', 'wasp', 'nova', 'quake', 'shuri'],
-    Cosmico: ['thor', 'captain_marvel', 'star_lord', 'groot', 'gamora', 'silver_surfer', 'nova', 'black_bolt', 'crystal', 'triton'],
+    Cosmico: ['thor', 'captain_marvel', 'ms_marvel', 'star_lord', 'groot', 'gamora', 'silver_surfer', 'nova', 'black_bolt', 'crystal', 'triton'],
     Espias: ['black_widow', 'hawkeye', 'nick_fury', 'winter_soldier', 'punisher', 'elektra'],
     Oscuros: ['doctor_strange', 'scarlet_witch', 'moon_knight', 'blade', 'ghost_rider', 'cloak', 'dagger', 'magik'],
     Marciales: ['black_panther', 'gamora', 'daredevil', 'shang_chi', 'iron_fist', 'elektra', 'okoye', 'namora'],

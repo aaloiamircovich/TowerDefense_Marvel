@@ -1,0 +1,63 @@
+{
+  "group_id": null,
+  "states": [
+    {
+      "character": {
+        "id": "a413f0d2-c3d4-4e8f-bbd3-1358fbe0e51f",
+        "name": "Create a professional 64x64 pixel",
+        "prompt": "Create a professional 64x64 pixel art sprite of a Sakaaran Soldier from Marvel Comics for a 2D Tower Defense/RPG game. Use the classic Sakaaran infantry appearance from Marvel. Humanoid alien with a lean but armored build, dark gray skin, glowing blue eyes, and an insect-like helmet covering the entire head. Wear dark metallic black and gunmetal segmented armor with layered shoulder plates, reinforced chest armor, armored forearms, armored legs, heavy combat boots, and a tactical utility belt. The helmet should feature a smooth armored faceplate with narrow glowing blue eye slits and subtle ridged details. Hold a futuristic Sakaaran energy rifle with both hands, angled slightly downward while remaining ready for combat. Place the soldier in a disciplined combat-ready stance with feet apart and the rifle held firmly across the body. Use gunmetal gray, black, dark silver, glowing blue lights, and subtle metallic highlights. Professional high-quality pixel art with clean outlines, strong shading, high contrast, crisp silhouette, consistent lighting from the upper left, and excellent readability at small size. Transparent background, centered character, no text, no UI, no logos, no extra characters, and no visual effects. The final image must be a single game-ready 64x64 pixel sprite.",
+        "size": {
+          "width": 120,
+          "height": 120
+        },
+        "template_id": "mannequin",
+        "directions": 8,
+        "view": "low top-down",
+        "created_at": "2026-07-20T00:42:16.334319+00:00"
+      },
+      "folder": "Create_a_professional_64x64_pixel",
+      "frames": {
+        "rotations": {
+          "south": "Create_a_professional_64x64_pixel/rotations/south.png",
+          "south-east": "Create_a_professional_64x64_pixel/rotations/south-east.png",
+          "east": "Create_a_professional_64x64_pixel/rotations/east.png",
+          "north-east": "Create_a_professional_64x64_pixel/rotations/north-east.png",
+          "north": "Create_a_professional_64x64_pixel/rotations/north.png",
+          "north-west": "Create_a_professional_64x64_pixel/rotations/north-west.png",
+          "west": "Create_a_professional_64x64_pixel/rotations/west.png",
+          "south-west": "Create_a_professional_64x64_pixel/rotations/south-west.png"
+        },
+        "animations": {
+          "Walking": {
+            "east": [
+              "Create_a_professional_64x64_pixel/animations/Walking/east/frame_000.png",
+              "Create_a_professional_64x64_pixel/animations/Walking/east/frame_001.png",
+              "Create_a_professional_64x64_pixel/animations/Walking/east/frame_002.png",
+              "Create_a_professional_64x64_pixel/animations/Walking/east/frame_003.png"
+            ],
+            "south": [
+              "Create_a_professional_64x64_pixel/animations/Walking/south/frame_000.png",
+              "Create_a_professional_64x64_pixel/animations/Walking/south/frame_001.png",
+              "Create_a_professional_64x64_pixel/animations/Walking/south/frame_002.png",
+              "Create_a_professional_64x64_pixel/animations/Walking/south/frame_003.png"
+            ],
+            "west": [
+              "Create_a_professional_64x64_pixel/animations/Walking/west/frame_000.png",
+              "Create_a_professional_64x64_pixel/animations/Walking/west/frame_001.png",
+              "Create_a_professional_64x64_pixel/animations/Walking/west/frame_002.png",
+              "Create_a_professional_64x64_pixel/animations/Walking/west/frame_003.png"
+            ],
+            "north": [
+              "Create_a_professional_64x64_pixel/animations/Walking/north/frame_000.png",
+              "Create_a_professional_64x64_pixel/animations/Walking/north/frame_001.png",
+              "Create_a_professional_64x64_pixel/animations/Walking/north/frame_002.png",
+              "Create_a_professional_64x64_pixel/animations/Walking/north/frame_003.png"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "export_version": "3.1",
+  "export_date": "2026-07-20T00:51:58.207806"
+}

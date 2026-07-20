@@ -68,6 +68,23 @@ test('CombatVfx anima texto flotante de dano', () => {
     assert.ok(calls.some((call) => Array.isArray(call) && call[0] === 'fillText' && call[1] === 'CRIT 42'));
 });
 
+test('CombatVfx reducido baja intensidad y omite rayos pesados', () => {
+    const vfx = new CombatVfx();
+    vfx.setReduced(true);
+
+    const lightning = vfx.addLightning(40, 80);
+    const ring = vfx.addRing(20, 20, { radius: 100, duration: 0.8 });
+    const beam = vfx.addBeam({ x: 0, y: 0 }, { x: 100, y: 0 }, { width: 10, duration: 0.4 });
+
+    assert.equal(lightning, null);
+    assert.equal(vfx.effects.length, 2);
+    assert.equal(ring.radius, 72);
+    assert.equal(ring.duration, 0.32);
+    assert.equal(beam.width, 6.2);
+    assert.equal(beam.duration, 0.16);
+    assert.equal(vfx.effects.every((effect) => effect.reduced), true);
+});
+
 test('PerformanceMonitor calcula promedio, p95 y pico de entidades', () => {
     const monitor = new PerformanceMonitor(10, 1);
     [10, 12, 14, 16, 18].forEach((frame, index) => monitor.record(frame, index * 30));

@@ -127,7 +127,7 @@ export class EnemyBehaviorSystem {
             label: phase.name,
             duration: this.telegraphTimer,
             maxDuration: this.telegraphTimer,
-            color: phase.color || '#ffd166'
+            color: phase.color || phase.telegraphColor || null
         };
         this.game?.uiManager?.showToast(`${this.enemy.name} prepara ${phase.name}`, 'warning');
     }
@@ -136,6 +136,7 @@ export class EnemyBehaviorSystem {
         this.pendingPhase = null;
         this.enemy.telegraph = null;
         this.enemy.currentPhase = phase.name;
+        this.enemy.playPhaseAnimation?.(phase.animation);
 
         if (phase.barrier) {
             const barrier = Math.round(this.enemy.maxHp * phase.barrier);
@@ -155,13 +156,35 @@ export class EnemyBehaviorSystem {
                 this.game.spawnEnemy?.({ ...config, reward: 0 }, this.enemy);
             }
         }
+        if (phase.stunHeroes) {
+            const duration = phase.stunDuration || phase.heroStunDuration || 4;
+            const stunnedHeroes = (this.game?.heroes || []).filter((hero) => hero?.applyStun);
+            stunnedHeroes.forEach((hero) => hero.applyStun(duration));
+            this.game?.vfx?.addRing(this.enemy.x, this.enemy.y, {
+                color: phase.color || '#ffd166',
+                radius: phase.stunRadius || 220,
+                duration: Math.min(1.2, Math.max(0.6, duration * 0.25))
+            });
+            if (stunnedHeroes.length) {
+                this.game?.uiManager?.showToast(`El Guantelete aturde a ${stunnedHeroes.length} hÃ©roes`, 'danger');
+            }
+        }
 
         this.game?.vfx?.addRing(this.enemy.x, this.enemy.y, {
-            color: phase.color || '#ffd166',
+            color: phase.color || phase.telegraphColor || getPhaseColor(this.enemy),
             radius: 72,
             duration: 0.7
         });
         this.game?.audio?.play('boss');
         this.game?.uiManager?.showToast(`${this.enemy.name}: ${phase.name}`, 'warning');
     }
+}
+
+function getPhaseColor(enemy = {}) {
+    const category = enemy.category || enemy.config?.category || '';
+    if (category.includes('Tecn')) return '#40c9ff';
+    if (category.includes('Cos')) return '#ff8bd1';
+    if (category.includes('Mutante')) return '#c7f464';
+    if (category.includes('M')) return '#b865ff';
+    return '#e63946';
 }

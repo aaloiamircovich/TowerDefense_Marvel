@@ -6,7 +6,11 @@ const BOOLEAN_SETTINGS = [
     ['combatText', 'toggle-combat-text', 'combatText'],
     ['audio', 'toggle-audio', 'gameAudio'],
     ['highContrast', 'toggle-contrast', 'highContrast'],
-    ['reduceMotion', 'toggle-motion', 'reduceMotion']
+    ['reduceMotion', 'toggle-motion', 'reduceMotion'],
+    ['pixelArtCrisp', 'toggle-pixel-crisp', 'pixelArtCrisp'],
+    ['reducedVfx', 'toggle-vfx', 'reducedVfx'],
+    ['tutorialHints', 'toggle-tutorial', 'tutorialHints'],
+    ['simplifiedUi', 'toggle-simple-ui', 'simplifiedUi']
 ];
 
 const VOLUME_SETTINGS = [
@@ -59,7 +63,7 @@ export class SettingsPanel {
                 </section>
                 <section class="settings-section">
                     <h3>${t('saveData')}</h3>
-                    <div class="settings-actions"><button class="btn-primary ghost" id="export-save"><i class="fas fa-download"></i> ${t('export')}</button><button class="btn-primary ghost" id="import-save"><i class="fas fa-upload"></i> ${t('import')}</button><button class="btn-primary ghost" id="export-replay"><i class="fas fa-film"></i> ${t('replay')}</button><input id="import-save-file" type="file" accept="application/json,.json" hidden></div>
+                    <div class="settings-actions"><button class="btn-primary ghost" id="export-save"><i class="fas fa-download"></i> ${t('export')}</button><button class="btn-primary ghost" id="import-save"><i class="fas fa-upload"></i> ${t('import')}</button><button class="btn-primary ghost" id="export-replay"><i class="fas fa-film"></i> ${t('replay')}</button><button class="btn-primary danger" id="reset-all-game"><i class="fas fa-trash"></i> ${t('resetAllGame')}</button><input id="import-save-file" type="file" accept="application/json,.json" hidden></div>
                 </section>
                 <section class="settings-section">
                     <h3>${t('audioMix')}</h3>
@@ -135,6 +139,11 @@ export class SettingsPanel {
             const result = game.progression.importSave(await file.text());
             this.ui.showToast(result.ok ? 'Guardado importado' : result.reason, result.ok ? 'success' : 'warning');
             if (result.ok) this.render();
+        });
+        document.getElementById('reset-all-game')?.addEventListener('click', () => {
+            if (!window.confirm(translate('resetAllConfirm', game.progression.state.settings.locale || 'es'))) return;
+            game.progression.resetAllProgress();
+            window.location.reload();
         });
         document.getElementById('reset-placement')?.addEventListener('click', () => {
             game.inputManager.clearPlacement();

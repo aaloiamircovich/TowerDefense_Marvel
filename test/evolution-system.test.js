@@ -1,9 +1,18 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
 import { EVOLUTION_CATALOG, applyEvolutionStats, getEvolutionForHero } from '../src/systems/EvolutionSystem.js';
 
-test('las tres evoluciones pertenecen a heroes base distintos', () => {
-    assert.deepEqual(Object.values(EVOLUTION_CATALOG).map((entry) => entry.baseHeroId).sort(), ['iron_man', 'jean_grey', 'spiderman']);
+const heroes = JSON.parse(fs.readFileSync(new URL('../data/heroes.json', import.meta.url), 'utf8'));
+
+test('el catalogo legacy conserva identidades base distintas', () => {
+    const baseHeroIds = Object.values(EVOLUTION_CATALOG).map((entry) => entry.baseHeroId);
+    assert.equal(new Set(baseHeroIds).size, baseHeroIds.length);
+    assert.deepEqual(baseHeroIds.sort(), ['iron_man', 'jean_grey', 'spiderman']);
+});
+
+test('ningun heroe declara evolucion jugable hasta completar sprites del roster', () => {
+    assert.deepEqual(Object.values(heroes).filter((hero) => hero.evolutionId).map((hero) => hero.id), []);
 });
 
 test('una evolucion seleccionada modifica estadisticas sin mutar identidad', () => {

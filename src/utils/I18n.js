@@ -11,6 +11,7 @@ const STRINGS = {
         export: 'Exportar',
         import: 'Importar',
         replay: 'Replay',
+        resetAllGame: 'Reiniciar todo',
         cancelPlacement: 'Cancelar colocacion',
         restartLevel: 'Reiniciar nivel',
         compact: 'Compacta',
@@ -22,6 +23,10 @@ const STRINGS = {
         gameAudio: 'Audio del juego',
         highContrast: 'Modo de alto contraste',
         reduceMotion: 'Reducir movimiento',
+        pixelArtCrisp: 'Pixel art nitido',
+        reducedVfx: 'VFX reducido',
+        tutorialHints: 'Guia tactica contextual',
+        simplifiedUi: 'Interfaz simplificada',
         masterVolume: 'Volumen general',
         musicVolume: 'Musica ambiental',
         sfxVolume: 'Efectos y combate',
@@ -30,7 +35,8 @@ const STRINGS = {
         nextWave: 'Iniciar oleada',
         cancel: 'Cancelar',
         targeting: 'Cambiar objetivo',
-        upgrade: 'Mejorar seleccionado'
+        upgrade: 'Mejorar seleccionado',
+        resetAllConfirm: 'Esto borrara todo el progreso, heroes, objetos, mapas, records y ajustes. Esta accion no se puede deshacer. Reiniciar todo el juego?'
     },
     en: {
         settings: 'Settings',
@@ -44,6 +50,7 @@ const STRINGS = {
         export: 'Export',
         import: 'Import',
         replay: 'Replay',
+        resetAllGame: 'Reset all',
         cancelPlacement: 'Cancel placement',
         restartLevel: 'Restart level',
         compact: 'Compact',
@@ -55,6 +62,10 @@ const STRINGS = {
         gameAudio: 'Game audio',
         highContrast: 'High contrast mode',
         reduceMotion: 'Reduce motion',
+        pixelArtCrisp: 'Crisp pixel art',
+        reducedVfx: 'Reduced VFX',
+        tutorialHints: 'Contextual tactical guide',
+        simplifiedUi: 'Simplified interface',
         masterVolume: 'Master volume',
         musicVolume: 'Ambient music',
         sfxVolume: 'Effects and combat',
@@ -63,7 +74,8 @@ const STRINGS = {
         nextWave: 'Start wave',
         cancel: 'Cancel',
         targeting: 'Change target',
-        upgrade: 'Upgrade selected'
+        upgrade: 'Upgrade selected',
+        resetAllConfirm: 'This will delete all progress, heroes, items, maps, records, and settings. This action cannot be undone. Reset the whole game?'
     }
 };
 

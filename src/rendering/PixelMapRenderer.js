@@ -125,6 +125,7 @@ export function drawPixelTerrainTile(ctx, x, y, terrainType, game) {
     const manualTileKey = getManualTileKey(game.currentLevel, x, y);
 
     if (manualTileKey && drawManualTile(ctx, manualTileKey, px, py, size)) {
+        drawManualTilePolish(ctx, manualTileKey, px, py, size, x, y, game.terrainMap);
         if (game.showGrid) {
             ctx.strokeStyle = theme.gridLine;
             ctx.strokeRect(px, py, size, size);
@@ -201,6 +202,149 @@ function drawManualTile(ctx, tileKey, dx, dy, size) {
     ctx.drawImage(image, dx, dy, size, size);
     ctx.restore();
     return true;
+}
+
+function drawManualTilePolish(ctx, tileKey, px, py, size, x, y, map) {
+    if (tileKey === 'water') return drawManualWaterPolish(ctx, px, py, size, x, y);
+    if (MANHATTAN_MANUAL_ROAD_TILES.has(tileKey)) return drawManualRoadPolish(ctx, tileKey, px, py, size, x, y, map);
+    if (tileKey === 'mountain') return drawManualMountainPolish(ctx, px, py, size, x, y);
+    if (MANHATTAN_MANUAL_BLOCKED_TILES.has(tileKey)) return drawManualBuildingPolish(ctx, tileKey, px, py, size, x, y);
+    return drawManualGroundPolish(ctx, tileKey, px, py, size, x, y);
+}
+
+function drawManualWaterPolish(ctx, px, py, size, x, y) {
+    ctx.save();
+    const shimmer = (x * 11 + y * 7) % 9;
+    const gradient = ctx.createLinearGradient(px, py, px + size, py + size);
+    gradient.addColorStop(0, 'rgba(19, 104, 149, 0.72)');
+    gradient.addColorStop(1, 'rgba(23, 168, 206, 0.46)');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(px, py, size, size);
+    ctx.strokeStyle = 'rgba(196, 244, 255, 0.5)';
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    ctx.moveTo(px + 3, py + 9 + shimmer * 0.2);
+    ctx.quadraticCurveTo(px + size * 0.45, py + 4, px + size - 3, py + 10);
+    ctx.moveTo(px + 2, py + 22 - shimmer * 0.15);
+    ctx.quadraticCurveTo(px + size * 0.48, py + 17, px + size - 2, py + 22);
+    ctx.stroke();
+    ctx.restore();
+}
+
+function drawManualRoadPolish(ctx, tileKey, px, py, size, x, y, map) {
+    const hasLeft = map[y]?.[x - 1] === TERRAIN.path;
+    const hasRight = map[y]?.[x + 1] === TERRAIN.path;
+    const hasUp = map[y - 1]?.[x] === TERRAIN.path;
+    const hasDown = map[y + 1]?.[x] === TERRAIN.path;
+    const horizontal = hasLeft || hasRight || tileKey.includes('horizontal');
+    const vertical = hasUp || hasDown || tileKey.includes('vertical');
+
+    ctx.save();
+    ctx.fillStyle = '#10151b';
+    ctx.fillRect(px, py, size, size);
+    ctx.fillStyle = '#1e252d';
+    ctx.fillRect(px + 2, py + 2, size - 4, size - 4);
+
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.08)';
+    ctx.fillRect(px + 4, py + 5, size - 8, 1);
+    ctx.fillRect(px + 4, py + size - 6, size - 8, 1);
+
+    ctx.strokeStyle = 'rgba(255, 211, 77, 0.92)';
+    ctx.lineWidth = 3;
+    ctx.setLineDash([12, 8]);
+    ctx.beginPath();
+    if (horizontal) {
+        ctx.moveTo(px - 1, py + size / 2);
+        ctx.lineTo(px + size + 1, py + size / 2);
+    }
+    if (vertical) {
+        ctx.moveTo(px + size / 2, py - 1);
+        ctx.lineTo(px + size / 2, py + size + 1);
+    }
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.strokeStyle = 'rgba(65, 182, 255, 0.18)';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(px + 2.5, py + 2.5, size - 5, size - 5);
+    ctx.restore();
+}
+
+function drawManualMountainPolish(ctx, px, py, size, x, y) {
+    ctx.save();
+    const shade = (x + y) % 2 ? '#7e6d52' : '#6f614c';
+    ctx.fillStyle = shade;
+    ctx.fillRect(px, py, size, size);
+    ctx.fillStyle = 'rgba(255, 241, 184, 0.22)';
+    ctx.beginPath();
+    ctx.moveTo(px + 4, py + size - 5);
+    ctx.lineTo(px + size * 0.5, py + 6);
+    ctx.lineTo(px + size - 4, py + size - 5);
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(63, 47, 33, 0.55)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(px + 8, py + size - 7);
+    ctx.lineTo(px + size * 0.5, py + 9);
+    ctx.lineTo(px + size - 8, py + size - 7);
+    ctx.stroke();
+    ctx.restore();
+}
+
+function drawManualBuildingPolish(ctx, tileKey, px, py, size, x, y) {
+    ctx.save();
+    const base = tileKey.includes('center') ? '#5f6972' : '#707a82';
+    const gradient = ctx.createLinearGradient(px, py, px + size, py + size);
+    gradient.addColorStop(0, '#9ea7ad');
+    gradient.addColorStop(0.52, base);
+    gradient.addColorStop(1, '#3e474f');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(px, py, size, size);
+    ctx.strokeStyle = 'rgba(7, 12, 18, 0.52)';
+    ctx.strokeRect(px + 1.5, py + 1.5, size - 3, size - 3);
+    ctx.fillStyle = 'rgba(213, 238, 255, 0.42)';
+    const offset = (x + y) % 2 ? 5 : 8;
+    ctx.fillRect(px + offset, py + 7, 4, 4);
+    ctx.fillRect(px + size - offset - 4, py + 7, 4, 4);
+    ctx.fillRect(px + offset, py + size - 12, 4, 4);
+    ctx.restore();
+}
+
+function drawManualGroundPolish(ctx, tileKey, px, py, size, x, y) {
+    ctx.save();
+    const isForest = tileKey === 'forest';
+    const isSidewalk = tileKey === 'sidewalk' || tileKey === 'detail';
+    const seed = (x * 37 + y * 19) % 13;
+
+    if (isSidewalk) {
+        ctx.fillStyle = tileKey === 'detail' ? 'rgba(122, 132, 140, 0.76)' : 'rgba(139, 150, 156, 0.72)';
+        ctx.fillRect(px, py, size, size);
+        ctx.strokeStyle = 'rgba(74, 82, 90, 0.42)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(px, py + size / 2);
+        ctx.lineTo(px + size, py + size / 2);
+        ctx.moveTo(px + size / 2, py);
+        ctx.lineTo(px + size / 2, py + size);
+        ctx.stroke();
+        ctx.restore();
+        return;
+    }
+
+    ctx.fillStyle = isForest ? 'rgba(36, 103, 51, 0.76)' : 'rgba(49, 132, 61, 0.62)';
+    ctx.fillRect(px, py, size, size);
+    ctx.fillStyle = 'rgba(130, 226, 113, 0.28)';
+    ctx.fillRect(px + 5 + seed % 5, py + 8, 8, 2);
+    ctx.fillRect(px + 16, py + 17 + seed % 4, 7, 2);
+    if (isForest) {
+        ctx.fillStyle = 'rgba(21, 72, 36, 0.76)';
+        ctx.beginPath();
+        ctx.arc(px + 10, py + 12, 7, 0, Math.PI * 2);
+        ctx.arc(px + 21, py + 17, 8, 0, Math.PI * 2);
+        ctx.fill();
+    }
+    ctx.restore();
 }
 
 function pickTile(group, x, y) {

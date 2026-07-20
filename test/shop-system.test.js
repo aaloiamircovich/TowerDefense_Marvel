@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { ProgressionManager } from '../src/systems/ProgressionManager.js';
-import { ShopSystem } from '../src/systems/ShopSystem.js';
+import { HERO_RARITY_WEIGHTS, ShopSystem, sortItemsWeakestFirst } from '../src/systems/ShopSystem.js';
 
 const data = {
     heroes: JSON.parse(fs.readFileSync(new URL('../data/heroes.json', import.meta.url), 'utf8')),
@@ -10,17 +10,25 @@ const data = {
     levels: JSON.parse(fs.readFileSync(new URL('../data/levels.json', import.meta.url), 'utf8'))
 };
 
-test('ShopSystem genera una rotacion diaria estable por tiers', () => {
+test('ShopSystem muestra los tres objetos mas debiles disponibles', () => {
     const { shop } = createShop();
     const first = shop.getRotation().map((slot) => slot.item.id);
     const second = shop.getRotation().map((slot) => slot.item.id);
-    const tiers = shop.getRotation().map((slot) => slot.item.tier);
+    const expected = sortItemsWeakestFirst(Object.values(data.items)).slice(0, 3).map((item) => item.id);
 
     assert.deepEqual(first, second);
-    assert.equal(new Set(first).size, first.length);
-    assert.ok(tiers.includes(1));
-    assert.ok(tiers.includes(2));
-    assert.ok(tiers.some((tier) => tier >= 3));
+    assert.deepEqual(first, expected);
+});
+
+test('ShopSystem rellena la vitrina con el siguiente objeto al comprar', () => {
+    const { shop, progression } = createShop();
+    const expectedQueue = sortItemsWeakestFirst(Object.values(data.items)).map((item) => item.id);
+    progression.state.metaCredits = 10000;
+    const [first, second, third, fourth] = expectedQueue;
+
+    assert.deepEqual(shop.getRotation().map((slot) => slot.item.id), [first, second, third]);
+    assert.equal(shop.purchaseItem(first).ok, true);
+    assert.deepEqual(shop.getRotation().map((slot) => slot.item.id), [second, third, fourth]);
 });
 
 test('ShopSystem impide comprar dos veces el mismo objeto', () => {
@@ -43,6 +51,15 @@ test('ShopSystem recluta heroes sin duplicados', () => {
     assert.notEqual(result.hero.id, 'iron_man');
     assert.ok(result.hero.visual);
     assert.equal(new Set(progression.state.unlockedHeroIds).size, progression.state.unlockedHeroIds.length);
+});
+
+test('ShopSystem pondera las seis rarezas de heroes', () => {
+    assert.deepEqual(Object.keys(HERO_RARITY_WEIGHTS), ['Common', 'Rare', 'Epic', 'Legendary', 'Mythic', 'Secret']);
+    assert.ok(HERO_RARITY_WEIGHTS.Common > HERO_RARITY_WEIGHTS.Rare);
+    assert.ok(HERO_RARITY_WEIGHTS.Rare > HERO_RARITY_WEIGHTS.Epic);
+    assert.ok(HERO_RARITY_WEIGHTS.Epic > HERO_RARITY_WEIGHTS.Legendary);
+    assert.ok(HERO_RARITY_WEIGHTS.Legendary > HERO_RARITY_WEIGHTS.Mythic);
+    assert.ok(HERO_RARITY_WEIGHTS.Mythic > HERO_RARITY_WEIGHTS.Secret);
 });
 
 function createShop() {

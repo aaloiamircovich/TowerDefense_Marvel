@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildBossHudState, buildCombatPressureState, buildEnemyIntel, buildPressureActionState, buildRosterWaveFitView, buildShopItemInsight, buildShopSetProgress, buildSpawnQueueState, buildTargetingControlState, buildWaveLaunchState, buildWavePrepActionControl, buildWavePreparationPlan, buildWaveReportActionState, buildWaveReportGrade, buildWaveReportLesson, buildWaveReportState, evaluateHeroWaveFit, getNextTargetingPriority } from '../src/systems/UIManager.js';
+import { buildBossHudState, buildCombatPressureState, buildEnemyIntel, buildLeakIntel, buildOnboardingCoachState, buildPressureActionState, buildRosterWaveFitView, buildShopItemInsight, buildShopSetProgress, buildSpawnQueueState, buildStatusLegendModel, buildStealthCoverageState, buildTacticalContributionModel, buildTargetingControlState, buildWaveLaunchState, buildWavePrepActionControl, buildWavePreparationPlan, buildWaveReportActionState, buildWaveReportGrade, buildWaveReportLesson, buildWaveReportState, evaluateHeroWaveFit, getNextTargetingPriority, UIManager } from '../src/systems/UIManager.js';
 
 test('buildWaveLaunchState muestra riesgo critico en el CTA', () => {
     const state = buildWaveLaunchState(true, {
@@ -49,6 +49,19 @@ test('buildWaveLaunchState bloquea lectura cuando la oleada esta activa', () => 
     assert.equal(state.secondary, 'Defensa activa');
 });
 
+test('buildOnboardingCoachState guia segun el estado tactico actual', () => {
+    const noTeam = buildOnboardingCoachState({ activeTeamCount: 0 }, { tutorialHints: true });
+    const placing = buildOnboardingCoachState({ activeTeamCount: 1, placingHero: true, hasSuggestion: true }, { tutorialHints: true });
+    const report = buildOnboardingCoachState({ activeTeamCount: 1, deployedCount: 1, currentWave: 2, hasReport: true }, { tutorialHints: true });
+    const disabled = buildOnboardingCoachState({ activeTeamCount: 1 }, { tutorialHints: false });
+
+    assert.equal(noTeam.id, 'squad');
+    assert.equal(placing.id, 'suggestion');
+    assert.equal(placing.progressLabel, '3/5');
+    assert.equal(report.id, 'report');
+    assert.equal(disabled, null);
+});
+
 test('getNextTargetingPriority cicla prioridades tacticas del roster', () => {
     assert.equal(getNextTargetingPriority('Primero'), 'Último');
     assert.equal(getNextTargetingPriority('Jefe'), 'Primero');
@@ -95,17 +108,57 @@ test('buildEnemyIntel distingue soporte e invocador', () => {
     assert.equal(summoner.danger, 'high');
 });
 
+test('buildStatusLegendModel prioriza counters de la oleada', () => {
+    const model = buildStatusLegendModel({
+        stealthCount: 2,
+        armoredCount: 1,
+        barrierCount: 1,
+        fastest: 98,
+        roles: ['stealth', 'runner', 'tank'],
+        maxThreat: 4
+    });
+
+    assert.deepEqual(model.entries.map((entry) => entry.id), ['detection', 'piercing', 'control']);
+    assert.equal(model.label, 'Counters clave');
+});
+
+test('buildStealthCoverageState distingue detector desplegado, banco y faltante', () => {
+    const summary = { stealthCount: 2, roles: ['stealth'] };
+    const detector = { id: 'black_widow', name: 'Black Widow', cost: 180, canSeeStealth: true };
+    const deployed = buildStealthCoverageState(summary, [detector], [{ ...detector, cost: 180 }], 0);
+    const available = buildStealthCoverageState(summary, [detector], [], 0);
+    const missing = buildStealthCoverageState(summary, [{ id: 'hulk', name: 'Hulk', cost: 220 }], [], 300);
+
+    assert.equal(deployed.tone, 'ready');
+    assert.match(deployed.detail, /Black Widow/);
+    assert.equal(available.tone, 'warning');
+    assert.equal(available.heroId, 'black_widow');
+    assert.equal(missing.tone, 'danger');
+    assert.match(missing.detail, /No hay detector/);
+});
+
+test('buildLeakIntel resume enemigo filtrado y counter recomendado', () => {
+    const intel = buildLeakIntel([
+        { name: 'Ninja de La Mano', counter: 'Deteccion', lifeLoss: 1, segmentPct: 98, traits: ['Sigilo'] }
+    ]);
+
+    assert.equal(intel.label, 'Lectura de fugas');
+    assert.equal(intel.items[0].name, 'Ninja de La Mano');
+    assert.equal(intel.items[0].counter, 'Deteccion');
+    assert.match(intel.items[0].detail, /98% ruta/);
+});
+
 test('buildRosterWaveFitView expone score y razones visibles', () => {
     const view = buildRosterWaveFitView({
         id: 'prime',
         label: 'Counter ideal',
         score: 8.4,
-        reasons: ['detecta sigilo', 'asequible ahora', 'frena corredores']
+        reasons: ['detecta sigilo', 'frena corredores']
     });
 
     assert.equal(view.id, 'prime');
     assert.equal(view.scoreLabel, '8 pts');
-    assert.equal(view.reasonText, 'detecta sigilo + asequible ahora');
+    assert.equal(view.reasonText, 'detecta sigilo + frena corredores');
     assert.match(view.ariaLabel, /Puntaje 8/);
 });
 
@@ -133,7 +186,7 @@ test('buildShopItemInsight reconoce control, grupos y fallback de set', () => {
     assert.equal(utility.tone, 'utility');
 });
 
-test('buildShopSetProgress detecta cuando una compra completa un set', () => {
+test('buildShopSetProgress queda desactivado con objeto unico', () => {
     const itemDatabase = {
         reactor_arc: { id: 'reactor_arc', set: 'stark' },
         lentes_edith: { id: 'lentes_edith', set: 'stark' }
@@ -145,24 +198,7 @@ test('buildShopSetProgress detecta cuando una compra completa un set', () => {
         itemDatabase
     );
 
-    assert.equal(progress.status, 'ready');
-    assert.equal(progress.afterPurchase, 2);
-    assert.match(progress.label, /Completa Stark/);
-    assert.match(progress.detail, /2 piezas/);
-});
-
-test('buildShopSetProgress muestra avance hacia bonus de set', () => {
-    const progress = buildShopSetProgress(
-        { id: 'baliza_fury', name: 'BALIZA FURY', set: 'shield' },
-        [],
-        { iron_man: { weapon: 'reactor_arc' } },
-        { reactor_arc: { id: 'reactor_arc', set: 'stark' } }
-    );
-
-    assert.equal(progress.status, 'building');
-    assert.equal(progress.afterPurchase, 1);
-    assert.equal(progress.needed, 1);
-    assert.match(progress.label, /1\/2/);
+    assert.equal(progress, null);
 });
 
 test('evaluateHeroWaveFit recomienda deteccion contra sigilo', () => {
@@ -182,9 +218,8 @@ test('evaluateHeroWaveFit recomienda deteccion contra sigilo', () => {
         pressureScore: 14
     }, 180);
 
-    assert.equal(fit.id, 'prime');
+    assert.equal(fit.id, 'good');
     assert.match(fit.reasons.join(' '), /detecta sigilo/);
-    assert.match(fit.reasons.join(' '), /asequible ahora/);
 });
 
 test('evaluateHeroWaveFit detecta antiarmadura y DPS de jefe', () => {
@@ -277,7 +312,7 @@ test('buildWavePreparationPlan recomienda mejorar defensa desplegada en riesgo',
     assert.equal(plan[0].cost, 240);
 });
 
-test('buildWavePreparationPlan indica ahorro cuando no alcanza para preparar', () => {
+test('buildWavePreparationPlan recomienda desplegar aunque no sobren creditos', () => {
     const plan = buildWavePreparationPlan(
         {
             stealthCount: 0,
@@ -294,18 +329,19 @@ test('buildWavePreparationPlan indica ahorro cuando no alcanza para preparar', (
         120
     );
 
-    assert.equal(plan[0].type, 'save');
-    assert.equal(plan[0].label, 'Faltan $180');
+    assert.equal(plan[0].type, 'deploy');
+    assert.equal(plan[0].label, 'Colocar Thor');
+    assert.equal(plan[0].cost, 0);
 });
 
 test('buildWavePrepActionControl vuelve clickeables despliegue y mejora', () => {
-    const deploy = buildWavePrepActionControl({ type: 'deploy', heroId: 'iron_man', label: 'Colocar Iron Man', reason: 'DPS', cost: 250 });
+    const deploy = buildWavePrepActionControl({ type: 'deploy', heroId: 'iron_man', label: 'Colocar Iron Man', reason: 'DPS', cost: 0 });
     const upgrade = buildWavePrepActionControl({ type: 'upgrade', heroId: 'spiderman', label: 'Mejorar Spider-Man' });
 
     assert.equal(deploy.actionable, true);
     assert.equal(deploy.tag, 'button');
     assert.match(deploy.ariaLabel, /Preparar colocacion/);
-    assert.match(deploy.title, /250/);
+    assert.doesNotMatch(deploy.title, /\$250/);
     assert.equal(upgrade.actionable, true);
     assert.match(upgrade.ariaLabel, /Mejorar ahora/);
 });
@@ -431,6 +467,32 @@ test('buildPressureActionState pide despliegue si no hay heroes', () => {
     assert.equal(action.label, 'Sin heroes desplegados');
 });
 
+test('UIManager mantiene oculto el panel lateral de presion de ruta', () => {
+    const container = {
+        innerHTML: '<button>Mejorar Iron Man $360</button>',
+        classList: {
+            values: new Set(),
+            add(value) { this.values.add(value); },
+            contains(value) { return this.values.has(value); }
+        }
+    };
+    const previousDocument = globalThis.document;
+    globalThis.document = { getElementById: (id) => (id === 'combat-pressure' ? container : null) };
+    const ui = Object.create(UIManager.prototype);
+
+    try {
+        const state = ui.updateCombatPressure([
+            { name: 'Soldado de Hydra', distanceTravelled: 200, isAlive: true, hasReachedEnd: false }
+        ], path(), true);
+
+        assert.equal(container.innerHTML, '');
+        assert.equal(container.classList.contains('hidden'), true);
+        assert.equal(state.id, 'watch');
+    } finally {
+        globalThis.document = previousDocument;
+    }
+});
+
 test('buildWaveReportState resume una oleada limpia con consejo de ahorro', () => {
     const report = buildWaveReportState({
         wave: 4,
@@ -451,6 +513,26 @@ test('buildWaveReportState resume una oleada limpia con consejo de ahorro', () =
     assert.equal(report.cleanBonus, 42);
     assert.match(report.advice, /ahorrar/);
     assert.equal(report.grade.medal, 'S');
+});
+
+test('buildTacticalContributionModel resume aportes no basados en dano', () => {
+    const model = buildTacticalContributionModel({
+        controlSeconds: 4.4,
+        armorBreaks: 2,
+        marks: 1,
+        detectionReveals: 1,
+        livesSaved: 1,
+        score: 430,
+        heroes: [
+            { id: 'luke_cage', name: 'Luke Cage', tacticalScore: 260, controlSeconds: 1, armorBreaks: 1, livesSaved: 1 }
+        ]
+    });
+
+    assert.equal(model.active, true);
+    assert.equal(model.score, 430);
+    assert.deepEqual(model.metrics.map((metric) => metric.id), ['control', 'armor', 'marks', 'detect', 'saved']);
+    assert.equal(model.heroes[0].name, 'Luke Cage');
+    assert.match(model.heroes[0].detail, /vida/);
 });
 
 test('buildWaveReportState convierte fugas en recomendacion tactica', () => {
@@ -564,6 +646,44 @@ test('buildWaveReportActionState indica ahorro si falta para reforzar tras fugas
     assert.match(action.reason, /fuga/);
 });
 
+test('UIManager recalcula coste del panel con el nivel vivo tras mejora rapida', () => {
+    const ui = createUpgradeUi(240);
+    const hero = deployedHero({ id: 'iron_man', name: 'Iron Man', level: 2, damage: 48, fireRate: 1.3, range: 170 });
+
+    assert.equal(ui.quickUpgradeHero(hero), true);
+    assert.equal(hero.level, 3);
+    assert.equal(ui.game.resourceManager.credits, 0);
+
+    ui.game.resourceManager.credits = 300;
+    ui.processUpgrade(hero, 1);
+
+    assert.equal(hero.level, 3);
+    assert.equal(ui.game.resourceManager.credits, 300);
+    assert.ok(ui.__calls.some((call) => call[0] === 'toast' && /insuficientes/i.test(call[1])));
+});
+
+test('UIManager mejora rapida no cobra ni sube nivel si faltan creditos', () => {
+    const ui = createUpgradeUi(359);
+    const hero = deployedHero({ id: 'spiderman', name: 'Spider-Man', level: 3, damage: 20, fireRate: 2, range: 140 });
+
+    assert.equal(ui.quickUpgradeHero(hero), false);
+
+    assert.equal(hero.level, 3);
+    assert.equal(ui.game.resourceManager.credits, 359);
+    assert.ok(ui.__calls.some((call) => call[0] === 'toast' && /insuficientes/i.test(call[1])));
+});
+
+test('UIManager mejora rapida usa creditos visibles si el estado interno quedo sin normalizar', () => {
+    const ui = createUpgradeUi(undefined, '889');
+    const hero = deployedHero({ id: 'iron_man', name: 'Iron Man', level: 3, damage: 60, fireRate: 1.3, range: 180 });
+
+    assert.equal(ui.canAffordHeroUpgrade(hero, 1), true);
+    assert.equal(ui.quickUpgradeHero(hero), true);
+
+    assert.equal(hero.level, 4);
+    assert.equal(ui.game.resourceManager.credits, 529);
+});
+
 function path() {
     return [{ x: 0, y: 0 }, { x: 400, y: 0 }];
 }
@@ -589,4 +709,34 @@ function deployedHero({ id, name, level = 1, damage, fireRate, range, control = 
         config: { id, name, level, teamMetrics: { control } },
         getEffectiveStats: () => ({ damage, fireRate, range })
     };
+}
+
+function createUpgradeUi(credits, visibleCredits = '') {
+    const calls = [];
+    const ui = Object.create(UIManager.prototype);
+    ui.__calls = calls;
+    ui.overlay = { classList: { contains: () => true } };
+    ui.creditsEl = { textContent: visibleCredits };
+    ui.game = {
+        activeTeam: [],
+        inputManager: { setPlacementMode: () => {} },
+        resourceManager: {
+            credits,
+            lives: 20,
+            removeCredits(amount) {
+                if (!Number.isFinite(this.credits) || this.credits < amount) return false;
+                this.credits -= amount;
+                return true;
+            }
+        },
+        waveManager: { currentWave: 1, refreshWaveIntel: () => calls.push(['intel']) },
+        fps: 60,
+        stars: 0,
+        replaySystem: { record: (...args) => calls.push(['replay', ...args]) }
+    };
+    ui.renderHeroRoster = () => calls.push(['roster']);
+    ui.updateUI = (...args) => calls.push(['ui', ...args]);
+    ui.showToast = (message, type) => calls.push(['toast', message, type]);
+    ui.renderHeroDetails = (unit) => calls.push(['details', unit?.id]);
+    return ui;
 }

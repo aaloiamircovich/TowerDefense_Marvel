@@ -5,20 +5,20 @@ const file = path.join(process.cwd(), 'data', 'heroes.json');
 const heroes = JSON.parse(fs.readFileSync(file, 'utf8'));
 
 const tagGroups = {
-    Avengers: ['iron_man', 'capitan_america', 'thor', 'hulk', 'black_widow', 'hawkeye', 'black_panther', 'captain_marvel', 'scarlet_witch', 'vision', 'falcon', 'ant_man'],
+    Avengers: ['iron_man', 'capitan_america', 'thor', 'hulk', 'black_widow', 'hawkeye', 'black_panther', 'captain_marvel', 'ms_marvel', 'scarlet_witch', 'vision', 'falcon', 'ant_man'],
     Defenders: ['daredevil', 'luke_cage', 'iron_fist', 'jessica_jones'],
     Guardianes: ['star_lord', 'groot', 'gamora'],
-    'X-Men': ['wolverine', 'jean_grey', 'cyclops', 'storm', 'domino'],
-    'Místico': ['doctor_strange', 'scarlet_witch', 'moon_knight', 'blade', 'ghost_rider'],
+    'X-Men': ['wolverine', 'jean_grey', 'cyclops', 'storm', 'domino', 'nightcrawler'],
+    Místico: ['doctor_strange', 'scarlet_witch', 'moon_knight', 'blade', 'ghost_rider', 'nightcrawler'],
     Callejero: ['spiderman', 'black_widow', 'hawkeye', 'daredevil', 'moon_knight', 'blade', 'luke_cage', 'shang_chi', 'she_hulk', 'winter_soldier'],
     Wakanda: ['black_panther'],
-    'Tecnología': ['iron_man', 'spiderman', 'ant_man', 'vision', 'falcon', 'winter_soldier']
+    Tecnología: ['iron_man', 'spiderman', 'ant_man', 'vision', 'falcon', 'winter_soldier']
 };
 
 const roleGroups = {
     vanguard: ['capitan_america', 'hulk', 'black_panther', 'wolverine', 'gamora', 'shang_chi', 'she_hulk', 'blade', 'luke_cage', 'ghost_rider'],
-    support: ['spiderman', 'black_widow', 'doctor_strange', 'groot', 'scarlet_witch', 'ant_man', 'falcon', 'storm', 'jean_grey', 'domino', 'daredevil'],
-    artillery: ['iron_man', 'thor', 'hawkeye', 'captain_marvel', 'star_lord', 'vision', 'winter_soldier', 'cyclops', 'silver_surfer', 'moon_knight']
+    support: ['spiderman', 'black_widow', 'doctor_strange', 'groot', 'scarlet_witch', 'ant_man', 'falcon', 'storm', 'jean_grey', 'domino', 'daredevil', 'nightcrawler'],
+    artillery: ['iron_man', 'thor', 'hawkeye', 'captain_marvel', 'ms_marvel', 'star_lord', 'vision', 'winter_soldier', 'cyclops', 'silver_surfer', 'moon_knight']
 };
 
 const metrics = {
@@ -26,13 +26,15 @@ const metrics = {
     thor: [5, 4, 1, 1], hulk: [5, 4, 1, 1], black_widow: [3, 4, 3, 5],
     hawkeye: [4, 4, 1, 4], black_panther: [4, 3, 4, 4], doctor_strange: [4, 5, 4, 3],
     vision: [5, 2, 2, 5], falcon: [3, 3, 5, 5],
-    captain_marvel: [5, 2, 2, 3], star_lord: [4, 4, 3, 2], groot: [2, 5, 5, 1],
+    captain_marvel: [5, 2, 2, 3], ms_marvel: [4, 3, 3, 3],
+    star_lord: [4, 4, 3, 2], groot: [2, 5, 5, 1],
     gamora: [5, 2, 1, 4], silver_surfer: [5, 4, 3, 5],
     daredevil: [3, 3, 4, 5], moon_knight: [4, 4, 2, 4], blade: [5, 2, 3, 4],
     ghost_rider: [5, 4, 1, 4], luke_cage: [3, 4, 5, 1], shang_chi: [5, 4, 3, 1],
-    she_hulk: [5, 4, 2, 1], wolverine: [5, 2, 3, 4], jean_grey: [5, 5, 4, 4],
-    cyclops: [5, 3, 2, 4], storm: [4, 5, 4, 2], domino: [4, 3, 4, 5],
-    scarlet_witch: [5, 5, 4, 4], ant_man: [4, 4, 4, 4], winter_soldier: [5, 4, 2, 4]
+    she_hulk: [5, 4, 2, 1], wolverine: [5, 2, 3, 4], nightcrawler: [3, 5, 4, 5],
+    jean_grey: [5, 5, 4, 4], cyclops: [5, 3, 2, 4], storm: [4, 5, 4, 2],
+    domino: [4, 3, 4, 5], scarlet_witch: [5, 5, 4, 4], ant_man: [4, 4, 4, 4],
+    winter_soldier: [5, 4, 2, 4]
 };
 
 for (const hero of Object.values(heroes)) {

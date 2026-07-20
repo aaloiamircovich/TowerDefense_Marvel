@@ -27,6 +27,6 @@ export function applyEvolutionStats(stats, evolution) {
     stats.fireRate *= 1 + evolution.stats.fireRate;
     stats.range *= 1 + evolution.stats.range;
     stats.critChance += evolution.stats.critChance;
-    if (evolution.id === 'iron_spider') stats.canSeeStealth = true;
+    if (evolution.id === 'iron_spider' || evolution.canSeeStealth) stats.canSeeStealth = true;
     return stats;
 }

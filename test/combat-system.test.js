@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { CombatSystem } from '../src/systems/CombatSystem.js';
+import { Hero } from '../src/entities/Hero.js';
 
 test('CombatSystem aplica ventaja de tipo', () => {
     let received = 0;
@@ -179,6 +180,34 @@ test('CombatSystem respeta ajuste para ocultar texto flotante de combate', () =>
     }, target, attacker, null);
 
     assert.equal(floating.length, 0);
+});
+
+test('Hero acumula control, ruptura, marcas, deteccion y vidas salvadas', () => {
+    const hero = new Hero({
+        id: 'black_widow',
+        name: 'Black Widow',
+        damage: 10,
+        range: 100,
+        fireRate: 1,
+        canSeeStealth: true
+    }, 0, 0, {
+        resourceManager: { lives: 20 },
+        progression: null,
+        teamSynergy: null
+    });
+    const stealthTarget = { stealth: true };
+
+    hero.recordStatusApplied({ type: 'slow', duration: 2.2 }, stealthTarget);
+    hero.recordStatusApplied({ type: 'stun', duration: 0.5 }, stealthTarget);
+    hero.recordStatusApplied({ type: 'armorBreak', duration: 2 }, stealthTarget);
+    hero.recordStatusApplied({ type: 'mark', duration: 2 }, stealthTarget);
+    hero.recordLifeSaved(2);
+
+    assert.equal(hero.combatStats.controlSeconds, 2.7);
+    assert.equal(hero.combatStats.armorBreaks, 1);
+    assert.equal(hero.combatStats.marks, 1);
+    assert.equal(hero.combatStats.detectionReveals, 4);
+    assert.equal(hero.combatStats.livesSaved, 2);
 });
 
 function createTarget(category, takeDamage) {

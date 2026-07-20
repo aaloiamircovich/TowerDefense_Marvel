@@ -105,6 +105,25 @@ export function findBestPlacementCell(heroConfig, game, movingHero = null) {
     return best;
 }
 
+export function buildPlacementSuggestionState(suggestion = null, heroConfig = null) {
+    if (!suggestion || !heroConfig) return null;
+    const quality = suggestion.coverage?.quality || { id: 'solid', label: 'Cobertura solida' };
+    const coveredLength = Math.max(0, Math.round(Number(suggestion.coverage?.coveredLength || 0)));
+    const pathDistance = Math.max(0, Math.round(Number(suggestion.pathDistance || 0)));
+    const terrain = getPlacementTerrainLabel(suggestion.terrainType);
+    return {
+        heroId: heroConfig.id || '',
+        label: `Celda ${suggestion.x + 1},${suggestion.y + 1}`,
+        detail: `${terrain} | ${quality.label} | ${coveredLength}px de ruta | camino a ${pathDistance}px`,
+        qualityId: quality.id,
+        actionLabel: 'Colocar aqui',
+        x: suggestion.x,
+        y: suggestion.y,
+        centerX: suggestion.centerX,
+        centerY: suggestion.centerY
+    };
+}
+
 export function buildHeroCoverageState(hero, path = []) {
     if (!hero) return null;
     const range = hero.getEffectiveStats?.().range || hero.range || hero.config?.range || 100;
@@ -181,9 +200,11 @@ export class InputManager {
         this.movingHero = null;
         this.placingHero = heroConfig;
         this.suggestedPlacement = findBestPlacementCell(heroConfig, this.game);
-        const suggestion = this.suggestedPlacement ? ` Sugerencia: celda ${this.suggestedPlacement.x + 1},${this.suggestedPlacement.y + 1}. Enter confirma sugerida.` : '';
+        const suggestionState = buildPlacementSuggestionState(this.suggestedPlacement, heroConfig);
+        const suggestion = suggestionState ? ` Sugerencia: ${suggestionState.label}; ${suggestionState.detail}.` : '';
         const terrainText = getAllowedTerrainLabels(heroConfig.allowedTerrains || [TERRAIN.grass]);
-        this.uiManager.setSelectionStatus(`Colocando ${heroConfig.name}. Terreno: ${terrainText}. Coste: $${heroConfig.cost || 0}.${suggestion} Esc para cancelar.`);
+        this.uiManager.setSelectionStatus(`Colocando ${heroConfig.name}. Terreno: ${terrainText}. Despliegue libre.${suggestion} Esc para cancelar.`);
+        this.uiManager.updatePlacementSuggestion?.(suggestionState);
     }
 
     setRepositionMode(hero) {
@@ -196,6 +217,7 @@ export class InputManager {
         this.placingHero = hero.config;
         this.movingHero = hero;
         this.suggestedPlacement = findBestPlacementCell(hero.config, this.game, hero);
+        this.uiManager.updatePlacementSuggestion?.(buildPlacementSuggestionState(this.suggestedPlacement, hero.config));
         this.game.selectedUnit = hero;
         this.uiManager.setManualPause?.(true, false);
         this.uiManager.setSelectionStatus(`Reposicionando ${hero.name}. Un movimiento por oleada · Esc para cancelar.`);
@@ -206,6 +228,7 @@ export class InputManager {
         this.placingHero = null;
         this.movingHero = null;
         this.suggestedPlacement = null;
+        this.uiManager.updatePlacementSuggestion?.(null);
         this.uiManager.setSelectionStatus('Elige un héroe y colócalo junto al camino.');
     }
 
@@ -307,10 +330,7 @@ export class InputManager {
             return { valid: true, terrainType, placementTerrain, pathDistance, pathPoint, coverage, message: `${getPlacementTerrainLabel(terrainType)} · ${coverage.quality.label}: ${Math.round(coverage.coveredLength)} px de ruta. Clic para mover.` };
         }
 
-        const cost = this.placingHero.cost || 0;
-        if (this.resources.credits < cost) return { valid: false, message: `Créditos insuficientes. Necesitas $${cost}.` };
-
-        return { valid: true, terrainType, placementTerrain, pathDistance, pathPoint, coverage, message: `${getPlacementTerrainLabel(terrainType)} · ${coverage.quality.label}: ${Math.round(coverage.coveredLength)} px de ruta. Clic para colocar por $${cost}.` };
+        return { valid: true, terrainType, placementTerrain, pathDistance, pathPoint, coverage, message: `${getPlacementTerrainLabel(terrainType)} · ${coverage.quality.label}: ${Math.round(coverage.coveredLength)} px de ruta. Clic para colocar.` };
     }
 
     confirmSuggestedPlacement(event = null) {
@@ -348,12 +368,6 @@ export class InputManager {
             return;
         }
 
-        const cost = this.placingHero.cost || 0;
-
-        if (!this.resources.removeCredits(cost)) {
-            this.uiManager.showToast('Los créditos cambiaron antes de confirmar la colocación.', 'warning');
-            return;
-        }
         const deployed = this.game.spawnHero(this.placingHero, snapX, snapY);
         this.game.replaySystem?.record('deploy', { heroId: this.placingHero.id, x: snapX, y: snapY });
         this.game.selectedUnit = deployed;
@@ -369,7 +383,7 @@ export class InputManager {
             this.uiManager.showToast(result.reason, 'warning');
             return result;
         }
-        this.uiManager.showToast(`${hero.name} retirado · +$${result.refund}`, 'reward');
+        this.uiManager.showToast(`${hero.name} retirado`, 'info');
         this.uiManager.renderHeroRoster(this.game.activeTeam, (config) => this.setPlacementMode(config));
         this.uiManager.updateUI(
             this.resources.lives,
@@ -390,6 +404,8 @@ export class InputManager {
         if (selectedUnit) {
             this.game.selectedUnit = selectedUnit;
             this.uiManager.inspectUnit(selectedUnit, selectedUnit.takeDamage !== undefined);
+        } else {
+            this.game.selectedUnit = null;
         }
     }
 
@@ -508,6 +524,7 @@ export class InputManager {
 
     drawSelectedHero(ctx) {
         const hero = this.game.selectedUnit;
+        if (this.game.showHeroRanges === false) return;
         if (!hero || !this.game.heroes.includes(hero)) return;
         const state = buildHeroCoverageState(hero, this.game.path);
         const targetIntent = buildHeroTargetIntent(hero, this.game.enemies || []);

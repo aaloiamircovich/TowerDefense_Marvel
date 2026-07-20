@@ -4,6 +4,7 @@ import { isOrthogonalPath } from '../src/utils/PathUtils.js';
 import { DIRECTIONS, collectVisualSources } from '../src/rendering/SpriteAnimator.js';
 import { buildBootstrapSource, readProjectData } from './lib/project-data.js';
 import { EVOLUTION_CATALOG } from '../src/systems/EvolutionSystem.js';
+import { SYNERGY_DEFINITIONS } from '../src/systems/TeamSynergySystem.js';
 import { TERRAIN } from '../src/utils/TerrainRules.js';
 
 const root = process.cwd();
@@ -29,24 +30,40 @@ if (errors.length > 0) process.exitCode = 1;
 function validateHeroes(heroes) {
     validateRecordIds('heroes', heroes);
     const knownIds = new Set(Object.keys(heroes));
-    const phase12Heroes = new Set(['hulk', 'black_widow', 'hawkeye', 'black_panther', 'vision', 'falcon']);
-    const phase14Heroes = new Set(['captain_marvel', 'star_lord', 'groot', 'gamora', 'silver_surfer']);
-    const phase15Heroes = new Set(['daredevil', 'moon_knight', 'blade', 'ghost_rider', 'luke_cage', 'shang_chi', 'she_hulk']);
-    const phase16Heroes = new Set(['wolverine', 'jean_grey', 'cyclops', 'storm', 'domino', 'scarlet_witch', 'ant_man', 'winter_soldier']);
-    const frontierHeroes = new Set(['war_machine', 'nick_fury', 'wasp', 'nova', 'quake', 'medusa', 'namor', 'iron_fist', 'punisher', 'elektra', 'jessica_jones', 'cloak', 'dagger', 'magik', 'iceman']);
-    const allegianceHeroes = new Set(['shuri', 'okoye', 'black_bolt', 'crystal', 'namora', 'triton']);
-    const rivalsHeroes = new Set(['black_cat', 'elsa_bloodstone', 'gambit', 'hela', 'human_torch', 'the_hood', 'psylocke', 'squirrel_girl', 'venom', 'angela', 'devil_dinosaur', 'emma_frost', 'magneto', 'peni_parker', 'adam_warlock', 'deadpool', 'invisible_woman', 'jeff_the_land_shark', 'jubilee', 'loki', 'luna_snow', 'mantis', 'mister_fantastic', 'rocket_raccoon']);
+    const allowedHeroKeys = new Set(['id', 'name', 'category', 'rarity', 'cost', 'damage', 'range', 'fireRate', 'canSeeStealth', 'ability', 'abilityDesc', 'niche', 'sprite', 'visual', 'allowedTerrains', 'tags', 'formationRole', 'teamMetrics', 'terrainRole', 'special', 'evolutionId']);
+    const allowedSpecialKeys = new Set(['statModifiers', 'attackEffects', 'projectileProfile', 'visualStyle', 'projectileColor']);
+    const allowedSpecialStatKeys = new Set(['allowWater', 'cooldown', 'critChance', 'damagePct', 'detectStealth', 'fireRatePct', 'rangePct']);
+    const allowedAttackEffectKeys = new Set(['chance', 'duration', 'power', 'type']);
+    const allowedAttackEffectTypes = new Set(['armorBreak', 'bleed', 'burn', 'mark', 'slow', 'stun', 'web']);
+    const allowedProjectileProfileKeys = new Set(['armorPenetration', 'chainCount', 'chainFactor', 'chainRange', 'splashFactor', 'splashRadius']);
+    const allowedVisualStyles = new Set(['ballistic', 'blade', 'elemental', 'energy', 'explosive', 'fire', 'ice', 'impact', 'mystic', 'sonic', 'water', 'web', 'whip']);
     const validTags = new Set(['Avengers', 'Defenders', 'Guardianes', 'X-Men', 'Mutantes', 'Místico', 'Callejero', 'Wakanda', 'Tecnología', 'Cósmico', 'Espías', 'Oscuros', 'Marciales', 'Inhumanos', 'Atlánticos', 'Rivales']);
     const validRoles = new Set(['vanguard', 'support', 'artillery']);
+    const validRarities = new Set(['Common', 'Rare', 'Epic', 'Legendary', 'Mythic', 'Secret']);
+    const enforcedTags = new Set(Object.keys(SYNERGY_DEFINITIONS));
     const validPlacementTerrains = new Set([TERRAIN.water, TERRAIN.grass, TERRAIN.mountain]);
     const validTerrainRoles = new Set(['grass', 'ground', 'high', 'flyer', 'aquatic', 'amphibious']);
+    const heroesWithEvolution = Object.entries(heroes).filter(([, hero]) => hero.evolutionId);
+
+    if (heroesWithEvolution.length > 0 && heroesWithEvolution.length !== Object.keys(heroes).length) {
+        errors.push(`heroes.evolutionId debe activarse para todo el roster o para nadie (${heroesWithEvolution.length}/${Object.keys(heroes).length})`);
+    }
 
     for (const [key, hero] of Object.entries(heroes)) {
+        validateAllowedKeys(`heroes.${key}`, hero, allowedHeroKeys);
         requireText(hero.name, `heroes.${key}.name`);
+        requireText(hero.category, `heroes.${key}.category`);
+        requireText(hero.ability, `heroes.${key}.ability`);
+        requireText(hero.abilityDesc, `heroes.${key}.abilityDesc`);
+        requireText(hero.niche, `heroes.${key}.niche`);
         requirePositive(hero.cost, `heroes.${key}.cost`);
         requirePositive(hero.damage, `heroes.${key}.damage`);
         requirePositive(hero.range, `heroes.${key}.range`);
         requirePositive(hero.fireRate, `heroes.${key}.fireRate`);
+        if (typeof hero.canSeeStealth !== 'boolean') errors.push(`heroes.${key}.canSeeStealth debe ser booleano`);
+        if (!validRarities.has(hero.rarity || 'Common')) {
+            errors.push(`heroes.${key}.rarity debe ser Common, Rare, Epic, Legendary, Mythic o Secret`);
+        }
 
         if (!Array.isArray(hero.allowedTerrains) || hero.allowedTerrains.length === 0) {
             errors.push(`heroes.${key}.allowedTerrains debe ser un array no vacio`);
@@ -56,13 +73,9 @@ function validateHeroes(heroes) {
         if (!validTerrainRoles.has(hero.terrainRole)) errors.push(`heroes.${key}.terrainRole no es valido`);
 
         validateAsset(hero.sprite, `heroes.${key}.sprite`);
-        if (hero.visual) validateHeroVisual(key, hero.visual);
-        if (phase12Heroes.has(key) || phase14Heroes.has(key) || phase15Heroes.has(key) || phase16Heroes.has(key) || frontierHeroes.has(key) || allegianceHeroes.has(key) || rivalsHeroes.has(key)) {
-            if (!hero.visual) errors.push(`heroes.${key}.visual es obligatorio para las expansiones de roster`);
-            requireText(hero.abilityDesc, `heroes.${key}.abilityDesc`);
-            requireText(hero.niche, `heroes.${key}.niche`);
-        }
-        if (!Array.isArray(hero.tags) || hero.tags.some((tag) => !validTags.has(tag))) {
+        if (!hero.visual) errors.push(`heroes.${key}.visual es obligatorio`);
+        else validateHeroVisual(key, hero.visual);
+        if (!Array.isArray(hero.tags) || hero.tags.length < 1 || hero.tags.length > 2 || hero.tags.some((tag) => !enforcedTags.has(tag))) {
             errors.push(`heroes.${key}.tags contiene etiquetas no válidas`);
         }
         if (!validRoles.has(hero.formationRole)) errors.push(`heroes.${key}.formationRole no es válido`);
@@ -70,10 +83,72 @@ function validateHeroes(heroes) {
             const value = hero.teamMetrics?.[metric];
             if (!Number.isInteger(value) || value < 1 || value > 5) errors.push(`heroes.${key}.teamMetrics.${metric} debe estar entre 1 y 5`);
         }
+        if (hero.special) validateHeroSpecial(key, hero.special, {
+            allowedSpecialKeys,
+            allowedSpecialStatKeys,
+            allowedAttackEffectKeys,
+            allowedAttackEffectTypes,
+            allowedProjectileProfileKeys,
+            allowedVisualStyles
+        });
 
-        if (hero.evolutionId && !knownIds.has(hero.evolutionId) && !EVOLUTION_CATALOG[hero.evolutionId]) {
-            warnings.push(`heroes.${key}.evolutionId referencia '${hero.evolutionId}', que aun no existe`);
+        if (hero.evolutionId) {
+            if (!EVOLUTION_CATALOG[hero.evolutionId]) errors.push(`heroes.${key}.evolutionId referencia '${hero.evolutionId}', que no existe`);
+            else if (EVOLUTION_CATALOG[hero.evolutionId].baseHeroId !== key) errors.push(`heroes.${key}.evolutionId no pertenece a este heroe`);
+            if (knownIds.has(hero.evolutionId)) errors.push(`heroes.${key}.evolutionId no debe apuntar a un heroe base`);
         }
+    }
+}
+
+function validateHeroSpecial(heroId, special, schema) {
+    validateAllowedKeys(`heroes.${heroId}.special`, special, schema.allowedSpecialKeys);
+
+    if (special.statModifiers) {
+        validateAllowedKeys(`heroes.${heroId}.special.statModifiers`, special.statModifiers, schema.allowedSpecialStatKeys);
+        for (const [key, value] of Object.entries(special.statModifiers)) {
+            const label = `heroes.${heroId}.special.statModifiers.${key}`;
+            if (key === 'allowWater' || key === 'detectStealth') {
+                if (typeof value !== 'boolean') errors.push(`${label} debe ser booleano`);
+            } else {
+                requireFiniteNumber(value, label);
+                if (['damagePct', 'fireRatePct', 'rangePct', 'cooldown'].includes(key) && (value < 0 || value > 1)) {
+                    errors.push(`${label} debe estar entre 0 y 1`);
+                }
+                if (key === 'critChance' && (value < 0 || value > 100)) errors.push(`${label} debe estar entre 0 y 100`);
+            }
+        }
+    }
+
+    if (special.attackEffects) {
+        if (!Array.isArray(special.attackEffects)) errors.push(`heroes.${heroId}.special.attackEffects debe ser un array`);
+        else special.attackEffects.forEach((effect, index) => {
+            const label = `heroes.${heroId}.special.attackEffects.${index}`;
+            validateAllowedKeys(label, effect, schema.allowedAttackEffectKeys);
+            if (!schema.allowedAttackEffectTypes.has(effect.type)) errors.push(`${label}.type no es valido`);
+            if (!isUnitNumber(effect.chance)) errors.push(`${label}.chance debe estar entre 0 y 1`);
+            requireNonNegativeNumber(effect.duration, `${label}.duration`);
+            requireNonNegativeNumber(effect.power, `${label}.power`);
+        });
+    }
+
+    if (special.projectileProfile) {
+        validateAllowedKeys(`heroes.${heroId}.special.projectileProfile`, special.projectileProfile, schema.allowedProjectileProfileKeys);
+        for (const [key, value] of Object.entries(special.projectileProfile)) {
+            const label = `heroes.${heroId}.special.projectileProfile.${key}`;
+            if (key === 'chainCount') {
+                if (!Number.isInteger(value) || value < 0) errors.push(`${label} debe ser un entero no negativo`);
+            } else {
+                requireNonNegativeNumber(value, label);
+                if (['armorPenetration', 'chainFactor', 'splashFactor'].includes(key) && value > 1) errors.push(`${label} debe estar entre 0 y 1`);
+            }
+        }
+    }
+
+    if (special.visualStyle && !schema.allowedVisualStyles.has(special.visualStyle)) {
+        errors.push(`heroes.${heroId}.special.visualStyle no es valido`);
+    }
+    if (special.projectileColor && !/^#[0-9a-fA-F]{6}$/.test(special.projectileColor)) {
+        errors.push(`heroes.${heroId}.special.projectileColor debe ser color hex #RRGGBB`);
     }
 }
 
@@ -101,6 +176,7 @@ function validateHeroVisual(heroId, visual) {
 function validateEnemies(enemies) {
     const validArchetypes = new Set(['soldier', 'runner', 'tank', 'shield', 'stealth', 'flying', 'summoner', 'support', 'commander', 'phaser', 'boss']);
     const phasedBosses = new Set(['loki', 'ultron_prime', 'killmonger', 'magneto', 'thanos_final']);
+    const allowedEnemyKeys = new Set(['id', 'name', 'hp', 'speed', 'reward', 'sprite', 'faction', 'archetype', 'threat', 'armor', 'barrierRatio', 'stealth', 'flying', 'category', 'summonId', 'summonLimit', 'healPower', 'commandPower', 'behaviorCooldown', 'statusResistance', 'statusResistances', 'resistances', 'immuneToSlow', 'immuneToStun', 'immuneToKnockback', 'isBoss', 'isFinalBoss', 'phases', 'visual']);
     for (const group of ['normal', 'bosses']) {
         if (!enemies[group] || typeof enemies[group] !== 'object') {
             errors.push(`enemies.${group} no existe`);
@@ -109,6 +185,7 @@ function validateEnemies(enemies) {
 
         validateRecordIds(`enemies.${group}`, enemies[group]);
         for (const [key, enemy] of Object.entries(enemies[group])) {
+            validateAllowedKeys(`enemies.${group}.${key}`, enemy, allowedEnemyKeys);
             requireText(enemy.name, `enemies.${group}.${key}.name`);
             requirePositive(enemy.hp, `enemies.${group}.${key}.hp`);
             requirePositive(enemy.speed, `enemies.${group}.${key}.speed`);
@@ -135,7 +212,9 @@ function validateItems(items) {
     validateRecordIds('items', items);
     if (Object.keys(items).length < 30) errors.push('items necesita al menos 30 objetos para la Fase 11');
     const validSlots = new Set(['weapon', 'armor', 'artifact']);
+    const allowedItemKeys = new Set(['id', 'name', 'desc', 'price', 'tier', 'slot', 'set', 'effects', 'icon']);
     for (const [key, item] of Object.entries(items)) {
+        validateAllowedKeys(`items.${key}`, item, allowedItemKeys);
         requireText(item.name, `items.${key}.name`);
         requirePositive(item.price, `items.${key}.price`);
         requirePositive(item.tier, `items.${key}.tier`);
@@ -155,7 +234,18 @@ function validateLevels(levels) {
     }
 
     validateUniqueIds('levels', levels);
+    const allowedLevelKeys = new Set(['id', 'name', 'description', 'difficulty', 'path', 'alternatePaths', 'theme', 'mission', 'rendering', 'thumbnail']);
+    const allowedRenderingKeys = new Set(['style', 'camera', 'source', 'tileSize', 'targetSpriteSize']);
+    const allowedThemeKeys = new Set(['id', 'label', 'accent', 'brief']);
+    const allowedMissionKeys = new Set(['operation', 'speaker', 'briefing', 'dialogue', 'mechanic', 'objectives']);
+    const allowedMechanicKeys = new Set(['type', 'label', 'description', 'status', 'convoyStart', 'convoyEnd', 'door', 'turret', 'nodes', 'landmarks', 'portals', 'jumpDistance', 'cycle', 'vegetation', 'prisoner']);
+    const allowedObjectiveKeys = new Set(['id', 'label', 'description', 'metric', 'target', 'reward']);
     for (const level of levels) {
+        validateAllowedKeys(`levels.${level.id}`, level, allowedLevelKeys);
+        if (level.rendering) validateAllowedKeys(`levels.${level.id}.rendering`, level.rendering, allowedRenderingKeys);
+        if (level.theme) validateAllowedKeys(`levels.${level.id}.theme`, level.theme, allowedThemeKeys);
+        if (level.mission) validateAllowedKeys(`levels.${level.id}.mission`, level.mission, allowedMissionKeys);
+        if (level.mission?.mechanic) validateAllowedKeys(`levels.${level.id}.mission.mechanic`, level.mission.mechanic, allowedMechanicKeys);
         requireText(level.name, `levels.${level.id}.name`);
         if (!isOrthogonalPath(level.path)) errors.push(`levels.${level.id}.path contiene segmentos diagonales o puntos invalidos`);
         if (!level.theme?.id) errors.push(`levels.${level.id}.theme.id es obligatorio`);
@@ -166,6 +256,7 @@ function validateLevels(levels) {
             errors.push(`levels.${level.id}.mission.objectives necesita al menos dos objetivos`);
         } else {
             level.mission.objectives.forEach((objective) => {
+                validateAllowedKeys(`levels.${level.id}.mission.objectives.${objective.id}`, objective, allowedObjectiveKeys);
                 requireText(objective.id, `levels.${level.id}.mission.objectives.id`);
                 requireText(objective.metric, `levels.${level.id}.mission.objectives.${objective.id}.metric`);
                 requirePositive(objective.target, `levels.${level.id}.mission.objectives.${objective.id}.target`);
@@ -252,6 +343,12 @@ function validateUniqueIds(label, values) {
     }
 }
 
+function validateAllowedKeys(label, value, allowedKeys) {
+    Object.keys(value || {}).forEach((key) => {
+        if (!allowedKeys.has(key)) errors.push(`${label}.${key} no esta permitido por el schema`);
+    });
+}
+
 function validateAsset(assetPath, label) {
     if (!assetPath || !fs.existsSync(path.resolve(root, assetPath))) {
         const message = `${label} no existe: ${assetPath || '(vacio)'}`;
@@ -266,6 +363,14 @@ function requireText(value, label) {
 
 function requirePositive(value, label) {
     if (!Number.isFinite(value) || value <= 0) errors.push(`${label} debe ser un numero positivo`);
+}
+
+function requireFiniteNumber(value, label) {
+    if (!Number.isFinite(value)) errors.push(`${label} debe ser un numero finito`);
+}
+
+function requireNonNegativeNumber(value, label) {
+    if (!Number.isFinite(value) || value < 0) errors.push(`${label} debe ser un numero no negativo`);
 }
 
 function isUnitNumber(value) {

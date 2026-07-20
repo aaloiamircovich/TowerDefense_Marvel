@@ -7,6 +7,7 @@ import {
     getHeroTeamEffects,
     getSynergyMenuModel
 } from '../src/systems/TeamSynergySystem.js';
+import { HERO_RARITIES } from '../src/utils/Rarity.js';
 
 test('cinco Avengers activan solo el escalon superior', () => {
     const team = [
@@ -36,7 +37,7 @@ test('Steve y Tony activan una pareja extensible', () => {
     assert.equal(effects.abilityPower, 0.04);
 });
 
-test('tres Mutantes activan buff de estadisticas', () => {
+test('tres Mutantes activan buff de estadisticas legendario', () => {
     const team = [
         hero('wolverine', ['Mutantes']),
         hero('storm', ['Mutantes']),
@@ -46,9 +47,10 @@ test('tres Mutantes activan buff de estadisticas', () => {
     const mutants = snapshot.families.find((family) => family.tag === 'Mutantes');
     const effects = getHeroTeamEffects(team[0], team);
 
+    assert.equal(mutants.definition.rarity, 'Legendary');
     assert.equal(mutants.activeTier.count, 3);
     assert.equal(effects.critChance, 4);
-    assert.equal(effects.rangePct, 0.04);
+    assert.equal(effects.rangePct, 0.035);
 });
 
 test('un equipo mixto obtiene versatilidad sin exigir una familia', () => {
@@ -66,16 +68,15 @@ test('un equipo mixto obtiene versatilidad sin exigir una familia', () => {
     assert.equal(effects.rangePct, 0.025);
 });
 
-test('formacion de vanguardia depende de distancia real', () => {
+test('formaciones de rol quedan retiradas del sistema de sinergias', () => {
     const game = { activeTeam: [], heroes: [], selectedUnit: null, isManuallyPaused: false };
     const system = new TeamSynergySystem(game);
     const first = deployed('hulk', 'vanguard', 0, 0);
     const second = deployed('black_panther', 'vanguard', 90, 0);
     game.heroes = [first, second];
 
-    assert.deepEqual(system.getFormationEffects(first), { damagePct: 0.06, critChance: 2 });
-    second.x = 140;
     assert.deepEqual(system.getFormationEffects(first), {});
+    assert.equal(system.getFormationStatus(first), null);
 });
 
 test('metricas de equipo resumen cobertura y coste', () => {
@@ -85,10 +86,10 @@ test('metricas de equipo resumen cobertura y coste', () => {
     assert.equal(snapshot.cost, 390);
     assert.equal(snapshot.metrics.coverage, 84);
     assert.ok(snapshot.metrics.damage > 0);
-    assert.equal(snapshot.formationCounts.artillery, 2);
+    assert.equal(snapshot.formationCounts, undefined);
 });
 
-test('menu de agrupaciones expone entre diez y quince grupos con progreso', () => {
+test('menu de agrupaciones expone catalogo amplio con progreso', () => {
     const team = [
         hero('black_panther', ['Wakanda', 'Marciales']),
         hero('shuri', ['Wakanda', 'Tecnología']),
@@ -98,34 +99,65 @@ test('menu de agrupaciones expone entre diez y quince grupos con progreso', () =
     const model = getSynergyMenuModel(snapshot, team, new Set(team.map((entry) => entry.id)));
     const wakanda = model.find((group) => group.tag === 'Wakanda');
 
-    assert.ok(Object.keys(SYNERGY_DEFINITIONS).length >= 10);
-    assert.ok(Object.keys(SYNERGY_DEFINITIONS).length <= 15);
+    assert.ok(Object.keys(SYNERGY_DEFINITIONS).length >= 20);
     assert.equal(wakanda.state, 'active');
     assert.equal(wakanda.progressLabel, '3/3');
+    assert.equal(wakanda.rarity, 'Legendary');
+    assert.equal(wakanda.rarityClass, 'rarity-legendary');
     assert.match(wakanda.effectLabel, /dano|poder|critico/);
+    assert.deepEqual(wakanda.memberNames, ['black_panther', 'shuri', 'okoye'].map((id) => team.find((entry) => entry.id === id).name || id));
+    assert.deepEqual(wakanda.missingNames, []);
 });
 
-test('Rivales recompensa equipos mixtos de la nueva lista', () => {
+test('agrupaciones tienen rareza valida y requisitos variables', () => {
+    const rarities = new Set(HERO_RARITIES);
+    const allTiers = Object.values(SYNERGY_DEFINITIONS).flatMap((definition) => definition.tiers);
+    const tierCounts = new Set(allTiers.map((tier) => tier.count));
+
+    for (const definition of Object.values(SYNERGY_DEFINITIONS)) {
+        assert.ok(rarities.has(definition.rarity), `${definition.label} tiene rareza invalida`);
+        assert.ok(definition.tiers.every((tier) => tier.count >= 2 && tier.count <= 6));
+    }
+
+    assert.ok(tierCounts.has(2), 'debe haber agrupaciones de duo');
+    assert.ok(tierCounts.has(4), 'debe haber agrupaciones de cuatro');
+    assert.ok(tierCounts.has(5), 'debe haber agrupaciones de cinco');
+    assert.ok(tierCounts.has(6), 'debe haber agrupaciones de equipo completo');
+    assert.equal(SYNERGY_DEFINITIONS.Rivales.rarity, 'Secret');
+});
+
+test('rareza de agrupacion escala por requisito, beneficio y miembros esperados', () => {
+    assert.equal(SYNERGY_DEFINITIONS.Bestias.rarity, 'Common');
+    assert.equal(SYNERGY_DEFINITIONS['Arácnidos'].rarity, 'Rare');
+    assert.equal(SYNERGY_DEFINITIONS['Fantásticos'].rarity, 'Epic');
+    assert.equal(SYNERGY_DEFINITIONS['Nexo Caótico'].rarity, 'Mythic');
+    assert.equal(SYNERGY_DEFINITIONS.Rivales.rarity, 'Secret');
+    assert.ok(SYNERGY_DEFINITIONS.Rivales.tiers.at(-1).effects.damagePct > SYNERGY_DEFINITIONS.Bestias.tiers.at(-1).effects.damagePct);
+});
+
+test('Rivales recompensa antiheroes de rareza alta', () => {
     const team = [
-        hero('black_cat', ['Rivales', 'Callejero']),
-        hero('gambit', ['Rivales', 'Mutantes']),
-        hero('rocket_raccoon', ['Rivales', 'Guardianes']),
-        hero('loki', ['Rivales', 'Místico']),
-        hero('invisible_woman', ['Rivales', 'Tecnología'])
+        hero('hela', ['Rivales', 'Asgardianos']),
+        hero('the_hood', ['Rivales', 'Oscuros']),
+        hero('venom', ['Rivales', 'Arácnidos']),
+        hero('magneto', ['Rivales', 'Mutantes']),
+        hero('deadpool', ['Rivales', 'Mercenarios'])
     ];
     const snapshot = analyzeTeam(team);
     const rivals = snapshot.families.find((family) => family.tag === 'Rivales');
     const effects = getHeroTeamEffects(team[0], team);
 
     assert.equal(rivals.activeTier.count, 5);
-    assert.ok(Math.abs(effects.damagePct - 0.04) < 0.0001);
-    assert.ok(Math.abs(effects.rangePct - 0.04) < 0.0001);
+    assert.ok(Math.abs(effects.damagePct - 0.135) < 0.0001);
+    assert.ok(Math.abs(effects.rangePct - 0.085) < 0.0001);
+    assert.ok(Math.abs(effects.abilityPower - 0.07) < 0.0001);
     assert.equal(effects.detectStealth, true);
 });
 
 function hero(id, tags, cost = 200, range = 150) {
     return {
         id,
+        name: id,
         tags,
         cost,
         range,

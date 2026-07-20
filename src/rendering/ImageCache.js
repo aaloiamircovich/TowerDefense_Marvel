@@ -1,16 +1,23 @@
 const imageCache = new Map();
+const ASSET_VERSION = 'battle-sprites-20260713';
+
+function versionAssetSource(source) {
+    if (!source?.startsWith?.('assets/images/')) return source;
+    return `${source}${source.includes('?') ? '&' : '?'}v=${ASSET_VERSION}`;
+}
 
 export function getCachedImage(source) {
     if (!source || typeof Image === 'undefined') return null;
 
-    if (!imageCache.has(source)) {
+    const versionedSource = versionAssetSource(source);
+    if (!imageCache.has(versionedSource)) {
         const image = new Image();
         image.decoding = 'async';
-        image.src = source;
-        imageCache.set(source, image);
+        image.src = versionedSource;
+        imageCache.set(versionedSource, image);
     }
 
-    return imageCache.get(source);
+    return imageCache.get(versionedSource);
 }
 
 export function getSpriteFrame(source) {

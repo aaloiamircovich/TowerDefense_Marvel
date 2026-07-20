@@ -44,22 +44,17 @@ console.log(`Menor eficiencia: ${ranking.slice(-3).map((hero) => hero.name).join
 console.log(`Creditos proyectados tras oleadas 1/5/10: ${missionProjection[0]} / ${missionProjection[4]} / ${missionProjection[9]}`);
 console.log(`Precios medianos por tier: ${Object.entries(tierPrices).map(([tier, prices]) => `T${tier}=$${median(prices)}`).join(' | ')}`);
 
-const slots = {
-    weapon: Object.values(items).filter((item) => item.slot === 'weapon'),
-    armor: Object.values(items).filter((item) => item.slot === 'armor'),
-    artifact: Object.values(items).filter((item) => item.slot === 'artifact')
-};
-const builds = slots.weapon.flatMap((weapon) => slots.armor.flatMap((armor) => slots.artifact.map((artifact) => {
-    const effects = aggregateItemEffects([weapon, armor, artifact]);
+const builds = Object.values(items).map((item) => {
+    const effects = aggregateItemEffects([item]);
     const power = (1 + (effects.damagePct || 0))
         * (1 + (effects.fireRatePct || 0))
         * (1 + (effects.rangePct || 0) * 0.4)
         * (1 + (effects.critChance || 0) / 100)
         + (effects.armorPenetration || 0) * 0.2;
-    return { ids: [weapon.id, armor.id, artifact.id], power };
-})));
+    return { ids: [item.id], power };
+});
 builds.sort((a, b) => b.power - a.power);
-console.log(`Builds de tres ranuras simuladas: ${builds.length}`);
+console.log(`Objetos individuales simulados: ${builds.length}`);
 console.log(`Mayor multiplicador estimado: ${builds[0].power.toFixed(2)} (${builds[0].ids.join(' + ')})`);
 
 const phase12Ids = ['hulk', 'black_widow', 'hawkeye', 'black_panther', 'vision', 'falcon'];

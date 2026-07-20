@@ -66,6 +66,7 @@ export class GameModeSystem {
     prepareDailyRoster(random) {
         const heroes = Object.values(this.game.heroDatabase || {});
         this.game.activeTeam = sampleUnique(heroes, 6, random);
+        this.game.assetPreloader?.preloadHeroes(this.game.activeTeam);
     }
 
     prepareDraftRoster(random) {
@@ -73,6 +74,7 @@ export class GameModeSystem {
         const shuffled = sampleUnique(heroes, heroes.length, random);
         this.game.activeTeam = shuffled.slice(0, 3);
         this.draftPool = shuffled.slice(3);
+        this.game.assetPreloader?.preloadHeroes([...this.game.activeTeam, ...this.draftPool.slice(0, 3)]);
     }
 
     buildWave(waveNumber, manager) {
@@ -113,6 +115,7 @@ export class GameModeSystem {
         if (this.game.activeTeam.length < 6) this.game.activeTeam.push(hero);
         else this.game.activeTeam[this.game.activeTeam.length - 1] = hero;
         this.pendingDraft = [];
+        this.game.assetPreloader?.preloadHeroes(this.game.activeTeam);
         this.game.replaySystem?.record('draft', { heroId });
         this.game.uiManager?.renderHeroRoster(this.game.activeTeam, (config) => this.game.inputManager.setPlacementMode(config));
         this.game.uiManager?.closePanel();

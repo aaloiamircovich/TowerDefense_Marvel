@@ -1,14 +1,29 @@
-function hashText(text) {
-    let hash = 2166136261;
-    for (let index = 0; index < text.length; index++) {
-        hash ^= text.charCodeAt(index);
-        hash = Math.imul(hash, 16777619);
-    }
-    return hash >>> 0;
+export const HERO_RARITY_WEIGHTS = {
+    Common: 48,
+    Rare: 30,
+    Epic: 15,
+    Legendary: 6,
+    Mythic: 2,
+    Secret: 1
+};
+
+export function getItemShopPowerScore(item = {}) {
+    const tierScore = (Number(item.tier) || 1) * 100000;
+    const priceScore = Number(item.price) || 0;
+    const effectScore = Object.values(item.effects || {}).reduce((total, value) => {
+        if (typeof value === 'number') return total + Math.abs(value) * 1000;
+        if (typeof value === 'boolean') return total + (value ? 250 : 0);
+        return total;
+    }, 0);
+    return tierScore + priceScore + effectScore;
 }
 
-function seededOrder(values, seed) {
-    return [...values].sort((a, b) => hashText(`${seed}:${a.id}`) - hashText(`${seed}:${b.id}`));
+export function sortItemsWeakestFirst(items = []) {
+    return [...items].sort((a, b) => (
+        getItemShopPowerScore(a) - getItemShopPowerScore(b)
+        || (a.price || 0) - (b.price || 0)
+        || String(a.name || a.id).localeCompare(String(b.name || b.id))
+    ));
 }
 
 export class ShopSystem {
@@ -19,26 +34,28 @@ export class ShopSystem {
     }
 
     getRotationKey() {
-        return this.dateProvider().toISOString().slice(0, 10);
+        return 'arsenal-progressivo';
     }
 
     ensureRotation() {
         const shop = this.progression.state.shop;
-        const key = this.getRotationKey();
-        if (shop.rotationKey === key && shop.slotIds.length > 0) return;
+        const rotationKey = this.getRotationKey();
+        const slotIds = this.getProgressiveQueue().slice(0, 3).map((item) => item.id);
+        const changed = shop.rotationKey !== rotationKey
+            || shop.purchasedIds.length > 0
+            || shop.slotIds.length !== slotIds.length
+            || shop.slotIds.some((id, index) => id !== slotIds[index]);
+        if (!changed) return;
 
-        const available = Object.values(this.game.itemDatabase);
-        const bands = [
-            available.filter((item) => item.tier === 1),
-            available.filter((item) => item.tier === 2),
-            available.filter((item) => item.tier >= 3)
-        ];
-        const selected = bands.flatMap((band, index) => seededOrder(band, `${key}:${index}`).slice(0, 1));
-        const remainder = seededOrder(available.filter((item) => !selected.includes(item)), `${key}:extra`);
-        shop.rotationKey = key;
-        shop.slotIds = [...selected, ...remainder].slice(0, 3).map((item) => item.id);
+        shop.rotationKey = rotationKey;
         shop.purchasedIds = [];
+        shop.slotIds = slotIds;
         this.progression.save();
+    }
+
+    getProgressiveQueue() {
+        return sortItemsWeakestFirst(Object.values(this.game.itemDatabase || {}))
+            .filter((item) => !this.progression.hasItem(item.id));
     }
 
     getRotation() {
@@ -46,20 +63,20 @@ export class ShopSystem {
         const shop = this.progression.state.shop;
         return shop.slotIds.map((id) => ({
             item: this.game.itemDatabase[id],
-            purchased: shop.purchasedIds.includes(id)
-        }));
+            purchased: false
+        })).filter((slot) => slot.item);
     }
 
     purchaseItem(itemId) {
         this.ensureRotation();
         const shop = this.progression.state.shop;
         const item = this.game.itemDatabase[itemId];
-        if (!item || !shop.slotIds.includes(itemId) || shop.purchasedIds.includes(itemId)) {
+        if (!item || !shop.slotIds.includes(itemId) || this.progression.hasItem(itemId)) {
             return { ok: false, reason: 'Objeto no disponible' };
         }
         if (!this.progression.spendMetaCredits(item.price)) return { ok: false, reason: 'Fondos S.H.I.E.L.D. insuficientes' };
         this.progression.addOwnedItem(itemId);
-        shop.purchasedIds.push(itemId);
+        shop.slotIds = this.getProgressiveQueue().slice(0, 3).map((nextItem) => nextItem.id);
         this.progression.save();
         return { ok: true, item };
     }
@@ -75,12 +92,12 @@ export class ShopSystem {
         const shop = this.progression.state.shop;
         const guaranteed = shop.heroPity >= 4;
         const candidates = guaranteed ? pool.filter((hero) => hero.rarity !== 'Common') : pool;
-        const weights = { Common: 60, Rare: 30, Legendary: 10 };
         const weighted = (candidates.length ? candidates : pool)
-            .flatMap((hero) => Array(weights[hero.rarity] || 20).fill(hero));
+            .flatMap((hero) => Array(HERO_RARITY_WEIGHTS[hero.rarity] || HERO_RARITY_WEIGHTS.Rare).fill(hero));
         const hero = this.game.random.pick(weighted);
         this.progression.spendMetaCredits(cost);
         this.progression.unlockHero(hero.id);
+        this.game.assetPreloader?.preloadHeroes([hero]);
         shop.heroPity = hero.rarity === 'Common' ? shop.heroPity + 1 : 0;
         this.progression.save();
         return { ok: true, hero, guaranteed };

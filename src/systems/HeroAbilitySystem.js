@@ -4,6 +4,8 @@ import { AvengerKitSystem } from './AvengerKitSystem.js';
 import { CosmicKitSystem } from './CosmicKitSystem.js';
 import { StreetKitSystem } from './StreetKitSystem.js';
 import { MutantKitSystem } from './MutantKitSystem.js';
+import { getLineEndpoint, getLineTargets } from '../utils/LineTargeting.js';
+import { applyCooldownReductions } from '../utils/AbilityModifiers.js';
 
 const ACTIVE_COOLDOWNS = {
     thor: 11,
@@ -85,14 +87,14 @@ export class HeroAbilitySystem {
     }
 
     activateArcOverload(target, stats) {
-        const targets = HeroAbilitySystem.getLineTargets(
+        const targets = getLineTargets(
             this.hero,
             target,
             this.hero.game.enemies,
             stats.range * 1.2,
             24
         );
-        const endpoint = HeroAbilitySystem.getLineEndpoint(this.hero, target, stats.range * 1.2);
+        const endpoint = getLineEndpoint(this.hero, target, stats.range * 1.2);
         const damage = stats.damage * 0.9 * this.getPowerScale();
 
         targets.forEach((enemy) => CombatSystem.applyDamage({
@@ -169,9 +171,7 @@ export class HeroAbilitySystem {
     getCooldown() {
         const base = ACTIVE_COOLDOWNS[this.hero.id] || 0;
         const reduction = Math.min(0.25, Math.max(0, this.hero.level - 1) * 0.02);
-        const progression = this.hero.game.progression?.getHeroBonuses(this.hero.id);
-        const synergy = this.hero.game.teamSynergy?.getAbilityModifiers(this.hero);
-        return base * (1 - reduction) * (1 - (progression?.cooldown || 0)) * (1 - (synergy?.cooldown || 0));
+        return applyCooldownReductions(this.hero, base, reduction);
     }
 
     getPowerScale() {
@@ -243,28 +243,10 @@ export class HeroAbilitySystem {
     }
 
     static getLineEndpoint(origin, target, distance) {
-        const dx = target.x - origin.x;
-        const dy = target.y - origin.y;
-        const length = Math.hypot(dx, dy) || 1;
-        return {
-            x: origin.x + dx / length * distance,
-            y: origin.y + dy / length * distance
-        };
+        return getLineEndpoint(origin, target, distance);
     }
 
     static getLineTargets(origin, target, enemies, distance, width) {
-        const endpoint = HeroAbilitySystem.getLineEndpoint(origin, target, distance);
-        const vx = endpoint.x - origin.x;
-        const vy = endpoint.y - origin.y;
-        const lengthSquared = vx * vx + vy * vy;
-
-        return enemies.filter((enemy) => {
-            if (!enemy.isAlive) return false;
-            const projection = ((enemy.x - origin.x) * vx + (enemy.y - origin.y) * vy) / lengthSquared;
-            if (projection < 0 || projection > 1) return false;
-            const closestX = origin.x + projection * vx;
-            const closestY = origin.y + projection * vy;
-            return Math.hypot(enemy.x - closestX, enemy.y - closestY) <= width;
-        });
+        return getLineTargets(origin, target, enemies, distance, width);
     }
 }

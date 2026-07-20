@@ -33,6 +33,10 @@ test('SettingsPanel usa el locale guardado para renderizar textos reales', () =>
                         audio: true,
                         highContrast: false,
                         reduceMotion: false,
+                        pixelArtCrisp: false,
+                        reducedVfx: false,
+                        tutorialHints: true,
+                        simplifiedUi: false,
                         masterVolume: 0.8,
                         musicVolume: 0.45,
                         sfxVolume: 0.75,
@@ -58,8 +62,13 @@ test('SettingsPanel usa el locale guardado para renderizar textos reales', () =>
         assert.match(panelContent.html, /<h2>Settings<\/h2>/);
         assert.match(panelContent.html, /Game and accessibility/);
         assert.match(panelContent.html, /Show tactical grid/);
+        assert.match(panelContent.html, /Crisp pixel art/);
+        assert.match(panelContent.html, /Reduced VFX/);
+        assert.match(panelContent.html, /Contextual tactical guide/);
+        assert.match(panelContent.html, /Simplified interface/);
         assert.match(panelContent.html, /Start wave/);
         assert.match(panelContent.html, /Cancel placement/);
+        assert.match(panelContent.html, /Reset all/);
     } finally {
         globalThis.document = previousDocument;
     }

@@ -1,5 +1,7 @@
 import { Projectile } from '../entities/Projectile.js';
 import { CombatSystem } from './CombatSystem.js';
+import { getLineEndpoint, getLineTargets } from '../utils/LineTargeting.js';
+import { applyCooldownReductions } from '../utils/AbilityModifiers.js';
 
 const COSMIC_CONTROLS = {
     star_lord: {
@@ -168,7 +170,7 @@ export class CosmicKitSystem {
         if (!target) return;
         this.flightOrigin = { x: this.hero.x, y: this.hero.y };
         const endpoint = { x: target.x, y: target.y - 34 };
-        const victims = lineTargets(this.hero, target, enemies, stats.range * 2.2, 26);
+        const victims = getLineTargets(this.hero, target, enemies, stats.range * 2.2, 26);
         victims.forEach((enemy) => CombatSystem.applyDamage({ attackerType: this.hero.category, damage: stats.damage * 0.85 * this.getPowerScale(), armorPenetration: 0.35 }, enemy, this.hero, this.hero.game.resourceManager, 1));
         this.hero.game.vfx?.addBeam(this.hero, endpoint, { color: '#ffd45f', width: 13, duration: 0.3 });
         this.hero.x = endpoint.x;
@@ -241,10 +243,10 @@ export class CosmicKitSystem {
 
     fireCosmicTrajectory(target, stats) {
         const length = stats.range * 1.25;
-        const victims = lineTargets(this.hero, target, this.hero.game.enemies || [], length, 32);
+        const victims = getLineTargets(this.hero, target, this.hero.game.enemies || [], length, 32);
         const factor = this.mode === 'power' ? 0.75 : this.mode === 'control' ? 0.48 : 0.38;
         victims.forEach((enemy) => CombatSystem.applyDamage({ attackerType: this.hero.category, damage: stats.damage * factor * this.getPowerScale(), armorPenetration: 0.4 }, enemy, this.hero, this.hero.game.resourceManager, 1));
-        this.hero.game.vfx?.addBeam(this.hero, lineEndpoint(this.hero, target, length), { color: this.getProjectileColor(), width: 9, duration: 0.22 });
+        this.hero.game.vfx?.addBeam(this.hero, getLineEndpoint(this.hero, target, length), { color: this.getProjectileColor(), width: 9, duration: 0.22 });
         this.hero.game.audio?.play('cosmic');
         this.hero.recordAbility();
     }
@@ -256,9 +258,7 @@ export class CosmicKitSystem {
     }
 
     getCooldown(base) {
-        const progression = this.hero.game.progression?.getHeroBonuses(this.hero.id);
-        const synergy = this.hero.game.teamSynergy?.getAbilityModifiers(this.hero);
-        return base * (1 - (progression?.cooldown || 0)) * (1 - (synergy?.cooldown || 0));
+        return applyCooldownReductions(this.hero, base);
     }
 
     getModeLabel() {
@@ -277,26 +277,6 @@ function staticState(label) {
 
 function distance(a, b) {
     return Math.hypot(a.x - b.x, a.y - b.y);
-}
-
-function lineEndpoint(origin, target, length) {
-    const dx = target.x - origin.x;
-    const dy = target.y - origin.y;
-    const magnitude = Math.hypot(dx, dy) || 1;
-    return { x: origin.x + dx / magnitude * length, y: origin.y + dy / magnitude * length };
-}
-
-function lineTargets(origin, target, enemies, length, width) {
-    const endpoint = lineEndpoint(origin, target, length);
-    const vx = endpoint.x - origin.x;
-    const vy = endpoint.y - origin.y;
-    const lengthSquared = vx * vx + vy * vy;
-    return enemies.filter((enemy) => {
-        if (!enemy.isAlive) return false;
-        const projection = ((enemy.x - origin.x) * vx + (enemy.y - origin.y) * vy) / lengthSquared;
-        if (projection < 0 || projection > 1) return false;
-        return distance(enemy, { x: origin.x + projection * vx, y: origin.y + projection * vy }) <= width;
-    });
 }
 
 export { COSMIC_CONTROLS };

@@ -210,6 +210,9 @@ test('WaveManager emite informe tactico con deltas de la oleada', () => {
     manager.startNextWave();
     game.heroes[0].combatStats.damageDealt += 640;
     game.heroes[0].combatStats.kills += 5;
+    game.heroes[0].combatStats.controlSeconds = 3;
+    game.heroes[0].combatStats.armorBreaks = 2;
+    game.heroes[0].combatStats.livesSaved = 1;
     game.resourceManager.lives = 18;
     manager.enemiesQueue = [];
     manager.finishWave();
@@ -221,7 +224,48 @@ test('WaveManager emite informe tactico con deltas de la oleada', () => {
     assert.equal(reports[0].kills, 5);
     assert.equal(reports[0].bestHero, 'Iron Man');
     assert.equal(reports[0].bestHeroId, 'iron_man');
+    assert.equal(reports[0].tactical.controlSeconds, 3);
+    assert.equal(reports[0].tactical.armorBreaks, 2);
+    assert.equal(reports[0].tactical.livesSaved, 1);
+    assert.equal(reports[0].tactical.mvp, 'Iron Man');
+    assert.ok(reports[0].tactical.score > 0);
     assert.ok(reports[0].credits >= 134);
+});
+
+test('WaveManager registra fugas con counter y progreso de ruta', () => {
+    const reports = [];
+    const game = createGame('new-york', [], [
+        deployedHero({ id: 'iron_man', name: 'Iron Man', damage: 58, fireRate: 1.4, range: 180, level: 2 })
+    ]);
+    game.resourceManager.credits = 300;
+    game.resourceManager.lives = 20;
+    game.uiManager = {
+        renderWavePreview: () => {},
+        setNextWaveEnabled: () => {},
+        clearWaveReport: () => {},
+        renderWaveReport: (report) => reports.push(report),
+        updateCombatPressure: () => {},
+        showToast: () => {}
+    };
+    const manager = new WaveManager(game, enemies);
+
+    manager.startNextWave();
+    manager.recordLeak({
+        id: 'hand_ninja',
+        name: 'Ninja de La Mano',
+        archetype: 'stealth',
+        stealth: true,
+        speed: 92,
+        distanceTravelled: 36
+    }, { lifeLoss: 1 });
+    game.resourceManager.lives = 19;
+    manager.enemiesQueue = [];
+    manager.finishWave();
+
+    assert.equal(reports[0].leakEvents.length, 1);
+    assert.equal(reports[0].leakEvents[0].counter, 'Deteccion');
+    assert.equal(reports[0].leakEvents[0].segmentPct, 90);
+    assert.deepEqual(reports[0].leakEvents[0].traits, ['Sigilo', 'Rapido']);
 });
 
 test('WaveManager paga bonus moderado por oleada perfecta', () => {

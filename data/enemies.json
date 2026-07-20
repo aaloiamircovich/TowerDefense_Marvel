@@ -113,7 +113,56 @@
       "stealth": true,
       "faction": "Hydra",
       "archetype": "runner",
-      "threat": 3
+      "threat": 3,
+      "sprite": "assets/images/enemies/hand_ninja/portrait.png",
+      "visual": {
+        "size": 72,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.62
+        },
+        "defaultDirection": "south",
+        "portrait": "assets/images/enemies/hand_ninja/portrait.png",
+        "idle": {
+          "south": "assets/images/enemies/hand_ninja/idle/south.png",
+          "south-east": "assets/images/enemies/hand_ninja/idle/south-east.png",
+          "east": "assets/images/enemies/hand_ninja/idle/east.png",
+          "north-east": "assets/images/enemies/hand_ninja/idle/north-east.png",
+          "north": "assets/images/enemies/hand_ninja/idle/north.png",
+          "north-west": "assets/images/enemies/hand_ninja/idle/north-west.png",
+          "west": "assets/images/enemies/hand_ninja/idle/west.png",
+          "south-west": "assets/images/enemies/hand_ninja/idle/south-west.png"
+        },
+        "walk": {
+          "fps": 8,
+          "frames": {
+            "south": [
+              "assets/images/enemies/hand_ninja/walk/south/0.png",
+              "assets/images/enemies/hand_ninja/walk/south/1.png",
+              "assets/images/enemies/hand_ninja/walk/south/2.png",
+              "assets/images/enemies/hand_ninja/walk/south/3.png"
+            ],
+            "north": [
+              "assets/images/enemies/hand_ninja/walk/north/0.png",
+              "assets/images/enemies/hand_ninja/walk/north/1.png",
+              "assets/images/enemies/hand_ninja/walk/north/2.png",
+              "assets/images/enemies/hand_ninja/walk/north/3.png"
+            ],
+            "east": [
+              "assets/images/enemies/hand_ninja/walk/east/0.png",
+              "assets/images/enemies/hand_ninja/walk/east/1.png",
+              "assets/images/enemies/hand_ninja/walk/east/2.png",
+              "assets/images/enemies/hand_ninja/walk/east/3.png"
+            ],
+            "west": [
+              "assets/images/enemies/hand_ninja/walk/west/0.png",
+              "assets/images/enemies/hand_ninja/walk/west/1.png",
+              "assets/images/enemies/hand_ninja/walk/west/2.png",
+              "assets/images/enemies/hand_ninja/walk/west/3.png"
+            ]
+          }
+        }
+      }
     },
     "symbiote_spawn": {
       "id": "symbiote_spawn",
@@ -572,7 +621,69 @@
           "speed": 1.25,
           "color": "#e63946"
         }
-      ]
+      ],
+      "sprite": "assets/images/enemies/ultron_prime/portrait.png",
+      "visual": {
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.62
+        },
+        "defaultDirection": "south",
+        "portrait": "assets/images/enemies/ultron_prime/portrait.png",
+        "idle": {
+          "south": "assets/images/enemies/ultron_prime/idle/south.png",
+          "south-east": "assets/images/enemies/ultron_prime/idle/south-east.png",
+          "east": "assets/images/enemies/ultron_prime/idle/east.png",
+          "north-east": "assets/images/enemies/ultron_prime/idle/north-east.png",
+          "north": "assets/images/enemies/ultron_prime/idle/north.png",
+          "north-west": "assets/images/enemies/ultron_prime/idle/north-west.png",
+          "west": "assets/images/enemies/ultron_prime/idle/west.png",
+          "south-west": "assets/images/enemies/ultron_prime/idle/south-west.png"
+        },
+        "walk": {
+          "fps": 8,
+          "frames": {
+            "south": [
+              "assets/images/enemies/ultron_prime/walk/south/0.png",
+              "assets/images/enemies/ultron_prime/walk/south/1.png",
+              "assets/images/enemies/ultron_prime/walk/south/2.png",
+              "assets/images/enemies/ultron_prime/walk/south/3.png",
+              "assets/images/enemies/ultron_prime/walk/south/4.png",
+              "assets/images/enemies/ultron_prime/walk/south/5.png"
+            ],
+            "north": [
+              "assets/images/enemies/ultron_prime/walk/north/0.png",
+              "assets/images/enemies/ultron_prime/walk/north/1.png",
+              "assets/images/enemies/ultron_prime/walk/north/2.png",
+              "assets/images/enemies/ultron_prime/walk/north/3.png",
+              "assets/images/enemies/ultron_prime/walk/north/4.png",
+              "assets/images/enemies/ultron_prime/walk/north/5.png",
+              "assets/images/enemies/ultron_prime/walk/north/6.png",
+              "assets/images/enemies/ultron_prime/walk/north/7.png",
+              "assets/images/enemies/ultron_prime/walk/north/8.png"
+            ],
+            "east": [
+              "assets/images/enemies/ultron_prime/walk/east/0.png",
+              "assets/images/enemies/ultron_prime/walk/east/1.png",
+              "assets/images/enemies/ultron_prime/walk/east/2.png",
+              "assets/images/enemies/ultron_prime/walk/east/3.png",
+              "assets/images/enemies/ultron_prime/walk/east/4.png",
+              "assets/images/enemies/ultron_prime/walk/east/5.png",
+              "assets/images/enemies/ultron_prime/walk/east/6.png"
+            ],
+            "west": [
+              "assets/images/enemies/ultron_prime/walk/west/0.png",
+              "assets/images/enemies/ultron_prime/walk/west/1.png",
+              "assets/images/enemies/ultron_prime/walk/west/2.png",
+              "assets/images/enemies/ultron_prime/walk/west/3.png",
+              "assets/images/enemies/ultron_prime/walk/west/4.png",
+              "assets/images/enemies/ultron_prime/walk/west/5.png",
+              "assets/images/enemies/ultron_prime/walk/west/6.png"
+            ]
+          }
+        }
+      }
     },
     "kingpin": {
       "id": "kingpin",
@@ -596,7 +707,56 @@
       "reward": 1800,
       "armor": 0.35,
       "stealth": false,
-      "immuneToStun": true
+      "immuneToStun": true,
+      "sprite": "assets/images/enemies/kang/portrait.png",
+      "visual": {
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.62
+        },
+        "defaultDirection": "south",
+        "portrait": "assets/images/enemies/kang/portrait.png",
+        "idle": {
+          "south": "assets/images/enemies/kang/idle/south.png",
+          "south-east": "assets/images/enemies/kang/idle/south-east.png",
+          "east": "assets/images/enemies/kang/idle/east.png",
+          "north-east": "assets/images/enemies/kang/idle/north-east.png",
+          "north": "assets/images/enemies/kang/idle/north.png",
+          "north-west": "assets/images/enemies/kang/idle/north-west.png",
+          "west": "assets/images/enemies/kang/idle/west.png",
+          "south-west": "assets/images/enemies/kang/idle/south-west.png"
+        },
+        "walk": {
+          "fps": 7,
+          "frames": {
+            "south": [
+              "assets/images/enemies/kang/walk/south/0.png",
+              "assets/images/enemies/kang/walk/south/1.png",
+              "assets/images/enemies/kang/walk/south/2.png",
+              "assets/images/enemies/kang/walk/south/3.png"
+            ],
+            "north": [
+              "assets/images/enemies/kang/walk/north/0.png",
+              "assets/images/enemies/kang/walk/north/1.png",
+              "assets/images/enemies/kang/walk/north/2.png",
+              "assets/images/enemies/kang/walk/north/3.png"
+            ],
+            "east": [
+              "assets/images/enemies/kang/walk/east/0.png",
+              "assets/images/enemies/kang/walk/east/1.png",
+              "assets/images/enemies/kang/walk/east/2.png",
+              "assets/images/enemies/kang/walk/east/3.png"
+            ],
+            "west": [
+              "assets/images/enemies/kang/walk/west/0.png",
+              "assets/images/enemies/kang/walk/west/1.png",
+              "assets/images/enemies/kang/walk/west/2.png",
+              "assets/images/enemies/kang/walk/west/3.png"
+            ]
+          }
+        }
+      }
     },
     "apocalypse": {
       "id": "apocalypse",
@@ -728,11 +888,13 @@
         },
         {
           "threshold": 0.5,
-          "name": "Ejército Outrider",
-          "telegraph": 1.4,
-          "summonId": "outrider",
-          "summonCount": 4,
-          "color": "#ff8bd1"
+          "name": "Guantelete del Infinito",
+          "telegraph": 0.8,
+          "animation": "gauntlet",
+          "stunHeroes": true,
+          "stunDuration": 4,
+          "stunRadius": 260,
+          "color": "#ffd166"
         },
         {
           "threshold": 0.25,
@@ -743,7 +905,174 @@
           "heal": 0.08,
           "color": "#ffd166"
         }
-      ]
+      ],
+      "sprite": "assets/images/enemies/thanos_final/portrait.png",
+      "visual": {
+        "portrait": "assets/images/enemies/thanos_final/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.62
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/enemies/thanos_final/idle/north.png",
+          "north-east": "assets/images/enemies/thanos_final/idle/north-east.png",
+          "east": "assets/images/enemies/thanos_final/idle/east.png",
+          "south-east": "assets/images/enemies/thanos_final/idle/south-east.png",
+          "south": "assets/images/enemies/thanos_final/idle/south.png",
+          "south-west": "assets/images/enemies/thanos_final/idle/south-west.png",
+          "west": "assets/images/enemies/thanos_final/idle/west.png",
+          "north-west": "assets/images/enemies/thanos_final/idle/north-west.png"
+        },
+        "walk": {
+          "fps": 7,
+          "frames": {
+            "north": [
+              "assets/images/enemies/thanos_final/walk/north/0.png",
+              "assets/images/enemies/thanos_final/walk/north/1.png",
+              "assets/images/enemies/thanos_final/walk/north/2.png",
+              "assets/images/enemies/thanos_final/walk/north/3.png"
+            ],
+            "north-east": [
+              "assets/images/enemies/thanos_final/walk/north/0.png",
+              "assets/images/enemies/thanos_final/walk/north/1.png",
+              "assets/images/enemies/thanos_final/walk/north/2.png",
+              "assets/images/enemies/thanos_final/walk/north/3.png"
+            ],
+            "east": [
+              "assets/images/enemies/thanos_final/walk/east/0.png",
+              "assets/images/enemies/thanos_final/walk/east/1.png",
+              "assets/images/enemies/thanos_final/walk/east/2.png",
+              "assets/images/enemies/thanos_final/walk/east/3.png"
+            ],
+            "south-east": [
+              "assets/images/enemies/thanos_final/walk/south/0.png",
+              "assets/images/enemies/thanos_final/walk/south/1.png",
+              "assets/images/enemies/thanos_final/walk/south/2.png",
+              "assets/images/enemies/thanos_final/walk/south/3.png"
+            ],
+            "south": [
+              "assets/images/enemies/thanos_final/walk/south/0.png",
+              "assets/images/enemies/thanos_final/walk/south/1.png",
+              "assets/images/enemies/thanos_final/walk/south/2.png",
+              "assets/images/enemies/thanos_final/walk/south/3.png"
+            ],
+            "south-west": [
+              "assets/images/enemies/thanos_final/walk/south/0.png",
+              "assets/images/enemies/thanos_final/walk/south/1.png",
+              "assets/images/enemies/thanos_final/walk/south/2.png",
+              "assets/images/enemies/thanos_final/walk/south/3.png"
+            ],
+            "west": [
+              "assets/images/enemies/thanos_final/walk/west/0.png",
+              "assets/images/enemies/thanos_final/walk/west/1.png",
+              "assets/images/enemies/thanos_final/walk/west/2.png",
+              "assets/images/enemies/thanos_final/walk/west/3.png"
+            ],
+            "north-west": [
+              "assets/images/enemies/thanos_final/walk/north/0.png",
+              "assets/images/enemies/thanos_final/walk/north/1.png",
+              "assets/images/enemies/thanos_final/walk/north/2.png",
+              "assets/images/enemies/thanos_final/walk/north/3.png"
+            ]
+          }
+        },
+        "attack": {
+          "fps": 12,
+          "loop": false,
+          "frames": {
+            "north": [
+              "assets/images/enemies/thanos_final/gauntlet/north/0.png",
+              "assets/images/enemies/thanos_final/gauntlet/north/1.png",
+              "assets/images/enemies/thanos_final/gauntlet/north/2.png",
+              "assets/images/enemies/thanos_final/gauntlet/north/3.png",
+              "assets/images/enemies/thanos_final/gauntlet/north/4.png",
+              "assets/images/enemies/thanos_final/gauntlet/north/5.png",
+              "assets/images/enemies/thanos_final/gauntlet/north/6.png",
+              "assets/images/enemies/thanos_final/gauntlet/north/7.png",
+              "assets/images/enemies/thanos_final/gauntlet/north/8.png"
+            ],
+            "north-east": [
+              "assets/images/enemies/thanos_final/gauntlet/north/0.png",
+              "assets/images/enemies/thanos_final/gauntlet/north/1.png",
+              "assets/images/enemies/thanos_final/gauntlet/north/2.png",
+              "assets/images/enemies/thanos_final/gauntlet/north/3.png",
+              "assets/images/enemies/thanos_final/gauntlet/north/4.png",
+              "assets/images/enemies/thanos_final/gauntlet/north/5.png",
+              "assets/images/enemies/thanos_final/gauntlet/north/6.png",
+              "assets/images/enemies/thanos_final/gauntlet/north/7.png",
+              "assets/images/enemies/thanos_final/gauntlet/north/8.png"
+            ],
+            "east": [
+              "assets/images/enemies/thanos_final/gauntlet/east/0.png",
+              "assets/images/enemies/thanos_final/gauntlet/east/1.png",
+              "assets/images/enemies/thanos_final/gauntlet/east/2.png",
+              "assets/images/enemies/thanos_final/gauntlet/east/3.png",
+              "assets/images/enemies/thanos_final/gauntlet/east/4.png",
+              "assets/images/enemies/thanos_final/gauntlet/east/5.png",
+              "assets/images/enemies/thanos_final/gauntlet/east/6.png",
+              "assets/images/enemies/thanos_final/gauntlet/east/7.png",
+              "assets/images/enemies/thanos_final/gauntlet/east/8.png"
+            ],
+            "south-east": [
+              "assets/images/enemies/thanos_final/gauntlet/south/0.png",
+              "assets/images/enemies/thanos_final/gauntlet/south/1.png",
+              "assets/images/enemies/thanos_final/gauntlet/south/2.png",
+              "assets/images/enemies/thanos_final/gauntlet/south/3.png",
+              "assets/images/enemies/thanos_final/gauntlet/south/4.png",
+              "assets/images/enemies/thanos_final/gauntlet/south/5.png",
+              "assets/images/enemies/thanos_final/gauntlet/south/6.png",
+              "assets/images/enemies/thanos_final/gauntlet/south/7.png",
+              "assets/images/enemies/thanos_final/gauntlet/south/8.png"
+            ],
+            "south": [
+              "assets/images/enemies/thanos_final/gauntlet/south/0.png",
+              "assets/images/enemies/thanos_final/gauntlet/south/1.png",
+              "assets/images/enemies/thanos_final/gauntlet/south/2.png",
+              "assets/images/enemies/thanos_final/gauntlet/south/3.png",
+              "assets/images/enemies/thanos_final/gauntlet/south/4.png",
+              "assets/images/enemies/thanos_final/gauntlet/south/5.png",
+              "assets/images/enemies/thanos_final/gauntlet/south/6.png",
+              "assets/images/enemies/thanos_final/gauntlet/south/7.png",
+              "assets/images/enemies/thanos_final/gauntlet/south/8.png"
+            ],
+            "south-west": [
+              "assets/images/enemies/thanos_final/gauntlet/south/0.png",
+              "assets/images/enemies/thanos_final/gauntlet/south/1.png",
+              "assets/images/enemies/thanos_final/gauntlet/south/2.png",
+              "assets/images/enemies/thanos_final/gauntlet/south/3.png",
+              "assets/images/enemies/thanos_final/gauntlet/south/4.png",
+              "assets/images/enemies/thanos_final/gauntlet/south/5.png",
+              "assets/images/enemies/thanos_final/gauntlet/south/6.png",
+              "assets/images/enemies/thanos_final/gauntlet/south/7.png",
+              "assets/images/enemies/thanos_final/gauntlet/south/8.png"
+            ],
+            "west": [
+              "assets/images/enemies/thanos_final/gauntlet/west/0.png",
+              "assets/images/enemies/thanos_final/gauntlet/west/1.png",
+              "assets/images/enemies/thanos_final/gauntlet/west/2.png",
+              "assets/images/enemies/thanos_final/gauntlet/west/3.png",
+              "assets/images/enemies/thanos_final/gauntlet/west/4.png",
+              "assets/images/enemies/thanos_final/gauntlet/west/5.png",
+              "assets/images/enemies/thanos_final/gauntlet/west/6.png",
+              "assets/images/enemies/thanos_final/gauntlet/west/7.png",
+              "assets/images/enemies/thanos_final/gauntlet/west/8.png"
+            ],
+            "north-west": [
+              "assets/images/enemies/thanos_final/gauntlet/north/0.png",
+              "assets/images/enemies/thanos_final/gauntlet/north/1.png",
+              "assets/images/enemies/thanos_final/gauntlet/north/2.png",
+              "assets/images/enemies/thanos_final/gauntlet/north/3.png",
+              "assets/images/enemies/thanos_final/gauntlet/north/4.png",
+              "assets/images/enemies/thanos_final/gauntlet/north/5.png",
+              "assets/images/enemies/thanos_final/gauntlet/north/6.png",
+              "assets/images/enemies/thanos_final/gauntlet/north/7.png",
+              "assets/images/enemies/thanos_final/gauntlet/north/8.png"
+            ]
+          }
+        }
+      }
     },
     "malekith": {
       "id": "malekith",

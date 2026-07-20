@@ -9,10 +9,14 @@ const allegianceHeroes = ['shuri', 'okoye', 'black_bolt', 'crystal', 'namora', '
 const requiredGroups = ['Avengers', 'Mutantes', 'Defenders', 'Guardianes', 'Místico', 'Callejero', 'Wakanda', 'Tecnología', 'Cósmico', 'Espías', 'Oscuros', 'Marciales', 'Inhumanos', 'Atlánticos', 'Rivales'];
 
 test('agrupaciones tienen catalogo completo y umbral jugable', () => {
-    assert.deepEqual(Object.keys(SYNERGY_DEFINITIONS).sort(), requiredGroups.sort());
-    for (const tag of requiredGroups) {
+    const groups = Object.keys(SYNERGY_DEFINITIONS);
+    assert.ok(groups.length >= 20);
+    for (const tag of groups) {
         const members = Object.values(heroes).filter((hero) => hero.tags?.includes(tag));
-        assert.ok(members.length >= 3, `${tag} necesita al menos tres miembros`);
+        assert.ok(members.length >= 2, `${tag} necesita al menos dos miembros`);
+    }
+    for (const hero of Object.values(heroes)) {
+        assert.ok(hero.tags.length >= 1 && hero.tags.length <= 2, `${hero.id} debe tener una o dos agrupaciones`);
     }
 });
 

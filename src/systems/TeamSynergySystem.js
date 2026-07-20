@@ -1,46 +1,122 @@
-export const SYNERGY_DEFINITIONS = {
-    Avengers: family('Avengers', '#e63946', 'Ataque coordinado para equipos de primera linea.',
+import { getRarityClass, normalizeRarity } from '../utils/Rarity.js';
+
+const LEGACY_SYNERGY_DEFINITIONS = {
+    Avengers: family('Avengers', 'Epic', '#e63946', 'Ataque coordinado para equipos de primera linea.',
         tier(3, 'Asamblea tactica', { damagePct: 0.04, fireRatePct: 0.02 }),
         tier(5, 'Vengadores unidos', { damagePct: 0.07, fireRatePct: 0.03, critChance: 1 })),
-    Mutantes: family('Mutantes', '#f4d35e', 'Talento mutante que escala critico y control de mapa.',
-        tier(3, 'Entrenamiento mutante', { critChance: 4, rangePct: 0.04 }),
-        tier(5, 'Equipo dorado', { critChance: 7, damagePct: 0.06, rangePct: 0.04 })),
-    Defenders: family('Defenders', '#f4d35e', 'Defensa urbana resistente y precisa.',
-        tier(3, 'Guardia urbana', { rangePct: 0.07, critChance: 3 }),
-        tier(5, 'Defensa sin descanso', { rangePct: 0.1, damagePct: 0.05, detectStealth: true })),
-    Guardianes: family('Guardianes', '#ff6bd6', 'Cadencia cosmica para rutas largas.',
+    Mutantes: family('Mutantes', 'Legendary', '#f4d35e', 'Talento mutante que escala critico y control de mapa.',
+        tier(4, 'Entrenamiento mutante', { critChance: 5, rangePct: 0.04 }),
+        tier(6, 'Equipo dorado', { critChance: 8, damagePct: 0.07, rangePct: 0.05 })),
+    Defenders: family('Defenders', 'Rare', '#4aa3ff', 'Defensa urbana resistente y precisa.',
+        tier(2, 'Patrulla urbana', { rangePct: 0.04, critChance: 2 }),
+        tier(4, 'Defensa sin descanso', { rangePct: 0.09, damagePct: 0.04, detectStealth: true })),
+    Guardianes: family('Guardianes', 'Rare', '#40a9ff', 'Cadencia cosmica para rutas largas.',
         tier(3, 'Tripulacion improvisada', { fireRatePct: 0.07, rangePct: 0.03 }),
         tier(5, 'Guardianes de la galaxia', { fireRatePct: 0.1, damagePct: 0.05 })),
-    'Místico': family('Místico', '#b865ff', 'Habilidades mas fuertes y enfriamientos mas cortos.',
-        tier(3, 'Circulo arcano', { abilityPower: 0.07, cooldown: 0.04 }),
-        tier(5, 'Convergencia mistica', { abilityPower: 0.12, cooldown: 0.07 })),
-    Callejero: family('Callejero', '#40c9ff', 'Lectura de amenaza, sigilo y control de barrio.',
-        tier(3, 'Red de informantes', { rangePct: 0.05, detectStealth: true }),
-        tier(5, 'Heroes del barrio', { rangePct: 0.08, fireRatePct: 0.05, detectStealth: true })),
-    Wakanda: family('Wakanda', '#9c7cff', 'Tecnologia vibranium y disciplina real.',
+    'Místico': family('Místico', 'Mythic', '#b865ff', 'Habilidades mas fuertes y enfriamientos mas cortos.',
+        tier(3, 'Circulo arcano', { abilityPower: 0.08, cooldown: 0.04 }),
+        tier(5, 'Convergencia mistica', { abilityPower: 0.13, cooldown: 0.08 })),
+    Callejero: family('Callejero', 'Common', '#a9b0b8', 'Lectura de amenaza, sigilo y control de barrio.',
+        tier(2, 'Red de informantes', { rangePct: 0.035, detectStealth: true }),
+        tier(4, 'Heroes del barrio', { rangePct: 0.075, fireRatePct: 0.045, detectStealth: true })),
+    Wakanda: family('Wakanda', 'Legendary', '#ffcf4a', 'Tecnologia vibranium y disciplina real.',
         tier(3, 'Wakanda por siempre', { damagePct: 0.08, abilityPower: 0.06, critChance: 2 })),
-    'Tecnología': family('Tecnología', '#5be7ff', 'Red tactica para cadencia y cobertura.',
+    'Tecnología': family('Tecnología', 'Epic', '#5be7ff', 'Red tactica para cadencia y cobertura.',
         tier(3, 'Red tactica', { fireRatePct: 0.04, rangePct: 0.03 }),
         tier(5, 'Protocolo integrado', { fireRatePct: 0.05, rangePct: 0.04 })),
-    'Cósmico': family('Cósmico', '#ffdf6f', 'Energia estelar para romper oleadas densas.',
-        tier(3, 'Orbita ofensiva', { damagePct: 0.06, rangePct: 0.05 }),
-        tier(5, 'Frente galactico', { damagePct: 0.1, rangePct: 0.07, abilityPower: 0.04 })),
-    Espías: family('Espías', '#94a3b8', 'Inteligencia S.H.I.E.L.D. contra elites y sigilo.',
-        tier(3, 'Operacion encubierta', { critChance: 4, detectStealth: true }),
-        tier(5, 'Red de inteligencia', { critChance: 6, rangePct: 0.06, detectStealth: true })),
-    Oscuros: family('Oscuros', '#7c3aed', 'Anti-heroes sobrenaturales con control sostenido.',
-        tier(3, 'Pacto nocturno', { abilityPower: 0.07, damagePct: 0.04 }),
-        tier(5, 'Medianoche viva', { abilityPower: 0.1, cooldown: 0.05, damagePct: 0.05 })),
-    Marciales: family('Marciales', '#fb923c', 'Duelistas de corto alcance con golpes criticos.',
-        tier(3, 'Dojo de combate', { critChance: 5, fireRatePct: 0.04 }),
-        tier(5, 'Maestros del cuerpo a cuerpo', { critChance: 8, damagePct: 0.06 })),
-    Inhumanos: family('Inhumanos', '#38bdf8', 'Control elemental y presion de area.',
-        tier(3, 'Consejo de Attilan', { abilityPower: 0.06, rangePct: 0.05, cooldown: 0.03 })),
-    Atlánticos: family('Atlánticos', '#22d3ee', 'Defensa anfibia y ruptura de blindaje.',
+    'Cósmico': family('Cósmico', 'Legendary', '#ffdf6f', 'Energia estelar para romper oleadas densas.',
+        tier(4, 'Orbita ofensiva', { damagePct: 0.075, rangePct: 0.055 }),
+        tier(6, 'Frente galactico', { damagePct: 0.12, rangePct: 0.08, abilityPower: 0.05 })),
+    Espías: family('Espías', 'Epic', '#94a3b8', 'Inteligencia S.H.I.E.L.D. contra elites y sigilo.',
+        tier(2, 'Operacion encubierta', { critChance: 3, detectStealth: true }),
+        tier(4, 'Red de inteligencia', { critChance: 6, rangePct: 0.055, detectStealth: true })),
+    Oscuros: family('Oscuros', 'Mythic', '#7c3aed', 'Anti-heroes sobrenaturales con control sostenido.',
+        tier(4, 'Pacto nocturno', { abilityPower: 0.09, damagePct: 0.045 }),
+        tier(6, 'Medianoche viva', { abilityPower: 0.13, cooldown: 0.06, damagePct: 0.06 })),
+    Marciales: family('Marciales', 'Rare', '#fb923c', 'Duelistas de corto alcance con golpes criticos.',
+        tier(2, 'Dojo de combate', { critChance: 3, fireRatePct: 0.025 }),
+        tier(4, 'Maestros del cuerpo a cuerpo', { critChance: 7, damagePct: 0.055 })),
+    Inhumanos: family('Inhumanos', 'Rare', '#38bdf8', 'Control elemental y presion de area.',
+        tier(2, 'Linaje terrigeno', { abilityPower: 0.035, rangePct: 0.025 }),
+        tier(4, 'Consejo de Attilan', { abilityPower: 0.075, rangePct: 0.055, cooldown: 0.035 })),
+    Atlánticos: family('Atlánticos', 'Epic', '#22d3ee', 'Defensa anfibia y ruptura de blindaje.',
+        tier(2, 'Guardia de marea', { damagePct: 0.04, rangePct: 0.025 }),
         tier(3, 'Marea real', { damagePct: 0.07, rangePct: 0.04, allowWater: true })),
-    Rivales: family('Rivales', '#ff4fd8', 'Equipos mixtos de choque que convierten variedad en tempo.',
-        tier(3, 'Choque coordinado', { abilityPower: 0.04, fireRatePct: 0.01 }),
-        tier(5, 'Convergencia rival', { damagePct: 0.015, rangePct: 0.015, detectStealth: true }))
+    Rivales: family('Rivales', 'Secret', '#ff304f', 'Equipos mixtos de choque que convierten variedad en tempo.',
+        tier(5, 'Convergencia rival', { damagePct: 0.015, rangePct: 0.015, detectStealth: true }),
+        tier(6, 'Crisis secreta', { damagePct: 0.04, rangePct: 0.035, abilityPower: 0.04, detectStealth: true }))
+};
+
+export const SYNERGY_DEFINITIONS = {
+    Avengers: family('Avengers', 'Epic', '#e63946', 'Ataque coordinado de iconos de primera linea.',
+        tier(3, 'Asamblea tactica', { damagePct: 0.04, fireRatePct: 0.02 }),
+        tier(5, 'Vengadores unidos', { damagePct: 0.07, fireRatePct: 0.03, critChance: 1 })),
+    Mutantes: family('Mutantes', 'Legendary', '#f4d35e', 'Genes extraordinarios que escalan critico y cobertura.',
+        tier(3, 'Instinto evolutivo', { critChance: 4, rangePct: 0.035 }),
+        tier(5, 'Potencial omega', { critChance: 7, damagePct: 0.06, rangePct: 0.04 })),
+    Defenders: family('Defenders', 'Rare', '#4aa3ff', 'Defensa urbana resistente y precisa.',
+        tier(2, 'Patrulla urbana', { rangePct: 0.04, critChance: 2 }),
+        tier(4, 'Defensa sin descanso', { rangePct: 0.08, damagePct: 0.035, detectStealth: true })),
+    Guardianes: family('Guardianes', 'Rare', '#40a9ff', 'Cadencia improvisada para rutas largas.',
+        tier(2, 'Tripulacion improvisada', { fireRatePct: 0.055, rangePct: 0.025 }),
+        tier(4, 'Plan de media galaxia', { fireRatePct: 0.09, damagePct: 0.04 })),
+    'X-Men': family('X-Men', 'Legendary', '#f59e0b', 'Disciplina mutante para sostener lineas mixtas.',
+        tier(3, 'Sala de peligro', { damagePct: 0.035, critChance: 3 }),
+        tier(5, 'Equipo dorado', { damagePct: 0.07, critChance: 6, rangePct: 0.035 })),
+    'Místico': family('Místico', 'Mythic', '#b865ff', 'Habilidades mas fuertes y enfriamientos mas cortos.',
+        tier(3, 'Circulo arcano', { abilityPower: 0.08, cooldown: 0.04 }),
+        tier(5, 'Convergencia mistica', { abilityPower: 0.13, cooldown: 0.08 })),
+    Callejero: family('Callejero', 'Common', '#a9b0b8', 'Lectura de amenaza y control de barrio.',
+        tier(2, 'Red de barrio', { rangePct: 0.03, detectStealth: true }),
+        tier(4, 'Heroes a pie de calle', { rangePct: 0.065, fireRatePct: 0.04, detectStealth: true })),
+    Wakanda: family('Wakanda', 'Legendary', '#ffcf4a', 'Tecnologia vibranium y disciplina real.',
+        tier(2, 'Guardia real', { damagePct: 0.055, critChance: 2 }),
+        tier(3, 'Wakanda por siempre', { damagePct: 0.085, abilityPower: 0.055, critChance: 3 })),
+    'Tecnología': family('Tecnología', 'Epic', '#5be7ff', 'Red tactica para cadencia y cobertura.',
+        tier(3, 'Red tactica', { fireRatePct: 0.04, rangePct: 0.03 }),
+        tier(5, 'Protocolo integrado', { fireRatePct: 0.075, rangePct: 0.055 })),
+    'Cósmico': family('Cósmico', 'Legendary', '#ffdf6f', 'Energia estelar para romper oleadas densas.',
+        tier(3, 'Orbita ofensiva', { damagePct: 0.055, rangePct: 0.04 }),
+        tier(6, 'Frente galactico', { damagePct: 0.11, rangePct: 0.075, abilityPower: 0.045 })),
+    'Espías': family('Espías', 'Rare', '#94a3b8', 'Inteligencia S.H.I.E.L.D. contra elites y sigilo.',
+        tier(2, 'Operacion encubierta', { critChance: 3, detectStealth: true }),
+        tier(4, 'Red de inteligencia', { critChance: 6, rangePct: 0.05, detectStealth: true })),
+    Oscuros: family('Oscuros', 'Mythic', '#7c3aed', 'Anti-heroes sobrenaturales con control sostenido.',
+        tier(3, 'Pacto nocturno', { abilityPower: 0.07, damagePct: 0.035 }),
+        tier(5, 'Medianoche viva', { abilityPower: 0.12, cooldown: 0.055, damagePct: 0.055 })),
+    Marciales: family('Marciales', 'Rare', '#fb923c', 'Duelistas de corto alcance con golpes criticos.',
+        tier(2, 'Dojo de combate', { critChance: 3, fireRatePct: 0.025 }),
+        tier(4, 'Maestros del cuerpo a cuerpo', { critChance: 7, damagePct: 0.05 })),
+    Inhumanos: family('Inhumanos', 'Rare', '#38bdf8', 'Control elemental y presion de area.',
+        tier(2, 'Linaje terrigeno', { abilityPower: 0.035, rangePct: 0.025 }),
+        tier(4, 'Consejo de Attilan', { abilityPower: 0.075, rangePct: 0.055, cooldown: 0.03 })),
+    'Atlánticos': family('Atlánticos', 'Epic', '#22d3ee', 'Defensa anfibia y ruptura de blindaje.',
+        tier(2, 'Guardia de marea', { damagePct: 0.04, rangePct: 0.025 }),
+        tier(3, 'Marea real', { damagePct: 0.07, rangePct: 0.04, allowWater: true })),
+    Arácnidos: family('Arácnidos', 'Rare', '#ef4444', 'Redes, movilidad y lectura contra corredores.',
+        tier(2, 'Sentido aracnido', { fireRatePct: 0.04, detectStealth: true }),
+        tier(3, 'Red compartida', { fireRatePct: 0.07, rangePct: 0.035, detectStealth: true })),
+    Asgardianos: family('Asgardianos', 'Legendary', '#facc15', 'Poder divino para castigar jefes y elites.',
+        tier(2, 'Sangre de reino', { damagePct: 0.055, abilityPower: 0.035 }),
+        tier(4, 'Guerra de los reinos', { damagePct: 0.095, abilityPower: 0.07, cooldown: 0.035 })),
+    Operaciones: family('Operaciones', 'Rare', '#64748b', 'Comando tactico, fuego disciplinado y cobertura anti sigilo.',
+        tier(2, 'Orden de campo', { rangePct: 0.035, detectStealth: true }),
+        tier(4, 'Mando coordinado', { rangePct: 0.07, critChance: 4, detectStealth: true })),
+    'Fantásticos': family('Fantásticos', 'Epic', '#60a5fa', 'Ciencia experimental y control flexible de rutas.',
+        tier(2, 'Fundacion Baxter', { rangePct: 0.05, abilityPower: 0.035 }),
+        tier(3, 'Familia imposible', { rangePct: 0.08, fireRatePct: 0.045, abilityPower: 0.055 })),
+    Mercenarios: family('Mercenarios', 'Epic', '#f97316', 'Suerte, caos y dano oportunista.',
+        tier(2, 'Trabajo sucio', { critChance: 4, damagePct: 0.035 }),
+        tier(3, 'Contrato imposible', { critChance: 7, damagePct: 0.06, fireRatePct: 0.03 })),
+    Bestias: family('Bestias', 'Common', '#84cc16', 'Presion fisica economica y control de grupos.',
+        tier(2, 'Instinto de manada', { damagePct: 0.03, fireRatePct: 0.025 }),
+        tier(3, 'Caos adorable', { damagePct: 0.055, rangePct: 0.025, fireRatePct: 0.035 })),
+    'Nexo Caótico': family('Nexo Caótico', 'Mythic', '#ec4899', 'Poderes raros que alteran ritmo, control y habilidad.',
+        tier(2, 'Resonancia imposible', { abilityPower: 0.075, cooldown: 0.035 }),
+        tier(4, 'Realidad fracturada', { abilityPower: 0.13, cooldown: 0.07, rangePct: 0.035 })),
+    Rivales: family('Rivales', 'Secret', '#ff304f', 'Villanos y anti-heroes de alto riesgo con recompensas explosivas.',
+        tier(3, 'Alianza inestable', { damagePct: 0.065, rangePct: 0.035, detectStealth: true }),
+        tier(5, 'Crisis secreta', { damagePct: 0.11, rangePct: 0.06, abilityPower: 0.07, detectStealth: true }))
 };
 
 export const PAIR_SYNERGIES = [
@@ -52,12 +128,6 @@ export const PAIR_SYNERGIES = [
     pair('marea_real', 'Marea real', ['namor', 'namora'], { damagePct: 0.05, rangePct: 0.03 })
 ];
 
-export const FORMATION_DEFINITIONS = {
-    vanguard: { label: 'Vanguardia', radius: 110, color: '#ff7b86' },
-    support: { label: 'Apoyo', radius: 150, color: '#69e6a6' },
-    artillery: { label: 'Artilleria', radius: 185, color: '#67d9ff' }
-};
-
 export class TeamSynergySystem {
     constructor(game) {
         this.game = game;
@@ -65,14 +135,12 @@ export class TeamSynergySystem {
 
     applyHeroStats(hero, stats) {
         const effects = getHeroTeamEffects(hero, this.game.activeTeam || []);
-        const formation = this.getFormationEffects(hero);
-        const combined = mergeEffects(effects, formation);
-        stats.damage *= 1 + (combined.damagePct || 0);
-        stats.fireRate *= 1 + (combined.fireRatePct || 0);
-        stats.range *= 1 + (combined.rangePct || 0);
-        stats.critChance += combined.critChance || 0;
-        if (combined.detectStealth) stats.canSeeStealth = true;
-        if (combined.allowWater && Array.isArray(hero.allowedTerrains) && !hero.allowedTerrains.includes(0)) hero.allowedTerrains.push(0);
+        stats.damage *= 1 + (effects.damagePct || 0);
+        stats.fireRate *= 1 + (effects.fireRatePct || 0);
+        stats.range *= 1 + (effects.rangePct || 0);
+        stats.critChance += effects.critChance || 0;
+        if (effects.detectStealth) stats.canSeeStealth = true;
+        if (effects.allowWater && Array.isArray(hero.allowedTerrains) && !hero.allowedTerrains.includes(0)) hero.allowedTerrains.push(0);
         return stats;
     }
 
@@ -86,39 +154,15 @@ export class TeamSynergySystem {
     }
 
     getFormationEffects(hero) {
-        const deployed = this.game.heroes || [];
-        const role = hero.config?.formationRole || hero.formationRole || 'artillery';
-        if (role === 'vanguard') {
-            const partner = deployed.some((candidate) => candidate !== hero
-                && getRole(candidate) === 'vanguard' && distance(candidate, hero) <= FORMATION_DEFINITIONS.vanguard.radius);
-            return partner ? { damagePct: 0.06, critChance: 2 } : {};
-        }
-        if (role === 'support') {
-            const allies = deployed.filter((candidate) => candidate !== hero && distance(candidate, hero) <= FORMATION_DEFINITIONS.support.radius);
-            return allies.length >= 2 ? { rangePct: 0.05, fireRatePct: 0.04 } : {};
-        }
-        const screen = deployed.some((candidate) => candidate !== hero && getRole(candidate) === 'vanguard'
-            && distance(candidate, hero) >= 70 && distance(candidate, hero) <= FORMATION_DEFINITIONS.artillery.radius);
-        return screen ? { damagePct: 0.07, rangePct: 0.05 } : {};
+        return {};
     }
 
     getFormationStatus(hero) {
-        const definition = FORMATION_DEFINITIONS[getRole(hero)] || FORMATION_DEFINITIONS.artillery;
-        return { ...definition, active: Object.keys(this.getFormationEffects(hero)).length > 0 };
+        return null;
     }
 
     renderFormationRadius(ctx, hero) {
-        if (this.game.selectedUnit !== hero && !this.game.isManuallyPaused) return;
-        const status = this.getFormationStatus(hero);
-        ctx.save();
-        ctx.strokeStyle = status.color;
-        ctx.globalAlpha = status.active ? 0.75 : 0.36;
-        ctx.lineWidth = status.active ? 3 : 2;
-        ctx.setLineDash([8, 7]);
-        ctx.beginPath();
-        ctx.arc(hero.x, hero.y, status.radius, 0, Math.PI * 2);
-        ctx.stroke();
-        ctx.restore();
+        return undefined;
     }
 }
 
@@ -148,7 +192,6 @@ export function analyzeTeam(team = []) {
         pairs,
         distinctTags,
         versatile: team.length >= 4 && distinctTags >= 4,
-        formationCounts: Object.fromEntries(Object.keys(FORMATION_DEFINITIONS).map((role) => [role, team.filter((hero) => (hero.formationRole || 'artillery') === role).length])),
         metrics
     };
 }
@@ -177,15 +220,20 @@ export function getSynergyMenuModel(snapshot, roster = [], unlockedIds = new Set
         const targetTier = familySnapshot.nextTier || familySnapshot.activeTier || familySnapshot.definition.tiers[0];
         const needed = familySnapshot.nextTier ? Math.max(0, familySnapshot.nextTier.count - familySnapshot.count) : 0;
         const state = familySnapshot.activeTier ? 'active' : needed === 1 ? 'near' : 'locked';
+        const rarity = normalizeRarity(familySnapshot.definition.rarity);
         return {
             tag: familySnapshot.tag,
             label: familySnapshot.definition.label,
             color: familySnapshot.definition.color,
+            rarity,
+            rarityClass: getRarityClass(rarity),
             description: familySnapshot.definition.description,
             count: familySnapshot.count,
             rosterCount: members.length,
+            memberNames: members.map((hero) => hero.name),
             selectedNames: selected.map((hero) => hero.name),
             unlockedNames: unlocked.map((hero) => hero.name),
+            missingNames: members.filter((hero) => !activeIds.has(hero.id)).map((hero) => hero.name),
             activeTier: familySnapshot.activeTier,
             nextTier: familySnapshot.nextTier,
             state,
@@ -212,8 +260,8 @@ export function formatEffectSummary(effects = {}) {
     return labels.join(' · ');
 }
 
-function family(label, color, description, ...tiers) {
-    return { label, color, description, tiers };
+function family(label, rarity, color, description, ...tiers) {
+    return { label, rarity: normalizeRarity(rarity), color, description, tiers };
 }
 
 function tier(count, label, effects) {
@@ -234,14 +282,6 @@ function mergeEffects(...sources) {
 
 function percent(value) {
     return Math.round(value * 100);
-}
-
-function getRole(hero) {
-    return hero.config?.formationRole || hero.formationRole || 'artillery';
-}
-
-function distance(a, b) {
-    return Math.hypot(a.x - b.x, a.y - b.y);
 }
 
 export { mergeEffects };

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildHeroCoverageState, findBestPlacementCell, InputManager, measurePathCoverage } from '../src/core/InputManager.js';
+import { buildHeroCoverageState, buildPlacementSuggestionState, findBestPlacementCell, InputManager, measurePathCoverage } from '../src/core/InputManager.js';
 import { TERRAIN } from '../src/utils/TerrainRules.js';
 
 test('measurePathCoverage mide el tramo de camino dentro del rango', () => {
@@ -53,6 +53,19 @@ test('findBestPlacementCell recomienda una celda valida con cobertura de ruta', 
     assert.ok(suggestion.pathDistance <= hero.range);
 });
 
+test('buildPlacementSuggestionState explica terreno, cobertura y distancia', () => {
+    const game = placementGame();
+    const hero = { id: 'iron_man', name: 'Iron Man', range: 95, allowedTerrains: [1] };
+    const suggestion = findBestPlacementCell(hero, game);
+    const state = buildPlacementSuggestionState(suggestion, hero);
+
+    assert.equal(state.heroId, 'iron_man');
+    assert.match(state.label, /Celda/);
+    assert.match(state.detail, /Cobertura/);
+    assert.match(state.detail, /camino a/);
+    assert.equal(state.actionLabel, 'Colocar aqui');
+});
+
 test('findBestPlacementCell evita una celda ocupada por otro heroe', () => {
     const game = placementGame();
     game.heroes.push({ x: 100, y: 60 });
@@ -92,6 +105,36 @@ test('buildHeroCoverageState resume cobertura real del heroe seleccionado', () =
     assert.equal(state.quality.id, 'excellent');
     assert.ok(state.coveredLength > 180);
     assert.match(state.label, /Cobertura excelente/);
+});
+
+test('InputManager dibuja rango solo para el heroe seleccionado', () => {
+    const input = createInputForSelection();
+    const hero = { id: 'iron_man', name: 'Iron Man', x: 100, y: 60, range: 100, getEffectiveStats: () => ({ range: 100 }) };
+    const ctx = createCanvasContextSpy();
+
+    input.game.heroes = [hero];
+    input.game.selectedUnit = null;
+    input.drawSelectedHero(ctx);
+    assert.equal(ctx.calls.arc, 0);
+
+    input.game.selectedUnit = hero;
+    input.drawSelectedHero(ctx);
+    assert.equal(ctx.calls.arc, 1);
+
+    input.game.showHeroRanges = false;
+    input.drawSelectedHero(ctx);
+    assert.equal(ctx.calls.arc, 1);
+});
+
+test('InputManager limpia seleccion al hacer click en mapa vacio', () => {
+    const input = createInputForSelection();
+    const hero = { id: 'iron_man', name: 'Iron Man', x: 100, y: 60, range: 100 };
+    input.game.heroes = [hero];
+    input.game.selectedUnit = hero;
+
+    input.checkUnitSelection(300, 300);
+
+    assert.equal(input.game.selectedUnit, null);
 });
 
 test('InputManager cicla prioridad del heroe seleccionado con atajo configurable', () => {
@@ -231,7 +274,7 @@ test('InputManager confirma la celda sugerida con Enter durante colocacion', () 
         keydownHandler({ key: 'Enter', target: { tagName: 'BODY' }, preventDefault: () => { prevented = true; } });
 
         assert.equal(prevented, true);
-        assert.equal(resources.credits, 400);
+        assert.equal(resources.credits, 650);
         assert.equal(deployed.length, 1);
         assert.equal(deployed[0].x, suggestion.centerX);
         assert.equal(deployed[0].y, suggestion.centerY);
@@ -279,6 +322,41 @@ test('InputManager no consume atajo de mejora sin heroe desplegado seleccionado'
 
 function roundPoint(point) {
     return { x: Math.round(point.x), y: Math.round(point.y) };
+}
+
+function createInputForSelection() {
+    const previousWindow = globalThis.window;
+    globalThis.window = { addEventListener: () => {} };
+    const game = {
+        selectedUnit: null,
+        heroes: [],
+        enemies: [],
+        path: [{ x: 0, y: 100 }, { x: 240, y: 100 }],
+        showHeroRanges: true,
+        progression: { state: { settings: { keyBindings: {} } } },
+        tacticalActions: null
+    };
+    const input = new InputManager({ addEventListener: () => {} }, game, { setSelectionStatus: () => {}, inspectUnit: () => {} }, {});
+    globalThis.window = previousWindow;
+    return input;
+}
+
+function createCanvasContextSpy() {
+    const calls = { arc: 0 };
+    const ctx = {
+        calls,
+        save: () => {},
+        restore: () => {},
+        beginPath: () => {},
+        arc: () => { calls.arc++; },
+        fill: () => {},
+        stroke: () => {},
+        moveTo: () => {},
+        lineTo: () => {},
+        setLineDash: () => {},
+        fillText: () => {}
+    };
+    return ctx;
 }
 
 function placementGame() {
