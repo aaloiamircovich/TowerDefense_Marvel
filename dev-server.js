@@ -4,6 +4,7 @@ import path from 'node:path';
 
 const root = process.cwd();
 const port = Number(process.env.PORT || 5173);
+const host = process.env.HOST || '0.0.0.0';
 
 const types = {
     '.html': 'text/html; charset=utf-8',
@@ -40,6 +41,7 @@ http.createServer((req, res) => {
         res.writeHead(200, headers);
         res.end(data);
     });
-}).listen(port, '127.0.0.1', () => {
-    console.log(`Super Hero TD listo en http://127.0.0.1:${port}`);
+}).listen(port, host, () => {
+    const displayHost = host === '0.0.0.0' ? '127.0.0.1' : host;
+    console.log(`Super Hero TD listo en http://${displayHost}:${port}`);
 });

@@ -31,9 +31,21 @@ Luego abrir:
 http://127.0.0.1:5173/
 ```
 
+## Railway
+
+Railway puede desplegar el proyecto directamente desde GitHub con Nixpacks:
+
+```bash
+npm run build
+npm start
+```
+
+El servidor usa `process.env.PORT` y escucha en `0.0.0.0`, que es lo que Railway necesita dentro del contenedor.
+
 ## Calidad
 
 ```bash
+npm run build
 npm run build:data
 npm run build:heroes
 npm run build:items

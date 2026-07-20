@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "node dev-server.js",
+    "start": "node dev-server.js",
+    "build": "node scripts/validate-data.js",
     "test": "node --test",
     "validate": "node scripts/validate-data.js",
     "validate:strict": "node scripts/validate-data.js --strict-assets",
