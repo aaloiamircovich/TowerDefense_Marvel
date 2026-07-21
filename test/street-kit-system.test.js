@@ -26,7 +26,7 @@ test('Moon Knight alterna alcance, dano y control con el ciclo lunar', () => {
     assert.equal(hero.getProjectileEffects()[0].type, 'slow');
 });
 
-test('Blade sangra elites y limita el robo de vida por racha', () => {
+test('Blade sangra elites sin curar la base', () => {
     const game = createGame();
     const hero = createHero('blade', game);
     game.heroes = [hero];
@@ -34,7 +34,7 @@ test('Blade sangra elites y limita el robo de vida por racha', () => {
     assert.equal(hero.getProjectileEffects(elite)[0].duration, 5);
 
     for (let index = 0; index < 6; index++) hero.abilitySystem.onKill();
-    assert.equal(game.resourceManager.lives, 20);
+    assert.equal(game.resourceManager.lives, 19);
     assert.ok(hero.abilitySystem.streetKit.lifeStealCooldown > 0);
 });
 

@@ -15,7 +15,7 @@ export const SET_BONUSES = {
     shield: { name: 'S.H.I.E.L.D.', description: '2 piezas: +6% daño y alcance.', effects: { damagePct: 0.06, rangePct: 0.06 } }
 };
 
-const NON_SCALING = new Set(['killHealEvery', 'chainCount']);
+const NON_SCALING = new Set(['chainCount']);
 const MAXIMUM_EFFECTS = new Set(['chainRange', 'chainFactor', 'splashRadius', 'splashFactor']);
 
 export function getForgeMultiplier(level = 1) {
@@ -40,8 +40,7 @@ function mergeEffects(target, effects, multiplier) {
         }
         if (!Number.isFinite(value)) return;
         const scaled = NON_SCALING.has(key) ? value : value * multiplier;
-        if (key === 'killHealEvery') target[key] = Math.min(target[key] || Infinity, scaled);
-        else if (MAXIMUM_EFFECTS.has(key)) target[key] = Math.max(target[key] || 0, scaled);
+        if (MAXIMUM_EFFECTS.has(key)) target[key] = Math.max(target[key] || 0, scaled);
         else target[key] = (target[key] || 0) + scaled;
     });
 }

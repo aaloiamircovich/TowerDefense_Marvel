@@ -31,10 +31,10 @@ test('Contrato Stark genera un credito por impacto', () => {
     assert.equal(credits, 1);
 });
 
-test('Protocolo Extremis cura despues de quince bajas', () => {
+test('Las bajas de heroes no curan la base', () => {
     let lives = 0;
     const attacker = {
-        items: [{ id: 'protocolo_extremis', effects: { killHealEvery: 15 } }],
+        items: [],
         killCount: 14
     };
     const target = createTarget('Urbano', (damage) => ({ damage, killed: true }));
@@ -43,8 +43,8 @@ test('Protocolo Extremis cura despues de quince bajas', () => {
         addLife: (amount) => { lives += amount; }
     });
 
-    assert.equal(lives, 1);
-    assert.equal(attacker.killCount, 0);
+    assert.equal(lives, 0);
+    assert.equal(attacker.killCount, 15);
 });
 
 test('CombatSystem aplica dano de area solo dentro del radio', () => {
@@ -134,7 +134,7 @@ test('CombatSystem usa la fuente aleatoria sembrada para efectos', () => {
     assert.equal(applied, 0);
 });
 
-test('CombatSystem convierte efecto heal en vida para la base', () => {
+test('CombatSystem ignora efectos heal de proyectiles de heroes', () => {
     let lives = 0;
     let saved = 0;
     const target = createTarget('Urbano', (damage) => ({ damage, killed: false }));
@@ -154,8 +154,8 @@ test('CombatSystem convierte efecto heal en vida para la base', () => {
         effects: [{ type: 'heal', power: 1, chance: 1 }]
     }, target, attacker, null);
 
-    assert.equal(lives, 1);
-    assert.equal(saved, 1);
+    assert.equal(lives, 0);
+    assert.equal(saved, 0);
 });
 
 test('CombatSystem no aplica heal como estado del enemigo', () => {

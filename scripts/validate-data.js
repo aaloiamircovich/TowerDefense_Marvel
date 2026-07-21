@@ -33,11 +33,14 @@ function validateHeroes(heroes) {
     const knownIds = new Set(Object.keys(heroes));
     const allowedHeroKeys = new Set(['id', 'name', 'category', 'rarity', 'cost', 'damage', 'range', 'rangePattern', 'fireRate', 'canSeeStealth', 'ability', 'abilityDesc', 'niche', 'sprite', 'visual', 'allowedTerrains', 'tags', 'formationRole', 'teamMetrics', 'terrainRole', 'special', 'evolutionId']);
     const allowedRangePatterns = new Set(['circle', 'cross', 'x', 'ring']);
-    const allowedSpecialKeys = new Set(['statModifiers', 'attackEffects', 'projectileProfile', 'visualStyle', 'projectileColor']);
+    const allowedSpecialKeys = new Set(['statModifiers', 'attackEffects', 'projectileProfile', 'visualStyle', 'projectileColor', 'supportAura', 'economyOnHit']);
     const allowedSpecialStatKeys = new Set(['allowWater', 'cooldown', 'critChance', 'damagePct', 'detectStealth', 'fireRatePct', 'rangePct']);
     const allowedAttackEffectKeys = new Set(['chance', 'duration', 'power', 'type']);
-    const allowedAttackEffectTypes = new Set(['armorBreak', 'bleed', 'burn', 'curse', 'heal', 'mark', 'poison', 'slow', 'stun', 'web']);
+    const allowedAttackEffectTypes = new Set(['armorBreak', 'bleed', 'burn', 'curse', 'mark', 'poison', 'slow', 'stun', 'web']);
     const allowedProjectileProfileKeys = new Set(['armorPenetration', 'chainCount', 'chainFactor', 'chainRange', 'splashFactor', 'splashRadius', 'propagationCount', 'propagationFactor', 'propagationRadius']);
+    const allowedSupportAuraKeys = new Set(['detectStealth', 'label', 'power', 'range', 'type']);
+    const allowedSupportAuraTypes = new Set(['damage', 'fireRate', 'range']);
+    const allowedEconomyOnHitKeys = new Set(['rewardPct']);
     const allowedVisualStyles = new Set(['ballistic', 'blade', 'elemental', 'energy', 'explosive', 'fire', 'ice', 'impact', 'mystic', 'sonic', 'water', 'web', 'whip']);
     const validTags = new Set(['Avengers', 'Defenders', 'Guardianes', 'X-Men', 'Mutantes', 'Místico', 'Callejero', 'Wakanda', 'Tecnología', 'Cósmico', 'Espías', 'Oscuros', 'Marciales', 'Inhumanos', 'Atlánticos', 'Rivales']);
     const validRoles = new Set(['vanguard', 'support', 'artillery']);
@@ -91,7 +94,10 @@ function validateHeroes(heroes) {
             allowedAttackEffectKeys,
             allowedAttackEffectTypes,
             allowedProjectileProfileKeys,
-            allowedVisualStyles
+            allowedVisualStyles,
+            allowedSupportAuraKeys,
+            allowedSupportAuraTypes,
+            allowedEconomyOnHitKeys
         });
 
         if (hero.evolutionId) {
@@ -144,6 +150,22 @@ function validateHeroSpecial(heroId, special, schema) {
                 if (['armorPenetration', 'chainFactor', 'splashFactor', 'propagationFactor'].includes(key) && value > 1) errors.push(`${label} debe estar entre 0 y 1`);
             }
         }
+    }
+
+    if (special.supportAura) {
+        validateAllowedKeys(`heroes.${heroId}.special.supportAura`, special.supportAura, schema.allowedSupportAuraKeys);
+        if (!schema.allowedSupportAuraTypes.has(special.supportAura.type)) errors.push(`heroes.${heroId}.special.supportAura.type no es valido`);
+        if (!isUnitNumber(special.supportAura.power)) errors.push(`heroes.${heroId}.special.supportAura.power debe estar entre 0 y 1`);
+        requirePositive(special.supportAura.range, `heroes.${heroId}.special.supportAura.range`);
+        if (special.supportAura.label !== undefined) requireText(special.supportAura.label, `heroes.${heroId}.special.supportAura.label`);
+        if (special.supportAura.detectStealth !== undefined && typeof special.supportAura.detectStealth !== 'boolean') {
+            errors.push(`heroes.${heroId}.special.supportAura.detectStealth debe ser booleano`);
+        }
+    }
+
+    if (special.economyOnHit) {
+        validateAllowedKeys(`heroes.${heroId}.special.economyOnHit`, special.economyOnHit, schema.allowedEconomyOnHitKeys);
+        if (!isUnitNumber(special.economyOnHit.rewardPct)) errors.push(`heroes.${heroId}.special.economyOnHit.rewardPct debe estar entre 0 y 1`);
     }
 
     if (special.visualStyle && !schema.allowedVisualStyles.has(special.visualStyle)) {

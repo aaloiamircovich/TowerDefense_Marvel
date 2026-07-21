@@ -64,7 +64,7 @@ test('roster Rivales agrega veinticuatro heroes con contrato tactico, visual y t
         assert.equal(hero.visual.attack.frames.length, 9);
         assert.ok(hero.abilityDesc.length > 20);
         assert.ok(hero.niche.length > 8);
-        assert.ok(hero.special?.statModifiers || hero.special?.attackEffects || hero.special?.projectileProfile);
+        assert.ok(hasSpecialContract(hero));
 
         for (const source of collectVisualSources(hero.visual)) {
             const file = path.join(root, source);
@@ -99,6 +99,14 @@ test('especiales Rivales se conectan al combate generico', () => {
 
 function toId(name) {
     return name.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '');
+}
+
+function hasSpecialContract(hero) {
+    return Boolean(hero.special?.statModifiers
+        || hero.special?.attackEffects
+        || hero.special?.projectileProfile
+        || hero.special?.supportAura
+        || hero.special?.economyOnHit);
 }
 
 function createGame() {

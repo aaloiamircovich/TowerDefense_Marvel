@@ -19,7 +19,14 @@ const utility = {
 const ranking = Object.values(heroes).map((hero) => {
     const critMultiplier = 1 + (hero.critChance || 5) / 100;
     const dps = hero.damage * hero.fireRate * critMultiplier;
-    const tacticalPower = dps * (1 + hero.range / 650) * (utility[hero.id] || 1);
+    const aura = hero.special?.supportAura;
+    const economy = hero.special?.economyOnHit;
+    const auraPower = aura
+        ? hero.cost * (0.24 + (aura.power || 0) * 0.45 + Math.min(0.08, (aura.range || 0) / 4000) + (aura.detectStealth ? 0.02 : 0))
+        : 0;
+    const economyPower = economy ? hero.cost * (economy.rewardPct || 0) * 1.4 : 0;
+    const directPower = dps * (1 + hero.range / 650) * (utility[hero.id] || 1);
+    const tacticalPower = aura ? auraPower : directPower + economyPower;
     return { id: hero.id, name: hero.name, cost: hero.cost, power: tacticalPower, efficiency: tacticalPower / hero.cost };
 }).sort((a, b) => b.efficiency - a.efficiency);
 

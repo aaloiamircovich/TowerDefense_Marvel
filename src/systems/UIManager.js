@@ -570,7 +570,7 @@ export function buildShopItemInsight(item = {}, summary = null) {
     add(effects.rangePct && ((summary?.roles || []).includes('flying') || Number(summary?.fastest || 0) >= 90), 'mejora cobertura');
     add(effects.allowWater, 'abre posiciones');
     add(effects.onHitCredit, 'economia por impacto');
-    add(effects.killHealEvery || effects.lowLifeDamagePct || effects.lowLifeFireRatePct, 'seguro de fuga');
+    add(effects.lowLifeDamagePct || effects.lowLifeFireRatePct, 'seguro de fuga');
 
     const setName = SET_BONUSES[item.set]?.name || item.set || 'sin set';
     if (reasons.length < 3 && item.set) reasons.push(`set ${setName}`);

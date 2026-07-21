@@ -20,8 +20,8 @@ function getHeroCombatCoverage(hero) {
         armorBreak: effects.some((effect) => effect.type === 'armorBreak') || Boolean(stats.armorBreakChance || profile.armorPenetration) || text.includes('armadura'),
         superCritical: Boolean(stats.critChance || stats.critDamage) || /critico|crítico/.test(text),
         detection: Boolean(hero.canSeeStealth || stats.detectStealth) || /detecci|sigilo/.test(text),
-        heal: effects.some((effect) => effect.type === 'heal') || /cura|restaura|recupera/.test(text),
-        buffAura: Boolean(special.aura || stats.auraDamagePct) || /aura|aliados cercanos|potenci/.test(text)
+        heal: effects.some((effect) => effect.type === 'heal'),
+        buffAura: Boolean(special.supportAura) || /aura|aliados cercanos|potenci/.test(text)
     };
 }
 
@@ -50,10 +50,10 @@ test('roster reparte cada tipo de ataque clave entre multiples heroes', () => {
 test('roster tiene por lo menos cinco heroes de utilidad y soporte de campo', () => {
     const utilityHeroes = new Set([
         ...heroesWith('detection'),
-        ...heroesWith('heal'),
         ...heroesWith('buffAura')
     ]);
 
     assert.ok(utilityHeroes.size >= 5);
-    assert.ok(heroesWith('heal').length >= 5);
+    assert.equal(heroesWith('heal').length, 0);
+    assert.ok(heroesWith('buffAura').length >= 6);
 });

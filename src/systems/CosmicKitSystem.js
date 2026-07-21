@@ -212,14 +212,6 @@ export class CosmicKitSystem {
                 this.hero.recordAbility();
             }
         }
-        this.guardianHealTimer -= dt;
-        const guardians = (this.hero.game.heroes || []).filter((hero) => hero.config?.tags?.includes('Guardianes')).length;
-        if (guardians >= 2 && this.guardianHealTimer <= 0 && this.hero.game.resourceManager.lives < this.hero.game.resourceManager.maxLives) {
-            this.hero.game.resourceManager.addLife(1);
-            this.guardianHealTimer = 20;
-            this.hero.game.audio?.play('roots');
-            this.hero.recordAbility();
-        }
     }
 
     activateGamoraCombo(target, stats) {

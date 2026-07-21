@@ -211,13 +211,7 @@ export class MutantKitSystem {
             }
             return;
         }
-        this.regenerationTimer -= dt;
         const resources = this.hero.game.resourceManager;
-        if (this.regenerationTimer <= 0 && resources?.lives < resources?.maxLives) {
-            resources.addLife(1);
-            this.regenerationTimer = 30;
-            this.hero.recordAbility();
-        }
         if (this.resource < 55 || this.cooldownRemaining > 0) return;
         const target = enemies.filter((enemy) => enemy.isAlive && distance(enemy, this.hero) <= stats.range * 3)
             .sort((a, b) => b.distanceTravelled - a.distanceTravelled)[0];
@@ -318,9 +312,10 @@ export class MutantKitSystem {
     }
 
     luckyShot(target, stats) {
-        CombatSystem.applyDamage({ attackerType: this.hero.category, damage: stats.damage * 1.6 * this.getPowerScale(), armorPenetration: 0.5 }, target, this.hero, this.hero.game.resourceManager, 1);
-        this.hero.game.resourceManager?.addCredits?.(4);
-        this.hero.recordGold?.(4);
+        if (!target?.isAlive || target.flying) return;
+        target.moveBackward?.(target.isBoss ? 12 : 34);
+        target.applyStatus?.({ type: 'mark', duration: 2.4, power: 0.1 }, this.hero);
+        this.hero.game.vfx?.addBurst(target.x, target.y, { color: '#d8c8ff', radius: 28, duration: 0.24 });
         this.hero.game.audio?.play('luck');
         this.hero.recordAbility();
     }

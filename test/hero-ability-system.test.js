@@ -33,15 +33,21 @@ test('Spider-Man inmoviliza al acumular tres redes', () => {
     assert.equal(binds, 1);
 });
 
-test('Capitan America mejora dano y cadencia de aliados cercanos', () => {
+test('Capitan America usa aura de dano sin disparar', () => {
     const game = createGame();
-    const captain = { id: 'capitan_america', x: 0, y: 0 };
+    const captain = new Hero({
+        ...createHeroConfig('capitan_america'),
+        special: { supportAura: { type: 'damage', power: 0.1, range: 150 } }
+    }, 0, 0, game);
     const ally = new Hero(createHeroConfig('iron_man'), 100, 0, game);
     game.heroes = [captain, ally];
 
     const stats = ally.getEffectiveStats();
     assert.equal(stats.damage, 11);
-    assert.equal(stats.fireRate, 1.15);
+    assert.equal(stats.fireRate, 1);
+    const projectiles = [];
+    captain.update(2, [createEnemy(40, 0)], projectiles);
+    assert.equal(projectiles.length, 0);
 });
 
 test('Iron Man activa Sobrecarga ARC cada tres ataques', () => {

@@ -136,14 +136,14 @@ window.__MARVEL_TD_DATA__ = {
       "name": "Capitán América",
       "category": "Urbano",
       "rarity": "Rare",
-      "cost": 200,
-      "damage": 30,
-      "range": 100,
-      "fireRate": 1.2,
+      "cost": 260,
+      "damage": 1,
+      "range": 255,
+      "fireRate": 1,
       "canSeeStealth": false,
-      "ability": "REBOTE DE ESCUDO",
-      "abilityDesc": "El escudo golpea al objetivo, rebota dos veces y regresa. Su liderazgo da +10% de daño y +15% de cadencia a aliados cercanos.",
-      "niche": "soporte de escuadrón y cadenas",
+      "ability": "MANDO AVENGER",
+      "abilityDesc": "No ataca. Inspira a aliados cercanos con un aura amplia de dano moderado.",
+      "niche": "aura amplia de dano estable",
       "sprite": "assets/images/heroes/capitan_america/portrait.png",
       "visual": {
         "portrait": "assets/images/heroes/capitan_america/portrait.png",
@@ -186,14 +186,24 @@ window.__MARVEL_TD_DATA__ = {
         "Avengers",
         "Operaciones"
       ],
-      "formationRole": "vanguard",
+      "formationRole": "support",
       "teamMetrics": {
-        "damage": 3,
+        "damage": 1,
         "control": 3,
         "support": 5,
         "detection": 2
       },
-      "terrainRole": "grass"
+      "terrainRole": "grass",
+      "special": {
+        "supportAura": {
+          "type": "damage",
+          "power": 0.1,
+          "range": 255,
+          "label": "Inspiracion tactica"
+        },
+        "visualStyle": "energy",
+        "projectileColor": "#40c9ff"
+      }
     },
     "thor": {
       "id": "thor",
@@ -471,19 +481,19 @@ window.__MARVEL_TD_DATA__ = {
       "name": "Black Panther",
       "category": "Tecnológico",
       "rarity": "Rare",
-      "cost": 320,
-      "damage": 35,
-      "range": 90,
-      "fireRate": 1.8,
+      "cost": 340,
+      "damage": 1,
+      "range": 135,
+      "fireRate": 1,
       "canSeeStealth": true,
-      "ability": "CARGA DE VIBRANIUM",
-      "abilityDesc": "Acumula energía cinética al insistir sobre un blanco y contraataca al primero que entra en su guardia. Al máximo libera un pulso y fortalece aliados cercanos.",
+      "ability": "RED DE VIBRANIUM",
+      "abilityDesc": "No ataca. Concentra tecnologia de Wakanda en un aura corta de dano alto.",
       "sprite": "assets/images/heroes/black_panther/portrait.png",
       "allowedTerrains": [
         1,
         3
       ],
-      "niche": "duelista cercano, contraataque y aura de equipo",
+      "niche": "aura corta de dano potente",
       "visual": {
         "portrait": "assets/images/heroes/black_panther/portrait.png",
         "size": 96,
@@ -522,14 +532,24 @@ window.__MARVEL_TD_DATA__ = {
         "Wakanda",
         "Marciales"
       ],
-      "formationRole": "vanguard",
+      "formationRole": "support",
       "teamMetrics": {
-        "damage": 4,
+        "damage": 1,
         "control": 3,
-        "support": 4,
+        "support": 5,
         "detection": 4
       },
-      "terrainRole": "ground"
+      "terrainRole": "ground",
+      "special": {
+        "supportAura": {
+          "type": "damage",
+          "power": 0.2,
+          "range": 135,
+          "label": "Vibranium ofensivo"
+        },
+        "visualStyle": "energy",
+        "projectileColor": "#40c9ff"
+      }
     },
     "doctor_strange": {
       "id": "doctor_strange",
@@ -686,7 +706,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 2.5,
       "canSeeStealth": true,
       "ability": "FRENESI REGENERATIVO",
-      "abilityDesc": "Acumula frenesí, acelera sus ataques cuando está rodeado, salta al objetivo prioritario y recupera una vida con límite temporal.",
+      "abilityDesc": "Acumula frenesí, acelera sus ataques cuando está rodeado y salta al objetivo prioritario para cortar avances peligrosos.",
       "sprite": "assets/images/heroes/wolverine/portrait.png",
       "allowedTerrains": [
         1,
@@ -703,7 +723,7 @@ window.__MARVEL_TD_DATA__ = {
         "support": 3,
         "detection": 4
       },
-      "niche": "asalto cercano, salto y recuperacion",
+      "niche": "asalto cercano, salto y presion",
       "visual": {
         "portrait": "assets/images/heroes/wolverine/portrait.png",
         "size": 96,
@@ -943,7 +963,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 0.6,
       "canSeeStealth": false,
       "ability": "MURO DE RAÍCES",
-      "abilityDesc": "Levanta una barrera temporal sobre la ruta que ralentiza grupos sin desplazarlos. Con otro Guardián recupera una vida cada veinte segundos. Sus raices de contencion pueden restaurar 1 vida ocasionalmente.",
+      "abilityDesc": "Levanta una barrera temporal sobre la ruta que ralentiza grupos sin desplazarlos. Sus raices priorizan contencion pura.",
       "sprite": "assets/images/heroes/groot/portrait.png",
       "allowedTerrains": [
         1
@@ -959,7 +979,7 @@ window.__MARVEL_TD_DATA__ = {
         "support": 5,
         "detection": 1
       },
-      "niche": "control de paso y recuperación de Guardianes",
+      "niche": "control de paso y contencion de Guardianes",
       "visual": {
         "portrait": "assets/images/heroes/groot/portrait.png",
         "size": 96,
@@ -996,14 +1016,6 @@ window.__MARVEL_TD_DATA__ = {
       },
       "terrainRole": "grass",
       "special": {
-        "attackEffects": [
-          {
-            "type": "heal",
-            "duration": 0,
-            "power": 1,
-            "chance": 0.04
-          }
-        ],
         "statModifiers": {}
       }
     },
@@ -1835,7 +1847,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.8,
       "canSeeStealth": true,
       "ability": "CAZADOR DAYWALKER",
-      "abilityDesc": "Aplica sangrado reforzado a elites y convierte cada seis bajas en una vida, con un limite temporal. Sus armas preparadas aplican toxina anti monstruos acumulable.",
+      "abilityDesc": "Aplica sangrado reforzado a elites. Sus armas preparadas aplican toxina anti monstruos acumulable.",
       "sprite": "assets/images/heroes/blade/portrait.png",
       "allowedTerrains": [
         1,
@@ -1852,7 +1864,7 @@ window.__MARVEL_TD_DATA__ = {
         "support": 3,
         "detection": 4
       },
-      "niche": "caza de elites, sangrado y recuperacion",
+      "niche": "caza de elites, sangrado y toxina",
       "visual": {
         "portrait": "assets/images/heroes/blade/portrait.png",
         "size": 96,
@@ -2047,12 +2059,12 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Mutante",
       "rarity": "Legendary",
       "cost": 220,
-      "damage": 20,
-      "range": 140,
-      "fireRate": 1.5,
+      "damage": 6,
+      "range": 155,
+      "fireRate": 1.35,
       "canSeeStealth": true,
-      "ability": "SUERTE IMPOSIBLE",
-      "abilityDesc": "Cada quinto ataque es un crítico controlado y su suerte sembrada puede desviar una fuga hacia atrás.",
+      "ability": "PROBABILIDAD RENTABLE",
+      "abilityDesc": "Cada ataque genera el 15% de la recompensa total del enemigo. Hace muy poco dano, pero convierte presion constante en economia.",
       "sprite": "assets/images/heroes/domino/portrait.png",
       "allowedTerrains": [
         1,
@@ -2064,12 +2076,12 @@ window.__MARVEL_TD_DATA__ = {
       ],
       "formationRole": "support",
       "teamMetrics": {
-        "damage": 4,
+        "damage": 1,
         "control": 3,
-        "support": 4,
+        "support": 5,
         "detection": 5
       },
-      "niche": "criticos previsibles, economia y desvio",
+      "niche": "economia por ataque y control de suerte",
       "visual": {
         "portrait": "assets/images/heroes/domino/portrait.png",
         "size": 96,
@@ -2104,7 +2116,14 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "ground"
+      "terrainRole": "ground",
+      "special": {
+        "economyOnHit": {
+          "rewardPct": 0.15
+        },
+        "visualStyle": "energy",
+        "projectileColor": "#d8c8ff"
+      }
     },
     "war_machine": {
       "id": "war_machine",
@@ -2185,14 +2204,14 @@ window.__MARVEL_TD_DATA__ = {
       "name": "Nick Fury",
       "category": "Urbano",
       "rarity": "Rare",
-      "cost": 210,
-      "damage": 20,
-      "range": 180,
-      "fireRate": 1.8,
+      "cost": 240,
+      "damage": 1,
+      "range": 265,
+      "fireRate": 1,
       "canSeeStealth": true,
-      "ability": "DIRECTOR S.H.I.E.L.D.",
-      "abilityDesc": "Marca objetivos prioritarios y mejora la lectura contra sigilo desde larga distancia.",
-      "niche": "deteccion, marca y soporte tactico",
+      "ability": "ORDEN DE FUEGO",
+      "abilityDesc": "No ataca. Coordina al equipo con un aura amplia de cadencia moderada.",
+      "niche": "aura amplia de cadencia tactica",
       "allowedTerrains": [
         3
       ],
@@ -2202,23 +2221,17 @@ window.__MARVEL_TD_DATA__ = {
       ],
       "formationRole": "support",
       "teamMetrics": {
-        "damage": 2,
+        "damage": 1,
         "control": 3,
         "support": 5,
         "detection": 5
       },
       "special": {
-        "attackEffects": [
-          {
-            "type": "mark",
-            "duration": 2.4,
-            "power": 0.14,
-            "chance": 0.45
-          }
-        ],
-        "statModifiers": {
-          "rangePct": 0.08,
-          "detectStealth": true
+        "supportAura": {
+          "type": "fireRate",
+          "power": 0.08,
+          "range": 265,
+          "label": "Coordinacion S.H.I.E.L.D."
         },
         "visualStyle": "energy",
         "projectileColor": "#88aaff"
@@ -2265,14 +2278,14 @@ window.__MARVEL_TD_DATA__ = {
       "name": "Wasp",
       "category": "Tecnológico",
       "rarity": "Epic",
-      "cost": 230,
-      "damage": 18,
-      "range": 135,
-      "fireRate": 2.5,
+      "cost": 280,
+      "damage": 1,
+      "range": 125,
+      "fireRate": 1,
       "canSeeStealth": true,
-      "ability": "PICADURA WASP",
-      "abilityDesc": "Alta cadencia, criticos rapidos y microdescargas que frenan corredores.",
-      "niche": "cadencia, critico y anti runners",
+      "ability": "ENLACE PYM",
+      "abilityDesc": "No ataca. Acelera aliados en un aura corta con mucha cadencia.",
+      "niche": "aura corta de cadencia intensa",
       "allowedTerrains": [
         0,
         1,
@@ -2284,25 +2297,18 @@ window.__MARVEL_TD_DATA__ = {
       ],
       "formationRole": "support",
       "teamMetrics": {
-        "damage": 3,
+        "damage": 1,
         "control": 4,
-        "support": 3,
+        "support": 5,
         "detection": 5
       },
       "special": {
-        "statModifiers": {
-          "fireRatePct": 0.1,
-          "critChance": 4,
-          "detectStealth": true
+        "supportAura": {
+          "type": "fireRate",
+          "power": 0.18,
+          "range": 125,
+          "label": "Impulso Pym"
         },
-        "attackEffects": [
-          {
-            "type": "slow",
-            "duration": 1.1,
-            "power": 0.24,
-            "chance": 0.25
-          }
-        ],
         "visualStyle": "energy",
         "projectileColor": "#ffd447"
       },
@@ -3069,7 +3075,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.65,
       "canSeeStealth": true,
       "ability": "DAGAS DE LUZ",
-      "abilityDesc": "Lanza luz que marca y salta a un segundo objetivo cercano. La luz de Dagger puede recuperar 1 vida con impactos precisos.",
+      "abilityDesc": "Lanza luz que marca y salta a un segundo objetivo cercano, abriendo ventanas de dano para el equipo.",
       "niche": "marca y rebote luminoso",
       "allowedTerrains": [
         0,
@@ -3099,12 +3105,6 @@ window.__MARVEL_TD_DATA__ = {
             "duration": 2,
             "power": 0.12,
             "chance": 0.36
-          },
-          {
-            "type": "heal",
-            "duration": 0,
-            "power": 1,
-            "chance": 0.05
           }
         ],
         "statModifiers": {
@@ -4250,8 +4250,8 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.35,
       "canSeeStealth": true,
       "ability": "PACTO DEMONICO",
-      "abilityDesc": "Balas malditas revelan infiltrados, marcan soportes y aumentan el dano recibido. Sus balas malditas dejan una maldicion persistente. Su pacto oscuro convierte impactos raros en recuperacion de vida.",
-      "niche": "marca oscura y deteccion",
+      "abilityDesc": "Balas malditas revelan infiltrados, marcan soportes y aumentan el dano recibido. Sus balas dejan una maldicion persistente.",
+      "niche": "marca oscura, maldicion y deteccion",
       "allowedTerrains": [
         1,
         3
@@ -4280,12 +4280,6 @@ window.__MARVEL_TD_DATA__ = {
             "duration": 3.6,
             "power": 0.0038,
             "chance": 0.44
-          },
-          {
-            "type": "heal",
-            "duration": 0,
-            "power": 1,
-            "chance": 0.035
           }
         ],
         "statModifiers": {
@@ -5012,8 +5006,8 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1,
       "canSeeStealth": false,
       "ability": "CAPULLO CUANTICO",
-      "abilityDesc": "Energia cosmica encadena objetivos y potencia el sosten de equipos largos. Una fraccion de sus impactos restaura 1 vida de la base.",
-      "niche": "soporte cosmico, cadenas y curacion de base",
+      "abilityDesc": "Energia cosmica encadena objetivos y potencia el sosten ofensivo de equipos largos.",
+      "niche": "soporte cosmico, cadenas y presion sostenida",
       "allowedTerrains": [
         0,
         1,
@@ -5041,15 +5035,7 @@ window.__MARVEL_TD_DATA__ = {
           "damagePct": 0.04
         },
         "visualStyle": "energy",
-        "projectileColor": "#facc15",
-        "attackEffects": [
-          {
-            "type": "heal",
-            "duration": 0,
-            "power": 1,
-            "chance": 0.08
-          }
-        ]
+        "projectileColor": "#facc15"
       },
       "sprite": "assets/images/heroes/adam_warlock/portrait.png",
       "visual": {
@@ -5175,13 +5161,13 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Tecnológico",
       "rarity": "Legendary",
       "cost": 430,
-      "damage": 28,
-      "range": 185,
-      "fireRate": 1.55,
+      "damage": 1,
+      "range": 245,
+      "fireRate": 1,
       "canSeeStealth": true,
-      "ability": "CAMPO INVISIBLE",
-      "abilityDesc": "Campos de fuerza revelan infiltrados, marcan elites y amplian cobertura segura.",
-      "niche": "soporte defensivo de rango",
+      "ability": "CAMPO DE COBERTURA",
+      "abilityDesc": "No ataca. Extiende ligeramente el alcance en un area amplia y ayuda a revelar sigilo.",
+      "niche": "aura amplia de alcance y deteccion",
       "allowedTerrains": [
         0,
         1,
@@ -5193,23 +5179,18 @@ window.__MARVEL_TD_DATA__ = {
       ],
       "formationRole": "support",
       "teamMetrics": {
-        "damage": 3,
+        "damage": 1,
         "control": 4,
         "support": 5,
         "detection": 5
       },
       "special": {
-        "attackEffects": [
-          {
-            "type": "mark",
-            "duration": 2.6,
-            "power": 0.14,
-            "chance": 0.38
-          }
-        ],
-        "statModifiers": {
-          "detectStealth": true,
-          "rangePct": 0.1
+        "supportAura": {
+          "type": "range",
+          "power": 0.08,
+          "range": 245,
+          "label": "Campo invisible",
+          "detectStealth": true
         },
         "visualStyle": "energy",
         "projectileColor": "#a7f3ff"
@@ -5523,7 +5504,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.55,
       "canSeeStealth": true,
       "ability": "HIELO POP",
-      "abilityDesc": "Proyectiles de hielo ralentizan corredores y estabilizan el tramo final. Su hielo protector puede recuperar 1 vida en impactos clave.",
+      "abilityDesc": "Proyectiles de hielo ralentizan corredores y estabilizan el tramo final con control seguro.",
       "niche": "slow a distancia y deteccion",
       "allowedTerrains": [
         1,
@@ -5551,12 +5532,6 @@ window.__MARVEL_TD_DATA__ = {
             "duration": 2.2,
             "power": 0.46,
             "chance": 0.52
-          },
-          {
-            "type": "heal",
-            "duration": 0,
-            "power": 1,
-            "chance": 0.04
           }
         ],
         "statModifiers": {
@@ -5613,8 +5588,8 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.65,
       "canSeeStealth": true,
       "ability": "EMPATIA PSIQUICA",
-      "abilityDesc": "Calma grupos peligrosos con ralentizacion y marca tactica desde gran distancia. Su empatia tiene baja probabilidad de restaurar 1 vida al impactar.",
-      "niche": "soporte guardian de control y curacion ligera",
+      "abilityDesc": "Calma grupos peligrosos con ralentizacion y marca tactica desde gran distancia.",
+      "niche": "soporte guardian de control tactico",
       "allowedTerrains": [
         1,
         3
@@ -5643,12 +5618,6 @@ window.__MARVEL_TD_DATA__ = {
             "duration": 2,
             "power": 0.1,
             "chance": 0.3
-          },
-          {
-            "type": "heal",
-            "duration": 0,
-            "power": 1,
-            "chance": 0.06
           }
         ],
         "statModifiers": {
@@ -5701,13 +5670,13 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Tecnológico",
       "rarity": "Legendary",
       "cost": 415,
-      "damage": 35,
-      "range": 175,
-      "fireRate": 1.45,
+      "damage": 1,
+      "range": 145,
+      "fireRate": 1,
       "canSeeStealth": false,
-      "ability": "ELASTICIDAD TACTICA",
-      "abilityDesc": "Golpes elasticos alcanzan curvas, rebotan una vez y rompen formaciones densas.",
-      "niche": "alcance flexible y rebote",
+      "ability": "GEOMETRIA ELASTICA",
+      "abilityDesc": "No ataca. Recalibra posiciones cercanas con un aumento fuerte de alcance en area corta.",
+      "niche": "aura corta de alcance concentrado",
       "allowedTerrains": [
         1,
         3
@@ -5718,19 +5687,17 @@ window.__MARVEL_TD_DATA__ = {
       ],
       "formationRole": "support",
       "teamMetrics": {
-        "damage": 4,
+        "damage": 1,
         "control": 4,
         "support": 5,
         "detection": 3
       },
       "special": {
-        "projectileProfile": {
-          "chainCount": 1,
-          "chainRange": 100,
-          "chainFactor": 0.55
-        },
-        "statModifiers": {
-          "rangePct": 0.12
+        "supportAura": {
+          "type": "range",
+          "power": 0.15,
+          "range": 145,
+          "label": "Calculo elastico"
         },
         "visualStyle": "impact",
         "projectileColor": "#5be7ff"
@@ -9042,14 +9009,15 @@ window.__MARVEL_TD_DATA__ = {
     "protocolo_extremis": {
       "id": "protocolo_extremis",
       "name": "PROTOCOLO EXTREMIS",
-      "desc": "Restaura 1 vida cada 15 bajas.",
+      "desc": "Aumenta el dano +18% y activa +22% dano extra cuando la base esta en peligro.",
       "icon": "assets/images/items/protocolo_extremis.png",
       "price": 2800,
       "tier": 4,
       "slot": "armor",
       "set": "stark",
       "effects": {
-        "killHealEvery": 15
+        "damagePct": 0.18,
+        "lowLifeDamagePct": 0.22
       },
       "rarity": "Legendary"
     },

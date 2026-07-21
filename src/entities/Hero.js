@@ -116,6 +116,7 @@ export class Hero {
         }
 
         this.abilitySystem.applyStatModifiers(stats);
+        this.applySupportAuras(stats);
         return this.game.teamSynergy?.applyHeroStats(this, stats) || stats;
     }
 
@@ -126,6 +127,7 @@ export class Hero {
         this.visualTime += dt;
         this.animator?.update(dt);
         if (this.stunTimer > 0) return;
+        if (this.isSupportAuraOnly()) return;
 
         const stats = this.getEffectiveStats();
         this.abilitySystem.update(dt, enemies, stats, projectiles);
@@ -178,6 +180,7 @@ export class Hero {
         let finalDamage = isCrit ? stats.damage * 2 : stats.damage;
         this.combatStats.shots++;
         if (isCrit) this.combatStats.crits++;
+        this.generateEconomyOnHit(target);
 
         const itemEffects = aggregateItemEffects(this.items);
         if (itemEffects.consecutiveDamagePct) {
@@ -211,7 +214,9 @@ export class Hero {
 
         effects.push(...this.abilitySystem.getAttackEffects(target));
         if (this.id === 'groot') effects.push({ type: 'slow', duration: 1.8, power: 0.6, chance: 0.5 });
-        effects.push(...(this.config.special?.attackEffects || []).map((effect) => ({ ...effect })));
+        effects.push(...(this.config.special?.attackEffects || [])
+            .filter((effect) => effect.type !== 'heal')
+            .map((effect) => ({ ...effect })));
         const itemEffects = aggregateItemEffects(this.items);
         if (itemEffects.slowChance) effects.push({ type: 'slow', duration: 1.2, power: itemEffects.slowPower || 0.2, chance: itemEffects.slowChance });
         if (itemEffects.armorBreakChance) effects.push({ type: 'armorBreak', duration: 3, power: itemEffects.armorBreakPower || 0.15, chance: itemEffects.armorBreakChance });
@@ -249,13 +254,42 @@ export class Hero {
         this.combatStats.kills++;
         this.killCount++;
         this.abilitySystem.onKill();
+    }
 
-        const healEvery = aggregateItemEffects(this.items).killHealEvery;
-        if (healEvery && this.killCount >= healEvery) {
-            resourceManager?.addLife(1);
-            this.recordLifeSaved(1);
-            this.killCount = 0;
+    isSupportAuraOnly() {
+        return Boolean(this.config.special?.supportAura?.type);
+    }
+
+    applySupportAuras(stats) {
+        const allies = this.game?.heroes || [];
+        for (const ally of allies) {
+            if (ally === this || ally.stunTimer > 0) continue;
+            const aura = ally.config?.special?.supportAura;
+            if (!aura?.type) continue;
+            const radius = Math.max(0, Number(aura.range || ally.range || 0));
+            if (Math.hypot(ally.x - this.x, ally.y - this.y) > radius) continue;
+            const power = Math.max(0, Number(aura.power || 0));
+            if (aura.type === 'damage') stats.damage *= 1 + power;
+            if (aura.type === 'fireRate') stats.fireRate *= 1 + power;
+            if (aura.type === 'range') stats.range *= 1 + power;
+            if (aura.detectStealth) stats.canSeeStealth = true;
         }
+    }
+
+    generateEconomyOnHit(target) {
+        const config = this.config.special?.economyOnHit;
+        const reward = Number(target?.reward ?? target?.config?.reward ?? 0);
+        const rewardPct = Number(config?.rewardPct || 0);
+        if (!Number.isFinite(reward) || reward <= 0 || !Number.isFinite(rewardPct) || rewardPct <= 0) return;
+        const credits = Math.max(1, Math.ceil(reward * rewardPct));
+        this.game?.resourceManager?.addCredits?.(credits);
+        this.recordGold(credits);
+        this.game?.vfx?.addFloatingText?.(target.x, target.y - 34, `+$${credits}`, {
+            color: '#f6d365',
+            size: 12,
+            duration: 0.7,
+            velocityY: -24
+        });
     }
 
     applyStun(duration = 1) {

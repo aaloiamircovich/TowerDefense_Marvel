@@ -70,16 +70,6 @@ export class HeroAbilitySystem {
     }
 
     applyStatModifiers(stats) {
-        const leader = this.hero.game?.heroes?.find((candidate) => (
-            candidate !== this.hero
-            && candidate.id === 'capitan_america'
-            && Math.hypot(candidate.x - this.hero.x, candidate.y - this.hero.y) <= 150
-        ));
-
-        if (leader) {
-            stats.damage *= 1.1;
-            stats.fireRate *= 1.15;
-        }
         this.avengerKit.applyStatModifiers(stats);
         this.cosmicKit.applyStatModifiers(stats);
         this.streetKit.applyStatModifiers(stats);
@@ -181,15 +171,17 @@ export class HeroAbilitySystem {
     }
 
     getDisplayState() {
+        const aura = this.hero.config?.special?.supportAura;
+        if (aura?.type) {
+            const labels = { damage: 'Daño', fireRate: 'Cadencia', range: 'Alcance' };
+            return { label: `${labels[aura.type] || 'Aura'} +${Math.round((aura.power || 0) * 100)}%`, progress: null, ready: true };
+        }
         if (this.hero.id === 'iron_man') {
             const charge = this.attackCount % 3;
             return { label: `Carga ARC ${charge}/3`, progress: charge / 3, ready: charge === 2 };
         }
         if (this.hero.id === 'spiderman') {
             return { label: '3 redes inmovilizan', progress: null, ready: true };
-        }
-        if (this.hero.id === 'capitan_america') {
-            return { label: 'Liderazgo: +10% daño, +15% cadencia', progress: null, ready: true };
         }
         if (ACTIVE_COOLDOWNS[this.hero.id]) {
             const cooldown = this.getCooldown();

@@ -154,13 +154,7 @@ export class CombatSystem {
     static applyEffects(effects = [], target, attacker) {
         effects.forEach((effect) => {
             if (CombatSystem.random(attacker) > (effect.chance ?? 1)) return;
-
-            if (effect.type === 'heal') {
-                const amount = Math.max(1, Math.round(Number(effect.power || 1)));
-                attacker?.game?.resourceManager?.addLife?.(amount);
-                attacker?.recordLifeSaved?.(amount);
-                return;
-            }
+            if (effect.type === 'heal') return;
 
             if (target.applyStatus) {
                 target.applyStatus(effect, attacker);
@@ -180,11 +174,6 @@ export class CombatSystem {
         }
 
         attacker.killCount = (attacker.killCount || 0) + 1;
-        const healEvery = aggregateItemEffects(attacker.items).killHealEvery;
-        if (healEvery && attacker.killCount >= healEvery) {
-            resourceManager?.addLife(1);
-            attacker.killCount = 0;
-        }
     }
 
     static applyItemEffects(attacker, target, resourceManager) {
@@ -197,14 +186,6 @@ export class CombatSystem {
             if (item.flags?.includes('slow_on_armor') && target.armor > 0) {
                 target.applyStatus?.({ type: 'slow', duration: 1, power: 0.5 }, attacker)
                     ?? target.applyDebuff?.('slow', 1, 0.5);
-            }
-
-            if (item.id === 'leftovers') {
-                if (item.usedThisWave === undefined) item.usedThisWave = false;
-                if (!item.usedThisWave && CombatSystem.random(attacker) <= 0.01) {
-                    resourceManager?.addLife(1);
-                    item.usedThisWave = true;
-                }
             }
         });
     }

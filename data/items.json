@@ -45,14 +45,15 @@
   "protocolo_extremis": {
     "id": "protocolo_extremis",
     "name": "PROTOCOLO EXTREMIS",
-    "desc": "Restaura 1 vida cada 15 bajas.",
+    "desc": "Aumenta el dano +18% y activa +22% dano extra cuando la base esta en peligro.",
     "icon": "assets/images/items/protocolo_extremis.png",
     "price": 2800,
     "tier": 4,
     "slot": "armor",
     "set": "stark",
     "effects": {
-      "killHealEvery": 15
+      "damagePct": 0.18,
+      "lowLifeDamagePct": 0.22
     },
     "rarity": "Legendary"
   },

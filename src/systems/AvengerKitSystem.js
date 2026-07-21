@@ -82,12 +82,6 @@ export class AvengerKitSystem {
         }
 
         const allies = this.hero.game?.heroes || [];
-        const panther = allies.find((candidate) => candidate.id === 'black_panther'
-            && Math.hypot(candidate.x - this.hero.x, candidate.y - this.hero.y) <= 145);
-        if (panther && panther !== this.hero) {
-            stats.damage *= 1.06;
-            stats.critChance += 3;
-        }
 
         const reconFalcon = allies.find((candidate) => candidate.id === 'falcon'
             && candidate.abilitySystem?.getCombatMode?.() === 'recon'

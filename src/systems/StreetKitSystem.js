@@ -61,14 +61,10 @@ export class StreetKitSystem {
         if (this.hero.id !== 'blade') return;
         this.bloodTally++;
         if (this.bloodTally < 6 || this.lifeStealCooldown > 0) return;
-        const resources = this.hero.game.resourceManager;
-        if (resources?.lives < resources?.maxLives) {
-            resources.addLife(1);
-            this.hero.recordAbility();
-            this.hero.game.audio?.play('blood');
-        }
         this.bloodTally = 0;
         this.lifeStealCooldown = 24;
+        this.hero.recordAbility();
+        this.hero.game.audio?.play('blood');
     }
 
     applyStatModifiers(stats) {
@@ -268,7 +264,6 @@ export class StreetKitSystem {
         this.hero.game.vfx?.addBeam(this.hero, target, { color: '#f2c94c', width: 7, duration: 0.28 });
         this.hero.game.audio?.play('intercept');
         this.hero.recordAbility();
-        this.hero.recordLifeSaved?.(target.isBoss ? 3 : 1);
         this.cooldownRemaining = this.getCooldown(10);
     }
 
