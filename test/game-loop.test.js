@@ -62,3 +62,63 @@ test('GameLoop conserva absorcion de fugas para enemigos comunes', () => {
     assert.equal(enemy.processed, true);
     assert.deepEqual(leaks[0].payload, { lifeLoss: 0, absorbed: true });
 });
+
+test('GameLoop reintenta campania desde oleada uno sin resetear heroes ni recursos', () => {
+    const loop = Object.create(GameLoop.prototype);
+    const hero = { id: 'spiderman', level: 4 };
+    const calls = [];
+    loop.isGameOver = true;
+    loop.isManuallyPaused = true;
+    loop.selectedUnit = hero;
+    loop.heroes = [hero];
+    loop.enemies = [{ id: 'hydra' }];
+    loop.projectiles = [{ id: 'web' }];
+    loop.stars = 12;
+    loop.fps = 60;
+    loop.path = [{ x: 0, y: 0 }, { x: 100, y: 0 }];
+    loop.currentLevel = { id: 'level_1' };
+    loop.resourceManager = { lives: 0, maxLives: 20, credits: 889 };
+    loop.clearProjectiles = () => {
+        loop.projectiles.length = 0;
+        calls.push('clearProjectiles');
+    };
+    loop.vfx = { clear: () => calls.push('clearVfx') };
+    loop.missionSystem = { loadLevel: (level) => calls.push(['mission', level.id]) };
+    loop.waveManager = {
+        currentWave: 8,
+        enemiesQueue: [{ id: 'queued' }],
+        spawnTimer: 4,
+        isWaveActive: true,
+        selectedBranch: 'rush',
+        waveStartSnapshot: { wave: 8 },
+        waveLeakEvents: [{ id: 'leak' }],
+        prepareNextWave: () => calls.push('prepare')
+    };
+    loop.uiManager = {
+        updateCombatPressure: () => calls.push('pressure'),
+        updateSpawnQueue: () => calls.push('spawnQueue'),
+        updateBossHud: () => calls.push('bossHud'),
+        setNextWaveEnabled: (enabled) => calls.push(['nextWave', enabled]),
+        updateUI: (...args) => calls.push(['ui', ...args])
+    };
+
+    loop.retryCampaignFromFirstWave();
+
+    assert.equal(loop.isGameOver, false);
+    assert.equal(loop.isManuallyPaused, false);
+    assert.equal(loop.selectedUnit, null);
+    assert.deepEqual(loop.heroes, [hero]);
+    assert.equal(hero.level, 4);
+    assert.deepEqual(loop.enemies, []);
+    assert.deepEqual(loop.projectiles, []);
+    assert.equal(loop.resourceManager.lives, 20);
+    assert.equal(loop.resourceManager.credits, 889);
+    assert.equal(loop.stars, 12);
+    assert.equal(loop.waveManager.currentWave, 1);
+    assert.deepEqual(loop.waveManager.enemiesQueue, []);
+    assert.equal(loop.waveManager.isWaveActive, false);
+    assert.equal(loop.waveManager.selectedBranch, null);
+    assert.deepEqual(loop.waveManager.waveLeakEvents, []);
+    assert.ok(calls.includes('prepare'));
+    assert.deepEqual(calls.at(-1), ['ui', 20, 889, 1, 60, 12]);
+});

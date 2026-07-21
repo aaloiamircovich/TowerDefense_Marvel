@@ -89,6 +89,33 @@ test('CombatSystem encadena objetivos cercanos con dano decreciente', () => {
     assert.equal(attacker.damageDealt, 35);
 });
 
+test('CombatSystem propaga dano y estados a enemigos agrupados', () => {
+    const targets = [
+        createPositionedTarget(0, 0),
+        createPositionedTarget(30, 0),
+        createPositionedTarget(55, 0),
+        createPositionedTarget(140, 0)
+    ];
+    const applied = [];
+    targets.forEach((target) => {
+        target.applyStatus = (effect) => applied.push([target.x, effect.type]);
+    });
+    const attacker = createAttacker(targets);
+
+    const result = CombatSystem.applyImpact({
+        attackerType: 'Urbano',
+        damage: 30,
+        effects: [{ type: 'slow', duration: 1, power: 0.2, chance: 1 }],
+        propagationCount: 2,
+        propagationRadius: 70,
+        propagationFactor: 0.4
+    }, targets[0], attacker, null);
+
+    assert.deepEqual(targets.map((target) => target.hp), [70, 88, 88, 100]);
+    assert.deepEqual(applied, [[0, 'slow'], [30, 'slow'], [55, 'slow']]);
+    assert.equal(result.hits, 3);
+});
+
 test('CombatSystem usa la fuente aleatoria sembrada para efectos', () => {
     let applied = 0;
     const target = createTarget('Urbano', (damage) => ({ damage, killed: false }));

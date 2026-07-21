@@ -79,8 +79,7 @@ const teamStats = evaluateTeamCombinations(readyHeroes, 6);
 const teamCombinations = { length: teamStats.label || teamStats.total };
 const bestTeam = teamStats.best;
 const competitiveTeams = { length: teamStats.competitive };
-const competitiveMixed = { length: teamStats.competitiveMixed };
-console.log(`Equipos de seis simulados: ${teamCombinations.length} · techo x${bestTeam.multiplier.toFixed(2)} · competitivos ${competitiveTeams.length} (${competitiveMixed.length} mixtos)`);
+console.log(`Equipos de seis simulados: ${teamCombinations.length} · techo x${bestTeam.multiplier.toFixed(2)} · competitivos ${competitiveTeams.length}`);
 
 if (missionProjection[0] < 800 || missionProjection[4] < 1800) {
     console.error('ERROR: la economia de mision no permite una segunda decision temprana.');
@@ -106,7 +105,7 @@ if (Math.min(...phase16Efficiencies) < 0.2 || Math.max(...phase16Efficiencies) >
     console.error('ERROR: un héroe de reserva queda fuera del rango de eficiencia 0.20-0.42.');
     process.exitCode = 1;
 }
-if (bestTeam.multiplier > 1.3 || competitiveTeams.length < 8 || competitiveMixed.length < 3) {
+if (bestTeam.multiplier > 1.3 || competitiveTeams.length < 8) {
     console.error('ERROR: las sinergias reducen demasiado la variedad competitiva.');
     process.exitCode = 1;
 }
@@ -123,60 +122,51 @@ function evaluateTeamCombinations(values, size) {
     if (!process.env.BALANCE_EXACT && capacity > sampleLimit) return evaluateSampledTeamCombinations(values, size, capacity, sampleLimit);
 
     const multipliers = new Float32Array(capacity);
-    const versatile = new Uint8Array(capacity);
     let total = 0;
-    let best = { ids: [], multiplier: 0, versatile: false };
+    let best = { ids: [], multiplier: 0 };
 
     visitCombinations(values, size, (team) => {
         const entry = evaluateTeam(team);
         multipliers[total] = entry.multiplier;
-        versatile[total] = entry.versatile ? 1 : 0;
         total++;
         if (entry.multiplier > best.multiplier) best = { ...entry, ids: team.map((hero) => hero.id) };
     });
 
     const threshold = best.multiplier * 0.94;
     let competitive = 0;
-    let competitiveMixed = 0;
     for (let index = 0; index < total; index++) {
         if (multipliers[index] < threshold) continue;
         competitive++;
-        if (versatile[index]) competitiveMixed++;
     }
 
-    return { total, best, competitive, competitiveMixed };
+    return { total, best, competitive };
 }
 
 function evaluateSampledTeamCombinations(values, size, universe, sampleLimit) {
     let seed = 0x9e3779b9;
-    let best = { ids: [], multiplier: 0, versatile: false };
+    let best = { ids: [], multiplier: 0 };
     const multipliers = new Float32Array(sampleLimit);
-    const versatile = new Uint8Array(sampleLimit);
 
     for (let index = 0; index < sampleLimit; index++) {
         const team = sampleTeam(values, size, seed);
         seed = nextSeed(seed);
         const entry = evaluateTeam(team);
         multipliers[index] = entry.multiplier;
-        versatile[index] = entry.versatile ? 1 : 0;
         if (entry.multiplier > best.multiplier) best = { ...entry, ids: team.map((hero) => hero.id) };
     }
 
     const threshold = best.multiplier * 0.94;
     let competitive = 0;
-    let competitiveMixed = 0;
     for (let index = 0; index < sampleLimit; index++) {
         if (multipliers[index] < threshold) continue;
         competitive++;
-        if (versatile[index]) competitiveMixed++;
     }
 
     return {
         total: sampleLimit,
         label: `${sampleLimit}/${universe} muestras`,
         best,
-        competitive,
-        competitiveMixed
+        competitive
     };
 }
 
@@ -202,7 +192,7 @@ function evaluateTeam(team) {
             * (1 + (effects.rangePct || 0) * 0.4)
             * (1 + (effects.critChance || 0) / 100);
     }, 0) / team.length;
-    return { multiplier, versatile: snapshot.versatile };
+    return { multiplier };
 }
 
 function getTeamEffectsFromSnapshot(hero, snapshot) {
@@ -215,7 +205,6 @@ function getTeamEffectsFromSnapshot(hero, snapshot) {
     snapshot.pairs.forEach((pairSnapshot) => {
         if (pairSnapshot.active && pairSnapshot.heroIds.includes(hero.id)) effects = mergeEffects(effects, pairSnapshot.effects);
     });
-    if (snapshot.versatile) effects = mergeEffects(effects, { damagePct: 0.025, rangePct: 0.025 });
     return effects;
 }
 

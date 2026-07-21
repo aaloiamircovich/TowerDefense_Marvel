@@ -52,7 +52,31 @@ export class CombatSystem {
             }
         }
 
+        if (projectile.propagationCount > 0) {
+            const propagated = CombatSystem.propagateImpact(projectile, target, attacker, resourceManager, enemies);
+            hits += propagated;
+        }
+
         return { ...primary, hits };
+    }
+
+    static propagateImpact(projectile, target, attacker, resourceManager, enemies = []) {
+        const candidates = enemies
+            .filter((enemy) => enemy !== target && enemy.isAlive && CombatSystem.distance(enemy, target) <= projectile.propagationRadius)
+            .sort((a, b) => CombatSystem.distance(a, target) - CombatSystem.distance(b, target))
+            .slice(0, projectile.propagationCount);
+
+        candidates.forEach((enemy) => {
+            CombatSystem.applyDamage(projectile, enemy, attacker, resourceManager, projectile.propagationFactor);
+            if (enemy.isAlive) CombatSystem.applyEffects(projectile.effects, enemy, attacker);
+            attacker?.game?.vfx?.addBeam?.(target, enemy, {
+                color: projectile.color,
+                width: 2,
+                duration: 0.22
+            });
+        });
+
+        return candidates.length;
     }
 
     static applyDamage(projectile, target, attacker, resourceManager, factor) {

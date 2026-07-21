@@ -3,6 +3,7 @@ import { TacticalActionSystem } from '../systems/TacticalActionSystem.js';
 import { getNextTargetingPriority } from '../systems/UIManager.js';
 import { getClosestPointOnPath } from '../utils/PathUtils.js';
 import { buildHeroTargetIntent } from '../entities/Hero.js';
+import { getHeroRangePattern, getRangePatternLabel, isPointInRangePattern } from '../utils/RangePattern.js';
 import {
     canPlaceOnTerrain,
     getAllowedTerrainLabels,
@@ -14,7 +15,9 @@ import {
     TERRAIN
 } from '../utils/TerrainRules.js';
 
-export function measurePathCoverage(origin, range, path = []) {
+export function measurePathCoverage(origin, range, path = [], pattern = 'circle') {
+    if (pattern !== 'circle') return measurePatternPathCoverage(origin, range, path, pattern);
+
     const intervals = [];
     let coveredLength = 0;
     const radiusSquared = range * range;
@@ -60,11 +63,58 @@ export function measurePathCoverage(origin, range, path = []) {
     return { coveredLength, intervals, quality };
 }
 
+function measurePatternPathCoverage(origin, range, path = [], pattern = 'circle') {
+    const intervals = [];
+    let coveredLength = 0;
+    const step = 10;
+
+    for (let index = 0; index < path.length - 1; index++) {
+        const start = path[index];
+        const end = path[index + 1];
+        const dx = end.x - start.x;
+        const dy = end.y - start.y;
+        const segmentLength = Math.hypot(dx, dy);
+        if (!segmentLength) continue;
+
+        let open = null;
+        const samples = Math.max(2, Math.ceil(segmentLength / step));
+        for (let sample = 0; sample <= samples; sample++) {
+            const t = sample / samples;
+            const point = { x: start.x + dx * t, y: start.y + dy * t };
+            const covered = isPointInRangePattern(origin, point, range, pattern);
+
+            if (covered && open === null) open = t;
+            if ((!covered || sample === samples) && open !== null) {
+                const endT = covered && sample === samples ? t : (sample - 1) / samples;
+                if (endT > open) {
+                    const from = { x: start.x + dx * open, y: start.y + dy * open };
+                    const to = { x: start.x + dx * endT, y: start.y + dy * endT };
+                    coveredLength += (endT - open) * segmentLength;
+                    intervals.push({ segmentIndex: index, startT: open, endT, from, to });
+                }
+                open = null;
+            }
+        }
+    }
+
+    const ratio = coveredLength / Math.max(80, range);
+    const quality = ratio >= 1.45
+        ? { id: 'excellent', label: 'Cobertura excelente' }
+        : ratio >= 0.95
+            ? { id: 'strong', label: 'Cobertura fuerte' }
+            : ratio >= 0.55
+                ? { id: 'solid', label: 'Cobertura solida' }
+                : { id: 'minimal', label: 'Cobertura minima' };
+
+    return { coveredLength, intervals, quality };
+}
+
 export function findBestPlacementCell(heroConfig, game, movingHero = null) {
     if (!heroConfig || !game?.terrainMap?.length || !game?.path?.length) return null;
 
     const gridSize = game.gridSize || 40;
     const range = movingHero?.getEffectiveStats?.().range || heroConfig.range || 100;
+    const pattern = getHeroRangePattern(movingHero || heroConfig);
     const allowedTerrains = heroConfig.allowedTerrains || [TERRAIN.grass];
     const qualityWeight = { excellent: 220, strong: 140, solid: 70, minimal: 0 };
     let best = null;
@@ -86,9 +136,9 @@ export function findBestPlacementCell(heroConfig, game, movingHero = null) {
 
             const pathPoint = getClosestPointOnPath(center, game.path);
             const pathDistance = pathPoint?.distance ?? Infinity;
-            if (pathDistance > range) continue;
+            if (!isPointInRangePattern(center, pathPoint || {}, range, pattern)) continue;
 
-            const coverage = measurePathCoverage(center, range, game.path);
+            const coverage = measurePathCoverage(center, range, game.path, pattern);
             if (coverage.coveredLength <= 0) continue;
 
             const score = coverage.coveredLength
@@ -114,7 +164,7 @@ export function buildPlacementSuggestionState(suggestion = null, heroConfig = nu
     return {
         heroId: heroConfig.id || '',
         label: `Celda ${suggestion.x + 1},${suggestion.y + 1}`,
-        detail: `${terrain} | ${quality.label} | ${coveredLength}px de ruta | camino a ${pathDistance}px`,
+        detail: `${terrain} | ${getRangePatternLabel(getHeroRangePattern(heroConfig))} | ${quality.label} | ${coveredLength}px de ruta | camino a ${pathDistance}px`,
         qualityId: quality.id,
         actionLabel: 'Colocar aqui',
         x: suggestion.x,
@@ -127,9 +177,11 @@ export function buildPlacementSuggestionState(suggestion = null, heroConfig = nu
 export function buildHeroCoverageState(hero, path = []) {
     if (!hero) return null;
     const range = hero.getEffectiveStats?.().range || hero.range || hero.config?.range || 100;
-    const coverage = measurePathCoverage({ x: hero.x || 0, y: hero.y || 0 }, range, path);
+    const pattern = getHeroRangePattern(hero);
+    const coverage = measurePathCoverage({ x: hero.x || 0, y: hero.y || 0 }, range, path, pattern);
     return {
         range,
+        pattern,
         coverage,
         quality: coverage.quality,
         coveredLength: Math.round(coverage.coveredLength),
@@ -319,11 +371,13 @@ export class InputManager {
         const pathPoint = getClosestPointOnPath({ x: snapX, y: snapY }, this.game.path);
         const pathDistance = pathPoint?.distance ?? Infinity;
         const range = this.movingHero?.getEffectiveStats?.().range || this.placingHero.range || 100;
-        const coverage = measurePathCoverage({ x: snapX, y: snapY }, range, this.game.path);
-        if (pathDistance > range) {
+        const pattern = getHeroRangePattern(this.movingHero || this.placingHero);
+        const coverage = measurePathCoverage({ x: snapX, y: snapY }, range, this.game.path, pattern);
+        if (!isPointInRangePattern({ x: snapX, y: snapY }, pathPoint || {}, range, pattern)) {
             return { valid: false, terrainType, placementTerrain, pathDistance, pathPoint, coverage, message: `Fuera de alcance: el camino está a ${Math.round(pathDistance)} px.` };
         }
 
+        const patternLabel = getRangePatternLabel(pattern);
         if (this.movingHero) {
             const permission = this.game.tacticalActions.canReposition(this.movingHero);
             if (!permission.ok) return { valid: false, terrainType, placementTerrain, pathDistance, pathPoint, coverage, message: permission.reason };
@@ -433,10 +487,7 @@ export class InputManager {
         ctx.lineWidth = 2;
         ctx.strokeRect(px + 2, py + 2, this.game.gridSize - 4, this.game.gridSize - 4);
 
-        ctx.beginPath();
-        ctx.arc(centerX, centerY, range, 0, Math.PI * 2);
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.45)';
-        ctx.stroke();
+        this.drawRangePattern(ctx, centerX, centerY, range, getHeroRangePattern(this.movingHero || this.placingHero), 'rgba(255, 255, 255, 0.45)');
         this.drawCoveredPathSegments(ctx, validation.coverage, validation.valid);
         if (validation.pathPoint) {
             ctx.beginPath();
@@ -456,6 +507,7 @@ export class InputManager {
         const gridSize = this.game.gridSize;
         const rows = this.game.terrainMap.length;
         const cols = this.game.terrainMap[0]?.length || 0;
+        const pattern = getHeroRangePattern(this.movingHero || this.placingHero);
         ctx.save();
         for (let y = 0; y < rows; y++) {
             for (let x = 0; x < cols; x++) {
@@ -463,7 +515,7 @@ export class InputManager {
                 if (!canPlaceOnTerrain(this.placingHero, terrainType)) continue;
                 const center = { x: x * gridSize + gridSize / 2, y: y * gridSize + gridSize / 2 };
                 const pathPoint = getClosestPointOnPath(center, this.game.path);
-                if ((pathPoint?.distance ?? Infinity) > range) continue;
+                if (!isPointInRangePattern(center, pathPoint || {}, range, pattern)) continue;
                 const color = getTerrainPlacementTone(terrainType);
                 const px = x * gridSize;
                 const py = y * gridSize;
@@ -488,10 +540,7 @@ export class InputManager {
         ctx.lineWidth = 3;
         ctx.setLineDash([8, 6]);
         ctx.strokeRect(px + 4, py + 4, this.game.gridSize - 8, this.game.gridSize - 8);
-        ctx.beginPath();
-        ctx.arc(this.suggestedPlacement.centerX, this.suggestedPlacement.centerY, range, 0, Math.PI * 2);
-        ctx.strokeStyle = 'rgba(252, 163, 17, 0.42)';
-        ctx.stroke();
+        this.drawRangePattern(ctx, this.suggestedPlacement.centerX, this.suggestedPlacement.centerY, range, getHeroRangePattern(this.placingHero), 'rgba(252, 163, 17, 0.42)');
         ctx.setLineDash([]);
         ctx.fillStyle = '#fca311';
         ctx.font = '800 10px Segoe UI, sans-serif';
@@ -539,17 +588,66 @@ export class InputManager {
         ctx.save();
         this.drawCoveredPathSegments(ctx, state.coverage, state.coveredLength > 0);
         this.drawTargetIntent(ctx, hero, targetIntent);
-        ctx.beginPath();
-        ctx.arc(hero.x, hero.y, range, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(64, 201, 255, 0.035)';
-        ctx.fill();
-        ctx.strokeStyle = coverageColor;
-        ctx.lineWidth = 2;
-        ctx.stroke();
+        this.drawRangePattern(ctx, hero.x, hero.y, range, state.pattern, coverageColor, true);
         ctx.fillStyle = coverageColor;
         ctx.font = '800 10px Segoe UI, sans-serif';
         ctx.textAlign = 'center';
         ctx.fillText(state.quality.label.replace('Cobertura ', '').toUpperCase(), hero.x, hero.y - 34);
+        ctx.restore();
+    }
+
+    drawRangePattern(ctx, x, y, range, pattern = 'circle', color = '#40c9ff', fill = false) {
+        ctx.save();
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2;
+        ctx.fillStyle = fill ? 'rgba(64, 201, 255, 0.035)' : 'rgba(64, 201, 255, 0.02)';
+
+        if (pattern === 'cross') {
+            const lane = Math.max(18, range * 0.16);
+            if (fill) {
+                ctx.fillRect(x - lane, y - range, lane * 2, range * 2);
+                ctx.fillRect(x - range, y - lane, range * 2, lane * 2);
+            }
+            ctx.strokeRect(x - lane, y - range, lane * 2, range * 2);
+            ctx.strokeRect(x - range, y - lane, range * 2, lane * 2);
+            ctx.restore();
+            return;
+        }
+
+        if (pattern === 'x') {
+            const lane = Math.max(18, range * 0.16);
+            ctx.translate(x, y);
+            ctx.rotate(Math.PI / 4);
+            if (fill) {
+                ctx.fillRect(-lane, -range, lane * 2, range * 2);
+                ctx.fillRect(-range, -lane, range * 2, lane * 2);
+            }
+            ctx.strokeRect(-lane, -range, lane * 2, range * 2);
+            ctx.strokeRect(-range, -lane, range * 2, lane * 2);
+            ctx.restore();
+            return;
+        }
+
+        ctx.beginPath();
+        ctx.arc(x, y, range, 0, Math.PI * 2);
+        if (pattern === 'ring') {
+            const inner = range * 0.38;
+            if (fill) {
+                ctx.moveTo(x + inner, y);
+                ctx.arc(x, y, inner, 0, Math.PI * 2, true);
+                ctx.fill('evenodd');
+            }
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.arc(x, y, inner, 0, Math.PI * 2);
+            ctx.setLineDash([6, 5]);
+            ctx.stroke();
+            ctx.restore();
+            return;
+        }
+
+        if (fill) ctx.fill();
+        ctx.stroke();
         ctx.restore();
     }
 

@@ -43,10 +43,27 @@ test('buildHeroTargetIntent se oculta sin enemigos en rango', () => {
     assert.equal(buildHeroTargetIntent(hero, [far]), null);
 });
 
-function createHero(priority, canSeeStealth = false) {
+test('rango en anillo ignora enemigos pegados al heroe', () => {
+    const hero = createHero('Primero', false, { rangePattern: 'ring', range: 200 });
+    const close = createTarget({ x: 40, y: 0, distanceTravelled: 200 });
+    const ring = createTarget({ x: 120, y: 0, distanceTravelled: 80 });
+
+    assert.equal(hero.getBestTarget([close, ring], hero.getEffectiveStats()), ring);
+});
+
+test('rango en cruz solo cubre carriles cardinales', () => {
+    const hero = createHero('Primero', false, { rangePattern: 'cross', range: 200 });
+    const diagonal = createTarget({ x: 90, y: 90, distanceTravelled: 200 });
+    const horizontal = createTarget({ x: 150, y: 8, distanceTravelled: 80 });
+
+    assert.equal(hero.getBestTarget([diagonal, horizontal], hero.getEffectiveStats()), horizontal);
+});
+
+function createHero(priority, canSeeStealth = false, overrides = {}) {
     return new Hero({
         id: 'test', name: 'Test', damage: 10, range: 300, fireRate: 1,
-        targetingPriority: priority, canSeeStealth, allowedTerrains: [1]
+        targetingPriority: priority, canSeeStealth, allowedTerrains: [1],
+        ...overrides
     }, 0, 0, {
         heroes: [], resourceManager: { lives: 20 },
         progression: null, showHeroRanges: false

@@ -53,7 +53,7 @@ test('tres Mutantes activan buff de estadisticas legendario', () => {
     assert.equal(effects.rangePct, 0.035);
 });
 
-test('un equipo mixto obtiene versatilidad sin exigir una familia', () => {
+test('un equipo mixto sin requisitos completos no obtiene bonus gratuito', () => {
     const team = [
         hero('spiderman', ['Callejero', 'Tecnología']),
         hero('doctor_strange', ['Místico']),
@@ -63,9 +63,8 @@ test('un equipo mixto obtiene versatilidad sin exigir una familia', () => {
     const snapshot = analyzeTeam(team);
     const effects = getHeroTeamEffects(team[0], team);
 
-    assert.equal(snapshot.versatile, true);
-    assert.equal(effects.damagePct, 0.025);
-    assert.equal(effects.rangePct, 0.025);
+    assert.equal(snapshot.versatile, false);
+    assert.deepEqual(effects, {});
 });
 
 test('formaciones de rol quedan retiradas del sistema de sinergias', () => {
@@ -148,8 +147,8 @@ test('Rivales recompensa antiheroes de rareza alta', () => {
     const effects = getHeroTeamEffects(team[0], team);
 
     assert.equal(rivals.activeTier.count, 5);
-    assert.ok(Math.abs(effects.damagePct - 0.135) < 0.0001);
-    assert.ok(Math.abs(effects.rangePct - 0.085) < 0.0001);
+    assert.ok(Math.abs(effects.damagePct - 0.11) < 0.0001);
+    assert.ok(Math.abs(effects.rangePct - 0.06) < 0.0001);
     assert.ok(Math.abs(effects.abilityPower - 0.07) < 0.0001);
     assert.equal(effects.detectStealth, true);
 });

@@ -81,8 +81,8 @@ test('agrupacion Rivales activa buff de cinco miembros', () => {
     const effects = getHeroTeamEffects(heroes.hela, team);
 
     assert.equal(rivals.activeTier.count, 5);
-    assert.ok(Math.abs(effects.damagePct - 0.135) < 0.0001);
-    assert.ok(Math.abs(effects.rangePct - 0.085) < 0.0001);
+    assert.ok(Math.abs(effects.damagePct - 0.11) < 0.0001);
+    assert.ok(Math.abs(effects.rangePct - 0.06) < 0.0001);
     assert.ok(Math.abs(effects.abilityPower - 0.07) < 0.0001);
     assert.equal(effects.detectStealth, true);
 });

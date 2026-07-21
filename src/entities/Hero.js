@@ -4,6 +4,7 @@ import { SpriteAnimator } from '../rendering/SpriteAnimator.js';
 import { HeroAbilitySystem } from '../systems/HeroAbilitySystem.js';
 import { aggregateItemEffects } from '../systems/ItemEffectSystem.js';
 import { applyEvolutionStats } from '../systems/EvolutionSystem.js';
+import { getHeroRangePattern, isPointInRangePattern } from '../utils/RangePattern.js';
 
 export function buildHeroTargetIntent(hero, enemies = [], stats = null) {
     if (!hero?.getBestTarget) return null;
@@ -20,7 +21,7 @@ export function buildHeroTargetIntent(hero, enemies = [], stats = null) {
         targetName: target.name || target.config?.name || 'Enemigo',
         priority: hero.targetingPriority || hero.config?.targetingPriority || 'Primero',
         distance: Math.round(distance),
-        inRange: distance <= Number(effectiveStats.range || hero.range || 0),
+        inRange: isPointInRangePattern(hero, target, Number(effectiveStats.range || hero.range || 0), getHeroRangePattern(hero)),
         danger: target.isBoss || threat >= 5 ? 'critical' : threat >= 4 ? 'high' : threat >= 3 ? 'guarded' : 'low',
         color: target.isBoss ? '#ffdf6f' : threat >= 4 ? '#ff7b3d' : '#40c9ff'
     };
@@ -38,6 +39,7 @@ export class Hero {
         this.level = config.level || 1;
         this.damage = config.damage || 10;
         this.range = config.range || 120;
+        this.rangePattern = config.rangePattern || config.special?.rangePattern || 'circle';
         this.fireRate = config.fireRate || 1;
         this.critChance = config.critChance || 5;
         this.attackType = config.attackType || this.category;
@@ -142,7 +144,7 @@ export class Hero {
         const inRange = enemies.filter((enemy) => {
             if (!enemy.isAlive) return false;
             if (enemy.stealth && !stats.canSeeStealth) return false;
-            return Math.hypot(enemy.x - this.x, enemy.y - this.y) <= stats.range;
+            return isPointInRangePattern(this, enemy, stats.range, this.rangePattern);
         });
 
         if (inRange.length === 0) return null;
@@ -232,6 +234,9 @@ export class Hero {
             chainFactor: Math.max(base.chainFactor || 0, itemEffects.chainFactor || 0),
             splashRadius: Math.max(base.splashRadius || 0, itemEffects.splashRadius || 0),
             splashFactor: Math.max(base.splashFactor || 0, itemEffects.splashFactor || 0),
+            propagationCount: base.propagationCount || 0,
+            propagationRadius: base.propagationRadius || 90,
+            propagationFactor: base.propagationFactor || 0.35,
             armorPenetration: Math.min(0.85, (base.armorPenetration || 0) + (itemEffects.armorPenetration || 0))
         };
     }

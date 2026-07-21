@@ -532,7 +532,7 @@ export class ProgressionManager {
             activePairs: activePairIds.length,
             activeFamilyTags,
             activePairIds,
-            versatile: Boolean(teamSnapshot.versatile)
+            versatile: false
         };
         const summary = {
             result, mode: game.modeSystem?.modeId || 'campaign', map: game.currentLevel?.name || 'Mision',
@@ -557,7 +557,7 @@ export class ProgressionManager {
         if (tactical.livesSaved >= 5) unlocked.add('protector');
         if (tactical.controlSeconds >= 30) unlocked.add('controlador');
         if (totals.abilities >= 6) unlocked.add('arsenal_vivo');
-        if (synergies.activeFamilies > 0 || synergies.activePairs > 0 || synergies.versatile) unlocked.add('sinergia_activa');
+        if (synergies.activeFamilies > 0 || synergies.activePairs > 0) unlocked.add('sinergia_activa');
         if (Object.keys(this.state.mapProgress).length >= 5) unlocked.add('explorador_multiversal');
         this.state.achievements = [...unlocked];
         summary.synergyRewards = this.evaluateSynergyChallenges(summary);

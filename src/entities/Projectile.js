@@ -21,6 +21,9 @@ export class Projectile {
         this.chainCount = config.chainCount || 0;
         this.chainRange = config.chainRange || 100;
         this.chainFactor = config.chainFactor ?? 0.65;
+        this.propagationCount = config.propagationCount || 0;
+        this.propagationRadius = config.propagationRadius || 90;
+        this.propagationFactor = config.propagationFactor ?? 0.35;
         this.armorPenetration = config.armorPenetration || 0;
         this.returning = Boolean(config.returning);
         this.visualStyle = config.visualStyle || 'energy';

@@ -34,12 +34,14 @@ try {
     await page.goto(`http://127.0.0.1:${port}/`, { waitUntil: 'domcontentloaded' });
     await page.getByTestId('boot-screen').waitFor({ state: 'hidden', timeout: 20000 });
 
-    if (await page.getByTestId('starter-iron_man').isVisible().catch(() => false)) {
-        await page.getByTestId('starter-iron_man').click();
+    const starterCards = page.locator('[data-testid^="starter-"]');
+    if (await starterCards.first().isVisible().catch(() => false)) {
+        await starterCards.first().click();
     }
 
-    await page.getByTestId('hero-place-iron_man').waitFor({ state: 'visible', timeout: 10000 });
-    await page.getByTestId('hero-place-iron_man').click();
+    const placeButtons = page.locator('[data-testid^="hero-place-"]');
+    await placeButtons.first().waitFor({ state: 'visible', timeout: 10000 });
+    await placeButtons.first().click();
 
     const placement = await page.evaluate(findPlacementPoint);
     await page.getByTestId('game-canvas').click({ position: { x: placement.cssX, y: placement.cssY } });

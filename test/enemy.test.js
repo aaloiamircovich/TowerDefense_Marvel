@@ -98,6 +98,31 @@ test('Enemigos voladores se dibujan centrados sobre la ruta', () => {
     assert.ok(calls.some((call) => call[0] === 'arc' && call[1] === 75 && call[2] === 40 && call[3] === 15));
 });
 
+test('Enemy dibuja la barra de vida por encima del sprite visual completo', () => {
+    const enemy = new Enemy({
+        id: 'aim_scientist',
+        hp: 100,
+        speed: 0,
+        visual: {
+            size: 96,
+            anchor: { x: 0.5, y: 0.5 },
+            idle: { south: 'aim.png' }
+        }
+    }, [{ x: 0, y: 0 }]);
+    enemy.x = 120;
+    enemy.y = 140;
+    const fillRects = [];
+    const ctx = {
+        fillRect: (...args) => fillRects.push(args),
+        set fillStyle(value) {}
+    };
+
+    enemy.renderHealthBar(ctx);
+
+    assert.equal(fillRects[0][1], 83);
+    assert.ok(fillRects[0][1] < enemy.y - enemy.size / 2);
+});
+
 test('Enemy atribuye una baja por quemadura a su fuente', () => {
     const enemy = new Enemy({ id: 'test', hp: 5, speed: 50 }, [{ x: 0, y: 0 }]);
     const stats = { damage: 0, kills: 0 };

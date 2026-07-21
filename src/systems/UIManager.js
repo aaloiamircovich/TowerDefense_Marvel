@@ -2521,9 +2521,8 @@ export class UIManager {
             </div>
         `;
         document.getElementById('retry-run')?.addEventListener('click', () => {
-            this.game.isGameOver = false;
             if (modeSnapshot) this.game.modeSystem.start(modeSnapshot.id);
-            else this.game.loadLevel(this.game.currentLevel);
+            else this.game.retryCampaignFromFirstWave?.();
             this.renderHeroRoster(this.game.activeTeam, (hero) => this.game.inputManager.setPlacementMode(hero));
             this.closePanel();
             this.game.start();

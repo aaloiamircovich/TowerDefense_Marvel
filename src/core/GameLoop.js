@@ -172,6 +172,44 @@ export class GameLoop {
         if (this.uiManager) this.uiManager.showGameOver();
     }
 
+    retryCampaignFromFirstWave() {
+        this.isGameOver = false;
+        this.isManuallyPaused = false;
+        this.selectedUnit = null;
+        this.enemies.length = 0;
+        this.clearProjectiles();
+        this.vfx.clear();
+        this.missionSummaryRecorded = false;
+
+        if (this.resourceManager) {
+            this.resourceManager.lives = this.resourceManager.maxLives || 20;
+        }
+
+        if (this.waveManager) {
+            this.waveManager.currentWave = 1;
+            this.waveManager.enemiesQueue = [];
+            this.waveManager.spawnTimer = 0;
+            this.waveManager.isWaveActive = false;
+            this.waveManager.selectedBranch = null;
+            this.waveManager.waveStartSnapshot = null;
+            this.waveManager.waveLeakEvents = [];
+            this.waveManager.prepareNextWave();
+        }
+
+        if (this.currentLevel) this.missionSystem?.loadLevel(this.currentLevel);
+        this.uiManager?.updateCombatPressure?.([], this.path, false);
+        this.uiManager?.updateSpawnQueue?.([], 0, false);
+        this.uiManager?.updateBossHud?.([], false);
+        this.uiManager?.setNextWaveEnabled?.(true);
+        this.uiManager?.updateUI?.(
+            this.resourceManager?.lives || 0,
+            this.resourceManager?.credits || 0,
+            this.waveManager?.currentWave || 1,
+            this.fps,
+            this.stars
+        );
+    }
+
     loop(timestamp) {
         const frameMs = timestamp - this.lastTime;
         this.deltaTime = frameMs / 1000;

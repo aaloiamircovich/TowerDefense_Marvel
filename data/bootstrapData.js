@@ -452,7 +452,8 @@ window.__MARVEL_TD_DATA__ = {
         "support": 1,
         "detection": 4
       },
-      "terrainRole": "high"
+      "terrainRole": "high",
+      "rangePattern": "cross"
     },
     "black_panther": {
       "id": "black_panther",
@@ -583,7 +584,8 @@ window.__MARVEL_TD_DATA__ = {
         "support": 4,
         "detection": 3
       },
-      "terrainRole": "flyer"
+      "terrainRole": "flyer",
+      "rangePattern": "ring"
     },
     "captain_marvel": {
       "id": "captain_marvel",
@@ -1101,7 +1103,14 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "flyer"
+      "terrainRole": "flyer",
+      "special": {
+        "projectileProfile": {
+          "propagationCount": 3,
+          "propagationRadius": 125,
+          "propagationFactor": 0.38
+        }
+      }
     },
     "vision": {
       "id": "vision",
@@ -1558,7 +1567,14 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "flyer"
+      "terrainRole": "flyer",
+      "special": {
+        "projectileProfile": {
+          "propagationCount": 2,
+          "propagationRadius": 120,
+          "propagationFactor": 0.34
+        }
+      }
     },
     "cyclops": {
       "id": "cyclops",
@@ -1622,7 +1638,8 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "high"
+      "terrainRole": "high",
+      "rangePattern": "x"
     },
     "storm": {
       "id": "storm",
@@ -1688,7 +1705,15 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "flyer"
+      "terrainRole": "flyer",
+      "rangePattern": "ring",
+      "special": {
+        "projectileProfile": {
+          "propagationCount": 2,
+          "propagationRadius": 115,
+          "propagationFactor": 0.32
+        }
+      }
     },
     "silver_surfer": {
       "id": "silver_surfer",
@@ -1754,7 +1779,8 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "flyer"
+      "terrainRole": "flyer",
+      "rangePattern": "x"
     },
     "blade": {
       "id": "blade",
@@ -2087,7 +2113,8 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "high"
+      "terrainRole": "high",
+      "rangePattern": "cross"
     },
     "nick_fury": {
       "id": "nick_fury",
@@ -2722,7 +2749,8 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "high"
+      "terrainRole": "high",
+      "rangePattern": "cross"
     },
     "elektra": {
       "id": "elektra",
@@ -3457,7 +3485,8 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "flyer"
+      "terrainRole": "flyer",
+      "rangePattern": "ring"
     },
     "crystal": {
       "id": "crystal",
@@ -3903,7 +3932,10 @@ window.__MARVEL_TD_DATA__ = {
         "projectileProfile": {
           "chainCount": 2,
           "chainRange": 95,
-          "chainFactor": 0.45
+          "chainFactor": 0.45,
+          "propagationCount": 2,
+          "propagationRadius": 95,
+          "propagationFactor": 0.3
         },
         "statModifiers": {
           "critChance": 4
@@ -4777,7 +4809,8 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "flyer"
+      "terrainRole": "flyer",
+      "rangePattern": "ring"
     },
     "peni_parker": {
       "id": "peni_parker",
@@ -5313,7 +5346,12 @@ window.__MARVEL_TD_DATA__ = {
           "cooldown": 0.04
         },
         "visualStyle": "mystic",
-        "projectileColor": "#7ee081"
+        "projectileColor": "#7ee081",
+        "projectileProfile": {
+          "propagationCount": 3,
+          "propagationRadius": 120,
+          "propagationFactor": 0.36
+        }
       },
       "sprite": "assets/images/heroes/loki/portrait.png",
       "visual": {
@@ -5675,7 +5713,8 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "high"
+      "terrainRole": "high",
+      "rangePattern": "cross"
     },
     "nightcrawler": {
       "id": "nightcrawler",

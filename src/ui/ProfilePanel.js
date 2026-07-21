@@ -15,9 +15,9 @@ export class ProfilePanel {
         const challenges = maps.reduce((total, map) => total + (map.challenges?.length || 0), 0);
         const performance = game.performanceMonitor?.lastSnapshot || {};
         const pool = game.projectilePool?.getStats?.() || {};
-        const team = game.teamSynergy?.getSnapshot?.() || { families: [], pairs: [], versatile: false };
+        const team = game.teamSynergy?.getSnapshot?.() || { families: [], pairs: [] };
         const activeSynergies = team.families.filter((family) => family.activeTier).length
-            + team.pairs.filter((pair) => pair.active).length + Number(team.versatile);
+            + team.pairs.filter((pair) => pair.active).length;
         const codex = progression.getCodexSnapshot();
         const weekly = progression.getWeeklyContractSnapshot();
         const synergyChallenges = progression.getSynergyChallengeSnapshot(team);

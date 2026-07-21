@@ -414,6 +414,21 @@ export class Enemy {
         ctx.restore();
     }
 
+    getVisualBounds() {
+        const visualSize = this.animator?.config?.size || this.visual?.size || this.size;
+        const anchor = this.animator?.config?.anchor || this.visual?.anchor || { x: 0.5, y: 0.5 };
+        const left = this.x - visualSize * (Number(anchor.x) || 0.5);
+        const top = this.y - visualSize * (Number(anchor.y) || 0.5);
+        return {
+            left,
+            top,
+            right: left + visualSize,
+            bottom: top + visualSize,
+            width: visualSize,
+            height: visualSize
+        };
+    }
+
     renderFlyingMarker(ctx) {
         const pulse = 0.5 + Math.sin(this.behavior.elapsed * 5) * 0.5;
         const radius = this.size / 2 + 5 + pulse * 2;
@@ -483,13 +498,15 @@ export class Enemy {
     }
 
     renderHealthBar(ctx) {
-        const width = this.isFinalBoss ? 64 : this.isBoss ? 56 : 34;
+        const bounds = this.getVisualBounds();
+        const width = this.isFinalBoss ? 64 : this.isBoss ? 56 : Math.max(34, Math.min(48, bounds.width * 0.52));
+        const y = bounds.top - (this.isBoss ? 13 : 9);
         const hpPercent = Math.max(0, this.hp / this.maxHp);
 
         ctx.fillStyle = 'rgba(10, 12, 16, 0.9)';
-        ctx.fillRect(this.x - width / 2, this.y - this.size / 2 - 10, width, 5);
+        ctx.fillRect(this.x - width / 2, y, width, 5);
         ctx.fillStyle = hpPercent > 0.45 ? '#46d369' : hpPercent > 0.2 ? '#fca311' : '#e63946';
-        ctx.fillRect(this.x - width / 2, this.y - this.size / 2 - 10, width * hpPercent, 5);
+        ctx.fillRect(this.x - width / 2, y, width * hpPercent, 5);
     }
 
     renderBarrier(ctx) {

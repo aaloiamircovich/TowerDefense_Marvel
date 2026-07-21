@@ -191,7 +191,7 @@ export function analyzeTeam(team = []) {
         families,
         pairs,
         distinctTags,
-        versatile: team.length >= 4 && distinctTags >= 4,
+        versatile: false,
         metrics
     };
 }
@@ -207,7 +207,6 @@ export function getHeroTeamEffects(hero, team) {
     snapshot.pairs.forEach((pairSnapshot) => {
         if (pairSnapshot.active && pairSnapshot.heroIds.includes(hero.id)) effects = mergeEffects(effects, pairSnapshot.effects);
     });
-    if (snapshot.versatile) effects = mergeEffects(effects, { damagePct: 0.025, rangePct: 0.025 });
     return effects;
 }
 

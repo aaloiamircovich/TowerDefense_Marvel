@@ -63,7 +63,6 @@ export class TeamBuilderPanel {
                     `;
                     }).join('')}
                     ${snapshot.pairs.filter((pair) => pair.active).map((pair) => `<span class="synergy-chip pair active"><b>${pair.label}</b></span>`).join('')}
-                    ${snapshot.versatile ? '<span class="synergy-chip versatile active"><b>Equipo versátil</b> · +2.5% daño y alcance</span>' : ''}
                 </div>
                 ${this.renderSynergyMenu(snapshot, readyHeroes, unlockedIds)}
             </section>

@@ -31,12 +31,13 @@ if (errors.length > 0) process.exitCode = 1;
 function validateHeroes(heroes) {
     validateRecordIds('heroes', heroes);
     const knownIds = new Set(Object.keys(heroes));
-    const allowedHeroKeys = new Set(['id', 'name', 'category', 'rarity', 'cost', 'damage', 'range', 'fireRate', 'canSeeStealth', 'ability', 'abilityDesc', 'niche', 'sprite', 'visual', 'allowedTerrains', 'tags', 'formationRole', 'teamMetrics', 'terrainRole', 'special', 'evolutionId']);
+    const allowedHeroKeys = new Set(['id', 'name', 'category', 'rarity', 'cost', 'damage', 'range', 'rangePattern', 'fireRate', 'canSeeStealth', 'ability', 'abilityDesc', 'niche', 'sprite', 'visual', 'allowedTerrains', 'tags', 'formationRole', 'teamMetrics', 'terrainRole', 'special', 'evolutionId']);
+    const allowedRangePatterns = new Set(['circle', 'cross', 'x', 'ring']);
     const allowedSpecialKeys = new Set(['statModifiers', 'attackEffects', 'projectileProfile', 'visualStyle', 'projectileColor']);
     const allowedSpecialStatKeys = new Set(['allowWater', 'cooldown', 'critChance', 'damagePct', 'detectStealth', 'fireRatePct', 'rangePct']);
     const allowedAttackEffectKeys = new Set(['chance', 'duration', 'power', 'type']);
     const allowedAttackEffectTypes = new Set(['armorBreak', 'bleed', 'burn', 'mark', 'slow', 'stun', 'web']);
-    const allowedProjectileProfileKeys = new Set(['armorPenetration', 'chainCount', 'chainFactor', 'chainRange', 'splashFactor', 'splashRadius']);
+    const allowedProjectileProfileKeys = new Set(['armorPenetration', 'chainCount', 'chainFactor', 'chainRange', 'splashFactor', 'splashRadius', 'propagationCount', 'propagationFactor', 'propagationRadius']);
     const allowedVisualStyles = new Set(['ballistic', 'blade', 'elemental', 'energy', 'explosive', 'fire', 'ice', 'impact', 'mystic', 'sonic', 'water', 'web', 'whip']);
     const validTags = new Set(['Avengers', 'Defenders', 'Guardianes', 'X-Men', 'Mutantes', 'Místico', 'Callejero', 'Wakanda', 'Tecnología', 'Cósmico', 'Espías', 'Oscuros', 'Marciales', 'Inhumanos', 'Atlánticos', 'Rivales']);
     const validRoles = new Set(['vanguard', 'support', 'artillery']);
@@ -59,6 +60,7 @@ function validateHeroes(heroes) {
         requirePositive(hero.cost, `heroes.${key}.cost`);
         requirePositive(hero.damage, `heroes.${key}.damage`);
         requirePositive(hero.range, `heroes.${key}.range`);
+        if (hero.rangePattern && !allowedRangePatterns.has(hero.rangePattern)) errors.push(`heroes.${key}.rangePattern no es valido`);
         requirePositive(hero.fireRate, `heroes.${key}.fireRate`);
         if (typeof hero.canSeeStealth !== 'boolean') errors.push(`heroes.${key}.canSeeStealth debe ser booleano`);
         if (!VALID_RARITIES.has(hero.rarity || 'Common')) {
@@ -135,11 +137,11 @@ function validateHeroSpecial(heroId, special, schema) {
         validateAllowedKeys(`heroes.${heroId}.special.projectileProfile`, special.projectileProfile, schema.allowedProjectileProfileKeys);
         for (const [key, value] of Object.entries(special.projectileProfile)) {
             const label = `heroes.${heroId}.special.projectileProfile.${key}`;
-            if (key === 'chainCount') {
+            if (key === 'chainCount' || key === 'propagationCount') {
                 if (!Number.isInteger(value) || value < 0) errors.push(`${label} debe ser un entero no negativo`);
             } else {
                 requireNonNegativeNumber(value, label);
-                if (['armorPenetration', 'chainFactor', 'splashFactor'].includes(key) && value > 1) errors.push(`${label} debe estar entre 0 y 1`);
+                if (['armorPenetration', 'chainFactor', 'splashFactor', 'propagationFactor'].includes(key) && value > 1) errors.push(`${label} debe estar entre 0 y 1`);
             }
         }
     }
