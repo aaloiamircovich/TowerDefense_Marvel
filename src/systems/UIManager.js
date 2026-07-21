@@ -53,6 +53,10 @@ export function buildWaveLaunchState(enabled, summary = null) {
 const PIERCING_HERO_IDS = new Set(['iron_man', 'vision', 'hawkeye', 'winter_soldier', 'cyclops', 'silver_surfer']);
 export const TARGETING_PRIORITIES = ['Primero', 'Último', 'Fuerte', 'Débil', 'Rápido', 'Sigilo', 'Jefe'];
 
+const HERO_LEVEL_COST_BASE = 180;
+const HERO_LEVEL_COST_GROWTH = 1.35;
+const HERO_LEVEL_DAMAGE_STEP = 0.28;
+
 const TARGETING_PRIORITY_COPY = {
     Primero: { label: '1ro', icon: 'fa-route', description: 'prioriza al enemigo mas avanzado' },
     Último: { label: 'Ult', icon: 'fa-backward', description: 'limpia rezagados e invocaciones' },
@@ -1897,7 +1901,10 @@ export class UIManager {
         let total = 0;
         const level = Math.max(1, Math.floor(Number(currentLevel) || 1));
         const steps = Math.max(1, Math.floor(Number(amount) || 1));
-        for (let i = 0; i < steps; i++) total += (level + i) * 120;
+        for (let i = 0; i < steps; i++) {
+            const rawCost = HERO_LEVEL_COST_BASE * Math.pow(HERO_LEVEL_COST_GROWTH, level + i - 1);
+            total += Math.ceil(rawCost / 10) * 10;
+        }
         return total;
     }
 
@@ -1992,12 +1999,15 @@ export class UIManager {
         targetData.level = nextLevel;
         targetData.baseDamage = targetData.baseDamage || targetData.damage || unit.damage || 10;
         targetData.baseRange = targetData.baseRange || targetData.range || unit.range || 100;
-        targetData.damage = Math.floor(targetData.baseDamage * Math.pow(1.18, targetData.level - 1));
-        targetData.range = targetData.baseRange + targetData.level * 3;
+        targetData.baseFireRate = targetData.baseFireRate || targetData.fireRate || unit.fireRate || 1;
+        targetData.damage = Math.floor(targetData.baseDamage * (1 + HERO_LEVEL_DAMAGE_STEP * (targetData.level - 1)));
+        targetData.range = targetData.baseRange;
+        targetData.fireRate = targetData.baseFireRate;
 
         unit.level = nextLevel;
         unit.damage = targetData.damage;
         unit.range = targetData.range;
+        unit.fireRate = targetData.fireRate;
     }
 
     refillShop() {

@@ -647,11 +647,16 @@ test('buildWaveReportActionState indica ahorro si falta para reforzar tras fugas
 });
 
 test('UIManager recalcula coste del panel con el nivel vivo tras mejora rapida', () => {
-    const ui = createUpgradeUi(240);
+    const ui = createUpgradeUi(250);
     const hero = deployedHero({ id: 'iron_man', name: 'Iron Man', level: 2, damage: 48, fireRate: 1.3, range: 170 });
+    const originalRange = hero.range;
+    const originalFireRate = hero.fireRate;
 
     assert.equal(ui.quickUpgradeHero(hero), true);
     assert.equal(hero.level, 3);
+    assert.ok(hero.damage > 48);
+    assert.equal(hero.range, originalRange);
+    assert.equal(hero.fireRate, originalFireRate);
     assert.equal(ui.game.resourceManager.credits, 0);
 
     ui.game.resourceManager.credits = 300;
@@ -663,13 +668,13 @@ test('UIManager recalcula coste del panel con el nivel vivo tras mejora rapida',
 });
 
 test('UIManager mejora rapida no cobra ni sube nivel si faltan creditos', () => {
-    const ui = createUpgradeUi(359);
+    const ui = createUpgradeUi(329);
     const hero = deployedHero({ id: 'spiderman', name: 'Spider-Man', level: 3, damage: 20, fireRate: 2, range: 140 });
 
     assert.equal(ui.quickUpgradeHero(hero), false);
 
     assert.equal(hero.level, 3);
-    assert.equal(ui.game.resourceManager.credits, 359);
+    assert.equal(ui.game.resourceManager.credits, 329);
     assert.ok(ui.__calls.some((call) => call[0] === 'toast' && /insuficientes/i.test(call[1])));
 });
 
@@ -681,7 +686,7 @@ test('UIManager mejora rapida usa creditos visibles si el estado interno quedo s
     assert.equal(ui.quickUpgradeHero(hero), true);
 
     assert.equal(hero.level, 4);
-    assert.equal(ui.game.resourceManager.credits, 529);
+    assert.equal(ui.game.resourceManager.credits, 559);
 });
 
 function path() {
