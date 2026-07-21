@@ -1,5 +1,6 @@
 import { formatEffectSummary, getSynergyMenuModel } from '../systems/TeamSynergySystem.js';
 import { EVOLUTION_CATALOG } from '../systems/EvolutionSystem.js';
+import { buildVillainCodexModel } from '../systems/VillainCodexSystem.js';
 import { HERO_RARITIES, getRarityClass, normalizeRarity } from '../utils/Rarity.js';
 
 const METRIC_LABELS = {
@@ -16,6 +17,7 @@ export class TeamBuilderPanel {
         this.sortMode = 'az';
         this.rarityFilter = 'all';
         this.synergyExpanded = false;
+        this.viewMode = 'heroes';
     }
 
     getCollectionSprite(hero) {
@@ -36,8 +38,9 @@ export class TeamBuilderPanel {
                 <h2>${title}</h2>
                 <strong>${game.activeTeam.length}/6 activos · despliegue libre</strong>
             </div>
+            ${this.renderCollectionTabs()}
 
-            <section class="team-builder-summary">
+            ${this.viewMode === 'heroes' ? `<section class="team-builder-summary">
                 <div class="team-slot-strip">
                     ${Array.from({ length: 6 }, (_, index) => this.renderTeamSlot(game.activeTeam[index], index)).join('')}
                 </div>
@@ -67,7 +70,7 @@ export class TeamBuilderPanel {
                 ${filteredHeroes.length
                     ? filteredHeroes.map((hero) => this.renderHeroCard(hero, unlockedIds.has(hero.id))).join('')
                     : '<p class="empty-copy collection-empty">No hay heroes con esos filtros.</p>'}
-            </div>
+            </div>` : this.renderVillainCodex()}
         `;
 
         this.bindListeners();
@@ -126,6 +129,19 @@ export class TeamBuilderPanel {
                 <em><b>En equipo:</b> ${selectedLabel}</em>
                 <em><b>${group.needed > 0 ? 'Faltan' : 'Estado'}:</b> ${group.needed > 0 ? missingLabel : stateLabel}</em>
             </article>
+        `;
+    }
+
+    renderCollectionTabs() {
+        return `
+            <div class="collection-tabs" role="tablist" aria-label="Secciones de coleccion">
+                <button class="collection-view-tab ${this.viewMode === 'heroes' ? 'active' : ''}" data-view="heroes" type="button" aria-selected="${this.viewMode === 'heroes'}">
+                    <i class="fas fa-users"></i> Heroes
+                </button>
+                <button class="collection-view-tab ${this.viewMode === 'villains' ? 'active' : ''}" data-view="villains" type="button" aria-selected="${this.viewMode === 'villains'}">
+                    <i class="fas fa-skull"></i> Diccionario de villanos
+                </button>
+            </div>
         `;
     }
     getRarityRank(hero) {
@@ -214,8 +230,49 @@ export class TeamBuilderPanel {
         `;
     }
 
+    renderVillainCodex() {
+        const game = this.ui.game;
+        const model = buildVillainCodexModel(game.enemyDatabase, game.progression.state.codexDiscovered.enemies);
+        return `
+            <section class="villain-codex-header">
+                <div>
+                    <span class="briefing-kicker">ARCHIVO S.H.I.E.L.D.</span>
+                    <h3>Diccionario de villanos</h3>
+                    <p>Los registros se desbloquean cuando el enemigo aparece en una oleada.</p>
+                </div>
+                <strong>${model.discovered}/${model.total} avistados</strong>
+            </section>
+            <div class="villain-codex-grid">
+                ${model.entries.map((entry) => this.renderVillainCard(entry)).join('')}
+            </div>
+        `;
+    }
+
+    renderVillainCard(entry) {
+        const sprite = entry.sprite
+            ? this.ui.renderSprite(entry.sprite, entry.name)
+            : '<div class="villain-silhouette"><i class="fas fa-question"></i></div>';
+        return `
+            <article class="villain-card ${entry.unlocked ? 'unlocked' : 'locked'} ${entry.isBoss ? 'boss' : ''}">
+                ${sprite}
+                <div>
+                    <h3>${entry.name}</h3>
+                    <small>${entry.category} · ${entry.role}</small>
+                    <span>${entry.faction}</span>
+                </div>
+                <b>${entry.unlocked ? '◆'.repeat(entry.threat) : '?????'}</b>
+                <div class="hero-tag-list">${entry.traits.map((trait) => `<span>${trait}</span>`).join('')}</div>
+            </article>
+        `;
+    }
+
     bindListeners() {
         const game = this.ui.game;
+        this.ui.panelContent.querySelectorAll('.collection-view-tab').forEach((button) => button.addEventListener('click', () => {
+            this.viewMode = button.dataset.view || 'heroes';
+            this.render('Constructor de equipo');
+        }));
+        if (this.viewMode !== 'heroes') return;
         this.ui.panelContent.querySelector('#collection-search-input')?.addEventListener('input', (event) => {
             this.searchQuery = event.target.value;
             this.render('Constructor de equipo');
