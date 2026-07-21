@@ -1687,8 +1687,9 @@ export class UIManager {
         this.renderHeroDetails(unit);
     }
 
-    renderHeroDetails(hero) {
+    renderHeroDetails(hero, detailView = 'summary') {
         const config = hero.config || hero;
+        const heroName = hero.name || config.name;
         const level = this.getHeroLevel(hero);
         const bonuses = this.game.progression?.getHeroBonuses(config.id) || {};
         const effectiveStats = hero.getEffectiveStats?.();
@@ -1716,13 +1717,56 @@ export class UIManager {
         const isDeployed = this.game.heroes.includes(hero);
         const repositionPermission = isDeployed ? this.game.tacticalActions?.canReposition(hero) : null;
         const sellPermission = isDeployed ? this.game.tacticalActions?.canSell(hero) : null;
+        const activeDetailView = ['upgrades', 'equipment', 'combat'].includes(detailView) ? detailView : 'summary';
+        const currentTargeting = hero.targetingPriority || config.targetingPriority || TARGETING_PRIORITIES[0];
+        const compactStats = [
+            ['Daño', `${damage}${this.formatStatDelta(damage, baseDamage)}`],
+            ['Recarga', `${fireRate}/s${this.formatStatDelta(Number(fireRate), baseFireRate, '', 1)}`],
+            ['Crítico', `${critChance}%${this.formatStatDelta(critChance, baseCritChance, '%')}`],
+            ['Alcance', `${range}${this.formatStatDelta(range, baseRange)}`]
+        ];
+        const submenuTitles = {
+            upgrades: 'Árbol de mejora',
+            equipment: 'Equipar objeto',
+            combat: 'Registro de combate'
+        };
+        let submenu = '';
+
+        if (activeDetailView === 'upgrades') {
+            submenu = this.renderUpgradeTree(config, isUnlocked);
+        } else if (activeDetailView === 'equipment') {
+            submenu = `
+                <div class="equipment-card">
+                    <h3>Equipamiento</h3>
+                    <div class="hero-equipment-slots single-equipment-slot">
+                        <div class="item-slot ${equippedItem ? 'filled' : ''}">
+                            <span>${equippedItem ? `${SLOT_LABELS[equippedItem.slot]} | ${SET_BONUSES[equippedItem.set]?.name || 'Sin familia'}` : 'Objeto'}</span>
+                            <strong>${equippedItem?.name || 'Ranura libre'}</strong>
+                            ${equippedItem ? `<small>${equippedItem.desc}</small><button class="btn-unequip-modal icon-command" data-slot="${equippedSlot}" title="Desequipar"><i class="fas fa-eject"></i></button>` : '<small>Un solo objeto equipado por heroe.</small>'}
+                        </div>
+                    </div>
+                    <button id="open-inventory-panel" class="btn-primary ghost" ${isUnlocked ? '' : 'disabled'}><i class="fas fa-box-open"></i> ${isUnlocked ? 'Abrir inventario' : 'Recluta para equipar'}</button>
+                </div>
+            `;
+        } else if (activeDetailView === 'combat') {
+            submenu = `
+                <div class="hero-detail-subpanel detail-card">
+                    <h3>Combate</h3>
+                    <p><span>Daño total</span><strong>${Math.round(combat.damageDealt || 0)}</strong></p>
+                    <p><span>Bajas</span><strong>${combat.kills || 0}</strong></p>
+                    <p><span>Disparos</span><strong>${combat.shots || 0}</strong></p>
+                    <p><span>Críticos</span><strong>${combat.crits || 0}</strong></p>
+                    <p><span>Habilidades</span><strong>${combat.abilityActivations || 0}</strong></p>
+                </div>
+            `;
+        }
 
         this.panelContent.innerHTML = `
             <div class="hero-detail">
                 <section class="hero-portrait ${rarityClass}" data-rarity="${rarity}">
-                    <h2>${hero.name}</h2>
+                    <h2>${heroName}</h2>
                     <b class="rarity-badge ${rarityClass}">${rarity}</b>
-                    <div class="portrait-frame">${this.renderSprite(this.getHeroDisplaySprite(config), hero.name)}</div>
+                    <div class="portrait-frame">${this.renderSprite(this.getHeroDisplaySprite(config), heroName)}</div>
                     <div class="level-chip">Nivel ${level}</div>
                     ${isUnlocked ? `<div class="upgrade-list">
                         ${[1, 5, 10].map((amount) => {
@@ -1739,36 +1783,32 @@ export class UIManager {
                 </section>
 
                 <section class="detail-stack">
-                    <div class="stats-grid">
-                        <div class="detail-card">
-                            <h3>Estadísticas</h3>
-                            <p data-tooltip="Daño por impacto antes de armadura y resistencias"><span>Daño</span><strong>${damage}${this.formatStatDelta(damage, baseDamage)}</strong></p>
-                            <p data-tooltip="Ataques realizados por segundo"><span>Recarga</span><strong>${fireRate}/s${this.formatStatDelta(Number(fireRate), baseFireRate, '', 1)}</strong></p>
-                            <p data-tooltip="Probabilidad de infligir daño crítico"><span>Crítico</span><strong>${critChance}%${this.formatStatDelta(critChance, baseCritChance, '%')}</strong></p>
-                            <p data-tooltip="Distancia máxima de adquisición de objetivos"><span>Alcance</span><strong>${range}${this.formatStatDelta(range, baseRange)}</strong></p>
+                    <div class="hero-summary-card">
+                        <div class="hero-stat-strip">
+                            ${compactStats.map(([label, value]) => `<span><small>${label}</small><strong>${value}</strong></span>`).join('')}
                         </div>
-                        <div class="detail-card">
-                            <h3>Táctica</h3>
-                            <p><span>Terreno</span><strong>${terrains}</strong></p>
-                            <label class="field-label" for="targeting-select">Apuntar a</label>
-                            <select id="targeting-select">
-                                ${TARGETING_PRIORITIES.map((priority) => `<option value="${priority}" ${hero.targetingPriority === priority ? 'selected' : ''}>${priority}</option>`).join('')}
-                            </select>
-                        </div>
-                        <div class="detail-card">
-                            <h3>Combate</h3>
-                            <p><span>Daño total</span><strong>${Math.round(combat.damageDealt || 0)}</strong></p>
-                            <p><span>Bajas</span><strong>${combat.kills || 0}</strong></p>
-                            <p><span>Disparos</span><strong>${combat.shots || 0}</strong></p>
-                            <p><span>Críticos</span><strong>${combat.crits || 0}</strong></p>
-                            <p><span>Habilidades</span><strong>${combat.abilityActivations || 0}</strong></p>
-                        </div>
-                    </div>
 
-                    <div class="ability-card">
-                        <h3>${config.ability || 'Ataque básico'}</h3>
-                        <p>${config.abilityDesc || 'Ataca al enemigo objetivo con su daño base.'}</p>
-                        ${config.niche ? `<div class="ability-niche">Rol táctico: <strong>${config.niche}</strong></div>` : ''}
+                        <div class="hero-ability-compact">
+                            <div>
+                                <h3>${config.ability || 'Ataque básico'}</h3>
+                                <p>${config.abilityDesc || 'Ataca al enemigo objetivo con su daño base.'}</p>
+                            </div>
+                            ${config.niche ? `<b>${config.niche}</b>` : ''}
+                        </div>
+
+                        <div class="hero-tactic-compact">
+                            <div>
+                                <small>Terreno</small>
+                                <strong>${terrains}</strong>
+                            </div>
+                            <label>
+                                <small>Apuntar a</small>
+                                <select id="targeting-select">
+                                    ${TARGETING_PRIORITIES.map((priority) => `<option value="${priority}" ${currentTargeting === priority ? 'selected' : ''}>${priority}</option>`).join('')}
+                                </select>
+                            </label>
+                        </div>
+
                         ${abilityState ? `
                             <div class="ability-status ${abilityState.ready ? 'ready' : ''}">
                                 <span>${abilityState.label}</span>
@@ -1783,21 +1823,23 @@ export class UIManager {
                                 </div>
                             </div>
                         ` : ''}
-                    </div>
 
-                    ${this.renderUpgradeTree(config, isUnlocked)}
-
-                    <div class="equipment-card">
-                        <h3>Equipamiento</h3>
-                        <div class="hero-equipment-slots single-equipment-slot">
-                            <div class="item-slot ${equippedItem ? 'filled' : ''}">
-                                <span>${equippedItem ? `${SLOT_LABELS[equippedItem.slot]} | ${SET_BONUSES[equippedItem.set]?.name || 'Sin familia'}` : 'Objeto'}</span>
-                                <strong>${equippedItem?.name || 'Ranura libre'}</strong>
-                                ${equippedItem ? `<small>${equippedItem.desc}</small><button class="btn-unequip-modal icon-command" data-slot="${equippedSlot}" title="Desequipar"><i class="fas fa-eject"></i></button>` : '<small>Un solo objeto equipado por heroe.</small>'}
-                            </div>
+                        <div class="hero-detail-actions">
+                            <button class="hero-detail-menu-btn ${activeDetailView === 'upgrades' ? 'active' : ''}" data-view="upgrades"><i class="fas fa-project-diagram"></i><span>Árbol</span></button>
+                            <button class="hero-detail-menu-btn ${activeDetailView === 'equipment' ? 'active' : ''}" data-view="equipment"><i class="fas fa-shield-alt"></i><span>Objeto</span></button>
+                            <button class="hero-detail-menu-btn ${activeDetailView === 'combat' ? 'active' : ''}" data-view="combat"><i class="fas fa-chart-line"></i><span>Combate</span></button>
                         </div>
-                        <button id="open-inventory-panel" class="btn-primary ghost" ${isUnlocked ? '' : 'disabled'}><i class="fas fa-box-open"></i> ${isUnlocked ? 'Gestionar inventario' : 'Recluta para equipar'}</button>
                     </div>
+
+                    ${activeDetailView !== 'summary' ? `
+                        <section class="hero-submenu">
+                            <header>
+                                <h3>${submenuTitles[activeDetailView]}</h3>
+                                <button class="hero-detail-back icon-command" title="Volver"><i class="fas fa-times"></i></button>
+                            </header>
+                            ${submenu}
+                        </section>
+                    ` : ''}
                 </section>
             </div>
         `;
@@ -1817,8 +1859,16 @@ export class UIManager {
             if (!hero.abilitySystem?.setCombatMode?.(button.dataset.mode)) return;
             this.showToast(`${kitControl.label}: ${button.textContent}`, 'success');
             this.renderHeroRoster(this.game.activeTeam, (config) => this.game.inputManager.setPlacementMode(config));
-            this.renderHeroDetails(hero);
+            this.renderHeroDetails(hero, activeDetailView);
         }));
+
+        this.panelContent.querySelectorAll('.hero-detail-menu-btn').forEach((button) => {
+            button.addEventListener('click', () => this.renderHeroDetails(hero, button.dataset.view || 'summary'));
+        });
+
+        this.panelContent.querySelector('.hero-detail-back')?.addEventListener('click', () => {
+            this.renderHeroDetails(hero);
+        });
 
         document.getElementById('reposition-hero')?.addEventListener('click', () => {
             if (this.game.inputManager.setRepositionMode(hero)) this.closePanel();
@@ -1830,14 +1880,14 @@ export class UIManager {
         });
 
         this.panelContent.querySelectorAll('.skill-node').forEach((button) => {
-            button.addEventListener('click', () => this.purchaseMetaUpgrade(config, button.dataset.node));
+            button.addEventListener('click', () => this.purchaseMetaUpgrade(config, button.dataset.node, 'upgrades'));
         });
 
         this.panelContent.querySelectorAll('.btn-unequip-modal').forEach((button) => button.addEventListener('click', () => {
             this.game.progression.unequipItem(config.id, button.dataset.slot);
             this.showToast('Objeto devuelto al inventario', 'success');
             const deployed = this.game.heroes.find((unit) => unit.id === config.id);
-            this.renderHeroDetails(deployed || config);
+            this.renderHeroDetails(deployed || config, 'equipment');
         }));
         document.getElementById('open-inventory-panel')?.addEventListener('click', () => {
             this.inventoryPanel.heroId = config.id;
@@ -1872,7 +1922,7 @@ export class UIManager {
         `;
     }
 
-    purchaseMetaUpgrade(hero, nodeId) {
+    purchaseMetaUpgrade(hero, nodeId, detailView = 'summary') {
         const result = this.game.progression.purchaseUpgrade(hero, nodeId);
         if (!result.ok) {
             this.showToast(result.reason, 'warning');
@@ -1880,7 +1930,7 @@ export class UIManager {
         }
         this.showToast(`${result.node.name} adquirida`, 'success');
         const deployed = this.game.heroes.find((unit) => unit.id === hero.id);
-        this.renderHeroDetails(deployed || hero);
+        this.renderHeroDetails(deployed || hero, detailView);
     }
 
     getHeroLevel(unit) {

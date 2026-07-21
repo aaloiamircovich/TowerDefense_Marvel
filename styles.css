@@ -2334,6 +2334,153 @@ body.panel-open {
     margin-top: auto;
 }
 
+.hero-summary-card {
+    display: grid;
+    gap: 12px;
+    padding: 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background:
+        linear-gradient(135deg, rgba(64, 201, 255, 0.08), transparent 42%),
+        rgba(20, 31, 45, 0.9);
+}
+
+.hero-stat-strip {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.hero-stat-strip span {
+    min-width: 0;
+    padding: 9px;
+    border: 1px solid rgba(64, 201, 255, 0.18);
+    border-radius: 7px;
+    background: rgba(5, 8, 13, 0.58);
+}
+
+.hero-stat-strip small,
+.hero-tactic-compact small {
+    display: block;
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.hero-stat-strip strong {
+    display: block;
+    overflow-wrap: anywhere;
+    color: var(--text);
+    font-size: 14px;
+}
+
+.hero-ability-compact {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 10px;
+    align-items: start;
+}
+
+.hero-ability-compact h3 {
+    margin: 0 0 4px;
+    color: var(--bright-yellow);
+}
+
+.hero-ability-compact p {
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.35;
+}
+
+.hero-ability-compact > b {
+    max-width: 160px;
+    padding: 6px 8px;
+    border: 1px solid rgba(252, 163, 17, 0.45);
+    border-radius: 999px;
+    color: var(--bright-yellow);
+    font-size: 11px;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.hero-tactic-compact {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(170px, 220px);
+    gap: 10px;
+    align-items: end;
+}
+
+.hero-tactic-compact strong {
+    display: block;
+    color: var(--text);
+}
+
+.hero-tactic-compact select {
+    width: 100%;
+    margin-top: 4px;
+}
+
+.hero-detail-actions {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.hero-detail-menu-btn {
+    display: grid;
+    place-items: center;
+    gap: 5px;
+    min-height: 58px;
+    padding: 8px;
+    border: 1px solid rgba(64, 201, 255, 0.22);
+    border-radius: 7px;
+    background: rgba(8, 14, 22, 0.82);
+    color: var(--muted);
+    font-weight: 900;
+    cursor: pointer;
+    text-transform: uppercase;
+}
+
+.hero-detail-menu-btn i {
+    color: var(--level-accent);
+    font-size: 16px;
+}
+
+.hero-detail-menu-btn.active,
+.hero-detail-menu-btn:hover {
+    border-color: var(--level-accent);
+    color: var(--text);
+    background: rgba(64, 201, 255, 0.12);
+}
+
+.hero-submenu {
+    display: grid;
+    gap: 12px;
+}
+
+.hero-submenu > header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 12px;
+    border: 1px solid rgba(64, 201, 255, 0.24);
+    border-radius: 8px;
+    background: rgba(5, 8, 13, 0.72);
+}
+
+.hero-submenu > header h3 {
+    margin: 0;
+    color: var(--level-accent);
+}
+
+.hero-submenu .upgrade-tree,
+.hero-submenu .equipment-card,
+.hero-detail-subpanel {
+    margin: 0;
+}
+
 .stats-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -4278,6 +4425,10 @@ body.tactical-paused #gameCanvas {
 
     .hero-detail,
     .stats-grid,
+    .hero-stat-strip,
+    .hero-detail-actions,
+    .hero-tactic-compact,
+    .hero-ability-compact,
     .tree-branches,
     .collection-toolbar,
     .inventory-toolbar,
