@@ -659,12 +659,26 @@ export class ProgressionManager {
     }
 
     equipItem(heroId, itemId) {
-        if (!this.state.ownedItemIds.includes(itemId) || !this.state.unlockedHeroIds.includes(heroId)) return false;
+        if (!this.state.unlockedHeroIds.includes(heroId)) return false;
         const item = this.data.items[itemId];
         if (!item?.slot) return false;
+        const hasFreeCopy = this.state.ownedItemIds.includes(itemId);
+        const sourceHeroId = Object.entries(this.state.equippedItems)
+            .find(([, slots]) => Object.values(slots || {}).includes(itemId))?.[0] || null;
+        if (!hasFreeCopy && !sourceHeroId) return false;
         const slots = { ...(this.state.equippedItems[heroId] || {}) };
         const previousItems = Object.values(slots);
-        this.removeOwnedItem(itemId);
+        if (previousItems.includes(itemId)) return true;
+        if (hasFreeCopy) {
+            this.removeOwnedItem(itemId);
+        } else if (sourceHeroId && sourceHeroId !== heroId) {
+            const sourceSlots = { ...(this.state.equippedItems[sourceHeroId] || {}) };
+            Object.entries(sourceSlots).forEach(([slot, equippedItemId]) => {
+                if (equippedItemId === itemId) delete sourceSlots[slot];
+            });
+            if (Object.keys(sourceSlots).length) this.state.equippedItems[sourceHeroId] = sourceSlots;
+            else delete this.state.equippedItems[sourceHeroId];
+        }
         this.state.ownedItemIds.push(...previousItems);
         this.state.equippedItems[heroId] = { [item.slot]: itemId };
         this.save();

@@ -27,6 +27,7 @@ export class TeamBuilderPanel {
     render(title = 'Equipo') {
         const game = this.ui.game;
         const unlockedIds = new Set(game.progression.state.unlockedHeroIds);
+        const pendingItem = this.getPendingInventoryItem();
         const readyHeroes = Object.values(game.heroDatabase)
             .filter((hero) => hero.visual)
             .sort((a, b) => Number(unlockedIds.has(b.id)) - Number(unlockedIds.has(a.id)) || a.name.localeCompare(b.name));
@@ -41,6 +42,7 @@ export class TeamBuilderPanel {
             ${this.renderCollectionTabs()}
 
             ${this.viewMode === 'heroes' ? `<section class="team-builder-summary">
+                ${pendingItem ? this.renderPendingItemBanner(pendingItem) : ''}
                 <div class="team-slot-strip">
                     ${Array.from({ length: 6 }, (_, index) => this.renderTeamSlot(game.activeTeam[index], index)).join('')}
                 </div>
@@ -132,6 +134,37 @@ export class TeamBuilderPanel {
         `;
     }
 
+    getPendingInventoryItem() {
+        const itemId = this.ui.inventoryPanel?.pendingEquipItemId;
+        return itemId ? this.ui.game.itemDatabase[itemId] || null : null;
+    }
+
+    getHeroEquippedItem(heroId) {
+        const game = this.ui.game;
+        const slots = game.progression.state.equippedItems[heroId] || {};
+        const itemId = Object.values(slots)[0] || null;
+        return itemId ? game.itemDatabase[itemId] || null : null;
+    }
+
+    renderPendingItemBanner(item) {
+        return `
+            <div class="pending-item-banner">
+                <div class="pending-item-preview">
+                    ${this.ui.renderSprite(item.icon, item.name)}
+                    <div>
+                        <span class="briefing-kicker">EQUIPAR OBJETO</span>
+                        <strong>${item.name}</strong>
+                        <small>Elegí un héroe de la colección para asignarlo.</small>
+                    </div>
+                </div>
+                <div class="pending-item-actions">
+                    <button id="cancel-pending-item" class="btn-primary ghost" type="button"><i class="fas fa-xmark"></i> Cancelar</button>
+                    <button id="back-to-inventory" class="btn-primary ghost" type="button"><i class="fas fa-box-open"></i> Inventario</button>
+                </div>
+            </div>
+        `;
+    }
+
     renderCollectionTabs() {
         return `
             <div class="collection-tabs" role="tablist" aria-label="Secciones de coleccion">
@@ -208,12 +241,16 @@ export class TeamBuilderPanel {
     renderHeroCard(hero, unlocked) {
         const game = this.ui.game;
         const equipped = game.activeTeam.some((active) => active.id === hero.id);
+        const pendingItem = this.getPendingInventoryItem();
+        const equippedItem = this.getHeroEquippedItem(hero.id);
         const evolution = hero.evolutionId ? game.progression.getHeroEvolution(hero.id) : null;
         const availableEvolution = hero.evolutionId ? EVOLUTION_CATALOG[hero.evolutionId] : null;
         const rarity = normalizeRarity(hero.rarity);
         const rarityClass = getRarityClass(rarity);
+        const alreadyHasPendingItem = equippedItem?.id === pendingItem?.id;
         return `
-            <article class="collection-card team-hero-card ${rarityClass} ${unlocked ? '' : 'locked'} ${equipped ? 'equipped' : ''}" data-rarity="${rarity}">
+            <article class="collection-card team-hero-card ${rarityClass} ${unlocked ? '' : 'locked'} ${equipped ? 'equipped' : ''} ${pendingItem ? 'item-target-mode' : ''}" data-rarity="${rarity}">
+                ${equippedItem ? `<span class="hero-item-corner" title="${equippedItem.name} equipado">${this.ui.renderSprite(equippedItem.icon, equippedItem.name)}</span>` : ''}
                 ${this.ui.renderSprite(this.getCollectionSprite(hero), hero.name)}
                 <h3>${hero.name}</h3>
                 ${evolution ? `<strong class="evolution-badge" style="--evolution-color:${evolution.color}">${evolution.name}</strong>` : ''}
@@ -221,9 +258,15 @@ export class TeamBuilderPanel {
                 <div class="hero-tag-list">${(hero.tags || []).map((tag) => `<span>${tag}</span>`).join('')}</div>
                 <div class="collection-actions">
                     <button class="btn-preview-hero icon-command" data-id="${hero.id}" aria-label="Ver ficha de ${hero.name}" title="Ver ficha"><i class="fas fa-eye"></i></button>
-                    <button class="${unlocked ? 'btn-equip' : ''} btn-primary ${equipped ? 'danger' : 'ghost'}" data-id="${hero.id}" ${unlocked ? '' : 'disabled'}>
-                        ${unlocked ? (equipped ? 'Quitar' : 'Añadir') : 'Por reclutar'}
-                    </button>
+                    ${pendingItem ? `
+                        <button class="${unlocked && !alreadyHasPendingItem ? 'btn-assign-item' : ''} btn-primary ${alreadyHasPendingItem ? 'ghost' : ''}" data-id="${hero.id}" ${unlocked && !alreadyHasPendingItem ? '' : 'disabled'}>
+                            ${unlocked ? (alreadyHasPendingItem ? 'Ya equipado' : (equippedItem ? 'Reemplazar' : 'Equipar')) : 'Por reclutar'}
+                        </button>
+                    ` : `
+                        <button class="${unlocked ? 'btn-equip' : ''} btn-primary ${equipped ? 'danger' : 'ghost'}" data-id="${hero.id}" ${unlocked ? '' : 'disabled'}>
+                            ${unlocked ? (equipped ? 'Quitar' : 'Añadir') : 'Por reclutar'}
+                        </button>
+                    `}
                 </div>
                 ${unlocked && availableEvolution ? `<button class="btn-evolution" data-id="${hero.id}" data-evolution="${availableEvolution.id}">${evolution ? 'Volver a forma base' : `Activar ${availableEvolution.shortName || availableEvolution.name}`}</button>` : ''}
             </article>
@@ -292,6 +335,24 @@ export class TeamBuilderPanel {
             this.synergyExpanded = !this.synergyExpanded;
             this.render('Constructor de equipo');
         });
+        this.ui.panelContent.querySelector('#cancel-pending-item')?.addEventListener('click', () => {
+            this.ui.inventoryPanel.pendingEquipItemId = null;
+            this.render('Constructor de equipo');
+        });
+        this.ui.panelContent.querySelector('#back-to-inventory')?.addEventListener('click', () => {
+            this.ui.inventoryPanel.pendingEquipItemId = null;
+            this.ui.renderPanel('inventory');
+        });
+        this.ui.panelContent.querySelectorAll('.btn-assign-item').forEach((button) => button.addEventListener('click', () => {
+            const pendingItem = this.getPendingInventoryItem();
+            if (!pendingItem) return;
+            const hero = game.heroDatabase[button.dataset.id];
+            const ok = game.progression.equipItem(hero.id, pendingItem.id);
+            this.ui.inventoryPanel.pendingEquipItemId = null;
+            this.ui.renderHeroRoster(game.activeTeam, (entry) => game.inputManager.setPlacementMode(entry));
+            this.ui.showToast(ok ? `${pendingItem.name} equipado en ${hero.name}` : 'No se pudo equipar el objeto', ok ? 'success' : 'warning');
+            this.render('Constructor de equipo');
+        }));
         this.ui.panelContent.querySelectorAll('.btn-equip').forEach((button) => button.addEventListener('click', () => {
             const teamIds = game.activeTeam.map((hero) => hero.id);
             const equipped = teamIds.includes(button.dataset.id);

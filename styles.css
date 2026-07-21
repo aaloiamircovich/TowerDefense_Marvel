@@ -2567,6 +2567,77 @@ body.panel-open {
     image-rendering: pixelated;
 }
 
+.hero-item-corner,
+.item-owner-corner {
+    position: absolute;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    border: 1px solid color-mix(in srgb, var(--level-accent), transparent 35%);
+    border-radius: 8px;
+    background: rgba(3, 7, 12, 0.9);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.28);
+}
+
+.hero-item-corner {
+    top: 8px;
+    right: 8px;
+    width: 34px;
+    height: 34px;
+}
+
+.hero-item-corner img {
+    width: 26px;
+    height: 26px;
+    object-fit: contain;
+}
+
+.team-hero-card.item-target-mode {
+    border-color: color-mix(in srgb, var(--bright-yellow), transparent 35%);
+}
+
+.pending-item-banner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border: 1px solid color-mix(in srgb, var(--bright-yellow), transparent 45%);
+    border-radius: 8px;
+    background:
+        linear-gradient(135deg, rgba(252, 163, 17, 0.12), transparent 58%),
+        rgba(7, 12, 19, 0.88);
+}
+
+.pending-item-preview {
+    display: grid;
+    grid-template-columns: 52px minmax(0, 1fr);
+    align-items: center;
+    gap: 10px;
+}
+
+.pending-item-preview img {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+}
+
+.pending-item-preview strong {
+    display: block;
+    color: var(--text);
+}
+
+.pending-item-preview small {
+    color: var(--muted);
+}
+
+.pending-item-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
 .collection-actions {
     display: grid;
     grid-template-columns: 38px minmax(0, 1fr);
@@ -3320,6 +3391,7 @@ select {
 }
 
 .collection-card {
+    position: relative;
     display: grid;
     justify-items: center;
     gap: 10px;
@@ -3572,12 +3644,117 @@ select {
 }
 
 .inventory-grid-v2 {
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
 }
 
 .item-card-v2 {
-    min-height: 210px;
+    min-height: 235px;
     padding: 12px;
+}
+
+.inventory-object-card {
+    justify-items: center;
+    gap: 8px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.inventory-object-card:hover,
+.inventory-object-card:focus-visible {
+    border-color: var(--level-accent);
+    outline: none;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.045),
+        0 0 0 1px color-mix(in srgb, var(--level-accent), transparent 40%),
+        0 12px 26px rgba(0, 0, 0, 0.24);
+}
+
+.item-sprite-frame {
+    display: grid;
+    place-items: center;
+    width: 96px;
+    height: 96px;
+    margin-top: 10px;
+    border: 1px solid rgba(64, 201, 255, 0.28);
+    border-radius: 8px;
+    background:
+        radial-gradient(circle at center, rgba(64, 201, 255, 0.12), transparent 60%),
+        rgba(3, 7, 12, 0.72);
+}
+
+.item-sprite-frame img {
+    width: 76px;
+    height: 76px;
+    object-fit: contain;
+}
+
+.inventory-object-card > h3 {
+    margin: 0;
+    font-size: 14px;
+}
+
+.inventory-object-card > small {
+    color: var(--muted);
+    font-size: 10px;
+}
+
+.inventory-object-card > p {
+    display: -webkit-box;
+    min-height: 36px;
+    margin: 0;
+    overflow: hidden;
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.25;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+
+.item-quantity-badge {
+    position: absolute;
+    top: 9px;
+    left: 10px;
+    z-index: 2;
+    color: var(--bright-yellow);
+    font-size: 12px;
+}
+
+.item-owner-corner {
+    top: 8px;
+    right: 8px;
+    width: 38px;
+    height: 38px;
+}
+
+.item-owner-corner img {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+}
+
+.item-card-status {
+    display: grid;
+    gap: 2px;
+    width: 100%;
+    padding: 6px 8px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 7px;
+    background: rgba(3, 7, 12, 0.45);
+}
+
+.item-card-status span {
+    color: #40c9ff;
+    font-size: 10px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.item-card-status b {
+    overflow: hidden;
+    color: var(--muted);
+    font-size: 10px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .item-card-heading {
@@ -3623,6 +3800,18 @@ select {
     .equipment-slots,
     .hero-equipment-slots {
         grid-template-columns: 1fr;
+    }
+
+    .pending-item-banner {
+        grid-template-columns: 1fr;
+    }
+
+    .pending-item-actions {
+        justify-content: stretch;
+    }
+
+    .pending-item-actions .btn-primary {
+        flex: 1 1 150px;
     }
 
     .inventory-toolbar-v2 {

@@ -126,6 +126,20 @@ test('Reemplazar un objeto devuelve la ranura anterior al inventario', () => {
     assert.deepEqual(manager.state.ownedItemIds, ['reactor_arc']);
 });
 
+test('Mover un objeto equipado lo transfiere a otro heroe si no hay copia libre', () => {
+    const manager = new ProgressionManager(new MemoryStorage());
+    manager.initialize(createGame(), data);
+    manager.startProfile('iron_man');
+    manager.unlockHero('spiderman');
+    manager.addOwnedItem('reactor_arc');
+    manager.equipItem('iron_man', 'reactor_arc');
+
+    assert.equal(manager.getOwnedQuantity('reactor_arc'), 0);
+    assert.equal(manager.equipItem('spiderman', 'reactor_arc'), true);
+    assert.equal(manager.state.equippedItems.iron_man, undefined);
+    assert.deepEqual(manager.state.equippedItems.spiderman, { weapon: 'reactor_arc' });
+});
+
 test('Forja y reciclaje de objetos quedan retirados', () => {
     const manager = new ProgressionManager(new MemoryStorage());
     manager.initialize(createGame(), data);
