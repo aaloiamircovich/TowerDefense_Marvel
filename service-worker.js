@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hero-td-v2.44.0-battle-sprites-20260713';
+const CACHE_NAME = 'hero-td-v2.44.0-admin-music-20260720';
 const CORE_ASSETS = [
     './', './index.html', './styles.css', './manifest.webmanifest',
     './data/bootstrapData.js', './data/sprite-atlas.js', './data/heroes.json', './data/enemies.json',

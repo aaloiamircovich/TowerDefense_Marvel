@@ -95,7 +95,7 @@ export class ShopSystem {
             .filter((hero) => hero.visual)
             .filter((hero) => !this.progression.state.unlockedHeroIds.includes(hero.id));
         if (pool.length === 0) return { ok: false, reason: 'Ya tienes todos los héroes' };
-        if (this.progression.state.metaCredits < cost) return { ok: false, reason: 'Fondos S.H.I.E.L.D. insuficientes' };
+        if (!this.progression.state.settings.adminMode && this.progression.state.metaCredits < cost) return { ok: false, reason: 'Fondos S.H.I.E.L.D. insuficientes' };
 
         const guaranteed = shop.heroPity >= 4;
         const candidates = guaranteed ? pool.filter((hero) => hero.rarity !== 'Common') : pool;

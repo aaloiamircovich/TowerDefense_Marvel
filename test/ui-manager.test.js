@@ -689,6 +689,16 @@ test('UIManager mejora rapida usa creditos visibles si el estado interno quedo s
     assert.equal(ui.game.resourceManager.credits, 559);
 });
 
+test('UIManager mejora rapida reconoce creditos infinitos de admin', () => {
+    const ui = createUpgradeUi(Number.POSITIVE_INFINITY, '∞');
+    ui.game.resourceManager.removeCredits = () => true;
+    const hero = deployedHero({ id: 'thor', name: 'Thor', level: 5, damage: 80, fireRate: 0.8, range: 180 });
+
+    assert.equal(ui.canAffordHeroUpgrade(hero, 5), true);
+    assert.equal(ui.quickUpgradeHero(hero), true);
+    assert.equal(hero.level, 6);
+});
+
 function path() {
     return [{ x: 0, y: 0 }, { x: 400, y: 0 }];
 }

@@ -14,6 +14,16 @@ test('ResourceManager administra creditos sin permitir saldo negativo', () => {
     assert.equal(resources.credits, 20);
 });
 
+test('ResourceManager conserva creditos infinitos en modo admin', () => {
+    const resources = new ResourceManager(null, 20, 650);
+    resources.setInfiniteCredits(true);
+
+    assert.equal(resources.credits, Number.POSITIVE_INFINITY);
+    assert.equal(resources.removeCredits(999999), true);
+    resources.addCredits(50);
+    assert.equal(resources.credits, Number.POSITIVE_INFINITY);
+});
+
 test('ResourceManager limita la curacion a maxLives', () => {
     const resources = new ResourceManager({}, 20, 0);
     resources.removeLife(5);

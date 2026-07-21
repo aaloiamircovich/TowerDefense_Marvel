@@ -4266,6 +4266,52 @@ select {
     text-align: right;
 }
 
+.music-picker {
+    display: grid;
+    grid-template-columns: minmax(220px, 1fr) minmax(160px, 0.45fr);
+    gap: 10px;
+    align-items: stretch;
+}
+
+.music-picker label:not(.setting-toggle) {
+    display: grid;
+    gap: 6px;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: rgba(8, 18, 30, 0.86);
+    color: var(--text);
+    font-weight: 800;
+}
+
+.music-picker select,
+.admin-settings input {
+    min-height: 38px;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    background: rgba(5, 10, 18, 0.94);
+    color: var(--text);
+    font-weight: 700;
+}
+
+.admin-settings {
+    border: 1px solid rgba(255, 209, 102, 0.26);
+    border-radius: 8px;
+    padding: 14px;
+    background: linear-gradient(135deg, rgba(252, 163, 17, 0.08), rgba(64, 201, 255, 0.04));
+}
+
+.admin-settings.admin-active {
+    border-color: rgba(255, 209, 102, 0.7);
+    box-shadow: 0 0 18px rgba(252, 163, 17, 0.14);
+}
+
+.admin-settings p {
+    color: var(--muted);
+    margin: 0;
+}
+
 .ui-scale-switch {
     display: grid;
     grid-template-columns: repeat(3, 1fr);

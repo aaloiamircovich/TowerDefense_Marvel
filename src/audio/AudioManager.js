@@ -55,6 +55,23 @@ const THEME_TONES = {
     'the-raft': [82.41, 164.81]
 };
 
+const MUSIC_TRACKS = [
+    { id: 'ambient', title: 'Ambiente del mapa', src: '' },
+    { id: 'marvel-opening-theme', title: 'Marvel Opening Theme', src: 'assets/audio/music/marvel-opening-theme.mp3' },
+    { id: 'the-avengers-theme-song', title: 'The Avengers - Theme Song', src: 'assets/audio/music/the-avengers-theme-song.mp3' },
+    { id: 'avengers-age-of-ultron-extended-theme', title: 'Avengers Age Of Ultron Extended Theme', src: 'assets/audio/music/avengers-age-of-ultron-extended-theme.mp3' },
+    { id: 'avengers-doomsday-epic-version', title: 'Avengers Doomsday - Epic Version', src: 'assets/audio/music/avengers-doomsday-epic-version.mp3' },
+    { id: 'divided-we-fall-civil-war', title: 'Divided We Fall - Civil War', src: 'assets/audio/music/divided-we-fall-civil-war.mp3' },
+    { id: 'acdc-shoot-to-thrill-iron-man-2', title: 'AC/DC - Shoot To Thrill', src: 'assets/audio/music/acdc-shoot-to-thrill-iron-man-2.mp3' },
+    { id: 'i-am-iron-man-john-debney', title: 'I Am Iron Man - John Debney', src: 'assets/audio/music/i-am-iron-man-john-debney.mp3' },
+    { id: 'iron-man-2012-remaster', title: 'Iron Man - 2012 Remaster', src: 'assets/audio/music/iron-man-2012-remaster.mp3' },
+    { id: 'doctor-strange-main-theme', title: 'Doctor Strange - Main Theme', src: 'assets/audio/music/doctor-strange-main-theme.mp3' },
+    { id: 'xmen-first-class-theme', title: 'X-Men: First Class - First Class', src: 'assets/audio/music/xmen-first-class-theme.mp3' },
+    { id: 'xmen-97-extended-theme', title: 'X-Men 97 Extended Theme', src: 'assets/audio/music/xmen-97-extended-theme.mp3' },
+    { id: 'sakaar-chase-thor-ragnarok', title: 'Sakaar Chase - Thor Ragnarok', src: 'assets/audio/music/sakaar-chase-thor-ragnarok.mp3' },
+    { id: 'spiderman-homecoming-suite', title: 'Spider-Man: Homecoming Suite', src: 'assets/audio/music/spiderman-homecoming-suite.mp3' }
+];
+
 export class AudioManager {
     constructor() {
         this.enabled = true;
@@ -63,8 +80,11 @@ export class AudioManager {
         this.musicVolume = 0.25;
         this.sfxVolume = 0.75;
         this.themeId = 'new-york';
+        this.musicTrackId = 'ambient';
+        this.musicLoop = false;
         this.nodes = null;
         this.ambient = [];
+        this.musicElement = null;
     }
 
     setEnabled(enabled) {
@@ -74,8 +94,8 @@ export class AudioManager {
             return;
         }
         this.enabled = next;
-        if (!this.enabled) this.stopAmbient();
-        else if (this.context) this.startAmbient();
+        if (!this.enabled) this.stopMusic();
+        else this.startMusic();
         this.applyVolumes();
     }
 
@@ -94,13 +114,31 @@ export class AudioManager {
 
     setTheme(themeId) {
         this.themeId = THEME_TONES[themeId] ? themeId : 'new-york';
-        if (this.context) this.startAmbient();
+        if (this.musicTrackId === 'ambient' && this.context) this.startAmbient();
+    }
+
+    setMusicTrack(trackId) {
+        const track = getMusicTrack(trackId);
+        if (this.musicTrackId === track.id) {
+            this.applyVolumes();
+            return this.musicTrackId;
+        }
+        this.musicTrackId = track.id;
+        this.stopMusic();
+        this.startMusic();
+        return this.musicTrackId;
+    }
+
+    setMusicLoop(enabled) {
+        this.musicLoop = Boolean(enabled);
+        if (this.musicElement) this.musicElement.loop = this.musicLoop;
+        return this.musicLoop;
     }
 
     unlock() {
         if (!this.enabled || !this.ensureContext()) return false;
         if (this.context.state === 'suspended') this.context.resume();
-        this.startAmbient();
+        this.startMusic();
         return true;
     }
 
@@ -147,10 +185,51 @@ export class AudioManager {
         this.nodes.master.gain.setTargetAtTime(this.enabled ? this.masterVolume : 0, now, 0.03);
         this.nodes.music.gain.setTargetAtTime(this.musicVolume, now, 0.03);
         this.nodes.sfx.gain.setTargetAtTime(this.sfxVolume, now, 0.03);
+        if (this.musicElement) this.musicElement.volume = this.enabled ? this.masterVolume * this.musicVolume : 0;
+    }
+
+    startMusic() {
+        if (!this.enabled) return false;
+        if (this.musicTrackId === 'ambient') {
+            if (!this.context) return false;
+            this.startAmbient();
+            return true;
+        }
+        this.stopAmbient();
+        return this.startTrackElement();
+    }
+
+    startTrackElement() {
+        const track = getMusicTrack(this.musicTrackId);
+        if (!track.src || typeof Audio === 'undefined') return false;
+        if (!this.musicElement) {
+            this.musicElement = new Audio();
+            this.musicElement.preload = 'auto';
+            this.musicElement.addEventListener('ended', () => this.handleTrackEnded());
+        }
+        if (!this.musicElement.src.endsWith(track.src)) {
+            this.musicElement.src = track.src;
+            this.musicElement.currentTime = 0;
+        }
+        this.musicElement.loop = this.musicLoop;
+        this.applyVolumes();
+        const playPromise = this.musicElement.play?.();
+        playPromise?.catch?.(() => {});
+        return true;
+    }
+
+    handleTrackEnded() {
+        if (this.musicLoop || this.musicTrackId === 'ambient') return;
+        const tracks = MUSIC_TRACKS.filter((track) => track.src);
+        const currentIndex = tracks.findIndex((track) => track.id === this.musicTrackId);
+        const nextTrack = tracks[(currentIndex + 1 + tracks.length) % tracks.length] || tracks[0];
+        this.musicTrackId = nextTrack.id;
+        this.startTrackElement();
     }
 
     startAmbient() {
         if (!this.enabled || !this.context || !this.nodes) return;
+        this.stopTrackElement();
         this.stopAmbient();
         const tones = THEME_TONES[this.themeId] || THEME_TONES['new-york'];
         this.ambient = tones.map((frequency, index) => {
@@ -172,10 +251,24 @@ export class AudioManager {
         });
         this.ambient = [];
     }
+
+    stopTrackElement() {
+        if (!this.musicElement) return;
+        this.musicElement.pause?.();
+    }
+
+    stopMusic() {
+        this.stopAmbient();
+        this.stopTrackElement();
+    }
 }
 
 function clampVolume(value) {
     return Math.max(0, Math.min(1, Number(value) || 0));
 }
 
-export { CUES, THEME_TONES };
+function getMusicTrack(trackId) {
+    return MUSIC_TRACKS.find((track) => track.id === trackId) || MUSIC_TRACKS[0];
+}
+
+export { CUES, THEME_TONES, MUSIC_TRACKS, getMusicTrack };

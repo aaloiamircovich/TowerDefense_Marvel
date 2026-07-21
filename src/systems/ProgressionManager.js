@@ -1,10 +1,14 @@
 import { EVOLUTION_CATALOG, getEvolutionForHero } from './EvolutionSystem.js';
 import { CODEX_MECHANICS, completedMasteryChallenges, createCodexSnapshot, flattenEnemyDatabase } from './MasteryCodexSystem.js';
 import { PAIR_SYNERGIES, SYNERGY_DEFINITIONS, analyzeTeam } from './TeamSynergySystem.js';
+import { getMusicTrack } from '../audio/AudioManager.js';
 
 const SAVE_KEY = 'tower-defense-marvel-save';
-const SAVE_VERSION = 7;
+const SAVE_VERSION = 8;
 const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
+const ADMIN_PASSWORD = '0000';
+const ADMIN_CREDITS = 999999999;
+const ADMIN_STARS_PER_LEVEL = 100;
 
 export const ACHIEVEMENT_CATALOG = {
     primera_defensa: achievement('Primera defensa', 'Completa tu primera mision registrada.'),
@@ -168,6 +172,7 @@ function createDefaultState() {
         lastLevelId: 'level_1',
         shop: { rotationKey: '', slotIds: [], purchasedIds: [], heroPity: 0, heroBoxCost: 500 },
         settings: {
+            adminMode: false,
             ranges: true,
             grid: false,
             combatText: true,
@@ -182,6 +187,8 @@ function createDefaultState() {
             masterVolume: 0.7,
             musicVolume: 0.25,
             sfxVolume: 0.75,
+            musicTrackId: 'ambient',
+            musicLoop: false,
             locale: 'es',
             keyBindings: { pause: 'p', speed: 's', nextWave: 'n', cancel: 'Escape', targeting: 't', upgrade: 'u' }
         }
@@ -329,6 +336,10 @@ export class ProgressionManager {
         this.state.shop.heroBoxCost = Math.max(500, Math.ceil(Number(this.state.shop.heroBoxCost) || 500));
         this.state.settings.keyBindings = { ...createDefaultState().settings.keyBindings, ...(this.state.settings.keyBindings || {}) };
         this.state.settings.locale = ['es', 'en'].includes(this.state.settings.locale) ? this.state.settings.locale : 'es';
+        this.state.settings.musicTrackId = getMusicTrack(this.state.settings.musicTrackId).id;
+        this.state.settings.musicLoop = Boolean(this.state.settings.musicLoop);
+        this.state.settings.adminMode = Boolean(this.state.settings.adminMode);
+        if (this.state.settings.adminMode) this.applyAdminUnlocks(false);
         this.save();
     }
 
@@ -342,6 +353,7 @@ export class ProgressionManager {
         this.game.showHeroRanges = this.state.settings.ranges;
         this.game.showGrid = this.state.settings.grid;
         this.applySettings();
+        this.game.resourceManager?.setInfiniteCredits?.(this.state.settings.adminMode);
         this.game.stars = this.getTotalStars();
         this.game.heroes?.forEach((hero) => this.applyEquippedItem(hero));
     }
@@ -407,6 +419,11 @@ export class ProgressionManager {
     }
 
     spendMetaCredits(amount) {
+        if (this.state.settings.adminMode && Number.isFinite(amount) && amount > 0) {
+            this.state.metaCredits = ADMIN_CREDITS;
+            this.save();
+            return true;
+        }
         if (!Number.isFinite(amount) || amount <= 0 || this.state.metaCredits < amount) return false;
         this.state.metaCredits -= amount;
         this.save();
@@ -414,6 +431,11 @@ export class ProgressionManager {
     }
 
     addMetaCredits(amount) {
+        if (this.state.settings.adminMode) {
+            this.state.metaCredits = ADMIN_CREDITS;
+            this.save();
+            return;
+        }
         if (!Number.isFinite(amount) || amount <= 0) return;
         this.state.metaCredits += Math.round(amount);
         this.save();
@@ -426,6 +448,50 @@ export class ProgressionManager {
         if (this.state.activeTeamIds.length < 6) this.state.activeTeamIds.push(heroId);
         this.save();
         this.syncGame();
+        return true;
+    }
+
+    enableAdminMode(password) {
+        if (String(password || '') !== ADMIN_PASSWORD) return { ok: false, reason: 'Contraseña incorrecta' };
+        this.state.settings.adminMode = true;
+        this.applyAdminUnlocks(false);
+        this.save();
+        this.syncGame();
+        return { ok: true };
+    }
+
+    disableAdminMode() {
+        this.state.settings.adminMode = false;
+        this.save();
+        this.syncGame();
+        return { ok: true };
+    }
+
+    applyAdminUnlocks(save = true) {
+        if (!this.data) return false;
+        const heroIds = Object.keys(this.data.heroes || {});
+        const itemIds = Object.keys(this.data.items || {});
+        const activeIds = new Set(this.state.activeTeamIds || []);
+        this.state.unlockedHeroIds = heroIds;
+        this.state.activeTeamIds = heroIds.filter((id) => activeIds.has(id)).slice(0, 6);
+        if (!this.state.activeTeamIds.length) this.state.activeTeamIds = heroIds.slice(0, 6);
+        this.state.ownedItemIds = itemIds;
+        this.state.metaCredits = ADMIN_CREDITS;
+        this.state.mapProgress = Object.fromEntries((this.data.levels || []).map((level) => [level.id, {
+            bestWave: ADMIN_STARS_PER_LEVEL,
+            stars: ADMIN_STARS_PER_LEVEL,
+            difficulty: level.difficulty || 'normal',
+            challenges: ['sin_danos', 'cazajefes'],
+            missionObjectives: (level.mission?.objectives || []).map((objective) => objective.id)
+        }]));
+        this.state.codexDiscovered = {
+            heroes: heroIds,
+            enemies: Object.keys(flattenEnemyDatabase(this.data.enemies || {})),
+            items: itemIds,
+            factions: [...new Set(Object.values(flattenEnemyDatabase(this.data.enemies || {})).map((enemy) => enemy.faction).filter(Boolean))],
+            mechanics: [...CODEX_MECHANICS]
+        };
+        if (save) this.save();
         return true;
     }
 
@@ -827,7 +893,7 @@ export class ProgressionManager {
 
     updateSetting(key, value) {
         if (!(key in this.state.settings)) return;
-        if (['ranges', 'grid', 'combatText', 'audio', 'highContrast', 'reduceMotion', 'pixelArtCrisp', 'reducedVfx', 'tutorialHints', 'simplifiedUi'].includes(key)) {
+        if (['ranges', 'grid', 'combatText', 'audio', 'highContrast', 'reduceMotion', 'pixelArtCrisp', 'reducedVfx', 'tutorialHints', 'simplifiedUi', 'musicLoop'].includes(key)) {
             this.state.settings[key] = Boolean(value);
         } else if (['masterVolume', 'musicVolume', 'sfxVolume'].includes(key)) {
             this.state.settings[key] = Math.max(0, Math.min(1, Number(value) || 0));
@@ -835,6 +901,8 @@ export class ProgressionManager {
             this.state.settings[key] = value;
         } else if (key === 'locale' && ['es', 'en'].includes(value)) {
             this.state.settings.locale = value;
+        } else if (key === 'musicTrackId') {
+            this.state.settings.musicTrackId = getMusicTrack(value).id;
         } else {
             return;
         }
@@ -943,6 +1011,9 @@ export class ProgressionManager {
         this.game.audio?.setBusVolume?.('master', settings.masterVolume);
         this.game.audio?.setBusVolume?.('music', settings.musicVolume);
         this.game.audio?.setBusVolume?.('sfx', settings.sfxVolume);
+        this.game.audio?.setMusicLoop?.(settings.musicLoop);
+        this.game.audio?.setMusicTrack?.(settings.musicTrackId);
+        this.game.resourceManager?.setInfiniteCredits?.(settings.adminMode);
 
         const documentRef = globalThis.document;
         if (!documentRef) return;

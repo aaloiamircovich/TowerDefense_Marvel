@@ -89,6 +89,30 @@ test('ProgressionManager reinicia todo el progreso persistido', () => {
     assert.deepEqual(saved.unlockedHeroIds, []);
 });
 
+test('modo admin requiere contraseña y desbloquea contenido completo', () => {
+    const game = createGame();
+    let infiniteCredits = false;
+    game.resourceManager.setInfiniteCredits = (enabled) => { infiniteCredits = enabled; };
+    const manager = new ProgressionManager(new MemoryStorage());
+    manager.initialize(game, data);
+
+    assert.equal(manager.enableAdminMode('1234').ok, false);
+    assert.equal(manager.state.settings.adminMode, false);
+
+    const result = manager.enableAdminMode('0000');
+
+    assert.equal(result.ok, true);
+    assert.equal(manager.state.settings.adminMode, true);
+    assert.equal(manager.state.unlockedHeroIds.length, Object.keys(data.heroes).length);
+    assert.equal(manager.state.ownedItemIds.length, Object.keys(data.items).length);
+    assert.equal(manager.state.activeTeamIds.length, 6);
+    assert.equal(manager.state.metaCredits, 999999999);
+    assert.equal(manager.getTotalStars(), data.levels.length * 100);
+    assert.equal(infiniteCredits, true);
+    assert.equal(manager.spendMetaCredits(500000), true);
+    assert.equal(manager.state.metaCredits, 999999999);
+});
+
 test('arbol de habilidades queda retirado y no aplica bonos ocultos', () => {
     const manager = new ProgressionManager(new MemoryStorage());
     manager.initialize(createGame(), data);

@@ -1249,7 +1249,7 @@ export class UIManager {
 
     updateUI(lives, credits, wave, fps, stars) {
         if (this.livesEl) this.livesEl.textContent = lives;
-        if (this.creditsEl) this.creditsEl.textContent = Math.floor(credits);
+        if (this.creditsEl) this.creditsEl.textContent = credits === Number.POSITIVE_INFINITY ? '∞' : Math.floor(credits);
         if (this.waveEl) this.waveEl.textContent = wave;
         if (this.fpsEl) this.fpsEl.textContent = `${Math.round(fps || 0)} FPS`;
         if (this.starsEl && stars !== undefined) this.starsEl.textContent = stars;
@@ -1914,6 +1914,7 @@ export class UIManager {
 
     getMissionCredits() {
         const rawCredits = Number(this.game.resourceManager?.credits);
+        if (rawCredits === Number.POSITIVE_INFINITY) return Number.POSITIVE_INFINITY;
         if (Number.isFinite(rawCredits)) return rawCredits;
 
         const hudCredits = Number(String(this.creditsEl?.textContent || '').replace(/[^\d.-]/g, ''));
@@ -2134,10 +2135,11 @@ export class UIManager {
     renderShop(title) {
         const rotation = this.game.shopSystem.getRotation();
         const funds = this.game.progression.state.metaCredits;
+        const fundsText = this.game.progression.state.settings.adminMode ? '∞' : funds;
         const recruitCost = getHeroBoxCost(this.game.progression.state.shop);
 
         this.panelContent.innerHTML = `
-            <div class="panel-title-row"><h2>${title}</h2><strong>${funds} Fondos S.H.I.E.L.D.</strong></div>
+            <div class="panel-title-row"><h2>${title}</h2><strong>${fundsText} Fondos S.H.I.E.L.D.</strong></div>
             <div class="shop-layout">
                 <section class="shop-feature">
                     <h3>Caja S.H.I.E.L.D.</h3>
@@ -2460,7 +2462,10 @@ export class UIManager {
         this.renderHeroRoster(this.game.activeTeam, (hero) => this.game.inputManager.setPlacementMode(hero));
 
         const fundsLabel = this.panelContent.querySelector('.panel-title-row strong');
-        if (fundsLabel) fundsLabel.textContent = `${this.game.progression.state.metaCredits} Fondos S.H.I.E.L.D.`;
+        if (fundsLabel) {
+            const fundsText = this.game.progression.state.settings.adminMode ? '∞' : this.game.progression.state.metaCredits;
+            fundsLabel.textContent = `${fundsText} Fondos S.H.I.E.L.D.`;
+        }
         const pityTrack = this.panelContent.querySelector('.pity-track');
         if (pityTrack) pityTrack.textContent = `Garantia: ${Math.min(4, this.game.progression.state.shop.heroPity)}/4`;
 

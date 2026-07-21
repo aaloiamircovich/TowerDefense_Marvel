@@ -8,13 +8,28 @@ export class ResourceManager {
         this.maxLives = initialLives;
         this.lives = initialLives;
         this.credits = initialCredits;
+        this.infiniteCredits = false;
+    }
+
+    setInfiniteCredits(enabled) {
+        this.infiniteCredits = Boolean(enabled);
+        if (this.infiniteCredits) this.credits = Number.POSITIVE_INFINITY;
+        else if (!Number.isFinite(this.credits)) this.credits = 650;
     }
 
     addCredits(amount) {
+        if (this.infiniteCredits) {
+            this.credits = Number.POSITIVE_INFINITY;
+            return;
+        }
         if (Number.isFinite(amount) && amount > 0) this.credits += amount;
     }
 
     removeCredits(amount) {
+        if (this.infiniteCredits && Number.isFinite(amount) && amount > 0) {
+            this.credits = Number.POSITIVE_INFINITY;
+            return true;
+        }
         if (Number.isFinite(amount) && amount > 0 && this.credits >= amount) {
             this.credits -= amount;
             return true;

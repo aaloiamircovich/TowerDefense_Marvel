@@ -1,4 +1,5 @@
 import { getSupportedLocales, translate } from '../utils/I18n.js';
+import { MUSIC_TRACKS } from '../audio/AudioManager.js';
 
 const BOOLEAN_SETTINGS = [
     ['ranges', 'toggle-ranges', 'showRanges'],
@@ -70,6 +71,19 @@ export class SettingsPanel {
                     <div class="audio-mixer">
                         ${VOLUME_SETTINGS.map(([key, bus, labelKey]) => `<label class="volume-control"><span>${t(labelKey)}</span><input type="range" min="0" max="100" value="${Math.round(settings[key] * 100)}" data-setting="${key}" data-bus="${bus}"><output>${Math.round(settings[key] * 100)}%</output></label>`).join('')}
                     </div>
+                    <div class="music-picker">
+                        <label><span>${t('musicTrack')}</span><select id="music-track-select">${MUSIC_TRACKS.map((track) => `<option value="${track.id}" ${settings.musicTrackId === track.id ? 'selected' : ''}>${track.title}</option>`).join('')}</select></label>
+                        <label class="setting-toggle"><input type="checkbox" id="toggle-music-loop" ${settings.musicLoop ? 'checked' : ''}><span>${t('musicLoop')}</span></label>
+                    </div>
+                </section>
+                <section class="settings-section admin-settings ${settings.adminMode ? 'admin-active' : ''}">
+                    <h3>${t('adminMode')}</h3>
+                    <p>${settings.adminMode ? t('adminModeActive') : t('adminModeHint')}</p>
+                    <div class="settings-actions">
+                        ${settings.adminMode
+                            ? `<button class="btn-primary danger" id="disable-admin-mode"><i class="fas fa-lock"></i> ${t('disableAdmin')}</button>`
+                            : `<input id="admin-password" type="password" inputmode="numeric" maxlength="8" placeholder="${t('adminPassword')}"><button class="btn-primary ghost" id="enable-admin-mode"><i class="fas fa-unlock"></i> ${t('enableAdmin')}</button>`}
+                    </div>
                 </section>
                 <section class="settings-section">
                     <h3>${t('uiSize')}</h3>
@@ -101,6 +115,15 @@ export class SettingsPanel {
                 input.nextElementSibling.value = `${input.value}%`;
             });
             input.addEventListener('change', () => game.audio?.play('ui'));
+        });
+        document.getElementById('music-track-select')?.addEventListener('change', (event) => {
+            game.audio?.unlock?.();
+            game.progression.updateSetting('musicTrackId', event.target.value);
+            game.audio?.play('ui');
+        });
+        document.getElementById('toggle-music-loop')?.addEventListener('change', (event) => {
+            game.progression.updateSetting('musicLoop', event.target.checked);
+            game.audio?.play('ui');
         });
         this.ui.panelContent.querySelectorAll('[data-scale]').forEach((button) => {
             button.addEventListener('click', () => {
@@ -144,6 +167,17 @@ export class SettingsPanel {
             if (!window.confirm(translate('resetAllConfirm', game.progression.state.settings.locale || 'es'))) return;
             game.progression.resetAllProgress();
             window.location.reload();
+        });
+        document.getElementById('enable-admin-mode')?.addEventListener('click', () => {
+            const password = document.getElementById('admin-password')?.value || '';
+            const result = game.progression.enableAdminMode(password);
+            this.ui.showToast(result.ok ? t('adminUnlocked') : result.reason, result.ok ? 'success' : 'warning');
+            if (result.ok) this.render();
+        });
+        document.getElementById('disable-admin-mode')?.addEventListener('click', () => {
+            game.progression.disableAdminMode();
+            this.ui.showToast(t('adminDisabled'), 'info');
+            this.render();
         });
         document.getElementById('reset-placement')?.addEventListener('click', () => {
             game.inputManager.clearPlacement();
