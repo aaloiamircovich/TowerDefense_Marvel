@@ -105,9 +105,9 @@ async function initGame() {
         };
 
         const starterPool = [
-            data.heroes.iron_man,
             data.heroes.spiderman,
-            data.heroes.capitan_america
+            data.heroes.star_lord,
+            data.heroes.hawkeye
         ].filter(Boolean);
 
         const rawSavedLevel = data.levels.find((level) => level.id === game.progression.state.lastLevelId);
