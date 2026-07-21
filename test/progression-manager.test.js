@@ -89,15 +89,24 @@ test('ProgressionManager reinicia todo el progreso persistido', () => {
     assert.deepEqual(saved.unlockedHeroIds, []);
 });
 
-test('Arbol de mejoras exige dependencias y descuenta fondos', () => {
+test('arbol de habilidades queda retirado y no aplica bonos ocultos', () => {
     const manager = new ProgressionManager(new MemoryStorage());
     manager.initialize(createGame(), data);
     manager.startProfile('iron_man');
+    manager.state.heroUpgrades.iron_man = ['assault_1'];
+    const funds = manager.state.metaCredits;
 
-    assert.equal(manager.purchaseUpgrade(data.heroes.iron_man, 'assault_2').ok, false);
-    assert.equal(manager.purchaseUpgrade(data.heroes.iron_man, 'assault_1').ok, true);
-    assert.equal(manager.state.metaCredits, 980);
-    assert.equal(manager.getHeroBonuses('iron_man').damage, 0.1);
+    const result = manager.purchaseUpgrade(data.heroes.iron_man, 'assault_1');
+    assert.equal(result.ok, false);
+    assert.equal(manager.state.metaCredits, funds);
+    assert.deepEqual(manager.getHeroBonuses('iron_man'), {
+        damage: 0,
+        range: 0,
+        fireRate: 0,
+        critChance: 0,
+        abilityPower: 0,
+        cooldown: 0
+    });
 });
 
 test('Equipar un segundo objeto reemplaza el anterior aunque sea otra ranura', () => {

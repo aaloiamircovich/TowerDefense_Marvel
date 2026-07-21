@@ -107,6 +107,36 @@ const DIFFICULTIES = {
     hard: { hp: 1.3, speed: 1.1, count: 1.15, reward: 1.25 }
 };
 
+const LEVEL_DIFFICULTY_HP = {
+    easy: 0.92,
+    normal: 1,
+    hard: 1.18,
+    extreme: 1.42
+};
+
+export function getWaveHealthCurve(wave = 1, isBoss = false) {
+    const safeWave = Math.max(1, Math.floor(Number(wave) || 1));
+    let curve;
+    if (safeWave <= 30) {
+        curve = 0.86 + safeWave * 0.04;
+    } else if (safeWave <= 79) {
+        curve = 2.06 * (1.072 ** (safeWave - 30));
+    } else {
+        curve = 62.2 * (1.125 ** (safeWave - 79));
+    }
+    if (!isBoss) return curve;
+    return curve * (2.2 + safeWave * 0.035);
+}
+
+export function getLevelHealthFactor(level = {}, levelIndex = 0) {
+    const label = String(level.difficulty || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+    const key = label.includes('extrema') ? 'extreme'
+        : label.includes('dificil') ? 'hard'
+            : label.includes('normal') || label.includes('media') ? 'normal'
+                : 'easy';
+    return LEVEL_DIFFICULTY_HP[key] * (1 + Math.max(0, Number(levelIndex) || 0) * 0.08);
+}
+
 const OPENING_WAVES = {
     'new-york': [
         { label: 'Reconocimiento Hydra', counter: 'Coloca daño temprano junto a la avenida', enemies: [['hydra_soldier', 4], ['aim_scientist', 3]] },
@@ -333,9 +363,12 @@ export class WaveManager {
     scaleEnemy(config, multiplier, isBoss) {
         const modifier = isBoss ? {} : this.waveModifier;
         const difficulty = DIFFICULTIES[this.game.difficulty || 'normal'];
+        const levelIndex = (this.game.levelsData || []).findIndex((level) => level.id === this.game.currentLevel?.id);
+        const waveHealth = getWaveHealthCurve(this.currentWave, isBoss || config.isBoss);
+        const levelHealth = getLevelHealthFactor(this.game.currentLevel, levelIndex);
         return {
             ...config,
-            hp: Math.round(config.hp * multiplier * (modifier.hpFactor || 1) * difficulty.hp),
+            hp: Math.round(config.hp * multiplier * waveHealth * levelHealth * (modifier.hpFactor || 1) * difficulty.hp),
             speed: Math.round(config.speed * (modifier.speedFactor || 1) * difficulty.speed),
             armor: Math.min(0.8, (config.armor || 0) + (modifier.armorBonus || 0)),
             barrierRatio: Math.max(config.barrierRatio || 0, modifier.barrierRatio || 0),

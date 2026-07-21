@@ -1,4 +1,3 @@
-import { getHeroUpgradeTree } from '../data/HeroUpgradeCatalog.js';
 import { CampaignPanel } from '../ui/CampaignPanel.js';
 import { ProfilePanel } from '../ui/ProfilePanel.js';
 import { SettingsPanel } from '../ui/SettingsPanel.js';
@@ -7,6 +6,7 @@ import { InventoryPanel } from '../ui/InventoryPanel.js';
 import { TeamBuilderPanel } from '../ui/TeamBuilderPanel.js';
 import { ModePanel } from '../ui/ModePanel.js';
 import { SET_BONUSES, SLOT_LABELS } from './ItemEffectSystem.js';
+import { getHeroBoxCost } from './ShopSystem.js';
 import { getAllowedTerrainLabels } from '../utils/TerrainRules.js';
 import { getRarityClass, normalizeRarity } from '../utils/Rarity.js';
 
@@ -1718,7 +1718,7 @@ export class UIManager {
         const isDeployed = this.game.heroes.includes(hero);
         const repositionPermission = isDeployed ? this.game.tacticalActions?.canReposition(hero) : null;
         const sellPermission = isDeployed ? this.game.tacticalActions?.canSell(hero) : null;
-        const activeDetailView = ['upgrades', 'equipment', 'combat'].includes(detailView) ? detailView : 'summary';
+        const activeDetailView = ['equipment', 'combat'].includes(detailView) ? detailView : 'summary';
         const currentTargeting = hero.targetingPriority || config.targetingPriority || TARGETING_PRIORITIES[0];
         const compactStats = [
             ['Daño', `${damage}${this.formatStatDelta(damage, baseDamage)}`],
@@ -1727,15 +1727,12 @@ export class UIManager {
             ['Alcance', `${range}${this.formatStatDelta(range, baseRange)}`]
         ];
         const submenuTitles = {
-            upgrades: 'Árbol de mejora',
             equipment: 'Equipar objeto',
             combat: 'Registro de combate'
         };
         let submenu = '';
 
-        if (activeDetailView === 'upgrades') {
-            submenu = this.renderUpgradeTree(config, isUnlocked);
-        } else if (activeDetailView === 'equipment') {
+        if (activeDetailView === 'equipment') {
             submenu = `
                 <div class="equipment-card">
                     <h3>Equipamiento</h3>
@@ -1826,7 +1823,6 @@ export class UIManager {
                         ` : ''}
 
                         <div class="hero-detail-actions">
-                            <button class="hero-detail-menu-btn ${activeDetailView === 'upgrades' ? 'active' : ''}" data-view="upgrades"><i class="fas fa-project-diagram"></i><span>Árbol</span></button>
                             <button class="hero-detail-menu-btn ${activeDetailView === 'equipment' ? 'active' : ''}" data-view="equipment"><i class="fas fa-shield-alt"></i><span>Objeto</span></button>
                             <button class="hero-detail-menu-btn ${activeDetailView === 'combat' ? 'active' : ''}" data-view="combat"><i class="fas fa-chart-line"></i><span>Combate</span></button>
                         </div>
@@ -1880,9 +1876,6 @@ export class UIManager {
             if (result.ok) this.closePanel();
         });
 
-        this.panelContent.querySelectorAll('.skill-node').forEach((button) => {
-            button.addEventListener('click', () => this.purchaseMetaUpgrade(config, button.dataset.node, 'upgrades'));
-        });
 
         this.panelContent.querySelectorAll('.btn-unequip-modal').forEach((button) => button.addEventListener('click', () => {
             this.game.progression.unequipItem(config.id, button.dataset.slot);
@@ -1894,44 +1887,6 @@ export class UIManager {
             this.inventoryPanel.heroId = config.id;
             this.renderPanel('inventory');
         });
-    }
-
-    renderUpgradeTree(hero, isUnlocked = true) {
-        if (!this.game.progression) return '';
-        const purchased = new Set(this.game.progression.state.heroUpgrades[hero.id] || []);
-        return `
-            <section class="upgrade-tree">
-                <div class="tree-heading">
-                    <h3>Árbol de mejora</h3>
-                    <span>${this.game.progression.state.metaCredits} Fondos S.H.I.E.L.D.</span>
-                </div>
-                <div class="tree-branches">
-                    ${getHeroUpgradeTree(hero).map((branch) => `
-                        <div class="tree-branch">
-                            <strong>${branch.name}</strong>
-                            ${branch.nodes.map((node) => {
-                                const owned = purchased.has(node.id);
-                                const locked = node.requires && !purchased.has(node.requires);
-                                return `<button class="skill-node ${owned ? 'owned' : ''}" data-node="${node.id}" ${owned || locked || !isUnlocked ? 'disabled' : ''}>
-                                    <span>${node.name}</span><small>${node.desc}</small><b>${!isUnlocked ? 'Recluta primero' : owned ? 'Adquirida' : locked ? 'Bloqueada' : `${node.cost} F`}</b>
-                                </button>`;
-                            }).join('')}
-                        </div>
-                    `).join('')}
-                </div>
-            </section>
-        `;
-    }
-
-    purchaseMetaUpgrade(hero, nodeId, detailView = 'summary') {
-        const result = this.game.progression.purchaseUpgrade(hero, nodeId);
-        if (!result.ok) {
-            this.showToast(result.reason, 'warning');
-            return;
-        }
-        this.showToast(`${result.node.name} adquirida`, 'success');
-        const deployed = this.game.heroes.find((unit) => unit.id === hero.id);
-        this.renderHeroDetails(deployed || hero, detailView);
     }
 
     getHeroLevel(unit) {
@@ -2169,6 +2124,7 @@ export class UIManager {
     renderShop(title) {
         const rotation = this.game.shopSystem.getRotation();
         const funds = this.game.progression.state.metaCredits;
+        const recruitCost = getHeroBoxCost(this.game.progression.state.shop);
 
         this.panelContent.innerHTML = `
             <div class="panel-title-row"><h2>${title}</h2><strong>${funds} Fondos S.H.I.E.L.D.</strong></div>
@@ -2177,7 +2133,7 @@ export class UIManager {
                     <h3>Caja S.H.I.E.L.D.</h3>
                     <p>Recluta un héroe sin duplicados. Tras cuatro aperturas comunes, la siguiente garantiza Rare o superior.</p>
                     <div class="pity-track">Garantía: ${Math.min(4, this.game.progression.state.shop.heroPity)}/4</div>
-                    <button class="btn-primary" id="gacha-btn">RECLUTAR POR 500 F</button>
+                    <button class="btn-primary" id="gacha-btn">RECLUTAR POR ${recruitCost} F</button>
                     <div id="gacha-res" class="result-copy"></div>
                 </section>
                 <section>
@@ -2504,7 +2460,8 @@ export class UIManager {
                 .filter((hero) => !this.game.progression.state.unlockedHeroIds.includes(hero.id));
             if (button) {
                 button.disabled = nextPool.length === 0;
-                button.textContent = nextPool.length === 0 ? 'PLANTILLA COMPLETA' : 'RECLUTAR POR 500 F';
+                const nextCost = getHeroBoxCost(this.game.progression.state.shop);
+                button.textContent = nextPool.length === 0 ? 'PLANTILLA COMPLETA' : `RECLUTAR POR ${nextCost} F`;
             }
         });
     }

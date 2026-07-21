@@ -7,6 +7,13 @@ export const HERO_RARITY_WEIGHTS = {
     Secret: 1
 };
 
+export const HERO_BOX_BASE_COST = 500;
+export const HERO_BOX_COST_GROWTH = 1.12;
+
+export function getHeroBoxCost(shopState = {}) {
+    return Math.max(HERO_BOX_BASE_COST, Math.ceil(Number(shopState.heroBoxCost) || HERO_BOX_BASE_COST));
+}
+
 export function getItemShopPowerScore(item = {}) {
     const tierScore = (Number(item.tier) || 1) * 100000;
     const priceScore = Number(item.price) || 0;
@@ -82,14 +89,14 @@ export class ShopSystem {
     }
 
     recruitHero() {
-        const cost = 500;
+        const shop = this.progression.state.shop;
+        const cost = getHeroBoxCost(shop);
         const pool = Object.values(this.game.heroDatabase)
             .filter((hero) => hero.visual)
             .filter((hero) => !this.progression.state.unlockedHeroIds.includes(hero.id));
         if (pool.length === 0) return { ok: false, reason: 'Ya tienes todos los héroes' };
         if (this.progression.state.metaCredits < cost) return { ok: false, reason: 'Fondos S.H.I.E.L.D. insuficientes' };
 
-        const shop = this.progression.state.shop;
         const guaranteed = shop.heroPity >= 4;
         const candidates = guaranteed ? pool.filter((hero) => hero.rarity !== 'Common') : pool;
         const weighted = (candidates.length ? candidates : pool)
@@ -99,7 +106,8 @@ export class ShopSystem {
         this.progression.unlockHero(hero.id);
         this.game.assetPreloader?.preloadHeroes([hero]);
         shop.heroPity = hero.rarity === 'Common' ? shop.heroPity + 1 : 0;
+        shop.heroBoxCost = Math.ceil(cost * HERO_BOX_COST_GROWTH);
         this.progression.save();
-        return { ok: true, hero, guaranteed };
+        return { ok: true, hero, guaranteed, cost, nextCost: shop.heroBoxCost };
     }
 }

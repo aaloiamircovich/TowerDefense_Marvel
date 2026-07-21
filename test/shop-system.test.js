@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { ProgressionManager } from '../src/systems/ProgressionManager.js';
-import { HERO_RARITY_WEIGHTS, ShopSystem, sortItemsWeakestFirst } from '../src/systems/ShopSystem.js';
+import { HERO_BOX_BASE_COST, ShopSystem, getHeroBoxCost, HERO_RARITY_WEIGHTS, sortItemsWeakestFirst } from '../src/systems/ShopSystem.js';
 
 const data = {
     heroes: JSON.parse(fs.readFileSync(new URL('../data/heroes.json', import.meta.url), 'utf8')),
@@ -51,6 +51,22 @@ test('ShopSystem recluta heroes sin duplicados', () => {
     assert.notEqual(result.hero.id, 'iron_man');
     assert.ok(result.hero.visual);
     assert.equal(new Set(progression.state.unlockedHeroIds).size, progression.state.unlockedHeroIds.length);
+});
+
+test('ShopSystem aumenta el costo de la caja de heroe un 12% por apertura', () => {
+    const { shop, progression } = createShop();
+    progression.startProfile('iron_man');
+    progression.state.metaCredits = 5000;
+
+    const first = shop.recruitHero();
+    const second = shop.recruitHero();
+
+    assert.equal(first.ok, true);
+    assert.equal(first.cost, HERO_BOX_BASE_COST);
+    assert.equal(first.nextCost, Math.ceil(HERO_BOX_BASE_COST * 1.12));
+    assert.equal(second.ok, true);
+    assert.equal(second.cost, first.nextCost);
+    assert.equal(getHeroBoxCost(progression.state.shop), Math.ceil(second.cost * 1.12));
 });
 
 test('ShopSystem pondera las seis rarezas de heroes', () => {

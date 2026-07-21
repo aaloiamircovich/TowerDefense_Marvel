@@ -1,7 +1,7 @@
 ﻿import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import { WaveManager } from '../src/systems/WaveManager.js';
+import { WaveManager, getLevelHealthFactor, getWaveHealthCurve } from '../src/systems/WaveManager.js';
 
 const enemies = JSON.parse(fs.readFileSync(new URL('../data/enemies.json', import.meta.url), 'utf8'));
 
@@ -76,6 +76,28 @@ test('WaveManager aplica modificadores sin depender solo de salud', () => {
 
     assert.equal(manager.waveModifier.id, 'rush');
     assert.ok(manager.preparedQueue.every((entry) => entry.config.speed > enemies.normal[entry.config.id].speed));
+});
+
+test('curva de salud escala suave, exponencial y extrema por oleada', () => {
+    const wave1 = getWaveHealthCurve(1);
+    const wave30 = getWaveHealthCurve(30);
+    const wave60 = getWaveHealthCurve(60);
+    const wave100 = getWaveHealthCurve(100);
+    const boss100 = getWaveHealthCurve(100, true);
+
+    assert.ok(wave30 > wave1 * 2);
+    assert.ok(wave60 > wave30 * 3);
+    assert.ok(wave100 > wave60 * 10);
+    assert.ok(boss100 > wave100 * 5);
+});
+
+test('factor de salud sube con dificultad fija y posicion del mapa', () => {
+    const manhattan = getLevelHealthFactor({ id: 'level_1', difficulty: 'Fácil' }, 0);
+    const avengers = getLevelHealthFactor({ id: 'level_2', difficulty: 'Normal' }, 1);
+    const extreme = getLevelHealthFactor({ id: 'level_8', difficulty: 'Extrema' }, 7);
+
+    assert.ok(avengers > manhattan);
+    assert.ok(extreme > avengers);
 });
 
 test('WaveManager prepara barreras globales en la oleada protegida', () => {

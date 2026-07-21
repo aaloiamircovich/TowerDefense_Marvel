@@ -1,4 +1,3 @@
-import { calculateHeroBonuses, getUpgradeNode } from '../data/HeroUpgradeCatalog.js';
 import { EVOLUTION_CATALOG, getEvolutionForHero } from './EvolutionSystem.js';
 import { CODEX_MECHANICS, completedMasteryChallenges, createCodexSnapshot, flattenEnemyDatabase } from './MasteryCodexSystem.js';
 import { PAIR_SYNERGIES, SYNERGY_DEFINITIONS, analyzeTeam } from './TeamSynergySystem.js';
@@ -167,7 +166,7 @@ function createDefaultState() {
         statistics: { missions: 0, victories: 0, defeats: 0, waves: 0, enemiesDefeated: 0, damageDealt: 0, creditsEarned: 0 },
         lastMissionSummary: null,
         lastLevelId: 'level_1',
-        shop: { rotationKey: '', slotIds: [], purchasedIds: [], heroPity: 0 },
+        shop: { rotationKey: '', slotIds: [], purchasedIds: [], heroPity: 0, heroBoxCost: 500 },
         settings: {
             ranges: true,
             grid: false,
@@ -325,6 +324,9 @@ export class ProgressionManager {
         this.state.statistics = Object.fromEntries(['missions', 'victories', 'defeats', 'waves', 'enemiesDefeated', 'damageDealt', 'creditsEarned']
             .map((key) => [key, Math.max(0, Math.round(Number(statistics[key]) || 0))]));
         this.state.metaCredits = Math.max(0, Number(this.state.metaCredits) || 0);
+        this.state.shop = { ...createDefaultState().shop, ...(this.state.shop || {}) };
+        this.state.shop.heroPity = Math.max(0, Math.floor(Number(this.state.shop.heroPity) || 0));
+        this.state.shop.heroBoxCost = Math.max(500, Math.ceil(Number(this.state.shop.heroBoxCost) || 500));
         this.state.settings.keyBindings = { ...createDefaultState().settings.keyBindings, ...(this.state.settings.keyBindings || {}) };
         this.state.settings.locale = ['es', 'en'].includes(this.state.settings.locale) ? this.state.settings.locale : 'es';
         this.save();
@@ -435,20 +437,11 @@ export class ProgressionManager {
     }
 
     purchaseUpgrade(hero, nodeId) {
-        const node = getUpgradeNode(hero, nodeId);
-        if (!node) return { ok: false, reason: 'Mejora inexistente' };
-        const purchased = this.state.heroUpgrades[hero.id] || [];
-        if (purchased.includes(nodeId)) return { ok: false, reason: 'Mejora ya adquirida' };
-        if (node.requires && !purchased.includes(node.requires)) return { ok: false, reason: 'Compra primero el nodo anterior' };
-        if (!this.spendMetaCredits(node.cost)) return { ok: false, reason: 'Fondos S.H.I.E.L.D. insuficientes' };
-        this.state.heroUpgrades[hero.id] = [...purchased, nodeId];
-        this.save();
-        return { ok: true, node };
+        return { ok: false, reason: 'El arbol de habilidades fue retirado' };
     }
 
     getHeroBonuses(heroId) {
-        const hero = this.data?.heroes?.[heroId] || { id: heroId };
-        return calculateHeroBonuses(hero, this.state.heroUpgrades[heroId] || []);
+        return { damage: 0, range: 0, fireRate: 0, critChance: 0, abilityPower: 0, cooldown: 0 };
     }
 
     getHeroEvolution(heroId) {

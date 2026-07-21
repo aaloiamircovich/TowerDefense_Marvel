@@ -23,14 +23,14 @@ const CORE_ASSETS = [
     './assets/icons/icon-192.png', './assets/icons/icon-512.png',
     './src/main.js', './src/config/AppConfig.js', './src/pwa/register.js',
     './src/audio/AudioManager.js', './src/core/GameLoop.js', './src/core/InputManager.js',
-    './src/data/HeroUpgradeCatalog.js', './src/entities/Enemy.js', './src/entities/Hero.js', './src/entities/Projectile.js',
+    './src/entities/Enemy.js', './src/entities/Hero.js', './src/entities/Projectile.js',
     './src/rendering/CombatVfx.js', './src/rendering/ImageCache.js', './src/rendering/SpriteAnimator.js',
     './src/systems/AvengerKitSystem.js', './src/systems/CosmicKitSystem.js', './src/systems/StreetKitSystem.js', './src/systems/MutantKitSystem.js', './src/systems/CombatSystem.js', './src/systems/EncounterDirector.js', './src/systems/EnemyBehaviorSystem.js', './src/systems/HeroAbilitySystem.js',
     './src/systems/GameModeSystem.js', './src/systems/EvolutionSystem.js', './src/systems/MasteryCodexSystem.js', './src/systems/ReplaySystem.js', './src/systems/MissionSystem.js', './src/systems/PerformanceMonitor.js', './src/systems/ProgressionManager.js', './src/systems/TeamSynergySystem.js',
     './src/systems/ItemEffectSystem.js', './src/systems/ResourceManager.js', './src/systems/ShopSystem.js', './src/systems/TacticalActionSystem.js',
     './src/systems/UIManager.js', './src/systems/WaveManager.js',
     './src/ui/CampaignPanel.js', './src/ui/InventoryPanel.js', './src/ui/ProfilePanel.js', './src/ui/SettingsPanel.js', './src/ui/TeamBuilderPanel.js', './src/ui/TooltipController.js',
-    './src/utils/I18n.js', './src/utils/Loader.js', './src/utils/ObjectPool.js', './src/utils/PathUtils.js', './src/utils/Random.js'
+    './src/utils/I18n.js', './src/utils/Loader.js', './src/utils/ObjectPool.js', './src/utils/PathUtils.js', './src/utils/Random.js', './src/utils/RangePattern.js'
 ];
 
 self.addEventListener('install', (event) => {
