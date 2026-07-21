@@ -337,7 +337,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 2,
       "canSeeStealth": true,
       "ability": "SABOTAJE WIDOW",
-      "abilityDesc": "Prioriza apoyos e invocadores con ruptura de armadura. Cada cuarto ataque libera una descarga que encadena y paraliza varios objetivos.",
+      "abilityDesc": "Prioriza apoyos e invocadores con ruptura de armadura. Cada cuarto ataque libera una descarga que encadena y paraliza varios objetivos. Sus toxinas tacticas agregan veneno acumulable contra elites.",
       "sprite": "assets/images/heroes/black_widow/portrait.png",
       "allowedTerrains": [
         1
@@ -388,7 +388,18 @@ window.__MARVEL_TD_DATA__ = {
         "support": 3,
         "detection": 5
       },
-      "terrainRole": "grass"
+      "terrainRole": "grass",
+      "special": {
+        "attackEffects": [
+          {
+            "type": "poison",
+            "duration": 3.2,
+            "power": 0.0032,
+            "chance": 0.32
+          }
+        ],
+        "statModifiers": {}
+      }
     },
     "hawkeye": {
       "id": "hawkeye",
@@ -598,7 +609,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 0.7,
       "canSeeStealth": false,
       "ability": "ENERGÍA BINARIA",
-      "abilityDesc": "Carga energía al atacar y derrotar enemigos. Al superar 60 vuela a una posición avanzada, atraviesa la línea enemiga y regresa a su puesto.",
+      "abilityDesc": "Carga energía al atacar y derrotar enemigos. Al superar 60 vuela a una posición avanzada, atraviesa la línea enemiga y regresa a su puesto. Sus rafagas fotonicas pueden dejar plasma ardiendo en objetivos duros.",
       "sprite": "assets/images/heroes/captain_marvel/portrait.png",
       "allowedTerrains": [
         0,
@@ -651,7 +662,18 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "flyer"
+      "terrainRole": "flyer",
+      "special": {
+        "attackEffects": [
+          {
+            "type": "burn",
+            "duration": 2.8,
+            "power": 6,
+            "chance": 0.28
+          }
+        ],
+        "statModifiers": {}
+      }
     },
     "wolverine": {
       "id": "wolverine",
@@ -921,7 +943,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 0.6,
       "canSeeStealth": false,
       "ability": "MURO DE RAÍCES",
-      "abilityDesc": "Levanta una barrera temporal sobre la ruta que ralentiza grupos sin desplazarlos. Con otro Guardián recupera una vida cada veinte segundos.",
+      "abilityDesc": "Levanta una barrera temporal sobre la ruta que ralentiza grupos sin desplazarlos. Con otro Guardián recupera una vida cada veinte segundos. Sus raices de contencion pueden restaurar 1 vida ocasionalmente.",
       "sprite": "assets/images/heroes/groot/portrait.png",
       "allowedTerrains": [
         1
@@ -972,7 +994,18 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "grass"
+      "terrainRole": "grass",
+      "special": {
+        "attackEffects": [
+          {
+            "type": "heal",
+            "duration": 0,
+            "power": 1,
+            "chance": 0.04
+          }
+        ],
+        "statModifiers": {}
+      }
     },
     "gamora": {
       "id": "gamora",
@@ -1050,7 +1083,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 0.9,
       "canSeeStealth": true,
       "ability": "REALIDAD ENLAZADA",
-      "abilityDesc": "Conecta maldiciones entre enemigos y altera temporalmente la velocidad de toda una sección de la oleada.",
+      "abilityDesc": "Conecta maldiciones entre enemigos y altera temporalmente la velocidad de toda una sección de la oleada. La maldicion inflige dano porcentual y se aprovecha de su propagacion en cadena.",
       "sprite": "assets/images/heroes/scarlet_witch/portrait.png",
       "allowedTerrains": [
         0,
@@ -1068,7 +1101,7 @@ window.__MARVEL_TD_DATA__ = {
         "support": 4,
         "detection": 4
       },
-      "niche": "maldiciones enlazadas y tiempo",
+      "niche": "maldicion propagable y control caotico de oleadas",
       "visual": {
         "portrait": "assets/images/heroes/scarlet_witch/portrait.png",
         "size": 96,
@@ -1109,7 +1142,16 @@ window.__MARVEL_TD_DATA__ = {
           "propagationCount": 3,
           "propagationRadius": 125,
           "propagationFactor": 0.38
-        }
+        },
+        "attackEffects": [
+          {
+            "type": "curse",
+            "duration": 4.2,
+            "power": 0.0048,
+            "chance": 0.55
+          }
+        ],
+        "statModifiers": {}
       }
     },
     "vision": {
@@ -1793,7 +1835,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.8,
       "canSeeStealth": true,
       "ability": "CAZADOR DAYWALKER",
-      "abilityDesc": "Aplica sangrado reforzado a elites y convierte cada seis bajas en una vida, con un limite temporal.",
+      "abilityDesc": "Aplica sangrado reforzado a elites y convierte cada seis bajas en una vida, con un limite temporal. Sus armas preparadas aplican toxina anti monstruos acumulable.",
       "sprite": "assets/images/heroes/blade/portrait.png",
       "allowedTerrains": [
         1,
@@ -1845,7 +1887,18 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "ground"
+      "terrainRole": "ground",
+      "special": {
+        "attackEffects": [
+          {
+            "type": "poison",
+            "duration": 3.8,
+            "power": 0.0038,
+            "chance": 0.42
+          }
+        ],
+        "statModifiers": {}
+      }
     },
     "ghost_rider": {
       "id": "ghost_rider",
@@ -1858,7 +1911,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 0.9,
       "canSeeStealth": true,
       "ability": "ESPIRITU DE VENGANZA",
-      "abilityDesc": "Sus cadenas arrastran enemigos por la ruta y la Mirada de Penitencia castiga la vida perdida de los jefes.",
+      "abilityDesc": "Sus cadenas arrastran enemigos por la ruta y la Mirada de Penitencia castiga la vida perdida de los jefes. Sus cadenas tambien dejan fuego infernal persistente.",
       "sprite": "assets/images/heroes/ghost_rider/portrait.png",
       "allowedTerrains": [
         1,
@@ -1910,7 +1963,18 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "ground"
+      "terrainRole": "ground",
+      "special": {
+        "attackEffects": [
+          {
+            "type": "burn",
+            "duration": 3.6,
+            "power": 8,
+            "chance": 0.42
+          }
+        ],
+        "statModifiers": {}
+      }
     },
     "luke_cage": {
       "id": "luke_cage",
@@ -3005,7 +3069,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.65,
       "canSeeStealth": true,
       "ability": "DAGAS DE LUZ",
-      "abilityDesc": "Lanza luz que marca y salta a un segundo objetivo cercano.",
+      "abilityDesc": "Lanza luz que marca y salta a un segundo objetivo cercano. La luz de Dagger puede recuperar 1 vida con impactos precisos.",
       "niche": "marca y rebote luminoso",
       "allowedTerrains": [
         0,
@@ -3035,6 +3099,12 @@ window.__MARVEL_TD_DATA__ = {
             "duration": 2,
             "power": 0.12,
             "chance": 0.36
+          },
+          {
+            "type": "heal",
+            "duration": 0,
+            "power": 1,
+            "chance": 0.05
           }
         ],
         "statModifiers": {
@@ -3091,7 +3161,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.05,
       "canSeeStealth": false,
       "ability": "ESPADA ALMA",
-      "abilityDesc": "Cortes mistico-mutantes rompen armadura y generan rebote dimensional.",
+      "abilityDesc": "Cortes mistico-mutantes rompen armadura y generan rebote dimensional. Los cortes dimensionales dejan una maldicion breve en formaciones densas.",
       "niche": "ruptura y dano mistico",
       "allowedTerrains": [
         1,
@@ -3121,10 +3191,17 @@ window.__MARVEL_TD_DATA__ = {
             "duration": 3.5,
             "power": 0.2,
             "chance": 0.3
+          },
+          {
+            "type": "curse",
+            "duration": 3.4,
+            "power": 0.0034,
+            "chance": 0.34
           }
         ],
         "visualStyle": "mystic",
-        "projectileColor": "#ff9cff"
+        "projectileColor": "#ff9cff",
+        "statModifiers": {}
       },
       "sprite": "assets/images/heroes/magik/portrait.png",
       "visual": {
@@ -3829,7 +3906,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.3,
       "canSeeStealth": true,
       "ability": "BLOODSTONE",
-      "abilityDesc": "Dispara municion anti monstruos con ruptura de armadura y dano sostenido contra elites.",
+      "abilityDesc": "Dispara municion anti monstruos con ruptura de armadura y dano sostenido contra elites. La municion alquimica suma veneno acumulable a blancos resistentes.",
       "niche": "cazadora anti elite con deteccion",
       "allowedTerrains": [
         3
@@ -3855,6 +3932,12 @@ window.__MARVEL_TD_DATA__ = {
             "duration": 3,
             "power": 0.16,
             "chance": 0.34
+          },
+          {
+            "type": "poison",
+            "duration": 4,
+            "power": 0.0036,
+            "chance": 0.36
           }
         ],
         "statModifiers": {
@@ -3991,7 +4074,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 0.85,
       "canSeeStealth": false,
       "ability": "ESPINAS DE HEL",
-      "abilityDesc": "Lanzas necroticas perforan armadura y aplican sangrado persistente a jefes y tanques.",
+      "abilityDesc": "Lanzas necroticas perforan armadura y aplican sangrado persistente a jefes y tanques. Sus lanzas necroticas agregan maldicion contra jefes y tanques.",
       "niche": "artilleria mistica anti jefe",
       "allowedTerrains": [
         0,
@@ -4022,10 +4105,17 @@ window.__MARVEL_TD_DATA__ = {
             "duration": 3.2,
             "power": 0.24,
             "chance": 0.42
+          },
+          {
+            "type": "curse",
+            "duration": 4.5,
+            "power": 0.0042,
+            "chance": 0.48
           }
         ],
         "visualStyle": "mystic",
-        "projectileColor": "#69e58c"
+        "projectileColor": "#69e58c",
+        "statModifiers": {}
       },
       "sprite": "assets/images/heroes/hela/portrait.png",
       "visual": {
@@ -4160,7 +4250,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.35,
       "canSeeStealth": true,
       "ability": "PACTO DEMONICO",
-      "abilityDesc": "Balas malditas revelan infiltrados, marcan soportes y aumentan el dano recibido.",
+      "abilityDesc": "Balas malditas revelan infiltrados, marcan soportes y aumentan el dano recibido. Sus balas malditas dejan una maldicion persistente. Su pacto oscuro convierte impactos raros en recuperacion de vida.",
       "niche": "marca oscura y deteccion",
       "allowedTerrains": [
         1,
@@ -4184,6 +4274,18 @@ window.__MARVEL_TD_DATA__ = {
             "duration": 2.4,
             "power": 0.16,
             "chance": 0.4
+          },
+          {
+            "type": "curse",
+            "duration": 3.6,
+            "power": 0.0038,
+            "chance": 0.44
+          },
+          {
+            "type": "heal",
+            "duration": 0,
+            "power": 1,
+            "chance": 0.035
           }
         ],
         "statModifiers": {
@@ -4403,8 +4505,8 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.18,
       "canSeeStealth": false,
       "ability": "SIMBIONTE DEPREDADOR",
-      "abilityDesc": "Golpes de masa simbionte atraviesan armadura y ralentizan objetivos marcados.",
-      "niche": "vanguardia anti blindaje",
+      "abilityDesc": "Golpes de masa simbionte atraviesan armadura y ralentizan objetivos marcados. El simbionte aplica veneno acumulable basado en la salud maxima.",
+      "niche": "control simbionte, veneno porcentual y presion antiarmadura",
       "allowedTerrains": [
         1,
         3
@@ -4432,6 +4534,12 @@ window.__MARVEL_TD_DATA__ = {
             "duration": 1.5,
             "power": 0.34,
             "chance": 0.34
+          },
+          {
+            "type": "poison",
+            "duration": 4.2,
+            "power": 0.0045,
+            "chance": 0.55
           }
         ],
         "statModifiers": {
@@ -4904,8 +5012,8 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1,
       "canSeeStealth": false,
       "ability": "CAPULLO CUANTICO",
-      "abilityDesc": "Energia cosmica encadena objetivos y potencia el sosten de equipos largos.",
-      "niche": "soporte cosmico de alcance",
+      "abilityDesc": "Energia cosmica encadena objetivos y potencia el sosten de equipos largos. Una fraccion de sus impactos restaura 1 vida de la base.",
+      "niche": "soporte cosmico, cadenas y curacion de base",
       "allowedTerrains": [
         0,
         1,
@@ -4933,7 +5041,15 @@ window.__MARVEL_TD_DATA__ = {
           "damagePct": 0.04
         },
         "visualStyle": "energy",
-        "projectileColor": "#facc15"
+        "projectileColor": "#facc15",
+        "attackEffects": [
+          {
+            "type": "heal",
+            "duration": 0,
+            "power": 1,
+            "chance": 0.08
+          }
+        ]
       },
       "sprite": "assets/images/heroes/adam_warlock/portrait.png",
       "visual": {
@@ -5308,7 +5424,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.25,
       "canSeeStealth": true,
       "ability": "ILUSION REAL",
-      "abilityDesc": "Ilusiones marcan amenazas y ralentizan la vanguardia enemiga sin romper la ruta.",
+      "abilityDesc": "Ilusiones marcan amenazas y ralentizan la vanguardia enemiga sin romper la ruta. Las ilusiones pueden propagar una maldicion ligera entre grupos.",
       "niche": "control mistico y deteccion",
       "allowedTerrains": [
         0,
@@ -5339,6 +5455,12 @@ window.__MARVEL_TD_DATA__ = {
             "duration": 2.2,
             "power": 0.13,
             "chance": 0.34
+          },
+          {
+            "type": "curse",
+            "duration": 3.8,
+            "power": 0.0036,
+            "chance": 0.42
           }
         ],
         "statModifiers": {
@@ -5401,7 +5523,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.55,
       "canSeeStealth": true,
       "ability": "HIELO POP",
-      "abilityDesc": "Proyectiles de hielo ralentizan corredores y estabilizan el tramo final.",
+      "abilityDesc": "Proyectiles de hielo ralentizan corredores y estabilizan el tramo final. Su hielo protector puede recuperar 1 vida en impactos clave.",
       "niche": "slow a distancia y deteccion",
       "allowedTerrains": [
         1,
@@ -5429,6 +5551,12 @@ window.__MARVEL_TD_DATA__ = {
             "duration": 2.2,
             "power": 0.46,
             "chance": 0.52
+          },
+          {
+            "type": "heal",
+            "duration": 0,
+            "power": 1,
+            "chance": 0.04
           }
         ],
         "statModifiers": {
@@ -5485,8 +5613,8 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.65,
       "canSeeStealth": true,
       "ability": "EMPATIA PSIQUICA",
-      "abilityDesc": "Calma grupos peligrosos con ralentizacion y marca tactica desde gran distancia.",
-      "niche": "soporte guardian de control",
+      "abilityDesc": "Calma grupos peligrosos con ralentizacion y marca tactica desde gran distancia. Su empatia tiene baja probabilidad de restaurar 1 vida al impactar.",
+      "niche": "soporte guardian de control y curacion ligera",
       "allowedTerrains": [
         1,
         3
@@ -5515,6 +5643,12 @@ window.__MARVEL_TD_DATA__ = {
             "duration": 2,
             "power": 0.1,
             "chance": 0.3
+          },
+          {
+            "type": "heal",
+            "duration": 0,
+            "power": 1,
+            "chance": 0.06
           }
         ],
         "statModifiers": {

@@ -8,6 +8,8 @@ const STATUS_VISUALS = {
     stun: { color: '#ffd166', symbol: '!' },
     slow: { color: '#40c9ff', symbol: '~' },
     burn: { color: '#ff6b35', symbol: 'F' },
+    poison: { color: '#69e58c', symbol: 'P' },
+    curse: { color: '#b865ff', symbol: 'C' },
     bleed: { color: '#e63946', symbol: 'B' },
     armorBreak: { color: '#b8b8b8', symbol: '-' },
     mark: { color: '#d86cff', symbol: '+' },
@@ -61,7 +63,7 @@ export function buildEnemyStatusPips(debuffs = [], limit = 4) {
             return map;
         }, new Map());
 
-    const priority = { stun: 9, web: 8, slow: 7, burn: 6, bleed: 6, armorBreak: 5, mark: 4, haste: 3 };
+    const priority = { stun: 9, web: 8, slow: 7, burn: 6, poison: 6, curse: 6, bleed: 6, armorBreak: 5, mark: 4, haste: 3 };
     const entries = [...active.values()]
         .sort((a, b) => (priority[b.type] || 1) - (priority[a.type] || 1) || b.duration - a.duration)
         .map((status) => {
@@ -193,9 +195,10 @@ export class Enemy {
         if (existing) {
             existing.duration = Math.max(existing.duration, adjustedDuration);
             existing.power = Math.max(existing.power, power);
+            if (type === 'poison') existing.stacks = Math.min(12, (existing.stacks || 1) + Number(effect.stacks || 1));
             existing.source = source || existing.source;
         } else {
-            this.debuffs.push({ type, duration: adjustedDuration, power, source, tickTimer: 0 });
+            this.debuffs.push({ type, duration: adjustedDuration, power, source, tickTimer: 0, stacks: type === 'poison' ? Number(effect.stacks || 1) : 1 });
         }
         source?.recordStatusApplied?.({ ...effect, duration: adjustedDuration }, this);
         return true;
@@ -203,11 +206,15 @@ export class Enemy {
 
     updateDebuffs(dt) {
         this.debuffs.forEach((debuff) => {
-            if ((debuff.type === 'burn' || debuff.type === 'bleed') && this.isAlive) {
-                const interval = debuff.type === 'burn' ? 0.5 : 0.4;
+            if ((debuff.type === 'burn' || debuff.type === 'bleed' || debuff.type === 'poison' || debuff.type === 'curse') && this.isAlive) {
+                const interval = debuff.type === 'bleed' ? 0.4 : 0.5;
                 debuff.tickTimer += Math.min(dt, debuff.duration);
                 while (debuff.tickTimer >= interval && this.isAlive) {
-                    const result = this.takeDamage(debuff.power * interval, { ignoreArmor: true });
+                    const stackCount = Math.max(1, Number(debuff.stacks || 1));
+                    const damage = debuff.type === 'poison' || debuff.type === 'curse'
+                        ? this.maxHp * debuff.power * stackCount * interval
+                        : debuff.power * interval;
+                    const result = this.takeDamage(damage, { ignoreArmor: true });
                     debuff.source?.recordDamage?.(result.damage);
                     if (result.killed && !this.killCredited) {
                         this.killCredited = true;

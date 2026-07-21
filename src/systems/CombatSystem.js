@@ -155,6 +155,13 @@ export class CombatSystem {
         effects.forEach((effect) => {
             if (CombatSystem.random(attacker) > (effect.chance ?? 1)) return;
 
+            if (effect.type === 'heal') {
+                const amount = Math.max(1, Math.round(Number(effect.power || 1)));
+                attacker?.game?.resourceManager?.addLife?.(amount);
+                attacker?.recordLifeSaved?.(amount);
+                return;
+            }
+
             if (target.applyStatus) {
                 target.applyStatus(effect, attacker);
             } else {

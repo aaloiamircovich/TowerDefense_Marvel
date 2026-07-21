@@ -278,7 +278,7 @@ export class Hero {
             this.combatStats.controlSeconds += duration || (type === 'knockback' ? 0.8 : 0);
         }
         if (type === 'armorBreak') this.combatStats.armorBreaks++;
-        if (type === 'mark') this.combatStats.marks++;
+        if (type === 'mark' || type === 'curse') this.combatStats.marks++;
         if (target?.stealth && (type === 'mark' || this.getEffectiveStats?.().canSeeStealth)) this.combatStats.detectionReveals++;
     }
 

@@ -134,6 +134,53 @@ test('CombatSystem usa la fuente aleatoria sembrada para efectos', () => {
     assert.equal(applied, 0);
 });
 
+test('CombatSystem convierte efecto heal en vida para la base', () => {
+    let lives = 0;
+    let saved = 0;
+    const target = createTarget('Urbano', (damage) => ({ damage, killed: false }));
+    const attacker = {
+        items: [],
+        game: {
+            enemies: [],
+            random: { next: () => 0 },
+            resourceManager: { addLife: (amount) => { lives += amount; } }
+        },
+        recordLifeSaved: (amount) => { saved += amount; }
+    };
+
+    CombatSystem.applyImpact({
+        attackerType: 'Urbano',
+        damage: 10,
+        effects: [{ type: 'heal', power: 1, chance: 1 }]
+    }, target, attacker, null);
+
+    assert.equal(lives, 1);
+    assert.equal(saved, 1);
+});
+
+test('CombatSystem no aplica heal como estado del enemigo', () => {
+    const applied = [];
+    const target = createTarget('Urbano', (damage) => ({ damage, killed: false }));
+    target.applyStatus = (effect) => applied.push(effect.type);
+    const attacker = {
+        items: [],
+        game: {
+            enemies: [],
+            random: { next: () => 0 },
+            resourceManager: { addLife: () => {} }
+        },
+        recordLifeSaved: () => {}
+    };
+
+    CombatSystem.applyImpact({
+        attackerType: 'Urbano',
+        damage: 10,
+        effects: [{ type: 'heal', power: 1, chance: 1 }]
+    }, target, attacker, null);
+
+    assert.deepEqual(applied, []);
+});
+
 test('CombatSystem describe feedback visual de impacto por critico y KO', () => {
     const critical = CombatSystem.buildImpactVfxState({ attackerType: 'Urbano', critical: true }, { damage: 20, killed: false });
     const killed = CombatSystem.buildImpactVfxState({ attackerType: 'Urbano', color: '#123456' }, { damage: 20, killed: true });

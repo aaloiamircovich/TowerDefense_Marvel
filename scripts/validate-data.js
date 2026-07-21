@@ -36,7 +36,7 @@ function validateHeroes(heroes) {
     const allowedSpecialKeys = new Set(['statModifiers', 'attackEffects', 'projectileProfile', 'visualStyle', 'projectileColor']);
     const allowedSpecialStatKeys = new Set(['allowWater', 'cooldown', 'critChance', 'damagePct', 'detectStealth', 'fireRatePct', 'rangePct']);
     const allowedAttackEffectKeys = new Set(['chance', 'duration', 'power', 'type']);
-    const allowedAttackEffectTypes = new Set(['armorBreak', 'bleed', 'burn', 'mark', 'slow', 'stun', 'web']);
+    const allowedAttackEffectTypes = new Set(['armorBreak', 'bleed', 'burn', 'curse', 'heal', 'mark', 'poison', 'slow', 'stun', 'web']);
     const allowedProjectileProfileKeys = new Set(['armorPenetration', 'chainCount', 'chainFactor', 'chainRange', 'splashFactor', 'splashRadius', 'propagationCount', 'propagationFactor', 'propagationRadius']);
     const allowedVisualStyles = new Set(['ballistic', 'blade', 'elemental', 'energy', 'explosive', 'fire', 'ice', 'impact', 'mystic', 'sonic', 'water', 'web', 'whip']);
     const validTags = new Set(['Avengers', 'Defenders', 'Guardianes', 'X-Men', 'Mutantes', 'Místico', 'Callejero', 'Wakanda', 'Tecnología', 'Cósmico', 'Espías', 'Oscuros', 'Marciales', 'Inhumanos', 'Atlánticos', 'Rivales']);

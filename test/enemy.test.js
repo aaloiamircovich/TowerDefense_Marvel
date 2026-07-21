@@ -140,6 +140,28 @@ test('Enemy atribuye una baja por quemadura a su fuente', () => {
     assert.equal(stats.kills, 1);
 });
 
+test('Enemy aplica veneno acumulable como dano porcentual', () => {
+    const enemy = new Enemy({ id: 'test', hp: 1000, speed: 50 }, [{ x: 0, y: 0 }]);
+    const source = { recordDamage: () => {}, recordKill: () => {} };
+
+    enemy.applyStatus({ type: 'poison', duration: 2, power: 0.01 }, source);
+    enemy.applyStatus({ type: 'poison', duration: 2, power: 0.01 }, source);
+    enemy.updateDebuffs(0.5);
+
+    assert.equal(enemy.hp, 990);
+    assert.equal(enemy.debuffs.find((status) => status.type === 'poison').stacks, 2);
+});
+
+test('Enemy aplica maldicion como dano porcentual persistente', () => {
+    const enemy = new Enemy({ id: 'test', hp: 1000, speed: 50 }, [{ x: 0, y: 0 }]);
+    const source = { recordDamage: () => {}, recordKill: () => {} };
+
+    enemy.applyStatus({ type: 'curse', duration: 2, power: 0.01 }, source);
+    enemy.updateDebuffs(0.5);
+
+    assert.equal(enemy.hp, 995);
+});
+
 test('Enemy registra contribucion tactica al aplicar estados', () => {
     const enemy = new Enemy({ id: 'stealth', hp: 100, speed: 50, stealth: true }, [{ x: 0, y: 0 }]);
     const applied = [];
