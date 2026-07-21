@@ -1,4 +1,5 @@
 import { ITEM_SLOTS, SET_BONUSES, SLOT_LABELS } from '../systems/ItemEffectSystem.js';
+import { getRarityClass, normalizeRarity } from '../utils/Rarity.js';
 
 export class InventoryPanel {
     constructor(ui) {
@@ -104,16 +105,18 @@ export class InventoryPanel {
     renderItemCard(entry) {
         const { item, freeCount, equippedHeroes, totalCount } = entry;
         const primaryHero = equippedHeroes[0]?.hero || null;
+        const rarity = normalizeRarity(item.rarity);
+        const rarityClass = getRarityClass(rarity);
         const ownerLabel = equippedHeroes.length
             ? equippedHeroes.map(({ hero }) => hero?.name || 'Heroe').join(', ')
             : 'Sin equipar';
         return `
-            <article class="inventory-card item-card-v2 inventory-object-card" data-item-id="${item.id}" role="button" tabindex="0" aria-label="Elegir ${item.name} para equipar">
+            <article class="inventory-card item-card-v2 inventory-object-card ${rarityClass}" data-item-id="${item.id}" data-rarity="${rarity}" role="button" tabindex="0" aria-label="Elegir ${item.name} para equipar">
                 <b class="item-quantity-badge">x${totalCount}</b>
                 ${primaryHero ? `<span class="item-owner-corner" title="Equipado por ${primaryHero.name}">${this.ui.renderSprite(this.ui.getHeroDisplaySprite(primaryHero), primaryHero.name)}</span>` : ''}
                 <div class="item-sprite-frame">${this.ui.renderSprite(item.icon, item.name)}</div>
                 <h3>${item.name}</h3>
-                <small>${SLOT_LABELS[item.slot]} | T${item.tier} | ${SET_BONUSES[item.set]?.name || 'Sin familia'}</small>
+                <small>${SLOT_LABELS[item.slot]} | <b class="rarity-badge ${rarityClass}">${rarity}</b> | ${SET_BONUSES[item.set]?.name || 'Sin familia'}</small>
                 <p>${item.desc}</p>
                 <div class="item-card-status">
                     <span>${freeCount} libre${freeCount === 1 ? '' : 's'}</span>

@@ -12,6 +12,7 @@ const strictAssets = process.argv.includes('--strict-assets');
 const errors = [];
 const warnings = [];
 const data = readProjectData(root);
+const VALID_RARITIES = new Set(['Common', 'Rare', 'Epic', 'Legendary', 'Mythic', 'Secret']);
 
 validateHeroes(data.heroes);
 validateEnemies(data.enemies);
@@ -39,7 +40,6 @@ function validateHeroes(heroes) {
     const allowedVisualStyles = new Set(['ballistic', 'blade', 'elemental', 'energy', 'explosive', 'fire', 'ice', 'impact', 'mystic', 'sonic', 'water', 'web', 'whip']);
     const validTags = new Set(['Avengers', 'Defenders', 'Guardianes', 'X-Men', 'Mutantes', 'Místico', 'Callejero', 'Wakanda', 'Tecnología', 'Cósmico', 'Espías', 'Oscuros', 'Marciales', 'Inhumanos', 'Atlánticos', 'Rivales']);
     const validRoles = new Set(['vanguard', 'support', 'artillery']);
-    const validRarities = new Set(['Common', 'Rare', 'Epic', 'Legendary', 'Mythic', 'Secret']);
     const enforcedTags = new Set(Object.keys(SYNERGY_DEFINITIONS));
     const validPlacementTerrains = new Set([TERRAIN.water, TERRAIN.grass, TERRAIN.mountain]);
     const validTerrainRoles = new Set(['grass', 'ground', 'high', 'flyer', 'aquatic', 'amphibious']);
@@ -61,7 +61,7 @@ function validateHeroes(heroes) {
         requirePositive(hero.range, `heroes.${key}.range`);
         requirePositive(hero.fireRate, `heroes.${key}.fireRate`);
         if (typeof hero.canSeeStealth !== 'boolean') errors.push(`heroes.${key}.canSeeStealth debe ser booleano`);
-        if (!validRarities.has(hero.rarity || 'Common')) {
+        if (!VALID_RARITIES.has(hero.rarity || 'Common')) {
             errors.push(`heroes.${key}.rarity debe ser Common, Rare, Epic, Legendary, Mythic o Secret`);
         }
 
@@ -212,12 +212,15 @@ function validateItems(items) {
     validateRecordIds('items', items);
     if (Object.keys(items).length < 30) errors.push('items necesita al menos 30 objetos para la Fase 11');
     const validSlots = new Set(['weapon', 'armor', 'artifact']);
-    const allowedItemKeys = new Set(['id', 'name', 'desc', 'price', 'tier', 'slot', 'set', 'effects', 'icon']);
+    const allowedItemKeys = new Set(['id', 'name', 'desc', 'price', 'tier', 'rarity', 'slot', 'set', 'effects', 'icon']);
     for (const [key, item] of Object.entries(items)) {
         validateAllowedKeys(`items.${key}`, item, allowedItemKeys);
         requireText(item.name, `items.${key}.name`);
         requirePositive(item.price, `items.${key}.price`);
         requirePositive(item.tier, `items.${key}.tier`);
+        if (!VALID_RARITIES.has(item.rarity || 'Common')) {
+            errors.push(`items.${key}.rarity debe ser Common, Rare, Epic, Legendary, Mythic o Secret`);
+        }
         if (!validSlots.has(item.slot)) errors.push(`items.${key}.slot no es valido`);
         requireText(item.set, `items.${key}.set`);
         if (!item.effects || typeof item.effects !== 'object' || Array.isArray(item.effects)) {

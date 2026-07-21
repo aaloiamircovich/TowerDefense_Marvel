@@ -37,6 +37,16 @@ test('validate-data bloquea campos no declarados en heroes', () => {
     assert.match(result.stderr, /heroes\.iron_man\.campoInventado no esta permitido/);
 });
 
+test('validate-data bloquea rarezas invalidas en objetos', () => {
+    const workspace = createDataWorkspace((data) => {
+        data.items.reactor_arc.rarity = 'Celestial';
+    });
+    const result = runValidator(workspace);
+
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr, /items\.reactor_arc\.rarity debe ser Common, Rare, Epic, Legendary, Mythic o Secret/);
+});
+
 test('validate-data bloquea campos no declarados en estructuras internas de niveles', () => {
     const workspace = createDataWorkspace((data) => {
         data.levels[0].theme.paletteSecret = ['#fff'];

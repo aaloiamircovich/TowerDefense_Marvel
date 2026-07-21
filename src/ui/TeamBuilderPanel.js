@@ -72,7 +72,7 @@ export class TeamBuilderPanel {
                 ${filteredHeroes.length
                     ? filteredHeroes.map((hero) => this.renderHeroCard(hero, unlockedIds.has(hero.id))).join('')
                     : '<p class="empty-copy collection-empty">No hay heroes con esos filtros.</p>'}
-            </div>` : this.renderVillainCodex()}
+            </div>` : this.viewMode === 'villains' ? this.renderVillainCodex() : this.renderEvolutionCodex()}
         `;
 
         this.bindListeners();
@@ -173,6 +173,9 @@ export class TeamBuilderPanel {
                 </button>
                 <button class="collection-view-tab ${this.viewMode === 'villains' ? 'active' : ''}" data-view="villains" type="button" aria-selected="${this.viewMode === 'villains'}">
                     <i class="fas fa-skull"></i> Diccionario de villanos
+                </button>
+                <button class="collection-view-tab ${this.viewMode === 'evolutions' ? 'active' : ''}" data-view="evolutions" type="button" aria-selected="${this.viewMode === 'evolutions'}">
+                    <i class="fas fa-dna"></i> Diccionario de evoluciones
                 </button>
             </div>
         `;
@@ -306,6 +309,19 @@ export class TeamBuilderPanel {
                 <b>${entry.unlocked ? '◆'.repeat(entry.threat) : '?????'}</b>
                 <div class="hero-tag-list">${entry.traits.map((trait) => `<span>${trait}</span>`).join('')}</div>
             </article>
+        `;
+    }
+
+    renderEvolutionCodex() {
+        return `
+            <section class="evolution-codex-empty">
+                <div>
+                    <span class="briefing-kicker">ARCHIVO S.H.I.E.L.D.</span>
+                    <h3>Diccionario de evoluciones</h3>
+                    <p>Reservado para futuras evoluciones cuando el roster tenga sus sprites completos.</p>
+                </div>
+                <i class="fas fa-dna"></i>
+            </section>
         `;
     }
 

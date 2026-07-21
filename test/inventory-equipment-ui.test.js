@@ -42,6 +42,8 @@ test('inventario muestra objetos equipados con el sprite del heroe dueño', () =
 
     const html = panel.renderItemCard(reactorEntry);
     assert.match(html, /inventory-object-card/);
+    assert.match(html, /rarity-rare/);
+    assert.match(html, /Rare/);
     assert.match(html, /item-owner-corner/);
     assert.match(html, /Equipado por Iron Man/);
 });
@@ -57,4 +59,13 @@ test('coleccion muestra el objeto equipado y permite elegir heroe destino', () =
     const spiderManHtml = panel.renderHeroCard(data.heroes.spiderman, true);
     assert.match(spiderManHtml, /btn-assign-item/);
     assert.match(spiderManHtml, /Equipar/);
+});
+
+test('coleccion expone diccionario de evoluciones vacio', () => {
+    const ui = createUiStub();
+    const panel = new TeamBuilderPanel(ui);
+
+    assert.match(panel.renderCollectionTabs(), /data-view="evolutions"/);
+    assert.match(panel.renderEvolutionCodex(), /Diccionario de evoluciones/);
+    assert.match(panel.renderEvolutionCodex(), /Reservado para futuras evoluciones/);
 });

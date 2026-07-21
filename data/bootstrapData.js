@@ -8834,7 +8834,8 @@ window.__MARVEL_TD_DATA__ = {
       "set": "stark",
       "effects": {
         "fireRatePct": 0.25
-      }
+      },
+      "rarity": "Rare"
     },
     "lentes_edith": {
       "id": "lentes_edith",
@@ -8848,7 +8849,8 @@ window.__MARVEL_TD_DATA__ = {
       "effects": {
         "detectStealth": true,
         "rangePct": 0.05
-      }
+      },
+      "rarity": "Common"
     },
     "contrato_stark": {
       "id": "contrato_stark",
@@ -8861,7 +8863,8 @@ window.__MARVEL_TD_DATA__ = {
       "set": "stark",
       "effects": {
         "onHitCredit": 1
-      }
+      },
+      "rarity": "Rare"
     },
     "protocolo_extremis": {
       "id": "protocolo_extremis",
@@ -8874,7 +8877,8 @@ window.__MARVEL_TD_DATA__ = {
       "set": "stark",
       "effects": {
         "killHealEvery": 15
-      }
+      },
+      "rarity": "Legendary"
     },
     "municion_repulsora": {
       "id": "municion_repulsora",
@@ -8887,7 +8891,8 @@ window.__MARVEL_TD_DATA__ = {
       "set": "stark",
       "effects": {
         "armorPenetration": 0.25
-      }
+      },
+      "rarity": "Epic"
     },
     "escudo_vibranium": {
       "id": "escudo_vibranium",
@@ -8901,7 +8906,8 @@ window.__MARVEL_TD_DATA__ = {
       "effects": {
         "damagePct": 0.08,
         "rangePct": 0.05
-      }
+      },
+      "rarity": "Rare"
     },
     "tejido_cinetico": {
       "id": "tejido_cinetico",
@@ -8914,7 +8920,8 @@ window.__MARVEL_TD_DATA__ = {
       "set": "vibranium",
       "effects": {
         "fireRatePct": 0.12
-      }
+      },
+      "rarity": "Rare"
     },
     "lanza_dora": {
       "id": "lanza_dora",
@@ -8928,7 +8935,8 @@ window.__MARVEL_TD_DATA__ = {
       "effects": {
         "critChance": 4,
         "armorPenetration": 0.2
-      }
+      },
+      "rarity": "Epic"
     },
     "cuentas_kimoyo": {
       "id": "cuentas_kimoyo",
@@ -8942,7 +8950,8 @@ window.__MARVEL_TD_DATA__ = {
       "effects": {
         "detectStealth": true,
         "rangePct": 0.12
-      }
+      },
+      "rarity": "Rare"
     },
     "corazon_wakanda": {
       "id": "corazon_wakanda",
@@ -8955,7 +8964,8 @@ window.__MARVEL_TD_DATA__ = {
       "set": "vibranium",
       "effects": {
         "damagePct": 0.15
-      }
+      },
+      "rarity": "Epic"
     },
     "particulas_pym": {
       "id": "particulas_pym",
@@ -8968,7 +8978,8 @@ window.__MARVEL_TD_DATA__ = {
       "set": "pym",
       "effects": {
         "fireRatePct": 0.35
-      }
+      },
+      "rarity": "Epic"
     },
     "aerodeslizador": {
       "id": "aerodeslizador",
@@ -8982,7 +8993,8 @@ window.__MARVEL_TD_DATA__ = {
       "effects": {
         "allowWater": true,
         "rangePct": 0.05
-      }
+      },
+      "rarity": "Common"
     },
     "guanteletes_gigantes": {
       "id": "guanteletes_gigantes",
@@ -8996,7 +9008,8 @@ window.__MARVEL_TD_DATA__ = {
       "effects": {
         "splashRadius": 46,
         "splashFactor": 0.35
-      }
+      },
+      "rarity": "Epic"
     },
     "regulador_cuantico": {
       "id": "regulador_cuantico",
@@ -9009,7 +9022,8 @@ window.__MARVEL_TD_DATA__ = {
       "set": "pym",
       "effects": {
         "critChance": 8
-      }
+      },
+      "rarity": "Rare"
     },
     "aguijon_wasp": {
       "id": "aguijon_wasp",
@@ -9023,7 +9037,8 @@ window.__MARVEL_TD_DATA__ = {
       "effects": {
         "slowChance": 0.25,
         "slowPower": 0.25
-      }
+      },
+      "rarity": "Common"
     },
     "gema_poder": {
       "id": "gema_poder",
@@ -9036,7 +9051,8 @@ window.__MARVEL_TD_DATA__ = {
       "set": "mystic",
       "effects": {
         "damagePct": 0.35
-      }
+      },
+      "rarity": "Secret"
     },
     "ojo_agamotto": {
       "id": "ojo_agamotto",
@@ -9050,7 +9066,8 @@ window.__MARVEL_TD_DATA__ = {
       "effects": {
         "detectStealth": true,
         "rangePct": 0.15
-      }
+      },
+      "rarity": "Legendary"
     },
     "capa_levitacion": {
       "id": "capa_levitacion",
@@ -9064,7 +9081,8 @@ window.__MARVEL_TD_DATA__ = {
       "effects": {
         "allowWater": true,
         "rangePct": 0.1
-      }
+      },
+      "rarity": "Epic"
     },
     "runas_kamar_taj": {
       "id": "runas_kamar_taj",
@@ -9078,7 +9096,8 @@ window.__MARVEL_TD_DATA__ = {
       "effects": {
         "slowChance": 0.35,
         "slowPower": 0.3
-      }
+      },
+      "rarity": "Rare"
     },
     "anillo_portal": {
       "id": "anillo_portal",
@@ -9093,7 +9112,8 @@ window.__MARVEL_TD_DATA__ = {
         "chainCount": 1,
         "chainRange": 100,
         "chainFactor": 0.55
-      }
+      },
+      "rarity": "Epic"
     },
     "simbionte": {
       "id": "simbionte",
@@ -9106,7 +9126,8 @@ window.__MARVEL_TD_DATA__ = {
       "set": "symbiote",
       "effects": {
         "consecutiveDamagePct": 0.025
-      }
+      },
+      "rarity": "Epic"
     },
     "telarana_sintetica": {
       "id": "telarana_sintetica",
@@ -9120,7 +9141,8 @@ window.__MARVEL_TD_DATA__ = {
       "effects": {
         "slowChance": 0.4,
         "slowPower": 0.35
-      }
+      },
+      "rarity": "Common"
     },
     "tentaculo_klyntar": {
       "id": "tentaculo_klyntar",
@@ -9134,7 +9156,8 @@ window.__MARVEL_TD_DATA__ = {
       "effects": {
         "armorBreakChance": 0.35,
         "armorBreakPower": 0.18
-      }
+      },
+      "rarity": "Rare"
     },
     "memoria_colmena": {
       "id": "memoria_colmena",
@@ -9148,7 +9171,8 @@ window.__MARVEL_TD_DATA__ = {
       "effects": {
         "detectStealth": true,
         "rangePct": 0.12
-      }
+      },
+      "rarity": "Rare"
     },
     "fragmento_carnage": {
       "id": "fragmento_carnage",
@@ -9162,7 +9186,8 @@ window.__MARVEL_TD_DATA__ = {
       "effects": {
         "damagePct": 0.18,
         "critChance": 5
-      }
+      },
+      "rarity": "Mythic"
     },
     "suero_supersoldado": {
       "id": "suero_supersoldado",
@@ -9176,7 +9201,8 @@ window.__MARVEL_TD_DATA__ = {
       "effects": {
         "lowLifeDamagePct": 0.3,
         "lowLifeFireRatePct": 0.3
-      }
+      },
+      "rarity": "Rare"
     },
     "chaleco_tactico": {
       "id": "chaleco_tactico",
@@ -9190,7 +9216,8 @@ window.__MARVEL_TD_DATA__ = {
       "effects": {
         "damagePct": 0.08,
         "fireRatePct": 0.08
-      }
+      },
+      "rarity": "Common"
     },
     "municion_ice": {
       "id": "municion_ice",
@@ -9205,7 +9232,8 @@ window.__MARVEL_TD_DATA__ = {
         "slowChance": 0.3,
         "slowPower": 0.2,
         "armorPenetration": 0.1
-      }
+      },
+      "rarity": "Rare"
     },
     "baliza_fury": {
       "id": "baliza_fury",
@@ -9219,7 +9247,8 @@ window.__MARVEL_TD_DATA__ = {
       "effects": {
         "rangePct": 0.1,
         "detectStealth": true
-      }
+      },
+      "rarity": "Common"
     },
     "dron_shield": {
       "id": "dron_shield",
@@ -9235,7 +9264,8 @@ window.__MARVEL_TD_DATA__ = {
         "chainRange": 90,
         "chainFactor": 0.5,
         "fireRatePct": 0.05
-      }
+      },
+      "rarity": "Epic"
     },
     "armadura_war_machine": {
       "id": "armadura_war_machine",
@@ -9250,7 +9280,8 @@ window.__MARVEL_TD_DATA__ = {
         "splashFactor": 0.24,
         "armorPenetration": 0.12
       },
-      "icon": "assets/images/items/armadura_war_machine.png"
+      "icon": "assets/images/items/armadura_war_machine.png",
+      "rarity": "Epic"
     },
     "localizador_fury": {
       "id": "localizador_fury",
@@ -9264,7 +9295,8 @@ window.__MARVEL_TD_DATA__ = {
         "detectStealth": true,
         "rangePct": 0.08
       },
-      "icon": "assets/images/items/localizador_fury.png"
+      "icon": "assets/images/items/localizador_fury.png",
+      "rarity": "Rare"
     },
     "alas_wasp": {
       "id": "alas_wasp",
@@ -9278,7 +9310,8 @@ window.__MARVEL_TD_DATA__ = {
         "fireRatePct": 0.18,
         "critChance": 4
       },
-      "icon": "assets/images/items/alas_wasp.png"
+      "icon": "assets/images/items/alas_wasp.png",
+      "rarity": "Rare"
     },
     "casco_nova": {
       "id": "casco_nova",
@@ -9293,7 +9326,8 @@ window.__MARVEL_TD_DATA__ = {
         "chainRange": 105,
         "chainFactor": 0.52
       },
-      "icon": "assets/images/items/casco_nova.png"
+      "icon": "assets/images/items/casco_nova.png",
+      "rarity": "Epic"
     },
     "guante_quake": {
       "id": "guante_quake",
@@ -9309,7 +9343,8 @@ window.__MARVEL_TD_DATA__ = {
         "armorBreakChance": 0.28,
         "armorBreakPower": 0.14
       },
-      "icon": "assets/images/items/guante_quake.png"
+      "icon": "assets/images/items/guante_quake.png",
+      "rarity": "Epic"
     },
     "tridente_atlante": {
       "id": "tridente_atlante",
@@ -9323,7 +9358,8 @@ window.__MARVEL_TD_DATA__ = {
         "allowWater": true,
         "armorPenetration": 0.22
       },
-      "icon": "assets/images/items/tridente_atlante.png"
+      "icon": "assets/images/items/tridente_atlante.png",
+      "rarity": "Epic"
     },
     "sello_kun_lun": {
       "id": "sello_kun_lun",
@@ -9338,7 +9374,8 @@ window.__MARVEL_TD_DATA__ = {
         "slowChance": 0.18,
         "slowPower": 0.25
       },
-      "icon": "assets/images/items/sello_kun_lun.png"
+      "icon": "assets/images/items/sello_kun_lun.png",
+      "rarity": "Epic"
     },
     "prisma_luz_oscura": {
       "id": "prisma_luz_oscura",
@@ -9355,7 +9392,8 @@ window.__MARVEL_TD_DATA__ = {
         "chainRange": 80,
         "chainFactor": 0.45
       },
-      "icon": "assets/images/items/prisma_luz_oscura.png"
+      "icon": "assets/images/items/prisma_luz_oscura.png",
+      "rarity": "Legendary"
     }
   }
 };

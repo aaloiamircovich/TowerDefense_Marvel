@@ -244,13 +244,13 @@ input:focus-visible,
     animation: rarity-rainbow 4s linear infinite;
 }
 
-.rarity-mythic:is(.rarity-badge, .hero-card, .starter-card, .collection-card, .hero-portrait, .synergy-chip, .allegiance-card) {
+.rarity-mythic:is(.rarity-badge, .hero-card, .starter-card, .collection-card, .hero-portrait, .synergy-chip, .allegiance-card, .inventory-object-card, .shop-card) {
     position: relative;
     border-color: transparent;
     isolation: isolate;
 }
 
-.rarity-mythic:is(.rarity-badge, .hero-card, .starter-card, .collection-card, .hero-portrait, .synergy-chip, .allegiance-card)::before {
+.rarity-mythic:is(.rarity-badge, .hero-card, .starter-card, .collection-card, .hero-portrait, .synergy-chip, .allegiance-card, .inventory-object-card, .shop-card)::before {
     content: "";
     position: absolute;
     inset: -1px;
@@ -2502,7 +2502,19 @@ body.panel-open {
 .collection-card.rarity-epic,
 .collection-card.rarity-legendary,
 .collection-card.rarity-mythic,
-.collection-card.rarity-secret {
+.collection-card.rarity-secret,
+.inventory-object-card.rarity-common,
+.inventory-object-card.rarity-rare,
+.inventory-object-card.rarity-epic,
+.inventory-object-card.rarity-legendary,
+.inventory-object-card.rarity-mythic,
+.inventory-object-card.rarity-secret,
+.shop-card.rarity-common,
+.shop-card.rarity-rare,
+.shop-card.rarity-epic,
+.shop-card.rarity-legendary,
+.shop-card.rarity-mythic,
+.shop-card.rarity-secret {
     border-color: color-mix(in srgb, var(--rarity-color), transparent 45%);
     background:
         linear-gradient(180deg, var(--rarity-bg), transparent 58%),
@@ -2587,9 +2599,11 @@ body.panel-open {
 }
 
 .hero-item-corner img {
+    display: block;
     width: 26px;
     height: 26px;
     object-fit: contain;
+    object-position: center;
 }
 
 .team-hero-card.item-target-mode {
@@ -2813,6 +2827,42 @@ body.panel-open {
 .villain-codex-header h3 {
     margin: 2px 0 4px;
     color: #ffffff;
+}
+
+.evolution-codex-empty {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 18px;
+    min-height: 220px;
+    padding: 18px;
+    border: 1px dashed rgba(184, 108, 255, 0.42);
+    border-radius: 8px;
+    background:
+        linear-gradient(135deg, rgba(184, 108, 255, 0.12), transparent 54%),
+        rgba(7, 16, 24, 0.72);
+}
+
+.evolution-codex-empty h3 {
+    margin: 2px 0 6px;
+    color: #ffffff;
+}
+
+.evolution-codex-empty p {
+    max-width: 620px;
+    color: var(--muted);
+}
+
+.evolution-codex-empty > i {
+    display: grid;
+    place-items: center;
+    width: 86px;
+    height: 86px;
+    border: 1px solid rgba(184, 108, 255, 0.42);
+    border-radius: 8px;
+    color: #b86cff;
+    font-size: 38px;
+    background: rgba(5, 8, 13, 0.62);
 }
 
 .villain-codex-header p {
@@ -3390,6 +3440,46 @@ select {
     font-weight: 900;
 }
 
+.shop-skins-menu {
+    border: 1px solid rgba(64, 201, 255, 0.22);
+    border-radius: 8px;
+    background: rgba(7, 12, 19, 0.84);
+}
+
+.shop-skins-menu summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 48px;
+    padding: 0 14px;
+    color: var(--text);
+    font-weight: 900;
+    cursor: pointer;
+    text-transform: uppercase;
+}
+
+.shop-skins-menu summary span {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.shop-skins-menu summary i {
+    color: var(--level-accent);
+}
+
+.shop-skins-menu summary b {
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.shop-skins-menu .empty-copy {
+    margin: 0;
+    padding: 12px 14px 14px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
 .collection-card {
     position: relative;
     display: grid;
@@ -3682,10 +3772,13 @@ select {
         rgba(3, 7, 12, 0.72);
 }
 
-.item-sprite-frame img {
+.item-sprite-frame img,
+.item-sprite-frame .sprite-fallback {
+    display: block;
     width: 76px;
     height: 76px;
     object-fit: contain;
+    object-position: center;
 }
 
 .inventory-object-card > h3 {
@@ -3727,9 +3820,11 @@ select {
 }
 
 .item-owner-corner img {
+    display: block;
     width: 30px;
     height: 30px;
     object-fit: contain;
+    object-position: center;
 }
 
 .item-card-status {
@@ -4249,11 +4344,11 @@ body.reduce-motion *::after {
 
 body.reduce-motion .rarity-badge.rarity-mythic,
 body.reduce-motion .rarity-badge.rarity-secret,
-body.reduce-motion .rarity-mythic:is(.rarity-badge, .hero-card, .starter-card, .collection-card, .hero-portrait, .synergy-chip, .allegiance-card)::before {
+body.reduce-motion .rarity-mythic:is(.rarity-badge, .hero-card, .starter-card, .collection-card, .hero-portrait, .synergy-chip, .allegiance-card, .inventory-object-card, .shop-card)::before {
     animation: none;
 }
 
-.rarity-mythic:is(.rarity-badge, .hero-card, .starter-card, .collection-card, .hero-portrait, .synergy-chip, .allegiance-card) {
+.rarity-mythic:is(.rarity-badge, .hero-card, .starter-card, .collection-card, .hero-portrait, .synergy-chip, .allegiance-card, .inventory-object-card, .shop-card) {
     border-color: transparent;
 }
 
@@ -4333,6 +4428,15 @@ body.reduce-motion .rarity-mythic:is(.rarity-badge, .hero-card, .starter-card, .
 .gacha-case i {
     color: var(--rarity-color, var(--bright-yellow));
     font-size: 18px;
+}
+
+.gacha-skip-btn {
+    position: relative;
+    z-index: 2;
+    width: auto;
+    min-height: 34px;
+    padding: 7px 12px;
+    font-size: 11px;
 }
 
 .gacha-roller {
@@ -5569,6 +5673,23 @@ canvas {
     width: 3px;
     background: linear-gradient(180deg, var(--level-accent), var(--bright-yellow));
     opacity: 0.72;
+}
+
+.inventory-object-card.rarity-mythic {
+    border-color: transparent;
+    background:
+        linear-gradient(180deg, rgba(20, 31, 45, 0.92), rgba(7, 12, 19, 0.9)) padding-box,
+        var(--rarity-mythic-gradient) border-box;
+    background-size: 100% 100%, 240% 100%;
+    animation: rarity-rainbow 4s linear infinite;
+}
+
+.inventory-object-card.rarity-secret {
+    border-color: rgba(255, 48, 79, 0.72);
+    background:
+        radial-gradient(circle at 50% 8%, rgba(255, 48, 79, 0.22), transparent 38%),
+        linear-gradient(135deg, rgba(10, 4, 8, 0.96), rgba(80, 0, 12, 0.22), rgba(7, 12, 19, 0.94));
+    box-shadow: inset 0 3px 0 #ff304f, 0 0 18px rgba(217, 4, 41, 0.2);
 }
 
 .detail-card h3,

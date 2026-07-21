@@ -62,6 +62,15 @@ test('ShopSystem pondera las seis rarezas de heroes', () => {
     assert.ok(HERO_RARITY_WEIGHTS.Mythic > HERO_RARITY_WEIGHTS.Secret);
 });
 
+test('objetos usan las mismas seis rarezas auditadas que los heroes', () => {
+    const rarities = new Set(Object.values(data.items).map((item) => item.rarity));
+
+    assert.deepEqual([...rarities].sort(), ['Common', 'Epic', 'Legendary', 'Mythic', 'Rare', 'Secret']);
+    Object.values(data.items).forEach((item) => {
+        assert.ok(Object.hasOwn(HERO_RARITY_WEIGHTS, item.rarity), `${item.id} tiene rareza invalida`);
+    });
+});
+
 function createShop() {
     const storage = { value: null, getItem() { return this.value; }, setItem(key, value) { this.value = value; } };
     const game = {

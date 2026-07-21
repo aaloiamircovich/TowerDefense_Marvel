@@ -1021,6 +1021,7 @@ export class UIManager {
         this.shopSlots = [null, null, null];
         this.itemPool = [];
         this.toastTimer = null;
+        this.gachaRevealTimers = [];
         this.lastFocusedElement = null;
         this.nextWaveSummary = null;
         this.combatPressureSignature = '';
@@ -2184,6 +2185,10 @@ export class UIManager {
                         ${rotation.map((slot) => this.renderShopItem(slot.item, slot.purchased)).join('') || '<p class="empty-copy">Arsenal completado.</p>'}
                     </div>
                 </section>
+                <details class="shop-skins-menu">
+                    <summary><span><i class="fas fa-shirt"></i> Skins de heroes</span><b>Próximamente</b></summary>
+                    <div class="empty-copy">Este espacio queda reservado para skins cuando estén listas.</div>
+                </details>
             </div>
         `;
 
@@ -2203,6 +2208,8 @@ export class UIManager {
     renderShopItem(item, purchased = false) {
         if (!item) return '<div class="shop-card empty-copy">Agotado</div>';
         const owned = this.game.progression.getOwnedQuantity(item.id);
+        const rarity = normalizeRarity(item.rarity);
+        const rarityClass = getRarityClass(rarity);
         const summary = this.nextWaveSummary || (!this.game.waveManager?.isWaveActive ? this.game.waveManager?.buildPreparedSummary?.() : null);
         const insight = buildShopItemInsight(item, summary);
         const setProgress = buildShopSetProgress(
@@ -2212,8 +2219,8 @@ export class UIManager {
             this.game.itemDatabase
         );
         return `
-            <div class="shop-card ${purchased ? 'purchased' : ''}">
-                <div class="item-badge">T${item.tier || 1}</div>
+            <div class="shop-card ${rarityClass} ${purchased ? 'purchased' : ''}" data-rarity="${rarity}">
+                <div class="item-badge rarity-badge ${rarityClass}">${rarity}</div>
                 <div class="shop-item-heading">
                     ${this.renderSprite(item.icon, item.name)}
                     <div><small>${SLOT_LABELS[item.slot]} · ${SET_BONUSES[item.set]?.name || item.set}</small><h4>${item.name}</h4></div>
@@ -2377,6 +2384,7 @@ export class UIManager {
                     <i class="fas fa-box-open"></i>
                     <span>Caja S.H.I.E.L.D.</span>
                 </div>
+                <button class="gacha-skip-btn btn-primary ghost" type="button"><i class="fas fa-forward"></i> Saltear</button>
                 <div class="gacha-roller" aria-hidden="true">
                     <div class="gacha-roll-sprite">${this.renderSprite(this.getHeroDisplaySprite(firstPreview), firstPreview.name)}</div>
                 </div>
@@ -2389,18 +2397,25 @@ export class UIManager {
         `;
     }
 
-    startGachaRevealAnimation(result) {
+    startGachaRevealAnimation(result, onComplete = () => {}) {
         const reveal = document.querySelector('#gacha-res .gacha-reveal');
         const slot = reveal?.querySelector('.gacha-roll-sprite');
         const finalCopy = reveal?.querySelector('.gacha-final');
-        if (!reveal || !slot || !finalCopy) return;
+        const skipButton = reveal?.querySelector('.gacha-skip-btn');
+        if (!reveal || !slot || !finalCopy) {
+            onComplete();
+            return;
+        }
 
         const sequence = this.buildGachaRevealSequence(result.hero);
-        const delays = [140, 150, 160, 170, 185, 200, 220, 245, 275, 310, 360, 430];
+        const delays = [320, 360, 400, 440, 500, 560, 640, 720, 820, 940, 1080, 1220];
         let index = 0;
+        let finished = false;
 
-        const showEntry = () => {
-            const entry = sequence[Math.min(index, sequence.length - 1)];
+        this.gachaRevealTimers.forEach((timer) => window.clearTimeout(timer));
+        this.gachaRevealTimers = [];
+
+        const applyEntry = (entry) => {
             const rarity = normalizeRarity(entry.rarity);
             const rarityClass = getRarityClass(rarity);
             reveal.classList.remove('rarity-common', 'rarity-rare', 'rarity-epic', 'rarity-legendary', 'rarity-mythic', 'rarity-secret');
@@ -2410,19 +2425,42 @@ export class UIManager {
             slot.classList.remove('tick');
             void slot.offsetWidth;
             slot.classList.add('tick');
+        };
+
+        const finishReveal = () => {
+            if (finished) return;
+            finished = true;
+            this.gachaRevealTimers.forEach((timer) => window.clearTimeout(timer));
+            this.gachaRevealTimers = [];
+            applyEntry(result.hero);
+            reveal.classList.add('is-final');
+            finalCopy.classList.add('is-visible');
+            skipButton?.classList.add('hidden');
+            onComplete();
+        };
+
+        const showEntry = () => {
+            if (finished) return;
+            const entry = sequence[Math.min(index, sequence.length - 1)];
+            applyEntry(entry);
 
             if (index >= sequence.length - 1) {
-                reveal.classList.add('is-final');
-                finalCopy.classList.add('is-visible');
+                finishReveal();
                 return;
             }
 
             const delay = delays[Math.min(index, delays.length - 1)];
             index += 1;
-            window.setTimeout(showEntry, delay);
+            this.gachaRevealTimers.push(window.setTimeout(showEntry, delay));
         };
 
-        showEntry();
+        skipButton?.addEventListener('click', finishReveal, { once: true });
+        Promise.resolve(this.game.assetPreloader?.preloadHeroes?.(sequence))
+            .catch(() => null)
+            .finally(() => {
+                if (finished) return;
+                this.gachaRevealTimers.push(window.setTimeout(showEntry, 220));
+            });
     }
 
     handleGacha() {
@@ -2436,7 +2474,6 @@ export class UIManager {
         const resultNode = document.getElementById('gacha-res');
         if (button) button.disabled = true;
         if (resultNode) resultNode.innerHTML = this.renderGachaReveal(result);
-        this.startGachaRevealAnimation(result);
 
         this.showToast(`${result.hero.name} se unio a la plantilla`, 'success');
         this.renderHeroRoster(this.game.activeTeam, (hero) => this.game.inputManager.setPlacementMode(hero));
@@ -2446,7 +2483,7 @@ export class UIManager {
         const pityTrack = this.panelContent.querySelector('.pity-track');
         if (pityTrack) pityTrack.textContent = `Garantia: ${Math.min(4, this.game.progression.state.shop.heroPity)}/4`;
 
-        window.setTimeout(() => {
+        this.startGachaRevealAnimation(result, () => {
             const nextPool = Object.values(this.game.heroDatabase || {})
                 .filter((hero) => hero.visual)
                 .filter((hero) => !this.game.progression.state.unlockedHeroIds.includes(hero.id));
@@ -2454,7 +2491,7 @@ export class UIManager {
                 button.disabled = nextPool.length === 0;
                 button.textContent = nextPool.length === 0 ? 'PLANTILLA COMPLETA' : 'RECLUTAR POR 500 F';
             }
-        }, 4800);
+        });
     }
     showGameOver() {
         this.game.audio?.play('warning');
