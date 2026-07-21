@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { InventoryPanel } from '../src/ui/InventoryPanel.js';
 import { TeamBuilderPanel } from '../src/ui/TeamBuilderPanel.js';
+import { UIManager } from '../src/systems/UIManager.js';
 
 const data = {
     heroes: JSON.parse(fs.readFileSync(new URL('../data/heroes.json', import.meta.url), 'utf8')),
@@ -68,4 +69,30 @@ test('coleccion expone diccionario de evoluciones vacio', () => {
     assert.match(panel.renderCollectionTabs(), /data-view="evolutions"/);
     assert.match(panel.renderEvolutionCodex(), /Diccionario de evoluciones/);
     assert.match(panel.renderEvolutionCodex(), /Reservado para futuras evoluciones/);
+});
+
+test('coleccion filtra heroes obtenidos y faltantes', () => {
+    const ui = createUiStub();
+    const panel = new TeamBuilderPanel(ui);
+    const heroes = [data.heroes.iron_man, data.heroes.spiderman, data.heroes.thor];
+    const unlockedIds = new Set(ui.game.progression.state.unlockedHeroIds);
+
+    panel.ownershipFilter = 'owned';
+    assert.deepEqual(panel.getFilteredHeroes(heroes, unlockedIds).map((hero) => hero.id), ['iron_man', 'spiderman']);
+
+    panel.ownershipFilter = 'missing';
+    assert.deepEqual(panel.getFilteredHeroes(heroes, unlockedIds).map((hero) => hero.id), ['thor']);
+
+    assert.match(panel.renderCollectionFilters(2, 3), /collection-ownership-select/);
+});
+
+test('tienda de skins queda como panel independiente vacio', () => {
+    const ui = Object.create(UIManager.prototype);
+    ui.panelContent = { innerHTML: '' };
+
+    ui.renderSkinShop('Skins');
+
+    assert.match(ui.panelContent.innerHTML, /skins-shop-panel/);
+    assert.match(ui.panelContent.innerHTML, /Skins de héroes/);
+    assert.match(ui.panelContent.innerHTML, /Próximamente/);
 });

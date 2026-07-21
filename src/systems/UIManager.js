@@ -2058,11 +2058,13 @@ export class UIManager {
             collection: 'Colección',
             inventory: 'Inventario',
             shop: 'Tienda',
+            skins: 'Skins',
             map: 'Mapa',
             settings: 'Ajustes'
         }[type] || type;
 
         if (type === 'shop') return this.renderShop(title);
+        if (type === 'skins') return this.renderSkinShop(title);
         if (type === 'radar') return this.renderRadarPanel(title);
         if (type === 'collection') return this.teamBuilderPanel.render('Constructor de equipo');
         if (type === 'inventory') return this.inventoryPanel.render(title);
@@ -2185,10 +2187,6 @@ export class UIManager {
                         ${rotation.map((slot) => this.renderShopItem(slot.item, slot.purchased)).join('') || '<p class="empty-copy">Arsenal completado.</p>'}
                     </div>
                 </section>
-                <details class="shop-skins-menu">
-                    <summary><span><i class="fas fa-shirt"></i> Skins de heroes</span><b>Próximamente</b></summary>
-                    <div class="empty-copy">Este espacio queda reservado para skins cuando estén listas.</div>
-                </details>
             </div>
         `;
 
@@ -2248,6 +2246,23 @@ export class UIManager {
         }
         this.showToast(`${result.item.name} comprado`, 'success');
         this.renderShop('Tienda');
+    }
+
+    renderSkinShop(title = 'Skins') {
+        this.panelContent.innerHTML = `
+            <div class="panel-title-row">
+                <h2>${title}</h2>
+                <strong>Próximamente</strong>
+            </div>
+            <section class="skins-shop-panel">
+                <div>
+                    <span class="briefing-kicker">TIENDA COSMÉTICA</span>
+                    <h3>Skins de héroes</h3>
+                    <p>Este menú queda reservado para skins cuando estén listas.</p>
+                </div>
+                <i class="fas fa-shirt"></i>
+            </section>
+        `;
     }
 
     renderProfile(title) {

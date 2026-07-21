@@ -16,6 +16,7 @@ export class TeamBuilderPanel {
         this.searchQuery = '';
         this.sortMode = 'az';
         this.rarityFilter = 'all';
+        this.ownershipFilter = 'all';
         this.synergyExpanded = false;
         this.viewMode = 'heroes';
     }
@@ -31,7 +32,7 @@ export class TeamBuilderPanel {
         const readyHeroes = Object.values(game.heroDatabase)
             .filter((hero) => hero.visual)
             .sort((a, b) => Number(unlockedIds.has(b.id)) - Number(unlockedIds.has(a.id)) || a.name.localeCompare(b.name));
-        const filteredHeroes = this.getFilteredHeroes(readyHeroes);
+        const filteredHeroes = this.getFilteredHeroes(readyHeroes, unlockedIds);
         const snapshot = game.teamSynergy.getSnapshot();
 
         this.ui.panelContent.innerHTML = `
@@ -184,12 +185,15 @@ export class TeamBuilderPanel {
         return HERO_RARITIES.indexOf(normalizeRarity(hero.rarity));
     }
 
-    getFilteredHeroes(heroes) {
+    getFilteredHeroes(heroes, unlockedIds = new Set()) {
         const query = this.searchQuery.trim().toLowerCase();
         return [...heroes]
             .filter((hero) => {
                 const rarity = normalizeRarity(hero.rarity);
                 if (this.rarityFilter !== 'all' && rarity !== this.rarityFilter) return false;
+                const unlocked = unlockedIds.has(hero.id);
+                if (this.ownershipFilter === 'owned' && !unlocked) return false;
+                if (this.ownershipFilter === 'missing' && unlocked) return false;
                 if (!query) return true;
 
                 return [
@@ -226,6 +230,14 @@ export class TeamBuilderPanel {
                         <option value="za" ${this.sortMode === 'za' ? 'selected' : ''}>Z-A</option>
                         <option value="rarity-desc" ${this.sortMode === 'rarity-desc' ? 'selected' : ''}>Rareza alta</option>
                         <option value="rarity-asc" ${this.sortMode === 'rarity-asc' ? 'selected' : ''}>Rareza baja</option>
+                    </select>
+                </label>
+                <label class="collection-sort">
+                    <span>Estado</span>
+                    <select id="collection-ownership-select">
+                        <option value="all" ${this.ownershipFilter === 'all' ? 'selected' : ''}>Todos</option>
+                        <option value="owned" ${this.ownershipFilter === 'owned' ? 'selected' : ''}>Obtenidos</option>
+                        <option value="missing" ${this.ownershipFilter === 'missing' ? 'selected' : ''}>Faltantes</option>
                     </select>
                 </label>
                 <div class="collection-rarity-filters" aria-label="Filtrar por rareza">
@@ -341,6 +353,10 @@ export class TeamBuilderPanel {
         });
         this.ui.panelContent.querySelector('#collection-sort-select')?.addEventListener('change', (event) => {
             this.sortMode = event.target.value;
+            this.render('Constructor de equipo');
+        });
+        this.ui.panelContent.querySelector('#collection-ownership-select')?.addEventListener('change', (event) => {
+            this.ownershipFilter = event.target.value;
             this.render('Constructor de equipo');
         });
         this.ui.panelContent.querySelectorAll('.rarity-filter').forEach((button) => button.addEventListener('click', () => {

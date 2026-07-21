@@ -2665,7 +2665,7 @@ body.panel-open {
 
 .collection-toolbar {
     display: grid;
-    grid-template-columns: minmax(220px, 1fr) 150px minmax(240px, auto) auto;
+    grid-template-columns: minmax(220px, 1fr) 150px 150px minmax(240px, auto) auto;
     align-items: center;
     gap: 10px;
     margin: 14px 0;
@@ -3440,44 +3440,40 @@ select {
     font-weight: 900;
 }
 
-.shop-skins-menu {
-    border: 1px solid rgba(64, 201, 255, 0.22);
+.skins-shop-panel {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 18px;
+    min-height: 220px;
+    padding: 18px;
+    border: 1px dashed rgba(64, 201, 255, 0.42);
     border-radius: 8px;
-    background: rgba(7, 12, 19, 0.84);
+    background:
+        linear-gradient(135deg, rgba(64, 201, 255, 0.12), transparent 54%),
+        rgba(7, 16, 24, 0.72);
 }
 
-.shop-skins-menu summary {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    min-height: 48px;
-    padding: 0 14px;
-    color: var(--text);
-    font-weight: 900;
-    cursor: pointer;
-    text-transform: uppercase;
+.skins-shop-panel h3 {
+    margin: 2px 0 6px;
+    color: #ffffff;
 }
 
-.shop-skins-menu summary span {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.shop-skins-menu summary i {
-    color: var(--level-accent);
-}
-
-.shop-skins-menu summary b {
+.skins-shop-panel p {
+    max-width: 620px;
     color: var(--muted);
-    font-size: 11px;
 }
 
-.shop-skins-menu .empty-copy {
-    margin: 0;
-    padding: 12px 14px 14px;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+.skins-shop-panel > i {
+    display: grid;
+    place-items: center;
+    width: 86px;
+    height: 86px;
+    border: 1px solid rgba(64, 201, 255, 0.42);
+    border-radius: 8px;
+    color: var(--level-accent);
+    font-size: 38px;
+    background: rgba(5, 8, 13, 0.62);
 }
 
 .collection-card {
