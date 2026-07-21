@@ -51,6 +51,15 @@ test('auras de soporte modifican solo aliados dentro del radio', () => {
     assert.equal(Math.round(untouched.range), 100);
 });
 
+test('auras de soporte mejoran al subir nivel del heroe soporte', () => {
+    const game = createGame();
+    const captain = new Hero({ ...heroes.capitan_america, level: 100 }, 0, 0, game);
+    const ally = new Hero(createHeroConfig('ally', { damage: 100 }), 100, 0, game);
+    game.heroes = [captain, ally];
+
+    assert.equal(Math.round(ally.getEffectiveStats().damage), 118);
+});
+
 test('Domino genera 15 por ciento de recompensa por cada ataque realizado', () => {
     const game = createGame();
     const domino = new Hero(heroes.domino, 0, 0, game);

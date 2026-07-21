@@ -6,6 +6,7 @@ import { StreetKitSystem } from './StreetKitSystem.js';
 import { MutantKitSystem } from './MutantKitSystem.js';
 import { getLineEndpoint, getLineTargets } from '../utils/LineTargeting.js';
 import { applyCooldownReductions } from '../utils/AbilityModifiers.js';
+import { getScaledSupportAura } from '../utils/HeroLevel.js';
 
 const ACTIVE_COOLDOWNS = {
     thor: 11,
@@ -171,7 +172,7 @@ export class HeroAbilitySystem {
     }
 
     getDisplayState() {
-        const aura = this.hero.config?.special?.supportAura;
+        const aura = getScaledSupportAura(this.hero.config?.special?.supportAura, this.hero.level || this.hero.config?.level || 1);
         if (aura?.type) {
             const labels = { damage: 'Daño', fireRate: 'Cadencia', range: 'Alcance' };
             return { label: `${labels[aura.type] || 'Aura'} +${Math.round((aura.power || 0) * 100)}%`, progress: null, ready: true };

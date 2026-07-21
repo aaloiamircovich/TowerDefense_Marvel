@@ -5,6 +5,7 @@ import { HeroAbilitySystem } from '../systems/HeroAbilitySystem.js';
 import { aggregateItemEffects } from '../systems/ItemEffectSystem.js';
 import { applyEvolutionStats } from '../systems/EvolutionSystem.js';
 import { getHeroRangePattern, isPointInRangePattern } from '../utils/RangePattern.js';
+import { getScaledSupportAura, normalizeHeroLevel } from '../utils/HeroLevel.js';
 
 export function buildHeroTargetIntent(hero, enemies = [], stats = null) {
     if (!hero?.getBestTarget) return null;
@@ -36,7 +37,7 @@ export class Hero {
         this.category = config.category || 'Urbano';
         this.x = x;
         this.y = y;
-        this.level = config.level || 1;
+        this.level = normalizeHeroLevel(config.level || 1);
         this.damage = config.damage || 10;
         this.range = config.range || 120;
         this.rangePattern = config.rangePattern || config.special?.rangePattern || 'circle';
@@ -264,7 +265,7 @@ export class Hero {
         const allies = this.game?.heroes || [];
         for (const ally of allies) {
             if (ally === this || ally.stunTimer > 0) continue;
-            const aura = ally.config?.special?.supportAura;
+            const aura = getScaledSupportAura(ally.config?.special?.supportAura, ally.level || ally.config?.level || 1);
             if (!aura?.type) continue;
             const radius = Math.max(0, Number(aura.range || ally.range || 0));
             if (Math.hypot(ally.x - this.x, ally.y - this.y) > radius) continue;

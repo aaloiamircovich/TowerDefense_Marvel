@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hero-td-v2.44.0-support-economy-20260720';
+const CACHE_NAME = 'hero-td-v2.44.0-hero-level-100-20260720';
 const CORE_ASSETS = [
     './', './index.html', './styles.css', './manifest.webmanifest',
     './data/bootstrapData.js', './data/sprite-atlas.js', './data/heroes.json', './data/enemies.json',
@@ -30,7 +30,7 @@ const CORE_ASSETS = [
     './src/systems/ItemEffectSystem.js', './src/systems/ResourceManager.js', './src/systems/ShopSystem.js', './src/systems/TacticalActionSystem.js',
     './src/systems/UIManager.js', './src/systems/WaveManager.js',
     './src/ui/CampaignPanel.js', './src/ui/InventoryPanel.js', './src/ui/ProfilePanel.js', './src/ui/SettingsPanel.js', './src/ui/TeamBuilderPanel.js', './src/ui/TooltipController.js',
-    './src/utils/I18n.js', './src/utils/Loader.js', './src/utils/ObjectPool.js', './src/utils/PathUtils.js', './src/utils/Random.js', './src/utils/RangePattern.js'
+    './src/utils/HeroLevel.js', './src/utils/I18n.js', './src/utils/Loader.js', './src/utils/ObjectPool.js', './src/utils/PathUtils.js', './src/utils/Random.js', './src/utils/RangePattern.js'
 ];
 
 self.addEventListener('install', (event) => {

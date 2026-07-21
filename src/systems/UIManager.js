@@ -9,6 +9,7 @@ import { SET_BONUSES, SLOT_LABELS } from './ItemEffectSystem.js';
 import { getHeroBoxCost } from './ShopSystem.js';
 import { getAllowedTerrainLabels } from '../utils/TerrainRules.js';
 import { getRarityClass, normalizeRarity } from '../utils/Rarity.js';
+import { HERO_MAX_LEVEL, calculateHeroLevelCost, getHeroDamageAtLevel, getHeroLevelUpgradeSteps, normalizeHeroLevel } from '../utils/HeroLevel.js';
 
 const ASSET_VERSION = 'battle-sprites-20260713';
 
@@ -52,10 +53,6 @@ export function buildWaveLaunchState(enabled, summary = null) {
 
 const PIERCING_HERO_IDS = new Set(['iron_man', 'vision', 'hawkeye', 'winter_soldier', 'cyclops', 'silver_surfer']);
 export const TARGETING_PRIORITIES = ['Primero', 'Último', 'Fuerte', 'Débil', 'Rápido', 'Sigilo', 'Jefe'];
-
-const HERO_LEVEL_COST_BASE = 180;
-const HERO_LEVEL_COST_GROWTH = 1.35;
-const HERO_LEVEL_DAMAGE_STEP = 0.28;
 
 const TARGETING_PRIORITY_COPY = {
     Primero: { label: '1ro', icon: 'fa-route', description: 'prioriza al enemigo mas avanzado' },
@@ -1723,6 +1720,7 @@ export class UIManager {
         const repositionPermission = isDeployed ? this.game.tacticalActions?.canReposition(hero) : null;
         const sellPermission = isDeployed ? this.game.tacticalActions?.canSell(hero) : null;
         const activeDetailView = ['equipment', 'combat'].includes(detailView) ? detailView : 'summary';
+        const isMaxLevel = level >= HERO_MAX_LEVEL;
         const currentTargeting = hero.targetingPriority || config.targetingPriority || TARGETING_PRIORITIES[0];
         const compactStats = [
             ['Daño', `${damage}${this.formatStatDelta(damage, baseDamage)}`],
@@ -1769,11 +1767,13 @@ export class UIManager {
                     <h2>${heroName}</h2>
                     <b class="rarity-badge ${rarityClass}">${rarity}</b>
                     <div class="portrait-frame">${this.renderSprite(this.getHeroDisplaySprite(config), heroName)}</div>
-                    <div class="level-chip">Nivel ${level}</div>
+                    <div class="level-chip">Nivel ${level}/${HERO_MAX_LEVEL}</div>
                     ${isUnlocked ? `<div class="upgrade-list">
                         ${[1, 5, 10].map((amount) => {
                             const cost = this.getHeroUpgradeCost(hero, amount);
-                            return `<button class="modal-btn-upgrade btn-primary ghost" data-amt="${amount}" data-cost="${cost}">+${amount} $${cost}</button>`;
+                            const steps = getHeroLevelUpgradeSteps(level, amount);
+                            const label = isMaxLevel ? 'MAX' : `+${steps} $${cost}`;
+                            return `<button class="modal-btn-upgrade btn-primary ghost" data-amt="${amount}" data-cost="${cost}" ${isMaxLevel ? 'disabled' : ''}>${label}</button>`;
                         }).join('')}
                     </div>` : '<div class="locked-hero-note"><i class="fas fa-lock"></i> Recluta al héroe para mejorarlo</div>'}
                     ${isDeployed ? `
@@ -1894,18 +1894,11 @@ export class UIManager {
     }
 
     getHeroLevel(unit) {
-        return Math.max(1, Math.floor(Number(unit?.level ?? unit?.config?.level ?? 1) || 1));
+        return normalizeHeroLevel(unit?.level ?? unit?.config?.level ?? 1);
     }
 
     calculateLevelCost(currentLevel, amount = 1) {
-        let total = 0;
-        const level = Math.max(1, Math.floor(Number(currentLevel) || 1));
-        const steps = Math.max(1, Math.floor(Number(amount) || 1));
-        for (let i = 0; i < steps; i++) {
-            const rawCost = HERO_LEVEL_COST_BASE * Math.pow(HERO_LEVEL_COST_GROWTH, level + i - 1);
-            total += Math.ceil(rawCost / 10) * 10;
-        }
-        return total;
+        return calculateHeroLevelCost(currentLevel, amount);
     }
 
     getHeroUpgradeCost(unit, amount = 1) {
@@ -1922,7 +1915,8 @@ export class UIManager {
     }
 
     canAffordHeroUpgrade(unit, amount = 1) {
-        return Boolean(unit) && this.getMissionCredits() >= this.getHeroUpgradeCost(unit, amount);
+        const cost = this.getHeroUpgradeCost(unit, amount);
+        return Boolean(unit) && Number.isFinite(cost) && this.getMissionCredits() >= cost;
     }
 
     findDeployedHeroById(heroId) {
@@ -1967,12 +1961,18 @@ export class UIManager {
 
     processUpgrade(unit, amount) {
         const cost = this.getHeroUpgradeCost(unit, amount);
+        const steps = getHeroLevelUpgradeSteps(this.getHeroLevel(unit), amount);
+        if (!Number.isFinite(cost) || steps <= 0) {
+            this.showToast('Este héroe ya está en nivel máximo', 'info');
+            this.refreshHeroUpgradeUi(unit);
+            return;
+        }
         if (!this.spendMissionCredits(cost)) {
             this.showToast('Créditos insuficientes para esta mejora', 'warning');
             return;
         }
 
-        this.applyHeroLevelUpgrade(unit, amount);
+        this.applyHeroLevelUpgrade(unit, steps);
         this.game.replaySystem?.record('upgrade', { heroId: unit.id, level: unit.level, cost });
         this.showToast(`${unit.name} subió a nivel ${unit.level}`, 'success');
         this.refreshHeroUpgradeUi(unit);
@@ -1981,6 +1981,11 @@ export class UIManager {
     quickUpgradeHero(unit) {
         if (!unit) return false;
         const cost = this.getHeroUpgradeCost(unit, 1);
+        if (!Number.isFinite(cost) || getHeroLevelUpgradeSteps(this.getHeroLevel(unit), 1) <= 0) {
+            this.showToast('Este héroe ya está en nivel máximo', 'info');
+            this.refreshHeroUpgradeUi(unit);
+            return false;
+        }
         if (!this.spendMissionCredits(cost)) {
             this.showToast('Creditos insuficientes para mejora de campo', 'warning');
             this.refreshHeroUpgradeUi(unit);
@@ -1996,12 +2001,12 @@ export class UIManager {
 
     applyHeroLevelUpgrade(unit, amount) {
         const targetData = unit.config || unit;
-        const nextLevel = this.getHeroLevel(unit) + Math.max(1, Math.floor(Number(amount) || 1));
+        const nextLevel = normalizeHeroLevel(this.getHeroLevel(unit) + Math.max(1, Math.floor(Number(amount) || 1)));
         targetData.level = nextLevel;
         targetData.baseDamage = targetData.baseDamage || targetData.damage || unit.damage || 10;
         targetData.baseRange = targetData.baseRange || targetData.range || unit.range || 100;
         targetData.baseFireRate = targetData.baseFireRate || targetData.fireRate || unit.fireRate || 1;
-        targetData.damage = Math.floor(targetData.baseDamage * (1 + HERO_LEVEL_DAMAGE_STEP * (targetData.level - 1)));
+        targetData.damage = getHeroDamageAtLevel(targetData.baseDamage, targetData.level);
         targetData.range = targetData.baseRange;
         targetData.fireRate = targetData.baseFireRate;
 
@@ -2295,6 +2300,7 @@ export class UIManager {
             const fit = evaluateHeroWaveFit(deployedHero || hero, waveSummary, credits);
             const quickUpgradeCost = deployedHero ? this.getHeroUpgradeCost(deployedHero, 1) : 0;
             const canQuickUpgrade = this.canAffordHeroUpgrade(deployedHero, 1);
+            const quickUpgradeTooltip = Number.isFinite(quickUpgradeCost) ? `Mejora rapida $${quickUpgradeCost}` : 'Nivel maximo';
             const targetingState = deployedHero ? buildTargetingControlState(deployedHero.targetingPriority || hero.targetingPriority) : null;
             const rarity = normalizeRarity(hero.rarity);
             const rarityClass = getRarityClass(rarity);
@@ -2313,7 +2319,7 @@ export class UIManager {
                 </div>
                 <div class="hero-actions">
                     <button class="btn-action place-btn" data-testid="hero-place-${hero.id}" title="${deployed ? 'Reposicionar' : 'Colocar'}" aria-label="${deployed ? 'Reposicionar' : 'Colocar'}" data-tooltip="${deployed ? 'Mover libremente' : 'Colocar héroe gratis'}"><i class="fas ${deployed ? 'fa-arrows-alt' : 'fa-map-marker-alt'}"></i></button>
-                    ${deployedHero ? `<button class="btn-action upgrade-btn ${canQuickUpgrade ? '' : 'is-unaffordable'}" data-testid="hero-upgrade-${hero.id}" data-quick-upgrade-id="${hero.id}" data-affordable="${canQuickUpgrade ? 'true' : 'false'}" title="Mejorar en campo" aria-label="Mejorar ${hero.name}" data-tooltip="Mejora rapida $${quickUpgradeCost}"><i class="fas fa-arrow-up"></i></button>` : ''}
+                    ${deployedHero ? `<button class="btn-action upgrade-btn ${canQuickUpgrade ? '' : 'is-unaffordable'}" data-testid="hero-upgrade-${hero.id}" data-quick-upgrade-id="${hero.id}" data-affordable="${canQuickUpgrade ? 'true' : 'false'}" title="Mejorar en campo" aria-label="Mejorar ${hero.name}" data-tooltip="${quickUpgradeTooltip}"><i class="fas fa-arrow-up"></i></button>` : ''}
                     ${targetingState ? `<button class="btn-action target-btn" data-testid="hero-target-${hero.id}" title="${targetingState.tooltip}" aria-label="${targetingState.ariaLabel}" data-tooltip="${targetingState.tooltip}"><i class="fas ${targetingState.icon}"></i><span>${targetingState.label}</span></button>` : ''}
                     <button class="btn-action stats-btn" title="Mejoras" aria-label="Mejoras" data-tooltip="Estadísticas y mejoras"><i class="fas fa-chart-bar"></i></button>
                 </div>
