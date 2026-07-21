@@ -2334,6 +2334,73 @@ body.panel-open {
     margin-top: auto;
 }
 
+.modal-btn-upgrade {
+    position: relative;
+    overflow: visible;
+}
+
+.modal-btn-upgrade > span:first-child {
+    position: relative;
+    z-index: 2;
+}
+
+.upgrade-preview,
+.item-equip-preview {
+    position: absolute;
+    z-index: 20;
+    display: none;
+    min-width: 150px;
+    gap: 4px;
+    padding: 8px;
+    border: 1px solid rgba(64, 201, 255, 0.28);
+    border-radius: 8px;
+    background:
+        linear-gradient(135deg, rgba(64, 201, 255, 0.12), transparent 58%),
+        rgba(3, 7, 12, 0.96);
+    box-shadow: 0 16px 34px rgba(0, 0, 0, 0.35);
+    pointer-events: none;
+}
+
+.upgrade-preview {
+    left: 50%;
+    bottom: calc(100% + 8px);
+    transform: translateX(-50%);
+}
+
+.modal-btn-upgrade:hover .upgrade-preview,
+.modal-btn-upgrade:focus-visible .upgrade-preview,
+.inventory-object-card:hover .item-equip-preview,
+.inventory-object-card:focus-visible .item-equip-preview {
+    display: grid;
+}
+
+.upgrade-preview em,
+.item-equip-preview em,
+.hero-item-delta-preview em {
+    font-style: normal;
+    font-size: 10px;
+    font-weight: 900;
+    line-height: 1.15;
+    text-transform: uppercase;
+}
+
+.upgrade-preview .positive,
+.item-equip-preview .positive,
+.hero-item-delta-preview .positive {
+    color: var(--accent-green);
+}
+
+.upgrade-preview .negative,
+.item-equip-preview .negative,
+.hero-item-delta-preview .negative {
+    color: #ff7b86;
+}
+
+.item-equip-preview .neutral,
+.hero-item-delta-preview .neutral {
+    color: var(--muted);
+}
+
 .hero-summary-card {
     display: grid;
     gap: 12px;
@@ -2608,6 +2675,16 @@ body.panel-open {
 
 .team-hero-card.item-target-mode {
     border-color: color-mix(in srgb, var(--bright-yellow), transparent 35%);
+}
+
+.hero-item-delta-preview {
+    display: grid;
+    width: 100%;
+    gap: 3px;
+    padding: 7px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 7px;
+    background: rgba(3, 7, 12, 0.58);
 }
 
 .pending-item-banner {
@@ -3753,6 +3830,22 @@ select {
         inset 0 1px 0 rgba(255, 255, 255, 0.045),
         0 0 0 1px color-mix(in srgb, var(--level-accent), transparent 40%),
         0 12px 26px rgba(0, 0, 0, 0.24);
+}
+
+.inventory-object-card {
+    position: relative;
+}
+
+.item-equip-preview {
+    left: 50%;
+    bottom: calc(100% + 8px);
+    transform: translateX(-50%);
+}
+
+.item-equip-preview strong {
+    color: var(--text);
+    font-size: 10px;
+    line-height: 1.1;
 }
 
 .item-sprite-frame {

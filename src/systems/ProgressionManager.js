@@ -2,6 +2,7 @@ import { EVOLUTION_CATALOG, getEvolutionForHero } from './EvolutionSystem.js';
 import { CODEX_MECHANICS, completedMasteryChallenges, createCodexSnapshot, flattenEnemyDatabase } from './MasteryCodexSystem.js';
 import { PAIR_SYNERGIES, SYNERGY_DEFINITIONS, analyzeTeam } from './TeamSynergySystem.js';
 import { getMusicTrack } from '../audio/AudioManager.js';
+import { HERO_MAX_LEVEL, getHeroDamageAtLevel, normalizeHeroLevel } from '../utils/HeroLevel.js';
 
 const SAVE_KEY = 'tower-defense-marvel-save';
 const SAVE_VERSION = 8;
@@ -106,6 +107,12 @@ function normalizeWeeklyContracts(value = {}) {
 
 function normalizeStringList(value = []) {
     return [...new Set(value || [])].filter((id) => typeof id === 'string');
+}
+
+function normalizeHeroUpgrade(value = {}) {
+    const rawLevel = typeof value === 'number' ? value : value?.level;
+    const level = normalizeHeroLevel(rawLevel);
+    return level > 1 ? { level } : null;
 }
 
 function getSynergyChallengeReward(definition) {
@@ -294,6 +301,10 @@ export class ProgressionManager {
                 slots: Object.fromEntries(Object.entries(loadout?.slots || {})
                     .filter(([, itemId], index) => index === 0 && itemIds.has(itemId)))
             }]));
+        this.state.heroUpgrades = Object.fromEntries(Object.entries(this.state.heroUpgrades || {})
+            .filter(([heroId]) => heroIds.has(heroId))
+            .map(([heroId, value]) => [heroId, normalizeHeroUpgrade(value)])
+            .filter(([, value]) => value));
         if (!levelIds.has(this.state.lastLevelId)) this.state.lastLevelId = 'level_1';
         this.state.mapProgress = Object.fromEntries(Object.entries(this.state.mapProgress || {})
             .filter(([levelId]) => levelIds.has(levelId))
@@ -345,8 +356,12 @@ export class ProgressionManager {
 
     syncGame() {
         if (!this.game) return;
-        this.game.unlockedHeroes = this.state.unlockedHeroIds.map((id) => this.data.heroes[id]).filter(Boolean);
-        this.game.activeTeam = this.state.activeTeamIds.map((id) => this.data.heroes[id]).filter(Boolean);
+        this.game.unlockedHeroes = this.state.unlockedHeroIds
+            .map((id) => this.applyHeroLevelStats(this.data.heroes[id]))
+            .filter(Boolean);
+        this.game.activeTeam = this.state.activeTeamIds
+            .map((id) => this.applyHeroLevelStats(this.data.heroes[id]))
+            .filter(Boolean);
         this.game.assetPreloader?.preloadHeroes(this.game.activeTeam);
         this.reconcileDeployedHeroesWithActiveTeam();
         this.game.ownedItems = this.state.ownedItemIds.map((id) => ({ ...this.data.items[id] })).filter(Boolean);
@@ -355,7 +370,10 @@ export class ProgressionManager {
         this.applySettings();
         this.game.resourceManager?.setInfiniteCredits?.(this.state.settings.adminMode);
         this.game.stars = this.getTotalStars();
-        this.game.heroes?.forEach((hero) => this.applyEquippedItem(hero));
+        this.game.heroes?.forEach((hero) => {
+            this.applyHeroLevelStats(hero);
+            this.applyEquippedItem(hero);
+        });
     }
 
     reconcileDeployedHeroesWithActiveTeam() {
@@ -476,6 +494,7 @@ export class ProgressionManager {
         this.state.activeTeamIds = heroIds.filter((id) => activeIds.has(id)).slice(0, 6);
         if (!this.state.activeTeamIds.length) this.state.activeTeamIds = heroIds.slice(0, 6);
         this.state.ownedItemIds = itemIds;
+        this.state.heroUpgrades = Object.fromEntries(heroIds.map((id) => [id, { level: HERO_MAX_LEVEL }]));
         this.state.metaCredits = ADMIN_CREDITS;
         this.state.mapProgress = Object.fromEntries((this.data.levels || []).map((level) => [level.id, {
             bestWave: ADMIN_STARS_PER_LEVEL,
@@ -508,6 +527,63 @@ export class ProgressionManager {
 
     getHeroBonuses(heroId) {
         return { damage: 0, range: 0, fireRate: 0, critChance: 0, abilityPower: 0, cooldown: 0 };
+    }
+
+    getHeroLevel(heroOrId) {
+        const heroId = typeof heroOrId === 'string' ? heroOrId : heroOrId?.id || heroOrId?.config?.id;
+        if (!heroId) return 1;
+        const upgrade = this.state.heroUpgrades?.[heroId];
+        const rawLevel = typeof upgrade === 'number' ? upgrade : upgrade?.level;
+        return normalizeHeroLevel(rawLevel ?? this.data?.heroes?.[heroId]?.level ?? 1);
+    }
+
+    setHeroLevel(heroId, level, options = {}) {
+        if (!this.data?.heroes?.[heroId]) return 1;
+        const { save = true, sync = true } = options;
+        const normalized = normalizeHeroLevel(level);
+        if (normalized > 1) this.state.heroUpgrades[heroId] = { level: normalized };
+        else delete this.state.heroUpgrades[heroId];
+        this.applyHeroLevelStats(this.data.heroes[heroId]);
+        if (sync) this.syncGame();
+        if (save) this.save();
+        return normalized;
+    }
+
+    upgradeHeroLevel(heroId, amount = 1, options = {}) {
+        const steps = Math.max(1, Math.floor(Number(amount) || 1));
+        return this.setHeroLevel(heroId, this.getHeroLevel(heroId) + steps, options);
+    }
+
+    applyHeroLevelStats(target) {
+        if (!target) return target;
+        if (target.config) {
+            const config = this.applyHeroLevelStats(target.config);
+            target.level = config.level;
+            target.baseDamage = config.baseDamage;
+            target.baseRange = config.baseRange;
+            target.baseFireRate = config.baseFireRate;
+            target.damage = config.damage;
+            target.range = config.range;
+            target.fireRate = config.fireRate;
+            return target;
+        }
+
+        const heroId = target.id;
+        if (!heroId) return target;
+        const source = this.data?.heroes?.[heroId] || target;
+        const baseDamage = Number(target.baseDamage ?? source.baseDamage ?? source.damage ?? 10);
+        const baseRange = Number(target.baseRange ?? source.baseRange ?? source.range ?? 100);
+        const baseFireRate = Number(target.baseFireRate ?? source.baseFireRate ?? source.fireRate ?? 1);
+        const level = this.getHeroLevel(heroId);
+
+        target.level = level;
+        target.baseDamage = Number.isFinite(baseDamage) ? baseDamage : 10;
+        target.baseRange = Number.isFinite(baseRange) ? baseRange : 100;
+        target.baseFireRate = Number.isFinite(baseFireRate) ? baseFireRate : 1;
+        target.damage = getHeroDamageAtLevel(target.baseDamage, level);
+        target.range = target.baseRange;
+        target.fireRate = target.baseFireRate;
+        return target;
     }
 
     getHeroEvolution(heroId) {

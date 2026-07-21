@@ -2,6 +2,7 @@ import { formatEffectSummary, getSynergyMenuModel } from '../systems/TeamSynergy
 import { EVOLUTION_CATALOG } from '../systems/EvolutionSystem.js';
 import { buildVillainCodexModel } from '../systems/VillainCodexSystem.js';
 import { HERO_RARITIES, getRarityClass, normalizeRarity } from '../utils/Rarity.js';
+import { buildItemEquipDeltaRows, renderItemDeltaRows } from './InventoryPanel.js';
 
 const METRIC_LABELS = {
     coverage: 'Cobertura',
@@ -262,6 +263,9 @@ export class TeamBuilderPanel {
         const rarity = normalizeRarity(hero.rarity);
         const rarityClass = getRarityClass(rarity);
         const alreadyHasPendingItem = equippedItem?.id === pendingItem?.id;
+        const itemDeltaPreview = pendingItem && unlocked
+            ? `<div class="hero-item-delta-preview">${renderItemDeltaRows(buildItemEquipDeltaRows(pendingItem, equippedItem))}</div>`
+            : '';
         return `
             <article class="collection-card team-hero-card ${rarityClass} ${unlocked ? '' : 'locked'} ${equipped ? 'equipped' : ''} ${pendingItem ? 'item-target-mode' : ''}" data-rarity="${rarity}">
                 ${equippedItem ? `<span class="hero-item-corner" title="${equippedItem.name} equipado">${this.ui.renderSprite(equippedItem.icon, equippedItem.name)}</span>` : ''}
@@ -282,6 +286,7 @@ export class TeamBuilderPanel {
                         </button>
                     `}
                 </div>
+                ${itemDeltaPreview}
                 ${unlocked && availableEvolution ? `<button class="btn-evolution" data-id="${hero.id}" data-evolution="${availableEvolution.id}">${evolution ? 'Volver a forma base' : `Activar ${availableEvolution.shortName || availableEvolution.name}`}</button>` : ''}
             </article>
         `;

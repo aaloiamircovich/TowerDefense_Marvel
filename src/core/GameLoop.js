@@ -120,7 +120,9 @@ export class GameLoop {
     }
 
     spawnHero(config, x, y) {
-        const hero = new Hero(config, x, y, this);
+        const preparedConfig = this.progression?.applyHeroLevelStats?.(config) || config;
+        const hero = new Hero(preparedConfig, x, y, this);
+        this.progression?.applyHeroLevelStats?.(hero);
         this.progression?.applyEquippedItem(hero);
         this.heroes.push(hero);
         this.progression?.discoverCodex?.('heroes', config.id);

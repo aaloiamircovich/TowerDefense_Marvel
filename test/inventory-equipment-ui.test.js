@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import { InventoryPanel } from '../src/ui/InventoryPanel.js';
+import { buildItemEquipDeltaRows, InventoryPanel } from '../src/ui/InventoryPanel.js';
 import { TeamBuilderPanel } from '../src/ui/TeamBuilderPanel.js';
 import { UIManager } from '../src/systems/UIManager.js';
 
@@ -60,6 +60,28 @@ test('coleccion muestra el objeto equipado y permite elegir heroe destino', () =
     const spiderManHtml = panel.renderHeroCard(data.heroes.spiderman, true);
     assert.match(spiderManHtml, /btn-assign-item/);
     assert.match(spiderManHtml, /Equipar/);
+});
+
+test('previsualizacion de objeto compara mejoras y perdidas numericas', () => {
+    const rows = buildItemEquipDeltaRows(data.items.lentes_edith, data.items.reactor_arc);
+    const byKey = Object.fromEntries(rows.map((row) => [row.key, row]));
+
+    assert.equal(byKey.rangePct.value, 0.05);
+    assert.equal(byKey.fireRatePct.value, -0.25);
+
+    const ui = createUiStub();
+    const panel = new InventoryPanel(ui);
+    panel.heroId = 'iron_man';
+    const html = panel.renderItemCard({
+        item: data.items.lentes_edith,
+        freeCount: 1,
+        equippedHeroes: [],
+        totalCount: 1
+    });
+
+    assert.match(html, /item-equip-preview/);
+    assert.match(html, /Alcance \+5%/);
+    assert.match(html, /Cadencia -25%/);
 });
 
 test('coleccion expone diccionario de evoluciones vacio', () => {

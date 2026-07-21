@@ -9,7 +9,7 @@ import { SET_BONUSES, SLOT_LABELS } from './ItemEffectSystem.js';
 import { getHeroBoxCost } from './ShopSystem.js';
 import { getAllowedTerrainLabels } from '../utils/TerrainRules.js';
 import { getRarityClass, normalizeRarity } from '../utils/Rarity.js';
-import { HERO_MAX_LEVEL, calculateHeroLevelCost, getHeroDamageAtLevel, getHeroLevelUpgradeSteps, normalizeHeroLevel } from '../utils/HeroLevel.js';
+import { HERO_MAX_LEVEL, calculateHeroLevelCost, getHeroDamageAtLevel, getHeroLevelUpgradeSteps, getScaledSupportAura, normalizeHeroLevel } from '../utils/HeroLevel.js';
 
 const ASSET_VERSION = 'battle-sprites-20260713';
 
@@ -1773,7 +1773,8 @@ export class UIManager {
                             const cost = this.getHeroUpgradeCost(hero, amount);
                             const steps = getHeroLevelUpgradeSteps(level, amount);
                             const label = isMaxLevel ? 'MAX' : `+${steps} $${cost}`;
-                            return `<button class="modal-btn-upgrade btn-primary ghost" data-amt="${amount}" data-cost="${cost}" ${isMaxLevel ? 'disabled' : ''}>${label}</button>`;
+                            const preview = isMaxLevel ? '' : this.renderHeroLevelPreview(hero, steps);
+                            return `<button class="modal-btn-upgrade btn-primary ghost" data-amt="${amount}" data-cost="${cost}" ${isMaxLevel ? 'disabled' : ''}><span>${label}</span>${preview}</button>`;
                         }).join('')}
                     </div>` : '<div class="locked-hero-note"><i class="fas fa-lock"></i> Recluta al héroe para mejorarlo</div>'}
                     ${isDeployed ? `
@@ -1894,7 +1895,8 @@ export class UIManager {
     }
 
     getHeroLevel(unit) {
-        return normalizeHeroLevel(unit?.level ?? unit?.config?.level ?? 1);
+        const heroId = unit?.id || unit?.config?.id;
+        return this.game.progression?.getHeroLevel?.(heroId) || normalizeHeroLevel(unit?.level ?? unit?.config?.level ?? 1);
     }
 
     calculateLevelCost(currentLevel, amount = 1) {
@@ -1903,6 +1905,46 @@ export class UIManager {
 
     getHeroUpgradeCost(unit, amount = 1) {
         return this.calculateLevelCost(this.getHeroLevel(unit), amount);
+    }
+
+    renderHeroLevelPreview(unit, amount = 1) {
+        const rows = this.getHeroLevelPreviewRows(unit, amount);
+        if (!rows.length) return '';
+        return `
+            <span class="upgrade-preview" aria-hidden="true">
+                ${rows.map((row) => `<em class="${row.value < 0 ? 'negative' : 'positive'}">${row.label} ${this.formatSignedPreviewValue(row.value, row.suffix, row.precision)}</em>`).join('')}
+            </span>
+        `;
+    }
+
+    getHeroLevelPreviewRows(unit, amount = 1) {
+        const targetData = unit?.config || unit || {};
+        const heroId = targetData.id || unit?.id;
+        const currentLevel = this.getHeroLevel(unit);
+        const steps = getHeroLevelUpgradeSteps(currentLevel, amount);
+        if (!steps) return [];
+
+        const databaseHero = this.game.heroDatabase?.[heroId] || {};
+        const baseDamage = Number(targetData.baseDamage ?? databaseHero.baseDamage ?? databaseHero.damage ?? targetData.damage ?? unit?.damage ?? 0);
+        const currentDamage = getHeroDamageAtLevel(baseDamage, currentLevel);
+        const nextDamage = getHeroDamageAtLevel(baseDamage, currentLevel + steps);
+        const rows = [];
+        if (nextDamage !== currentDamage) rows.push({ label: 'Dano', value: nextDamage - currentDamage });
+
+        const aura = targetData.supportAura || databaseHero.supportAura;
+        const currentAura = getScaledSupportAura(aura, currentLevel);
+        const nextAura = getScaledSupportAura(aura, currentLevel + steps);
+        const auraDelta = Number(nextAura?.power || 0) - Number(currentAura?.power || 0);
+        if (auraDelta) rows.push({ label: 'Aura', value: auraDelta * 100, suffix: '%', precision: 1 });
+
+        return rows;
+    }
+
+    formatSignedPreviewValue(value, suffix = '', precision = 0) {
+        const amount = Number(value) || 0;
+        const fixed = Math.abs(amount).toFixed(precision);
+        const clean = precision > 0 ? fixed.replace(/\.0$/, '') : fixed;
+        return `${amount >= 0 ? '+' : '-'}${clean}${suffix}`;
     }
 
     getMissionCredits() {
@@ -2002,6 +2044,9 @@ export class UIManager {
     applyHeroLevelUpgrade(unit, amount) {
         const targetData = unit.config || unit;
         const nextLevel = normalizeHeroLevel(this.getHeroLevel(unit) + Math.max(1, Math.floor(Number(amount) || 1)));
+        if (targetData.id && this.game.progression?.setHeroLevel) {
+            this.game.progression.setHeroLevel(targetData.id, nextLevel, { save: true, sync: false });
+        }
         targetData.level = nextLevel;
         targetData.baseDamage = targetData.baseDamage || targetData.damage || unit.damage || 10;
         targetData.baseRange = targetData.baseRange || targetData.range || unit.range || 100;
@@ -2014,6 +2059,7 @@ export class UIManager {
         unit.damage = targetData.damage;
         unit.range = targetData.range;
         unit.fireRate = targetData.fireRate;
+        this.game.progression?.applyHeroLevelStats?.(unit);
     }
 
     refillShop() {

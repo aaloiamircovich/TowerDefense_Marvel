@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hero-td-v2.44.0-hero-level-100-20260720';
+const CACHE_NAME = 'hero-td-v2.44.0-persistent-level-preview-20260721';
 const CORE_ASSETS = [
     './', './index.html', './styles.css', './manifest.webmanifest',
     './data/bootstrapData.js', './data/sprite-atlas.js', './data/heroes.json', './data/enemies.json',

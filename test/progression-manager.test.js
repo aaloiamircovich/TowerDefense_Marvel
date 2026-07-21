@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { ProgressionManager, SAVE_KEY, SAVE_VERSION } from '../src/systems/ProgressionManager.js';
+import { getHeroDamageAtLevel } from '../src/utils/HeroLevel.js';
 
 const data = {
     heroes: JSON.parse(fs.readFileSync(new URL('../data/heroes.json', import.meta.url), 'utf8')),
@@ -526,6 +527,25 @@ test('quitar un heroe del equipo tambien lo retira del campo', () => {
     assert.equal(keptProjectile.isActive, true);
     assert.equal(game.inputManager.cleared, true);
     assert.equal(game.waveManager.refreshed, 1);
+});
+
+test('nivel de heroe persiste al retirarlo del campo y del equipo', () => {
+    const game = createGame();
+    const manager = new ProgressionManager(new MemoryStorage());
+    manager.initialize(game, data);
+    manager.startProfile('iron_man');
+    manager.setHeroLevel('iron_man', 12);
+
+    game.heroes = [{ id: 'iron_man', name: 'Iron Man', config: { ...data.heroes.iron_man } }];
+    manager.setActiveTeam([]);
+
+    assert.equal(manager.getHeroLevel('iron_man'), 12);
+    assert.deepEqual(game.heroes, []);
+
+    manager.setActiveTeam(['iron_man']);
+
+    assert.equal(game.activeTeam[0].level, 12);
+    assert.equal(game.activeTeam[0].damage, getHeroDamageAtLevel(25, 12));
 });
 
 function createGame() {

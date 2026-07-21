@@ -1,5 +1,62 @@
-import { ITEM_SLOTS, SET_BONUSES, SLOT_LABELS } from '../systems/ItemEffectSystem.js';
+import { aggregateItemEffects, ITEM_SLOTS, SET_BONUSES, SLOT_LABELS } from '../systems/ItemEffectSystem.js';
 import { getRarityClass, normalizeRarity } from '../utils/Rarity.js';
+
+const ITEM_EFFECT_LABELS = {
+    damagePct: 'Dano',
+    fireRatePct: 'Cadencia',
+    rangePct: 'Alcance',
+    critChance: 'Critico',
+    armorPenetration: 'Perforacion',
+    critMultiplier: 'Dano critico',
+    consecutiveDamagePct: 'Combo',
+    splashRadius: 'Area',
+    splashFactor: 'Splash',
+    chainCount: 'Rebotes',
+    chainRange: 'Cadena',
+    chainFactor: 'Dano cadena',
+    onHitCreditPct: 'Creditos',
+    slowPower: 'Ralentizar',
+    stunChance: 'Aturdir'
+};
+
+const PERCENT_EFFECTS = new Set([
+    'damagePct',
+    'fireRatePct',
+    'rangePct',
+    'consecutiveDamagePct',
+    'splashFactor',
+    'chainFactor',
+    'onHitCreditPct',
+    'slowPower'
+]);
+
+export function buildItemEquipDeltaRows(nextItem, currentItem = null) {
+    const current = aggregateItemEffects(currentItem ? [currentItem] : []);
+    const next = aggregateItemEffects(nextItem ? [nextItem] : []);
+    const keys = [...new Set([...Object.keys(current), ...Object.keys(next)])]
+        .filter((key) => typeof current[key] !== 'boolean' && typeof next[key] !== 'boolean');
+
+    return keys
+        .map((key) => ({
+            key,
+            label: ITEM_EFFECT_LABELS[key] || key,
+            value: Number(next[key] || 0) - Number(current[key] || 0),
+            suffix: PERCENT_EFFECTS.has(key) ? '%' : '',
+            precision: PERCENT_EFFECTS.has(key) ? 1 : 0,
+            multiplier: PERCENT_EFFECTS.has(key) ? 100 : 1
+        }))
+        .filter((row) => Math.abs(row.value) > 0.0001);
+}
+
+export function renderItemDeltaRows(rows) {
+    if (!rows.length) return '<em class="neutral">Sin cambios numericos</em>';
+    return rows.map((row) => {
+        const value = row.value * row.multiplier;
+        const fixed = Math.abs(value).toFixed(row.precision);
+        const clean = row.precision > 0 ? fixed.replace(/\.0$/, '') : fixed;
+        return `<em class="${value < 0 ? 'negative' : 'positive'}">${row.label} ${value >= 0 ? '+' : '-'}${clean}${row.suffix}</em>`;
+    }).join('');
+}
 
 export class InventoryPanel {
     constructor(ui) {
@@ -110,6 +167,7 @@ export class InventoryPanel {
         const ownerLabel = equippedHeroes.length
             ? equippedHeroes.map(({ hero }) => hero?.name || 'Heroe').join(', ')
             : 'Sin equipar';
+        const equipPreview = this.heroId ? this.renderEquipPreview(item) : '';
         return `
             <article class="inventory-card item-card-v2 inventory-object-card ${rarityClass}" data-item-id="${item.id}" data-rarity="${rarity}" role="button" tabindex="0" aria-label="Elegir ${item.name} para equipar">
                 <b class="item-quantity-badge">x${totalCount}</b>
@@ -125,8 +183,27 @@ export class InventoryPanel {
                 <div class="item-card-actions">
                     <button class="btn-primary equip-item" data-id="${item.id}"><i class="fas fa-users"></i> Elegir héroe</button>
                 </div>
+                ${equipPreview}
             </article>
         `;
+    }
+
+    renderEquipPreview(item) {
+        const currentItem = this.getHeroCurrentItem(this.heroId);
+        const rows = buildItemEquipDeltaRows(item, currentItem);
+        return `
+            <div class="item-equip-preview">
+                <strong>${currentItem ? `vs ${currentItem.name}` : 'Al equipar'}</strong>
+                ${renderItemDeltaRows(rows)}
+            </div>
+        `;
+    }
+
+    getHeroCurrentItem(heroId) {
+        if (!heroId) return null;
+        const slots = this.ui.game.progression.state.equippedItems[heroId] || {};
+        const itemId = Object.values(slots)[0] || null;
+        return itemId ? this.ui.game.itemDatabase[itemId] || null : null;
     }
 
     bindListeners() {
