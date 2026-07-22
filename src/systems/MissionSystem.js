@@ -24,9 +24,7 @@ export class MissionSystem {
             metrics: { ...DEFAULT_METRICS },
             completed: new Set(this.game.progression?.getMapProgress(level.id).missionObjectives || []),
             waveStartLives: this.game.resourceManager?.lives || 0,
-            doorReady: false,
             blackout: 0,
-            turretCooldown: 0,
             vibranium: 0,
             shieldCharges: level.mission?.mechanic?.type === 'vibranium' ? 1 : 0,
             cycleTimer: level.mission?.mechanic?.cycle || 6,
@@ -47,13 +45,7 @@ export class MissionSystem {
         this.state.affectedEnemies.clear();
         this.state.activeLandmarks.clear();
 
-        if (type === 'security') {
-            this.state.doorReady = true;
-            this.state.blackout = waveNumber % 4 === 0 ? 8 : 0;
-            this.state.message = this.state.blackout > 0
-                ? 'Corte de energía: defensas auxiliares reiniciándose.'
-                : 'Puerta de seguridad y torreta auxiliares operativas.';
-        } else if (type === 'vibranium') {
+        if (type === 'vibranium') {
             this.switchReactiveRoute(waveNumber);
             this.state.message = `Ruta cinética ${waveNumber % 2 === 0 ? 'Dorada' : 'Pantera'} activa.`;
         } else if (type === 'bifrost') {
@@ -81,45 +73,11 @@ export class MissionSystem {
     update(dt) {
         if (!this.state) return;
         const type = this.level.mission?.mechanic?.type;
-        if (type === 'security') this.updateSecurity(dt);
         if (type === 'ward' || type === 'academy') this.updateLandmarks(type);
         if (type === 'bifrost') this.updateBifrost();
         if (type === 'inversion') this.updateInversion(dt);
         if (type === 'jungle') this.updateJungle();
         if (type === 'raft') this.updateRaft();
-    }
-
-    updateSecurity(dt) {
-        if (this.state.blackout > 0) {
-            this.state.blackout = Math.max(0, this.state.blackout - dt);
-            const second = Math.ceil(this.state.blackout);
-            if (second !== this.lastPublishSecond) {
-                this.lastPublishSecond = second;
-                if (second === 0) this.state.message = 'Energía restaurada. Defensas auxiliares en línea.';
-                this.publish();
-            }
-            return;
-        }
-
-        const mechanic = this.level.mission.mechanic;
-        if (this.state.doorReady) {
-            const targets = this.game.enemies.filter((enemy) => enemy.isAlive && distanceTo(enemy, mechanic.door) <= 42).slice(0, 3);
-            if (targets.length > 0) {
-                targets.forEach((enemy) => enemy.applyStatus({ type: 'stun', duration: 1.4, power: 1 }));
-                this.state.doorReady = false;
-                this.state.metrics.mechanicUses++;
-                this.state.message = `Puerta cerrada: ${targets.length} objetivos contenidos.`;
-                this.publish();
-            }
-        }
-
-        this.state.turretCooldown -= dt;
-        if (this.state.turretCooldown > 0) return;
-        const target = nearestEnemy(this.game.enemies, mechanic.turret, mechanic.turret.range || 175);
-        if (!target) return;
-        target.takeDamage(18 + this.state.wave * 1.5, { armorPenetration: 0.2 });
-        this.game.vfx?.addImpact?.(target.x, target.y, '#40c9ff');
-        this.state.turretCooldown = 0.75;
     }
 
     updateLandmarks(type) {
@@ -292,7 +250,7 @@ export class MissionSystem {
             x: gridX * this.game.gridSize + this.game.gridSize / 2,
             y: gridY * this.game.gridSize + this.game.gridSize / 2
         };
-        const reserved = [mechanic.zone, mechanic.door, mechanic.turret, ...(mechanic.nodes || []), ...(mechanic.landmarks || []), ...(mechanic.portals || [])].filter(Boolean);
+        const reserved = [mechanic.zone, ...(mechanic.nodes || []), ...(mechanic.landmarks || []), ...(mechanic.portals || [])].filter(Boolean);
         return reserved.some((zone) => distanceTo(point, zone) < (zone.radius || 34) + 16)
             ? 'Celda reservada para una defensa de la misión.'
             : null;
@@ -327,11 +285,6 @@ export class MissionSystem {
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
 
-        if (mechanic.type === 'security') {
-            drawZone(ctx, mechanic.door, this.state.blackout > 0 ? '#e63946' : '#fca311', 'PUERTA');
-            drawToken(ctx, mechanic.turret.x, mechanic.turret.y, this.state.blackout > 0 ? '#4b5567' : '#40c9ff', 'AUX');
-        }
-
         if (mechanic.type === 'vibranium') {
             (mechanic.nodes || []).forEach((node) => drawToken(ctx, node.x, node.y, '#b865ff', 'V'));
             const exit = this.game.path.at(-2);
@@ -351,12 +304,6 @@ export class MissionSystem {
 
 function distanceTo(entity, point) {
     return Math.hypot(entity.x - point.x, entity.y - point.y);
-}
-
-function nearestEnemy(enemies, origin, range) {
-    return enemies
-        .filter((enemy) => enemy.isAlive && distanceTo(enemy, origin) <= range)
-        .sort((a, b) => b.distanceTravelled - a.distanceTravelled)[0] || null;
 }
 
 function drawZone(ctx, zone, color, label) {

@@ -88,7 +88,6 @@ const PROPS = {
     cone: [18, 18],
     trash: [13, 14],
     hydrant: [22, 16],
-    door: [25, 17],
     window: [25, 14]
 };
 

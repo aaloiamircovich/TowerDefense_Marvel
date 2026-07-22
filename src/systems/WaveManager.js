@@ -149,7 +149,7 @@ const OPENING_WAVES = {
         { label: 'Drones de intrusión', counter: 'Cobertura antiaérea temprana', enemies: [['ultron_drone', 5], ['doombot', 2]] },
         { label: 'Doombots de apoyo', counter: 'Controla invocadores primero', enemies: [['doombot', 3], ['ultron_drone', 4]] },
         { label: 'Red sincronizada', counter: 'Daño sostenido contra blindaje', enemies: [['ultron_drone', 6], ['doombot', 3]] },
-        { label: 'Hackeo de hangar', counter: 'Usa la puerta de seguridad', enemies: [['doombot', 4], ['aim_scientist', 3], ['ultron_drone', 3]] },
+        { label: 'Hackeo de hangar', counter: 'Cubre la avenida y elimina soportes', enemies: [['doombot', 4], ['aim_scientist', 3], ['ultron_drone', 3]] },
         { label: 'Nodo Prime menor', counter: 'Mejora un héroe antes del élite', enemies: [['ultron_drone', 5], ['doombot', 4]], elite: 'doombot' }
     ]
 };

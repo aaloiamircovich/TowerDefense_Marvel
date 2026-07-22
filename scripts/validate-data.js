@@ -265,7 +265,7 @@ function validateLevels(levels) {
     const allowedRenderingKeys = new Set(['style', 'camera', 'source', 'tileSize', 'targetSpriteSize', 'image', 'terrainRows']);
     const allowedThemeKeys = new Set(['id', 'label', 'accent', 'brief']);
     const allowedMissionKeys = new Set(['operation', 'speaker', 'briefing', 'dialogue', 'mechanic', 'objectives']);
-    const allowedMechanicKeys = new Set(['type', 'label', 'description', 'status', 'convoyStart', 'convoyEnd', 'door', 'turret', 'nodes', 'landmarks', 'portals', 'jumpDistance', 'cycle', 'vegetation', 'prisoner']);
+    const allowedMechanicKeys = new Set(['type', 'label', 'description', 'status', 'convoyStart', 'convoyEnd', 'nodes', 'landmarks', 'portals', 'jumpDistance', 'cycle', 'vegetation', 'prisoner']);
     const allowedObjectiveKeys = new Set(['id', 'label', 'description', 'metric', 'target', 'reward']);
     for (const level of levels) {
         validateAllowedKeys(`levels.${level.id}`, level, allowedLevelKeys);

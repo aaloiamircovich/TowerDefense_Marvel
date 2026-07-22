@@ -49,23 +49,23 @@ test('mapa RPG Maker usa imagen y matriz logica de terreno', () => {
             style: 'image-map',
             image: 'assets/images/tiles/base_vengadores_rpgmaker.png',
             terrainRows: [
-                'WWWWBBBBBBBBBBBBBBBBBBBBB',
-                'WWWWBGGGGGGGGGBBBBBBBBBBB',
-                'WWWWBGGPPPPPPGBBBBBBBBBBB',
-                'WWWWBGPGGGGGPGSSBBBBBBBBB',
-                'WWWWBGPGGGGGPGSSBBBBBBBBB',
-                'WWWWGGPGGGGGPGGGGSSSSSSSS',
-                'WWWWGGPGGGGGPGGGGSSSSSSSS',
-                'WWWWGGPGGGGGPGGGGSSSSSSSS',
-                'WWWWGGPGGGGGPGGGGSSSSSSSS',
-                'WWWWGGPGGGGGPPPPPPPPPPPPP',
-                'WWWWGGPGGGGGGGGGGGGGGGGGG',
-                'GGGGGGPGGGGGMMMMMMMMMMMMM',
-                'GGGGGGPGGGGGMMMMMMMMMMMMM',
-                'PPPPPPPGGGGGMMMMMMMMMMMMM',
-                'GGGGGGGGGGGGMMBBBBBMMBBBB',
-                'GGGGGGGGGGGGMMBBBBBMMBBBB',
-                'GGGGGGGGGGGGMMBBBBBMMBBBB',
+                'WWWWBBBBBBBBBBBMMMMMMMMMM',
+                'WWWWBBBBBBBBBBBMMMMMMMMMM',
+                'WWWWBPPPPPPPPPBMMMMMMMMMM',
+                'WWWWBPPPGGGPPPBMMMMMMMMMM',
+                'WWWWBPPPGGGPPPGBBBBBBBBBB',
+                'WWWWGPPPGGGPPPGGGGGGGGGGG',
+                'WWWWGPPPGGGPPPGGGGGGGGGGG',
+                'WWWWGPPPGGGPPPGGGGGGGGGGG',
+                'WWWWGPPPGGGPPPPPPPPPPPPPP',
+                'WWWWGPPPGGGPPPPPPPPPPPPPP',
+                'WWWWGPPPGGGPPPPPPPPPPPPPP',
+                'GGGGGPPPGGGMMMMMMMMMMMMMM',
+                'PPPPPPPPGGGMMMMMMMMMMMMMM',
+                'PPPPPPPPGGGMMMMMMMMMMMMMM',
+                'PPPPPPPPGGGMMMMMMMMMMMMMM',
+                'GGGGGGGGGGGGMMMMMMMMMMMMM',
+                'GGGGGGGGGGGGMMMMMMMMMMMMM',
                 'GGGGGGGGGGGGMMBBBBBMMBBBB',
                 'GGGGGGGGGGGGMMBBBBBMMBBBB'
             ]
@@ -78,6 +78,9 @@ test('mapa RPG Maker usa imagen y matriz logica de terreno', () => {
     assert.equal(map[0].length, 25);
     assert.equal(map[0][0], TERRAIN.water);
     assert.equal(map[13][0], TERRAIN.path);
-    assert.equal(map[14][14], TERRAIN.blocked);
-    assert.equal(map[14][12], TERRAIN.mountain);
+    assert.equal(map[13][1], TERRAIN.path);
+    assert.equal(map[13][7], TERRAIN.path);
+    assert.equal(map[17][14], TERRAIN.blocked);
+    assert.equal(map[15][14], TERRAIN.mountain);
+    assert.equal(map[11][11], TERRAIN.mountain);
 });

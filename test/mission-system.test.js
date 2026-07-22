@@ -31,18 +31,19 @@ test('Manhattan no dibuja tokens CIV ni BARRICADA en el campo', () => {
     assert.equal(labels.includes('BARRICADA'), false);
 });
 
-test('Avengers HQ activa la puerta una vez por oleada', () => {
+test('Base Avengers ya no usa puerta ni auxiliar', () => {
     const game = createGame();
-    const statuses = [];
-    game.enemies = [{ uid: 'drone', x: 600, y: 300, isAlive: true, distanceTravelled: 100, applyStatus: (status) => statuses.push(status), takeDamage: () => {} }];
+    const labels = [];
     const mission = new MissionSystem(game);
     mission.loadLevel(levels[0]);
     mission.onWaveStart(1);
     mission.update(0.1);
-    mission.update(0.1);
+    mission.render(createCanvasContext(labels));
 
-    assert.equal(statuses.filter((status) => status.type === 'stun').length, 1);
-    assert.equal(mission.state.metrics.mechanicUses, 1);
+    assert.equal(levels[0].mission.mechanic.type, 'base_assault');
+    assert.equal(labels.includes('PUERTA'), false);
+    assert.equal(labels.includes('AUX'), false);
+    assert.equal(mission.state.metrics.mechanicUses, 0);
 });
 
 test('Wakanda alterna rutas ortogonales y absorbe una fuga', () => {

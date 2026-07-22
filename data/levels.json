@@ -15,30 +15,20 @@
       "operation": "Defensa de la Base Avengers",
       "speaker": "Iron Man",
       "briefing": "La base acaba de entrar en alerta roja. Drones y celulas de Ultron avanzan por el acceso principal; usa los jardines y el hangar para sostener la primera linea.",
-      "dialogue": "Bienvenidos a casa. No dejen que nadie cruce esa avenida interna; el logo de la puerta acaba de ser encerado.",
+      "dialogue": "Bienvenidos a casa. No dejen que nadie cruce esa avenida interna; el logo del edificio acaba de ser encerado.",
       "mechanic": {
-        "type": "security",
-        "label": "Seguridad Avengers",
-        "description": "La puerta de contencion y la torreta auxiliar protegen el acceso al edificio principal. Los cortes de energia desactivan ambas durante ocho segundos.",
-        "status": "Red local aislada. Puerta y torreta disponibles.",
-        "door": {
-          "x": 600,
-          "y": 300,
-          "radius": 40
-        },
-        "turret": {
-          "x": 464,
-          "y": 232,
-          "range": 180
-        }
+        "type": "base_assault",
+        "label": "Acceso principal",
+        "description": "Defiende la avenida interna de la base. Todo depende del equipo desplegado.",
+        "status": "Base en alerta; cobertura libre sobre jardines y techos."
       },
       "objectives": [
         {
-          "id": "avengers_base_systems",
-          "label": "Defensa del complejo",
-          "description": "Activa la puerta de seguridad 6 veces.",
-          "metric": "mechanicUses",
-          "target": 6,
+          "id": "avengers_base_contact",
+          "label": "Primer contacto",
+          "description": "Derrota a 80 invasores en la base.",
+          "metric": "kills",
+          "target": 80,
           "reward": 240
         },
         {
@@ -85,23 +75,23 @@
       "tileSize": 32,
       "targetSpriteSize": 64,
       "terrainRows": [
-        "WWWWBBBBBBBBBBBBBBBBBBBBB",
-        "WWWWBGGGGGGGGGBBBBBBBBBBB",
-        "WWWWBGGPPPPPPGBBBBBBBBBBB",
-        "WWWWBGPGGGGGPGSSBBBBBBBBB",
-        "WWWWBGPGGGGGPGSSBBBBBBBBB",
-        "WWWWGGPGGGGGPGGGGSSSSSSSS",
-        "WWWWGGPGGGGGPGGGGSSSSSSSS",
-        "WWWWGGPGGGGGPGGGGSSSSSSSS",
-        "WWWWGGPGGGGGPGGGGSSSSSSSS",
-        "WWWWGGPGGGGGPPPPPPPPPPPPP",
-        "WWWWGGPGGGGGGGGGGGGGGGGGG",
-        "GGGGGGPGGGGGMMMMMMMMMMMMM",
-        "GGGGGGPGGGGGMMMMMMMMMMMMM",
-        "PPPPPPPGGGGGMMMMMMMMMMMMM",
-        "GGGGGGGGGGGGMMBBBBBMMBBBB",
-        "GGGGGGGGGGGGMMBBBBBMMBBBB",
-        "GGGGGGGGGGGGMMBBBBBMMBBBB",
+        "WWWWBBBBBBBBBBBMMMMMMMMMM",
+        "WWWWBBBBBBBBBBBMMMMMMMMMM",
+        "WWWWBPPPPPPPPPBMMMMMMMMMM",
+        "WWWWBPPPGGGPPPBMMMMMMMMMM",
+        "WWWWBPPPGGGPPPGBBBBBBBBBB",
+        "WWWWGPPPGGGPPPGGGGGGGGGGG",
+        "WWWWGPPPGGGPPPGGGGGGGGGGG",
+        "WWWWGPPPGGGPPPGGGGGGGGGGG",
+        "WWWWGPPPGGGPPPPPPPPPPPPPP",
+        "WWWWGPPPGGGPPPPPPPPPPPPPP",
+        "WWWWGPPPGGGPPPPPPPPPPPPPP",
+        "GGGGGPPPGGGMMMMMMMMMMMMMM",
+        "PPPPPPPPGGGMMMMMMMMMMMMMM",
+        "PPPPPPPPGGGMMMMMMMMMMMMMM",
+        "PPPPPPPPGGGMMMMMMMMMMMMMM",
+        "GGGGGGGGGGGGMMMMMMMMMMMMM",
+        "GGGGGGGGGGGGMMMMMMMMMMMMM",
         "GGGGGGGGGGGGMMBBBBBMMBBBB",
         "GGGGGGGGGGGGMMBBBBBMMBBBB"
       ]

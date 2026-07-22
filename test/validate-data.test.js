@@ -58,7 +58,7 @@ test('validate-data bloquea campos no declarados en estructuras internas de nive
     assert.notEqual(result.status, 0);
     assert.match(result.stderr, /levels\.level_1\.theme\.paletteSecret no esta permitido/);
     assert.match(result.stderr, /levels\.level_1\.mission\.mechanic\.experimentalHook no esta permitido/);
-    assert.match(result.stderr, /levels\.level_1\.mission\.objectives\.avengers_base_systems\.hiddenMultiplier no esta permitido/);
+    assert.match(result.stderr, /levels\.level_1\.mission\.objectives\.avengers_base_contact\.hiddenMultiplier no esta permitido/);
 });
 
 test('validate-data bloquea campos y valores invalidos en especiales de heroes', () => {
