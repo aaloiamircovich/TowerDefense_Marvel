@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { MANHATTAN_MANUAL_ROWS } from '../src/rendering/ManhattanManualMap.js';
-import { buildPixelTerrainMap, getManhattanTileId, isPixelMapLevel, TERRAIN } from '../src/rendering/PixelMapRenderer.js';
+import { buildPixelTerrainMap, getManhattanTileId, isImageMapLevel, isPixelMapLevel, TERRAIN } from '../src/rendering/PixelMapRenderer.js';
 
 test('buildPixelTerrainMap crea una grilla Manhattan de 32 px', () => {
     const level = { theme: { id: 'new-york' }, rendering: { style: 'pixelart', tileSize: 32 } };
@@ -41,4 +41,43 @@ test('Manhattan manual separa edificios bloqueados de montana colocable', () => 
     assert.equal(map[0][15], TERRAIN.blocked);
     assert.equal(map[14][12], TERRAIN.mountain);
     assert.notEqual(map[0][15], map[14][12]);
+});
+
+test('mapa RPG Maker usa imagen y matriz logica de terreno', () => {
+    const level = {
+        rendering: {
+            style: 'image-map',
+            image: 'assets/images/tiles/base_vengadores_rpgmaker.png',
+            terrainRows: [
+                'WWWWBBBBBBBBBBBBBBBBBBBBB',
+                'WWWWBGGGGGGGGGBBBBBBBBBBB',
+                'WWWWBGGPPPPPPGBBBBBBBBBBB',
+                'WWWWBGPGGGGGPGSSBBBBBBBBB',
+                'WWWWBGPGGGGGPGSSBBBBBBBBB',
+                'WWWWGGPGGGGGPGGGGSSSSSSSS',
+                'WWWWGGPGGGGGPGGGGSSSSSSSS',
+                'WWWWGGPGGGGGPGGGGSSSSSSSS',
+                'WWWWGGPGGGGGPGGGGSSSSSSSS',
+                'WWWWGGPGGGGGPPPPPPPPPPPPP',
+                'WWWWGGPGGGGGGGGGGGGGGGGGG',
+                'GGGGGGPGGGGGMMMMMMMMMMMMM',
+                'GGGGGGPGGGGGMMMMMMMMMMMMM',
+                'PPPPPPPGGGGGMMMMMMMMMMMMM',
+                'GGGGGGGGGGGGMMBBBBBMMBBBB',
+                'GGGGGGGGGGGGMMBBBBBMMBBBB',
+                'GGGGGGGGGGGGMMBBBBBMMBBBB',
+                'GGGGGGGGGGGGMMBBBBBMMBBBB',
+                'GGGGGGGGGGGGMMBBBBBMMBBBB'
+            ]
+        }
+    };
+    const map = buildPixelTerrainMap(level, { width: 800, height: 600 }, 32);
+
+    assert.equal(isImageMapLevel(level), true);
+    assert.equal(map.length, 19);
+    assert.equal(map[0].length, 25);
+    assert.equal(map[0][0], TERRAIN.water);
+    assert.equal(map[13][0], TERRAIN.path);
+    assert.equal(map[14][14], TERRAIN.blocked);
+    assert.equal(map[14][12], TERRAIN.mountain);
 });

@@ -262,7 +262,7 @@ function validateLevels(levels) {
 
     validateUniqueIds('levels', levels);
     const allowedLevelKeys = new Set(['id', 'name', 'description', 'difficulty', 'path', 'alternatePaths', 'theme', 'mission', 'rendering', 'thumbnail']);
-    const allowedRenderingKeys = new Set(['style', 'camera', 'source', 'tileSize', 'targetSpriteSize']);
+    const allowedRenderingKeys = new Set(['style', 'camera', 'source', 'tileSize', 'targetSpriteSize', 'image', 'terrainRows']);
     const allowedThemeKeys = new Set(['id', 'label', 'accent', 'brief']);
     const allowedMissionKeys = new Set(['operation', 'speaker', 'briefing', 'dialogue', 'mechanic', 'objectives']);
     const allowedMechanicKeys = new Set(['type', 'label', 'description', 'status', 'convoyStart', 'convoyEnd', 'door', 'turret', 'nodes', 'landmarks', 'portals', 'jumpDistance', 'cycle', 'vegetation', 'prisoner']);
@@ -270,6 +270,8 @@ function validateLevels(levels) {
     for (const level of levels) {
         validateAllowedKeys(`levels.${level.id}`, level, allowedLevelKeys);
         if (level.rendering) validateAllowedKeys(`levels.${level.id}.rendering`, level.rendering, allowedRenderingKeys);
+        if (level.rendering?.image) validateAsset(level.rendering.image, `levels.${level.id}.rendering.image`);
+        if (level.rendering?.terrainRows) validateTerrainRows(level);
         if (level.theme) validateAllowedKeys(`levels.${level.id}.theme`, level.theme, allowedThemeKeys);
         if (level.mission) validateAllowedKeys(`levels.${level.id}.mission`, level.mission, allowedMissionKeys);
         if (level.mission?.mechanic) validateAllowedKeys(`levels.${level.id}.mission.mechanic`, level.mission.mechanic, allowedMechanicKeys);
@@ -294,6 +296,22 @@ function validateLevels(levels) {
             if (!isOrthogonalPath(alternatePath)) errors.push(`levels.${level.id}.alternatePaths.${index} no es ortogonal`);
         }
     }
+}
+
+function validateTerrainRows(level) {
+    const rows = level.rendering.terrainRows;
+    if (!Array.isArray(rows) || rows.length !== 19) {
+        errors.push(`levels.${level.id}.rendering.terrainRows debe tener 19 filas`);
+        return;
+    }
+    rows.forEach((row, index) => {
+        if (typeof row !== 'string' || row.length !== 25) {
+            errors.push(`levels.${level.id}.rendering.terrainRows.${index} debe tener 25 columnas`);
+        }
+        if (/[^WGSPMBX]/.test(row || '')) {
+            errors.push(`levels.${level.id}.rendering.terrainRows.${index} contiene simbolos invalidos`);
+        }
+    });
 }
 
 function validateWaves(waves, enemies) {

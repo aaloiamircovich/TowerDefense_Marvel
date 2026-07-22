@@ -7,7 +7,7 @@ import { Projectile } from '../entities/Projectile.js';
 import { ObjectPool } from '../utils/ObjectPool.js';
 import { PerformanceMonitor } from '../systems/PerformanceMonitor.js';
 import { TeamSynergySystem } from '../systems/TeamSynergySystem.js';
-import { buildPixelTerrainMap, drawPixelMapOverlays, drawPixelTerrainTile, isPixelMapLevel, usesManualManhattanMap } from '../rendering/PixelMapRenderer.js';
+import { buildPixelTerrainMap, drawImageMapBackground, drawPixelMapOverlays, drawPixelTerrainTile, isImageMapLevel, isPixelMapLevel, usesManualManhattanMap } from '../rendering/PixelMapRenderer.js';
 
 export class GameLoop {
     constructor(canvasId, options = {}) {
@@ -60,7 +60,7 @@ export class GameLoop {
         this.terrainMap = [];
         this.theme = this.getLevelTheme();
 
-        if (isPixelMapLevel(this.currentLevel)) {
+        if (isPixelMapLevel(this.currentLevel) || isImageMapLevel(this.currentLevel)) {
             this.terrainMap = buildPixelTerrainMap(this.currentLevel, this.canvas, this.gridSize);
             this.paintPathTiles();
             return;
@@ -310,10 +310,14 @@ export class GameLoop {
         ctx.fillStyle = this.theme.void;
         ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-        for (let y = 0; y < this.terrainMap.length; y++) {
-            for (let x = 0; x < this.terrainMap[y].length; x++) {
-                const terrainType = this.terrainMap[y][x];
-                this.drawTerrainTile(ctx, x, y, terrainType);
+        if (isImageMapLevel(this.currentLevel)) {
+            drawImageMapBackground(ctx, this);
+        } else {
+            for (let y = 0; y < this.terrainMap.length; y++) {
+                for (let x = 0; x < this.terrainMap[y].length; x++) {
+                    const terrainType = this.terrainMap[y][x];
+                    this.drawTerrainTile(ctx, x, y, terrainType);
+                }
             }
         }
 
@@ -335,6 +339,7 @@ export class GameLoop {
     drawPathGuide(ctx) {
         if (!this.path || this.path.length < 2) return;
         if (usesManualManhattanMap(this.currentLevel)) return;
+        if (isImageMapLevel(this.currentLevel)) return;
         ctx.save();
         ctx.strokeStyle = this.theme.pathGlow;
         ctx.lineWidth = isPixelMapLevel(this.currentLevel) ? 3 : 7;
@@ -355,6 +360,10 @@ export class GameLoop {
 
     drawLevelSetDressing(ctx) {
         const themeId = this.currentLevel?.theme?.id || 'new-york';
+        if (isImageMapLevel(this.currentLevel)) {
+            this.drawMissionLandmarkBadges(ctx);
+            return;
+        }
         if (isPixelMapLevel(this.currentLevel)) {
             drawPixelMapOverlays(ctx, this);
             this.drawMissionLandmarkBadges(ctx);

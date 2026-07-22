@@ -9,11 +9,11 @@ const levels = JSON.parse(fs.readFileSync(new URL('../data/levels.json', import.
 test('Manhattan ya no activa evacuacion civil ni barricada', () => {
     const game = createGame();
     const mission = new MissionSystem(game);
-    mission.loadLevel(levels[0]);
+    mission.loadLevel(levels[1]);
     mission.onWaveStart(3);
     mission.onWaveFinished(3);
 
-    assert.equal(levels[0].mission.mechanic.type, 'urban_assault');
+    assert.equal(levels[1].mission.mechanic.type, 'urban_assault');
     assert.equal('civiliansSaved' in mission.state.metrics, false);
     assert.equal('civilianActive' in mission.state, false);
     assert.equal(mission.state.metrics.noLeakWaves, 1);
@@ -22,7 +22,7 @@ test('Manhattan ya no activa evacuacion civil ni barricada', () => {
 test('Manhattan no dibuja tokens CIV ni BARRICADA en el campo', () => {
     const labels = [];
     const mission = new MissionSystem(createGame());
-    mission.loadLevel(levels[0]);
+    mission.loadLevel(levels[1]);
     mission.onWaveStart(3);
     mission.update(1);
     mission.render(createCanvasContext(labels));
@@ -36,7 +36,7 @@ test('Avengers HQ activa la puerta una vez por oleada', () => {
     const statuses = [];
     game.enemies = [{ uid: 'drone', x: 600, y: 300, isAlive: true, distanceTravelled: 100, applyStatus: (status) => statuses.push(status), takeDamage: () => {} }];
     const mission = new MissionSystem(game);
-    mission.loadLevel(levels[1]);
+    mission.loadLevel(levels[0]);
     mission.onWaveStart(1);
     mission.update(0.1);
     mission.update(0.1);

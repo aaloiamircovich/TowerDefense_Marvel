@@ -1,6 +1,142 @@
 [
   {
     "id": "level_1",
+    "name": "Base de los Vengadores",
+    "description": "La base de los Vengadores queda bajo ataque. Defiende el corredor principal entre jardines, costa y hangares del complejo.",
+    "thumbnail": "assets/images/tiles/base_vengadores_rpgmaker.png",
+    "difficulty": "Facil",
+    "theme": {
+      "id": "avengers",
+      "label": "Base Avengers",
+      "accent": "#fca311",
+      "brief": "Complejo costero, jardines tacticos, hangares y ruta interna del equipo."
+    },
+    "mission": {
+      "operation": "Defensa de la Base Avengers",
+      "speaker": "Iron Man",
+      "briefing": "La base acaba de entrar en alerta roja. Drones y celulas de Ultron avanzan por el acceso principal; usa los jardines y el hangar para sostener la primera linea.",
+      "dialogue": "Bienvenidos a casa. No dejen que nadie cruce esa avenida interna; el logo de la puerta acaba de ser encerado.",
+      "mechanic": {
+        "type": "security",
+        "label": "Seguridad Avengers",
+        "description": "La puerta de contencion y la torreta auxiliar protegen el acceso al edificio principal. Los cortes de energia desactivan ambas durante ocho segundos.",
+        "status": "Red local aislada. Puerta y torreta disponibles.",
+        "door": {
+          "x": 600,
+          "y": 300,
+          "radius": 40
+        },
+        "turret": {
+          "x": 464,
+          "y": 232,
+          "range": 180
+        }
+      },
+      "objectives": [
+        {
+          "id": "avengers_base_systems",
+          "label": "Defensa del complejo",
+          "description": "Activa la puerta de seguridad 6 veces.",
+          "metric": "mechanicUses",
+          "target": 6,
+          "reward": 240
+        },
+        {
+          "id": "avengers_base_clean",
+          "label": "Base intacta",
+          "description": "Supera 5 oleadas sin fugas.",
+          "metric": "noLeakWaves",
+          "target": 5,
+          "reward": 220
+        }
+      ]
+    },
+    "path": [
+      {
+        "x": 0,
+        "y": 432
+      },
+      {
+        "x": 208,
+        "y": 432
+      },
+      {
+        "x": 208,
+        "y": 112
+      },
+      {
+        "x": 400,
+        "y": 112
+      },
+      {
+        "x": 400,
+        "y": 304
+      },
+      {
+        "x": 800,
+        "y": 304
+      }
+    ],
+    "rendering": {
+      "style": "image-map",
+      "camera": "top-down-rpg",
+      "source": "rpgmaker-xp-screenshot-cleaned-grid",
+      "image": "assets/images/tiles/base_vengadores_rpgmaker.png",
+      "tileSize": 32,
+      "targetSpriteSize": 64,
+      "terrainRows": [
+        "WWWWBBBBBBBBBBBBBBBBBBBBB",
+        "WWWWBGGGGGGGGGBBBBBBBBBBB",
+        "WWWWBGGPPPPPPGBBBBBBBBBBB",
+        "WWWWBGPGGGGGPGSSBBBBBBBBB",
+        "WWWWBGPGGGGGPGSSBBBBBBBBB",
+        "WWWWGGPGGGGGPGGGGSSSSSSSS",
+        "WWWWGGPGGGGGPGGGGSSSSSSSS",
+        "WWWWGGPGGGGGPGGGGSSSSSSSS",
+        "WWWWGGPGGGGGPGGGGSSSSSSSS",
+        "WWWWGGPGGGGGPPPPPPPPPPPPP",
+        "WWWWGGPGGGGGGGGGGGGGGGGGG",
+        "GGGGGGPGGGGGMMMMMMMMMMMMM",
+        "GGGGGGPGGGGGMMMMMMMMMMMMM",
+        "PPPPPPPGGGGGMMMMMMMMMMMMM",
+        "GGGGGGGGGGGGMMBBBBBMMBBBB",
+        "GGGGGGGGGGGGMMBBBBBMMBBBB",
+        "GGGGGGGGGGGGMMBBBBBMMBBBB",
+        "GGGGGGGGGGGGMMBBBBBMMBBBB",
+        "GGGGGGGGGGGGMMBBBBBMMBBBB"
+      ]
+    },
+    "alternatePaths": [
+      [
+        {
+          "x": 0,
+          "y": 432
+        },
+        {
+          "x": 208,
+          "y": 432
+        },
+        {
+          "x": 208,
+          "y": 112
+        },
+        {
+          "x": 400,
+          "y": 112
+        },
+        {
+          "x": 400,
+          "y": 304
+        },
+        {
+          "x": 800,
+          "y": 304
+        }
+      ]
+    ]
+  },
+  {
+    "id": "level_2",
     "name": "Calles de Nueva York",
     "description": "Hydra y A.I.M. avanzan por Manhattan rumbo a la Torre Stark. Defiende las avenidas entre taxis, asfalto y neón.",
     "thumbnail": "city_streets",
@@ -127,85 +263,6 @@
           "y": 304
         }
       ]
-    ]
-  },
-  {
-    "id": "level_2",
-    "name": "Base de los Vengadores",
-    "description": "Ultrón ha invadido el complejo. Mantén los drones dentro de los corredores blindados del hangar.",
-    "thumbnail": "avengers_hq",
-    "difficulty": "Normal",
-    "theme": {
-      "id": "avengers",
-      "label": "Complejo Avengers",
-      "accent": "#fca311",
-      "brief": "Hangar táctico, paneles de energía, acero y pasillos S.H.I.E.L.D."
-    },
-    "mission": {
-      "operation": "Protocolo Casa de Hierro",
-      "speaker": "Iron Man",
-      "briefing": "Ultrón tomó la red del hangar. Una puerta de contención y una torreta auxiliar siguen bajo control local, aunque cada cuatro oleadas sufriremos un corte de energía.",
-      "dialogue": "J.A.R.V.I.S. dejó un par de sorpresas manuales. Úsenlas antes de que Ultrón encuentre el interruptor.",
-      "mechanic": {
-        "type": "security",
-        "label": "Defensas del hangar",
-        "description": "La puerta contiene hasta tres enemigos una vez por oleada y la torreta dispara automáticamente. Los cortes de energía desactivan ambas durante ocho segundos.",
-        "status": "Red local aislada. Puerta y torreta disponibles.",
-        "door": {
-          "x": 600,
-          "y": 300,
-          "radius": 40
-        },
-        "turret": {
-          "x": 485,
-          "y": 245,
-          "range": 180
-        }
-      },
-      "objectives": [
-        {
-          "id": "hq_systems",
-          "label": "Operador de sistemas",
-          "description": "Activa la puerta de seguridad 6 veces.",
-          "metric": "mechanicUses",
-          "target": 6,
-          "reward": 240
-        },
-        {
-          "id": "hq_clean",
-          "label": "Hangar sellado",
-          "description": "Supera 5 oleadas sin fugas.",
-          "metric": "noLeakWaves",
-          "target": 5,
-          "reward": 220
-        }
-      ]
-    },
-    "path": [
-      {
-        "x": 0,
-        "y": 300
-      },
-      {
-        "x": 200,
-        "y": 300
-      },
-      {
-        "x": 200,
-        "y": 100
-      },
-      {
-        "x": 600,
-        "y": 100
-      },
-      {
-        "x": 600,
-        "y": 500
-      },
-      {
-        "x": 800,
-        "y": 500
-      }
     ]
   },
   {

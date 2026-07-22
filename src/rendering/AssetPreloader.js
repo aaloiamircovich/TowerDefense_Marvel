@@ -38,6 +38,7 @@ export function collectHeroPreloadSources(heroes = []) {
 export function collectLevelPreloadSources(level = null) {
     return uniqueSources([
         assetPathOrNull(level?.thumbnail),
+        assetPathOrNull(level?.rendering?.image),
         assetPathOrNull(level?.theme?.image),
         assetPathOrNull(level?.mission?.image)
     ]);

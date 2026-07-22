@@ -4,6 +4,7 @@ import {
     MANHATTAN_MANUAL_ROWS,
     MANHATTAN_MANUAL_TILE_IMAGES
 } from './ManhattanManualMap.js';
+import { getCachedImage } from './ImageCache.js';
 import { TERRAIN } from '../utils/TerrainRules.js';
 
 export { TERRAIN };
@@ -37,6 +38,16 @@ const MANHATTAN_LEGEND = {
     S: TERRAIN.sidewalk,
     P: TERRAIN.path,
     G: TERRAIN.grass
+};
+
+const IMAGE_MAP_LEGEND = {
+    W: TERRAIN.water,
+    G: TERRAIN.grass,
+    S: TERRAIN.sidewalk,
+    P: TERRAIN.path,
+    M: TERRAIN.mountain,
+    B: TERRAIN.blocked,
+    X: TERRAIN.blocked
 };
 
 const TILESET_SRC = 'assets/images/tiles/kenney-modern-city.png?v=2';
@@ -85,6 +96,10 @@ export function isPixelMapLevel(level) {
     return level?.rendering?.style === 'pixelart';
 }
 
+export function isImageMapLevel(level) {
+    return level?.rendering?.style === 'image-map' && typeof level?.rendering?.image === 'string';
+}
+
 export function usesManualManhattanMap(level) {
     return level?.theme?.id === 'new-york' && level?.rendering?.source === 'manual-grid';
 }
@@ -94,6 +109,8 @@ export function getManhattanTileId(x, y, cols = 25) {
 }
 
 export function buildPixelTerrainMap(level, canvas, tileSize) {
+    if (isImageMapLevel(level)) return buildImageTerrainMap(level, canvas, tileSize);
+
     const cols = Math.ceil(canvas.width / tileSize);
     const rows = Math.ceil(canvas.height / tileSize);
     if (usesManualManhattanMap(level)) {
@@ -112,6 +129,25 @@ export function buildPixelTerrainMap(level, canvas, tileSize) {
     }
 
     return terrainMap;
+}
+
+export function drawImageMapBackground(ctx, game) {
+    if (!isImageMapLevel(game.currentLevel)) return false;
+    const image = getCachedImage(game.currentLevel.rendering.image);
+    const drawWidth = (game.terrainMap?.[0]?.length || 25) * game.gridSize;
+    const drawHeight = (game.terrainMap?.length || 19) * game.gridSize;
+    if (image?.complete && image.naturalWidth > 0) {
+        ctx.save();
+        ctx.imageSmoothingEnabled = false;
+        ctx.drawImage(image, 0, 0, drawWidth, drawHeight);
+        ctx.restore();
+    } else {
+        ctx.fillStyle = game.theme?.terrain?.[TERRAIN.grass] || '#284a35';
+        ctx.fillRect(0, 0, game.canvas.width, game.canvas.height);
+    }
+
+    if (game.showGrid) drawImageMapGrid(ctx, game);
+    return true;
 }
 
 export function drawPixelTerrainTile(ctx, x, y, terrainType, game) {
@@ -177,6 +213,36 @@ export function drawPixelMapOverlays(ctx, game) {
 
 function tilesetReady() {
     return tilesetImage.complete && tilesetImage.naturalWidth > 0;
+}
+
+function buildImageTerrainMap(level, canvas, tileSize) {
+    const cols = Math.ceil(canvas.width / tileSize);
+    const rows = Math.ceil(canvas.height / tileSize);
+    const sourceRows = level.rendering.terrainRows || [];
+    const terrainMap = [];
+
+    for (let y = 0; y < rows; y++) {
+        const row = sourceRows[y] || '';
+        terrainMap[y] = [];
+        for (let x = 0; x < cols; x++) {
+            terrainMap[y][x] = IMAGE_MAP_LEGEND[row[x]] ?? TERRAIN.grass;
+        }
+    }
+
+    return terrainMap;
+}
+
+function drawImageMapGrid(ctx, game) {
+    const size = game.gridSize;
+    const rows = game.terrainMap?.length || 0;
+    const cols = game.terrainMap?.[0]?.length || 0;
+    ctx.save();
+    ctx.strokeStyle = game.theme?.gridLine || 'rgba(255,255,255,0.16)';
+    ctx.lineWidth = 1;
+    for (let y = 0; y < rows; y++) {
+        for (let x = 0; x < cols; x++) ctx.strokeRect(x * size, y * size, size, size);
+    }
+    ctx.restore();
 }
 
 function getManualTileKey(level, x, y) {
