@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hero-td-v2.44.0-avengers-map-terrain-fix-20260721';
+const CACHE_NAME = 'hero-td-v2.44.0-avengers-terrain-blockers-20260721';
 const CORE_ASSETS = [
     './', './index.html', './styles.css', './manifest.webmanifest',
     './data/bootstrapData.js', './data/sprite-atlas.js', './data/heroes.json', './data/enemies.json',
