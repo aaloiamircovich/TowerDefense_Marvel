@@ -72,9 +72,9 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Urbano",
       "rarity": "Common",
       "cost": 150,
-      "damage": 15,
+      "damage": 17,
       "range": 110,
-      "fireRate": 2.2,
+      "fireRate": 1.95,
       "canSeeStealth": true,
       "ability": "TELARAÑA",
       "abilityDesc": "Cada impacto acumula una red y reduce 20% la velocidad. Al llegar a tres redes, inmoviliza al objetivo durante 0.7 segundos.",
@@ -269,7 +269,17 @@ window.__MARVEL_TD_DATA__ = {
         "support": 1,
         "detection": 1
       },
-      "terrainRole": "flyer"
+      "terrainRole": "flyer",
+      "special": {
+        "attackEffects": [
+          {
+            "type": "stun",
+            "duration": 0.3,
+            "power": 1,
+            "chance": 0.16
+          }
+        ]
+      }
     },
     "hulk": {
       "id": "hulk",
@@ -279,10 +289,10 @@ window.__MARVEL_TD_DATA__ = {
       "cost": 400,
       "damage": 80,
       "range": 80,
-      "fireRate": 0.5,
+      "fireRate": 0.55,
       "canSeeStealth": false,
       "ability": "FURIA GAMMA",
-      "abilityDesc": "Acumula furia al atacar y cuando la defensa pierde vidas. Con 50 de furia salta sobre un grupo, inflige daño en área y aturde sin sacar enemigos de su ruta.",
+      "abilityDesc": "Acumula furia al atacar y cuando la defensa pierde vidas. Con 50 de furia salta sobre un grupo, inflige dano en area y aturde sin sacar enemigos de su ruta; es una bomba de corto alcance, no un carry universal.",
       "sprite": "assets/images/heroes/hulk/portrait.png",
       "allowedTerrains": [
         1,
@@ -342,9 +352,9 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Urbano",
       "rarity": "Common",
       "cost": 190,
-      "damage": 18,
+      "damage": 22,
       "range": 130,
-      "fireRate": 2,
+      "fireRate": 1.8,
       "canSeeStealth": true,
       "ability": "SABOTAJE WIDOW",
       "abilityDesc": "Prioriza apoyos e invocadores con ruptura de armadura. Cada cuarto ataque libera una descarga que encadena y paraliza varios objetivos. Sus toxinas tacticas agregan veneno acumulable contra elites.",
@@ -548,7 +558,15 @@ window.__MARVEL_TD_DATA__ = {
           "label": "Vibranium ofensivo"
         },
         "visualStyle": "energy",
-        "projectileColor": "#40c9ff"
+        "projectileColor": "#40c9ff",
+        "attackEffects": [
+          {
+            "type": "stun",
+            "duration": 0.24,
+            "power": 1,
+            "chance": 0.12
+          }
+        ]
       }
     },
     "doctor_strange": {
@@ -557,12 +575,12 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Místico",
       "rarity": "Legendary",
       "cost": 550,
-      "damage": 55,
+      "damage": 42,
       "range": 200,
-      "fireRate": 1,
+      "fireRate": 0.95,
       "canSeeStealth": true,
       "ability": "PORTAL MÍSTICO",
-      "abilityDesc": "Cada segundo ataque se duplica mediante un portal. Cada 9 segundos crea un campo temporal que ralentiza 62% a todos los enemigos cercanos.",
+      "abilityDesc": "Cada segundo ataque se duplica mediante un portal. Cada 9 segundos crea un campo temporal que ralentiza enemigos cercanos; su anillo controla zonas, pero paga con menor dano plano.",
       "niche": "amplificación de proyectiles y control temporal",
       "sprite": "assets/images/heroes/doctor_strange/portrait.png",
       "visual": {
@@ -616,7 +634,17 @@ window.__MARVEL_TD_DATA__ = {
         "detection": 3
       },
       "terrainRole": "flyer",
-      "rangePattern": "ring"
+      "rangePattern": "ring",
+      "special": {
+        "attackEffects": [
+          {
+            "type": "slow",
+            "duration": 1.8,
+            "power": 0.38,
+            "chance": 0.28
+          }
+        ]
+      }
     },
     "captain_marvel": {
       "id": "captain_marvel",
@@ -624,12 +652,12 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Cósmico",
       "rarity": "Legendary",
       "cost": 650,
-      "damage": 90,
-      "range": 250,
-      "fireRate": 0.7,
+      "damage": 86,
+      "range": 230,
+      "fireRate": 0.75,
       "canSeeStealth": false,
       "ability": "ENERGÍA BINARIA",
-      "abilityDesc": "Carga energía al atacar y derrotar enemigos. Al superar 60 vuela a una posición avanzada, atraviesa la línea enemiga y regresa a su puesto. Sus rafagas fotonicas pueden dejar plasma ardiendo en objetivos duros.",
+      "abilityDesc": "Carga energia al atacar y derrotar enemigos. Al superar 60 vuela a una posicion avanzada, atraviesa la linea enemiga y regresa a su puesto. Sus rafagas fotonicas priorizan dano sostenido y quemadura sobre DPS plano.",
       "sprite": "assets/images/heroes/captain_marvel/portrait.png",
       "allowedTerrains": [
         0,
@@ -687,9 +715,9 @@ window.__MARVEL_TD_DATA__ = {
         "attackEffects": [
           {
             "type": "burn",
-            "duration": 2.8,
-            "power": 6,
-            "chance": 0.28
+            "duration": 3.6,
+            "power": 8,
+            "chance": 0.34
           }
         ],
         "statModifiers": {}
@@ -766,9 +794,9 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Urbano",
       "rarity": "Rare",
       "cost": 150,
-      "damage": 20,
+      "damage": 23,
       "range": 100,
-      "fireRate": 2,
+      "fireRate": 1.8,
       "canSeeStealth": true,
       "ability": "RADAR DE HELL'S KITCHEN",
       "abilityDesc": "Emite pulsos que revelan sigilo para todo el equipo y responde cada cuatro ataques con un contraataque preciso.",
@@ -958,12 +986,12 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Cósmico",
       "rarity": "Common",
       "cost": 300,
-      "damage": 45,
+      "damage": 37,
       "range": 120,
-      "fireRate": 0.6,
+      "fireRate": 0.7,
       "canSeeStealth": false,
       "ability": "MURO DE RAÍCES",
-      "abilityDesc": "Levanta una barrera temporal sobre la ruta que ralentiza grupos sin desplazarlos. Sus raices priorizan contencion pura.",
+      "abilityDesc": "Levanta raices sobre la ruta que ralentizan grupos sin desplazarlos. Su valor principal es control y cobertura de curvas, no DPS frontal.",
       "sprite": "assets/images/heroes/groot/portrait.png",
       "allowedTerrains": [
         1
@@ -1016,7 +1044,15 @@ window.__MARVEL_TD_DATA__ = {
       },
       "terrainRole": "grass",
       "special": {
-        "statModifiers": {}
+        "statModifiers": {},
+        "attackEffects": [
+          {
+            "type": "slow",
+            "duration": 2.2,
+            "power": 0.32,
+            "chance": 0.42
+          }
+        ]
       }
     },
     "gamora": {
@@ -1238,9 +1274,9 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Tecnológico",
       "rarity": "Common",
       "cost": 210,
-      "damage": 16,
+      "damage": 20,
       "range": 150,
-      "fireRate": 2.1,
+      "fireRate": 1.8,
       "canSeeStealth": true,
       "ability": "REDWING",
       "abilityDesc": "Ordena a Redwing explorar para revelar y marcar amenazas o atacar con mayor frecuencia. El dron opera fuera del alcance normal de Falcon.",
@@ -1766,7 +1802,21 @@ window.__MARVEL_TD_DATA__ = {
           "propagationCount": 2,
           "propagationRadius": 115,
           "propagationFactor": 0.32
-        }
+        },
+        "attackEffects": [
+          {
+            "type": "slow",
+            "duration": 2.4,
+            "power": 0.42,
+            "chance": 0.46
+          },
+          {
+            "type": "stun",
+            "duration": 0.22,
+            "power": 1,
+            "chance": 0.12
+          }
+        ]
       }
     },
     "silver_surfer": {
@@ -1775,12 +1825,12 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Cósmico",
       "rarity": "Mythic",
       "cost": 760,
-      "damage": 100,
+      "damage": 96,
       "range": 300,
       "fireRate": 0.6,
-      "canSeeStealth": true,
+      "canSeeStealth": false,
       "ability": "PODER CÓSMICO",
-      "abilityDesc": "Traza rayos que atraviesan enemigos y configura su poder para daño, control o resonancia de equipo.",
+      "abilityDesc": "Traza rayos cosmicos en forma de X con alcance enorme. Su potencia es brutal en lineas abiertas, pero ya no cumple rol de detector universal.",
       "sprite": "assets/images/heroes/silver_surfer/portrait.png",
       "allowedTerrains": [
         0,
@@ -1794,9 +1844,9 @@ window.__MARVEL_TD_DATA__ = {
       "formationRole": "artillery",
       "teamMetrics": {
         "damage": 5,
-        "control": 4,
-        "support": 3,
-        "detection": 5
+        "control": 3,
+        "support": 2,
+        "detection": 2
       },
       "niche": "trayectorias globales y potencia configurable",
       "visual": {
@@ -1918,9 +1968,9 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Místico",
       "rarity": "Legendary",
       "cost": 520,
-      "damage": 75,
+      "damage": 66,
       "range": 150,
-      "fireRate": 0.9,
+      "fireRate": 0.95,
       "canSeeStealth": true,
       "ability": "ESPIRITU DE VENGANZA",
       "abilityDesc": "Sus cadenas arrastran enemigos por la ruta y la Mirada de Penitencia castiga la vida perdida de los jefes. Sus cadenas tambien dejan fuego infernal persistente.",
@@ -1980,9 +2030,9 @@ window.__MARVEL_TD_DATA__ = {
         "attackEffects": [
           {
             "type": "burn",
-            "duration": 3.6,
-            "power": 8,
-            "chance": 0.42
+            "duration": 4.2,
+            "power": 9,
+            "chance": 0.4
           }
         ],
         "statModifiers": {}
@@ -2159,7 +2209,15 @@ window.__MARVEL_TD_DATA__ = {
           "armorPenetration": 0.18
         },
         "visualStyle": "explosive",
-        "projectileColor": "#9bd1ff"
+        "projectileColor": "#9bd1ff",
+        "attackEffects": [
+          {
+            "type": "burn",
+            "duration": 2.4,
+            "power": 5,
+            "chance": 0.18
+          }
+        ]
       },
       "sprite": "assets/images/heroes/war_machine/portrait.png",
       "visual": {
@@ -5995,28 +6053,31 @@ window.__MARVEL_TD_DATA__ = {
         "id": "hydra_soldier",
         "name": "Soldado de Hydra",
         "category": "Urbano",
-        "hp": 100,
+        "hp": 115,
         "speed": 50,
-        "reward": 10,
+        "reward": 11,
         "armor": 0,
         "stealth": false,
         "faction": "Hydra",
         "archetype": "shield",
-        "barrierRatio": 0.22,
-        "threat": 2
+        "barrierRatio": 0.26,
+        "threat": 2,
+        "statusResistances": {
+          "slow": 0.1
+        }
       },
       "aim_scientist": {
         "id": "aim_scientist",
         "name": "Científico A.I.M.",
         "category": "Tecnológico",
-        "hp": 85,
+        "hp": 95,
         "speed": 55,
-        "reward": 12,
+        "reward": 14,
         "armor": 0,
         "stealth": false,
         "faction": "A.I.M.",
         "archetype": "support",
-        "healPower": 0.06,
+        "healPower": 0.07,
         "behaviorCooldown": 4,
         "threat": 2,
         "sprite": "assets/images/enemies/aim_scientist/portrait.png",
@@ -6067,37 +6128,47 @@ window.__MARVEL_TD_DATA__ = {
           },
           "portrait": "assets/images/enemies/aim_scientist/portrait.png",
           "size": 96
+        },
+        "statusResistances": {
+          "poison": 0.15
         }
       },
       "sentinel": {
         "id": "sentinel",
         "name": "Centinela",
         "category": "Tecnológico",
-        "hp": 500,
+        "hp": 560,
         "speed": 35,
-        "reward": 45,
+        "reward": 58,
         "armor": 0.6,
         "stealth": false,
         "faction": "Legión de Ultrón",
         "archetype": "tank",
-        "statusResistance": 0.35,
+        "statusResistance": 0.4,
         "resistances": {
           "Tecnológico": 0.2
         },
-        "threat": 5
+        "threat": 5,
+        "statusResistances": {
+          "stun": 0.25,
+          "poison": 0.35
+        }
       },
       "outrider": {
         "id": "outrider",
         "name": "Outrider",
         "category": "Cósmico",
-        "hp": 120,
-        "speed": 75,
-        "reward": 15,
+        "hp": 105,
+        "speed": 88,
+        "reward": 17,
         "armor": 0.1,
         "stealth": false,
         "faction": "Outriders",
         "archetype": "runner",
-        "threat": 2
+        "threat": 2,
+        "statusResistances": {
+          "stun": 0.15
+        }
       },
       "chitauri_warrior": {
         "id": "chitauri_warrior",
@@ -6293,9 +6364,9 @@ window.__MARVEL_TD_DATA__ = {
         "id": "hand_ninja",
         "name": "Ninja de La Mano",
         "category": "Urbano",
-        "hp": 90,
-        "speed": 90,
-        "reward": 22,
+        "hp": 75,
+        "speed": 104,
+        "reward": 24,
         "armor": 0,
         "stealth": true,
         "faction": "Hydra",
@@ -6349,6 +6420,9 @@ window.__MARVEL_TD_DATA__ = {
           },
           "portrait": "assets/images/enemies/hand_ninja/portrait.png",
           "size": 96
+        },
+        "statusResistances": {
+          "slow": 0.3
         }
       },
       "symbiote_spawn": {
@@ -6463,14 +6537,14 @@ window.__MARVEL_TD_DATA__ = {
         "id": "frost_giant_scout",
         "name": "Gigante de Hielo",
         "category": "Místico",
-        "hp": 600,
+        "hp": 680,
         "speed": 30,
-        "reward": 50,
-        "armor": 0.2,
+        "reward": 62,
+        "armor": 0.28,
         "stealth": false,
         "faction": "Jotunheim",
         "archetype": "tank",
-        "statusResistance": 0.4,
+        "statusResistance": 0.45,
         "threat": 5,
         "sprite": "assets/images/enemies/frost_giant_scout/portrait.png",
         "visual": {
@@ -6520,6 +6594,10 @@ window.__MARVEL_TD_DATA__ = {
           },
           "portrait": "assets/images/enemies/frost_giant_scout/portrait.png",
           "size": 96
+        },
+        "statusResistances": {
+          "slow": 0.25,
+          "stun": 0.2
         }
       },
       "sakaaran_soldier": {
@@ -6606,9 +6684,9 @@ window.__MARVEL_TD_DATA__ = {
         "id": "ultron_drone",
         "name": "Dron de Ultrón",
         "category": "Tecnológico",
-        "hp": 120,
-        "speed": 70,
-        "reward": 15,
+        "hp": 110,
+        "speed": 82,
+        "reward": 17,
         "armor": 0.2,
         "stealth": false,
         "faction": "Legión de Ultrón",
@@ -6617,7 +6695,10 @@ window.__MARVEL_TD_DATA__ = {
         "statusResistances": {
           "slow": 0.3
         },
-        "threat": 2
+        "threat": 2,
+        "resistances": {
+          "Tecnol?gico": 0.15
+        }
       },
       "mercenary_raider": {
         "id": "mercenary_raider",
@@ -6636,16 +6717,20 @@ window.__MARVEL_TD_DATA__ = {
         "id": "kree_commander",
         "name": "Comandante Kree",
         "category": "Cósmico",
-        "hp": 260,
+        "hp": 300,
         "speed": 44,
-        "reward": 34,
+        "reward": 45,
         "armor": 0.32,
         "stealth": false,
         "faction": "Imperio Kree",
         "archetype": "commander",
         "behaviorCooldown": 5,
         "commandPower": 0.22,
-        "threat": 4
+        "threat": 4,
+        "statusResistance": 0.2,
+        "resistances": {
+          "C?smico": 0.15
+        }
       },
       "kree_sentry": {
         "id": "kree_sentry",
@@ -6667,13 +6752,17 @@ window.__MARVEL_TD_DATA__ = {
         "category": "Cósmico",
         "hp": 145,
         "speed": 72,
-        "reward": 28,
+        "reward": 32,
         "armor": 0.08,
-        "stealth": false,
+        "stealth": true,
         "faction": "Chitauri",
         "archetype": "phaser",
         "behaviorCooldown": 6,
-        "threat": 4
+        "threat": 4,
+        "statusResistances": {
+          "slow": 0.25,
+          "stun": 0.15
+        }
       },
       "chitauri_skimmer": {
         "id": "chitauri_skimmer",
@@ -6797,14 +6886,20 @@ window.__MARVEL_TD_DATA__ = {
         "id": "mindless_one",
         "name": "Sin Mente",
         "category": "Místico",
-        "hp": 390,
+        "hp": 460,
         "speed": 38,
-        "reward": 46,
+        "reward": 58,
         "armor": 0.36,
         "stealth": false,
         "faction": "Dimensión Oscura",
         "archetype": "tank",
-        "threat": 5
+        "threat": 5,
+        "statusResistance": 0.32,
+        "immuneToSlow": false,
+        "statusResistances": {
+          "slow": 0.35,
+          "stun": 0.15
+        }
       },
       "dark_zealot": {
         "id": "dark_zealot",
@@ -6929,9 +7024,9 @@ window.__MARVEL_TD_DATA__ = {
         "name": "Loki",
         "category": "Místico",
         "isBoss": true,
-        "hp": 4000,
+        "hp": 4500,
         "speed": 70,
-        "reward": 1000,
+        "reward": 1200,
         "armor": 0.1,
         "stealth": true,
         "immuneToStun": false,
@@ -7008,7 +7103,12 @@ window.__MARVEL_TD_DATA__ = {
             "speed": 1.3,
             "color": "#d86cff"
           }
-        ]
+        ],
+        "statusResistance": 0.25,
+        "statusResistances": {
+          "curse": 0.25,
+          "stun": 0.15
+        }
       },
       "doctor_doom": {
         "id": "doctor_doom",
@@ -7027,9 +7127,9 @@ window.__MARVEL_TD_DATA__ = {
         "name": "Magneto",
         "category": "Mutante",
         "isBoss": true,
-        "hp": 5500,
+        "hp": 6200,
         "speed": 45,
-        "reward": 1200,
+        "reward": 1400,
         "armor": 0.4,
         "stealth": false,
         "immuneToSlow": true,
@@ -7118,19 +7218,27 @@ window.__MARVEL_TD_DATA__ = {
             "armor": 0.1,
             "color": "#ff4d6d"
           }
-        ]
+        ],
+        "statusResistance": 0.35,
+        "statusResistances": {
+          "stun": 0.35,
+          "armorBreak": 0.2
+        }
       },
       "green_goblin": {
         "id": "green_goblin",
         "name": "Duende Verde",
         "category": "Tecnológico",
         "isBoss": true,
-        "hp": 3500,
-        "speed": 90,
-        "reward": 800,
+        "hp": 3800,
+        "speed": 98,
+        "reward": 950,
         "armor": 0.2,
         "stealth": false,
-        "immuneToSlow": false
+        "immuneToSlow": false,
+        "statusResistances": {
+          "slow": 0.3
+        }
       },
       "red_skull": {
         "id": "red_skull",
@@ -7389,12 +7497,17 @@ window.__MARVEL_TD_DATA__ = {
         "name": "Carnage",
         "category": "Urbano",
         "isBoss": true,
-        "hp": 4000,
-        "speed": 110,
-        "reward": 1000,
+        "hp": 4300,
+        "speed": 118,
+        "reward": 1150,
         "armor": 0.15,
         "stealth": false,
-        "immuneToSlow": true
+        "immuneToSlow": true,
+        "statusResistance": 0.18,
+        "statusResistances": {
+          "slow": 0.45,
+          "poison": 0.25
+        }
       },
       "hela": {
         "id": "hela",
@@ -7644,6 +7757,14 @@ window.__MARVEL_TD_DATA__ = {
           },
           "portrait": "assets/images/enemies/thanos_final/portrait.png",
           "size": 96
+        },
+        "statusResistance": 0.55,
+        "statusResistances": {
+          "slow": 0.4,
+          "stun": 0.6,
+          "poison": 0.4,
+          "burn": 0.25,
+          "curse": 0.35
         }
       },
       "malekith": {
