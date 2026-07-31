@@ -3,13 +3,14 @@ import { CODEX_MECHANICS, completedMasteryChallenges, createCodexSnapshot, flatt
 import { PAIR_SYNERGIES, SYNERGY_DEFINITIONS, analyzeTeam } from './TeamSynergySystem.js';
 import { getMusicTrack } from '../audio/AudioManager.js';
 import { HERO_MAX_LEVEL, getHeroDamageAtLevel, normalizeHeroLevel } from '../utils/HeroLevel.js';
+import { CAMPAIGN_MAX_WAVES } from '../utils/LevelProgression.js';
 
 const SAVE_KEY = 'tower-defense-marvel-save';
 const SAVE_VERSION = 8;
 const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
 const ADMIN_PASSWORD = '0000';
 const ADMIN_CREDITS = 999999999;
-const ADMIN_STARS_PER_LEVEL = 100;
+const ADMIN_STARS_PER_LEVEL = CAMPAIGN_MAX_WAVES;
 
 export const ACHIEVEMENT_CATALOG = {
     primera_defensa: achievement('Primera defensa', 'Completa tu primera mision registrada.'),
@@ -29,8 +30,8 @@ const ACHIEVEMENT_IDS = Object.keys(ACHIEVEMENT_CATALOG);
 const WEEKLY_FACTIONS = ['Hydra', 'A.I.M.', 'La Mano', 'Ultron', 'Kang', 'Thanos'];
 
 function createMapProgress(progress = {}) {
-    const bestWave = Math.max(0, Number(progress.bestWave) || 0);
-    const rawStars = Math.max(0, Number(progress.stars) || 0);
+    const bestWave = Math.min(CAMPAIGN_MAX_WAVES, Math.max(0, Number(progress.bestWave) || 0));
+    const rawStars = Math.min(CAMPAIGN_MAX_WAVES, Math.max(0, Number(progress.stars) || 0));
     return {
         bestWave,
         stars: Math.max(rawStars, bestWave),
@@ -913,13 +914,14 @@ export class ProgressionManager {
     recordWave(game, waveNumber) {
         const levelId = game.currentLevel?.id || 'level_1';
         const progress = createMapProgress(this.state.mapProgress[levelId]);
-        progress.bestWave = Math.max(progress.bestWave, waveNumber);
-        progress.stars = Math.max(progress.stars, waveNumber);
-        if (waveNumber >= 5 && game.resourceManager.lives === game.resourceManager.maxLives) {
+        const campaignWave = Math.min(CAMPAIGN_MAX_WAVES, Math.max(1, Math.floor(Number(waveNumber) || 1)));
+        progress.bestWave = Math.max(progress.bestWave, campaignWave);
+        progress.stars = Math.max(progress.stars, campaignWave);
+        if (campaignWave >= 5 && game.resourceManager.lives === game.resourceManager.maxLives) {
             progress.challenges = [...new Set([...progress.challenges, 'sin_danos'])];
         }
-        if (waveNumber % 10 === 0) progress.challenges = [...new Set([...progress.challenges, 'cazajefes'])];
-        const reward = 18 + waveNumber * 3 + (waveNumber % 10 === 0 ? 100 : 0);
+        if (campaignWave % 10 === 0) progress.challenges = [...new Set([...progress.challenges, 'cazajefes'])];
+        const reward = 18 + campaignWave * 3 + (campaignWave % 10 === 0 ? 100 : 0);
         this.state.mapProgress[levelId] = progress;
         this.addMetaCredits(reward);
         game.stars = this.getTotalStars();

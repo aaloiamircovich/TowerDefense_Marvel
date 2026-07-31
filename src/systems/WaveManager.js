@@ -1,5 +1,6 @@
 ﻿import { Enemy } from '../entities/Enemy.js';
 import { EncounterDirector } from './EncounterDirector.js';
+import { CAMPAIGN_MAX_WAVES } from '../utils/LevelProgression.js';
 
 const FACTIONS = {
     'new-york': {
@@ -118,19 +119,23 @@ export function getWaveHealthCurve(wave = 1, isBoss = false) {
     const safeWave = Math.max(1, Math.floor(Number(wave) || 1));
     let curve;
     if (safeWave <= 30) {
-        curve = 0.86 + safeWave * 0.04;
+        curve = 0.84 + safeWave * 0.045;
     } else if (safeWave <= 79) {
-        curve = 2.06 * (1.072 ** (safeWave - 30));
+        curve = 2.2 * (1.046 ** (safeWave - 30));
     } else {
-        curve = 62.2 * (1.125 ** (safeWave - 79));
+        curve = 20 * (1.072 ** (safeWave - 79));
     }
     if (!isBoss) return curve;
     const bossFactor = safeWave <= 30
         ? 1.05 + safeWave * 0.035
         : safeWave <= 79
-            ? 2.1 + (safeWave - 30) * 0.055
-            : 4.8 + (safeWave - 79) * 0.085;
+            ? 2.1 + (safeWave - 30) * 0.005
+            : 2.35 + (safeWave - 79) * 0.012;
     return curve * bossFactor;
+}
+
+export function getFinalBossHealthCurve(wave = CAMPAIGN_MAX_WAVES) {
+    return getWaveHealthCurve(wave, false) * 0.62;
 }
 
 export function getLevelHealthFactor(level = {}, levelIndex = 0) {
@@ -164,7 +169,7 @@ export class WaveManager {
         this.game = gameInstance;
         this.data = enemiesDb;
         this.currentWave = 1;
-        this.maxWaves = 50;
+        this.maxWaves = CAMPAIGN_MAX_WAVES;
         this.enemiesQueue = [];
         this.preparedQueue = [];
         this.spawnTimer = 0;
@@ -277,8 +282,9 @@ export class WaveManager {
     getBossWaveMultiplier(wave = this.currentWave) {
         const safeWave = Math.max(1, Math.floor(Number(wave) || 1));
         if (safeWave <= 10) return 0.85;
-        if (safeWave <= 30) return 0.85 + (safeWave - 10) * 0.045;
-        return 1.75 + (safeWave - 30) * 0.065;
+        if (safeWave <= 30) return 0.85 + (safeWave - 10) * 0.015;
+        if (safeWave <= 79) return 1.15 + (safeWave - 30) * 0.006;
+        return 1.45 + (safeWave - 79) * 0.006;
     }
 
     getWaveModifier() {
@@ -376,11 +382,14 @@ export class WaveManager {
         const modifier = isBoss ? {} : this.waveModifier;
         const difficulty = DIFFICULTIES[this.game.difficulty || 'normal'];
         const levelIndex = (this.game.levelsData || []).findIndex((level) => level.id === this.game.currentLevel?.id);
-        const waveHealth = getWaveHealthCurve(this.currentWave, isBoss || config.isBoss);
+        const waveHealth = config.isFinalBoss
+            ? getFinalBossHealthCurve(this.currentWave)
+            : getWaveHealthCurve(this.currentWave, isBoss || config.isBoss);
         const levelHealth = getLevelHealthFactor(this.game.currentLevel, levelIndex);
+        const scalingMultiplier = config.isFinalBoss ? 1 : multiplier;
         return {
             ...config,
-            hp: Math.round(config.hp * multiplier * waveHealth * levelHealth * (modifier.hpFactor || 1) * difficulty.hp),
+            hp: Math.round(config.hp * scalingMultiplier * waveHealth * levelHealth * (modifier.hpFactor || 1) * difficulty.hp),
             speed: Math.round(config.speed * (modifier.speedFactor || 1) * difficulty.speed),
             armor: Math.min(0.8, (config.armor || 0) + (modifier.armorBonus || 0)),
             barrierRatio: Math.max(config.barrierRatio || 0, modifier.barrierRatio || 0),
@@ -464,7 +473,7 @@ export class WaveManager {
 
     getWaveSummary() {
         const roles = new Set();
-        let reward = 110 + this.currentWave * 24;
+        let reward = this.getWaveBounty();
         let fastest = 0;
         let maxThreat = 1;
         let stealthCount = 0;
@@ -710,7 +719,7 @@ export class WaveManager {
         this.game.uiManager?.updateCombatPressure?.([], this.game.path, false);
         this.game.missionSystem?.onWaveFinished(this.currentWave);
         this.game.modeSystem?.onWaveFinished(this.currentWave);
-        const waveBounty = 110 + this.currentWave * 24;
+        const waveBounty = this.getWaveBounty();
         const cleanBonus = this.getCleanWaveBonus();
         this.game.resourceManager.addCredits(waveBounty);
         if (cleanBonus > 0) this.game.resourceManager.addCredits(cleanBonus);
@@ -755,7 +764,13 @@ export class WaveManager {
     }
 
     getPerfectWaveBonus(wave = this.currentWave) {
-        return Math.min(140, 24 + Math.max(1, Number(wave || 1)) * 6);
+        return Math.min(260, 28 + Math.max(1, Number(wave || 1)) * 8);
+    }
+
+    getWaveBounty(wave = this.currentWave) {
+        const safeWave = Math.max(1, Number(wave || 1));
+        const lateRamp = Math.max(0, safeWave - 30);
+        return Math.round(150 + safeWave * 38 + lateRamp * 70 + lateRamp * lateRamp * 0.55);
     }
 
     captureWaveSnapshot(wave = this.currentWave) {

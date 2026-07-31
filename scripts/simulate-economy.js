@@ -38,9 +38,9 @@ const tierPrices = Object.values(items).reduce((groups, item) => {
 
 let missionCredits = 650;
 const missionProjection = [];
-for (let wave = 1; wave <= 10; wave++) {
+for (let wave = 1; wave <= 100; wave++) {
     const enemyCount = 7 + Math.floor(wave * 0.55);
-    missionCredits += enemyCount * (10 + wave * 0.4) + 110 + wave * 24;
+    missionCredits += enemyCount * (10 + wave * 0.4) + getWaveBounty(wave);
     missionProjection.push(Math.round(missionCredits));
 }
 
@@ -48,7 +48,7 @@ console.log('Simulacion de economia Marvel TD');
 console.log(`Eficiencia mediana: ${median(ranking.map((hero) => hero.efficiency)).toFixed(3)}`);
 console.log(`Top eficiencia: ${ranking.slice(0, 3).map((hero) => hero.name).join(', ')}`);
 console.log(`Menor eficiencia: ${ranking.slice(-3).map((hero) => hero.name).join(', ')}`);
-console.log(`Creditos proyectados tras oleadas 1/5/10: ${missionProjection[0]} / ${missionProjection[4]} / ${missionProjection[9]}`);
+console.log(`Creditos proyectados tras oleadas 1/50/100: ${missionProjection[0]} / ${missionProjection[49]} / ${missionProjection[99]}`);
 console.log(`Precios medianos por tier: ${Object.entries(tierPrices).map(([tier, prices]) => `T${tier}=$${median(prices)}`).join(' | ')}`);
 
 const builds = Object.values(items).map((item) => {
@@ -88,7 +88,7 @@ const bestTeam = teamStats.best;
 const competitiveTeams = { length: teamStats.competitive };
 console.log(`Equipos de seis simulados: ${teamCombinations.length} · techo x${bestTeam.multiplier.toFixed(2)} · competitivos ${competitiveTeams.length}`);
 
-if (missionProjection[0] < 800 || missionProjection[4] < 1800) {
+if (missionProjection[0] < 850 || missionProjection[49] < 95000 || missionProjection[99] < 350000) {
     console.error('ERROR: la economia de mision no permite una segunda decision temprana.');
     process.exitCode = 1;
 }
@@ -121,6 +121,12 @@ function median(values) {
     const sorted = [...values].sort((a, b) => a - b);
     const middle = Math.floor(sorted.length / 2);
     return sorted.length % 2 ? sorted[middle] : (sorted[middle - 1] + sorted[middle]) / 2;
+}
+
+function getWaveBounty(wave) {
+    const safeWave = Math.max(1, Number(wave || 1));
+    const lateRamp = Math.max(0, safeWave - 30);
+    return Math.round(150 + safeWave * 38 + lateRamp * 70 + lateRamp * lateRamp * 0.55);
 }
 
 function evaluateTeamCombinations(values, size) {

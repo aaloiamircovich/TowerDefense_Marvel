@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { buildBossHudState, buildCombatPressureState, buildEnemyIntel, buildLeakIntel, buildOnboardingCoachState, buildPressureActionState, buildRosterWaveFitView, buildShopItemInsight, buildShopSetProgress, buildSpawnQueueState, buildStatusLegendModel, buildStealthCoverageState, buildTacticalContributionModel, buildTargetingControlState, buildWaveLaunchState, buildWavePrepActionControl, buildWavePreparationPlan, buildWaveReportActionState, buildWaveReportGrade, buildWaveReportLesson, buildWaveReportState, evaluateHeroWaveFit, getNextTargetingPriority, UIManager } from '../src/systems/UIManager.js';
+import { calculateHeroLevelCost } from '../src/utils/HeroLevel.js';
 
 test('buildWaveLaunchState muestra riesgo critico en el CTA', () => {
     const state = buildWaveLaunchState(true, {
@@ -647,8 +648,10 @@ test('buildWaveReportActionState indica ahorro si falta para reforzar tras fugas
 });
 
 test('UIManager recalcula coste del panel con el nivel vivo tras mejora rapida', () => {
-    const ui = createUpgradeUi(250);
     const hero = deployedHero({ id: 'iron_man', name: 'Iron Man', level: 2, damage: 48, fireRate: 1.3, range: 170 });
+    const firstCost = calculateHeroLevelCost(hero.level, 1);
+    const nextCost = calculateHeroLevelCost(hero.level + 1, 1);
+    const ui = createUpgradeUi(firstCost);
     const originalRange = hero.range;
     const originalFireRate = hero.fireRate;
 
@@ -659,34 +662,36 @@ test('UIManager recalcula coste del panel con el nivel vivo tras mejora rapida',
     assert.equal(hero.fireRate, originalFireRate);
     assert.equal(ui.game.resourceManager.credits, 0);
 
-    ui.game.resourceManager.credits = 300;
+    ui.game.resourceManager.credits = nextCost - 1;
     ui.processUpgrade(hero, 1);
 
     assert.equal(hero.level, 3);
-    assert.equal(ui.game.resourceManager.credits, 300);
+    assert.equal(ui.game.resourceManager.credits, nextCost - 1);
     assert.ok(ui.__calls.some((call) => call[0] === 'toast' && /insuficientes/i.test(call[1])));
 });
 
 test('UIManager mejora rapida no cobra ni sube nivel si faltan creditos', () => {
-    const ui = createUpgradeUi(329);
     const hero = deployedHero({ id: 'spiderman', name: 'Spider-Man', level: 3, damage: 20, fireRate: 2, range: 140 });
+    const credits = calculateHeroLevelCost(hero.level, 1) - 1;
+    const ui = createUpgradeUi(credits);
 
     assert.equal(ui.quickUpgradeHero(hero), false);
 
     assert.equal(hero.level, 3);
-    assert.equal(ui.game.resourceManager.credits, 329);
+    assert.equal(ui.game.resourceManager.credits, credits);
     assert.ok(ui.__calls.some((call) => call[0] === 'toast' && /insuficientes/i.test(call[1])));
 });
 
 test('UIManager mejora rapida usa creditos visibles si el estado interno quedo sin normalizar', () => {
     const ui = createUpgradeUi(undefined, '889');
     const hero = deployedHero({ id: 'iron_man', name: 'Iron Man', level: 3, damage: 60, fireRate: 1.3, range: 180 });
+    const cost = calculateHeroLevelCost(hero.level, 1);
 
     assert.equal(ui.canAffordHeroUpgrade(hero, 1), true);
     assert.equal(ui.quickUpgradeHero(hero), true);
 
     assert.equal(hero.level, 4);
-    assert.equal(ui.game.resourceManager.credits, 559);
+    assert.equal(ui.game.resourceManager.credits, 889 - cost);
 });
 
 test('UIManager mejora rapida reconoce creditos infinitos de admin', () => {

@@ -116,7 +116,7 @@ function createGame() {
         uiManager: { showToast() {}, updateModeStatus() {}, showModeResult() {}, closePanel() {}, renderHeroRoster() {}, renderWavePreview() {}, setNextWaveEnabled() {}, showDraftChoice(options) { game.draftOffers = options; } }, inputManager: { setPlacementMode() {} }
     };
     game.progression = { recordModeScore(modeId, score, wave, result, seedKey) { game.recorded.push({ modeId, score, wave, result, seedKey }); }, getModeRecord() { return { bestScore: 0, bestWave: 0 }; } };
-    game.loadLevel = (level) => { game.currentLevel = level; game.waveManager = { maxWaves: 50, currentWave: 1, isWaveActive: false }; };
+    game.loadLevel = (level) => { game.currentLevel = level; game.waveManager = { maxWaves: 100, currentWave: 1, isWaveActive: false }; };
     return game;
 }
 function createContext(calls) { return new Proxy({}, { get(_target, key) { if (['save', 'restore', 'fillRect', 'strokeRect', 'fillText'].includes(key)) return () => calls.push(key); return ''; }, set() { return true; } }); }

@@ -1,6 +1,7 @@
 import { APP_VERSION, FAN_PROJECT_NOTICE } from '../config/AppConfig.js';
 import { MASTERY_CHALLENGES } from '../systems/MasteryCodexSystem.js';
 import { ACHIEVEMENT_CATALOG } from '../systems/ProgressionManager.js';
+import { CAMPAIGN_MAX_WAVES } from '../utils/LevelProgression.js';
 
 export class ProfilePanel {
     constructor(ui) {
@@ -22,7 +23,7 @@ export class ProfilePanel {
         const weekly = progression.getWeeklyContractSnapshot();
         const synergyChallenges = progression.getSynergyChallengeSnapshot(team);
         const statistics = progression.state.statistics;
-        const starTarget = Math.max(1, game.levelsData.length * (game.waveManager?.maxWaves || 50));
+        const starTarget = Math.max(1, game.levelsData.length * (game.waveManager?.maxWaves || CAMPAIGN_MAX_WAVES));
         const completion = Math.min(100, Math.round((game.stars / starTarget) * 100));
         const masteryRows = game.unlockedHeroes.map((hero) => {
             const completed = progression.getHeroMastery(hero.id).completed;

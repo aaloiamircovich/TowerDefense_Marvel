@@ -222,13 +222,14 @@ test('Cada oleada nueva superada cuenta como una estrella', () => {
     manager.initialize(game, data);
     game.progression = manager;
 
-    for (let wave = 1; wave <= 50; wave++) manager.recordWave(game, wave);
+    for (let wave = 1; wave <= 100; wave++) manager.recordWave(game, wave);
     manager.recordWave(game, 25);
+    manager.recordWave(game, 125);
 
     const progress = manager.getMapProgress('level_1');
-    assert.equal(progress.bestWave, 50);
-    assert.equal(progress.stars, 50);
-    assert.equal(game.stars, 50);
+    assert.equal(progress.bestWave, 100);
+    assert.equal(progress.stars, 100);
+    assert.equal(game.stars, 100);
 });
 
 test('Objetivos de misión entregan una recompensa una sola vez', () => {

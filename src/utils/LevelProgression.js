@@ -1,4 +1,5 @@
-export const STARS_PER_LEVEL_UNLOCK = 25;
+export const CAMPAIGN_MAX_WAVES = 100;
+export const STARS_PER_LEVEL_UNLOCK = 50;
 
 export function getLevelUnlockRequirement(index = 0) {
     return Math.max(0, Number(index) || 0) * STARS_PER_LEVEL_UNLOCK;

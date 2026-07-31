@@ -1,7 +1,7 @@
 ﻿import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import { WaveManager, getLevelHealthFactor, getWaveHealthCurve } from '../src/systems/WaveManager.js';
+import { WaveManager, getFinalBossHealthCurve, getLevelHealthFactor, getWaveHealthCurve } from '../src/systems/WaveManager.js';
 
 const enemies = JSON.parse(fs.readFileSync(new URL('../data/enemies.json', import.meta.url), 'utf8'));
 
@@ -57,6 +57,7 @@ test('WaveManager mantiene a Ultron como primer boss vencible en Base Avengers',
 
 test('WaveManager conserva la marca de jefe final en la ultima oleada', () => {
     const manager = new WaveManager(createGame(), enemies);
+    assert.equal(manager.maxWaves, 100);
     manager.currentWave = manager.maxWaves;
     manager.prepareNextWave();
 
@@ -102,11 +103,13 @@ test('curva de salud escala suave, exponencial y extrema por oleada', () => {
     const wave60 = getWaveHealthCurve(60);
     const wave100 = getWaveHealthCurve(100);
     const boss100 = getWaveHealthCurve(100, true);
+    const final100 = getFinalBossHealthCurve(100);
 
     assert.ok(wave30 > wave1 * 2);
     assert.ok(wave60 > wave30 * 3);
     assert.ok(wave100 > wave60 * 10);
-    assert.ok(boss100 > wave100 * 5);
+    assert.ok(boss100 > wave100 * 2.5);
+    assert.ok(final100 < wave100);
 });
 
 test('factor de salud sube con dificultad fija y posicion del mapa', () => {
@@ -158,7 +161,7 @@ test('WaveManager anticipa bonus perfecto en el resumen preparado', () => {
     const manager = new WaveManager(createGame(), enemies);
     const summary = manager.buildPreparedSummary();
 
-    assert.equal(summary.perfectBonus, 30);
+    assert.equal(summary.perfectBonus, 36);
     assert.equal(manager.getPerfectWaveBonus(), summary.perfectBonus);
 });
 
@@ -270,7 +273,7 @@ test('WaveManager emite informe tactico con deltas de la oleada', () => {
     assert.equal(reports[0].tactical.livesSaved, 1);
     assert.equal(reports[0].tactical.mvp, 'Iron Man');
     assert.ok(reports[0].tactical.score > 0);
-    assert.ok(reports[0].credits >= 134);
+    assert.ok(reports[0].credits >= 188);
 });
 
 test('WaveManager registra fugas con counter y progreso de ruta', () => {
@@ -332,8 +335,8 @@ test('WaveManager paga bonus moderado por oleada perfecta', () => {
     manager.enemiesQueue = [];
     manager.finishWave();
 
-    assert.equal(reports[0].cleanBonus, 30);
-    assert.equal(game.resourceManager.credits, 300 + 134 + 30);
+    assert.equal(reports[0].cleanBonus, 36);
+    assert.equal(game.resourceManager.credits, 300 + 188 + 36);
 });
 
 test('WaveManager cancela bonus perfecto cuando hay fugas', () => {
@@ -359,7 +362,7 @@ test('WaveManager cancela bonus perfecto cuando hay fugas', () => {
     manager.finishWave();
 
     assert.equal(reports[0].cleanBonus, 0);
-    assert.equal(game.resourceManager.credits, 300 + 134);
+    assert.equal(game.resourceManager.credits, 300 + 188);
 });
 
 test('WaveManager anuncia jefes al entrar en ruta', () => {
