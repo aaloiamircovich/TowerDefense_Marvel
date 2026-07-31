@@ -35,13 +35,13 @@ test('canPlaceOnTerrain aplica afinidad del heroe sin permitir edificios ni cami
     assert.equal(canPlaceOnTerrain(ground, TERRAIN.path), false);
 });
 
-test('Base Avengers bloquea calle y mediana decorativa para heroes de pasto', () => {
+test('Base Avengers bloquea calle gris y permite pasto central', () => {
     const level = levels.find((entry) => entry.id === 'level_1');
     const map = buildPixelTerrainMap(level, { width: 800, height: 608 }, 32);
     const ground = { allowedTerrains: [TERRAIN.grass] };
 
     assert.equal(canPlaceOnTerrain(ground, map[5][6]), false);
-    assert.equal(canPlaceOnTerrain(ground, map[5][9]), false);
-    assert.equal(canPlaceOnTerrain(ground, map[12][9]), false);
+    assert.equal(canPlaceOnTerrain(ground, map[5][9]), true);
+    assert.equal(canPlaceOnTerrain(ground, map[12][9]), true);
     assert.equal(canPlaceOnTerrain(ground, map[16][3]), true);
 });
