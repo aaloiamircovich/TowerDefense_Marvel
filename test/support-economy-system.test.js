@@ -57,7 +57,7 @@ test('auras de soporte mejoran al subir nivel del heroe soporte', () => {
     const ally = new Hero(createHeroConfig('ally', { damage: 100 }), 100, 0, game);
     game.heroes = [captain, ally];
 
-    assert.equal(Math.round(ally.getEffectiveStats().damage), 118);
+    assert.equal(Math.round(ally.getEffectiveStats().damage), 116);
 });
 
 test('Domino genera 15 por ciento de recompensa por cada ataque realizado', () => {

@@ -13,6 +13,10 @@ $setColors = @{
     mystic = [System.Drawing.Color]::FromArgb(255, 245, 151, 35)
     symbiote = [System.Drawing.Color]::FromArgb(255, 184, 224, 74)
     shield = [System.Drawing.Color]::FromArgb(255, 70, 160, 220)
+    tactical = [System.Drawing.Color]::FromArgb(255, 70, 160, 220)
+    street = [System.Drawing.Color]::FromArgb(255, 230, 57, 70)
+    cosmic = [System.Drawing.Color]::FromArgb(255, 255, 139, 209)
+    asgard = [System.Drawing.Color]::FromArgb(255, 244, 211, 94)
 }
 
 foreach ($property in $items.PSObject.Properties) {
@@ -23,6 +27,7 @@ foreach ($property in $items.PSObject.Properties) {
     $graphics.Clear([System.Drawing.Color]::Transparent)
 
     $accent = $setColors[$item.set]
+    if ($null -eq $accent) { $accent = [System.Drawing.Color]::FromArgb(255, 148, 163, 184) }
     $background = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(245, 10, 18, 29))
     $accentBrush = New-Object System.Drawing.SolidBrush $accent
     $accentPen = New-Object System.Drawing.Pen $accent, 3

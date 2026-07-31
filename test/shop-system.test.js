@@ -33,7 +33,7 @@ test('ShopSystem abre la tienda con una respuesta basica contra blindaje', () =>
 test('ShopSystem rellena la vitrina con el siguiente objeto al comprar', () => {
     const { shop, progression } = createShop();
     const expectedQueue = sortItemsWeakestFirst(Object.values(data.items)).map((item) => item.id);
-    progression.state.metaCredits = 10000;
+    progression.setCredits(10000);
     const [first, second, third, fourth] = expectedQueue;
 
     assert.deepEqual(shop.getRotation().map((slot) => slot.item.id), [first, second, third]);
@@ -44,7 +44,7 @@ test('ShopSystem rellena la vitrina con el siguiente objeto al comprar', () => {
 test('ShopSystem impide comprar dos veces el mismo objeto', () => {
     const { shop, progression } = createShop();
     const item = shop.getRotation()[0].item;
-    progression.state.metaCredits = 10000;
+    progression.setCredits(10000);
 
     assert.equal(shop.purchaseItem(item.id).ok, true);
     assert.equal(shop.purchaseItem(item.id).ok, false);
@@ -54,7 +54,7 @@ test('ShopSystem impide comprar dos veces el mismo objeto', () => {
 test('ShopSystem recluta heroes sin duplicados', () => {
     const { shop, progression } = createShop();
     progression.startProfile('iron_man');
-    progression.state.metaCredits = 5000;
+    progression.setCredits(5000);
     const result = shop.recruitHero();
 
     assert.equal(result.ok, true);
@@ -66,7 +66,7 @@ test('ShopSystem recluta heroes sin duplicados', () => {
 test('ShopSystem aumenta el costo de la caja de heroe un 12% por apertura', () => {
     const { shop, progression } = createShop();
     progression.startProfile('iron_man');
-    progression.state.metaCredits = 5000;
+    progression.setCredits(5000);
 
     const first = shop.recruitHero();
     const second = shop.recruitHero();

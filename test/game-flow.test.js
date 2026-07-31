@@ -36,7 +36,7 @@ test('flujo completo selecciona héroe, lo coloca, supera oleada y cobra recompe
     assert.equal(game.waveManager.currentWave, 2);
     assert.deepEqual(game.completedWaves, [1]);
     assert.ok(game.resourceManager.credits > 650);
-    assert.ok(game.progression.state.metaCredits > 1200);
+    assert.ok(game.progression.state.credits > 1200);
 });
 
 function createGame() {

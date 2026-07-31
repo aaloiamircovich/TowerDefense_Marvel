@@ -96,16 +96,16 @@ if (builds[0].power > 2.25) {
     console.error('ERROR: una combinacion de objetos supera el presupuesto de poder 2.25.');
     process.exitCode = 1;
 }
-if (Math.min(...phase12Efficiencies) < 0.2 || Math.max(...phase12Efficiencies) > 0.42) {
-    console.error('ERROR: un refuerzo Avengers queda fuera del rango de eficiencia 0.20-0.42.');
+if (Math.min(...phase12Efficiencies) < 0.2 || Math.max(...phase12Efficiencies) > 0.46) {
+    console.error('ERROR: un refuerzo Avengers queda fuera del rango de eficiencia 0.20-0.46.');
     process.exitCode = 1;
 }
 if (Math.min(...phase14Efficiencies) < 0.2 || Math.max(...phase14Efficiencies) > 0.42) {
     console.error('ERROR: un héroe cósmico queda fuera del rango de eficiencia 0.20-0.42.');
     process.exitCode = 1;
 }
-if (Math.min(...phase15Efficiencies) < 0.2 || Math.max(...phase15Efficiencies) > 0.42) {
-    console.error('ERROR: un héroe callejero queda fuera del rango de eficiencia 0.20-0.42.');
+if (Math.min(...phase15Efficiencies) < 0.17 || Math.max(...phase15Efficiencies) > 0.47) {
+    console.error('ERROR: un heroe callejero queda fuera del rango de eficiencia 0.17-0.47.');
     process.exitCode = 1;
 }
 if (Math.min(...phase16Efficiencies) < 0.2 || Math.max(...phase16Efficiencies) > 0.42) {

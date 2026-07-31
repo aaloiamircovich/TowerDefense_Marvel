@@ -298,7 +298,7 @@ export class TeamBuilderPanel {
         return `
             <section class="villain-codex-header">
                 <div>
-                    <span class="briefing-kicker">ARCHIVO S.H.I.E.L.D.</span>
+                    <span class="briefing-kicker">ARCHIVO HEROICO</span>
                     <h3>Diccionario de villanos</h3>
                     <p>Los registros se desbloquean cuando el enemigo aparece en una oleada.</p>
                 </div>
@@ -332,7 +332,7 @@ export class TeamBuilderPanel {
         return `
             <section class="evolution-codex-empty">
                 <div>
-                    <span class="briefing-kicker">ARCHIVO S.H.I.E.L.D.</span>
+                    <span class="briefing-kicker">ARCHIVO HEROICO</span>
                     <h3>Diccionario de evoluciones</h3>
                     <p>Reservado para futuras evoluciones cuando el roster tenga sus sprites completos.</p>
                 </div>

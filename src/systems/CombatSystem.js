@@ -182,6 +182,14 @@ export class CombatSystem {
             resourceManager?.addCredits(itemEffects.onHitCredit);
             attacker.recordGold?.(itemEffects.onHitCredit);
         }
+        if (itemEffects.onHitCreditPct) {
+            const reward = Number(target?.reward ?? target?.config?.reward ?? 0);
+            const credits = Math.max(1, Math.ceil(reward * itemEffects.onHitCreditPct));
+            if (Number.isFinite(reward) && reward > 0) {
+                resourceManager?.addCredits(credits);
+                attacker.recordGold?.(credits);
+            }
+        }
         attacker.items.forEach((item) => {
             if (item.flags?.includes('slow_on_armor') && target.armor > 0) {
                 target.applyStatus?.({ type: 'slow', duration: 1, power: 0.5 }, attacker)

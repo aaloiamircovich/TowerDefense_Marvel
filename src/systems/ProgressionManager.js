@@ -6,7 +6,7 @@ import { HERO_MAX_LEVEL, getHeroDamageAtLevel, normalizeHeroLevel } from '../uti
 import { CAMPAIGN_MAX_WAVES } from '../utils/LevelProgression.js';
 
 const SAVE_KEY = 'tower-defense-marvel-save';
-const SAVE_VERSION = 8;
+const SAVE_VERSION = 9;
 const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
 const ADMIN_PASSWORD = '0000';
 const ADMIN_CREDITS = 999999999;
@@ -65,7 +65,7 @@ function createWeeklyContracts(weekKey = getWeekKey()) {
         {
             id: `${weekKey}:clean_run`,
             title: 'Defensa impecable',
-            group: 'S.H.I.E.L.D.',
+            group: 'Comando',
             reward: 180,
             goal: 'Gana una mision con 18 o mas vidas restantes.',
             evaluate: (summary) => summary.result === 'victory' && summary.lives >= 18
@@ -158,7 +158,7 @@ function decodeSharePayload(source) {
 function createDefaultState() {
     return {
         version: SAVE_VERSION,
-        metaCredits: 1200,
+        credits: 1200,
         unlockedHeroIds: [],
         activeTeamIds: [],
         ownedItemIds: [],
@@ -246,7 +246,7 @@ export class ProgressionManager {
         }
 
         const migrated = createDefaultState();
-        migrated.metaCredits = raw.metaCredits ?? raw.credits ?? migrated.metaCredits;
+        migrated.credits = raw.credits ?? raw.metaCredits ?? migrated.credits;
         migrated.unlockedHeroIds = raw.unlockedHeroIds || raw.heroes || [];
         migrated.activeTeamIds = raw.activeTeamIds || raw.team || migrated.unlockedHeroIds.slice(0, 6);
         migrated.ownedItemIds = raw.ownedItemIds || raw.items || [];
@@ -342,7 +342,8 @@ export class ProgressionManager {
         const statistics = this.state.statistics || {};
         this.state.statistics = Object.fromEntries(['missions', 'victories', 'defeats', 'waves', 'enemiesDefeated', 'damageDealt', 'creditsEarned']
             .map((key) => [key, Math.max(0, Math.round(Number(statistics[key]) || 0))]));
-        this.state.metaCredits = Math.max(0, Number(this.state.metaCredits) || 0);
+        this.state.credits = Math.max(0, Number(this.state.credits ?? this.state.metaCredits) || 0);
+        delete this.state.metaCredits;
         this.state.shop = { ...createDefaultState().shop, ...(this.state.shop || {}) };
         this.state.shop.heroPity = Math.max(0, Math.floor(Number(this.state.shop.heroPity) || 0));
         this.state.shop.heroBoxCost = Math.max(500, Math.ceil(Number(this.state.shop.heroBoxCost) || 500));
@@ -370,6 +371,9 @@ export class ProgressionManager {
         this.game.showGrid = this.state.settings.grid;
         this.applySettings();
         this.game.resourceManager?.setInfiniteCredits?.(this.state.settings.adminMode);
+        if (this.game.resourceManager && !this.state.settings.adminMode) {
+            this.game.resourceManager.credits = this.state.credits;
+        }
         this.game.stars = this.getTotalStars();
         this.game.heroes?.forEach((hero) => {
             this.applyHeroLevelStats(hero);
@@ -437,27 +441,67 @@ export class ProgressionManager {
         return true;
     }
 
-    spendMetaCredits(amount) {
+    getCredits() {
+        return this.state.settings.adminMode ? ADMIN_CREDITS : Math.max(0, Math.floor(Number(this.state.credits) || 0));
+    }
+
+    setCredits(amount, save = true) {
+        if (this.state.settings.adminMode) {
+            this.state.credits = ADMIN_CREDITS;
+        } else if (Number.isFinite(amount)) {
+            this.state.credits = Math.max(0, Math.floor(amount));
+        }
+        if (this.game?.resourceManager && !this.state.settings.adminMode) {
+            this.game.resourceManager.credits = this.state.credits;
+        }
+        if (save) this.save();
+        return this.state.credits;
+    }
+
+    syncCreditsFromResource(amount) {
+        if (this.state.settings.adminMode) {
+            this.state.credits = ADMIN_CREDITS;
+            this.save();
+            return;
+        }
+        this.setCredits(amount, true);
+    }
+
+    spendCredits(amount) {
         if (this.state.settings.adminMode && Number.isFinite(amount) && amount > 0) {
-            this.state.metaCredits = ADMIN_CREDITS;
+            this.state.credits = ADMIN_CREDITS;
             this.save();
             return true;
         }
-        if (!Number.isFinite(amount) || amount <= 0 || this.state.metaCredits < amount) return false;
-        this.state.metaCredits -= amount;
+        if (!Number.isFinite(amount) || amount <= 0 || this.state.credits < amount) return false;
+        this.state.credits -= amount;
+        if (this.game?.resourceManager && !this.state.settings.adminMode) {
+            this.game.resourceManager.credits = this.state.credits;
+        }
         this.save();
         return true;
     }
 
-    addMetaCredits(amount) {
+    addCredits(amount) {
         if (this.state.settings.adminMode) {
-            this.state.metaCredits = ADMIN_CREDITS;
+            this.state.credits = ADMIN_CREDITS;
             this.save();
             return;
         }
         if (!Number.isFinite(amount) || amount <= 0) return;
-        this.state.metaCredits += Math.round(amount);
+        this.state.credits += Math.round(amount);
+        if (this.game?.resourceManager && !this.state.settings.adminMode) {
+            this.game.resourceManager.credits = this.state.credits;
+        }
         this.save();
+    }
+
+    spendMetaCredits(amount) {
+        return this.spendCredits(amount);
+    }
+
+    addMetaCredits(amount) {
+        return this.addCredits(amount);
     }
 
     unlockHero(heroId) {
@@ -496,7 +540,7 @@ export class ProgressionManager {
         if (!this.state.activeTeamIds.length) this.state.activeTeamIds = heroIds.slice(0, 6);
         this.state.ownedItemIds = itemIds;
         this.state.heroUpgrades = Object.fromEntries(heroIds.map((id) => [id, { level: HERO_MAX_LEVEL }]));
-        this.state.metaCredits = ADMIN_CREDITS;
+        this.state.credits = ADMIN_CREDITS;
         this.state.mapProgress = Object.fromEntries((this.data.levels || []).map((level) => [level.id, {
             bestWave: ADMIN_STARS_PER_LEVEL,
             stars: ADMIN_STARS_PER_LEVEL,
@@ -581,7 +625,7 @@ export class ProgressionManager {
         target.baseDamage = Number.isFinite(baseDamage) ? baseDamage : 10;
         target.baseRange = Number.isFinite(baseRange) ? baseRange : 100;
         target.baseFireRate = Number.isFinite(baseFireRate) ? baseFireRate : 1;
-        target.damage = getHeroDamageAtLevel(target.baseDamage, level);
+        target.damage = getHeroDamageAtLevel(target.baseDamage, level, target.rarity || source.rarity);
         target.range = target.baseRange;
         target.fireRate = target.baseFireRate;
         return target;
@@ -611,10 +655,7 @@ export class ProgressionManager {
         const completed = [...new Set([...previous, ...completedMasteryChallenges(hero.combatStats)])];
         const unlocked = completed.filter((id) => !previous.includes(id));
         this.state.heroMastery[hero.id] = { completed };
-        if (unlocked.length) {
-            this.state.metaCredits += unlocked.length * 100;
-            this.save();
-        }
+        if (unlocked.length) this.addCredits(unlocked.length * 100);
         return unlocked;
     }
 
@@ -739,7 +780,7 @@ export class ProgressionManager {
                 : activePairIds.has(challenge.pairId) && kills >= 15;
             if (!qualifies || completed.has(challenge.id)) return;
             completed.add(challenge.id);
-            this.state.metaCredits += challenge.reward;
+            this.addCredits(challenge.reward);
             earned.push({
                 id: challenge.id,
                 title: challenge.title,
@@ -782,7 +823,7 @@ export class ProgressionManager {
         createWeeklyContracts(weekKey).forEach((contract) => {
             if (completed.has(contract.id) || !contract.evaluate(summary)) return;
             completed.add(contract.id);
-            this.state.metaCredits += contract.reward;
+            this.addCredits(contract.reward);
             earned.push({
                 id: contract.id,
                 title: contract.title,
@@ -923,7 +964,7 @@ export class ProgressionManager {
         if (campaignWave % 10 === 0) progress.challenges = [...new Set([...progress.challenges, 'cazajefes'])];
         const reward = 18 + campaignWave * 3 + (campaignWave % 10 === 0 ? 100 : 0);
         this.state.mapProgress[levelId] = progress;
-        this.addMetaCredits(reward);
+        this.addCredits(reward);
         game.stars = this.getTotalStars();
         return reward;
     }
@@ -953,7 +994,7 @@ export class ProgressionManager {
         if (progress.missionObjectives.includes(objectiveId)) return false;
         progress.missionObjectives.push(objectiveId);
         this.state.mapProgress[levelId] = progress;
-        this.addMetaCredits(reward);
+        this.addCredits(reward);
         return true;
     }
 

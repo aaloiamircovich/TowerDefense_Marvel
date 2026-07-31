@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
 import {
     canPlaceOnTerrain,
     getAllowedTerrainLabels,
@@ -8,6 +9,9 @@ import {
     isBlockedPlacementTerrain,
     TERRAIN
 } from '../src/utils/TerrainRules.js';
+import { buildPixelTerrainMap } from '../src/rendering/PixelMapRenderer.js';
+
+const levels = JSON.parse(fs.readFileSync(new URL('../data/levels.json', import.meta.url), 'utf8'));
 
 test('reglas de terreno distinguen agua, pasto, montana y bloqueados', () => {
     assert.equal(getPlacementTerrain(TERRAIN.sidewalk), TERRAIN.grass);
@@ -29,4 +33,15 @@ test('canPlaceOnTerrain aplica afinidad del heroe sin permitir edificios ni cami
     assert.equal(canPlaceOnTerrain(highGround, TERRAIN.blocked), false);
     assert.equal(canPlaceOnTerrain(ground, TERRAIN.forest), true);
     assert.equal(canPlaceOnTerrain(ground, TERRAIN.path), false);
+});
+
+test('Base Avengers bloquea calle y mediana decorativa para heroes de pasto', () => {
+    const level = levels.find((entry) => entry.id === 'level_1');
+    const map = buildPixelTerrainMap(level, { width: 800, height: 608 }, 32);
+    const ground = { allowedTerrains: [TERRAIN.grass] };
+
+    assert.equal(canPlaceOnTerrain(ground, map[5][6]), false);
+    assert.equal(canPlaceOnTerrain(ground, map[5][9]), false);
+    assert.equal(canPlaceOnTerrain(ground, map[12][9]), false);
+    assert.equal(canPlaceOnTerrain(ground, map[16][3]), true);
 });

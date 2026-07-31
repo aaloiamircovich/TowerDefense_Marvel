@@ -18,7 +18,7 @@ test('ProgressionManager migra un guardado antiguo', () => {
     manager.initialize(createGame(), data);
 
     assert.equal(manager.state.version, SAVE_VERSION);
-    assert.equal(manager.state.metaCredits, 700);
+    assert.equal(manager.state.credits, 700);
     assert.deepEqual(manager.state.unlockedHeroIds, ['iron_man']);
     assert.deepEqual(manager.state.ownedItemIds, ['reactor_arc']);
 });
@@ -37,14 +37,14 @@ test('Migracion conserva un solo objeto equipado antiguo', () => {
     assert.deepEqual(manager.state.equippedItems.iron_man, { artifact: 'lentes_edith' });
 });
 
-test('ProgressionManager conserva heroes, fondos y equipo al reabrir', () => {
+test('ProgressionManager conserva heroes, creditos y equipo al reabrir', () => {
     const storage = new MemoryStorage();
     const first = new ProgressionManager(storage);
     first.initialize(createGame(), data);
     first.startProfile('spiderman');
     first.addOwnedItem('reactor_arc');
     first.equipItem('spiderman', 'reactor_arc');
-    first.addMetaCredits(300);
+    first.addCredits(300);
 
     const reopenedGame = createGame();
     const reopened = new ProgressionManager(storage);
@@ -52,7 +52,7 @@ test('ProgressionManager conserva heroes, fondos y equipo al reabrir', () => {
 
     assert.deepEqual(reopenedGame.activeTeam.map((hero) => hero.id), ['spiderman']);
     assert.deepEqual(reopened.state.equippedItems.spiderman, { weapon: 'reactor_arc' });
-    assert.equal(reopened.state.metaCredits, 1500);
+    assert.equal(reopened.state.credits, 1500);
 });
 
 test('ProgressionManager recupera guardados corruptos sin bloquear el arranque', () => {
@@ -107,11 +107,11 @@ test('modo admin requiere contraseña y desbloquea contenido completo', () => {
     assert.equal(manager.state.unlockedHeroIds.length, Object.keys(data.heroes).length);
     assert.equal(manager.state.ownedItemIds.length, Object.keys(data.items).length);
     assert.equal(manager.state.activeTeamIds.length, 6);
-    assert.equal(manager.state.metaCredits, 999999999);
+    assert.equal(manager.state.credits, 999999999);
     assert.equal(manager.getTotalStars(), data.levels.length * 100);
     assert.equal(infiniteCredits, true);
-    assert.equal(manager.spendMetaCredits(500000), true);
-    assert.equal(manager.state.metaCredits, 999999999);
+    assert.equal(manager.spendCredits(500000), true);
+    assert.equal(manager.state.credits, 999999999);
 });
 
 test('arbol de habilidades queda retirado y no aplica bonos ocultos', () => {
@@ -119,11 +119,11 @@ test('arbol de habilidades queda retirado y no aplica bonos ocultos', () => {
     manager.initialize(createGame(), data);
     manager.startProfile('iron_man');
     manager.state.heroUpgrades.iron_man = ['assault_1'];
-    const funds = manager.state.metaCredits;
+    const funds = manager.state.credits;
 
     const result = manager.purchaseUpgrade(data.heroes.iron_man, 'assault_1');
     assert.equal(result.ok, false);
-    assert.equal(manager.state.metaCredits, funds);
+    assert.equal(manager.state.credits, funds);
     assert.deepEqual(manager.getHeroBonuses('iron_man'), {
         damage: 0,
         range: 0,
@@ -238,7 +238,7 @@ test('Objetivos de misión entregan una recompensa una sola vez', () => {
 
     assert.equal(manager.completeMissionObjective('level_1', 'ny_first_contact', 200), true);
     assert.equal(manager.completeMissionObjective('level_1', 'ny_first_contact', 200), false);
-    assert.equal(manager.state.metaCredits, 1400);
+    assert.equal(manager.state.credits, 1400);
     assert.deepEqual(manager.getMapProgress('level_1').missionObjectives, ['ny_first_contact']);
 });
 
@@ -332,7 +332,7 @@ test('maestria recompensa desafios una sola vez y el codice persiste hallazgos',
 
     assert.equal(manager.evaluateHeroMastery(hero).length, 3);
     assert.equal(manager.evaluateHeroMastery(hero).length, 0);
-    assert.equal(manager.state.metaCredits, 1500);
+    assert.equal(manager.state.credits, 1500);
     assert.equal(manager.discoverCodex('enemies', 'hydra_soldier'), true);
     assert.equal(manager.state.codexDiscovered.enemies.includes('hydra_soldier'), true);
     assert.equal(manager.getCodexSnapshot().enemies.total, 49);
@@ -399,12 +399,12 @@ test('resumen de mision desbloquea logros tacticos y sinergia activa', () => {
     assert.equal(manager.state.lastMissionSummary.tactical.controlSeconds, 32);
 });
 
-test('contratos semanales se completan una vez y pagan fondos', () => {
+test('contratos semanales se completan una vez y pagan creditos', () => {
     const manager = new ProgressionManager(new MemoryStorage());
     manager.initialize(createGame(), data);
     const now = new Date('2026-07-13T12:00:00Z');
     const factionContract = manager.getWeeklyContractSnapshot(now).contracts.find((contract) => contract.id.includes(':faction_'));
-    const before = manager.state.metaCredits;
+    const before = manager.state.credits;
     const summary = {
         result: 'victory',
         lives: 20,
@@ -420,7 +420,7 @@ test('contratos semanales se completan una vez y pagan fondos', () => {
     assert.equal(first.length, 4);
     assert.equal(second.length, 0);
     assert.equal(manager.getWeeklyContractSnapshot(now).completed, 4);
-    assert.equal(manager.state.metaCredits, before + first.reduce((sum, contract) => sum + contract.reward, 0));
+    assert.equal(manager.state.credits, before + first.reduce((sum, contract) => sum + contract.reward, 0));
 });
 
 test('retos de agrupacion detectan equipo activo y pagan una sola vez', () => {
@@ -436,7 +436,7 @@ test('retos de agrupacion detectan equipo activo y pagan una sola vez', () => {
     assert.ok(snapshot.challenges.some((challenge) => challenge.id === 'family:Avengers' && challenge.active));
     assert.ok(snapshot.challenges.some((challenge) => challenge.id === 'pair:ciencia_y_escudo' && challenge.active));
 
-    const before = manager.state.metaCredits;
+    const before = manager.state.credits;
     const summary = {
         result: 'victory',
         totals: { kills: 30 },
@@ -449,7 +449,7 @@ test('retos de agrupacion detectan equipo activo y pagan una sola vez', () => {
     assert.equal(second.length, 0);
     assert.equal(manager.state.synergyChallenges.includes('family:Avengers'), true);
     assert.equal(manager.state.synergyChallenges.includes('pair:ciencia_y_escudo'), true);
-    assert.equal(manager.state.metaCredits, before + first.reduce((sum, challenge) => sum + challenge.reward, 0));
+    assert.equal(manager.state.credits, before + first.reduce((sum, challenge) => sum + challenge.reward, 0));
 });
 
 test('codigo de build exporta e importa equipo, objetos y evoluciones validas', () => {
@@ -546,7 +546,10 @@ test('nivel de heroe persiste al retirarlo del campo y del equipo', () => {
     manager.setActiveTeam(['iron_man']);
 
     assert.equal(game.activeTeam[0].level, 12);
-    assert.equal(game.activeTeam[0].damage, getHeroDamageAtLevel(25, 12));
+    assert.equal(
+        game.activeTeam[0].damage,
+        getHeroDamageAtLevel(game.activeTeam[0].baseDamage, 12, game.activeTeam[0].rarity)
+    );
 });
 
 function createGame() {

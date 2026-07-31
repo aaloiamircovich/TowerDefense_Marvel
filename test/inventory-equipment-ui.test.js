@@ -66,8 +66,8 @@ test('previsualizacion de objeto compara mejoras y perdidas numericas', () => {
     const rows = buildItemEquipDeltaRows(data.items.lentes_edith, data.items.reactor_arc);
     const byKey = Object.fromEntries(rows.map((row) => [row.key, row]));
 
-    assert.equal(byKey.rangePct.value, 0.05);
-    assert.equal(byKey.fireRatePct.value, -0.25);
+    assert.equal(byKey.rangePct.value, 0.04);
+    assert.equal(byKey.fireRatePct.value, -0.18);
 
     const ui = createUiStub();
     const panel = new InventoryPanel(ui);
@@ -80,8 +80,8 @@ test('previsualizacion de objeto compara mejoras y perdidas numericas', () => {
     });
 
     assert.match(html, /item-equip-preview/);
-    assert.match(html, /Alcance \+5%/);
-    assert.match(html, /Cadencia -25%/);
+    assert.match(html, /Alcance \+4%/);
+    assert.match(html, /Cadencia -18%/);
 });
 
 test('coleccion expone diccionario de evoluciones vacio', () => {

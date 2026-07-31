@@ -88,7 +88,7 @@ export class CampaignPanel {
                 <span class="map-difficulty ${fixedDifficulty}">Dificultad fija: ${level.difficulty}</span>
                 <span class="${unlocked ? 'map-unlocked' : 'map-locked'}">${unlocked ? 'Desbloqueado' : `Requiere ${requirement} estrellas`}</span>
             </div>
-            <div class="challenge-row"><span class="${progress.challenges.includes('sin_danos') ? 'done' : ''}">Sin daños</span><span class="${progress.challenges.includes('cazajefes') ? 'done' : ''}">Cazajefes</span>${(level.mission?.objectives || []).map((objective) => `<span class="${progress.missionObjectives.includes(objective.id) ? 'done' : ''}">${objective.label} · ${objective.reward} F</span>`).join('')}</div>
+            <div class="challenge-row"><span class="${progress.challenges.includes('sin_danos') ? 'done' : ''}">Sin daños</span><span class="${progress.challenges.includes('cazajefes') ? 'done' : ''}">Cazajefes</span>${(level.mission?.objectives || []).map((objective) => `<span class="${progress.missionObjectives.includes(objective.id) ? 'done' : ''}">${objective.label} · $${objective.reward}</span>`).join('')}</div>
             <button class="btn-load-map btn-primary ghost" data-index="${index}" ${unlocked ? '' : 'disabled'}>${unlocked ? 'Jugar' : 'Bloqueado'}</button>
         </article>`;
     }
@@ -112,11 +112,11 @@ export class CampaignPanel {
                     ${signal.map((item) => `<span><i class="fas ${item.icon}"></i><small>${item.label}</small><b>${item.value}</b></span>`).join('')}
                 </div>
                 <div class="briefing-grid">
-                    <blockquote><strong>${mission.speaker || 'S.H.I.E.L.D.'}</strong><span>${mission.dialogue || level.theme?.brief || ''}</span></blockquote>
+                    <blockquote><strong>${mission.speaker || 'Comando'}</strong><span>${mission.dialogue || level.theme?.brief || ''}</span></blockquote>
                     <div class="briefing-mechanic"><b>${mission.mechanic?.label || 'Defensa táctica'}</b><span>${mission.mechanic?.description || ''}</span></div>
                 </div>
                 <div class="briefing-objectives">
-                    ${(mission.objectives || []).map((objective) => `<div><span>${objective.label}</span><small>${objective.description}</small><b>+${objective.reward} F</b></div>`).join('')}
+                    ${(mission.objectives || []).map((objective) => `<div><span>${objective.label}</span><small>${objective.description}</small><b>+$${objective.reward}</b></div>`).join('')}
                 </div>
                 <button class="btn-primary" id="deploy-mission">DESPLEGAR EQUIPO</button>
             </section>

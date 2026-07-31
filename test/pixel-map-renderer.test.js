@@ -52,18 +52,18 @@ test('mapa RPG Maker usa imagen y matriz logica de terreno', () => {
                 'WWWWBBBBBBBBBBBMMMMMMMMMB',
                 'WWWWBBBBBBBBBBBMMMMMMMMMB',
                 'WWWWBPPPPPPPPPBMMMMMMMMMB',
-                'WWWWBPPPGGGPPPBMMMMMMMMMB',
-                'WWWWBPPPGGGPPPGBBBBBBBBBB',
-                'WWWWBPPPGGGPPPBBBBBBBBBBB',
-                'WWWWBPPPGGGPPPBBBBBBBBBBB',
-                'WWWWBPPPGGGPPPBBBBBBBBBBB',
-                'WWWWBPPPGGGPPPPPPPPPPPPPP',
-                'WWWWBPPPGGGPPPPPPPPPPPPPP',
-                'WWWWBPPPGGGPPPPPPPPPPPPPP',
-                'BBBBBPPPGGGBBBBBBBBBBBBBB',
-                'PPPPPPPPGGGBMMMMMMMMMMMMM',
-                'PPPPPPPPGGGBMMMMMMMMMMMMM',
-                'PPPPPPPPGGGBMMMMMMMMMMMMM',
+                'WWWWBPPPXXXPPPBMMMMMMMMMB',
+                'WWWWBPPPXXXPPPGBBBBBBBBBB',
+                'WWWWBPPPXXXPPPBBBBBBBBBBB',
+                'WWWWBPPPXXXPPPBBBBBBBBBBB',
+                'WWWWBPPPXXXPPPBBBBBBBBBBB',
+                'WWWWBPPPXXXPPPPPPPPPPPPPP',
+                'WWWWBPPPXXXPPPPPPPPPPPPPP',
+                'WWWWBPPPXXXPPPPPPPPPPPPPP',
+                'BBBBBPPPXXXBBBBBBBBBBBBBB',
+                'PPPPPPPPXXXBMMMMMMMMMMMMM',
+                'PPPPPPPPXXXBMMMMMMMMMMMMM',
+                'PPPPPPPPXXXBMMMMMMMMMMMMM',
                 'BBBBBBBBBBBBMMMMMMMMMMMMM',
                 'GGGGGGGGGGGBMMMMMMMMMMMMM',
                 'GGGGGGGGGGGBMMBBBBBMMBBBB',
@@ -80,6 +80,9 @@ test('mapa RPG Maker usa imagen y matriz logica de terreno', () => {
     assert.equal(map[13][0], TERRAIN.path);
     assert.equal(map[13][1], TERRAIN.path);
     assert.equal(map[13][7], TERRAIN.path);
+    assert.equal(map[5][6], TERRAIN.path);
+    assert.equal(map[5][9], TERRAIN.blocked);
+    assert.equal(map[12][9], TERRAIN.blocked);
     assert.equal(map[5][4], TERRAIN.blocked);
     assert.equal(map[6][16], TERRAIN.blocked);
     assert.equal(map[11][11], TERRAIN.blocked);

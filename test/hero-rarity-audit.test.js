@@ -31,3 +31,23 @@ test('heroes clave quedan en rarezas coherentes con su poder y habilidad', () =>
     assert.equal(heroes.scarlet_witch.rarity, 'Secret');
     assert.equal(heroes.loki.rarity, 'Secret');
 });
+
+test('presupuesto de DPS base sube por rareza sin contar soportes puros', () => {
+    const medians = ['Common', 'Rare', 'Epic', 'Legendary', 'Mythic', 'Secret']
+        .map((rarity) => {
+            const values = Object.values(heroes)
+                .filter((hero) => hero.rarity === rarity && !hero.special?.supportAura)
+                .map((hero) => Math.round(Number(hero.damage || 0) * Number(hero.fireRate || 1) * (1 + Number(hero.critChance ?? 5) / 100)));
+            return median(values);
+        });
+
+    for (let index = 1; index < medians.length; index++) {
+        assert.ok(medians[index] > medians[index - 1], `${medians[index]} debe superar ${medians[index - 1]}`);
+    }
+});
+
+function median(values) {
+    const sorted = [...values].sort((a, b) => a - b);
+    const middle = Math.floor(sorted.length / 2);
+    return sorted.length % 2 ? sorted[middle] : Math.round((sorted[middle - 1] + sorted[middle]) / 2);
+}

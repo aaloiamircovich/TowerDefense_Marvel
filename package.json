@@ -26,6 +26,8 @@
     "sprite:prompts": "node scripts/build-sprite-prompts.js",
     "sprite:import": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/import-pixellab-sprite.ps1",
     "audit:rarities": "node scripts/audit-hero-rarities.js",
+    "balance:heroes": "node scripts/balance-hero-roster.js",
+    "balance:items": "node scripts/rebalance-pokepath-inspired-items.js",
     "balance": "node scripts/simulate-economy.js",
     "benchmark": "node scripts/benchmark-combat.js",
     "audit:a11y": "node scripts/audit-accessibility.js",

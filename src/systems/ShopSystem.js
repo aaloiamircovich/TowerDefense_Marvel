@@ -81,7 +81,7 @@ export class ShopSystem {
         if (!item || !shop.slotIds.includes(itemId) || this.progression.hasItem(itemId)) {
             return { ok: false, reason: 'Objeto no disponible' };
         }
-        if (!this.progression.spendMetaCredits(item.price)) return { ok: false, reason: 'Fondos S.H.I.E.L.D. insuficientes' };
+        if (!this.progression.spendCredits(item.price)) return { ok: false, reason: 'Creditos insuficientes' };
         this.progression.addOwnedItem(itemId);
         shop.slotIds = this.getProgressiveQueue().slice(0, 3).map((nextItem) => nextItem.id);
         this.progression.save();
@@ -95,14 +95,14 @@ export class ShopSystem {
             .filter((hero) => hero.visual)
             .filter((hero) => !this.progression.state.unlockedHeroIds.includes(hero.id));
         if (pool.length === 0) return { ok: false, reason: 'Ya tienes todos los héroes' };
-        if (!this.progression.state.settings.adminMode && this.progression.state.metaCredits < cost) return { ok: false, reason: 'Fondos S.H.I.E.L.D. insuficientes' };
+        if (!this.progression.state.settings.adminMode && this.progression.getCredits() < cost) return { ok: false, reason: 'Creditos insuficientes' };
 
         const guaranteed = shop.heroPity >= 4;
         const candidates = guaranteed ? pool.filter((hero) => hero.rarity !== 'Common') : pool;
         const weighted = (candidates.length ? candidates : pool)
             .flatMap((hero) => Array(HERO_RARITY_WEIGHTS[hero.rarity] || HERO_RARITY_WEIGHTS.Rare).fill(hero));
         const hero = this.game.random.pick(weighted);
-        this.progression.spendMetaCredits(cost);
+        this.progression.spendCredits(cost);
         this.progression.unlockHero(hero.id);
         this.game.assetPreloader?.preloadHeroes([hero]);
         shop.heroPity = hero.rarity === 'Common' ? shop.heroPity + 1 : 0;

@@ -97,7 +97,7 @@ async function initGame() {
             game.missionSystem.loadLevel(levelConfig);
             game.assetPreloader?.preloadTeamForLevel(game.activeTeam, levelConfig);
             game.waveManager = new WaveManager(game, data.enemies, data.waves);
-            game.resourceManager.reset(20, 650);
+            game.resourceManager.reset(20, game.progression?.getCredits?.() ?? 650);
             game.modeSystem.configureRun();
             game.replaySystem.reset(`${game.modeSystem.getSeed() || 'campaign'}:${levelConfig.id}`, levelConfig.id, game.modeSystem.modeId);
             ui.showToast(`${levelConfig.name} cargado`, 'info');

@@ -6,7 +6,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Tecnológico",
       "rarity": "Rare",
       "cost": 250,
-      "damage": 25,
+      "damage": 30,
       "range": 160,
       "fireRate": 1.5,
       "canSeeStealth": true,
@@ -72,7 +72,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Urbano",
       "rarity": "Common",
       "cost": 150,
-      "damage": 17,
+      "damage": 19,
       "range": 110,
       "fireRate": 1.95,
       "canSeeStealth": true,
@@ -211,7 +211,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Místico",
       "rarity": "Legendary",
       "cost": 600,
-      "damage": 70,
+      "damage": 86,
       "range": 180,
       "fireRate": 0.8,
       "canSeeStealth": false,
@@ -287,7 +287,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Mutante",
       "rarity": "Epic",
       "cost": 400,
-      "damage": 80,
+      "damage": 120,
       "range": 80,
       "fireRate": 0.55,
       "canSeeStealth": false,
@@ -352,7 +352,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Urbano",
       "rarity": "Common",
       "cost": 190,
-      "damage": 22,
+      "damage": 18,
       "range": 130,
       "fireRate": 1.8,
       "canSeeStealth": true,
@@ -427,7 +427,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Urbano",
       "rarity": "Common",
       "cost": 180,
-      "damage": 22,
+      "damage": 27,
       "range": 220,
       "fireRate": 1.1,
       "canSeeStealth": true,
@@ -575,7 +575,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Místico",
       "rarity": "Legendary",
       "cost": 550,
-      "damage": 42,
+      "damage": 61,
       "range": 200,
       "fireRate": 0.95,
       "canSeeStealth": true,
@@ -652,7 +652,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Cósmico",
       "rarity": "Legendary",
       "cost": 650,
-      "damage": 86,
+      "damage": 85,
       "range": 230,
       "fireRate": 0.75,
       "canSeeStealth": false,
@@ -729,7 +729,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Mutante",
       "rarity": "Legendary",
       "cost": 420,
-      "damage": 40,
+      "damage": 31,
       "range": 70,
       "fireRate": 2.5,
       "canSeeStealth": true,
@@ -794,7 +794,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Urbano",
       "rarity": "Rare",
       "cost": 150,
-      "damage": 23,
+      "damage": 26,
       "range": 100,
       "fireRate": 1.8,
       "canSeeStealth": true,
@@ -858,7 +858,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Tecnológico",
       "rarity": "Common",
       "cost": 190,
-      "damage": 28,
+      "damage": 26,
       "range": 110,
       "fireRate": 1.4,
       "canSeeStealth": true,
@@ -922,7 +922,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Cósmico",
       "rarity": "Common",
       "cost": 220,
-      "damage": 20,
+      "damage": 23,
       "range": 160,
       "fireRate": 1.6,
       "canSeeStealth": false,
@@ -986,7 +986,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Cósmico",
       "rarity": "Common",
       "cost": 300,
-      "damage": 37,
+      "damage": 49,
       "range": 120,
       "fireRate": 0.7,
       "canSeeStealth": false,
@@ -1061,7 +1061,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Cósmico",
       "rarity": "Rare",
       "cost": 360,
-      "damage": 42,
+      "damage": 27,
       "range": 90,
       "fireRate": 1.9,
       "canSeeStealth": true,
@@ -1126,7 +1126,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Místico",
       "rarity": "Secret",
       "cost": 650,
-      "damage": 65,
+      "damage": 86,
       "range": 220,
       "fireRate": 0.9,
       "canSeeStealth": true,
@@ -1274,7 +1274,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Tecnológico",
       "rarity": "Common",
       "cost": 210,
-      "damage": 20,
+      "damage": 19,
       "range": 150,
       "fireRate": 1.8,
       "canSeeStealth": true,
@@ -1340,7 +1340,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Urbano",
       "rarity": "Rare",
       "cost": 270,
-      "damage": 38,
+      "damage": 34,
       "range": 180,
       "fireRate": 1.3,
       "canSeeStealth": true,
@@ -1405,7 +1405,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Urbano",
       "rarity": "Rare",
       "cost": 410,
-      "damage": 45,
+      "damage": 24,
       "range": 80,
       "fireRate": 2.2,
       "canSeeStealth": false,
@@ -1470,7 +1470,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Urbano",
       "rarity": "Rare",
       "cost": 250,
-      "damage": 32,
+      "damage": 26,
       "range": 120,
       "fireRate": 1.7,
       "canSeeStealth": true,
@@ -1534,7 +1534,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Mutante",
       "rarity": "Rare",
       "cost": 350,
-      "damage": 55,
+      "damage": 48,
       "range": 90,
       "fireRate": 1.1,
       "canSeeStealth": false,
@@ -1599,7 +1599,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Mutante",
       "rarity": "Mythic",
       "cost": 600,
-      "damage": 60,
+      "damage": 72,
       "range": 210,
       "fireRate": 1,
       "canSeeStealth": true,
@@ -1672,7 +1672,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Mutante",
       "rarity": "Rare",
       "cost": 260,
-      "damage": 40,
+      "damage": 33,
       "range": 240,
       "fireRate": 1.2,
       "canSeeStealth": true,
@@ -1737,7 +1737,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Mutante",
       "rarity": "Epic",
       "cost": 300,
-      "damage": 35,
+      "damage": 31,
       "range": 200,
       "fireRate": 1.4,
       "canSeeStealth": false,
@@ -1825,7 +1825,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Cósmico",
       "rarity": "Mythic",
       "cost": 760,
-      "damage": 96,
+      "damage": 123,
       "range": 300,
       "fireRate": 0.6,
       "canSeeStealth": false,
@@ -1892,7 +1892,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Místico",
       "rarity": "Rare",
       "cost": 330,
-      "damage": 36,
+      "damage": 25,
       "range": 110,
       "fireRate": 1.8,
       "canSeeStealth": true,
@@ -1968,7 +1968,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Místico",
       "rarity": "Legendary",
       "cost": 520,
-      "damage": 66,
+      "damage": 68,
       "range": 150,
       "fireRate": 0.95,
       "canSeeStealth": true,
@@ -2044,7 +2044,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Urbano",
       "rarity": "Common",
       "cost": 210,
-      "damage": 25,
+      "damage": 29,
       "range": 85,
       "fireRate": 1.4,
       "canSeeStealth": false,
@@ -2109,7 +2109,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Mutante",
       "rarity": "Legendary",
       "cost": 220,
-      "damage": 6,
+      "damage": 9,
       "range": 155,
       "fireRate": 1.35,
       "canSeeStealth": true,
@@ -2181,7 +2181,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Tecnológico",
       "rarity": "Epic",
       "cost": 360,
-      "damage": 48,
+      "damage": 44,
       "range": 175,
       "fireRate": 1.1,
       "canSeeStealth": false,
@@ -2413,7 +2413,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Cósmico",
       "rarity": "Legendary",
       "cost": 520,
-      "damage": 58,
+      "damage": 63,
       "range": 205,
       "fireRate": 1,
       "canSeeStealth": false,
@@ -2492,7 +2492,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Tecnológico",
       "rarity": "Epic",
       "cost": 290,
-      "damage": 32,
+      "damage": 35,
       "range": 165,
       "fireRate": 1.45,
       "canSeeStealth": true,
@@ -2575,7 +2575,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Místico",
       "rarity": "Rare",
       "cost": 280,
-      "damage": 30,
+      "damage": 27,
       "range": 145,
       "fireRate": 1.6,
       "canSeeStealth": false,
@@ -2657,7 +2657,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Mutante",
       "rarity": "Legendary",
       "cost": 470,
-      "damage": 62,
+      "damage": 71,
       "range": 115,
       "fireRate": 0.95,
       "canSeeStealth": false,
@@ -2732,7 +2732,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Místico",
       "rarity": "Rare",
       "cost": 240,
-      "damage": 38,
+      "damage": 30,
       "range": 105,
       "fireRate": 1.55,
       "canSeeStealth": false,
@@ -2812,7 +2812,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Urbano",
       "rarity": "Rare",
       "cost": 260,
-      "damage": 34,
+      "damage": 25,
       "range": 190,
       "fireRate": 1.55,
       "canSeeStealth": false,
@@ -2886,7 +2886,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Urbano",
       "rarity": "Epic",
       "cost": 235,
-      "damage": 36,
+      "damage": 28,
       "range": 115,
       "fireRate": 1.9,
       "canSeeStealth": false,
@@ -2966,7 +2966,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Urbano",
       "rarity": "Common",
       "cost": 185,
-      "damage": 42,
+      "damage": 34,
       "range": 95,
       "fireRate": 1.05,
       "canSeeStealth": false,
@@ -3046,7 +3046,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Místico",
       "rarity": "Epic",
       "cost": 300,
-      "damage": 22,
+      "damage": 38,
       "range": 170,
       "fireRate": 1.35,
       "canSeeStealth": true,
@@ -3128,7 +3128,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Místico",
       "rarity": "Epic",
       "cost": 285,
-      "damage": 33,
+      "damage": 31,
       "range": 175,
       "fireRate": 1.65,
       "canSeeStealth": true,
@@ -3214,7 +3214,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Místico",
       "rarity": "Legendary",
       "cost": 540,
-      "damage": 54,
+      "damage": 56,
       "range": 150,
       "fireRate": 1.05,
       "canSeeStealth": false,
@@ -3304,7 +3304,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Mutante",
       "rarity": "Epic",
       "cost": 310,
-      "damage": 28,
+      "damage": 34,
       "range": 165,
       "fireRate": 1.55,
       "canSeeStealth": false,
@@ -3385,7 +3385,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Tecnologico",
       "rarity": "Legendary",
       "cost": 420,
-      "damage": 38,
+      "damage": 42,
       "range": 190,
       "fireRate": 1.45,
       "canSeeStealth": true,
@@ -3465,7 +3465,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Urbano",
       "rarity": "Rare",
       "cost": 260,
-      "damage": 40,
+      "damage": 30,
       "range": 110,
       "fireRate": 1.55,
       "canSeeStealth": false,
@@ -3545,7 +3545,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Cosmico",
       "rarity": "Legendary",
       "cost": 560,
-      "damage": 66,
+      "damage": 65,
       "range": 170,
       "fireRate": 0.9,
       "canSeeStealth": false,
@@ -3629,7 +3629,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Cosmico",
       "rarity": "Rare",
       "cost": 330,
-      "damage": 32,
+      "damage": 31,
       "range": 175,
       "fireRate": 1.35,
       "canSeeStealth": false,
@@ -3714,7 +3714,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Atlantico",
       "rarity": "Rare",
       "cost": 300,
-      "damage": 44,
+      "damage": 32,
       "range": 125,
       "fireRate": 1.35,
       "canSeeStealth": false,
@@ -3797,7 +3797,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Atlantico",
       "rarity": "Epic",
       "cost": 280,
-      "damage": 30,
+      "damage": 36,
       "range": 160,
       "fireRate": 1.45,
       "canSeeStealth": true,
@@ -3878,7 +3878,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Urbano",
       "rarity": "Epic",
       "cost": 245,
-      "damage": 31,
+      "damage": 25,
       "range": 135,
       "fireRate": 2.05,
       "canSeeStealth": true,
@@ -3959,7 +3959,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Místico",
       "rarity": "Epic",
       "cost": 330,
-      "damage": 44,
+      "damage": 37,
       "range": 170,
       "fireRate": 1.3,
       "canSeeStealth": true,
@@ -4047,7 +4047,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Mutante",
       "rarity": "Epic",
       "cost": 335,
-      "damage": 37,
+      "damage": 31,
       "range": 165,
       "fireRate": 1.55,
       "canSeeStealth": false,
@@ -4127,7 +4127,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Místico",
       "rarity": "Secret",
       "cost": 620,
-      "damage": 70,
+      "damage": 102,
       "range": 180,
       "fireRate": 0.85,
       "canSeeStealth": false,
@@ -4218,7 +4218,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Cósmico",
       "rarity": "Epic",
       "cost": 360,
-      "damage": 36,
+      "damage": 32,
       "range": 175,
       "fireRate": 1.65,
       "canSeeStealth": false,
@@ -4303,7 +4303,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Místico",
       "rarity": "Epic",
       "cost": 310,
-      "damage": 40,
+      "damage": 37,
       "range": 155,
       "fireRate": 1.35,
       "canSeeStealth": true,
@@ -4389,7 +4389,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Mutante",
       "rarity": "Mythic",
       "cost": 455,
-      "damage": 48,
+      "damage": 47,
       "range": 135,
       "fireRate": 1.55,
       "canSeeStealth": true,
@@ -4473,7 +4473,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Urbano",
       "rarity": "Common",
       "cost": 255,
-      "damage": 24,
+      "damage": 15,
       "range": 150,
       "fireRate": 2.15,
       "canSeeStealth": false,
@@ -4552,7 +4552,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Mutante",
       "rarity": "Legendary",
       "cost": 500,
-      "damage": 58,
+      "damage": 48,
       "range": 120,
       "fireRate": 1.18,
       "canSeeStealth": false,
@@ -4643,7 +4643,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Cósmico",
       "rarity": "Legendary",
       "cost": 540,
-      "damage": 62,
+      "damage": 61,
       "range": 150,
       "fireRate": 1.05,
       "canSeeStealth": false,
@@ -4722,7 +4722,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Mutante",
       "rarity": "Mythic",
       "cost": 575,
-      "damage": 68,
+      "damage": 89,
       "range": 105,
       "fireRate": 0.92,
       "canSeeStealth": false,
@@ -4806,7 +4806,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Mutante",
       "rarity": "Mythic",
       "cost": 470,
-      "damage": 34,
+      "damage": 49,
       "range": 180,
       "fireRate": 1.45,
       "canSeeStealth": true,
@@ -4894,7 +4894,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Mutante",
       "rarity": "Mythic",
       "cost": 590,
-      "damage": 55,
+      "damage": 69,
       "range": 205,
       "fireRate": 0.95,
       "canSeeStealth": false,
@@ -4978,7 +4978,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Tecnológico",
       "rarity": "Epic",
       "cost": 345,
-      "damage": 29,
+      "damage": 27,
       "range": 165,
       "fireRate": 1.9,
       "canSeeStealth": true,
@@ -5059,7 +5059,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Cósmico",
       "rarity": "Mythic",
       "cost": 610,
-      "damage": 52,
+      "damage": 73,
       "range": 205,
       "fireRate": 1,
       "canSeeStealth": false,
@@ -5138,7 +5138,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Urbano",
       "rarity": "Legendary",
       "cost": 390,
-      "damage": 34,
+      "damage": 32,
       "range": 155,
       "fireRate": 2.05,
       "canSeeStealth": false,
@@ -5296,7 +5296,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Mutante",
       "rarity": "Epic",
       "cost": 260,
-      "damage": 26,
+      "damage": 30,
       "range": 135,
       "fireRate": 1.75,
       "canSeeStealth": true,
@@ -5458,7 +5458,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Místico",
       "rarity": "Secret",
       "cost": 560,
-      "damage": 42,
+      "damage": 57,
       "range": 190,
       "fireRate": 1.25,
       "canSeeStealth": true,
@@ -5557,7 +5557,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Cósmico",
       "rarity": "Epic",
       "cost": 340,
-      "damage": 31,
+      "damage": 32,
       "range": 180,
       "fireRate": 1.55,
       "canSeeStealth": true,
@@ -5641,7 +5641,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Cósmico",
       "rarity": "Epic",
       "cost": 305,
-      "damage": 24,
+      "damage": 30,
       "range": 175,
       "fireRate": 1.65,
       "canSeeStealth": true,
@@ -5803,7 +5803,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Tecnológico",
       "rarity": "Epic",
       "cost": 335,
-      "damage": 36,
+      "damage": 28,
       "range": 185,
       "fireRate": 1.65,
       "canSeeStealth": true,
@@ -5881,7 +5881,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Mutante",
       "rarity": "Secret",
       "cost": 330,
-      "damage": 30,
+      "damage": 43,
       "range": 145,
       "fireRate": 1.85,
       "canSeeStealth": true,
@@ -5973,7 +5973,7 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Cósmico",
       "rarity": "Epic",
       "cost": 410,
-      "damage": 44,
+      "damage": 40,
       "range": 180,
       "fireRate": 1.35,
       "canSeeStealth": false,
@@ -8008,18 +8008,18 @@ window.__MARVEL_TD_DATA__ = {
           "WWWWBBBBBBBBBBBMMMMMMMMMB",
           "WWWWBBBBBBBBBBBMMMMMMMMMB",
           "WWWWBPPPPPPPPPBMMMMMMMMMB",
-          "WWWWBPPPGGGPPPBMMMMMMMMMB",
-          "WWWWBPPPGGGPPPGBBBBBBBBBB",
-          "WWWWBPPPGGGPPPBBBBBBBBBBB",
-          "WWWWBPPPGGGPPPBBBBBBBBBBB",
-          "WWWWBPPPGGGPPPBBBBBBBBBBB",
-          "WWWWBPPPGGGPPPPPPPPPPPPPP",
-          "WWWWBPPPGGGPPPPPPPPPPPPPP",
-          "WWWWBPPPGGGPPPPPPPPPPPPPP",
-          "BBBBBPPPGGGBBBBBBBBBBBBBB",
-          "PPPPPPPPGGGBMMMMMMMMMMMMM",
-          "PPPPPPPPGGGBMMMMMMMMMMMMM",
-          "PPPPPPPPGGGBMMMMMMMMMMMMM",
+          "WWWWBPPPXXXPPPBMMMMMMMMMB",
+          "WWWWBPPPXXXPPPGBBBBBBBBBB",
+          "WWWWBPPPXXXPPPBBBBBBBBBBB",
+          "WWWWBPPPXXXPPPBBBBBBBBBBB",
+          "WWWWBPPPXXXPPPBBBBBBBBBBB",
+          "WWWWBPPPXXXPPPPPPPPPPPPPP",
+          "WWWWBPPPXXXPPPPPPPPPPPPPP",
+          "WWWWBPPPXXXPPPPPPPPPPPPPP",
+          "BBBBBPPPXXXBBBBBBBBBBBBBB",
+          "PPPPPPPPXXXBMMMMMMMMMMMMM",
+          "PPPPPPPPXXXBMMMMMMMMMMMMM",
+          "PPPPPPPPXXXBMMMMMMMMMMMMM",
           "BBBBBBBBBBBBMMMMMMMMMMMMM",
           "GGGGGGGGGGGBMMMMMMMMMMMMM",
           "GGGGGGGGGGGBMMBBBBBMMBBBB",
@@ -9139,579 +9139,849 @@ window.__MARVEL_TD_DATA__ = {
     }
   ],
   "items": {
-    "reactor_arc": {
-      "id": "reactor_arc",
-      "name": "REACTOR ARC",
-      "desc": "+25% de cadencia.",
-      "icon": "assets/images/items/reactor_arc.png",
-      "price": 700,
-      "tier": 2,
-      "slot": "weapon",
-      "set": "stark",
+    "chaleco_tactico": {
+      "id": "chaleco_tactico",
+      "name": "CHALECO TACTICO",
+      "desc": "+6% dano, +6% cadencia y 6% penetracion. El primer anti-blindaje economico.",
+      "icon": "assets/images/items/chaleco_tactico.png",
+      "price": 260,
+      "tier": 1,
+      "slot": "armor",
+      "set": "tactical",
       "effects": {
-        "fireRatePct": 0.25
+        "damagePct": 0.06,
+        "fireRatePct": 0.06,
+        "armorPenetration": 0.06
       },
-      "rarity": "Rare"
+      "rarity": "Common"
+    },
+    "baliza_fury": {
+      "id": "baliza_fury",
+      "name": "BALIZA TACTICA",
+      "desc": "Detecta sigilo y extiende 8% el alcance.",
+      "icon": "assets/images/items/baliza_fury.png",
+      "price": 320,
+      "tier": 1,
+      "slot": "artifact",
+      "set": "tactical",
+      "effects": {
+        "detectStealth": true,
+        "rangePct": 0.08
+      },
+      "rarity": "Common"
+    },
+    "telarana_sintetica": {
+      "id": "telarana_sintetica",
+      "name": "TELARANA SINTETICA",
+      "desc": "35% de ralentizar al impactar.",
+      "icon": "assets/images/items/telarana_sintetica.png",
+      "price": 360,
+      "tier": 1,
+      "slot": "weapon",
+      "set": "street",
+      "effects": {
+        "slowChance": 0.35,
+        "slowPower": 0.3
+      },
+      "rarity": "Common"
+    },
+    "aguijon_wasp": {
+      "id": "aguijon_wasp",
+      "name": "AGUIJON WASP",
+      "desc": "22% de ralentizar y +3% critico.",
+      "icon": "assets/images/items/aguijon_wasp.png",
+      "price": 420,
+      "tier": 1,
+      "slot": "weapon",
+      "set": "pym",
+      "effects": {
+        "slowChance": 0.22,
+        "slowPower": 0.22,
+        "critChance": 3
+      },
+      "rarity": "Common"
     },
     "lentes_edith": {
       "id": "lentes_edith",
       "name": "LENTES E.D.I.T.H.",
-      "desc": "Detecta sigilo y aumenta 5% el alcance.",
+      "desc": "Detecta sigilo, +4% alcance y +2% critico.",
       "icon": "assets/images/items/lentes_edith.png",
-      "price": 450,
+      "price": 480,
       "tier": 1,
       "slot": "artifact",
       "set": "stark",
       "effects": {
         "detectStealth": true,
+        "rangePct": 0.04,
+        "critChance": 2
+      },
+      "rarity": "Common"
+    },
+    "aerodeslizador": {
+      "id": "aerodeslizador",
+      "name": "AERODESLIZADOR PYM",
+      "desc": "Permite colocacion sobre agua y +4% alcance.",
+      "icon": "assets/images/items/aerodeslizador.png",
+      "price": 520,
+      "tier": 1,
+      "slot": "armor",
+      "set": "pym",
+      "effects": {
+        "allowWater": true,
+        "rangePct": 0.04
+      },
+      "rarity": "Common"
+    },
+    "botas_antigrav": {
+      "id": "botas_antigrav",
+      "name": "BOTAS ANTIGRAV",
+      "desc": "Permite colocacion en montana y +5% alcance.",
+      "icon": "assets/images/items/botas_antigrav.png",
+      "price": 600,
+      "tier": 1,
+      "slot": "armor",
+      "set": "stark",
+      "effects": {
+        "allowMountain": true,
         "rangePct": 0.05
       },
       "rarity": "Common"
     },
-    "contrato_stark": {
-      "id": "contrato_stark",
-      "name": "CONTRATO STARK",
-      "desc": "Genera $1 adicional por impacto.",
-      "icon": "assets/images/items/contrato_stark.png",
-      "price": 1000,
-      "tier": 2,
+    "fertilizante_groot": {
+      "id": "fertilizante_groot",
+      "name": "ESPORAS DE GROOT",
+      "desc": "Permite colocacion en pasto y +5% dano.",
+      "icon": "assets/images/items/fertilizante_groot.png",
+      "price": 680,
+      "tier": 1,
       "slot": "artifact",
-      "set": "stark",
+      "set": "cosmic",
       "effects": {
-        "onHitCredit": 1
+        "allowGrass": true,
+        "damagePct": 0.05
       },
-      "rarity": "Rare"
+      "rarity": "Common"
     },
-    "protocolo_extremis": {
-      "id": "protocolo_extremis",
-      "name": "PROTOCOLO EXTREMIS",
-      "desc": "Aumenta el dano +18% y activa +22% dano extra cuando la base esta en peligro.",
-      "icon": "assets/images/items/protocolo_extremis.png",
-      "price": 2800,
-      "tier": 4,
-      "slot": "armor",
-      "set": "stark",
-      "effects": {
-        "damagePct": 0.18,
-        "lowLifeDamagePct": 0.22
-      },
-      "rarity": "Legendary"
-    },
-    "municion_repulsora": {
-      "id": "municion_repulsora",
-      "name": "MUNICIÓN REPULSORA",
-      "desc": "Ignora 25% de la armadura enemiga.",
-      "icon": "assets/images/items/municion_repulsora.png",
-      "price": 1550,
-      "tier": 3,
+    "emisor_termico": {
+      "id": "emisor_termico",
+      "name": "EMISOR TERMICO",
+      "desc": "18% de aplicar quemadura corta por impacto.",
+      "icon": "assets/images/items/emisor_termico.png",
+      "price": 760,
+      "tier": 1,
       "slot": "weapon",
       "set": "stark",
       "effects": {
-        "armorPenetration": 0.25
+        "burnChance": 0.18,
+        "burnDuration": 3,
+        "burnPower": 0.012
       },
-      "rarity": "Epic"
+      "rarity": "Common"
     },
-    "escudo_vibranium": {
-      "id": "escudo_vibranium",
-      "name": "ESCUDO DE VIBRANIUM",
-      "desc": "+8% daño y +5% alcance.",
-      "icon": "assets/images/items/escudo_vibranium.png",
-      "price": 900,
-      "tier": 2,
-      "slot": "armor",
-      "set": "vibranium",
+    "carga_viuda": {
+      "id": "carga_viuda",
+      "name": "CARGA WIDOW",
+      "desc": "12% de aturdir brevemente y +4% cadencia.",
+      "icon": "assets/images/items/carga_viuda.png",
+      "price": 820,
+      "tier": 1,
+      "slot": "weapon",
+      "set": "street",
       "effects": {
-        "damagePct": 0.08,
-        "rangePct": 0.05
+        "stunChance": 0.12,
+        "stunDuration": 0.18,
+        "fireRatePct": 0.04
+      },
+      "rarity": "Common"
+    },
+    "reactor_arc": {
+      "id": "reactor_arc",
+      "name": "REACTOR ARC",
+      "desc": "+18% cadencia y +4% dano.",
+      "icon": "assets/images/items/reactor_arc.png",
+      "price": 950,
+      "tier": 2,
+      "slot": "weapon",
+      "set": "stark",
+      "effects": {
+        "fireRatePct": 0.18,
+        "damagePct": 0.04
       },
       "rarity": "Rare"
     },
     "tejido_cinetico": {
       "id": "tejido_cinetico",
-      "name": "TEJIDO CINÉTICO",
-      "desc": "+12% de cadencia.",
+      "name": "TEJIDO CINETICO",
+      "desc": "+12% cadencia y +4% alcance.",
       "icon": "assets/images/items/tejido_cinetico.png",
-      "price": 650,
+      "price": 1050,
       "tier": 2,
       "slot": "armor",
       "set": "vibranium",
       "effects": {
-        "fireRatePct": 0.12
+        "fireRatePct": 0.12,
+        "rangePct": 0.04
       },
       "rarity": "Rare"
     },
-    "lanza_dora": {
-      "id": "lanza_dora",
-      "name": "LANZA DORA MILAJE",
-      "desc": "+4% crítico y 20% de penetración.",
-      "icon": "assets/images/items/lanza_dora.png",
-      "price": 1700,
-      "tier": 3,
-      "slot": "weapon",
+    "escudo_vibranium": {
+      "id": "escudo_vibranium",
+      "name": "ESCUDO DE VIBRANIUM",
+      "desc": "+8% dano, +4% alcance y +8% contra blindaje.",
+      "icon": "assets/images/items/escudo_vibranium.png",
+      "price": 1120,
+      "tier": 2,
+      "slot": "armor",
       "set": "vibranium",
       "effects": {
-        "critChance": 4,
-        "armorPenetration": 0.2
+        "damagePct": 0.08,
+        "rangePct": 0.04,
+        "armorDamagePct": 0.08
       },
-      "rarity": "Epic"
+      "rarity": "Rare"
     },
-    "cuentas_kimoyo": {
-      "id": "cuentas_kimoyo",
-      "name": "CUENTAS KIMOYO",
-      "desc": "Detecta sigilo y aumenta 12% el alcance.",
-      "icon": "assets/images/items/cuentas_kimoyo.png",
-      "price": 950,
+    "contrato_stark": {
+      "id": "contrato_stark",
+      "name": "CONTRATO STARK",
+      "desc": "Cada impacto genera 2.5% de la recompensa del enemigo y +3% dano.",
+      "icon": "assets/images/items/contrato_stark.png",
+      "price": 1220,
       "tier": 2,
       "slot": "artifact",
-      "set": "vibranium",
+      "set": "stark",
       "effects": {
-        "detectStealth": true,
-        "rangePct": 0.12
+        "onHitCreditPct": 0.025,
+        "damagePct": 0.03
       },
       "rarity": "Rare"
-    },
-    "corazon_wakanda": {
-      "id": "corazon_wakanda",
-      "name": "CORAZÓN DE WAKANDA",
-      "desc": "+15% de daño.",
-      "icon": "assets/images/items/corazon_wakanda.png",
-      "price": 1850,
-      "tier": 3,
-      "slot": "artifact",
-      "set": "vibranium",
-      "effects": {
-        "damagePct": 0.15
-      },
-      "rarity": "Epic"
-    },
-    "particulas_pym": {
-      "id": "particulas_pym",
-      "name": "PARTÍCULAS PYM",
-      "desc": "+35% de cadencia.",
-      "icon": "assets/images/items/particulas_pym.png",
-      "price": 1800,
-      "tier": 3,
-      "slot": "artifact",
-      "set": "pym",
-      "effects": {
-        "fireRatePct": 0.35
-      },
-      "rarity": "Epic"
-    },
-    "aerodeslizador": {
-      "id": "aerodeslizador",
-      "name": "AERODESLIZADOR PYM",
-      "desc": "Permite colocación sobre agua y +5% alcance.",
-      "icon": "assets/images/items/aerodeslizador.png",
-      "price": 350,
-      "tier": 1,
-      "slot": "armor",
-      "set": "pym",
-      "effects": {
-        "allowWater": true,
-        "rangePct": 0.05
-      },
-      "rarity": "Common"
-    },
-    "guanteletes_gigantes": {
-      "id": "guanteletes_gigantes",
-      "name": "GUANTELETES GIGANTES",
-      "desc": "Los impactos dañan un área pequeña.",
-      "icon": "assets/images/items/guanteletes_gigantes.png",
-      "price": 1600,
-      "tier": 3,
-      "slot": "weapon",
-      "set": "pym",
-      "effects": {
-        "splashRadius": 46,
-        "splashFactor": 0.35
-      },
-      "rarity": "Epic"
     },
     "regulador_cuantico": {
       "id": "regulador_cuantico",
-      "name": "REGULADOR CUÁNTICO",
-      "desc": "+8% de probabilidad crítica.",
+      "name": "REGULADOR CUANTICO",
+      "desc": "+7% critico y +15% dano critico.",
       "icon": "assets/images/items/regulador_cuantico.png",
-      "price": 850,
+      "price": 1300,
       "tier": 2,
       "slot": "artifact",
       "set": "pym",
       "effects": {
-        "critChance": 8
+        "critChance": 7,
+        "critDamageBonus": 0.15
       },
       "rarity": "Rare"
     },
-    "aguijon_wasp": {
-      "id": "aguijon_wasp",
-      "name": "AGUIJÓN WASP",
-      "desc": "25% de ralentizar al impactar.",
-      "icon": "assets/images/items/aguijon_wasp.png",
-      "price": 400,
-      "tier": 1,
+    "municion_ice": {
+      "id": "municion_ice",
+      "name": "MUNICION I.C.E.R.",
+      "desc": "28% de ralentizar y 8% penetracion.",
+      "icon": "assets/images/items/municion_ice.png",
+      "price": 1380,
+      "tier": 2,
       "slot": "weapon",
-      "set": "pym",
+      "set": "tactical",
       "effects": {
-        "slowChance": 0.25,
-        "slowPower": 0.25
+        "slowChance": 0.28,
+        "slowPower": 0.22,
+        "armorPenetration": 0.08
       },
-      "rarity": "Common"
+      "rarity": "Rare"
     },
-    "gema_poder": {
-      "id": "gema_poder",
-      "name": "GEMA DEL PODER",
-      "desc": "+35% de daño total.",
-      "icon": "assets/images/items/gema_poder.png",
-      "price": 4000,
-      "tier": 4,
+    "localizador_fury": {
+      "id": "localizador_fury",
+      "name": "LOCALIZADOR FURY",
+      "desc": "Detecta sigilo, +8% alcance y +8% dano a larga distancia.",
+      "icon": "assets/images/items/localizador_fury.png",
+      "price": 1460,
+      "tier": 2,
       "slot": "artifact",
-      "set": "mystic",
-      "effects": {
-        "damagePct": 0.35
-      },
-      "rarity": "Secret"
-    },
-    "ojo_agamotto": {
-      "id": "ojo_agamotto",
-      "name": "OJO DE AGAMOTTO",
-      "desc": "Detecta sigilo y aumenta 15% el alcance.",
-      "icon": "assets/images/items/ojo_agamotto.png",
-      "price": 2700,
-      "tier": 4,
-      "slot": "artifact",
-      "set": "mystic",
+      "set": "tactical",
       "effects": {
         "detectStealth": true,
-        "rangePct": 0.15
+        "rangePct": 0.08,
+        "longRangeDamagePct": 0.08,
+        "longRangeThreshold": 150
       },
-      "rarity": "Legendary"
-    },
-    "capa_levitacion": {
-      "id": "capa_levitacion",
-      "name": "CAPA DE LEVITACIÓN",
-      "desc": "Permite agua y aumenta 10% el alcance.",
-      "icon": "assets/images/items/capa_levitacion.png",
-      "price": 1450,
-      "tier": 3,
-      "slot": "armor",
-      "set": "mystic",
-      "effects": {
-        "allowWater": true,
-        "rangePct": 0.1
-      },
-      "rarity": "Epic"
+      "rarity": "Rare"
     },
     "runas_kamar_taj": {
       "id": "runas_kamar_taj",
       "name": "RUNAS DE KAMAR-TAJ",
-      "desc": "35% de ralentizar al impactar.",
+      "desc": "20% de maldecir y +6% dano por estado activo.",
       "icon": "assets/images/items/runas_kamar_taj.png",
-      "price": 800,
+      "price": 1540,
       "tier": 2,
       "slot": "weapon",
       "set": "mystic",
       "effects": {
-        "slowChance": 0.35,
-        "slowPower": 0.3
+        "curseChance": 0.2,
+        "curseDuration": 4,
+        "cursePower": 0.01,
+        "statusDamagePct": 0.06,
+        "statusDamageCap": 0.24
       },
       "rarity": "Rare"
     },
-    "anillo_portal": {
-      "id": "anillo_portal",
-      "name": "ANILLO PORTAL",
-      "desc": "Agrega un rebote de proyectil.",
-      "icon": "assets/images/items/anillo_portal.png",
-      "price": 1900,
-      "tier": 3,
-      "slot": "weapon",
+    "brazalete_kun_lun": {
+      "id": "brazalete_kun_lun",
+      "name": "BRAZALETE KUN-LUN",
+      "desc": "16% de aturdir y +20% dano critico.",
+      "icon": "assets/images/items/brazalete_kun_lun.png",
+      "price": 1620,
+      "tier": 2,
+      "slot": "artifact",
       "set": "mystic",
       "effects": {
-        "chainCount": 1,
-        "chainRange": 100,
-        "chainFactor": 0.55
-      },
-      "rarity": "Epic"
-    },
-    "simbionte": {
-      "id": "simbionte",
-      "name": "SIMBIONTE VENOM",
-      "desc": "Aumenta el daño contra el mismo objetivo.",
-      "icon": "assets/images/items/simbionte.png",
-      "price": 1900,
-      "tier": 3,
-      "slot": "armor",
-      "set": "symbiote",
-      "effects": {
-        "consecutiveDamagePct": 0.025
-      },
-      "rarity": "Epic"
-    },
-    "telarana_sintetica": {
-      "id": "telarana_sintetica",
-      "name": "TELARAÑA SINTÉTICA",
-      "desc": "40% de aplicar ralentización acumulable.",
-      "icon": "assets/images/items/telarana_sintetica.png",
-      "price": 300,
-      "tier": 1,
-      "slot": "weapon",
-      "set": "symbiote",
-      "effects": {
-        "slowChance": 0.4,
-        "slowPower": 0.35
-      },
-      "rarity": "Common"
-    },
-    "tentaculo_klyntar": {
-      "id": "tentaculo_klyntar",
-      "name": "TENTÁCULO KLYNTAR",
-      "desc": "35% de romper armadura.",
-      "icon": "assets/images/items/tentaculo_klyntar.png",
-      "price": 950,
-      "tier": 2,
-      "slot": "weapon",
-      "set": "symbiote",
-      "effects": {
-        "armorBreakChance": 0.35,
-        "armorBreakPower": 0.18
+        "stunChance": 0.16,
+        "stunDuration": 0.22,
+        "critDamageBonus": 0.2
       },
       "rarity": "Rare"
     },
     "memoria_colmena": {
       "id": "memoria_colmena",
       "name": "MEMORIA COLMENA",
-      "desc": "Detecta sigilo y aumenta 12% el alcance.",
+      "desc": "Detecta sigilo, +5% alcance y dano acumulativo por foco.",
       "icon": "assets/images/items/memoria_colmena.png",
-      "price": 900,
+      "price": 1700,
       "tier": 2,
       "slot": "artifact",
       "set": "symbiote",
       "effects": {
         "detectStealth": true,
-        "rangePct": 0.12
+        "rangePct": 0.05,
+        "consecutiveDamagePct": 0.015
       },
       "rarity": "Rare"
     },
-    "fragmento_carnage": {
-      "id": "fragmento_carnage",
-      "name": "FRAGMENTO CARNAGE",
-      "desc": "+18% daño y +5% crítico.",
-      "icon": "assets/images/items/fragmento_carnage.png",
-      "price": 3000,
-      "tier": 4,
-      "slot": "artifact",
-      "set": "symbiote",
-      "effects": {
-        "damagePct": 0.18,
-        "critChance": 5
-      },
-      "rarity": "Mythic"
-    },
-    "suero_supersoldado": {
-      "id": "suero_supersoldado",
-      "name": "SUERO DEL SÚPER SOLDADO",
-      "desc": "+30% daño y cadencia con 10 vidas o menos.",
-      "icon": "assets/images/items/suero_supersoldado.png",
-      "price": 850,
-      "tier": 2,
-      "slot": "armor",
-      "set": "shield",
-      "effects": {
-        "lowLifeDamagePct": 0.3,
-        "lowLifeFireRatePct": 0.3
-      },
-      "rarity": "Rare"
-    },
-    "chaleco_tactico": {
-      "id": "chaleco_tactico",
-      "name": "CHALECO TÁCTICO",
-      "desc": "+8% daño, +8% cadencia y 8% penetración.",
-      "icon": "assets/images/items/chaleco_tactico.png",
-      "price": 400,
-      "tier": 1,
-      "slot": "armor",
-      "set": "shield",
-      "effects": {
-        "damagePct": 0.08,
-        "fireRatePct": 0.08,
-        "armorPenetration": 0.08
-      },
-      "rarity": "Common"
-    },
-    "municion_ice": {
-      "id": "municion_ice",
-      "name": "MUNICIÓN I.C.E.R.",
-      "desc": "30% de ralentizar y 10% de penetración.",
-      "icon": "assets/images/items/municion_ice.png",
-      "price": 750,
-      "tier": 2,
-      "slot": "weapon",
-      "set": "shield",
-      "effects": {
-        "slowChance": 0.3,
-        "slowPower": 0.2,
-        "armorPenetration": 0.1
-      },
-      "rarity": "Rare"
-    },
-    "baliza_fury": {
-      "id": "baliza_fury",
-      "name": "BALIZA FURY",
-      "desc": "+10% alcance y detección de sigilo.",
-      "icon": "assets/images/items/baliza_fury.png",
-      "price": 350,
-      "tier": 1,
-      "slot": "artifact",
-      "set": "shield",
-      "effects": {
-        "rangePct": 0.1,
-        "detectStealth": true
-      },
-      "rarity": "Common"
-    },
-    "dron_shield": {
-      "id": "dron_shield",
-      "name": "DRON S.H.I.E.L.D.",
-      "desc": "Agrega un rebote y +5% de cadencia.",
-      "icon": "assets/images/items/dron_shield.png",
-      "price": 1500,
-      "tier": 3,
-      "slot": "artifact",
-      "set": "shield",
-      "effects": {
-        "chainCount": 1,
-        "chainRange": 90,
-        "chainFactor": 0.5,
-        "fireRatePct": 0.05
-      },
-      "rarity": "Epic"
-    },
-    "armadura_war_machine": {
-      "id": "armadura_war_machine",
-      "name": "ARMADURA WAR MACHINE",
-      "desc": "Splash pequeno y penetracion para artilleria pesada.",
+    "municion_repulsora": {
+      "id": "municion_repulsora",
+      "name": "MUNICION REPULSORA",
+      "desc": "22% penetracion y +15% dano contra enemigos blindados.",
+      "icon": "assets/images/items/municion_repulsora.png",
       "price": 2100,
       "tier": 3,
-      "slot": "armor",
+      "slot": "weapon",
       "set": "stark",
       "effects": {
-        "splashRadius": 38,
-        "splashFactor": 0.24,
-        "armorPenetration": 0.12
+        "armorPenetration": 0.22,
+        "armorDamagePct": 0.15
       },
-      "icon": "assets/images/items/armadura_war_machine.png",
       "rarity": "Epic"
     },
-    "localizador_fury": {
-      "id": "localizador_fury",
-      "name": "LOCALIZADOR FURY",
-      "desc": "Detecta sigilo y marca mejor objetivos peligrosos.",
-      "price": 1150,
-      "tier": 2,
-      "slot": "artifact",
-      "set": "shield",
+    "guanteletes_gigantes": {
+      "id": "guanteletes_gigantes",
+      "name": "GUANTELETES GIGANTES",
+      "desc": "Impactos en area pequena, pero -12% dano si el enemigo esta demasiado cerca.",
+      "icon": "assets/images/items/guanteletes_gigantes.png",
+      "price": 2250,
+      "tier": 3,
+      "slot": "weapon",
+      "set": "pym",
       "effects": {
-        "detectStealth": true,
-        "rangePct": 0.08
+        "splashRadius": 42,
+        "splashFactor": 0.32,
+        "closeRangeDamagePenaltyPct": 0.12,
+        "closeRangeThreshold": 110
       },
-      "icon": "assets/images/items/localizador_fury.png",
-      "rarity": "Rare"
+      "rarity": "Epic"
+    },
+    "anillo_portal": {
+      "id": "anillo_portal",
+      "name": "ANILLO PORTAL",
+      "desc": "Los proyectiles rebotan una vez entre enemigos cercanos.",
+      "icon": "assets/images/items/anillo_portal.png",
+      "price": 2400,
+      "tier": 3,
+      "slot": "weapon",
+      "set": "mystic",
+      "effects": {
+        "chainCount": 1,
+        "chainRange": 105,
+        "chainFactor": 0.55
+      },
+      "rarity": "Epic"
+    },
+    "lanza_dora": {
+      "id": "lanza_dora",
+      "name": "LANZA DORA MILAJE",
+      "desc": "+5% critico, +20% dano critico y 18% penetracion.",
+      "icon": "assets/images/items/lanza_dora.png",
+      "price": 2550,
+      "tier": 3,
+      "slot": "weapon",
+      "set": "vibranium",
+      "effects": {
+        "critChance": 5,
+        "critDamageBonus": 0.2,
+        "armorPenetration": 0.18
+      },
+      "rarity": "Epic"
+    },
+    "corazon_wakanda": {
+      "id": "corazon_wakanda",
+      "name": "CORAZON DE WAKANDA",
+      "desc": "+14% dano y +10% contra blindaje.",
+      "icon": "assets/images/items/corazon_wakanda.png",
+      "price": 2700,
+      "tier": 3,
+      "slot": "artifact",
+      "set": "vibranium",
+      "effects": {
+        "damagePct": 0.14,
+        "armorDamagePct": 0.1
+      },
+      "rarity": "Epic"
+    },
+    "particulas_pym": {
+      "id": "particulas_pym",
+      "name": "PARTICULAS PYM",
+      "desc": "+25% cadencia, pero -8% dano base.",
+      "icon": "assets/images/items/particulas_pym.png",
+      "price": 2850,
+      "tier": 3,
+      "slot": "artifact",
+      "set": "pym",
+      "effects": {
+        "fireRatePct": 0.25,
+        "damagePct": -0.08
+      },
+      "rarity": "Epic"
+    },
+    "tentaculo_klyntar": {
+      "id": "tentaculo_klyntar",
+      "name": "TENTACULO KLYNTAR",
+      "desc": "Rompe armadura y puede aplicar veneno ligero.",
+      "icon": "assets/images/items/tentaculo_klyntar.png",
+      "price": 3000,
+      "tier": 3,
+      "slot": "weapon",
+      "set": "symbiote",
+      "effects": {
+        "armorBreakChance": 0.32,
+        "armorBreakPower": 0.16,
+        "poisonChance": 0.2,
+        "poisonDuration": 4,
+        "poisonPower": 0.008,
+        "poisonStacks": 1
+      },
+      "rarity": "Epic"
+    },
+    "sello_kun_lun": {
+      "id": "sello_kun_lun",
+      "name": "SELLO KUN-LUN",
+      "desc": "+9% dano, 18% de aturdir y +10% contra enemigos controlados.",
+      "icon": "assets/images/items/sello_kun_lun.png",
+      "price": 3150,
+      "tier": 3,
+      "slot": "artifact",
+      "set": "mystic",
+      "effects": {
+        "damagePct": 0.09,
+        "stunChance": 0.18,
+        "stunDuration": 0.24,
+        "damageToControlledPct": 0.1
+      },
+      "rarity": "Epic"
+    },
+    "tridente_atlante": {
+      "id": "tridente_atlante",
+      "name": "TRIDENTE ATLANTE",
+      "desc": "Permite agua, 20% penetracion y +8% contra jefes.",
+      "icon": "assets/images/items/tridente_atlante.png",
+      "price": 3300,
+      "tier": 3,
+      "slot": "weapon",
+      "set": "cosmic",
+      "effects": {
+        "allowWater": true,
+        "armorPenetration": 0.2,
+        "bossDamagePct": 0.08
+      },
+      "rarity": "Epic"
     },
     "alas_wasp": {
       "id": "alas_wasp",
       "name": "ALAS WASP",
-      "desc": "+18% cadencia y +4% critico.",
-      "price": 1250,
-      "tier": 2,
+      "desc": "+16% cadencia y +4% critico.",
+      "icon": "assets/images/items/alas_wasp.png",
+      "price": 3450,
+      "tier": 3,
       "slot": "armor",
       "set": "pym",
       "effects": {
-        "fireRatePct": 0.18,
+        "fireRatePct": 0.16,
         "critChance": 4
       },
-      "icon": "assets/images/items/alas_wasp.png",
-      "rarity": "Rare"
-    },
-    "casco_nova": {
-      "id": "casco_nova",
-      "name": "CASCO NOVA",
-      "desc": "Un rebote adicional con dano cosmico estable.",
-      "price": 2300,
-      "tier": 3,
-      "slot": "artifact",
-      "set": "stark",
-      "effects": {
-        "chainCount": 1,
-        "chainRange": 105,
-        "chainFactor": 0.52
-      },
-      "icon": "assets/images/items/casco_nova.png",
       "rarity": "Epic"
     },
     "guante_quake": {
       "id": "guante_quake",
       "name": "GUANTE QUAKE",
       "desc": "Ralentiza y rompe armadura por vibracion.",
-      "price": 1500,
+      "icon": "assets/images/items/guante_quake.png",
+      "price": 3600,
       "tier": 3,
       "slot": "weapon",
-      "set": "shield",
+      "set": "tactical",
       "effects": {
-        "slowChance": 0.28,
+        "slowChance": 0.25,
         "slowPower": 0.22,
         "armorBreakChance": 0.28,
         "armorBreakPower": 0.14
       },
-      "icon": "assets/images/items/guante_quake.png",
       "rarity": "Epic"
     },
-    "tridente_atlante": {
-      "id": "tridente_atlante",
-      "name": "TRIDENTE ATLANTE",
-      "desc": "Permite agua y aumenta penetracion.",
-      "price": 1700,
-      "tier": 3,
-      "slot": "weapon",
-      "set": "vibranium",
-      "effects": {
-        "allowWater": true,
-        "armorPenetration": 0.22
-      },
-      "icon": "assets/images/items/tridente_atlante.png",
-      "rarity": "Epic"
-    },
-    "sello_kun_lun": {
-      "id": "sello_kun_lun",
-      "name": "SELLO KUN-LUN",
-      "desc": "+10% dano y chance de stun breve.",
-      "price": 1450,
+    "casco_nova": {
+      "id": "casco_nova",
+      "name": "CASCO NOVA",
+      "desc": "Rebote energetico y +8% dano contra jefes.",
+      "icon": "assets/images/items/casco_nova.png",
+      "price": 3750,
       "tier": 3,
       "slot": "artifact",
-      "set": "mystic",
+      "set": "cosmic",
       "effects": {
-        "damagePct": 0.1,
-        "slowChance": 0.18,
-        "slowPower": 0.25
+        "chainCount": 1,
+        "chainRange": 110,
+        "chainFactor": 0.58,
+        "bossDamagePct": 0.08
       },
-      "icon": "assets/images/items/sello_kun_lun.png",
       "rarity": "Epic"
     },
-    "prisma_luz_oscura": {
-      "id": "prisma_luz_oscura",
-      "name": "PRISMA LUZ OSCURA",
-      "desc": "Detecta sigilo, aumenta alcance y suma rebote corto.",
-      "price": 2600,
+    "armadura_war_machine": {
+      "id": "armadura_war_machine",
+      "name": "ARMADURA WAR MACHINE",
+      "desc": "Area pequena y 12% penetracion.",
+      "icon": "assets/images/items/armadura_war_machine.png",
+      "price": 3900,
+      "tier": 3,
+      "slot": "armor",
+      "set": "stark",
+      "effects": {
+        "splashRadius": 38,
+        "splashFactor": 0.28,
+        "armorPenetration": 0.12
+      },
+      "rarity": "Epic"
+    },
+    "simbionte": {
+      "id": "simbionte",
+      "name": "SIMBIONTE VENOM",
+      "desc": "Dano acumulativo por foco y +8% contra enemigos controlados.",
+      "icon": "assets/images/items/simbionte.png",
+      "price": 4100,
+      "tier": 3,
+      "slot": "armor",
+      "set": "symbiote",
+      "effects": {
+        "consecutiveDamagePct": 0.025,
+        "damageToControlledPct": 0.08
+      },
+      "rarity": "Epic"
+    },
+    "protocolo_extremis": {
+      "id": "protocolo_extremis",
+      "name": "PROTOCOLO EXTREMIS",
+      "desc": "+18% dano, quemadura estable y bonus si la base esta en peligro.",
+      "icon": "assets/images/items/protocolo_extremis.png",
+      "price": 5400,
+      "tier": 4,
+      "slot": "armor",
+      "set": "stark",
+      "effects": {
+        "damagePct": 0.18,
+        "burnChance": 0.25,
+        "burnDuration": 4,
+        "burnPower": 0.014,
+        "lowLifeDamagePct": 0.18
+      },
+      "rarity": "Legendary"
+    },
+    "ojo_agamotto": {
+      "id": "ojo_agamotto",
+      "name": "OJO DE AGAMOTTO",
+      "desc": "Detecta sigilo, +13% alcance y +8% dano por estado activo.",
+      "icon": "assets/images/items/ojo_agamotto.png",
+      "price": 5850,
       "tier": 4,
       "slot": "artifact",
       "set": "mystic",
       "effects": {
         "detectStealth": true,
-        "rangePct": 0.12,
+        "rangePct": 0.13,
+        "statusDamagePct": 0.08,
+        "statusDamageCap": 0.32
+      },
+      "rarity": "Legendary"
+    },
+    "capa_levitacion": {
+      "id": "capa_levitacion",
+      "name": "CAPA DE LEVITACION",
+      "desc": "Permite agua y montana, con +12% alcance.",
+      "icon": "assets/images/items/capa_levitacion.png",
+      "price": 6200,
+      "tier": 4,
+      "slot": "armor",
+      "set": "mystic",
+      "effects": {
+        "allowWater": true,
+        "allowMountain": true,
+        "rangePct": 0.12
+      },
+      "rarity": "Legendary"
+    },
+    "prisma_luz_oscura": {
+      "id": "prisma_luz_oscura",
+      "name": "PRISMA LUZ OSCURA",
+      "desc": "Detecta sigilo, rebota y castiga enemigos malditos.",
+      "icon": "assets/images/items/prisma_luz_oscura.png",
+      "price": 6600,
+      "tier": 4,
+      "slot": "artifact",
+      "set": "mystic",
+      "effects": {
+        "detectStealth": true,
+        "chainCount": 1,
+        "chainRange": 90,
+        "chainFactor": 0.5,
+        "curseChance": 0.22,
+        "curseDuration": 4,
+        "cursePower": 0.012,
+        "damageToCursedPct": 0.18
+      },
+      "rarity": "Legendary"
+    },
+    "moneda_madripoor": {
+      "id": "moneda_madripoor",
+      "name": "MONEDA DE MADRIPOOR",
+      "desc": "Cada impacto genera 6% de recompensa, pero reduce 5% el dano.",
+      "icon": "assets/images/items/moneda_madripoor.png",
+      "price": 7000,
+      "tier": 4,
+      "slot": "artifact",
+      "set": "street",
+      "effects": {
+        "onHitCreditPct": 0.06,
+        "damagePct": -0.05
+      },
+      "rarity": "Legendary"
+    },
+    "visor_sniper": {
+      "id": "visor_sniper",
+      "name": "VISOR SNIPER",
+      "desc": "+8% alcance y +22% dano a larga distancia, pero penaliza el combate cercano.",
+      "icon": "assets/images/items/visor_sniper.png",
+      "price": 7350,
+      "tier": 4,
+      "slot": "artifact",
+      "set": "tactical",
+      "effects": {
+        "rangePct": 0.08,
+        "longRangeDamagePct": 0.22,
+        "longRangeThreshold": 165,
+        "closeRangeDamagePenaltyPct": 0.18,
+        "closeRangeThreshold": 115
+      },
+      "rarity": "Legendary"
+    },
+    "collar_pantera": {
+      "id": "collar_pantera",
+      "name": "COLLAR PANTERA",
+      "desc": "+6% critico, +35% dano critico y +16% contra blindaje.",
+      "icon": "assets/images/items/collar_pantera.png",
+      "price": 7700,
+      "tier": 4,
+      "slot": "artifact",
+      "set": "vibranium",
+      "effects": {
+        "critChance": 6,
+        "critDamageBonus": 0.35,
+        "armorDamagePct": 0.16
+      },
+      "rarity": "Legendary"
+    },
+    "cetro_loki": {
+      "id": "cetro_loki",
+      "name": "CETRO DE LOKI",
+      "desc": "Maldice con frecuencia y propaga dano entre grupos.",
+      "icon": "assets/images/items/cetro_loki.png",
+      "price": 8200,
+      "tier": 4,
+      "slot": "weapon",
+      "set": "asgard",
+      "effects": {
+        "curseChance": 0.28,
+        "curseDuration": 5,
+        "cursePower": 0.013,
+        "statusDamagePct": 0.1,
+        "statusDamageCap": 0.35,
         "chainCount": 1,
         "chainRange": 80,
         "chainFactor": 0.45
       },
-      "icon": "assets/images/items/prisma_luz_oscura.png",
       "rarity": "Legendary"
+    },
+    "fragmento_carnage": {
+      "id": "fragmento_carnage",
+      "name": "FRAGMENTO CARNAGE",
+      "desc": "+18% dano, +5% critico y veneno acumulable.",
+      "icon": "assets/images/items/fragmento_carnage.png",
+      "price": 11500,
+      "tier": 5,
+      "slot": "artifact",
+      "set": "symbiote",
+      "effects": {
+        "damagePct": 0.18,
+        "critChance": 5,
+        "poisonChance": 0.35,
+        "poisonDuration": 5,
+        "poisonPower": 0.01,
+        "poisonStacks": 2
+      },
+      "rarity": "Mythic"
+    },
+    "formula_phoenix": {
+      "id": "formula_phoenix",
+      "name": "FORMULA PHOENIX",
+      "desc": "Quemadura fuerte, area y +25% contra enemigos quemados.",
+      "icon": "assets/images/items/formula_phoenix.png",
+      "price": 13500,
+      "tier": 5,
+      "slot": "artifact",
+      "set": "cosmic",
+      "effects": {
+        "burnChance": 0.45,
+        "burnDuration": 5,
+        "burnPower": 0.02,
+        "damageToBurnedPct": 0.25,
+        "splashRadius": 44,
+        "splashFactor": 0.28
+      },
+      "rarity": "Mythic"
+    },
+    "tabla_surfer": {
+      "id": "tabla_surfer",
+      "name": "TABLA DEL SURFER",
+      "desc": "+18% alcance, rebote y +18% dano a larga distancia.",
+      "icon": "assets/images/items/tabla_surfer.png",
+      "price": 15000,
+      "tier": 5,
+      "slot": "armor",
+      "set": "cosmic",
+      "effects": {
+        "rangePct": 0.18,
+        "chainCount": 1,
+        "chainRange": 130,
+        "chainFactor": 0.5,
+        "longRangeDamagePct": 0.18,
+        "longRangeThreshold": 170
+      },
+      "rarity": "Mythic"
+    },
+    "orbe_caos_wanda": {
+      "id": "orbe_caos_wanda",
+      "name": "ORBE DE CAOS",
+      "desc": "Alta probabilidad de maldicion y +12% dano por estado activo.",
+      "icon": "assets/images/items/orbe_caos_wanda.png",
+      "price": 17000,
+      "tier": 5,
+      "slot": "artifact",
+      "set": "mystic",
+      "effects": {
+        "curseChance": 0.4,
+        "curseDuration": 5,
+        "cursePower": 0.014,
+        "statusDamagePct": 0.12,
+        "statusDamageCap": 0.48
+      },
+      "rarity": "Mythic"
+    },
+    "nanites_stark_prime": {
+      "id": "nanites_stark_prime",
+      "name": "NANITES STARK PRIME",
+      "desc": "+14% dano, +18% cadencia y deteccion de sigilo.",
+      "icon": "assets/images/items/nanites_stark_prime.png",
+      "price": 19000,
+      "tier": 5,
+      "slot": "armor",
+      "set": "stark",
+      "effects": {
+        "damagePct": 0.14,
+        "fireRatePct": 0.18,
+        "detectStealth": true
+      },
+      "rarity": "Mythic"
+    },
+    "gema_poder": {
+      "id": "gema_poder",
+      "name": "GEMA DEL PODER",
+      "desc": "+30% dano total y +15% contra jefes.",
+      "icon": "assets/images/items/gema_poder.png",
+      "price": 36000,
+      "tier": 6,
+      "slot": "artifact",
+      "set": "cosmic",
+      "effects": {
+        "damagePct": 0.3,
+        "bossDamagePct": 0.15
+      },
+      "rarity": "Secret"
+    },
+    "necroespada": {
+      "id": "necroespada",
+      "name": "NECROESPADA",
+      "desc": "Maldice, castiga jefes y destruye enemigos ya malditos.",
+      "icon": "assets/images/items/necroespada.png",
+      "price": 52000,
+      "tier": 6,
+      "slot": "weapon",
+      "set": "asgard",
+      "effects": {
+        "damagePct": 0.26,
+        "curseChance": 0.42,
+        "curseDuration": 6,
+        "cursePower": 0.016,
+        "damageToCursedPct": 0.35,
+        "bossDamagePct": 0.18
+      },
+      "rarity": "Secret"
+    },
+    "corazon_multiverso": {
+      "id": "corazon_multiverso",
+      "name": "CORAZON MULTIVERSAL",
+      "desc": "+20% alcance, +8% critico, +55% dano critico y +20% a larga distancia.",
+      "icon": "assets/images/items/corazon_multiverso.png",
+      "price": 56000,
+      "tier": 6,
+      "slot": "artifact",
+      "set": "mystic",
+      "effects": {
+        "rangePct": 0.2,
+        "critChance": 8,
+        "critDamageBonus": 0.55,
+        "longRangeDamagePct": 0.2,
+        "longRangeThreshold": 170
+      },
+      "rarity": "Secret"
+    },
+    "guantelete_infinito": {
+      "id": "guantelete_infinito",
+      "name": "GUANTELETE DEL INFINITO",
+      "desc": "+32% dano, dos rebotes y +12% dano por estado activo.",
+      "icon": "assets/images/items/guantelete_infinito.png",
+      "price": 65000,
+      "tier": 6,
+      "slot": "weapon",
+      "set": "cosmic",
+      "effects": {
+        "damagePct": 0.32,
+        "chainCount": 2,
+        "chainRange": 120,
+        "chainFactor": 0.55,
+        "statusDamagePct": 0.12,
+        "statusDamageCap": 0.5
+      },
+      "rarity": "Secret"
     }
   }
 };

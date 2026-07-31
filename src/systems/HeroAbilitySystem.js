@@ -172,7 +172,11 @@ export class HeroAbilitySystem {
     }
 
     getDisplayState() {
-        const aura = getScaledSupportAura(this.hero.config?.special?.supportAura, this.hero.level || this.hero.config?.level || 1);
+        const aura = getScaledSupportAura(
+            this.hero.config?.special?.supportAura,
+            this.hero.level || this.hero.config?.level || 1,
+            this.hero.config?.rarity || this.hero.rarity
+        );
         if (aura?.type) {
             const labels = { damage: 'Daño', fireRate: 'Cadencia', range: 'Alcance' };
             return { label: `${labels[aura.type] || 'Aura'} +${Math.round((aura.power || 0) * 100)}%`, progress: null, ready: true };

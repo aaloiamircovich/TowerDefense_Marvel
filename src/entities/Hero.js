@@ -6,6 +6,7 @@ import { aggregateItemEffects } from '../systems/ItemEffectSystem.js';
 import { applyEvolutionStats } from '../systems/EvolutionSystem.js';
 import { getHeroRangePattern, isPointInRangePattern } from '../utils/RangePattern.js';
 import { getScaledSupportAura, normalizeHeroLevel } from '../utils/HeroLevel.js';
+import { TERRAIN } from '../utils/TerrainRules.js';
 
 export function buildHeroTargetIntent(hero, enemies = [], stats = null) {
     if (!hero?.getBestTarget) return null;
@@ -83,6 +84,7 @@ export class Hero {
             fireRate: this.fireRate,
             range: this.range,
             critChance: this.critChance,
+            critDamage: 2,
             canSeeStealth: this.config.canSeeStealth || false
         };
 
@@ -100,8 +102,11 @@ export class Hero {
         stats.fireRate *= 1 + (itemEffects.fireRatePct || 0);
         stats.range *= 1 + (itemEffects.rangePct || 0);
         stats.critChance += itemEffects.critChance || 0;
+        stats.critDamage += itemEffects.critDamageBonus || 0;
         if (itemEffects.detectStealth) stats.canSeeStealth = true;
         if (itemEffects.allowWater && !this.allowedTerrains.includes(0)) this.allowedTerrains.push(0);
+        if (itemEffects.allowGrass && !this.allowedTerrains.includes(TERRAIN.grass)) this.allowedTerrains.push(TERRAIN.grass);
+        if (itemEffects.allowMountain && !this.allowedTerrains.includes(TERRAIN.mountain)) this.allowedTerrains.push(TERRAIN.mountain);
 
         const specialStats = this.config.special?.statModifiers || {};
         stats.damage *= 1 + (specialStats.damagePct || 0);
@@ -178,12 +183,13 @@ export class Hero {
 
         const roll = this.game?.random?.next?.() ?? Math.random();
         const isCrit = roll * 100 < stats.critChance;
-        let finalDamage = isCrit ? stats.damage * 2 : stats.damage;
+        let finalDamage = isCrit ? stats.damage * Math.max(1, stats.critDamage || 2) : stats.damage;
         this.combatStats.shots++;
         if (isCrit) this.combatStats.crits++;
         this.generateEconomyOnHit(target);
 
         const itemEffects = aggregateItemEffects(this.items);
+        finalDamage *= this.getConditionalItemDamageMultiplier(target, itemEffects);
         if (itemEffects.consecutiveDamagePct) {
             if (this.lastTargetId === target.uid) {
                 this.consecutiveHits++;
@@ -221,8 +227,32 @@ export class Hero {
         const itemEffects = aggregateItemEffects(this.items);
         if (itemEffects.slowChance) effects.push({ type: 'slow', duration: 1.2, power: itemEffects.slowPower || 0.2, chance: itemEffects.slowChance });
         if (itemEffects.armorBreakChance) effects.push({ type: 'armorBreak', duration: 3, power: itemEffects.armorBreakPower || 0.15, chance: itemEffects.armorBreakChance });
+        if (itemEffects.burnChance) effects.push({ type: 'burn', duration: itemEffects.burnDuration || 4, power: itemEffects.burnPower || 0.018, chance: itemEffects.burnChance });
+        if (itemEffects.poisonChance) effects.push({ type: 'poison', duration: itemEffects.poisonDuration || 4, power: itemEffects.poisonPower || 0.01, stacks: itemEffects.poisonStacks || 1, chance: itemEffects.poisonChance });
+        if (itemEffects.curseChance) effects.push({ type: 'curse', duration: itemEffects.curseDuration || 4, power: itemEffects.cursePower || 0.01, chance: itemEffects.curseChance });
+        if (itemEffects.stunChance) effects.push({ type: 'stun', duration: itemEffects.stunDuration || 0.25, power: 1, chance: itemEffects.stunChance });
 
         return effects;
+    }
+
+    getConditionalItemDamageMultiplier(target, itemEffects = {}) {
+        let multiplier = 1;
+        const statuses = target?.debuffs || [];
+        const hasStatus = (types) => statuses.some((status) => types.includes(status.type));
+        if (itemEffects.bossDamagePct && target?.isBoss) multiplier *= 1 + itemEffects.bossDamagePct;
+        if (itemEffects.armorDamagePct && ((target?.armor || 0) > 0 || (target?.barrier || 0) > 0)) multiplier *= 1 + itemEffects.armorDamagePct;
+        if (itemEffects.damageToControlledPct && hasStatus(['slow', 'stun', 'web'])) multiplier *= 1 + itemEffects.damageToControlledPct;
+        if (itemEffects.damageToBurnedPct && hasStatus(['burn'])) multiplier *= 1 + itemEffects.damageToBurnedPct;
+        if (itemEffects.damageToCursedPct && hasStatus(['curse'])) multiplier *= 1 + itemEffects.damageToCursedPct;
+        if (itemEffects.statusDamagePct && statuses.length) {
+            const cap = Number.isFinite(itemEffects.statusDamageCap) ? itemEffects.statusDamageCap : 0.5;
+            multiplier *= 1 + Math.min(cap, itemEffects.statusDamagePct * statuses.length);
+        }
+
+        const distance = Math.hypot((target?.x || 0) - this.x, (target?.y || 0) - this.y);
+        if (itemEffects.longRangeDamagePct && distance >= (itemEffects.longRangeThreshold || 150)) multiplier *= 1 + itemEffects.longRangeDamagePct;
+        if (itemEffects.closeRangeDamagePenaltyPct && distance < (itemEffects.closeRangeThreshold || 120)) multiplier *= 1 - itemEffects.closeRangeDamagePenaltyPct;
+        return Math.max(0.1, multiplier);
     }
 
     getProjectileProfile() {
@@ -265,7 +295,11 @@ export class Hero {
         const allies = this.game?.heroes || [];
         for (const ally of allies) {
             if (ally === this || ally.stunTimer > 0) continue;
-            const aura = getScaledSupportAura(ally.config?.special?.supportAura, ally.level || ally.config?.level || 1);
+            const aura = getScaledSupportAura(
+                ally.config?.special?.supportAura,
+                ally.level || ally.config?.level || 1,
+                ally.config?.rarity || ally.rarity
+            );
             if (!aura?.type) continue;
             const radius = Math.max(0, Number(aura.range || ally.range || 0));
             if (Math.hypot(ally.x - this.x, ally.y - this.y) > radius) continue;

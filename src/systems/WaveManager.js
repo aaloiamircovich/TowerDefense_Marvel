@@ -733,7 +733,7 @@ export class WaveManager {
         const masteryUnlocked = (this.game.heroes || []).flatMap((hero) => this.game.progression?.evaluateHeroMastery?.(hero) || []);
         this.game.uiManager?.renderWaveReport?.(this.buildWaveReport(waveBounty, metaReward, masteryUnlocked, cleanBonus));
 
-        const metaCopy = metaReward > 0 ? ` · +${metaReward} Fondos` : '';
+        const metaCopy = metaReward > 0 ? ` · +$${metaReward}` : '';
         const masteryCopy = masteryUnlocked.length ? ` · ${masteryUnlocked.length} maestria` : '';
         this.game.uiManager?.showToast(`Oleada superada: +$${waveBounty}${metaCopy}${masteryCopy}`, 'reward');
         this.currentWave++;

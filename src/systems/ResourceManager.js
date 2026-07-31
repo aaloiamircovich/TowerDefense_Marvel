@@ -22,7 +22,10 @@ export class ResourceManager {
             this.credits = Number.POSITIVE_INFINITY;
             return;
         }
-        if (Number.isFinite(amount) && amount > 0) this.credits += amount;
+        if (Number.isFinite(amount) && amount > 0) {
+            this.credits += amount;
+            this.persistCredits();
+        }
     }
 
     removeCredits(amount) {
@@ -32,9 +35,15 @@ export class ResourceManager {
         }
         if (Number.isFinite(amount) && amount > 0 && this.credits >= amount) {
             this.credits -= amount;
+            this.persistCredits();
             return true;
         }
         return false;
+    }
+
+    persistCredits() {
+        if (!Number.isFinite(this.credits)) return;
+        this.game?.progression?.syncCreditsFromResource?.(this.credits);
     }
 
     addLife(amount = 1) {

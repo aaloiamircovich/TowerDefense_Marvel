@@ -7,7 +7,8 @@ const ITEM_EFFECT_LABELS = {
     rangePct: 'Alcance',
     critChance: 'Critico',
     armorPenetration: 'Perforacion',
-    critMultiplier: 'Dano critico',
+    armorDamagePct: 'Anti-blindaje',
+    critDamageBonus: 'Dano critico',
     consecutiveDamagePct: 'Combo',
     splashRadius: 'Area',
     splashFactor: 'Splash',
@@ -16,18 +17,47 @@ const ITEM_EFFECT_LABELS = {
     chainFactor: 'Dano cadena',
     onHitCreditPct: 'Creditos',
     slowPower: 'Ralentizar',
-    stunChance: 'Aturdir'
+    slowChance: 'Chance slow',
+    stunChance: 'Aturdir',
+    stunDuration: 'Duracion stun',
+    burnChance: 'Quemar',
+    burnPower: 'Dano quemadura',
+    poisonChance: 'Veneno',
+    poisonPower: 'Dano veneno',
+    poisonStacks: 'Cargas veneno',
+    curseChance: 'Maldicion',
+    cursePower: 'Dano maldicion',
+    statusDamagePct: 'Dano por estado',
+    statusDamageCap: 'Tope estados',
+    bossDamagePct: 'Dano jefe',
+    longRangeDamagePct: 'Dano lejano',
+    closeRangeDamagePenaltyPct: 'Penalizacion cerca'
 };
 
 const PERCENT_EFFECTS = new Set([
     'damagePct',
     'fireRatePct',
     'rangePct',
+    'armorDamagePct',
+    'critDamageBonus',
     'consecutiveDamagePct',
     'splashFactor',
     'chainFactor',
     'onHitCreditPct',
-    'slowPower'
+    'slowPower',
+    'slowChance',
+    'stunChance',
+    'burnChance',
+    'burnPower',
+    'poisonChance',
+    'poisonPower',
+    'curseChance',
+    'cursePower',
+    'statusDamagePct',
+    'statusDamageCap',
+    'bossDamagePct',
+    'longRangeDamagePct',
+    'closeRangeDamagePenaltyPct'
 ]);
 
 export function buildItemEquipDeltaRows(nextItem, currentItem = null) {
@@ -84,7 +114,7 @@ export class InventoryPanel {
             </div>
             <section class="inventory-command-header">
                 <div>
-                    <span class="briefing-kicker">ARSENAL S.H.I.E.L.D.</span>
+                    <span class="briefing-kicker">ARSENAL HEROICO</span>
                     <h3>Objetos disponibles</h3>
                     <p>Elegí un objeto para abrir la colección y asignarlo a un héroe.</p>
                 </div>

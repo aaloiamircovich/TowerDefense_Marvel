@@ -225,7 +225,7 @@ export class MissionSystem {
             if ((this.state.metrics[objective.metric] || 0) < objective.target) continue;
             this.state.completed.add(objective.id);
             const awarded = this.game.progression?.completeMissionObjective(this.level.id, objective.id, objective.reward);
-            if (awarded) this.game.uiManager?.showToast(`${objective.label}: +${objective.reward} Fondos`, 'success');
+            if (awarded) this.game.uiManager?.showToast(`${objective.label}: +$${objective.reward}`, 'success');
         }
     }
 

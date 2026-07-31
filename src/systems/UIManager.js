@@ -560,13 +560,14 @@ export function buildShopItemInsight(item = {}, summary = null) {
     };
 
     add(effects.detectStealth && (summary?.stealthCount > 0 || (summary?.roles || []).includes('stealth')), 'cubre sigilo');
-    add((effects.armorPenetration || effects.armorBreakChance) && (summary?.armoredCount > 0 || summary?.barrierCount > 0 || (summary?.roles || []).some((role) => ['tank', 'shield'].includes(role))), 'rompe blindaje');
-    add(effects.slowChance && ((summary?.roles || []).includes('runner') || Number(summary?.fastest || 0) >= 90), 'frena corredores');
-    add((effects.damagePct || effects.fireRatePct || effects.critChance || effects.consecutiveDamagePct) && (summary?.hasBoss || Number(summary?.pressureScore || 0) >= 16), 'sube DPS');
+    add((effects.armorPenetration || effects.armorBreakChance || effects.armorDamagePct) && (summary?.armoredCount > 0 || summary?.barrierCount > 0 || (summary?.roles || []).some((role) => ['tank', 'shield'].includes(role))), 'rompe blindaje');
+    add((effects.slowChance || effects.stunChance) && ((summary?.roles || []).includes('runner') || Number(summary?.fastest || 0) >= 90), 'frena corredores');
+    add((effects.damagePct || effects.fireRatePct || effects.critChance || effects.critDamageBonus || effects.consecutiveDamagePct || effects.bossDamagePct) && (summary?.hasBoss || Number(summary?.pressureScore || 0) >= 16), 'sube DPS');
     add((effects.chainCount || effects.splashRadius) && Number(summary?.total || 0) >= 8, 'limpia grupos');
     add(effects.rangePct && ((summary?.roles || []).includes('flying') || Number(summary?.fastest || 0) >= 90), 'mejora cobertura');
-    add(effects.allowWater, 'abre posiciones');
-    add(effects.onHitCredit, 'economia por impacto');
+    add(effects.allowWater || effects.allowGrass || effects.allowMountain, 'abre posiciones');
+    add(effects.onHitCredit || effects.onHitCreditPct, 'economia por impacto');
+    add(effects.burnChance || effects.poisonChance || effects.curseChance || effects.statusDamagePct, 'escala con estados');
     add(effects.lowLifeDamagePct || effects.lowLifeFireRatePct, 'seguro de fuga');
 
     const setName = SET_BONUSES[item.set]?.name || item.set || 'sin set';
@@ -811,7 +812,7 @@ export function buildWaveReportGrade(report = {}) {
     if (score >= 96) {
         medal = 'S';
         tone = 'elite';
-        label = 'S.H.I.E.L.D. perfecto';
+        label = 'Defensa perfecta';
     } else if (score >= 86) {
         medal = 'A';
         tone = 'strong';
@@ -1925,15 +1926,16 @@ export class UIManager {
         if (!steps) return [];
 
         const databaseHero = this.game.heroDatabase?.[heroId] || {};
+        const rarity = targetData.rarity || databaseHero.rarity || 'Common';
         const baseDamage = Number(targetData.baseDamage ?? databaseHero.baseDamage ?? databaseHero.damage ?? targetData.damage ?? unit?.damage ?? 0);
-        const currentDamage = getHeroDamageAtLevel(baseDamage, currentLevel);
-        const nextDamage = getHeroDamageAtLevel(baseDamage, currentLevel + steps);
+        const currentDamage = getHeroDamageAtLevel(baseDamage, currentLevel, rarity);
+        const nextDamage = getHeroDamageAtLevel(baseDamage, currentLevel + steps, rarity);
         const rows = [];
         if (nextDamage !== currentDamage) rows.push({ label: 'Dano', value: nextDamage - currentDamage });
 
-        const aura = targetData.supportAura || databaseHero.supportAura;
-        const currentAura = getScaledSupportAura(aura, currentLevel);
-        const nextAura = getScaledSupportAura(aura, currentLevel + steps);
+        const aura = targetData.special?.supportAura || databaseHero.special?.supportAura || targetData.supportAura || databaseHero.supportAura;
+        const currentAura = getScaledSupportAura(aura, currentLevel, rarity);
+        const nextAura = getScaledSupportAura(aura, currentLevel + steps, rarity);
         const auraDelta = Number(nextAura?.power || 0) - Number(currentAura?.power || 0);
         if (auraDelta) rows.push({ label: 'Aura', value: auraDelta * 100, suffix: '%', precision: 1 });
 
@@ -2051,7 +2053,7 @@ export class UIManager {
         targetData.baseDamage = targetData.baseDamage || targetData.damage || unit.damage || 10;
         targetData.baseRange = targetData.baseRange || targetData.range || unit.range || 100;
         targetData.baseFireRate = targetData.baseFireRate || targetData.fireRate || unit.fireRate || 1;
-        targetData.damage = getHeroDamageAtLevel(targetData.baseDamage, targetData.level);
+        targetData.damage = getHeroDamageAtLevel(targetData.baseDamage, targetData.level, targetData.rarity || unit.rarity);
         targetData.range = targetData.baseRange;
         targetData.fireRate = targetData.baseFireRate;
 
@@ -2185,18 +2187,18 @@ export class UIManager {
 
     renderShop(title) {
         const rotation = this.game.shopSystem.getRotation();
-        const funds = this.game.progression.state.metaCredits;
-        const fundsText = this.game.progression.state.settings.adminMode ? '∞' : funds;
+        const credits = this.game.progression.getCredits();
+        const fundsText = this.game.progression.state.settings.adminMode ? '∞' : `$${credits}`;
         const recruitCost = getHeroBoxCost(this.game.progression.state.shop);
 
         this.panelContent.innerHTML = `
-            <div class="panel-title-row"><h2>${title}</h2><strong>${fundsText} Fondos S.H.I.E.L.D.</strong></div>
+            <div class="panel-title-row"><h2>${title}</h2><strong>${fundsText} creditos</strong></div>
             <div class="shop-layout">
                 <section class="shop-feature">
-                    <h3>Caja S.H.I.E.L.D.</h3>
+                    <h3>Caja de reclutamiento</h3>
                     <p>Recluta un héroe sin duplicados. Tras cuatro aperturas comunes, la siguiente garantiza Rare o superior.</p>
                     <div class="pity-track">Garantía: ${Math.min(4, this.game.progression.state.shop.heroPity)}/4</div>
-                    <button class="btn-primary" id="gacha-btn">RECLUTAR POR ${recruitCost} F</button>
+                    <button class="btn-primary" id="gacha-btn">RECLUTAR POR $${recruitCost}</button>
                     <div id="gacha-res" class="result-copy"></div>
                 </section>
                 <section>
@@ -2252,7 +2254,7 @@ export class UIManager {
                     <span>${escapeHtml(setProgress.detail)}</span>
                 </div>` : ''}
                 <small>Copias disponibles: ${owned}</small>
-                <button class="btn-buy-item btn-primary ghost" data-id="${item.id}" ${purchased ? 'disabled' : ''}>${purchased ? 'ADQUIRIDO' : `${item.price} F`}</button>
+                <button class="btn-buy-item btn-primary ghost" data-id="${item.id}" ${purchased ? 'disabled' : ''}>${purchased ? 'ADQUIRIDO' : `$${item.price}`}</button>
             </div>
         `;
     }
@@ -2417,7 +2419,7 @@ export class UIManager {
                 <div class="gacha-aura"></div>
                 <div class="gacha-case">
                     <i class="fas fa-box-open"></i>
-                    <span>Caja S.H.I.E.L.D.</span>
+                    <span>Caja de reclutamiento</span>
                 </div>
                 <button class="gacha-skip-btn btn-primary ghost" type="button"><i class="fas fa-forward"></i> Saltear</button>
                 <div class="gacha-roller" aria-hidden="true">
@@ -2515,8 +2517,8 @@ export class UIManager {
 
         const fundsLabel = this.panelContent.querySelector('.panel-title-row strong');
         if (fundsLabel) {
-            const fundsText = this.game.progression.state.settings.adminMode ? '∞' : this.game.progression.state.metaCredits;
-            fundsLabel.textContent = `${fundsText} Fondos S.H.I.E.L.D.`;
+            const fundsText = this.game.progression.state.settings.adminMode ? '∞' : `$${this.game.progression.getCredits()}`;
+            fundsLabel.textContent = `${fundsText} creditos`;
         }
         const pityTrack = this.panelContent.querySelector('.pity-track');
         if (pityTrack) pityTrack.textContent = `Garantia: ${Math.min(4, this.game.progression.state.shop.heroPity)}/4`;
@@ -2528,7 +2530,7 @@ export class UIManager {
             if (button) {
                 button.disabled = nextPool.length === 0;
                 const nextCost = getHeroBoxCost(this.game.progression.state.shop);
-                button.textContent = nextPool.length === 0 ? 'PLANTILLA COMPLETA' : `RECLUTAR POR ${nextCost} F`;
+                button.textContent = nextPool.length === 0 ? 'PLANTILLA COMPLETA' : `RECLUTAR POR $${nextCost}`;
             }
         });
     }

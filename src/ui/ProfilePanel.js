@@ -36,7 +36,7 @@ export class ProfilePanel {
         panelContent.innerHTML = `
             <section class="profile-command-header">
                 <div>
-                    <span class="briefing-kicker">ARCHIVO S.H.I.E.L.D.</span>
+                    <span class="briefing-kicker">ARCHIVO DE MANDO</span>
                     <h2>${title}</h2>
                     <p>Progreso global, contratos, códice y rendimiento operativo de la campaña.</p>
                 </div>
@@ -49,7 +49,7 @@ export class ProfilePanel {
                 <div class="detail-card profile-stat-card"><h3>Progreso</h3><p><span>Mejores oleadas</span><strong>${bestWaves}</strong></p><p><span>Estrellas</span><strong>${game.stars}</strong></p><p><span>Desafios</span><strong>${challenges}/${game.levelsData.length * 2}</strong></p></div>
                 <div class="detail-card profile-stat-card"><h3>Plantilla</h3><p><span>Heroes</span><strong>${game.unlockedHeroes.length}</strong></p><p><span>Equipo activo</span><strong>${game.activeTeam.length}/6</strong></p></div>
                 <div class="detail-card profile-stat-card"><h3>Composicion</h3><p><span>Sinergias</span><strong>${activeSynergies}</strong></p><p><span>Familias</span><strong>${team.distinctTags || 0}</strong></p><p><span>Despliegue</span><strong>Libre</strong></p></div>
-                <div class="detail-card profile-stat-card"><h3>Economia</h3><p><span>Fondos S.H.I.E.L.D.</span><strong>${progression.state.metaCredits} F</strong></p><p><span>Creditos de mision</span><strong>$${Math.floor(game.resourceManager.credits)}</strong></p></div>
+                <div class="detail-card profile-stat-card"><h3>Economia</h3><p><span>Creditos</span><strong>$${progression.getCredits()}</strong></p></div>
                 <div class="detail-card"><h3>Zona Marvel</h3><p><span>Mapa</span><strong>${game.currentLevel?.theme?.label || game.currentLevel?.name || 'Mapa'}</strong></p><p><span>Ambiente</span><strong>${game.currentLevel?.theme?.brief || 'Defensa tactica'}</strong></p></div>
                 <div class="detail-card"><h3>Rendimiento</h3><p><span>Frame p95</span><strong>${(performance.p95Ms || 0).toFixed(1)} ms</strong></p><p><span>Memoria pico</span><strong>${(performance.peakMemoryMb || 0).toFixed(1)} MB</strong></p><p><span>Pico de entidades</span><strong>${performance.peakEntities || 0}</strong></p><p><span>Proyectiles reciclados</span><strong>${pool.reused || 0}</strong></p></div>
             </div>
@@ -68,7 +68,7 @@ export class ProfilePanel {
     renderContract(contract) {
         return `
             <article class="${contract.completed ? 'completed' : ''}">
-                <div><strong>${contract.title}</strong><small>${contract.group} | +${contract.reward} F</small></div>
+                <div><strong>${contract.title}</strong><small>${contract.group} | +$${contract.reward}</small></div>
                 <p>${contract.goal}</p>
                 <b>${contract.completed ? 'Cobrado' : 'Pendiente'}</b>
             </article>
@@ -78,7 +78,7 @@ export class ProfilePanel {
     renderSynergyChallenge(challenge) {
         return `
             <article class="${challenge.completed ? 'completed' : ''} ${challenge.active ? 'active' : ''}">
-                <div><strong>${challenge.title}</strong><small>${challenge.type === 'family' ? 'Agrupacion' : 'Pareja'} | +${challenge.reward} F</small></div>
+                <div><strong>${challenge.title}</strong><small>${challenge.type === 'family' ? 'Agrupacion' : 'Pareja'} | +$${challenge.reward}</small></div>
                 <p>${challenge.goal}</p>
                 <b>${challenge.completed ? 'Cobrado' : challenge.active ? 'Activo' : 'Pendiente'}</b>
             </article>
