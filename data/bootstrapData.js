@@ -7257,12 +7257,12 @@ window.__MARVEL_TD_DATA__ = {
         "name": "Ultrón Prime",
         "category": "Tecnológico",
         "isBoss": true,
-        "hp": 7000,
-        "speed": 40,
+        "hp": 5200,
+        "speed": 38,
         "reward": 2000,
-        "armor": 0.55,
+        "armor": 0.38,
         "stealth": false,
-        "immuneToStun": true,
+        "immuneToStun": false,
         "faction": "Legión de Ultrón",
         "archetype": "boss",
         "threat": 5,
@@ -7275,19 +7275,27 @@ window.__MARVEL_TD_DATA__ = {
             "name": "Producción de Drones",
             "telegraph": 1.4,
             "summonId": "ultron_drone",
-            "summonCount": 3,
-            "barrier": 0.12,
+            "summonCount": 2,
+            "barrier": 0.08,
             "color": "#40c9ff"
           },
           {
             "threshold": 0.3,
             "name": "Protocolo Prime",
             "telegraph": 1.1,
-            "armor": 0.12,
+            "armor": 0.07,
             "speed": 1.25,
             "color": "#e63946"
           }
         ],
+        "statusResistance": 0.28,
+        "statusResistances": {
+          "slow": 0.35,
+          "stun": 0.45,
+          "poison": 0.2,
+          "burn": 0.1,
+          "armorBreak": 0.15
+        },
         "sprite": "assets/images/enemies/ultron_prime/portrait.png",
         "visual": {
           "defaultDirection": "south",
@@ -9516,7 +9524,7 @@ window.__MARVEL_TD_DATA__ = {
     "chaleco_tactico": {
       "id": "chaleco_tactico",
       "name": "CHALECO TÁCTICO",
-      "desc": "+8% daño y +8% cadencia.",
+      "desc": "+8% daño, +8% cadencia y 8% penetración.",
       "icon": "assets/images/items/chaleco_tactico.png",
       "price": 400,
       "tier": 1,
@@ -9524,7 +9532,8 @@ window.__MARVEL_TD_DATA__ = {
       "set": "shield",
       "effects": {
         "damagePct": 0.08,
-        "fireRatePct": 0.08
+        "fireRatePct": 0.08,
+        "armorPenetration": 0.08
       },
       "rarity": "Common"
     },

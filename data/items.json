@@ -384,7 +384,7 @@
   "chaleco_tactico": {
     "id": "chaleco_tactico",
     "name": "CHALECO TÁCTICO",
-    "desc": "+8% daño y +8% cadencia.",
+    "desc": "+8% daño, +8% cadencia y 8% penetración.",
     "icon": "assets/images/items/chaleco_tactico.png",
     "price": 400,
     "tier": 1,
@@ -392,7 +392,8 @@
     "set": "shield",
     "effects": {
       "damagePct": 0.08,
-      "fireRatePct": 0.08
+      "fireRatePct": 0.08,
+      "armorPenetration": 0.08
     },
     "rarity": "Common"
   },

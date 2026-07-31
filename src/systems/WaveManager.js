@@ -125,7 +125,12 @@ export function getWaveHealthCurve(wave = 1, isBoss = false) {
         curve = 62.2 * (1.125 ** (safeWave - 79));
     }
     if (!isBoss) return curve;
-    return curve * (2.2 + safeWave * 0.035);
+    const bossFactor = safeWave <= 30
+        ? 1.05 + safeWave * 0.035
+        : safeWave <= 79
+            ? 2.1 + (safeWave - 30) * 0.055
+            : 4.8 + (safeWave - 79) * 0.085;
+    return curve * bossFactor;
 }
 
 export function getLevelHealthFactor(level = {}, levelIndex = 0) {
@@ -193,7 +198,7 @@ export class WaveManager {
             this.preparedQueue.push({ config: this.scaleEnemy(config, 1.25, true), delay: 0 });
         } else if (this.currentWave % 10 === 0) {
             const config = this.getBossForWave();
-            this.preparedQueue.push({ config: this.scaleEnemy(config, 1 + this.currentWave * 0.08, true), delay: 0 });
+            this.preparedQueue.push({ config: this.scaleEnemy(config, this.getBossWaveMultiplier(), true), delay: 0 });
         } else {
             const difficulty = DIFFICULTIES[this.game.difficulty || 'normal'];
             const interval = Math.max(0.45, 1.45 - this.currentWave / 65);
@@ -267,6 +272,13 @@ export class WaveManager {
         const bossIndex = Math.max(0, this.currentWave / 10 - 1);
         const id = this.faction.bosses[bossIndex % this.faction.bosses.length];
         return this.data.bosses[id] || this.data.bosses.loki;
+    }
+
+    getBossWaveMultiplier(wave = this.currentWave) {
+        const safeWave = Math.max(1, Math.floor(Number(wave) || 1));
+        if (safeWave <= 10) return 0.85;
+        if (safeWave <= 30) return 0.85 + (safeWave - 10) * 0.045;
+        return 1.75 + (safeWave - 30) * 0.065;
     }
 
     getWaveModifier() {
@@ -459,6 +471,7 @@ export class WaveManager {
         let barrierCount = 0;
         let armoredCount = 0;
         let hasBoss = false;
+        const bossIds = new Set();
 
         this.preparedQueue.forEach(({ config }) => {
             roles.add(config.archetype || (config.isBoss ? 'boss' : 'soldier'));
@@ -468,11 +481,15 @@ export class WaveManager {
             if (config.stealth) stealthCount++;
             if ((config.barrierRatio || 0) > 0) barrierCount++;
             if ((config.armor || 0) >= 0.15) armoredCount++;
-            if (config.isBoss) hasBoss = true;
+            if (config.isBoss) {
+                hasBoss = true;
+                bossIds.add(config.id);
+            }
         });
 
         let counter = 'Daño equilibrado';
         if (this.getOpeningScript()?.counter) counter = this.getOpeningScript().counter;
+        else if (bossIds.has('ultron_prime')) counter = 'Penetracion, control y dano sostenido';
         else if (hasBoss) counter = 'Daño sostenido';
         else if (stealthCount > 0) counter = 'Detección de sigilo';
         else if (roles.has('shield') || roles.has('tank')) counter = 'Perforación y control';

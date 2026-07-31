@@ -20,6 +20,16 @@ test('ShopSystem muestra los tres objetos mas debiles disponibles', () => {
     assert.deepEqual(first, expected);
 });
 
+test('ShopSystem abre la tienda con una respuesta basica contra blindaje', () => {
+    const { shop } = createShop();
+    const [firstSlot] = shop.getRotation();
+
+    assert.equal(firstSlot.item.id, 'chaleco_tactico');
+    assert.ok(firstSlot.item.effects.damagePct > 0);
+    assert.ok(firstSlot.item.effects.fireRatePct > 0);
+    assert.ok(firstSlot.item.effects.armorPenetration > 0);
+});
+
 test('ShopSystem rellena la vitrina con el siguiente objeto al comprar', () => {
     const { shop, progression } = createShop();
     const expectedQueue = sortItemsWeakestFirst(Object.values(data.items)).map((item) => item.id);

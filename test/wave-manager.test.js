@@ -37,6 +37,24 @@ test('WaveManager prepara un jefe cada diez oleadas', () => {
     assert.equal(manager.preparedQueue[0].config.id, 'loki');
 });
 
+test('WaveManager mantiene a Ultron como primer boss vencible en Base Avengers', () => {
+    const game = createGame('avengers');
+    game.currentLevel = { id: 'level_2', theme: { id: 'avengers' }, difficulty: 'Normal' };
+    game.levelsData = [{ id: 'level_1' }, { id: 'level_2' }];
+    const manager = new WaveManager(game, enemies);
+    manager.currentWave = 10;
+    manager.prepareNextWave();
+
+    const boss = manager.preparedQueue[0].config;
+    assert.equal(boss.id, 'ultron_prime');
+    assert.equal(boss.isBoss, true);
+    assert.ok(boss.hp >= 7500);
+    assert.ok(boss.hp <= 9000);
+    assert.ok(boss.armor <= 0.4);
+    assert.equal(boss.immuneToStun, false);
+    assert.equal(manager.getWaveSummary().counter, 'Penetracion, control y dano sostenido');
+});
+
 test('WaveManager conserva la marca de jefe final en la ultima oleada', () => {
     const manager = new WaveManager(createGame(), enemies);
     manager.currentWave = manager.maxWaves;
