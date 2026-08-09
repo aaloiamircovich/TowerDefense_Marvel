@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hero-td-v2.44.0-grass-placement-20260731';
+const CACHE_NAME = 'hero-td-v2.44.0-road-edge-placement-20260809';
 const CORE_ASSETS = [
     './', './index.html', './styles.css', './manifest.webmanifest',
     './data/bootstrapData.js', './data/sprite-atlas.js', './data/heroes.json', './data/enemies.json',
