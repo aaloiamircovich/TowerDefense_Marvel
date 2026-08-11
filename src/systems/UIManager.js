@@ -2326,7 +2326,7 @@ export class UIManager {
                     <button class="starter-card ${rarityClass}" data-id="${hero.id}" data-testid="starter-${hero.id}" data-rarity="${rarity}">
                         ${this.renderSprite(this.getHeroDisplaySprite(hero), hero.name)}
                         <strong>${hero.name}</strong>
-                        <span>${hero.category} | <b class="rarity-badge ${rarityClass}">${rarity}</b> | despliegue libre</span>
+                        <span class="starter-rarity-line"><b class="rarity-badge ${rarityClass}">${rarity}</b></span>
                     </button>
                 `;
                 }).join('')}
