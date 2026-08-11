@@ -2,8 +2,11 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { WaveManager, getFinalBossHealthCurve, getLevelHealthFactor, getWaveHealthCurve } from '../src/systems/WaveManager.js';
+import { getHeroDamageAtLevel } from '../src/utils/HeroLevel.js';
+import { TypeChart } from '../data/TypeChart.js';
 
 const enemies = JSON.parse(fs.readFileSync(new URL('../data/enemies.json', import.meta.url), 'utf8'));
+const heroes = JSON.parse(fs.readFileSync(new URL('../data/heroes.json', import.meta.url), 'utf8'));
 
 test('WaveManager prepara una primera oleada valida', () => {
     const manager = new WaveManager(createGame(), enemies);
@@ -27,9 +30,15 @@ test('apertura dirigida no fuerza sigilo sin deteccion disponible', () => {
     assert.equal(manager.getWaveSummary().counter, 'Mejora un heroe antes del elite');
 });
 
-test('WaveManager prepara un jefe cada diez oleadas', () => {
+test('WaveManager reserva jefes para oleadas 25, 50, 75 y 100', () => {
     const manager = new WaveManager(createGame(), enemies);
     manager.currentWave = 10;
+    manager.prepareNextWave();
+
+    assert.notEqual(manager.preparedQueue.length, 1);
+    assert.equal(manager.preparedQueue.some((entry) => entry.config.isBoss), false);
+
+    manager.currentWave = 25;
     manager.prepareNextWave();
 
     assert.equal(manager.preparedQueue.length, 1);
@@ -37,22 +46,52 @@ test('WaveManager prepara un jefe cada diez oleadas', () => {
     assert.equal(manager.preparedQueue[0].config.id, 'loki');
 });
 
-test('WaveManager mantiene a Ultron como primer boss vencible en Base Avengers', () => {
+test('WaveManager mantiene a Ultron como primer mini boss vencible en Base Avengers', () => {
     const game = createGame('avengers');
-    game.currentLevel = { id: 'level_2', theme: { id: 'avengers' }, difficulty: 'Normal' };
-    game.levelsData = [{ id: 'level_1' }, { id: 'level_2' }];
+    game.currentLevel = { id: 'level_1', theme: { id: 'avengers' }, difficulty: 'Fácil' };
+    game.levelsData = [{ id: 'level_1' }];
     const manager = new WaveManager(game, enemies);
-    manager.currentWave = 10;
+    manager.currentWave = 25;
     manager.prepareNextWave();
 
     const boss = manager.preparedQueue[0].config;
     assert.equal(boss.id, 'ultron_prime');
     assert.equal(boss.isBoss, true);
-    assert.ok(boss.hp >= 7500);
-    assert.ok(boss.hp <= 9000);
-    assert.ok(boss.armor <= 0.4);
+    assert.ok(boss.hp >= 14500);
+    assert.ok(boss.hp <= 16000);
+    assert.ok(boss.armor <= 0.34);
     assert.equal(boss.immuneToStun, false);
     assert.equal(manager.getWaveSummary().counter, 'Penetracion, control y dano sostenido');
+});
+
+test('primer mini boss de Base Avengers pide varios intentos pero no bloquea el progreso', () => {
+    const game = createGame('avengers');
+    game.currentLevel = { id: 'level_1', theme: { id: 'avengers' }, difficulty: 'Fácil' };
+    game.levelsData = [{ id: 'level_1' }];
+    const manager = new WaveManager(game, enemies);
+    manager.currentWave = 25;
+    manager.prepareNextWave();
+
+    const boss = manager.preparedQueue[0].config;
+    const firstAttempt = estimateBossDamage([
+        ['cyclops', 30],
+        ['black_widow', 15],
+        ['hawkeye', 15],
+        ['groot', 15],
+        ['korg', 15],
+        ['ms_marvel', 15]
+    ], boss);
+    const fourthAttempt = estimateBossDamage([
+        ['cyclops', 34],
+        ['black_widow', 20],
+        ['hawkeye', 20],
+        ['groot', 20],
+        ['korg', 20],
+        ['ms_marvel', 20]
+    ], boss);
+
+    assert.ok(firstAttempt < boss.hp * 0.95);
+    assert.ok(fourthAttempt > boss.hp * 1.08);
 });
 
 test('WaveManager conserva la marca de jefe final en la ultima oleada', () => {
@@ -108,7 +147,7 @@ test('curva de salud escala suave, exponencial y extrema por oleada', () => {
     assert.ok(wave30 > wave1 * 2);
     assert.ok(wave60 > wave30 * 3);
     assert.ok(wave100 > wave60 * 10);
-    assert.ok(boss100 > wave100 * 2.5);
+    assert.ok(boss100 > wave100 * 2.7);
     assert.ok(final100 < wave100);
 });
 
@@ -373,7 +412,7 @@ test('WaveManager anuncia jefes al entrar en ruta', () => {
     game.vfx = calls.vfx;
     game.spawnEnemy = (config) => ({ ...config, x: 24, y: 36 });
     const manager = new WaveManager(game, enemies);
-    manager.currentWave = 10;
+    manager.currentWave = 25;
     manager.prepareNextWave();
     manager.startNextWave();
     manager.update(1);
@@ -484,9 +523,25 @@ function deployedHero({ id, name = id, damage, fireRate, range, level = 1, canSe
     };
 }
 
+function estimateBossDamage(teamPlan, boss, seconds = 24) {
+    return teamPlan.reduce((total, [heroId, level]) => {
+        const hero = heroes[heroId];
+        if (!hero) return total;
+        const damage = getHeroDamageAtLevel(hero.damage, level, hero.rarity);
+        const fireRate = Number(hero.fireRate || 1);
+        const critChance = Number(hero.critChance || 5) / 100;
+        const critMultiplier = Number(hero.critMultiplier || 2);
+        const critFactor = 1 + critChance * (critMultiplier - 1);
+        const typeMultiplier = TypeChart[hero.category]?.[boss.category] || 1;
+        const resistance = Number(boss.resistances?.[hero.category] || 0);
+        const armor = Number(boss.armor || 0);
+        return total + damage * fireRate * critFactor * typeMultiplier * (1 - resistance) * (1 - armor) * seconds;
+    }, 0);
+}
+
 test('Manhattan usa amenazas urbanas coherentes con Hydra, A.I.M., Chitauri y Loki', () => {
     const manager = new WaveManager(createGame('new-york'), enemies);
-    manager.currentWave = 25;
+    manager.currentWave = 24;
     manager.prepareNextWave();
     const allowed = new Set(['hydra_soldier', 'aim_scientist', 'chitauri_warrior', 'chitauri_skimmer', 'chitauri_phaser']);
     const pool = new Set(manager.getEnemyPoolForWave().map((enemy) => enemy.id));

@@ -1,4 +1,5 @@
 import { RandomSource } from '../utils/Random.js';
+import { isBossWave } from '../utils/LevelProgression.js';
 
 const AFFIXES = [
     { id: 'regenerator', label: 'Regenerador' },
@@ -14,7 +15,7 @@ export class EncounterDirector {
     }
 
     getBranchOptions(wave) {
-        if (wave < 4 || wave % 4 !== 0 || wave % 10 === 0) return [];
+        if (wave < 4 || wave % 4 !== 0 || isBossWave(wave)) return [];
         return [
             { id: 'safe', label: 'Contención', description: 'Menos amenaza, botín normal.', threatFactor: 0.88, rewardFactor: 1 },
             { id: 'bounty', label: 'Cazar élite', description: '+30% amenaza y +25% botín.', threatFactor: 1.3, rewardFactor: 1.25 }
@@ -40,9 +41,9 @@ export class EncounterDirector {
             index++;
         }
 
-        if (wave % 5 === 0 && wave % 10 !== 0 && result.length) {
+        if (wave % 5 === 0 && !isBossWave(wave) && result.length) {
             const base = [...candidates].sort((a, b) => (b.threat || 1) - (a.threat || 1))[0];
-            result.push(this.createMiniBoss(base, random.pick(AFFIXES), branch.rewardFactor));
+            result.push(this.createElite(base, random.pick(AFFIXES), branch.rewardFactor));
         }
         return result;
     }
@@ -84,6 +85,20 @@ export class EncounterDirector {
             isMiniBoss: true,
             threat: 5,
             phases: [{ threshold: 0.6, name: 'Ataque anunciado', telegraph: 1.2, speed: 1.25, color: '#ffd166' }]
+        }, affix);
+    }
+
+    createElite(config, affix, rewardFactor) {
+        return this.applyAffix({
+            ...config,
+            id: `${config.id}_elite`,
+            name: `${config.name} Élite`,
+            hp: Math.round(config.hp * 1.55),
+            speed: Math.max(32, Math.round(config.speed * 0.92)),
+            reward: Math.round((config.reward || 10) * 1.75 * rewardFactor),
+            armor: Math.min(0.55, (config.armor || 0) + 0.08),
+            isElite: true,
+            threat: Math.min(5, (config.threat || 1) + 1)
         }, affix);
     }
 }

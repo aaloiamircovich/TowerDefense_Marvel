@@ -1,6 +1,11 @@
 ﻿import { Enemy } from '../entities/Enemy.js';
 import { EncounterDirector } from './EncounterDirector.js';
-import { CAMPAIGN_MAX_WAVES } from '../utils/LevelProgression.js';
+import {
+    CAMPAIGN_MAX_WAVES,
+    MINI_BOSS_WAVE_INTERVAL,
+    isFinalBossWave,
+    isMiniBossWave
+} from '../utils/LevelProgression.js';
 
 const FACTIONS = {
     'new-york': {
@@ -127,10 +132,10 @@ export function getWaveHealthCurve(wave = 1, isBoss = false) {
     }
     if (!isBoss) return curve;
     const bossFactor = safeWave <= 30
-        ? 1.05 + safeWave * 0.035
+        ? 1.8
         : safeWave <= 79
-            ? 2.1 + (safeWave - 30) * 0.005
-            : 2.35 + (safeWave - 79) * 0.012;
+            ? 1.85 + (safeWave - 30) * 0.012
+            : 2.45 + (safeWave - 79) * 0.014;
     return curve * bossFactor;
 }
 
@@ -198,10 +203,10 @@ export class WaveManager {
             this.preparedQueue.push(...modeQueue);
         } else if (scriptedQueue) {
             this.preparedQueue.push(...scriptedQueue);
-        } else if (this.currentWave === this.maxWaves) {
+        } else if (isFinalBossWave(this.currentWave, this.maxWaves)) {
             const config = this.data.bosses.thanos_final;
             this.preparedQueue.push({ config: this.scaleEnemy(config, 1.25, true), delay: 0 });
-        } else if (this.currentWave % 10 === 0) {
+        } else if (isMiniBossWave(this.currentWave, this.maxWaves)) {
             const config = this.getBossForWave();
             this.preparedQueue.push({ config: this.scaleEnemy(config, this.getBossWaveMultiplier(), true), delay: 0 });
         } else {
@@ -274,17 +279,17 @@ export class WaveManager {
     }
 
     getBossForWave() {
-        const bossIndex = Math.max(0, this.currentWave / 10 - 1);
+        const bossIndex = Math.max(0, Math.floor(this.currentWave / MINI_BOSS_WAVE_INTERVAL) - 1);
         const id = this.faction.bosses[bossIndex % this.faction.bosses.length];
         return this.data.bosses[id] || this.data.bosses.loki;
     }
 
     getBossWaveMultiplier(wave = this.currentWave) {
         const safeWave = Math.max(1, Math.floor(Number(wave) || 1));
-        if (safeWave <= 10) return 0.85;
-        if (safeWave <= 30) return 0.85 + (safeWave - 10) * 0.015;
-        if (safeWave <= 79) return 1.15 + (safeWave - 30) * 0.006;
-        return 1.45 + (safeWave - 79) * 0.006;
+        if (safeWave <= 25) return 0.9;
+        if (safeWave <= 50) return 1;
+        if (safeWave <= 75) return 1.1;
+        return 1.18 + (safeWave - 75) * 0.004;
     }
 
     getWaveModifier() {
@@ -296,8 +301,11 @@ export class WaveManager {
                 description: scripted.counter || 'Apertura dirigida de campaña.'
             };
         }
-        if (this.currentWave % 10 === 0 || this.currentWave === this.maxWaves) {
-            return { id: 'boss', label: 'Amenaza máxima', description: 'Jefe con múltiples fases.' };
+        if (isFinalBossWave(this.currentWave, this.maxWaves)) {
+            return { id: 'final-boss', label: 'Jefe final', description: 'El cierre de 100 oleadas exige todo tu progreso.' };
+        }
+        if (isMiniBossWave(this.currentWave, this.maxWaves)) {
+            return { id: 'mini-boss', label: 'Mini boss', description: 'Prueba de progreso cada 25 oleadas.' };
         }
         return MODIFIERS[(this.currentWave - 1) % MODIFIERS.length];
     }
@@ -343,7 +351,7 @@ export class WaveManager {
         if (script.elite) {
             const eliteBase = this.getCounterSafeEnemy(script.elite, fallbackId, capabilities);
             if (eliteBase) queue.push({
-                config: this.director.createMiniBoss(eliteBase, { id: 'commander', label: 'Comandante' }, 1),
+                config: this.director.createElite(eliteBase, { id: 'commander', label: 'Comandante' }, 1),
                 delay: 1.15
             });
         }
@@ -391,7 +399,7 @@ export class WaveManager {
             ...config,
             hp: Math.round(config.hp * scalingMultiplier * waveHealth * levelHealth * (modifier.hpFactor || 1) * difficulty.hp),
             speed: Math.round(config.speed * (modifier.speedFactor || 1) * difficulty.speed),
-            armor: Math.min(0.8, (config.armor || 0) + (modifier.armorBonus || 0)),
+            armor: Math.min(this.getArmorCap(config, isBoss), (config.armor || 0) + (modifier.armorBonus || 0)),
             barrierRatio: Math.max(config.barrierRatio || 0, modifier.barrierRatio || 0),
             stealth: modifier.stealth || config.stealth || false,
             reward: Math.round((config.reward ?? 10) * (isBoss ? 1 : 1 + this.currentWave * 0.02) * difficulty.reward),
@@ -399,6 +407,15 @@ export class WaveManager {
             isFinalBoss: Boolean(config.isFinalBoss),
             waveModifier: this.waveModifier.id
         };
+    }
+
+    getArmorCap(config = {}, isBoss = false) {
+        if (!(isBoss || config.isBoss)) return 0.8;
+        if (config.isFinalBoss) return 0.65;
+        if (this.currentWave <= 25) return 0.34;
+        if (this.currentWave <= 50) return 0.46;
+        if (this.currentWave <= 75) return 0.56;
+        return 0.62;
     }
 
     getUniqueEnemies() {

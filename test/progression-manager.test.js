@@ -208,11 +208,11 @@ test('Progreso de mapa guarda estrellas y desafios', () => {
     const game = createGame();
     manager.initialize(game, data);
     game.progression = manager;
-    manager.recordWave(game, 10);
+    manager.recordWave(game, 25);
 
     const progress = manager.getMapProgress('level_1');
-    assert.equal(progress.bestWave, 10);
-    assert.equal(progress.stars, 10);
+    assert.equal(progress.bestWave, 25);
+    assert.equal(progress.stars, 25);
     assert.deepEqual(progress.challenges.sort(), ['cazajefes', 'sin_danos']);
 });
 
@@ -345,7 +345,7 @@ test('resumen de mision acumula estadisticas y logros una sola vez', () => {
     manager.initialize(game, data);
     manager.startProfile('iron_man');
     game.heroes = [{ id: 'iron_man', name: 'Iron Man', combatStats: { damageDealt: 8200, kills: 31, shots: 60, crits: 8, goldGenerated: 90, abilityActivations: 6 } }];
-    game.waveManager = { currentWave: 10 };
+    game.waveManager = { currentWave: 25 };
     game.modeSystem = { modeId: 'campaign' };
 
     const summary = manager.recordMissionSummary(game, 'victory');

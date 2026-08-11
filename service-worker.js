@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hero-td-v2.44.0-avengers-grass-placement-v1-20260811';
+const CACHE_NAME = 'hero-td-v2.44.0-boss-balance-v1-20260811';
 const CORE_ASSETS = [
     './', './index.html', './styles.css', './manifest.webmanifest',
     './data/bootstrapData.js', './data/sprite-atlas.js', './data/heroes.json', './data/enemies.json',

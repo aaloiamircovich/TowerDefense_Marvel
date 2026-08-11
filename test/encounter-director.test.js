@@ -29,13 +29,14 @@ test('director elimina sigilo cuando el equipo no tiene detección', () => {
     assert.ok(encounter.every((enemy) => !enemy.stealth && enemy.archetype !== 'stealth'));
 });
 
-test('quinta oleada intermedia incorpora mini-jefe con telegraph y afijo', () => {
+test('quinta oleada intermedia incorpora elite con afijo sin tratarlo como mini boss', () => {
     const director = new EncounterDirector(createGame());
     const encounter = director.compose(pool, 5, 'safe');
-    const elite = encounter.find((enemy) => enemy.isMiniBoss);
+    const elite = encounter.find((enemy) => enemy.isElite);
     assert.ok(elite);
-    assert.equal(elite.threat, 5);
-    assert.equal(elite.phases[0].name, 'Ataque anunciado');
+    assert.equal(elite.isMiniBoss, undefined);
+    assert.ok(elite.threat >= 4);
+    assert.equal(elite.phases, undefined);
     assert.ok(AFFIXES.some((affix) => affix.id === elite.affix.id));
 });
 

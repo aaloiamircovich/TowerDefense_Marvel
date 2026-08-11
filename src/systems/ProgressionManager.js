@@ -3,7 +3,7 @@ import { CODEX_MECHANICS, completedMasteryChallenges, createCodexSnapshot, flatt
 import { PAIR_SYNERGIES, SYNERGY_DEFINITIONS, analyzeTeam } from './TeamSynergySystem.js';
 import { getMusicTrack } from '../audio/AudioManager.js';
 import { HERO_MAX_LEVEL, getHeroDamageAtLevel, normalizeHeroLevel } from '../utils/HeroLevel.js';
-import { CAMPAIGN_MAX_WAVES } from '../utils/LevelProgression.js';
+import { CAMPAIGN_MAX_WAVES, isBossWave } from '../utils/LevelProgression.js';
 
 const SAVE_KEY = 'tower-defense-marvel-save';
 const SAVE_VERSION = 9;
@@ -727,7 +727,7 @@ export class ProgressionManager {
         const unlocked = new Set(this.state.achievements);
         unlocked.add('primera_defensa');
         if (result === 'victory' && summary.lives === game.resourceManager?.maxLives) unlocked.add('intocable');
-        if (summary.wave >= 10) unlocked.add('cazajefes');
+        if (summary.wave >= 25) unlocked.add('cazajefes');
         if (Object.values(this.state.heroMastery).some((entry) => entry.completed?.length >= 3)) unlocked.add('maestro');
         if (this.state.unlockedHeroIds.length >= 10) unlocked.add('coleccionista');
         if (tactical.tacticalScore >= 2500) unlocked.add('tactico_superior');
@@ -961,8 +961,9 @@ export class ProgressionManager {
         if (campaignWave >= 5 && game.resourceManager.lives === game.resourceManager.maxLives) {
             progress.challenges = [...new Set([...progress.challenges, 'sin_danos'])];
         }
-        if (campaignWave % 10 === 0) progress.challenges = [...new Set([...progress.challenges, 'cazajefes'])];
-        const reward = 18 + campaignWave * 3 + (campaignWave % 10 === 0 ? 100 : 0);
+        const isScheduledBoss = isBossWave(campaignWave, CAMPAIGN_MAX_WAVES);
+        if (isScheduledBoss) progress.challenges = [...new Set([...progress.challenges, 'cazajefes'])];
+        const reward = 18 + campaignWave * 3 + (isScheduledBoss ? 180 : 0);
         this.state.mapProgress[levelId] = progress;
         this.addCredits(reward);
         game.stars = this.getTotalStars();

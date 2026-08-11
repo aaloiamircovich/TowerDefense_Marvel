@@ -63,7 +63,7 @@ test('cada mundo nuevo usa facción y jefe propios', () => {
     ];
     for (const [theme, label, boss] of expected) {
         const manager = new WaveManager(createWaveGame(theme), enemies);
-        manager.currentWave = 10; manager.prepareNextWave();
+        manager.currentWave = 25; manager.prepareNextWave();
         assert.equal(manager.faction.label, label);
         assert.equal(manager.preparedQueue[0].config.id, boss);
     }
