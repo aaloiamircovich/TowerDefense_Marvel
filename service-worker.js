@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hero-td-v2.44.0-start-screen-roster-105-20260811';
+const CACHE_NAME = 'hero-td-v2.44.0-start-loading-bar-20260811';
 const CORE_ASSETS = [
     './', './index.html', './styles.css', './manifest.webmanifest',
     './data/bootstrapData.js', './data/sprite-atlas.js', './data/heroes.json', './data/enemies.json',

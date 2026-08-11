@@ -32,7 +32,7 @@ try {
     });
 
     await page.goto(`http://127.0.0.1:${port}/`, { waitUntil: 'domcontentloaded' });
-    await page.getByTestId('boot-screen').waitFor({ state: 'hidden', timeout: 20000 });
+    await page.getByTestId('start-loading').waitFor({ state: 'hidden', timeout: 20000 });
 
     const playButton = page.locator('#start-play-btn');
     if (await playButton.isVisible().catch(() => false)) {

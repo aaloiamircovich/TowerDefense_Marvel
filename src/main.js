@@ -16,7 +16,7 @@ import { getFixedDifficultyKey, isLevelUnlockedByStars } from './utils/LevelProg
 
 async function initGame() {
     let ui = null;
-    setBootStatus('Preparando nucleo tactico...');
+    setBootStatus('Preparando nucleo tactico...', 8);
     try {
         const game = new GameLoop('gameCanvas');
         window.__SUPER_HERO_TD_GAME__ = game;
@@ -26,7 +26,7 @@ async function initGame() {
         game.uiManager = ui;
         game.resourceManager = resources;
 
-        setBootStatus('Cargando datos de heroes, mapas y oleadas...');
+        setBootStatus('Cargando datos de heroes, mapas y oleadas...', 24);
         const data = await Loader.loadManifest({
             heroes: './data/heroes.json',
             enemies: './data/enemies.json',
@@ -112,10 +112,10 @@ async function initGame() {
 
         const rawSavedLevel = data.levels.find((level) => level.id === game.progression.state.lastLevelId);
         const savedLevel = rawSavedLevel && game.isLevelUnlocked(rawSavedLevel) ? rawSavedLevel : data.levels[0];
-        setBootStatus('Precargando equipo inicial...');
+        setBootStatus('Precargando equipo inicial...', 62);
         await game.assetPreloader.preloadTeamForLevel([...game.activeTeam, ...starterPool], savedLevel);
 
-        setBootStatus('Abriendo la primera operacion...');
+        setBootStatus('Abriendo la primera operacion...', 86);
         game.loadLevel(savedLevel);
 
         if (game.progression.recoveredFromCorruptSave) {
@@ -160,6 +160,7 @@ async function initGame() {
             startStarterSelection();
         };
 
+        setBootStatus('Operacion lista', 100);
         hideBootScreen();
         showStartScreen({
             hasSave: game.unlockedHeroes.length > 0,
@@ -175,15 +176,16 @@ async function initGame() {
     }
 }
 
-function setBootStatus(message) {
+function setBootStatus(message, progress = 12) {
     document.body.dataset.appState = 'loading';
     const status = document.getElementById('boot-status');
     if (status) status.textContent = message;
+    const progressBar = document.getElementById('boot-progress');
+    if (progressBar) progressBar.style.width = `${Math.max(6, Math.min(100, Number(progress) || 12))}%`;
 }
 
 function hideBootScreen() {
     document.body.dataset.appState = 'ready';
-    document.getElementById('boot-screen')?.classList.add('hidden');
 }
 
 function setStartScreenView(view = 'home') {
