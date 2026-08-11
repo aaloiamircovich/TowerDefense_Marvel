@@ -14,6 +14,72 @@ import { ReplaySystem } from './systems/ReplaySystem.js';
 import { registerPwa } from './pwa/register.js';
 import { getFixedDifficultyKey, isLevelUnlockedByStars } from './utils/LevelProgression.js';
 
+function escapeModalText(value = '') {
+    return String(value).replace(/[&<>"']/g, (char) => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+    })[char]);
+}
+
+function showGameConfirm({
+    eyebrow = 'Operacion critica',
+    title = 'Confirmar accion',
+    message = '',
+    confirmLabel = 'Aceptar',
+    cancelLabel = 'Cancelar',
+    tone = 'warning'
+} = {}) {
+    return new Promise((resolve) => {
+        document.querySelector('.game-confirm-overlay')?.remove();
+
+        const overlay = document.createElement('div');
+        overlay.className = `game-confirm-overlay game-confirm-overlay--${tone}`;
+        overlay.innerHTML = `
+            <section class="game-confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="game-confirm-title" aria-describedby="game-confirm-message">
+                <div class="game-confirm-icon" aria-hidden="true"><i class="fas fa-triangle-exclamation"></i></div>
+                <div class="game-confirm-copy">
+                    <span class="briefing-kicker">${escapeModalText(eyebrow)}</span>
+                    <h2 id="game-confirm-title">${escapeModalText(title)}</h2>
+                    <p id="game-confirm-message">${escapeModalText(message)}</p>
+                </div>
+                <div class="game-confirm-actions">
+                    <button class="game-confirm-cancel" type="button">${escapeModalText(cancelLabel)}</button>
+                    <button class="game-confirm-accept" type="button">${escapeModalText(confirmLabel)}</button>
+                </div>
+            </section>
+        `;
+
+        const acceptButton = overlay.querySelector('.game-confirm-accept');
+        const cancelButton = overlay.querySelector('.game-confirm-cancel');
+        let settled = false;
+        const close = (confirmed) => {
+            if (settled) return;
+            settled = true;
+            document.removeEventListener('keydown', onKeydown);
+            overlay.classList.add('closing');
+            window.setTimeout(() => overlay.remove(), 150);
+            resolve(confirmed);
+        };
+        const onKeydown = (event) => {
+            if (event.key === 'Escape') close(false);
+        };
+
+        overlay.addEventListener('click', (event) => {
+            if (event.target === overlay) close(false);
+        });
+        cancelButton?.addEventListener('click', () => close(false), { once: true });
+        acceptButton?.addEventListener('click', () => close(true), { once: true });
+        document.addEventListener('keydown', onKeydown);
+        document.body.appendChild(overlay);
+        window.requestAnimationFrame(() => cancelButton?.focus());
+    });
+}
+
+window.showGameConfirm = showGameConfirm;
+
 async function initGame() {
     let ui = null;
     setBootStatus('Preparando nucleo tactico...', 8);
@@ -149,11 +215,19 @@ async function initGame() {
             game.start();
         };
 
-        const createNewRun = () => {
+        const createNewRun = async () => {
             const hasProgress = game.unlockedHeroes.length > 0
                 || game.progression.getTotalStars?.() > 0
                 || game.progression.state.ownedItemIds?.length > 0;
-            if (hasProgress && !window.confirm('Crear una nueva partida reinicia el progreso guardado. Queres continuar?')) return;
+            if (hasProgress) {
+                const confirmed = await showGameConfirm({
+                    title: 'Nueva partida',
+                    message: 'Crear una nueva partida reinicia el progreso guardado. Queres continuar?',
+                    confirmLabel: 'Si, reiniciar',
+                    cancelLabel: 'Cancelar'
+                });
+                if (!confirmed) return;
+            }
             game.pause();
             game.progression.resetAllProgress();
             game.loadLevel(data.levels[0], { ignoreUnlock: true });

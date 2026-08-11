@@ -163,8 +163,18 @@ export class SettingsPanel {
             this.ui.showToast(result.ok ? 'Guardado importado' : result.reason, result.ok ? 'success' : 'warning');
             if (result.ok) this.render();
         });
-        document.getElementById('reset-all-game')?.addEventListener('click', () => {
-            if (!window.confirm(translate('resetAllConfirm', game.progression.state.settings.locale || 'es'))) return;
+        document.getElementById('reset-all-game')?.addEventListener('click', async () => {
+            const message = translate('resetAllConfirm', game.progression.state.settings.locale || 'es');
+            const confirmed = window.showGameConfirm
+                ? await window.showGameConfirm({
+                    title: 'Reiniciar progreso',
+                    message,
+                    confirmLabel: 'Si, borrar',
+                    cancelLabel: 'Cancelar',
+                    tone: 'danger'
+                })
+                : window.confirm(message);
+            if (!confirmed) return;
             game.progression.resetAllProgress();
             window.location.reload();
         });
