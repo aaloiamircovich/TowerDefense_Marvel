@@ -62,7 +62,7 @@ export class GameLoop {
 
         if (isPixelMapLevel(this.currentLevel) || isImageMapLevel(this.currentLevel)) {
             this.terrainMap = buildPixelTerrainMap(this.currentLevel, this.canvas, this.gridSize);
-            this.paintPathTiles();
+            if (!isImageMapLevel(this.currentLevel)) this.paintPathTiles();
             return;
         }
 

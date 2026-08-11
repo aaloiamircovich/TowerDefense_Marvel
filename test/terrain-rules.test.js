@@ -44,5 +44,7 @@ test('Base Avengers bloquea calle gris y permite pasto central', () => {
     assert.equal(canPlaceOnTerrain(ground, map[4][9]), false);
     assert.equal(canPlaceOnTerrain(ground, map[5][9]), true);
     assert.equal(canPlaceOnTerrain(ground, map[12][9]), true);
+    assert.equal(canPlaceOnTerrain(ground, map[14][5]), false);
+    assert.equal(canPlaceOnTerrain(ground, map[15][5]), true);
     assert.equal(canPlaceOnTerrain(ground, map[16][3]), true);
 });

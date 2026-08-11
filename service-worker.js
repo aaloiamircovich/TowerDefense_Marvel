@@ -1,6 +1,6 @@
-const CACHE_NAME = 'hero-td-v2.46.0-starter-card-sprite-focus-v1-20260811';
+const CACHE_NAME = 'hero-td-v2.44.0-avengers-grass-placement-v1-20260811';
 const CORE_ASSETS = [
-    './', './index.html', './styles.css', './styles.css?v=starter-card-sprite-focus-v1-20260811', './manifest.webmanifest',
+    './', './index.html', './styles.css', './manifest.webmanifest',
     './data/bootstrapData.js', './data/sprite-atlas.js', './data/heroes.json', './data/enemies.json',
     './data/items.json', './data/levels.json', './data/waves.json', './data/TypeChart.js',
     './assets/images/heroes/atlas.png', './assets/images/heroes/iron_man/portrait.png',

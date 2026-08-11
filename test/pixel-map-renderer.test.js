@@ -78,7 +78,7 @@ test('mapa RPG Maker usa imagen y matriz logica de terreno', () => {
                 'PPPPPPPPGGGBMMMMMMMMMMMMM',
                 'PPPPPPPPGGGBMMMMMMMMMMMMM',
                 'PPPPPPPPGGGBMMMMMMMMMMMMM',
-                'BBBBBBBBBBBBMMMMMMMMMMMMM',
+                'GGGGGGGGGGGBMMMMMMMMMMMMM',
                 'GGGGGGGGGGGBMMMMMMMMMMMMM',
                 'GGGGGGGGGGGBMMBBBBBMMBBBB',
                 'BBBBBBBBBBBBMMBBBBBMMBBBB'
@@ -94,6 +94,8 @@ test('mapa RPG Maker usa imagen y matriz logica de terreno', () => {
     assert.equal(map[13][0], TERRAIN.path);
     assert.equal(map[13][1], TERRAIN.path);
     assert.equal(map[13][7], TERRAIN.path);
+    assert.equal(map[14][5], TERRAIN.path);
+    assert.equal(map[15][5], TERRAIN.grass);
     assert.equal(map[5][6], TERRAIN.path);
     assert.equal(map[4][9], TERRAIN.path);
     assert.equal(map[5][9], TERRAIN.grass);
@@ -101,7 +103,7 @@ test('mapa RPG Maker usa imagen y matriz logica de terreno', () => {
     assert.equal(map[5][4], TERRAIN.blocked);
     assert.equal(map[6][16], TERRAIN.blocked);
     assert.equal(map[11][11], TERRAIN.blocked);
-    assert.equal(map[15][0], TERRAIN.blocked);
+    assert.equal(map[15][0], TERRAIN.grass);
     assert.equal(map[1][16], TERRAIN.mountain);
     assert.equal(map[17][14], TERRAIN.blocked);
     assert.equal(map[15][14], TERRAIN.mountain);
