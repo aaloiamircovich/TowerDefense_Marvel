@@ -8,6 +8,10 @@
     <title>Super Hero TD</title>
     <link rel="manifest" href="manifest.webmanifest">
     <link rel="icon" href="assets/icons/icon-192.png">
+    <link rel="preload" href="assets/images/ui/start-screen-cover-final-clean-20260809.png" as="image" fetchpriority="high">
+    <link rel="preload" href="assets/images/ui/marvel-logo.png" as="image" fetchpriority="high">
+    <link rel="preload" href="assets/images/ui/button-comic-bg-violet-20260809.png" as="image">
+    <link rel="preload" href="assets/fonts/avengeance-heroic-avenger-bd.ttf" as="font" type="font/ttf" crossorigin>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -16,7 +20,7 @@
         <div class="start-screen__shade"></div>
         <div class="start-screen__frame" aria-hidden="true"></div>
         <div class="start-screen__content">
-            <img class="start-screen__logo" src="assets/images/ui/marvel-logo.png" alt="Marvel">
+            <img class="start-screen__logo" src="assets/images/ui/marvel-logo.png" alt="Marvel" fetchpriority="high" decoding="sync">
             <h1><span>Tower</span><span>Defense</span></h1>
             <p class="start-screen__subtitle">Pixel Hero Defense</p>
             <div class="start-screen__loading" data-testid="start-loading" role="status" aria-live="polite">
