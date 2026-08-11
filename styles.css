@@ -458,16 +458,77 @@ input:focus-visible,
     color: var(--accent);
 }
 
-.rarity-common { --rarity-color: var(--rarity-common); --rarity-bg: rgba(169, 176, 184, 0.14); }
-.rarity-rare { --rarity-color: var(--rarity-rare); --rarity-bg: rgba(64, 169, 255, 0.15); }
-.rarity-epic { --rarity-color: var(--rarity-epic); --rarity-bg: rgba(184, 108, 255, 0.15); }
-.rarity-legendary { --rarity-color: var(--rarity-legendary); --rarity-bg: rgba(255, 207, 74, 0.17); }
+.rarity-common {
+    --rarity-color: var(--rarity-common);
+    --rarity-bg: rgba(169, 176, 184, 0.14);
+    --rarity-card-bg:
+        radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.11), transparent 34%),
+        repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.045) 0 1px, transparent 1px 9px),
+        linear-gradient(160deg, rgba(169, 176, 184, 0.2), rgba(10, 15, 22, 0.92) 54%, rgba(54, 65, 76, 0.2));
+    --rarity-card-shine: linear-gradient(105deg, transparent 22%, rgba(255, 255, 255, 0.1) 42%, transparent 62%);
+    --rarity-card-glow: rgba(169, 176, 184, 0.2);
+    --rarity-card-speed: 9s;
+}
+.rarity-rare {
+    --rarity-color: var(--rarity-rare);
+    --rarity-bg: rgba(64, 169, 255, 0.15);
+    --rarity-card-bg:
+        radial-gradient(circle at 26% 18%, rgba(83, 189, 255, 0.28), transparent 31%),
+        linear-gradient(90deg, rgba(64, 169, 255, 0.08) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(64, 169, 255, 0.06) 1px, transparent 1px),
+        linear-gradient(155deg, rgba(18, 67, 110, 0.78), rgba(7, 15, 28, 0.94) 58%, rgba(25, 82, 128, 0.45));
+    --rarity-card-shine: linear-gradient(115deg, transparent 18%, rgba(111, 214, 255, 0.18) 38%, transparent 61%);
+    --rarity-card-glow: rgba(64, 169, 255, 0.34);
+    --rarity-card-speed: 7.5s;
+}
+.rarity-epic {
+    --rarity-color: var(--rarity-epic);
+    --rarity-bg: rgba(184, 108, 255, 0.15);
+    --rarity-card-bg:
+        radial-gradient(circle at 18% 20%, rgba(184, 108, 255, 0.36), transparent 28%),
+        radial-gradient(circle at 82% 74%, rgba(255, 64, 220, 0.22), transparent 34%),
+        repeating-linear-gradient(125deg, rgba(255, 255, 255, 0.06) 0 1px, transparent 1px 11px),
+        linear-gradient(155deg, rgba(66, 25, 106, 0.86), rgba(10, 8, 26, 0.95) 56%, rgba(89, 38, 136, 0.5));
+    --rarity-card-shine: conic-gradient(from 180deg at 50% 50%, transparent, rgba(216, 143, 255, 0.2), transparent 34%);
+    --rarity-card-glow: rgba(184, 108, 255, 0.42);
+    --rarity-card-speed: 6.8s;
+}
+.rarity-legendary {
+    --rarity-color: var(--rarity-legendary);
+    --rarity-bg: rgba(255, 207, 74, 0.17);
+    --rarity-card-bg:
+        radial-gradient(circle at 50% 0%, rgba(255, 243, 166, 0.38), transparent 31%),
+        repeating-conic-gradient(from 8deg at 50% 12%, rgba(255, 220, 92, 0.16) 0 8deg, transparent 8deg 18deg),
+        linear-gradient(155deg, rgba(105, 65, 7, 0.88), rgba(22, 15, 5, 0.95) 58%, rgba(178, 112, 13, 0.5));
+    --rarity-card-shine: linear-gradient(105deg, transparent 18%, rgba(255, 241, 158, 0.24) 38%, transparent 58%);
+    --rarity-card-glow: rgba(255, 207, 74, 0.48);
+    --rarity-card-speed: 6s;
+}
 .rarity-mythic {
     --rarity-color: #67f5ff;
     --rarity-bg: rgba(103, 245, 255, 0.16);
     --rarity-mythic-gradient: linear-gradient(90deg, #ff4d6d, #ffd166, #46d369, #40c9ff, #b86cff, #ff4d6d);
+    --rarity-card-bg:
+        radial-gradient(circle at 22% 24%, rgba(255, 77, 109, 0.28), transparent 28%),
+        radial-gradient(circle at 78% 20%, rgba(64, 201, 255, 0.3), transparent 31%),
+        radial-gradient(circle at 50% 88%, rgba(184, 108, 255, 0.28), transparent 34%),
+        linear-gradient(135deg, rgba(9, 19, 33, 0.92), rgba(8, 6, 23, 0.96));
+    --rarity-card-shine: linear-gradient(90deg, rgba(255, 77, 109, 0.16), rgba(255, 209, 102, 0.18), rgba(70, 211, 105, 0.15), rgba(64, 201, 255, 0.18), rgba(184, 108, 255, 0.18), rgba(255, 77, 109, 0.16));
+    --rarity-card-glow: rgba(103, 245, 255, 0.5);
+    --rarity-card-speed: 5.2s;
 }
-.rarity-secret { --rarity-color: #ff304f; --rarity-bg: rgba(255, 48, 79, 0.16); }
+.rarity-secret {
+    --rarity-color: #ff304f;
+    --rarity-bg: rgba(255, 48, 79, 0.16);
+    --rarity-card-bg:
+        radial-gradient(circle at 50% 18%, rgba(255, 48, 79, 0.24), transparent 29%),
+        repeating-linear-gradient(32deg, rgba(255, 48, 79, 0.09) 0 1px, transparent 1px 14px),
+        repeating-linear-gradient(148deg, rgba(255, 255, 255, 0.035) 0 1px, transparent 1px 18px),
+        linear-gradient(155deg, rgba(45, 2, 11, 0.96), rgba(3, 3, 6, 0.98) 58%, rgba(96, 0, 24, 0.58));
+    --rarity-card-shine: radial-gradient(circle at 50% 50%, rgba(255, 48, 79, 0.22), transparent 38%);
+    --rarity-card-glow: rgba(255, 48, 79, 0.52);
+    --rarity-card-speed: 4.8s;
+}
 
 .rarity-badge {
     display: inline-flex;
@@ -2890,6 +2951,174 @@ body.panel-open {
 
 .collection-card.locked img {
     filter: saturate(0.35) brightness(0.68);
+}
+
+.collection-card:is(.rarity-common, .rarity-rare, .rarity-epic, .rarity-legendary, .rarity-mythic, .rarity-secret),
+.starter-card:is(.rarity-common, .rarity-rare, .rarity-epic, .rarity-legendary, .rarity-mythic, .rarity-secret),
+.hero-portrait:is(.rarity-common, .rarity-rare, .rarity-epic, .rarity-legendary, .rarity-mythic, .rarity-secret),
+.shop-card:is(.rarity-common, .rarity-rare, .rarity-epic, .rarity-legendary, .rarity-mythic, .rarity-secret),
+.inventory-object-card:is(.rarity-common, .rarity-rare, .rarity-epic, .rarity-legendary, .rarity-mythic, .rarity-secret) {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    border-color: color-mix(in srgb, var(--rarity-color), transparent 36%);
+    background:
+        var(--rarity-card-bg),
+        rgba(20, 31, 45, 0.92);
+    background-size:
+        100% 100%,
+        100% 100%,
+        28px 28px,
+        100% 100%;
+    box-shadow:
+        inset 0 0 0 1px color-mix(in srgb, var(--rarity-color), transparent 76%),
+        inset 0 3px 0 color-mix(in srgb, var(--rarity-color), white 8%),
+        0 0 22px color-mix(in srgb, var(--rarity-card-glow), transparent 54%);
+}
+
+.collection-card:is(.rarity-common, .rarity-rare, .rarity-epic, .rarity-legendary, .rarity-mythic, .rarity-secret)::after,
+.starter-card:is(.rarity-common, .rarity-rare, .rarity-epic, .rarity-legendary, .rarity-mythic, .rarity-secret)::after,
+.hero-portrait:is(.rarity-common, .rarity-rare, .rarity-epic, .rarity-legendary, .rarity-mythic, .rarity-secret)::after,
+.shop-card:is(.rarity-common, .rarity-rare, .rarity-epic, .rarity-legendary, .rarity-mythic, .rarity-secret)::after,
+.inventory-object-card:is(.rarity-common, .rarity-rare, .rarity-epic, .rarity-legendary, .rarity-mythic, .rarity-secret)::after {
+    content: "";
+    position: absolute;
+    inset: -32%;
+    z-index: 0;
+    pointer-events: none;
+    background: var(--rarity-card-shine);
+    background-size: 220% 220%;
+    opacity: 0.62;
+    mix-blend-mode: screen;
+    transform: translate3d(-18%, -10%, 0) rotate(0.001deg);
+    animation: rarity-card-sheen var(--rarity-card-speed, 7s) ease-in-out infinite;
+}
+
+.collection-card:is(.rarity-common, .rarity-rare, .rarity-epic, .rarity-legendary, .rarity-mythic, .rarity-secret) > *,
+.starter-card:is(.rarity-common, .rarity-rare, .rarity-epic, .rarity-legendary, .rarity-mythic, .rarity-secret) > *,
+.hero-portrait:is(.rarity-common, .rarity-rare, .rarity-epic, .rarity-legendary, .rarity-mythic, .rarity-secret) > *,
+.shop-card:is(.rarity-common, .rarity-rare, .rarity-epic, .rarity-legendary, .rarity-mythic, .rarity-secret) > *,
+.inventory-object-card:is(.rarity-common, .rarity-rare, .rarity-epic, .rarity-legendary, .rarity-mythic, .rarity-secret) > * {
+    position: relative;
+    z-index: 2;
+}
+
+.collection-card.rarity-rare,
+.starter-card.rarity-rare,
+.hero-portrait.rarity-rare,
+.shop-card.rarity-rare,
+.inventory-object-card.rarity-rare {
+    background-size: 100% 100%, 22px 22px, 22px 22px, 100% 100%;
+}
+
+.collection-card.rarity-legendary,
+.starter-card.rarity-legendary,
+.hero-portrait.rarity-legendary,
+.shop-card.rarity-legendary,
+.inventory-object-card.rarity-legendary {
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 243, 166, 0.28),
+        inset 0 3px 0 #fff0a0,
+        0 0 28px rgba(255, 207, 74, 0.28);
+}
+
+.collection-card.rarity-mythic,
+.starter-card.rarity-mythic,
+.hero-portrait.rarity-mythic,
+.shop-card.rarity-mythic,
+.inventory-object-card.rarity-mythic {
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.16),
+        0 0 28px rgba(103, 245, 255, 0.24),
+        0 0 42px rgba(184, 108, 255, 0.16);
+}
+
+.collection-card.rarity-mythic::after,
+.starter-card.rarity-mythic::after,
+.hero-portrait.rarity-mythic::after,
+.shop-card.rarity-mythic::after,
+.inventory-object-card.rarity-mythic::after {
+    animation-name: rarity-card-prism;
+    animation-timing-function: linear;
+}
+
+.collection-card.rarity-secret,
+.starter-card.rarity-secret,
+.hero-portrait.rarity-secret,
+.shop-card.rarity-secret,
+.inventory-object-card.rarity-secret {
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 48, 79, 0.2),
+        inset 0 3px 0 #ff304f,
+        0 0 30px rgba(255, 48, 79, 0.22);
+}
+
+.collection-card.rarity-secret::after,
+.starter-card.rarity-secret::after,
+.hero-portrait.rarity-secret::after,
+.shop-card.rarity-secret::after,
+.inventory-object-card.rarity-secret::after {
+    animation-name: rarity-card-secret-pulse;
+}
+
+.collection-card.locked:is(.rarity-common, .rarity-rare, .rarity-epic, .rarity-legendary, .rarity-mythic, .rarity-secret) {
+    background:
+        linear-gradient(180deg, rgba(3, 6, 10, 0.46), rgba(3, 6, 10, 0.62)),
+        var(--rarity-card-bg),
+        rgba(10, 15, 22, 0.88);
+    box-shadow:
+        inset 0 0 0 1px color-mix(in srgb, var(--rarity-color), transparent 82%),
+        inset 0 3px 0 color-mix(in srgb, var(--rarity-color), transparent 24%),
+        0 0 20px color-mix(in srgb, var(--rarity-card-glow), transparent 68%);
+}
+
+.collection-card.locked:is(.rarity-common, .rarity-rare, .rarity-epic, .rarity-legendary, .rarity-mythic, .rarity-secret)::after {
+    opacity: 0.38;
+}
+
+.collection-card:is(.rarity-common, .rarity-rare, .rarity-epic, .rarity-legendary, .rarity-mythic, .rarity-secret):hover,
+.starter-card:is(.rarity-common, .rarity-rare, .rarity-epic, .rarity-legendary, .rarity-mythic, .rarity-secret):hover,
+.shop-card:is(.rarity-common, .rarity-rare, .rarity-epic, .rarity-legendary, .rarity-mythic, .rarity-secret):hover {
+    border-color: color-mix(in srgb, var(--rarity-color), white 15%);
+    box-shadow:
+        inset 0 0 0 1px color-mix(in srgb, var(--rarity-color), transparent 62%),
+        inset 0 3px 0 color-mix(in srgb, var(--rarity-color), white 10%),
+        0 0 30px color-mix(in srgb, var(--rarity-card-glow), transparent 38%);
+}
+
+@keyframes rarity-card-sheen {
+    0%, 100% {
+        opacity: 0.36;
+        transform: translate3d(-22%, -10%, 0) rotate(0.001deg);
+    }
+    50% {
+        opacity: 0.72;
+        transform: translate3d(18%, 10%, 0) rotate(0.001deg);
+    }
+}
+
+@keyframes rarity-card-prism {
+    from {
+        background-position: 0% 50%;
+        transform: translate3d(-12%, -8%, 0) rotate(0.001deg);
+    }
+    to {
+        background-position: 220% 50%;
+        transform: translate3d(12%, 8%, 0) rotate(0.001deg);
+    }
+}
+
+@keyframes rarity-card-secret-pulse {
+    0%, 100% {
+        opacity: 0.32;
+        transform: scale(0.96);
+        filter: saturate(1);
+    }
+    50% {
+        opacity: 0.74;
+        transform: scale(1.08);
+        filter: saturate(1.32);
+    }
 }
 
 .collection-card p {
