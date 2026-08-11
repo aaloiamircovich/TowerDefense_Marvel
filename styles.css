@@ -133,7 +133,7 @@ body {
 .start-screen {
     position: fixed;
     inset: 0;
-    z-index: 90;
+    z-index: 95;
     display: grid;
     place-items: stretch;
     overflow: hidden;
@@ -368,8 +368,20 @@ body[data-app-state="loading"] .start-screen__panel {
     text-shadow: 0 3px 0 rgba(0, 0, 0, 0.55);
 }
 
-body.title-screen-active #game-ui {
-    filter: saturate(0.85) brightness(0.7);
+body[data-app-state="loading"] #game-ui {
+    visibility: hidden;
+    pointer-events: none;
+}
+
+body.title-screen-active #top-bar,
+body.title-screen-active #main-content {
+    visibility: hidden;
+    pointer-events: none;
+}
+
+body.title-screen-active #panel-overlay {
+    visibility: visible;
+    pointer-events: auto;
 }
 
 @media (max-width: 820px), (max-height: 760px) {
