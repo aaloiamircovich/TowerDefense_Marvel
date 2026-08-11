@@ -1100,7 +1100,7 @@ export class UIManager {
 
     closePanel() {
         this.hidePanelOverlay();
-        if (!this.game.isManuallyPaused && !this.game.isGameOver) this.game.start();
+        if (!document.body.classList.contains('title-screen-active') && !this.game.isManuallyPaused && !this.game.isGameOver) this.game.start();
         this.lastFocusedElement?.focus?.();
     }
 

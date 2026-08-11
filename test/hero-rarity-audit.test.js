@@ -13,23 +13,24 @@ test('heroes usan las seis rarezas auditadas', () => {
 
     assert.deepEqual(Object.keys(counts).sort(), [...HERO_RARITIES].sort());
     assert.deepEqual(counts, {
-        Common: 10,
-        Rare: 18,
-        Epic: 22,
-        Legendary: 17,
-        Mythic: 7,
-        Secret: 4
+        Common: 30,
+        Rare: 26,
+        Epic: 24,
+        Legendary: 16,
+        Mythic: 8,
+        Secret: 1
     });
 });
 
 test('heroes clave quedan en rarezas coherentes con su poder y habilidad', () => {
-    assert.equal(heroes.spiderman.rarity, 'Common');
-    assert.equal(heroes.iron_man.rarity, 'Rare');
-    assert.equal(heroes.hulk.rarity, 'Epic');
-    assert.equal(heroes.thor.rarity, 'Legendary');
+    assert.equal(heroes.spiderman.rarity, 'Epic');
+    assert.equal(heroes.iron_man.rarity, 'Legendary');
+    assert.equal(heroes.hulk.rarity, 'Mythic');
+    assert.equal(heroes.thor.rarity, 'Mythic');
     assert.equal(heroes.silver_surfer.rarity, 'Mythic');
     assert.equal(heroes.scarlet_witch.rarity, 'Secret');
-    assert.equal(heroes.loki.rarity, 'Secret');
+    assert.equal(heroes.loki.rarity, 'Legendary');
+    assert.equal(heroes.profesor_x.rarity, 'Mythic');
 });
 
 test('presupuesto de DPS base sube por rareza sin contar soportes puros', () => {

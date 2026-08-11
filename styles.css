@@ -21,6 +21,14 @@
     --ui-scale: 1;
 }
 
+@font-face {
+    font-family: "Avengeance";
+    src: url("assets/fonts/avengeance-heroic-avenger-bd.ttf") format("truetype");
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
 body[data-ui-scale="compact"] {
     --ui-scale: 0.92;
     --left-panel-width: 250px;
@@ -165,6 +173,223 @@ body {
 
 #boot-screen.hidden {
     display: none;
+}
+
+.start-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+    display: grid;
+    place-items: stretch;
+    overflow: hidden;
+    background:
+        linear-gradient(90deg, rgba(3, 4, 15, 0.92) 0%, rgba(3, 4, 15, 0.64) 27%, rgba(3, 4, 15, 0.08) 58%),
+        linear-gradient(0deg, rgba(3, 4, 15, 0.82), rgba(3, 4, 15, 0.04) 38%),
+        url("assets/images/ui/start-screen-cover-final-clean-20260809.png") center / cover no-repeat;
+    color: #fff;
+}
+
+.start-screen__shade {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(circle at 67% 42%, rgba(121, 59, 255, 0.08), transparent 34%),
+        radial-gradient(circle at 21% 78%, rgba(49, 216, 255, 0.12), transparent 24%);
+}
+
+.start-screen__frame {
+    position: absolute;
+    inset: clamp(16px, 2.2vw, 42px);
+    pointer-events: none;
+    border: 5px solid rgba(95, 67, 255, 0.86);
+    box-shadow:
+        inset 0 0 0 2px rgba(59, 216, 255, 0.72),
+        0 0 34px rgba(75, 34, 255, 0.34);
+}
+
+.start-screen__content {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    align-content: start;
+    width: min(560px, calc(100vw - 44px));
+    margin: clamp(64px, 8vh, 92px) 0 0 clamp(54px, 5.4vw, 104px);
+}
+
+.start-screen__logo {
+    display: block;
+    width: clamp(220px, 18vw, 365px);
+    height: auto;
+    margin-bottom: clamp(18px, 2vw, 28px);
+    image-rendering: auto;
+    filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.45));
+}
+
+.start-screen h1 {
+    display: grid;
+    gap: 0;
+    margin: 0;
+    color: #fff;
+    font-family: "Avengeance", Impact, fantasy;
+    font-size: clamp(72px, 6vw, 118px);
+    font-weight: 700;
+    line-height: 0.85;
+    letter-spacing: 0;
+    text-transform: uppercase;
+    text-shadow:
+        0 7px 0 #240018,
+        0 14px 20px rgba(0, 0, 0, 0.55);
+}
+
+.start-screen h1 span:first-child {
+    color: #ffd36b;
+}
+
+.start-screen__subtitle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: min(520px, 100%);
+    min-height: 58px;
+    margin: 22px 0 clamp(58px, 14vh, 170px);
+    padding: 10px 24px;
+    transform: skewX(-16deg);
+    border: 3px solid #36d7ff;
+    background: rgba(7, 18, 34, 0.72);
+    color: #dff9ff;
+    font-family: Consolas, "Segoe UI", system-ui, sans-serif;
+    font-size: clamp(18px, 1.8vw, 28px);
+    font-weight: 900;
+    letter-spacing: 0;
+    text-transform: uppercase;
+    text-shadow: 0 3px 0 rgba(0, 0, 0, 0.65);
+}
+
+.start-screen__subtitle {
+    transform-origin: left center;
+}
+
+.start-screen__panel {
+    display: grid;
+    gap: 18px;
+    width: min(430px, 100%);
+}
+
+.start-screen[data-view="home"] [data-start-panel="play"],
+.start-screen[data-view="play"] [data-start-panel="home"] {
+    display: none;
+}
+
+.start-menu-button,
+.start-back-button {
+    border: 0;
+    color: #fff;
+    font-family: "Avengeance", Impact, fantasy;
+    letter-spacing: 0;
+    text-transform: uppercase;
+}
+
+.start-menu-button {
+    position: relative;
+    display: grid;
+    place-items: center;
+    min-height: 78px;
+    padding: 11px 46px;
+    clip-path: polygon(7% 0, 100% 0, 94% 100%, 0 100%);
+    border: 4px solid rgba(17, 5, 28, 0.8);
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.24), rgba(0, 0, 0, 0.16)),
+        url("assets/images/ui/button-comic-bg-violet-20260809.png") center / cover no-repeat,
+        #6926a5;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.26),
+        0 12px 0 rgba(22, 4, 34, 0.92),
+        0 18px 28px rgba(0, 0, 0, 0.38);
+    font-size: clamp(34px, 3.2vw, 48px);
+    line-height: 1;
+    text-shadow:
+        0 4px 0 #16051d,
+        0 8px 12px rgba(0, 0, 0, 0.55);
+    transition: transform 140ms ease, filter 140ms ease;
+}
+
+.start-menu-button--primary {
+    border-color: rgba(255, 124, 255, 0.76);
+    filter: saturate(1.08) brightness(1.05);
+}
+
+.start-menu-button:hover,
+.start-menu-button:focus-visible,
+.start-back-button:hover,
+.start-back-button:focus-visible {
+    transform: translateY(-2px);
+    filter: brightness(1.12) saturate(1.15);
+}
+
+.start-menu-button:disabled {
+    cursor: not-allowed;
+    filter: grayscale(0.8) brightness(0.65);
+    opacity: 0.72;
+    transform: none;
+}
+
+.start-back-button {
+    justify-self: start;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 42px;
+    padding: 8px 0;
+    background: transparent;
+    color: #bfefff;
+    font-size: 24px;
+    text-shadow: 0 3px 0 rgba(0, 0, 0, 0.55);
+}
+
+body.title-screen-active #game-ui {
+    filter: saturate(0.85) brightness(0.7);
+}
+
+@media (max-width: 820px), (max-height: 760px) {
+    .start-screen {
+        overflow: auto;
+        background-position: center;
+    }
+
+    .start-screen__frame {
+        inset: 10px;
+        border-width: 3px;
+    }
+
+    .start-screen__content {
+        width: min(430px, calc(100vw - 32px));
+        margin: 42px auto 32px;
+    }
+
+    .start-screen__logo {
+        width: min(260px, 68vw);
+        margin-bottom: 16px;
+    }
+
+    .start-screen h1 {
+        font-size: clamp(58px, 16vw, 84px);
+    }
+
+    .start-screen__subtitle {
+        min-height: 48px;
+        margin-bottom: clamp(34px, 10vh, 84px);
+        font-size: clamp(22px, 6vw, 30px);
+    }
+
+    .start-screen__panel {
+        gap: 14px;
+    }
+
+    .start-menu-button {
+        min-height: 66px;
+        font-size: clamp(30px, 8vw, 40px);
+    }
 }
 
 button,

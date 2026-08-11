@@ -105,9 +105,9 @@ async function initGame() {
         };
 
         const starterPool = [
-            data.heroes.spiderman,
-            data.heroes.star_lord,
-            data.heroes.hawkeye
+            data.heroes.black_widow,
+            data.heroes.hawkeye,
+            data.heroes.korg
         ].filter(Boolean);
 
         const rawSavedLevel = data.levels.find((level) => level.id === game.progression.state.lastLevelId);
@@ -126,12 +126,8 @@ async function initGame() {
             throw new Error('No se encontraron héroes iniciales.');
         }
 
-        if (game.unlockedHeroes.length > 0) {
-            ui.renderHeroRoster(game.activeTeam, (hero) => input.setPlacementMode(hero));
-            game.waveManager?.refreshWaveIntel?.();
-            hideBootScreen();
-            game.start();
-        } else {
+        const startStarterSelection = () => {
+            hideStartScreen();
             ui.renderStarterSelector(starterPool, (chosen) => {
                 game.progression.startProfile(chosen.id);
                 game.assetPreloader?.preloadHeroes([chosen]);
@@ -140,8 +136,37 @@ async function initGame() {
                 ui.showToast(`${chosen.name} se unió al equipo`, 'success');
                 game.start();
             });
-            hideBootScreen();
-        }
+        };
+
+        const continueRun = () => {
+            hideStartScreen();
+            if (game.unlockedHeroes.length === 0) {
+                startStarterSelection();
+                return;
+            }
+            ui.renderHeroRoster(game.activeTeam, (hero) => input.setPlacementMode(hero));
+            game.waveManager?.refreshWaveIntel?.();
+            game.start();
+        };
+
+        const createNewRun = () => {
+            const hasProgress = game.unlockedHeroes.length > 0
+                || game.progression.getTotalStars?.() > 0
+                || game.progression.state.ownedItemIds?.length > 0;
+            if (hasProgress && !window.confirm('Crear una nueva partida reinicia el progreso guardado. Queres continuar?')) return;
+            game.pause();
+            game.progression.resetAllProgress();
+            game.loadLevel(data.levels[0], { ignoreUnlock: true });
+            startStarterSelection();
+        };
+
+        hideBootScreen();
+        showStartScreen({
+            hasSave: game.unlockedHeroes.length > 0,
+            onContinue: continueRun,
+            onNewGame: createNewRun,
+            onOptions: () => ui.openPanel('settings')
+        });
     } catch (error) {
         hideBootScreen();
         document.body.dataset.appState = 'fatal';
@@ -159,6 +184,51 @@ function setBootStatus(message) {
 function hideBootScreen() {
     document.body.dataset.appState = 'ready';
     document.getElementById('boot-screen')?.classList.add('hidden');
+}
+
+function setStartScreenView(view = 'home') {
+    const screen = document.getElementById('start-screen');
+    if (!screen) return;
+    screen.dataset.view = view;
+    screen.querySelectorAll('[data-start-panel]').forEach((panel) => {
+        panel.setAttribute('aria-hidden', panel.dataset.startPanel === view ? 'false' : 'true');
+    });
+}
+
+function showStartScreen({ hasSave = false, onContinue, onNewGame, onOptions } = {}) {
+    const screen = document.getElementById('start-screen');
+    if (!screen) return;
+
+    document.body.classList.add('title-screen-active');
+    screen.classList.remove('hidden');
+    setStartScreenView('home');
+
+    const playButton = document.getElementById('start-play-btn');
+    const optionsButton = document.getElementById('start-options-btn');
+    const continueButton = document.getElementById('start-continue-btn');
+    const newGameButton = document.getElementById('start-new-game-btn');
+    const backButtons = screen.querySelectorAll('[data-start-back]');
+
+    if (continueButton) {
+        continueButton.disabled = !hasSave;
+        continueButton.setAttribute('aria-disabled', String(!hasSave));
+        continueButton.title = hasSave ? 'Continuar la partida guardada' : 'No hay una partida guardada para continuar';
+    }
+
+    playButton?.addEventListener('click', () => setStartScreenView('play'));
+    optionsButton?.addEventListener('click', () => onOptions?.());
+    continueButton?.addEventListener('click', () => {
+        if (!continueButton.disabled) onContinue?.();
+    });
+    newGameButton?.addEventListener('click', () => onNewGame?.());
+    backButtons.forEach((button) => button.addEventListener('click', () => setStartScreenView('home')));
+
+    window.requestAnimationFrame(() => playButton?.focus());
+}
+
+function hideStartScreen() {
+    document.body.classList.remove('title-screen-active');
+    document.getElementById('start-screen')?.classList.add('hidden');
 }
 
 initGame();

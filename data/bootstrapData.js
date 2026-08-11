@@ -4,9 +4,9 @@ window.__MARVEL_TD_DATA__ = {
       "id": "iron_man",
       "name": "Iron Man",
       "category": "Tecnológico",
-      "rarity": "Rare",
-      "cost": 250,
-      "damage": 30,
+      "rarity": "Legendary",
+      "cost": 610,
+      "damage": 45,
       "range": 160,
       "fireRate": 1.5,
       "canSeeStealth": true,
@@ -70,9 +70,9 @@ window.__MARVEL_TD_DATA__ = {
       "id": "spiderman",
       "name": "Spider-Man",
       "category": "Urbano",
-      "rarity": "Common",
-      "cost": 150,
-      "damage": 19,
+      "rarity": "Epic",
+      "cost": 405,
+      "damage": 30,
       "range": 110,
       "fireRate": 1.95,
       "canSeeStealth": true,
@@ -135,8 +135,8 @@ window.__MARVEL_TD_DATA__ = {
       "id": "capitan_america",
       "name": "Capitán América",
       "category": "Urbano",
-      "rarity": "Rare",
-      "cost": 260,
+      "rarity": "Epic",
+      "cost": 470,
       "damage": 1,
       "range": 255,
       "fireRate": 1,
@@ -209,9 +209,9 @@ window.__MARVEL_TD_DATA__ = {
       "id": "thor",
       "name": "Thor",
       "category": "Místico",
-      "rarity": "Legendary",
-      "cost": 600,
-      "damage": 86,
+      "rarity": "Mythic",
+      "cost": 775,
+      "damage": 105,
       "range": 180,
       "fireRate": 0.8,
       "canSeeStealth": false,
@@ -285,9 +285,9 @@ window.__MARVEL_TD_DATA__ = {
       "id": "hulk",
       "name": "Hulk",
       "category": "Mutante",
-      "rarity": "Epic",
-      "cost": 400,
-      "damage": 120,
+      "rarity": "Mythic",
+      "cost": 735,
+      "damage": 178,
       "range": 80,
       "fireRate": 0.55,
       "canSeeStealth": false,
@@ -351,7 +351,7 @@ window.__MARVEL_TD_DATA__ = {
       "name": "Black Widow",
       "category": "Urbano",
       "rarity": "Common",
-      "cost": 190,
+      "cost": 195,
       "damage": 18,
       "range": 130,
       "fireRate": 1.8,
@@ -426,7 +426,7 @@ window.__MARVEL_TD_DATA__ = {
       "name": "Hawkeye",
       "category": "Urbano",
       "rarity": "Common",
-      "cost": 180,
+      "cost": 235,
       "damage": 27,
       "range": 220,
       "fireRate": 1.1,
@@ -490,8 +490,8 @@ window.__MARVEL_TD_DATA__ = {
       "id": "black_panther",
       "name": "Black Panther",
       "category": "Tecnológico",
-      "rarity": "Rare",
-      "cost": 340,
+      "rarity": "Epic",
+      "cost": 500,
       "damage": 1,
       "range": 135,
       "fireRate": 1,
@@ -574,7 +574,7 @@ window.__MARVEL_TD_DATA__ = {
       "name": "Doctor Strange",
       "category": "Místico",
       "rarity": "Legendary",
-      "cost": 550,
+      "cost": 585,
       "damage": 61,
       "range": 200,
       "fireRate": 0.95,
@@ -651,7 +651,7 @@ window.__MARVEL_TD_DATA__ = {
       "name": "Captain Marvel",
       "category": "Cósmico",
       "rarity": "Legendary",
-      "cost": 650,
+      "cost": 595,
       "damage": 85,
       "range": 230,
       "fireRate": 0.75,
@@ -727,9 +727,9 @@ window.__MARVEL_TD_DATA__ = {
       "id": "wolverine",
       "name": "Wolverine",
       "category": "Mutante",
-      "rarity": "Legendary",
+      "rarity": "Epic",
       "cost": 420,
-      "damage": 31,
+      "damage": 25,
       "range": 70,
       "fireRate": 2.5,
       "canSeeStealth": true,
@@ -792,9 +792,9 @@ window.__MARVEL_TD_DATA__ = {
       "id": "daredevil",
       "name": "Daredevil",
       "category": "Urbano",
-      "rarity": "Rare",
-      "cost": 150,
-      "damage": 26,
+      "rarity": "Epic",
+      "cost": 405,
+      "damage": 33,
       "range": 100,
       "fireRate": 1.8,
       "canSeeStealth": true,
@@ -857,7 +857,7 @@ window.__MARVEL_TD_DATA__ = {
       "name": "Ant-Man",
       "category": "Tecnológico",
       "rarity": "Common",
-      "cost": 190,
+      "cost": 195,
       "damage": 26,
       "range": 110,
       "fireRate": 1.4,
@@ -920,9 +920,9 @@ window.__MARVEL_TD_DATA__ = {
       "id": "star_lord",
       "name": "Star-Lord",
       "category": "Cósmico",
-      "rarity": "Common",
-      "cost": 220,
-      "damage": 23,
+      "rarity": "Rare",
+      "cost": 305,
+      "damage": 30,
       "range": 160,
       "fireRate": 1.6,
       "canSeeStealth": false,
@@ -985,7 +985,7 @@ window.__MARVEL_TD_DATA__ = {
       "name": "Groot",
       "category": "Cósmico",
       "rarity": "Common",
-      "cost": 300,
+      "cost": 195,
       "damage": 49,
       "range": 120,
       "fireRate": 0.7,
@@ -1059,9 +1059,9 @@ window.__MARVEL_TD_DATA__ = {
       "id": "gamora",
       "name": "Gamora",
       "category": "Cósmico",
-      "rarity": "Rare",
-      "cost": 360,
-      "damage": 27,
+      "rarity": "Common",
+      "cost": 210,
+      "damage": 20,
       "range": 90,
       "fireRate": 1.9,
       "canSeeStealth": true,
@@ -1125,7 +1125,7 @@ window.__MARVEL_TD_DATA__ = {
       "name": "Scarlet Witch",
       "category": "Místico",
       "rarity": "Secret",
-      "cost": 650,
+      "cost": 945,
       "damage": 86,
       "range": 220,
       "fireRate": 0.9,
@@ -1207,7 +1207,7 @@ window.__MARVEL_TD_DATA__ = {
       "name": "Vision",
       "category": "Tecnológico",
       "rarity": "Legendary",
-      "cost": 520,
+      "cost": 610,
       "damage": 50,
       "range": 190,
       "fireRate": 1.3,
@@ -1273,7 +1273,7 @@ window.__MARVEL_TD_DATA__ = {
       "name": "Falcon",
       "category": "Tecnológico",
       "rarity": "Common",
-      "cost": 210,
+      "cost": 225,
       "damage": 19,
       "range": 150,
       "fireRate": 1.8,
@@ -1339,7 +1339,7 @@ window.__MARVEL_TD_DATA__ = {
       "name": "Winter Soldier",
       "category": "Urbano",
       "rarity": "Rare",
-      "cost": 270,
+      "cost": 320,
       "damage": 34,
       "range": 180,
       "fireRate": 1.3,
@@ -1403,9 +1403,9 @@ window.__MARVEL_TD_DATA__ = {
       "id": "shang_chi",
       "name": "Shang-Chi",
       "category": "Urbano",
-      "rarity": "Rare",
-      "cost": 410,
-      "damage": 24,
+      "rarity": "Epic",
+      "cost": 405,
+      "damage": 30,
       "range": 80,
       "fireRate": 2.2,
       "canSeeStealth": false,
@@ -1468,9 +1468,9 @@ window.__MARVEL_TD_DATA__ = {
       "id": "moon_knight",
       "name": "Moon Knight",
       "category": "Urbano",
-      "rarity": "Rare",
-      "cost": 250,
-      "damage": 26,
+      "rarity": "Epic",
+      "cost": 430,
+      "damage": 33,
       "range": 120,
       "fireRate": 1.7,
       "canSeeStealth": true,
@@ -1533,7 +1533,7 @@ window.__MARVEL_TD_DATA__ = {
       "name": "She-Hulk",
       "category": "Mutante",
       "rarity": "Rare",
-      "cost": 350,
+      "cost": 295,
       "damage": 48,
       "range": 90,
       "fireRate": 1.1,
@@ -1598,7 +1598,7 @@ window.__MARVEL_TD_DATA__ = {
       "name": "Jean Grey",
       "category": "Mutante",
       "rarity": "Mythic",
-      "cost": 600,
+      "cost": 765,
       "damage": 72,
       "range": 210,
       "fireRate": 1,
@@ -1670,9 +1670,9 @@ window.__MARVEL_TD_DATA__ = {
       "id": "cyclops",
       "name": "Cyclops",
       "category": "Mutante",
-      "rarity": "Rare",
-      "cost": 260,
-      "damage": 33,
+      "rarity": "Epic",
+      "cost": 445,
+      "damage": 40,
       "range": 240,
       "fireRate": 1.2,
       "canSeeStealth": true,
@@ -1735,9 +1735,9 @@ window.__MARVEL_TD_DATA__ = {
       "id": "storm",
       "name": "Storm",
       "category": "Mutante",
-      "rarity": "Epic",
-      "cost": 300,
-      "damage": 31,
+      "rarity": "Legendary",
+      "cost": 565,
+      "damage": 38,
       "range": 200,
       "fireRate": 1.4,
       "canSeeStealth": false,
@@ -1824,7 +1824,7 @@ window.__MARVEL_TD_DATA__ = {
       "name": "Silver Surfer",
       "category": "Cósmico",
       "rarity": "Mythic",
-      "cost": 760,
+      "cost": 775,
       "damage": 123,
       "range": 300,
       "fireRate": 0.6,
@@ -1890,9 +1890,9 @@ window.__MARVEL_TD_DATA__ = {
       "id": "blade",
       "name": "Blade",
       "category": "Místico",
-      "rarity": "Rare",
-      "cost": 330,
-      "damage": 25,
+      "rarity": "Epic",
+      "cost": 420,
+      "damage": 31,
       "range": 110,
       "fireRate": 1.8,
       "canSeeStealth": true,
@@ -1967,7 +1967,7 @@ window.__MARVEL_TD_DATA__ = {
       "name": "Ghost Rider",
       "category": "Místico",
       "rarity": "Legendary",
-      "cost": 520,
+      "cost": 570,
       "damage": 68,
       "range": 150,
       "fireRate": 0.95,
@@ -2043,7 +2043,7 @@ window.__MARVEL_TD_DATA__ = {
       "name": "Luke Cage",
       "category": "Urbano",
       "rarity": "Common",
-      "cost": 210,
+      "cost": 195,
       "damage": 29,
       "range": 85,
       "fireRate": 1.4,
@@ -2107,9 +2107,9 @@ window.__MARVEL_TD_DATA__ = {
       "id": "domino",
       "name": "Domino",
       "category": "Mutante",
-      "rarity": "Legendary",
-      "cost": 220,
-      "damage": 9,
+      "rarity": "Epic",
+      "cost": 405,
+      "damage": 7,
       "range": 155,
       "fireRate": 1.35,
       "canSeeStealth": true,
@@ -2179,9 +2179,9 @@ window.__MARVEL_TD_DATA__ = {
       "id": "war_machine",
       "name": "War Machine",
       "category": "Tecnológico",
-      "rarity": "Epic",
-      "cost": 360,
-      "damage": 44,
+      "rarity": "Rare",
+      "cost": 320,
+      "damage": 35,
       "range": 175,
       "fireRate": 1.1,
       "canSeeStealth": false,
@@ -2262,7 +2262,7 @@ window.__MARVEL_TD_DATA__ = {
       "name": "Nick Fury",
       "category": "Urbano",
       "rarity": "Rare",
-      "cost": 240,
+      "cost": 385,
       "damage": 1,
       "range": 265,
       "fireRate": 1,
@@ -2335,8 +2335,8 @@ window.__MARVEL_TD_DATA__ = {
       "id": "wasp",
       "name": "Wasp",
       "category": "Tecnológico",
-      "rarity": "Epic",
-      "cost": 280,
+      "rarity": "Common",
+      "cost": 310,
       "damage": 1,
       "range": 125,
       "fireRate": 1,
@@ -2412,7 +2412,7 @@ window.__MARVEL_TD_DATA__ = {
       "name": "Nova",
       "category": "Cósmico",
       "rarity": "Legendary",
-      "cost": 520,
+      "cost": 595,
       "damage": 63,
       "range": 205,
       "fireRate": 1,
@@ -2490,9 +2490,9 @@ window.__MARVEL_TD_DATA__ = {
       "id": "quake",
       "name": "Quake",
       "category": "Tecnológico",
-      "rarity": "Epic",
-      "cost": 290,
-      "damage": 35,
+      "rarity": "Common",
+      "cost": 195,
+      "damage": 21,
       "range": 165,
       "fireRate": 1.45,
       "canSeeStealth": true,
@@ -2573,9 +2573,9 @@ window.__MARVEL_TD_DATA__ = {
       "id": "medusa",
       "name": "Medusa",
       "category": "Místico",
-      "rarity": "Rare",
-      "cost": 280,
-      "damage": 27,
+      "rarity": "Common",
+      "cost": 180,
+      "damage": 21,
       "range": 145,
       "fireRate": 1.6,
       "canSeeStealth": false,
@@ -2656,7 +2656,7 @@ window.__MARVEL_TD_DATA__ = {
       "name": "Namor",
       "category": "Mutante",
       "rarity": "Legendary",
-      "cost": 470,
+      "cost": 555,
       "damage": 71,
       "range": 115,
       "fireRate": 0.95,
@@ -2730,9 +2730,9 @@ window.__MARVEL_TD_DATA__ = {
       "id": "iron_fist",
       "name": "Iron Fist",
       "category": "Místico",
-      "rarity": "Rare",
-      "cost": 240,
-      "damage": 30,
+      "rarity": "Epic",
+      "cost": 405,
+      "damage": 38,
       "range": 105,
       "fireRate": 1.55,
       "canSeeStealth": false,
@@ -2810,9 +2810,9 @@ window.__MARVEL_TD_DATA__ = {
       "id": "punisher",
       "name": "Punisher",
       "category": "Urbano",
-      "rarity": "Rare",
-      "cost": 260,
-      "damage": 25,
+      "rarity": "Common",
+      "cost": 220,
+      "damage": 19,
       "range": 190,
       "fireRate": 1.55,
       "canSeeStealth": false,
@@ -2884,9 +2884,9 @@ window.__MARVEL_TD_DATA__ = {
       "id": "elektra",
       "name": "Elektra",
       "category": "Urbano",
-      "rarity": "Epic",
-      "cost": 235,
-      "damage": 28,
+      "rarity": "Rare",
+      "cost": 295,
+      "damage": 23,
       "range": 115,
       "fireRate": 1.9,
       "canSeeStealth": false,
@@ -2965,7 +2965,7 @@ window.__MARVEL_TD_DATA__ = {
       "name": "Jessica Jones",
       "category": "Urbano",
       "rarity": "Common",
-      "cost": 185,
+      "cost": 195,
       "damage": 34,
       "range": 95,
       "fireRate": 1.05,
@@ -3044,9 +3044,9 @@ window.__MARVEL_TD_DATA__ = {
       "id": "cloak",
       "name": "Cloak",
       "category": "Místico",
-      "rarity": "Epic",
-      "cost": 300,
-      "damage": 38,
+      "rarity": "Rare",
+      "cost": 325,
+      "damage": 31,
       "range": 170,
       "fireRate": 1.35,
       "canSeeStealth": true,
@@ -3126,9 +3126,9 @@ window.__MARVEL_TD_DATA__ = {
       "id": "dagger",
       "name": "Dagger",
       "category": "Místico",
-      "rarity": "Epic",
-      "cost": 285,
-      "damage": 31,
+      "rarity": "Rare",
+      "cost": 350,
+      "damage": 25,
       "range": 175,
       "fireRate": 1.65,
       "canSeeStealth": true,
@@ -3212,9 +3212,9 @@ window.__MARVEL_TD_DATA__ = {
       "id": "magik",
       "name": "Magik",
       "category": "Místico",
-      "rarity": "Legendary",
-      "cost": 540,
-      "damage": 56,
+      "rarity": "Epic",
+      "cost": 405,
+      "damage": 46,
       "range": 150,
       "fireRate": 1.05,
       "canSeeStealth": false,
@@ -3302,9 +3302,9 @@ window.__MARVEL_TD_DATA__ = {
       "id": "iceman",
       "name": "Iceman",
       "category": "Mutante",
-      "rarity": "Epic",
-      "cost": 310,
-      "damage": 34,
+      "rarity": "Legendary",
+      "cost": 540,
+      "damage": 42,
       "range": 165,
       "fireRate": 1.55,
       "canSeeStealth": false,
@@ -3383,9 +3383,9 @@ window.__MARVEL_TD_DATA__ = {
       "id": "shuri",
       "name": "Shuri",
       "category": "Tecnologico",
-      "rarity": "Legendary",
-      "cost": 420,
-      "damage": 42,
+      "rarity": "Common",
+      "cost": 195,
+      "damage": 21,
       "range": 190,
       "fireRate": 1.45,
       "canSeeStealth": true,
@@ -3463,9 +3463,9 @@ window.__MARVEL_TD_DATA__ = {
       "id": "okoye",
       "name": "Okoye",
       "category": "Urbano",
-      "rarity": "Rare",
-      "cost": 260,
-      "damage": 30,
+      "rarity": "Common",
+      "cost": 195,
+      "damage": 23,
       "range": 110,
       "fireRate": 1.55,
       "canSeeStealth": false,
@@ -3544,7 +3544,7 @@ window.__MARVEL_TD_DATA__ = {
       "name": "Black Bolt",
       "category": "Cosmico",
       "rarity": "Legendary",
-      "cost": 560,
+      "cost": 595,
       "damage": 65,
       "range": 170,
       "fireRate": 0.9,
@@ -3627,9 +3627,9 @@ window.__MARVEL_TD_DATA__ = {
       "id": "crystal",
       "name": "Crystal",
       "category": "Cosmico",
-      "rarity": "Rare",
-      "cost": 330,
-      "damage": 31,
+      "rarity": "Common",
+      "cost": 210,
+      "damage": 24,
       "range": 175,
       "fireRate": 1.35,
       "canSeeStealth": false,
@@ -3712,9 +3712,9 @@ window.__MARVEL_TD_DATA__ = {
       "id": "namora",
       "name": "Namora",
       "category": "Atlantico",
-      "rarity": "Rare",
-      "cost": 300,
-      "damage": 32,
+      "rarity": "Common",
+      "cost": 195,
+      "damage": 24,
       "range": 125,
       "fireRate": 1.35,
       "canSeeStealth": false,
@@ -3795,9 +3795,9 @@ window.__MARVEL_TD_DATA__ = {
       "id": "triton",
       "name": "Triton",
       "category": "Atlantico",
-      "rarity": "Epic",
-      "cost": 280,
-      "damage": 36,
+      "rarity": "Common",
+      "cost": 195,
+      "damage": 22,
       "range": 160,
       "fireRate": 1.45,
       "canSeeStealth": true,
@@ -3876,9 +3876,9 @@ window.__MARVEL_TD_DATA__ = {
       "id": "black_cat",
       "name": "Black Cat",
       "category": "Urbano",
-      "rarity": "Epic",
-      "cost": 245,
-      "damage": 25,
+      "rarity": "Rare",
+      "cost": 295,
+      "damage": 20,
       "range": 135,
       "fireRate": 2.05,
       "canSeeStealth": true,
@@ -3957,9 +3957,9 @@ window.__MARVEL_TD_DATA__ = {
       "id": "elsa_bloodstone",
       "name": "Elsa Bloodstone",
       "category": "Místico",
-      "rarity": "Epic",
-      "cost": 330,
-      "damage": 37,
+      "rarity": "Rare",
+      "cost": 335,
+      "damage": 30,
       "range": 170,
       "fireRate": 1.3,
       "canSeeStealth": true,
@@ -4046,7 +4046,7 @@ window.__MARVEL_TD_DATA__ = {
       "name": "Gambit",
       "category": "Mutante",
       "rarity": "Epic",
-      "cost": 335,
+      "cost": 415,
       "damage": 31,
       "range": 165,
       "fireRate": 1.55,
@@ -4125,9 +4125,9 @@ window.__MARVEL_TD_DATA__ = {
       "id": "hela",
       "name": "Hela",
       "category": "Místico",
-      "rarity": "Secret",
-      "cost": 620,
-      "damage": 102,
+      "rarity": "Legendary",
+      "cost": 595,
+      "damage": 69,
       "range": 180,
       "fireRate": 0.85,
       "canSeeStealth": false,
@@ -4217,7 +4217,7 @@ window.__MARVEL_TD_DATA__ = {
       "name": "Human Torch",
       "category": "Cósmico",
       "rarity": "Epic",
-      "cost": 360,
+      "cost": 445,
       "damage": 32,
       "range": 175,
       "fireRate": 1.65,
@@ -4301,9 +4301,9 @@ window.__MARVEL_TD_DATA__ = {
       "id": "the_hood",
       "name": "The Hood",
       "category": "Místico",
-      "rarity": "Epic",
-      "cost": 310,
-      "damage": 37,
+      "rarity": "Rare",
+      "cost": 295,
+      "damage": 30,
       "range": 155,
       "fireRate": 1.35,
       "canSeeStealth": true,
@@ -4387,9 +4387,9 @@ window.__MARVEL_TD_DATA__ = {
       "id": "psylocke",
       "name": "Psylocke",
       "category": "Mutante",
-      "rarity": "Mythic",
-      "cost": 455,
-      "damage": 47,
+      "rarity": "Epic",
+      "cost": 420,
+      "damage": 32,
       "range": 135,
       "fireRate": 1.55,
       "canSeeStealth": true,
@@ -4472,7 +4472,7 @@ window.__MARVEL_TD_DATA__ = {
       "name": "Squirrel Girl",
       "category": "Urbano",
       "rarity": "Common",
-      "cost": 255,
+      "cost": 180,
       "damage": 15,
       "range": 150,
       "fireRate": 2.15,
@@ -4550,9 +4550,9 @@ window.__MARVEL_TD_DATA__ = {
       "id": "venom",
       "name": "Venom",
       "category": "Mutante",
-      "rarity": "Legendary",
-      "cost": 500,
-      "damage": 48,
+      "rarity": "Epic",
+      "cost": 405,
+      "damage": 39,
       "range": 120,
       "fireRate": 1.18,
       "canSeeStealth": false,
@@ -4641,9 +4641,9 @@ window.__MARVEL_TD_DATA__ = {
       "id": "angela",
       "name": "Angela",
       "category": "Cósmico",
-      "rarity": "Legendary",
-      "cost": 540,
-      "damage": 61,
+      "rarity": "Epic",
+      "cost": 435,
+      "damage": 50,
       "range": 150,
       "fireRate": 1.05,
       "canSeeStealth": false,
@@ -4720,9 +4720,9 @@ window.__MARVEL_TD_DATA__ = {
       "id": "devil_dinosaur",
       "name": "Devil Dinosaur",
       "category": "Mutante",
-      "rarity": "Mythic",
-      "cost": 575,
-      "damage": 89,
+      "rarity": "Rare",
+      "cost": 295,
+      "damage": 48,
       "range": 105,
       "fireRate": 0.92,
       "canSeeStealth": false,
@@ -4804,9 +4804,9 @@ window.__MARVEL_TD_DATA__ = {
       "id": "emma_frost",
       "name": "Emma Frost",
       "category": "Mutante",
-      "rarity": "Mythic",
-      "cost": 470,
-      "damage": 49,
+      "rarity": "Legendary",
+      "cost": 555,
+      "damage": 41,
       "range": 180,
       "fireRate": 1.45,
       "canSeeStealth": true,
@@ -4893,7 +4893,7 @@ window.__MARVEL_TD_DATA__ = {
       "name": "Magneto",
       "category": "Mutante",
       "rarity": "Mythic",
-      "cost": 590,
+      "cost": 775,
       "damage": 69,
       "range": 205,
       "fireRate": 0.95,
@@ -4976,9 +4976,9 @@ window.__MARVEL_TD_DATA__ = {
       "id": "peni_parker",
       "name": "Peni Parker",
       "category": "Tecnológico",
-      "rarity": "Epic",
-      "cost": 345,
-      "damage": 27,
+      "rarity": "Rare",
+      "cost": 295,
+      "damage": 22,
       "range": 165,
       "fireRate": 1.9,
       "canSeeStealth": true,
@@ -5058,7 +5058,7 @@ window.__MARVEL_TD_DATA__ = {
       "name": "Adam Warlock",
       "category": "Cósmico",
       "rarity": "Mythic",
-      "cost": 610,
+      "cost": 750,
       "damage": 73,
       "range": 205,
       "fireRate": 1,
@@ -5136,9 +5136,9 @@ window.__MARVEL_TD_DATA__ = {
       "id": "deadpool",
       "name": "Deadpool",
       "category": "Urbano",
-      "rarity": "Legendary",
-      "cost": 390,
-      "damage": 32,
+      "rarity": "Epic",
+      "cost": 405,
+      "damage": 26,
       "range": 155,
       "fireRate": 2.05,
       "canSeeStealth": false,
@@ -5218,7 +5218,7 @@ window.__MARVEL_TD_DATA__ = {
       "name": "Invisible Woman",
       "category": "Tecnológico",
       "rarity": "Legendary",
-      "cost": 430,
+      "cost": 660,
       "damage": 1,
       "range": 245,
       "fireRate": 1,
@@ -5294,9 +5294,9 @@ window.__MARVEL_TD_DATA__ = {
       "id": "jeff_the_land_shark",
       "name": "Jeff The Land Shark",
       "category": "Mutante",
-      "rarity": "Epic",
-      "cost": 260,
-      "damage": 30,
+      "rarity": "Rare",
+      "cost": 325,
+      "damage": 24,
       "range": 135,
       "fireRate": 1.75,
       "canSeeStealth": true,
@@ -5375,9 +5375,9 @@ window.__MARVEL_TD_DATA__ = {
       "id": "jubilee",
       "name": "Jubilee",
       "category": "Mutante",
-      "rarity": "Epic",
-      "cost": 300,
-      "damage": 30,
+      "rarity": "Rare",
+      "cost": 280,
+      "damage": 24,
       "range": 170,
       "fireRate": 1.75,
       "canSeeStealth": false,
@@ -5456,9 +5456,9 @@ window.__MARVEL_TD_DATA__ = {
       "id": "loki",
       "name": "Loki",
       "category": "Místico",
-      "rarity": "Secret",
-      "cost": 560,
-      "damage": 57,
+      "rarity": "Legendary",
+      "cost": 585,
+      "damage": 39,
       "range": 190,
       "fireRate": 1.25,
       "canSeeStealth": true,
@@ -5555,9 +5555,9 @@ window.__MARVEL_TD_DATA__ = {
       "id": "luna_snow",
       "name": "Luna Snow",
       "category": "Cósmico",
-      "rarity": "Epic",
-      "cost": 340,
-      "damage": 32,
+      "rarity": "Rare",
+      "cost": 295,
+      "damage": 26,
       "range": 180,
       "fireRate": 1.55,
       "canSeeStealth": true,
@@ -5639,9 +5639,9 @@ window.__MARVEL_TD_DATA__ = {
       "id": "mantis",
       "name": "Mantis",
       "category": "Cósmico",
-      "rarity": "Epic",
-      "cost": 305,
-      "damage": 30,
+      "rarity": "Rare",
+      "cost": 295,
+      "damage": 24,
       "range": 175,
       "fireRate": 1.65,
       "canSeeStealth": true,
@@ -5727,7 +5727,7 @@ window.__MARVEL_TD_DATA__ = {
       "name": "Mister Fantastic",
       "category": "Tecnológico",
       "rarity": "Legendary",
-      "cost": 415,
+      "cost": 620,
       "damage": 1,
       "range": 145,
       "fireRate": 1,
@@ -5801,9 +5801,9 @@ window.__MARVEL_TD_DATA__ = {
       "id": "rocket_raccoon",
       "name": "Rocket Raccoon",
       "category": "Tecnológico",
-      "rarity": "Epic",
-      "cost": 335,
-      "damage": 28,
+      "rarity": "Common",
+      "cost": 235,
+      "damage": 17,
       "range": 185,
       "fireRate": 1.65,
       "canSeeStealth": true,
@@ -5879,9 +5879,9 @@ window.__MARVEL_TD_DATA__ = {
       "id": "nightcrawler",
       "name": "Nightcrawler",
       "category": "Mutante",
-      "rarity": "Secret",
-      "cost": 330,
-      "damage": 43,
+      "rarity": "Epic",
+      "cost": 405,
+      "damage": 24,
       "range": 145,
       "fireRate": 1.85,
       "canSeeStealth": true,
@@ -5971,9 +5971,9 @@ window.__MARVEL_TD_DATA__ = {
       "id": "ms_marvel",
       "name": "Ms. Marvel",
       "category": "Cósmico",
-      "rarity": "Epic",
-      "cost": 410,
-      "damage": 40,
+      "rarity": "Rare",
+      "cost": 335,
+      "damage": 32,
       "range": 180,
       "fireRate": 1.35,
       "canSeeStealth": false,
@@ -6044,6 +6044,2160 @@ window.__MARVEL_TD_DATA__ = {
             "assets/images/heroes/ms_marvel/shoot/8.png"
           ]
         }
+      }
+    },
+    "yelena_belova": {
+      "id": "yelena_belova",
+      "name": "Yelena Belova",
+      "category": "Tactico",
+      "rarity": "Common",
+      "cost": 195,
+      "damage": 18,
+      "range": 145,
+      "fireRate": 1.75,
+      "canSeeStealth": true,
+      "ability": "VIUDA BLANCA",
+      "abilityDesc": "Dispara rafagas tacticas que marcan objetivos con sigilo y aplican veneno ligero acumulable.",
+      "niche": "deteccion comun y presion sostenida",
+      "sprite": "assets/images/heroes/yelena_belova/portrait.png",
+      "visual": {
+        "portrait": "assets/images/heroes/yelena_belova/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/yelena_belova/sprites/north.png",
+          "north-east": "assets/images/heroes/yelena_belova/sprites/north-east.png",
+          "east": "assets/images/heroes/yelena_belova/sprites/east.png",
+          "south-east": "assets/images/heroes/yelena_belova/sprites/south-east.png",
+          "south": "assets/images/heroes/yelena_belova/sprites/south.png",
+          "south-west": "assets/images/heroes/yelena_belova/sprites/south-west.png",
+          "west": "assets/images/heroes/yelena_belova/sprites/west.png",
+          "north-west": "assets/images/heroes/yelena_belova/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 16,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/yelena_belova/shoot/0.png",
+            "assets/images/heroes/yelena_belova/shoot/1.png",
+            "assets/images/heroes/yelena_belova/shoot/2.png",
+            "assets/images/heroes/yelena_belova/shoot/3.png",
+            "assets/images/heroes/yelena_belova/shoot/4.png",
+            "assets/images/heroes/yelena_belova/shoot/5.png",
+            "assets/images/heroes/yelena_belova/shoot/6.png",
+            "assets/images/heroes/yelena_belova/shoot/7.png",
+            "assets/images/heroes/yelena_belova/shoot/8.png"
+          ]
+        }
+      },
+      "allowedTerrains": [
+        1
+      ],
+      "tags": [
+        "Espías",
+        "Operaciones"
+      ],
+      "formationRole": "support",
+      "teamMetrics": {
+        "damage": 2,
+        "control": 3,
+        "support": 3,
+        "detection": 5
+      },
+      "terrainRole": "grass",
+      "special": {
+        "attackEffects": [
+          {
+            "type": "poison",
+            "duration": 3,
+            "power": 0.0025,
+            "chance": 0.3
+          },
+          {
+            "type": "mark",
+            "duration": 2,
+            "power": 0.06,
+            "chance": 0.22
+          }
+        ],
+        "visualStyle": "ballistic",
+        "projectileColor": "#d8dee9"
+      }
+    },
+    "mbaku": {
+      "id": "mbaku",
+      "name": "M'Baku",
+      "category": "Marcial",
+      "rarity": "Common",
+      "cost": 195,
+      "damage": 35,
+      "range": 95,
+      "fireRate": 1.05,
+      "canSeeStealth": false,
+      "ability": "DESAFIO JABARI",
+      "abilityDesc": "Golpes frontales rompen armadura y ganan valor contra enemigos blindados en cuellos de botella.",
+      "niche": "vanguardia barata antiarmadura",
+      "sprite": "assets/images/heroes/mbaku/portrait.png",
+      "visual": {
+        "portrait": "assets/images/heroes/mbaku/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/mbaku/sprites/north.png",
+          "north-east": "assets/images/heroes/mbaku/sprites/north-east.png",
+          "east": "assets/images/heroes/mbaku/sprites/east.png",
+          "south-east": "assets/images/heroes/mbaku/sprites/south-east.png",
+          "south": "assets/images/heroes/mbaku/sprites/south.png",
+          "south-west": "assets/images/heroes/mbaku/sprites/south-west.png",
+          "west": "assets/images/heroes/mbaku/sprites/west.png",
+          "north-west": "assets/images/heroes/mbaku/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 16,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/mbaku/shoot/0.png",
+            "assets/images/heroes/mbaku/shoot/1.png",
+            "assets/images/heroes/mbaku/shoot/2.png",
+            "assets/images/heroes/mbaku/shoot/3.png",
+            "assets/images/heroes/mbaku/shoot/4.png",
+            "assets/images/heroes/mbaku/shoot/5.png",
+            "assets/images/heroes/mbaku/shoot/6.png",
+            "assets/images/heroes/mbaku/shoot/7.png",
+            "assets/images/heroes/mbaku/shoot/8.png"
+          ]
+        }
+      },
+      "allowedTerrains": [
+        1,
+        3
+      ],
+      "tags": [
+        "Wakanda",
+        "Marciales"
+      ],
+      "formationRole": "vanguard",
+      "teamMetrics": {
+        "damage": 3,
+        "control": 3,
+        "support": 2,
+        "detection": 1
+      },
+      "terrainRole": "ground",
+      "special": {
+        "attackEffects": [
+          {
+            "type": "armorBreak",
+            "duration": 2.2,
+            "power": 0.1,
+            "chance": 0.28
+          }
+        ],
+        "visualStyle": "impact",
+        "projectileColor": "#f7c873"
+      }
+    },
+    "red_guardian": {
+      "id": "red_guardian",
+      "name": "Red Guardian",
+      "category": "Urbano",
+      "rarity": "Common",
+      "cost": 195,
+      "damage": 28,
+      "range": 120,
+      "fireRate": 1.2,
+      "canSeeStealth": false,
+      "ability": "ESCUDO SOVIETICO",
+      "abilityDesc": "Lanza un escudo que rebota una vez y aturde brevemente si golpea a un elite.",
+      "niche": "rebote defensivo economico",
+      "sprite": "assets/images/heroes/red_guardian/portrait.png",
+      "visual": {
+        "portrait": "assets/images/heroes/red_guardian/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/red_guardian/sprites/north.png",
+          "north-east": "assets/images/heroes/red_guardian/sprites/north-east.png",
+          "east": "assets/images/heroes/red_guardian/sprites/east.png",
+          "south-east": "assets/images/heroes/red_guardian/sprites/south-east.png",
+          "south": "assets/images/heroes/red_guardian/sprites/south.png",
+          "south-west": "assets/images/heroes/red_guardian/sprites/south-west.png",
+          "west": "assets/images/heroes/red_guardian/sprites/west.png",
+          "north-west": "assets/images/heroes/red_guardian/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 16,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/red_guardian/shoot/0.png",
+            "assets/images/heroes/red_guardian/shoot/1.png",
+            "assets/images/heroes/red_guardian/shoot/2.png",
+            "assets/images/heroes/red_guardian/shoot/3.png",
+            "assets/images/heroes/red_guardian/shoot/4.png",
+            "assets/images/heroes/red_guardian/shoot/5.png",
+            "assets/images/heroes/red_guardian/shoot/6.png",
+            "assets/images/heroes/red_guardian/shoot/7.png",
+            "assets/images/heroes/red_guardian/shoot/8.png"
+          ]
+        }
+      },
+      "allowedTerrains": [
+        1
+      ],
+      "tags": [
+        "Avengers",
+        "Operaciones"
+      ],
+      "formationRole": "vanguard",
+      "teamMetrics": {
+        "damage": 3,
+        "control": 3,
+        "support": 2,
+        "detection": 1
+      },
+      "terrainRole": "grass",
+      "special": {
+        "projectileProfile": {
+          "chainCount": 1,
+          "chainRange": 85,
+          "chainFactor": 0.48
+        },
+        "attackEffects": [
+          {
+            "type": "stun",
+            "duration": 0.25,
+            "power": 1,
+            "chance": 0.12
+          }
+        ],
+        "visualStyle": "impact",
+        "projectileColor": "#ef4444"
+      }
+    },
+    "korg": {
+      "id": "korg",
+      "name": "Korg",
+      "category": "Bestia",
+      "rarity": "Common",
+      "cost": 195,
+      "damage": 39,
+      "range": 85,
+      "fireRate": 0.95,
+      "canSeeStealth": false,
+      "ability": "ROCA DE SAKAAR",
+      "abilityDesc": "Impactos pesados salpican en un area pequena y ralentizan a grupos compactos.",
+      "niche": "splash cercano comun",
+      "sprite": "assets/images/heroes/korg/portrait.png",
+      "visual": {
+        "portrait": "assets/images/heroes/korg/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/korg/sprites/north.png",
+          "north-east": "assets/images/heroes/korg/sprites/north-east.png",
+          "east": "assets/images/heroes/korg/sprites/east.png",
+          "south-east": "assets/images/heroes/korg/sprites/south-east.png",
+          "south": "assets/images/heroes/korg/sprites/south.png",
+          "south-west": "assets/images/heroes/korg/sprites/south-west.png",
+          "west": "assets/images/heroes/korg/sprites/west.png",
+          "north-west": "assets/images/heroes/korg/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 16,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/korg/shoot/0.png",
+            "assets/images/heroes/korg/shoot/1.png",
+            "assets/images/heroes/korg/shoot/2.png",
+            "assets/images/heroes/korg/shoot/3.png",
+            "assets/images/heroes/korg/shoot/4.png",
+            "assets/images/heroes/korg/shoot/5.png",
+            "assets/images/heroes/korg/shoot/6.png",
+            "assets/images/heroes/korg/shoot/7.png",
+            "assets/images/heroes/korg/shoot/8.png"
+          ]
+        }
+      },
+      "allowedTerrains": [
+        1,
+        3
+      ],
+      "tags": [
+        "Asgardianos",
+        "Bestias"
+      ],
+      "formationRole": "vanguard",
+      "teamMetrics": {
+        "damage": 3,
+        "control": 4,
+        "support": 1,
+        "detection": 1
+      },
+      "terrainRole": "ground",
+      "special": {
+        "projectileProfile": {
+          "splashRadius": 48,
+          "splashFactor": 0.34
+        },
+        "attackEffects": [
+          {
+            "type": "slow",
+            "duration": 1.3,
+            "power": 0.22,
+            "chance": 0.26
+          }
+        ],
+        "visualStyle": "impact",
+        "projectileColor": "#a3a3a3"
+      }
+    },
+    "nebula": {
+      "id": "nebula",
+      "name": "Nebula",
+      "category": "Tecnologico",
+      "rarity": "Rare",
+      "cost": 295,
+      "damage": 32,
+      "range": 155,
+      "fireRate": 1.35,
+      "canSeeStealth": true,
+      "ability": "CYBER-SABOTAJE",
+      "abilityDesc": "Disparos ciberneticos detectan sigilo y reducen armadura de enemigos tecnologicos.",
+      "niche": "rara anti-sigilo y antiarmadura",
+      "sprite": "assets/images/heroes/nebula/portrait.png",
+      "visual": {
+        "portrait": "assets/images/heroes/nebula/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/nebula/sprites/north.png",
+          "north-east": "assets/images/heroes/nebula/sprites/north-east.png",
+          "east": "assets/images/heroes/nebula/sprites/east.png",
+          "south-east": "assets/images/heroes/nebula/sprites/south-east.png",
+          "south": "assets/images/heroes/nebula/sprites/south.png",
+          "south-west": "assets/images/heroes/nebula/sprites/south-west.png",
+          "west": "assets/images/heroes/nebula/sprites/west.png",
+          "north-west": "assets/images/heroes/nebula/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 16,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/nebula/shoot/0.png",
+            "assets/images/heroes/nebula/shoot/1.png",
+            "assets/images/heroes/nebula/shoot/2.png",
+            "assets/images/heroes/nebula/shoot/3.png",
+            "assets/images/heroes/nebula/shoot/4.png",
+            "assets/images/heroes/nebula/shoot/5.png",
+            "assets/images/heroes/nebula/shoot/6.png",
+            "assets/images/heroes/nebula/shoot/7.png",
+            "assets/images/heroes/nebula/shoot/8.png"
+          ]
+        }
+      },
+      "allowedTerrains": [
+        1,
+        3
+      ],
+      "tags": [
+        "Guardianes",
+        "Tecnología"
+      ],
+      "formationRole": "support",
+      "teamMetrics": {
+        "damage": 3,
+        "control": 3,
+        "support": 3,
+        "detection": 5
+      },
+      "terrainRole": "ground",
+      "special": {
+        "attackEffects": [
+          {
+            "type": "armorBreak",
+            "duration": 2.6,
+            "power": 0.14,
+            "chance": 0.34
+          }
+        ],
+        "statModifiers": {
+          "detectStealth": true
+        },
+        "visualStyle": "energy",
+        "projectileColor": "#7dd3fc"
+      }
+    },
+    "wong": {
+      "id": "wong",
+      "name": "Wong",
+      "category": "Mistico",
+      "rarity": "Common",
+      "cost": 250,
+      "damage": 1,
+      "range": 205,
+      "fireRate": 1,
+      "canSeeStealth": true,
+      "ability": "SANTUARIO ACTIVO",
+      "abilityDesc": "No ataca. Proyecta un aura que aumenta el alcance de aliados cercanos y revela amenazas ocultas.",
+      "niche": "aura comun de alcance y deteccion",
+      "sprite": "assets/images/heroes/wong/portrait.png",
+      "visual": {
+        "portrait": "assets/images/heroes/wong/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/wong/sprites/north.png",
+          "north-east": "assets/images/heroes/wong/sprites/north-east.png",
+          "east": "assets/images/heroes/wong/sprites/east.png",
+          "south-east": "assets/images/heroes/wong/sprites/south-east.png",
+          "south": "assets/images/heroes/wong/sprites/south.png",
+          "south-west": "assets/images/heroes/wong/sprites/south-west.png",
+          "west": "assets/images/heroes/wong/sprites/west.png",
+          "north-west": "assets/images/heroes/wong/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 16,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/wong/shoot/0.png",
+            "assets/images/heroes/wong/shoot/1.png",
+            "assets/images/heroes/wong/shoot/2.png",
+            "assets/images/heroes/wong/shoot/3.png",
+            "assets/images/heroes/wong/shoot/4.png",
+            "assets/images/heroes/wong/shoot/5.png",
+            "assets/images/heroes/wong/shoot/6.png",
+            "assets/images/heroes/wong/shoot/7.png",
+            "assets/images/heroes/wong/shoot/8.png"
+          ]
+        }
+      },
+      "allowedTerrains": [
+        1,
+        3
+      ],
+      "tags": [
+        "Místico",
+        "Operaciones"
+      ],
+      "formationRole": "support",
+      "teamMetrics": {
+        "damage": 1,
+        "control": 3,
+        "support": 5,
+        "detection": 5
+      },
+      "terrainRole": "ground",
+      "special": {
+        "supportAura": {
+          "type": "range",
+          "power": 0.045,
+          "range": 205,
+          "label": "Anillo del santuario",
+          "detectStealth": true
+        },
+        "visualStyle": "mystic",
+        "projectileColor": "#f59e0b"
+      }
+    },
+    "yondu": {
+      "id": "yondu",
+      "name": "Yondu",
+      "category": "Cosmico",
+      "rarity": "Common",
+      "cost": 220,
+      "damage": 25,
+      "range": 185,
+      "fireRate": 1.25,
+      "canSeeStealth": false,
+      "ability": "FLECHA YAKA",
+      "abilityDesc": "La flecha teledirigida encadena multiples objetivos con menor dano en cada salto.",
+      "niche": "cadena comun de largo alcance",
+      "sprite": "assets/images/heroes/yondu/portrait.png",
+      "visual": {
+        "portrait": "assets/images/heroes/yondu/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/yondu/sprites/north.png",
+          "north-east": "assets/images/heroes/yondu/sprites/north-east.png",
+          "east": "assets/images/heroes/yondu/sprites/east.png",
+          "south-east": "assets/images/heroes/yondu/sprites/south-east.png",
+          "south": "assets/images/heroes/yondu/sprites/south.png",
+          "south-west": "assets/images/heroes/yondu/sprites/south-west.png",
+          "west": "assets/images/heroes/yondu/sprites/west.png",
+          "north-west": "assets/images/heroes/yondu/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 16,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/yondu/shoot/0.png",
+            "assets/images/heroes/yondu/shoot/1.png",
+            "assets/images/heroes/yondu/shoot/2.png",
+            "assets/images/heroes/yondu/shoot/3.png",
+            "assets/images/heroes/yondu/shoot/4.png",
+            "assets/images/heroes/yondu/shoot/5.png",
+            "assets/images/heroes/yondu/shoot/6.png",
+            "assets/images/heroes/yondu/shoot/7.png",
+            "assets/images/heroes/yondu/shoot/8.png"
+          ]
+        }
+      },
+      "allowedTerrains": [
+        1,
+        3
+      ],
+      "tags": [
+        "Guardianes",
+        "Cósmico"
+      ],
+      "formationRole": "artillery",
+      "teamMetrics": {
+        "damage": 3,
+        "control": 2,
+        "support": 2,
+        "detection": 1
+      },
+      "terrainRole": "high",
+      "rangePattern": "cross",
+      "special": {
+        "projectileProfile": {
+          "chainCount": 2,
+          "chainRange": 95,
+          "chainFactor": 0.45
+        },
+        "visualStyle": "energy",
+        "projectileColor": "#ef4444"
+      }
+    },
+    "maria_hill": {
+      "id": "maria_hill",
+      "name": "Maria Hill",
+      "category": "Tactico",
+      "rarity": "Common",
+      "cost": 265,
+      "damage": 1,
+      "range": 225,
+      "fireRate": 1,
+      "canSeeStealth": true,
+      "ability": "COMANDO S.H.I.E.L.D.",
+      "abilityDesc": "No ataca. Coordina fuego aliado con un aura amplia de dano menor y lectura anti-sigilo.",
+      "niche": "aura comun de dano amplia",
+      "sprite": "assets/images/heroes/maria_hill/portrait.png",
+      "visual": {
+        "portrait": "assets/images/heroes/maria_hill/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/maria_hill/sprites/north.png",
+          "north-east": "assets/images/heroes/maria_hill/sprites/north-east.png",
+          "east": "assets/images/heroes/maria_hill/sprites/east.png",
+          "south-east": "assets/images/heroes/maria_hill/sprites/south-east.png",
+          "south": "assets/images/heroes/maria_hill/sprites/south.png",
+          "south-west": "assets/images/heroes/maria_hill/sprites/south-west.png",
+          "west": "assets/images/heroes/maria_hill/sprites/west.png",
+          "north-west": "assets/images/heroes/maria_hill/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 16,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/maria_hill/shoot/0.png",
+            "assets/images/heroes/maria_hill/shoot/1.png",
+            "assets/images/heroes/maria_hill/shoot/2.png",
+            "assets/images/heroes/maria_hill/shoot/3.png",
+            "assets/images/heroes/maria_hill/shoot/4.png",
+            "assets/images/heroes/maria_hill/shoot/5.png",
+            "assets/images/heroes/maria_hill/shoot/6.png",
+            "assets/images/heroes/maria_hill/shoot/7.png",
+            "assets/images/heroes/maria_hill/shoot/8.png"
+          ]
+        }
+      },
+      "allowedTerrains": [
+        3
+      ],
+      "tags": [
+        "Espías",
+        "Operaciones"
+      ],
+      "formationRole": "support",
+      "teamMetrics": {
+        "damage": 1,
+        "control": 2,
+        "support": 5,
+        "detection": 5
+      },
+      "terrainRole": "high",
+      "special": {
+        "supportAura": {
+          "type": "damage",
+          "power": 0.045,
+          "range": 225,
+          "label": "Orden de campo",
+          "detectStealth": true
+        },
+        "visualStyle": "energy",
+        "projectileColor": "#94a3b8"
+      }
+    },
+    "echo": {
+      "id": "echo",
+      "name": "Echo",
+      "category": "Marcial",
+      "rarity": "Common",
+      "cost": 210,
+      "damage": 23,
+      "range": 105,
+      "fireRate": 1.45,
+      "canSeeStealth": true,
+      "ability": "MIMESIS PERFECTA",
+      "abilityDesc": "Replica patrones de combate, marca al objetivo y aumenta la probabilidad critica propia.",
+      "niche": "duelista comun con marca",
+      "sprite": "assets/images/heroes/echo/portrait.png",
+      "visual": {
+        "portrait": "assets/images/heroes/echo/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/echo/sprites/north.png",
+          "north-east": "assets/images/heroes/echo/sprites/north-east.png",
+          "east": "assets/images/heroes/echo/sprites/east.png",
+          "south-east": "assets/images/heroes/echo/sprites/south-east.png",
+          "south": "assets/images/heroes/echo/sprites/south.png",
+          "south-west": "assets/images/heroes/echo/sprites/south-west.png",
+          "west": "assets/images/heroes/echo/sprites/west.png",
+          "north-west": "assets/images/heroes/echo/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 16,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/echo/shoot/0.png",
+            "assets/images/heroes/echo/shoot/1.png",
+            "assets/images/heroes/echo/shoot/2.png",
+            "assets/images/heroes/echo/shoot/3.png",
+            "assets/images/heroes/echo/shoot/4.png",
+            "assets/images/heroes/echo/shoot/5.png",
+            "assets/images/heroes/echo/shoot/6.png",
+            "assets/images/heroes/echo/shoot/7.png",
+            "assets/images/heroes/echo/shoot/8.png"
+          ]
+        }
+      },
+      "allowedTerrains": [
+        1
+      ],
+      "tags": [
+        "Callejero",
+        "Marciales"
+      ],
+      "formationRole": "vanguard",
+      "teamMetrics": {
+        "damage": 3,
+        "control": 3,
+        "support": 2,
+        "detection": 4
+      },
+      "terrainRole": "grass",
+      "special": {
+        "attackEffects": [
+          {
+            "type": "mark",
+            "duration": 2.2,
+            "power": 0.08,
+            "chance": 0.32
+          }
+        ],
+        "statModifiers": {
+          "critChance": 4
+        },
+        "visualStyle": "blade",
+        "projectileColor": "#ffffff"
+      }
+    },
+    "howard_the_duck": {
+      "id": "howard_the_duck",
+      "name": "Howard the Duck",
+      "category": "Bestia",
+      "rarity": "Common",
+      "cost": 210,
+      "damage": 20,
+      "range": 135,
+      "fireRate": 1.65,
+      "canSeeStealth": false,
+      "ability": "CAOS IMPROBABLE",
+      "abilityDesc": "Dispara artefactos absurdos que aplican quemadura ligera o ralentizacion aleatoria.",
+      "niche": "control barato irregular",
+      "sprite": "assets/images/heroes/howard_the_duck/portrait.png",
+      "visual": {
+        "portrait": "assets/images/heroes/howard_the_duck/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/howard_the_duck/sprites/north.png",
+          "north-east": "assets/images/heroes/howard_the_duck/sprites/north-east.png",
+          "east": "assets/images/heroes/howard_the_duck/sprites/east.png",
+          "south-east": "assets/images/heroes/howard_the_duck/sprites/south-east.png",
+          "south": "assets/images/heroes/howard_the_duck/sprites/south.png",
+          "south-west": "assets/images/heroes/howard_the_duck/sprites/south-west.png",
+          "west": "assets/images/heroes/howard_the_duck/sprites/west.png",
+          "north-west": "assets/images/heroes/howard_the_duck/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 16,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/howard_the_duck/shoot/0.png",
+            "assets/images/heroes/howard_the_duck/shoot/1.png",
+            "assets/images/heroes/howard_the_duck/shoot/2.png",
+            "assets/images/heroes/howard_the_duck/shoot/3.png",
+            "assets/images/heroes/howard_the_duck/shoot/4.png",
+            "assets/images/heroes/howard_the_duck/shoot/5.png",
+            "assets/images/heroes/howard_the_duck/shoot/6.png",
+            "assets/images/heroes/howard_the_duck/shoot/7.png",
+            "assets/images/heroes/howard_the_duck/shoot/8.png"
+          ]
+        }
+      },
+      "allowedTerrains": [
+        1,
+        0
+      ],
+      "tags": [
+        "Guardianes",
+        "Bestias"
+      ],
+      "formationRole": "support",
+      "teamMetrics": {
+        "damage": 2,
+        "control": 4,
+        "support": 2,
+        "detection": 1
+      },
+      "terrainRole": "amphibious",
+      "special": {
+        "attackEffects": [
+          {
+            "type": "burn",
+            "duration": 2.5,
+            "power": 0.003,
+            "chance": 0.22
+          },
+          {
+            "type": "slow",
+            "duration": 1.4,
+            "power": 0.18,
+            "chance": 0.24
+          }
+        ],
+        "visualStyle": "ballistic",
+        "projectileColor": "#facc15"
+      }
+    },
+    "valkyrie": {
+      "id": "valkyrie",
+      "name": "Valkyrie",
+      "category": "Mistico",
+      "rarity": "Rare",
+      "cost": 295,
+      "damage": 42,
+      "range": 115,
+      "fireRate": 1.05,
+      "canSeeStealth": false,
+      "ability": "CARGA DE VALKIRIA",
+      "abilityDesc": "Carga asgardiana que sangra objetivos duros y golpea mejor desde terreno alto.",
+      "niche": "rara anti jefe cuerpo a cuerpo",
+      "sprite": "assets/images/heroes/valkyrie/portrait.png",
+      "visual": {
+        "portrait": "assets/images/heroes/valkyrie/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/valkyrie/sprites/north.png",
+          "north-east": "assets/images/heroes/valkyrie/sprites/north-east.png",
+          "east": "assets/images/heroes/valkyrie/sprites/east.png",
+          "south-east": "assets/images/heroes/valkyrie/sprites/south-east.png",
+          "south": "assets/images/heroes/valkyrie/sprites/south.png",
+          "south-west": "assets/images/heroes/valkyrie/sprites/south-west.png",
+          "west": "assets/images/heroes/valkyrie/sprites/west.png",
+          "north-west": "assets/images/heroes/valkyrie/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 16,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/valkyrie/shoot/0.png",
+            "assets/images/heroes/valkyrie/shoot/1.png",
+            "assets/images/heroes/valkyrie/shoot/2.png",
+            "assets/images/heroes/valkyrie/shoot/3.png",
+            "assets/images/heroes/valkyrie/shoot/4.png",
+            "assets/images/heroes/valkyrie/shoot/5.png",
+            "assets/images/heroes/valkyrie/shoot/6.png",
+            "assets/images/heroes/valkyrie/shoot/7.png",
+            "assets/images/heroes/valkyrie/shoot/8.png"
+          ]
+        }
+      },
+      "allowedTerrains": [
+        1,
+        3
+      ],
+      "tags": [
+        "Asgardianos",
+        "Marciales"
+      ],
+      "formationRole": "vanguard",
+      "teamMetrics": {
+        "damage": 4,
+        "control": 3,
+        "support": 2,
+        "detection": 1
+      },
+      "terrainRole": "ground",
+      "special": {
+        "attackEffects": [
+          {
+            "type": "bleed",
+            "duration": 3.4,
+            "power": 0.004,
+            "chance": 0.32
+          }
+        ],
+        "statModifiers": {
+          "critChance": 5
+        },
+        "visualStyle": "blade",
+        "projectileColor": "#facc15"
+      }
+    },
+    "rogue": {
+      "id": "rogue",
+      "name": "Rogue",
+      "category": "Mutante",
+      "rarity": "Epic",
+      "cost": 405,
+      "damage": 50,
+      "range": 105,
+      "fireRate": 1.15,
+      "canSeeStealth": false,
+      "ability": "ABSORCION MUTANTE",
+      "abilityDesc": "Golpes cercanos reducen la velocidad y marcan elites para que el equipo los remate.",
+      "niche": "control mutante de corto alcance",
+      "sprite": "assets/images/heroes/rogue/portrait.png",
+      "visual": {
+        "portrait": "assets/images/heroes/rogue/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/rogue/sprites/north.png",
+          "north-east": "assets/images/heroes/rogue/sprites/north-east.png",
+          "east": "assets/images/heroes/rogue/sprites/east.png",
+          "south-east": "assets/images/heroes/rogue/sprites/south-east.png",
+          "south": "assets/images/heroes/rogue/sprites/south.png",
+          "south-west": "assets/images/heroes/rogue/sprites/south-west.png",
+          "west": "assets/images/heroes/rogue/sprites/west.png",
+          "north-west": "assets/images/heroes/rogue/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 16,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/rogue/shoot/0.png",
+            "assets/images/heroes/rogue/shoot/1.png",
+            "assets/images/heroes/rogue/shoot/2.png",
+            "assets/images/heroes/rogue/shoot/3.png",
+            "assets/images/heroes/rogue/shoot/4.png",
+            "assets/images/heroes/rogue/shoot/5.png",
+            "assets/images/heroes/rogue/shoot/6.png",
+            "assets/images/heroes/rogue/shoot/7.png",
+            "assets/images/heroes/rogue/shoot/8.png"
+          ]
+        }
+      },
+      "allowedTerrains": [
+        1,
+        3
+      ],
+      "tags": [
+        "X-Men",
+        "Mutantes"
+      ],
+      "formationRole": "vanguard",
+      "teamMetrics": {
+        "damage": 4,
+        "control": 4,
+        "support": 2,
+        "detection": 1
+      },
+      "terrainRole": "ground",
+      "special": {
+        "attackEffects": [
+          {
+            "type": "slow",
+            "duration": 2.2,
+            "power": 0.32,
+            "chance": 0.36
+          },
+          {
+            "type": "mark",
+            "duration": 2.4,
+            "power": 0.09,
+            "chance": 0.26
+          }
+        ],
+        "visualStyle": "impact",
+        "projectileColor": "#86efac"
+      }
+    },
+    "beast": {
+      "id": "beast",
+      "name": "Beast",
+      "category": "Mutante",
+      "rarity": "Epic",
+      "cost": 405,
+      "damage": 40,
+      "range": 125,
+      "fireRate": 1.35,
+      "canSeeStealth": false,
+      "ability": "ACROBACIA CIENTIFICA",
+      "abilityDesc": "Ataques acrobaticos rebotan en objetivos cercanos y ralentizan formaciones densas.",
+      "niche": "bestia epica con rebote y control",
+      "sprite": "assets/images/heroes/beast/portrait.png",
+      "visual": {
+        "portrait": "assets/images/heroes/beast/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/beast/sprites/north.png",
+          "north-east": "assets/images/heroes/beast/sprites/north-east.png",
+          "east": "assets/images/heroes/beast/sprites/east.png",
+          "south-east": "assets/images/heroes/beast/sprites/south-east.png",
+          "south": "assets/images/heroes/beast/sprites/south.png",
+          "south-west": "assets/images/heroes/beast/sprites/south-west.png",
+          "west": "assets/images/heroes/beast/sprites/west.png",
+          "north-west": "assets/images/heroes/beast/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 16,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/beast/shoot/0.png",
+            "assets/images/heroes/beast/shoot/1.png",
+            "assets/images/heroes/beast/shoot/2.png",
+            "assets/images/heroes/beast/shoot/3.png",
+            "assets/images/heroes/beast/shoot/4.png",
+            "assets/images/heroes/beast/shoot/5.png",
+            "assets/images/heroes/beast/shoot/6.png",
+            "assets/images/heroes/beast/shoot/7.png",
+            "assets/images/heroes/beast/shoot/8.png"
+          ]
+        }
+      },
+      "allowedTerrains": [
+        1,
+        3
+      ],
+      "tags": [
+        "X-Men",
+        "Bestias"
+      ],
+      "formationRole": "vanguard",
+      "teamMetrics": {
+        "damage": 4,
+        "control": 4,
+        "support": 3,
+        "detection": 1
+      },
+      "terrainRole": "ground",
+      "special": {
+        "projectileProfile": {
+          "chainCount": 1,
+          "chainRange": 80,
+          "chainFactor": 0.52
+        },
+        "attackEffects": [
+          {
+            "type": "slow",
+            "duration": 1.8,
+            "power": 0.25,
+            "chance": 0.32
+          }
+        ],
+        "visualStyle": "impact",
+        "projectileColor": "#60a5fa"
+      }
+    },
+    "cable": {
+      "id": "cable",
+      "name": "Cable",
+      "category": "Tecnologico",
+      "rarity": "Epic",
+      "cost": 445,
+      "damage": 47,
+      "range": 210,
+      "fireRate": 0.95,
+      "canSeeStealth": true,
+      "ability": "FUSIL TEMPORAL",
+      "abilityDesc": "Disparo pesado de largo alcance que perfora armadura y detecta amenazas camufladas.",
+      "niche": "francotirador epico antiarmadura",
+      "sprite": "assets/images/heroes/cable/portrait.png",
+      "visual": {
+        "portrait": "assets/images/heroes/cable/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/cable/sprites/north.png",
+          "north-east": "assets/images/heroes/cable/sprites/north-east.png",
+          "east": "assets/images/heroes/cable/sprites/east.png",
+          "south-east": "assets/images/heroes/cable/sprites/south-east.png",
+          "south": "assets/images/heroes/cable/sprites/south.png",
+          "south-west": "assets/images/heroes/cable/sprites/south-west.png",
+          "west": "assets/images/heroes/cable/sprites/west.png",
+          "north-west": "assets/images/heroes/cable/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 16,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/cable/shoot/0.png",
+            "assets/images/heroes/cable/shoot/1.png",
+            "assets/images/heroes/cable/shoot/2.png",
+            "assets/images/heroes/cable/shoot/3.png",
+            "assets/images/heroes/cable/shoot/4.png",
+            "assets/images/heroes/cable/shoot/5.png",
+            "assets/images/heroes/cable/shoot/6.png",
+            "assets/images/heroes/cable/shoot/7.png",
+            "assets/images/heroes/cable/shoot/8.png"
+          ]
+        }
+      },
+      "allowedTerrains": [
+        3
+      ],
+      "tags": [
+        "X-Men",
+        "Tecnología"
+      ],
+      "formationRole": "artillery",
+      "teamMetrics": {
+        "damage": 5,
+        "control": 2,
+        "support": 2,
+        "detection": 5
+      },
+      "terrainRole": "high",
+      "rangePattern": "cross",
+      "special": {
+        "projectileProfile": {
+          "armorPenetration": 0.28
+        },
+        "attackEffects": [
+          {
+            "type": "armorBreak",
+            "duration": 2.8,
+            "power": 0.16,
+            "chance": 0.34
+          }
+        ],
+        "visualStyle": "ballistic",
+        "projectileColor": "#38bdf8"
+      }
+    },
+    "miles_morales": {
+      "id": "miles_morales",
+      "name": "Miles Morales",
+      "category": "Urbano",
+      "rarity": "Epic",
+      "cost": 405,
+      "damage": 30,
+      "range": 135,
+      "fireRate": 1.65,
+      "canSeeStealth": true,
+      "ability": "VENOM STRIKE",
+      "abilityDesc": "Combina telaranas con descargas bioelectricas que inmovilizan brevemente y revelan sigilo.",
+      "niche": "aracnido epico de control",
+      "sprite": "assets/images/heroes/miles_morales/portrait.png",
+      "visual": {
+        "portrait": "assets/images/heroes/miles_morales/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/miles_morales/sprites/north.png",
+          "north-east": "assets/images/heroes/miles_morales/sprites/north-east.png",
+          "east": "assets/images/heroes/miles_morales/sprites/east.png",
+          "south-east": "assets/images/heroes/miles_morales/sprites/south-east.png",
+          "south": "assets/images/heroes/miles_morales/sprites/south.png",
+          "south-west": "assets/images/heroes/miles_morales/sprites/south-west.png",
+          "west": "assets/images/heroes/miles_morales/sprites/west.png",
+          "north-west": "assets/images/heroes/miles_morales/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 16,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/miles_morales/shoot/0.png",
+            "assets/images/heroes/miles_morales/shoot/1.png",
+            "assets/images/heroes/miles_morales/shoot/2.png",
+            "assets/images/heroes/miles_morales/shoot/3.png",
+            "assets/images/heroes/miles_morales/shoot/4.png",
+            "assets/images/heroes/miles_morales/shoot/5.png",
+            "assets/images/heroes/miles_morales/shoot/6.png",
+            "assets/images/heroes/miles_morales/shoot/7.png",
+            "assets/images/heroes/miles_morales/shoot/8.png"
+          ]
+        }
+      },
+      "allowedTerrains": [
+        1,
+        3
+      ],
+      "tags": [
+        "Callejero",
+        "Arácnidos"
+      ],
+      "formationRole": "support",
+      "teamMetrics": {
+        "damage": 3,
+        "control": 5,
+        "support": 2,
+        "detection": 5
+      },
+      "terrainRole": "ground",
+      "special": {
+        "attackEffects": [
+          {
+            "type": "web",
+            "duration": 2.2,
+            "power": 0.36,
+            "chance": 0.38
+          },
+          {
+            "type": "stun",
+            "duration": 0.35,
+            "power": 1,
+            "chance": 0.12
+          }
+        ],
+        "visualStyle": "web",
+        "projectileColor": "#ef4444"
+      }
+    },
+    "sentry": {
+      "id": "sentry",
+      "name": "Sentry",
+      "category": "Cosmico",
+      "rarity": "Mythic",
+      "cost": 790,
+      "damage": 73,
+      "range": 205,
+      "fireRate": 0.95,
+      "canSeeStealth": true,
+      "ability": "PODER DE UN MILLON DE SOLES",
+      "abilityDesc": "Energia cosmica extrema con salpicadura amplia y quemadura persistente contra jefes.",
+      "niche": "mythic de area y quemadura",
+      "sprite": "assets/images/heroes/sentry/portrait.png",
+      "visual": {
+        "portrait": "assets/images/heroes/sentry/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/sentry/sprites/north.png",
+          "north-east": "assets/images/heroes/sentry/sprites/north-east.png",
+          "east": "assets/images/heroes/sentry/sprites/east.png",
+          "south-east": "assets/images/heroes/sentry/sprites/south-east.png",
+          "south": "assets/images/heroes/sentry/sprites/south.png",
+          "south-west": "assets/images/heroes/sentry/sprites/south-west.png",
+          "west": "assets/images/heroes/sentry/sprites/west.png",
+          "north-west": "assets/images/heroes/sentry/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 16,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/sentry/shoot/0.png",
+            "assets/images/heroes/sentry/shoot/1.png",
+            "assets/images/heroes/sentry/shoot/2.png",
+            "assets/images/heroes/sentry/shoot/3.png",
+            "assets/images/heroes/sentry/shoot/4.png",
+            "assets/images/heroes/sentry/shoot/5.png",
+            "assets/images/heroes/sentry/shoot/6.png",
+            "assets/images/heroes/sentry/shoot/7.png",
+            "assets/images/heroes/sentry/shoot/8.png"
+          ]
+        }
+      },
+      "allowedTerrains": [
+        0,
+        1,
+        3
+      ],
+      "tags": [
+        "Cósmico",
+        "Nexo Caótico"
+      ],
+      "formationRole": "artillery",
+      "teamMetrics": {
+        "damage": 5,
+        "control": 4,
+        "support": 2,
+        "detection": 4
+      },
+      "terrainRole": "flyer",
+      "special": {
+        "projectileProfile": {
+          "splashRadius": 82,
+          "splashFactor": 0.48
+        },
+        "attackEffects": [
+          {
+            "type": "burn",
+            "duration": 4.2,
+            "power": 0.006,
+            "chance": 0.45
+          }
+        ],
+        "visualStyle": "energy",
+        "projectileColor": "#fde68a"
+      }
+    },
+    "x_23": {
+      "id": "x_23",
+      "name": "X-23",
+      "category": "Mutante",
+      "rarity": "Epic",
+      "cost": 405,
+      "damage": 45,
+      "range": 90,
+      "fireRate": 1.35,
+      "canSeeStealth": false,
+      "ability": "GARRAS DE CLON",
+      "abilityDesc": "Corta rapido a enemigos cercanos, causando sangrado acumulado y golpes supercriticos.",
+      "niche": "duelista epica de sangrado",
+      "sprite": "assets/images/heroes/x_23/portrait.png",
+      "visual": {
+        "portrait": "assets/images/heroes/x_23/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/x_23/sprites/north.png",
+          "north-east": "assets/images/heroes/x_23/sprites/north-east.png",
+          "east": "assets/images/heroes/x_23/sprites/east.png",
+          "south-east": "assets/images/heroes/x_23/sprites/south-east.png",
+          "south": "assets/images/heroes/x_23/sprites/south.png",
+          "south-west": "assets/images/heroes/x_23/sprites/south-west.png",
+          "west": "assets/images/heroes/x_23/sprites/west.png",
+          "north-west": "assets/images/heroes/x_23/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 16,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/x_23/shoot/0.png",
+            "assets/images/heroes/x_23/shoot/1.png",
+            "assets/images/heroes/x_23/shoot/2.png",
+            "assets/images/heroes/x_23/shoot/3.png",
+            "assets/images/heroes/x_23/shoot/4.png",
+            "assets/images/heroes/x_23/shoot/5.png",
+            "assets/images/heroes/x_23/shoot/6.png",
+            "assets/images/heroes/x_23/shoot/7.png",
+            "assets/images/heroes/x_23/shoot/8.png"
+          ]
+        }
+      },
+      "allowedTerrains": [
+        1,
+        3
+      ],
+      "tags": [
+        "X-Men",
+        "Mutantes"
+      ],
+      "formationRole": "vanguard",
+      "teamMetrics": {
+        "damage": 5,
+        "control": 2,
+        "support": 1,
+        "detection": 1
+      },
+      "terrainRole": "ground",
+      "special": {
+        "attackEffects": [
+          {
+            "type": "bleed",
+            "duration": 3.8,
+            "power": 0.005,
+            "chance": 0.42
+          }
+        ],
+        "statModifiers": {
+          "critChance": 8
+        },
+        "visualStyle": "blade",
+        "projectileColor": "#cbd5e1"
+      }
+    },
+    "beta_ray_bill": {
+      "id": "beta_ray_bill",
+      "name": "Beta Ray Bill",
+      "category": "Cosmico",
+      "rarity": "Legendary",
+      "cost": 595,
+      "damage": 73,
+      "range": 185,
+      "fireRate": 0.85,
+      "canSeeStealth": false,
+      "ability": "STORMBREAKER KORBINITA",
+      "abilityDesc": "Rayos divinos encadenan objetivos y pueden aturdir al primer enemigo golpeado.",
+      "niche": "legendary electrico contra grupos",
+      "sprite": "assets/images/heroes/beta_ray_bill/portrait.png",
+      "visual": {
+        "portrait": "assets/images/heroes/beta_ray_bill/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/beta_ray_bill/sprites/north.png",
+          "north-east": "assets/images/heroes/beta_ray_bill/sprites/north-east.png",
+          "east": "assets/images/heroes/beta_ray_bill/sprites/east.png",
+          "south-east": "assets/images/heroes/beta_ray_bill/sprites/south-east.png",
+          "south": "assets/images/heroes/beta_ray_bill/sprites/south.png",
+          "south-west": "assets/images/heroes/beta_ray_bill/sprites/south-west.png",
+          "west": "assets/images/heroes/beta_ray_bill/sprites/west.png",
+          "north-west": "assets/images/heroes/beta_ray_bill/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 16,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/beta_ray_bill/shoot/0.png",
+            "assets/images/heroes/beta_ray_bill/shoot/1.png",
+            "assets/images/heroes/beta_ray_bill/shoot/2.png",
+            "assets/images/heroes/beta_ray_bill/shoot/3.png",
+            "assets/images/heroes/beta_ray_bill/shoot/4.png",
+            "assets/images/heroes/beta_ray_bill/shoot/5.png",
+            "assets/images/heroes/beta_ray_bill/shoot/6.png",
+            "assets/images/heroes/beta_ray_bill/shoot/7.png",
+            "assets/images/heroes/beta_ray_bill/shoot/8.png"
+          ]
+        }
+      },
+      "allowedTerrains": [
+        0,
+        1,
+        3
+      ],
+      "tags": [
+        "Asgardianos",
+        "Cósmico"
+      ],
+      "formationRole": "artillery",
+      "teamMetrics": {
+        "damage": 5,
+        "control": 4,
+        "support": 2,
+        "detection": 1
+      },
+      "terrainRole": "flyer",
+      "special": {
+        "projectileProfile": {
+          "chainCount": 3,
+          "chainRange": 120,
+          "chainFactor": 0.62
+        },
+        "attackEffects": [
+          {
+            "type": "stun",
+            "duration": 0.32,
+            "power": 1,
+            "chance": 0.16
+          }
+        ],
+        "visualStyle": "energy",
+        "projectileColor": "#facc15"
+      }
+    },
+    "drax": {
+      "id": "drax",
+      "name": "Drax",
+      "category": "Cosmico",
+      "rarity": "Rare",
+      "cost": 295,
+      "damage": 45,
+      "range": 90,
+      "fireRate": 1.15,
+      "canSeeStealth": false,
+      "ability": "CUCHILLAS LITERALES",
+      "abilityDesc": "Dano cercano confiable con sangrado contra objetivos de mucha vida.",
+      "niche": "raro cuerpo a cuerpo anti jefe",
+      "sprite": "assets/images/heroes/drax/portrait.png",
+      "visual": {
+        "portrait": "assets/images/heroes/drax/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/drax/sprites/north.png",
+          "north-east": "assets/images/heroes/drax/sprites/north-east.png",
+          "east": "assets/images/heroes/drax/sprites/east.png",
+          "south-east": "assets/images/heroes/drax/sprites/south-east.png",
+          "south": "assets/images/heroes/drax/sprites/south.png",
+          "south-west": "assets/images/heroes/drax/sprites/south-west.png",
+          "west": "assets/images/heroes/drax/sprites/west.png",
+          "north-west": "assets/images/heroes/drax/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 16,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/drax/shoot/0.png",
+            "assets/images/heroes/drax/shoot/1.png",
+            "assets/images/heroes/drax/shoot/2.png",
+            "assets/images/heroes/drax/shoot/3.png",
+            "assets/images/heroes/drax/shoot/4.png",
+            "assets/images/heroes/drax/shoot/5.png",
+            "assets/images/heroes/drax/shoot/6.png",
+            "assets/images/heroes/drax/shoot/7.png",
+            "assets/images/heroes/drax/shoot/8.png"
+          ]
+        }
+      },
+      "allowedTerrains": [
+        1
+      ],
+      "tags": [
+        "Guardianes",
+        "Marciales"
+      ],
+      "formationRole": "vanguard",
+      "teamMetrics": {
+        "damage": 4,
+        "control": 2,
+        "support": 1,
+        "detection": 1
+      },
+      "terrainRole": "grass",
+      "special": {
+        "attackEffects": [
+          {
+            "type": "bleed",
+            "duration": 3.2,
+            "power": 0.0042,
+            "chance": 0.34
+          }
+        ],
+        "visualStyle": "blade",
+        "projectileColor": "#ef4444"
+      }
+    },
+    "cosmo": {
+      "id": "cosmo",
+      "name": "Cosmo",
+      "category": "Cosmico",
+      "rarity": "Rare",
+      "cost": 295,
+      "damage": 28,
+      "range": 180,
+      "fireRate": 1.4,
+      "canSeeStealth": true,
+      "ability": "TELEPATIA ESPACIAL",
+      "abilityDesc": "Detecta unidades ocultas y propaga marcas psiquicas entre enemigos agrupados.",
+      "niche": "raro detector y propagacion",
+      "sprite": "assets/images/heroes/cosmo/portrait.png",
+      "visual": {
+        "portrait": "assets/images/heroes/cosmo/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/cosmo/sprites/north.png",
+          "north-east": "assets/images/heroes/cosmo/sprites/north-east.png",
+          "east": "assets/images/heroes/cosmo/sprites/east.png",
+          "south-east": "assets/images/heroes/cosmo/sprites/south-east.png",
+          "south": "assets/images/heroes/cosmo/sprites/south.png",
+          "south-west": "assets/images/heroes/cosmo/sprites/south-west.png",
+          "west": "assets/images/heroes/cosmo/sprites/west.png",
+          "north-west": "assets/images/heroes/cosmo/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 16,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/cosmo/shoot/0.png",
+            "assets/images/heroes/cosmo/shoot/1.png",
+            "assets/images/heroes/cosmo/shoot/2.png",
+            "assets/images/heroes/cosmo/shoot/3.png",
+            "assets/images/heroes/cosmo/shoot/4.png",
+            "assets/images/heroes/cosmo/shoot/5.png",
+            "assets/images/heroes/cosmo/shoot/6.png",
+            "assets/images/heroes/cosmo/shoot/7.png",
+            "assets/images/heroes/cosmo/shoot/8.png"
+          ]
+        }
+      },
+      "allowedTerrains": [
+        1,
+        3
+      ],
+      "tags": [
+        "Guardianes",
+        "Bestias"
+      ],
+      "formationRole": "support",
+      "teamMetrics": {
+        "damage": 2,
+        "control": 4,
+        "support": 4,
+        "detection": 5
+      },
+      "terrainRole": "ground",
+      "special": {
+        "projectileProfile": {
+          "propagationCount": 2,
+          "propagationRadius": 90,
+          "propagationFactor": 0.28
+        },
+        "attackEffects": [
+          {
+            "type": "mark",
+            "duration": 2.6,
+            "power": 0.1,
+            "chance": 0.36
+          }
+        ],
+        "visualStyle": "mystic",
+        "projectileColor": "#fde68a"
+      }
+    },
+    "lady_sif": {
+      "id": "lady_sif",
+      "name": "Lady Sif",
+      "category": "Mistico",
+      "rarity": "Rare",
+      "cost": 295,
+      "damage": 37,
+      "range": 115,
+      "fireRate": 1.2,
+      "canSeeStealth": false,
+      "ability": "ESPADA DE ASGARD",
+      "abilityDesc": "Cortes precisos que rompen armadura y ganan critico contra elites.",
+      "niche": "rara marcial anti elite",
+      "sprite": "assets/images/heroes/lady_sif/portrait.png",
+      "visual": {
+        "portrait": "assets/images/heroes/lady_sif/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/lady_sif/sprites/north.png",
+          "north-east": "assets/images/heroes/lady_sif/sprites/north-east.png",
+          "east": "assets/images/heroes/lady_sif/sprites/east.png",
+          "south-east": "assets/images/heroes/lady_sif/sprites/south-east.png",
+          "south": "assets/images/heroes/lady_sif/sprites/south.png",
+          "south-west": "assets/images/heroes/lady_sif/sprites/south-west.png",
+          "west": "assets/images/heroes/lady_sif/sprites/west.png",
+          "north-west": "assets/images/heroes/lady_sif/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 16,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/lady_sif/shoot/0.png",
+            "assets/images/heroes/lady_sif/shoot/1.png",
+            "assets/images/heroes/lady_sif/shoot/2.png",
+            "assets/images/heroes/lady_sif/shoot/3.png",
+            "assets/images/heroes/lady_sif/shoot/4.png",
+            "assets/images/heroes/lady_sif/shoot/5.png",
+            "assets/images/heroes/lady_sif/shoot/6.png",
+            "assets/images/heroes/lady_sif/shoot/7.png",
+            "assets/images/heroes/lady_sif/shoot/8.png"
+          ]
+        }
+      },
+      "allowedTerrains": [
+        1,
+        3
+      ],
+      "tags": [
+        "Asgardianos",
+        "Marciales"
+      ],
+      "formationRole": "vanguard",
+      "teamMetrics": {
+        "damage": 4,
+        "control": 3,
+        "support": 2,
+        "detection": 1
+      },
+      "terrainRole": "ground",
+      "special": {
+        "attackEffects": [
+          {
+            "type": "armorBreak",
+            "duration": 2.4,
+            "power": 0.13,
+            "chance": 0.32
+          }
+        ],
+        "statModifiers": {
+          "critChance": 5
+        },
+        "visualStyle": "blade",
+        "projectileColor": "#fbbf24"
+      }
+    },
+    "heimdall": {
+      "id": "heimdall",
+      "name": "Heimdall",
+      "category": "Mistico",
+      "rarity": "Rare",
+      "cost": 310,
+      "damage": 35,
+      "range": 235,
+      "fireRate": 1.05,
+      "canSeeStealth": true,
+      "ability": "VISTA DEL BIFROST",
+      "abilityDesc": "Vigilancia de largo alcance que revela sigilo y marca amenazas antes de entrar al frente.",
+      "niche": "raro detector de largo alcance",
+      "sprite": "assets/images/heroes/heimdall/portrait.png",
+      "visual": {
+        "portrait": "assets/images/heroes/heimdall/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/heimdall/sprites/north.png",
+          "north-east": "assets/images/heroes/heimdall/sprites/north-east.png",
+          "east": "assets/images/heroes/heimdall/sprites/east.png",
+          "south-east": "assets/images/heroes/heimdall/sprites/south-east.png",
+          "south": "assets/images/heroes/heimdall/sprites/south.png",
+          "south-west": "assets/images/heroes/heimdall/sprites/south-west.png",
+          "west": "assets/images/heroes/heimdall/sprites/west.png",
+          "north-west": "assets/images/heroes/heimdall/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 16,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/heimdall/shoot/0.png",
+            "assets/images/heroes/heimdall/shoot/1.png",
+            "assets/images/heroes/heimdall/shoot/2.png",
+            "assets/images/heroes/heimdall/shoot/3.png",
+            "assets/images/heroes/heimdall/shoot/4.png",
+            "assets/images/heroes/heimdall/shoot/5.png",
+            "assets/images/heroes/heimdall/shoot/6.png",
+            "assets/images/heroes/heimdall/shoot/7.png",
+            "assets/images/heroes/heimdall/shoot/8.png"
+          ]
+        }
+      },
+      "allowedTerrains": [
+        3
+      ],
+      "tags": [
+        "Asgardianos",
+        "Operaciones"
+      ],
+      "formationRole": "support",
+      "teamMetrics": {
+        "damage": 3,
+        "control": 3,
+        "support": 4,
+        "detection": 5
+      },
+      "terrainRole": "high",
+      "rangePattern": "cross",
+      "special": {
+        "attackEffects": [
+          {
+            "type": "mark",
+            "duration": 3,
+            "power": 0.11,
+            "chance": 0.38
+          }
+        ],
+        "statModifiers": {
+          "detectStealth": true
+        },
+        "visualStyle": "energy",
+        "projectileColor": "#facc15"
+      }
+    },
+    "white_tiger": {
+      "id": "white_tiger",
+      "name": "White Tiger",
+      "category": "Marcial",
+      "rarity": "Rare",
+      "cost": 310,
+      "damage": 32,
+      "range": 105,
+      "fireRate": 1.35,
+      "canSeeStealth": true,
+      "ability": "AMULETO DEL TIGRE",
+      "abilityDesc": "Ataques veloces con deteccion y critico alto contra enemigos marcados.",
+      "niche": "rara callejera critica",
+      "sprite": "assets/images/heroes/white_tiger/portrait.png",
+      "visual": {
+        "portrait": "assets/images/heroes/white_tiger/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/white_tiger/sprites/north.png",
+          "north-east": "assets/images/heroes/white_tiger/sprites/north-east.png",
+          "east": "assets/images/heroes/white_tiger/sprites/east.png",
+          "south-east": "assets/images/heroes/white_tiger/sprites/south-east.png",
+          "south": "assets/images/heroes/white_tiger/sprites/south.png",
+          "south-west": "assets/images/heroes/white_tiger/sprites/south-west.png",
+          "west": "assets/images/heroes/white_tiger/sprites/west.png",
+          "north-west": "assets/images/heroes/white_tiger/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 16,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/white_tiger/shoot/0.png",
+            "assets/images/heroes/white_tiger/shoot/1.png",
+            "assets/images/heroes/white_tiger/shoot/2.png",
+            "assets/images/heroes/white_tiger/shoot/3.png",
+            "assets/images/heroes/white_tiger/shoot/4.png",
+            "assets/images/heroes/white_tiger/shoot/5.png",
+            "assets/images/heroes/white_tiger/shoot/6.png",
+            "assets/images/heroes/white_tiger/shoot/7.png",
+            "assets/images/heroes/white_tiger/shoot/8.png"
+          ]
+        }
+      },
+      "allowedTerrains": [
+        1,
+        3
+      ],
+      "tags": [
+        "Callejero",
+        "Marciales"
+      ],
+      "formationRole": "vanguard",
+      "teamMetrics": {
+        "damage": 4,
+        "control": 3,
+        "support": 2,
+        "detection": 4
+      },
+      "terrainRole": "ground",
+      "special": {
+        "attackEffects": [
+          {
+            "type": "mark",
+            "duration": 2,
+            "power": 0.08,
+            "chance": 0.28
+          }
+        ],
+        "statModifiers": {
+          "critChance": 7
+        },
+        "visualStyle": "blade",
+        "projectileColor": "#f8fafc"
+      }
+    },
+    "tigra": {
+      "id": "tigra",
+      "name": "Tigra",
+      "category": "Bestia",
+      "rarity": "Rare",
+      "cost": 295,
+      "damage": 31,
+      "range": 95,
+      "fireRate": 1.5,
+      "canSeeStealth": false,
+      "ability": "CAZADORA FELINA",
+      "abilityDesc": "Rasguños rapidos aplican sangrado y castigan grupos ya ralentizados.",
+      "niche": "rara bestial de sangrado",
+      "sprite": "assets/images/heroes/tigra/portrait.png",
+      "visual": {
+        "portrait": "assets/images/heroes/tigra/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/tigra/sprites/north.png",
+          "north-east": "assets/images/heroes/tigra/sprites/north-east.png",
+          "east": "assets/images/heroes/tigra/sprites/east.png",
+          "south-east": "assets/images/heroes/tigra/sprites/south-east.png",
+          "south": "assets/images/heroes/tigra/sprites/south.png",
+          "south-west": "assets/images/heroes/tigra/sprites/south-west.png",
+          "west": "assets/images/heroes/tigra/sprites/west.png",
+          "north-west": "assets/images/heroes/tigra/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 16,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/tigra/shoot/0.png",
+            "assets/images/heroes/tigra/shoot/1.png",
+            "assets/images/heroes/tigra/shoot/2.png",
+            "assets/images/heroes/tigra/shoot/3.png",
+            "assets/images/heroes/tigra/shoot/4.png",
+            "assets/images/heroes/tigra/shoot/5.png",
+            "assets/images/heroes/tigra/shoot/6.png",
+            "assets/images/heroes/tigra/shoot/7.png",
+            "assets/images/heroes/tigra/shoot/8.png"
+          ]
+        }
+      },
+      "allowedTerrains": [
+        1
+      ],
+      "tags": [
+        "Callejero",
+        "Bestias"
+      ],
+      "formationRole": "vanguard",
+      "teamMetrics": {
+        "damage": 4,
+        "control": 3,
+        "support": 1,
+        "detection": 1
+      },
+      "terrainRole": "grass",
+      "special": {
+        "attackEffects": [
+          {
+            "type": "bleed",
+            "duration": 3,
+            "power": 0.004,
+            "chance": 0.36
+          }
+        ],
+        "statModifiers": {
+          "critChance": 5
+        },
+        "visualStyle": "blade",
+        "projectileColor": "#fb923c"
+      }
+    },
+    "mockingbird": {
+      "id": "mockingbird",
+      "name": "Mockingbird",
+      "category": "Tactico",
+      "rarity": "Common",
+      "cost": 195,
+      "damage": 19,
+      "range": 125,
+      "fireRate": 1.65,
+      "canSeeStealth": true,
+      "ability": "BASTONES DE CAMPO",
+      "abilityDesc": "Golpes electricos con buena deteccion y pequena probabilidad de stun.",
+      "niche": "comun de control tactico",
+      "sprite": "assets/images/heroes/mockingbird/portrait.png",
+      "visual": {
+        "portrait": "assets/images/heroes/mockingbird/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/mockingbird/sprites/north.png",
+          "north-east": "assets/images/heroes/mockingbird/sprites/north-east.png",
+          "east": "assets/images/heroes/mockingbird/sprites/east.png",
+          "south-east": "assets/images/heroes/mockingbird/sprites/south-east.png",
+          "south": "assets/images/heroes/mockingbird/sprites/south.png",
+          "south-west": "assets/images/heroes/mockingbird/sprites/south-west.png",
+          "west": "assets/images/heroes/mockingbird/sprites/west.png",
+          "north-west": "assets/images/heroes/mockingbird/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 16,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/mockingbird/shoot/0.png",
+            "assets/images/heroes/mockingbird/shoot/1.png",
+            "assets/images/heroes/mockingbird/shoot/2.png",
+            "assets/images/heroes/mockingbird/shoot/3.png",
+            "assets/images/heroes/mockingbird/shoot/4.png",
+            "assets/images/heroes/mockingbird/shoot/5.png",
+            "assets/images/heroes/mockingbird/shoot/6.png",
+            "assets/images/heroes/mockingbird/shoot/7.png",
+            "assets/images/heroes/mockingbird/shoot/8.png"
+          ]
+        }
+      },
+      "allowedTerrains": [
+        1
+      ],
+      "tags": [
+        "Espías",
+        "Operaciones"
+      ],
+      "formationRole": "support",
+      "teamMetrics": {
+        "damage": 2,
+        "control": 4,
+        "support": 3,
+        "detection": 5
+      },
+      "terrainRole": "grass",
+      "special": {
+        "attackEffects": [
+          {
+            "type": "stun",
+            "duration": 0.25,
+            "power": 1,
+            "chance": 0.1
+          },
+          {
+            "type": "mark",
+            "duration": 1.8,
+            "power": 0.06,
+            "chance": 0.22
+          }
+        ],
+        "visualStyle": "impact",
+        "projectileColor": "#60a5fa"
+      }
+    },
+    "kate_bishop": {
+      "id": "kate_bishop",
+      "name": "Kate Bishop",
+      "category": "Urbano",
+      "rarity": "Common",
+      "cost": 235,
+      "damage": 25,
+      "range": 205,
+      "fireRate": 1.15,
+      "canSeeStealth": true,
+      "ability": "FLECHAS TRUCO",
+      "abilityDesc": "Arquera de gran alcance con flechas que marcan y revelan amenazas camufladas.",
+      "niche": "starter comun de largo alcance",
+      "sprite": "assets/images/heroes/kate_bishop/portrait.png",
+      "visual": {
+        "portrait": "assets/images/heroes/kate_bishop/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/kate_bishop/sprites/north.png",
+          "north-east": "assets/images/heroes/kate_bishop/sprites/north-east.png",
+          "east": "assets/images/heroes/kate_bishop/sprites/east.png",
+          "south-east": "assets/images/heroes/kate_bishop/sprites/south-east.png",
+          "south": "assets/images/heroes/kate_bishop/sprites/south.png",
+          "south-west": "assets/images/heroes/kate_bishop/sprites/south-west.png",
+          "west": "assets/images/heroes/kate_bishop/sprites/west.png",
+          "north-west": "assets/images/heroes/kate_bishop/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 16,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/kate_bishop/shoot/0.png",
+            "assets/images/heroes/kate_bishop/shoot/1.png",
+            "assets/images/heroes/kate_bishop/shoot/2.png",
+            "assets/images/heroes/kate_bishop/shoot/3.png",
+            "assets/images/heroes/kate_bishop/shoot/4.png",
+            "assets/images/heroes/kate_bishop/shoot/5.png",
+            "assets/images/heroes/kate_bishop/shoot/6.png",
+            "assets/images/heroes/kate_bishop/shoot/7.png",
+            "assets/images/heroes/kate_bishop/shoot/8.png"
+          ]
+        }
+      },
+      "allowedTerrains": [
+        3
+      ],
+      "tags": [
+        "Avengers",
+        "Espías"
+      ],
+      "formationRole": "artillery",
+      "teamMetrics": {
+        "damage": 3,
+        "control": 3,
+        "support": 2,
+        "detection": 5
+      },
+      "terrainRole": "high",
+      "rangePattern": "cross",
+      "special": {
+        "attackEffects": [
+          {
+            "type": "mark",
+            "duration": 2.4,
+            "power": 0.09,
+            "chance": 0.32
+          }
+        ],
+        "visualStyle": "ballistic",
+        "projectileColor": "#a78bfa"
+      }
+    },
+    "profesor_x": {
+      "id": "profesor_x",
+      "name": "Profesor X",
+      "category": "Mutante",
+      "rarity": "Mythic",
+      "cost": 835,
+      "damage": 1,
+      "range": 245,
+      "fireRate": 1,
+      "canSeeStealth": true,
+      "ability": "MENTE OMEGA",
+      "abilityDesc": "No ataca. Amplifica la cadencia aliada en un radio amplio y revela presencias ocultas.",
+      "niche": "mythic soporte de cadencia global",
+      "sprite": "assets/images/heroes/profesor_x/portrait.png",
+      "visual": {
+        "portrait": "assets/images/heroes/profesor_x/portrait.png",
+        "size": 96,
+        "anchor": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "defaultDirection": "south",
+        "idle": {
+          "north": "assets/images/heroes/profesor_x/sprites/north.png",
+          "north-east": "assets/images/heroes/profesor_x/sprites/north-east.png",
+          "east": "assets/images/heroes/profesor_x/sprites/east.png",
+          "south-east": "assets/images/heroes/profesor_x/sprites/south-east.png",
+          "south": "assets/images/heroes/profesor_x/sprites/south.png",
+          "south-west": "assets/images/heroes/profesor_x/sprites/south-west.png",
+          "west": "assets/images/heroes/profesor_x/sprites/west.png",
+          "north-west": "assets/images/heroes/profesor_x/sprites/north-west.png"
+        },
+        "attack": {
+          "fps": 16,
+          "loop": false,
+          "frames": [
+            "assets/images/heroes/profesor_x/shoot/0.png",
+            "assets/images/heroes/profesor_x/shoot/1.png",
+            "assets/images/heroes/profesor_x/shoot/2.png",
+            "assets/images/heroes/profesor_x/shoot/3.png",
+            "assets/images/heroes/profesor_x/shoot/4.png",
+            "assets/images/heroes/profesor_x/shoot/5.png",
+            "assets/images/heroes/profesor_x/shoot/6.png",
+            "assets/images/heroes/profesor_x/shoot/7.png",
+            "assets/images/heroes/profesor_x/shoot/8.png"
+          ]
+        }
+      },
+      "allowedTerrains": [
+        1,
+        3
+      ],
+      "tags": [
+        "X-Men",
+        "Nexo Caótico"
+      ],
+      "formationRole": "support",
+      "teamMetrics": {
+        "damage": 1,
+        "control": 5,
+        "support": 5,
+        "detection": 5
+      },
+      "terrainRole": "ground",
+      "special": {
+        "supportAura": {
+          "type": "fireRate",
+          "power": 0.15,
+          "range": 245,
+          "label": "Cerebro movil",
+          "detectStealth": true
+        },
+        "visualStyle": "mystic",
+        "projectileColor": "#c4b5fd"
       }
     }
   },

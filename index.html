@@ -20,6 +20,38 @@
         </div>
     </div>
 
+    <section id="start-screen" class="start-screen hidden" data-view="home" aria-label="Pantalla de inicio">
+        <div class="start-screen__shade"></div>
+        <div class="start-screen__frame" aria-hidden="true"></div>
+        <div class="start-screen__content">
+            <img class="start-screen__logo" src="assets/images/ui/marvel-logo.png" alt="Marvel">
+            <h1><span>Tower</span><span>Defense</span></h1>
+            <p class="start-screen__subtitle">Pixel Hero Defense</p>
+
+            <div class="start-screen__panel start-screen__panel--home" data-start-panel="home">
+                <button id="start-play-btn" class="start-menu-button start-menu-button--primary" type="button">
+                    <span>Jugar</span>
+                </button>
+                <button id="start-options-btn" class="start-menu-button" type="button">
+                    <span>Opciones</span>
+                </button>
+            </div>
+
+            <div class="start-screen__panel start-screen__panel--play" data-start-panel="play" aria-hidden="true">
+                <button id="start-continue-btn" class="start-menu-button start-menu-button--primary" type="button">
+                    <span>Continuar</span>
+                </button>
+                <button id="start-new-game-btn" class="start-menu-button" type="button">
+                    <span>Nueva partida</span>
+                </button>
+                <button class="start-back-button" data-start-back type="button">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Volver</span>
+                </button>
+            </div>
+        </div>
+    </section>
+
     <div id="game-ui" data-testid="game-ui">
         <header id="top-bar">
             <div class="top-section left" aria-label="Estado de partida">

@@ -145,7 +145,7 @@ function evaluateTeamCombinations(values, size) {
         if (entry.multiplier > best.multiplier) best = { ...entry, ids: team.map((hero) => hero.id) };
     });
 
-    const threshold = best.multiplier * 0.94;
+    const threshold = best.multiplier * getCompetitiveWindow(values.length);
     let competitive = 0;
     for (let index = 0; index < total; index++) {
         if (multipliers[index] < threshold) continue;
@@ -168,7 +168,7 @@ function evaluateSampledTeamCombinations(values, size, universe, sampleLimit) {
         if (entry.multiplier > best.multiplier) best = { ...entry, ids: team.map((hero) => hero.id) };
     }
 
-    const threshold = best.multiplier * 0.94;
+    const threshold = best.multiplier * getCompetitiveWindow(values.length);
     let competitive = 0;
     for (let index = 0; index < sampleLimit; index++) {
         if (multipliers[index] < threshold) continue;
@@ -206,6 +206,10 @@ function evaluateTeam(team) {
             * (1 + (effects.critChance || 0) / 100);
     }, 0) / team.length;
     return { multiplier };
+}
+
+function getCompetitiveWindow(rosterSize) {
+    return rosterSize >= 100 ? 0.925 : 0.94;
 }
 
 function getTeamEffectsFromSnapshot(hero, snapshot) {

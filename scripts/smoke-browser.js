@@ -34,6 +34,15 @@ try {
     await page.goto(`http://127.0.0.1:${port}/`, { waitUntil: 'domcontentloaded' });
     await page.getByTestId('boot-screen').waitFor({ state: 'hidden', timeout: 20000 });
 
+    const playButton = page.locator('#start-play-btn');
+    if (await playButton.isVisible().catch(() => false)) {
+        await playButton.click();
+    }
+    const newGameButton = page.locator('#start-new-game-btn');
+    if (await newGameButton.isVisible().catch(() => false)) {
+        await newGameButton.click();
+    }
+
     const starterCards = page.locator('[data-testid^="starter-"]');
     if (await starterCards.first().isVisible().catch(() => false)) {
         await starterCards.first().click();

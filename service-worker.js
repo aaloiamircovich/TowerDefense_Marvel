@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hero-td-v2.44.0-road-edge-placement-20260809';
+const CACHE_NAME = 'hero-td-v2.44.0-start-screen-roster-105-20260811';
 const CORE_ASSETS = [
     './', './index.html', './styles.css', './manifest.webmanifest',
     './data/bootstrapData.js', './data/sprite-atlas.js', './data/heroes.json', './data/enemies.json',
@@ -20,6 +20,11 @@ const CORE_ASSETS = [
     './assets/images/heroes/cyclops/portrait.png', './assets/images/heroes/storm/portrait.png',
     './assets/images/heroes/domino/portrait.png', './assets/images/heroes/scarlet_witch/portrait.png',
     './assets/images/heroes/ant_man/portrait.png', './assets/images/heroes/winter_soldier/portrait.png',
+    './assets/images/ui/start-screen-cover-final-clean-20260809.png',
+    './assets/images/ui/start-screen-cover-marvel-avengeance-v1-20260809.png',
+    './assets/images/ui/marvel-logo.png',
+    './assets/images/ui/button-comic-bg-violet-20260809.png',
+    './assets/fonts/avengeance-heroic-avenger-bd.ttf',
     './assets/images/tiles/base_vengadores_rpgmaker.png',
     './assets/icons/icon-192.png', './assets/icons/icon-512.png',
     './src/main.js', './src/config/AppConfig.js', './src/pwa/register.js',
