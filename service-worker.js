@@ -1,6 +1,6 @@
-const CACHE_NAME = 'hero-td-v2.44.0-rarity-card-textures-20260811';
+const CACHE_NAME = 'hero-td-v2.44.0-collection-card-map-polish-v1-20260811';
 const CORE_ASSETS = [
-    './', './index.html', './styles.css', './manifest.webmanifest',
+    './', './index.html', './styles.css', './styles.css?v=collection-card-map-polish-v1-20260811', './manifest.webmanifest',
     './data/bootstrapData.js', './data/sprite-atlas.js', './data/heroes.json', './data/enemies.json',
     './data/items.json', './data/levels.json', './data/waves.json', './data/TypeChart.js',
     './assets/images/heroes/atlas.png', './assets/images/heroes/iron_man/portrait.png',
@@ -24,6 +24,7 @@ const CORE_ASSETS = [
     './assets/images/ui/start-screen-cover-marvel-avengeance-v1-20260809.png',
     './assets/images/ui/marvel-logo.png',
     './assets/images/ui/button-comic-bg-violet-20260809.png',
+    './assets/images/ui/mythic-pride-gradient-20260811.jpg',
     './assets/fonts/avengeance-heroic-avenger-bd.ttf',
     './assets/images/tiles/base_vengadores_rpgmaker.png',
     './assets/icons/icon-192.png', './assets/icons/icon-512.png',

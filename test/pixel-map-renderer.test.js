@@ -1,7 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { MANHATTAN_MANUAL_ROWS } from '../src/rendering/ManhattanManualMap.js';
+import { MANHATTAN_MANUAL_FORCE_GRASS_TILE_IDS, MANHATTAN_MANUAL_ROWS } from '../src/rendering/ManhattanManualMap.js';
 import { buildPixelTerrainMap, getManhattanTileId, isImageMapLevel, isPixelMapLevel, TERRAIN } from '../src/rendering/PixelMapRenderer.js';
+import { canPlaceOnTerrain } from '../src/utils/TerrainRules.js';
 
 test('buildPixelTerrainMap crea una grilla Manhattan de 32 px', () => {
     const level = { theme: { id: 'new-york' }, rendering: { style: 'pixelart', tileSize: 32 } };
@@ -41,6 +42,19 @@ test('Manhattan manual separa edificios bloqueados de montana colocable', () => 
     assert.equal(map[0][15], TERRAIN.blocked);
     assert.equal(map[14][12], TERRAIN.mountain);
     assert.notEqual(map[0][15], map[14][12]);
+});
+
+test('Manhattan manual mantiene colocable el pasto debajo de la calle', () => {
+    const level = { theme: { id: 'new-york' }, rendering: { style: 'pixelart', source: 'manual-grid', tileSize: 32 } };
+    const canvas = { width: 800, height: 600 };
+    const map = buildPixelTerrainMap(level, canvas, 32);
+    const grassHero = { allowedTerrains: [TERRAIN.grass] };
+
+    assert.equal(MANHATTAN_MANUAL_FORCE_GRASS_TILE_IDS.has(getManhattanTileId(14, 10)), true);
+    assert.equal(map[10][14], TERRAIN.grass);
+    assert.equal(map[10][24], TERRAIN.grass);
+    assert.equal(canPlaceOnTerrain(grassHero, map[10][14]), true);
+    assert.equal(canPlaceOnTerrain(grassHero, map[10][24]), true);
 });
 
 test('mapa RPG Maker usa imagen y matriz logica de terreno', () => {

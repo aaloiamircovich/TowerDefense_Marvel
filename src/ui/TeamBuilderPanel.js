@@ -272,8 +272,7 @@ export class TeamBuilderPanel {
                 ${this.ui.renderSprite(this.getCollectionSprite(hero), hero.name)}
                 <h3>${hero.name}</h3>
                 ${evolution ? `<strong class="evolution-badge" style="--evolution-color:${evolution.color}">${evolution.name}</strong>` : ''}
-                <small>${hero.category} · <b class="rarity-badge ${rarityClass}">${rarity}</b></small>
-                <div class="hero-tag-list">${(hero.tags || []).map((tag) => `<span>${tag}</span>`).join('')}</div>
+                <small><b class="rarity-badge ${rarityClass}">${rarity}</b></small>
                 <div class="collection-actions">
                     <button class="btn-preview-hero icon-command" data-id="${hero.id}" aria-label="Ver ficha de ${hero.name}" title="Ver ficha"><i class="fas fa-eye"></i></button>
                     ${pendingItem ? `

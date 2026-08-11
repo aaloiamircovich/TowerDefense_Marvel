@@ -1717,6 +1717,7 @@ export class UIManager {
         const isUnlocked = this.game.progression?.state.unlockedHeroIds.includes(config.id) ?? true;
         const rarity = normalizeRarity(config.rarity);
         const rarityClass = getRarityClass(rarity);
+        const identityTags = [...new Set([...(config.tags || [])].filter(Boolean))];
         const isDeployed = this.game.heroes.includes(hero);
         const repositionPermission = isDeployed ? this.game.tacticalActions?.canReposition(hero) : null;
         const sellPermission = isDeployed ? this.game.tacticalActions?.canSell(hero) : null;
@@ -1790,6 +1791,12 @@ export class UIManager {
                     <div class="hero-summary-card">
                         <div class="hero-stat-strip">
                             ${compactStats.map(([label, value]) => `<span><small>${label}</small><strong>${value}</strong></span>`).join('')}
+                        </div>
+
+                        <div class="hero-identity-card">
+                            <span><small>Tipo</small><strong>${escapeHtml(config.category || 'Heroe')}</strong></span>
+                            <span><small>Rareza</small><b class="rarity-badge ${rarityClass}">${rarity}</b></span>
+                            ${identityTags.length ? `<div class="hero-tag-list">${identityTags.map((tag) => `<span>${escapeHtml(tag)}</span>`).join('')}</div>` : ''}
                         </div>
 
                         <div class="hero-ability-compact">

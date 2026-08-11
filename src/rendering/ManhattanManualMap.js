@@ -20,6 +20,11 @@
     ['grass', 'grass', 'grass', 'grass', 'grass', 'grass', 'grass', 'grass', 'grass', 'grass', 'grass', 'grass', 'mountain', 'mountain', 'mountain', 'mountain', 'mountain', 'mountain', 'mountain', 'mountain', 'mountain', 'mountain', 'mountain', 'mountain', 'mountain']
 ];
 
+export const MANHATTAN_MANUAL_FORCE_GRASS_TILE_IDS = new Set([
+    ...rangeIds(108, 112),
+    ...rangeIds(264, 275)
+]);
+
 export const MANHATTAN_MANUAL_TILE_IMAGES = {
     'building-bottom-center': 'assets/images/tiles/manhattan-manual/building-bottom-center.png',
     'building-bottom-left': 'assets/images/tiles/manhattan-manual/building-bottom-left.png',
@@ -63,3 +68,7 @@ export const MANHATTAN_MANUAL_BLOCKED_TILES = new Set([
     'mountain',
     'water'
 ]);
+
+function rangeIds(start, end) {
+    return Array.from({ length: end - start + 1 }, (_, index) => start + index);
+}

@@ -1,5 +1,6 @@
 import {
     MANHATTAN_MANUAL_BLOCKED_TILES,
+    MANHATTAN_MANUAL_FORCE_GRASS_TILE_IDS,
     MANHATTAN_MANUAL_ROAD_TILES,
     MANHATTAN_MANUAL_ROWS,
     MANHATTAN_MANUAL_TILE_IMAGES
@@ -113,7 +114,7 @@ export function buildPixelTerrainMap(level, canvas, tileSize) {
     const cols = Math.ceil(canvas.width / tileSize);
     const rows = Math.ceil(canvas.height / tileSize);
     if (usesManualManhattanMap(level)) {
-        return MANHATTAN_MANUAL_ROWS.map((row) => row.map((tileKey) => getTerrainForManualTile(tileKey)));
+        return MANHATTAN_MANUAL_ROWS.map((row, y) => row.map((tileKey, x) => getTerrainForManualTile(tileKey, x, y)));
     }
 
     const source = level?.theme?.id === 'new-york' ? MANHATTAN_TILES : [];
@@ -249,7 +250,8 @@ function getManualTileKey(level, x, y) {
     return MANHATTAN_MANUAL_ROWS[y]?.[x] || null;
 }
 
-function getTerrainForManualTile(tileKey) {
+function getTerrainForManualTile(tileKey, x = -1, y = -1) {
+    if (MANHATTAN_MANUAL_FORCE_GRASS_TILE_IDS.has(getManhattanTileId(x, y))) return TERRAIN.grass;
     if (MANHATTAN_MANUAL_ROAD_TILES.has(tileKey)) return TERRAIN.path;
     if (tileKey === 'water') return TERRAIN.water;
     if (tileKey === 'mountain') return TERRAIN.mountain;
