@@ -632,7 +632,13 @@ export class ProgressionManager {
     }
 
     getHeroEvolution(heroId) {
-        return getEvolutionForHero(this.data?.heroes?.[heroId], this.state.selectedEvolutions);
+        const hero = this.data?.heroes?.[heroId];
+        if (!hero) return null;
+        const slots = this.state.equippedItems?.[heroId] || {};
+        return getEvolutionForHero(hero, this.state.selectedEvolutions, {
+            level: this.getHeroLevel(heroId),
+            equippedItemIds: Object.values(slots)
+        });
     }
 
     setHeroEvolution(heroId, evolutionId = null) {

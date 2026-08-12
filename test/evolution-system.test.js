@@ -5,19 +5,22 @@ import { EVOLUTION_CATALOG, applyEvolutionStats, getEvolutionForHero } from '../
 
 const heroes = JSON.parse(fs.readFileSync(new URL('../data/heroes.json', import.meta.url), 'utf8'));
 
-test('el catalogo legacy conserva identidades base distintas', () => {
+test('el catalogo de evoluciones cubre todo el roster con identidades base distintas', () => {
     const baseHeroIds = Object.values(EVOLUTION_CATALOG).map((entry) => entry.baseHeroId);
     assert.equal(new Set(baseHeroIds).size, baseHeroIds.length);
-    assert.deepEqual(baseHeroIds.sort(), ['iron_man', 'jean_grey', 'spiderman']);
-});
-
-test('ningun heroe declara evolucion jugable hasta completar sprites del roster', () => {
-    assert.deepEqual(Object.values(heroes).filter((hero) => hero.evolutionId).map((hero) => hero.id), []);
+    assert.equal(baseHeroIds.length, Object.keys(heroes).length);
+    for (const [heroId, hero] of Object.entries(heroes)) {
+        assert.ok(hero.evolutionId, `${heroId} debe declarar evolucion`);
+        assert.equal(EVOLUTION_CATALOG[hero.evolutionId]?.baseHeroId, heroId);
+    }
+    assert.equal(EVOLUTION_CATALOG.iron_man_extremis.baseHeroId, 'iron_man');
+    assert.equal(EVOLUTION_CATALOG.iron_spider.baseHeroId, 'spiderman');
+    assert.equal(EVOLUTION_CATALOG.phoenix.baseHeroId, 'jean_grey');
 });
 
 test('una evolucion seleccionada modifica estadisticas sin mutar identidad', () => {
-    const hero = { id: 'spiderman' };
-    const evolution = getEvolutionForHero(hero, { spiderman: 'iron_spider' });
+    const hero = { ...heroes.spiderman };
+    const evolution = getEvolutionForHero(hero, {}, { level: 50 });
     const stats = applyEvolutionStats({ damage: 100, fireRate: 1, range: 200, critChance: 5, canSeeStealth: false }, evolution);
     assert.equal(evolution.id, 'iron_spider');
     assert.ok(Math.abs(stats.range - 232) < 0.0001);
@@ -25,6 +28,34 @@ test('una evolucion seleccionada modifica estadisticas sin mutar identidad', () 
     assert.equal(hero.id, 'spiderman');
 });
 
+test('la evolucion por nivel se activa al requisito y no antes', () => {
+    assert.equal(getEvolutionForHero(heroes.black_widow, {}, { level: 49 }), null);
+
+    const evolution = getEvolutionForHero(heroes.black_widow, {}, { level: 50 });
+
+    assert.equal(evolution.levelEvolved, true);
+    assert.equal(evolution.requiredLevel, 50);
+});
+
+test('los requisitos especiales de nivel se respetan', () => {
+    assert.equal(getEvolutionForHero(heroes.star_lord, {}, { level: 74 }), null);
+    assert.equal(getEvolutionForHero(heroes.star_lord, {}, { level: 75 })?.id, 'star_lord_evolution');
+    assert.equal(getEvolutionForHero(heroes.sentry, {}, { level: 99 }), null);
+    assert.equal(getEvolutionForHero(heroes.sentry, {}, { level: 100 })?.id, 'sentry_evolution');
+});
+
+test('un objeto signature mejora la evolucion sin bloquear la base', () => {
+    const base = getEvolutionForHero(heroes.capitan_america, {}, { level: 50 });
+    const withItem = getEvolutionForHero(heroes.capitan_america, {}, { level: 50, equippedItemIds: ['mjolnir'] });
+
+    assert.equal(base.id, 'capitan_america_evolution');
+    assert.equal(base.activeItemId, undefined);
+    assert.equal(withItem.activeItemId, 'mjolnir');
+    assert.equal(withItem.transformId, 'capitan_america_mjolnir');
+    assert.equal(withItem.allowsSupportAttack, true);
+    assert.ok(withItem.stats.damage > base.stats.damage);
+});
+
 test('una evolucion no puede aplicarse al heroe equivocado', () => {
-    assert.equal(getEvolutionForHero({ id: 'iron_man' }, { iron_man: 'phoenix' }), null);
+    assert.equal(getEvolutionForHero({ id: 'iron_man', evolutionId: 'phoenix' }, {}, { level: 100 }), null);
 });

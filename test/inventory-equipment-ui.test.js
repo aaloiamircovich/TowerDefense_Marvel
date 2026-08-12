@@ -84,13 +84,14 @@ test('previsualizacion de objeto compara mejoras y perdidas numericas', () => {
     assert.match(html, /Cadencia -18%/);
 });
 
-test('coleccion expone diccionario de evoluciones vacio', () => {
+test('coleccion expone diccionario de evoluciones completo', () => {
     const ui = createUiStub();
     const panel = new TeamBuilderPanel(ui);
 
     assert.match(panel.renderCollectionTabs(), /data-view="evolutions"/);
     assert.match(panel.renderEvolutionCodex(), /Diccionario de evoluciones/);
-    assert.match(panel.renderEvolutionCodex(), /Reservado para futuras evoluciones/);
+    assert.match(panel.renderEvolutionCodex(), /Nivel 50/);
+    assert.match(panel.renderEvolutionCodex(), /Los objetos signature agregan mecanicas extra/);
 });
 
 test('coleccion filtra heroes obtenidos y faltantes', () => {

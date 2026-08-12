@@ -286,7 +286,7 @@ export class TeamBuilderPanel {
                     `}
                 </div>
                 ${itemDeltaPreview}
-                ${unlocked && availableEvolution ? `<button class="btn-evolution" data-id="${hero.id}" data-evolution="${availableEvolution.id}">${evolution ? 'Volver a forma base' : `Activar ${availableEvolution.shortName || availableEvolution.name}`}</button>` : ''}
+                ${availableEvolution ? `<small class="evolution-requirement">${evolution ? 'Evolucion activa' : `Evoluciona al nivel ${availableEvolution.requiredLevel}`}</small>` : ''}
             </article>
         `;
     }
@@ -328,15 +328,43 @@ export class TeamBuilderPanel {
     }
 
     renderEvolutionCodex() {
+        const game = this.ui.game;
+        const entries = Object.values(EVOLUTION_CATALOG)
+            .filter((evolution) => game.heroDatabase?.[evolution.baseHeroId])
+            .sort((a, b) => game.heroDatabase[a.baseHeroId].name.localeCompare(game.heroDatabase[b.baseHeroId].name, 'es'));
         return `
-            <section class="evolution-codex-empty">
+            <section class="villain-codex-header">
                 <div>
                     <span class="briefing-kicker">ARCHIVO HEROICO</span>
                     <h3>Diccionario de evoluciones</h3>
-                    <p>Reservado para futuras evoluciones cuando el roster tenga sus sprites completos.</p>
+                    <p>Las evoluciones por nivel se activan automaticamente. Los objetos signature agregan mecanicas extra.</p>
                 </div>
-                <i class="fas fa-dna"></i>
+                <strong>${entries.length} registros</strong>
             </section>
+            <div class="villain-codex-grid evolution-codex-grid">
+                ${entries.map((evolution) => {
+                    const hero = game.heroDatabase[evolution.baseHeroId];
+                    const transforms = (evolution.itemTransforms || [])
+                        .map((entry) => game.itemDatabase?.[entry.itemId]?.name || entry.itemId)
+                        .join(', ');
+                    return `
+                        <article class="villain-card unlocked evolution-card">
+                            ${this.ui.renderSprite(hero.sprite, hero.name)}
+                            <div>
+                                <h3>${hero.name}</h3>
+                                <small>Nivel ${evolution.requiredLevel} · ${evolution.name}</small>
+                                <span>${transforms ? `Signature: ${transforms}` : 'Evolucion por nivel'}</span>
+                            </div>
+                            <b><i class="fas fa-dna"></i></b>
+                            <div class="hero-tag-list">
+                                <span>Daño +${Math.round((evolution.stats.damage || 0) * 100)}%</span>
+                                <span>Cadencia +${Math.round((evolution.stats.fireRate || 0) * 100)}%</span>
+                                <span>Alcance +${Math.round((evolution.stats.range || 0) * 100)}%</span>
+                            </div>
+                        </article>
+                    `;
+                }).join('')}
+            </div>
         `;
     }
 

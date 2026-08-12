@@ -64,7 +64,8 @@ window.__MARVEL_TD_DATA__ = {
         "support": 2,
         "detection": 3
       },
-      "terrainRole": "flyer"
+      "terrainRole": "flyer",
+      "evolutionId": "iron_man_extremis"
     },
     "spiderman": {
       "id": "spiderman",
@@ -129,7 +130,8 @@ window.__MARVEL_TD_DATA__ = {
         "support": 2,
         "detection": 5
       },
-      "terrainRole": "ground"
+      "terrainRole": "ground",
+      "evolutionId": "iron_spider"
     },
     "capitan_america": {
       "id": "capitan_america",
@@ -203,7 +205,8 @@ window.__MARVEL_TD_DATA__ = {
         },
         "visualStyle": "energy",
         "projectileColor": "#40c9ff"
-      }
+      },
+      "evolutionId": "capitan_america_evolution"
     },
     "thor": {
       "id": "thor",
@@ -279,7 +282,8 @@ window.__MARVEL_TD_DATA__ = {
             "chance": 0.16
           }
         ]
-      }
+      },
+      "evolutionId": "thor_evolution"
     },
     "hulk": {
       "id": "hulk",
@@ -344,7 +348,8 @@ window.__MARVEL_TD_DATA__ = {
         "support": 1,
         "detection": 1
       },
-      "terrainRole": "ground"
+      "terrainRole": "ground",
+      "evolutionId": "hulk_evolution"
     },
     "black_widow": {
       "id": "black_widow",
@@ -419,7 +424,8 @@ window.__MARVEL_TD_DATA__ = {
           }
         ],
         "statModifiers": {}
-      }
+      },
+      "evolutionId": "black_widow_evolution"
     },
     "hawkeye": {
       "id": "hawkeye",
@@ -484,7 +490,8 @@ window.__MARVEL_TD_DATA__ = {
         "detection": 4
       },
       "terrainRole": "high",
-      "rangePattern": "cross"
+      "rangePattern": "cross",
+      "evolutionId": "hawkeye_evolution"
     },
     "black_panther": {
       "id": "black_panther",
@@ -567,7 +574,8 @@ window.__MARVEL_TD_DATA__ = {
             "chance": 0.12
           }
         ]
-      }
+      },
+      "evolutionId": "black_panther_evolution"
     },
     "doctor_strange": {
       "id": "doctor_strange",
@@ -644,7 +652,8 @@ window.__MARVEL_TD_DATA__ = {
             "chance": 0.28
           }
         ]
-      }
+      },
+      "evolutionId": "doctor_strange_evolution"
     },
     "captain_marvel": {
       "id": "captain_marvel",
@@ -721,7 +730,8 @@ window.__MARVEL_TD_DATA__ = {
           }
         ],
         "statModifiers": {}
-      }
+      },
+      "evolutionId": "captain_marvel_evolution"
     },
     "wolverine": {
       "id": "wolverine",
@@ -786,7 +796,8 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "ground"
+      "terrainRole": "ground",
+      "evolutionId": "wolverine_evolution"
     },
     "daredevil": {
       "id": "daredevil",
@@ -850,7 +861,8 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "grass"
+      "terrainRole": "grass",
+      "evolutionId": "daredevil_evolution"
     },
     "ant_man": {
       "id": "ant_man",
@@ -914,7 +926,8 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "grass"
+      "terrainRole": "grass",
+      "evolutionId": "ant_man_evolution"
     },
     "star_lord": {
       "id": "star_lord",
@@ -978,7 +991,8 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "grass"
+      "terrainRole": "grass",
+      "evolutionId": "star_lord_evolution"
     },
     "groot": {
       "id": "groot",
@@ -1053,7 +1067,8 @@ window.__MARVEL_TD_DATA__ = {
             "chance": 0.42
           }
         ]
-      }
+      },
+      "evolutionId": "groot_evolution"
     },
     "gamora": {
       "id": "gamora",
@@ -1118,7 +1133,8 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "ground"
+      "terrainRole": "ground",
+      "evolutionId": "gamora_evolution"
     },
     "scarlet_witch": {
       "id": "scarlet_witch",
@@ -1200,7 +1216,8 @@ window.__MARVEL_TD_DATA__ = {
           }
         ],
         "statModifiers": {}
-      }
+      },
+      "evolutionId": "scarlet_witch_evolution"
     },
     "vision": {
       "id": "vision",
@@ -1266,7 +1283,8 @@ window.__MARVEL_TD_DATA__ = {
         "support": 2,
         "detection": 5
       },
-      "terrainRole": "flyer"
+      "terrainRole": "flyer",
+      "evolutionId": "vision_evolution"
     },
     "falcon": {
       "id": "falcon",
@@ -1332,7 +1350,8 @@ window.__MARVEL_TD_DATA__ = {
         "support": 5,
         "detection": 5
       },
-      "terrainRole": "flyer"
+      "terrainRole": "flyer",
+      "evolutionId": "falcon_evolution"
     },
     "winter_soldier": {
       "id": "winter_soldier",
@@ -1397,7 +1416,8 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "ground"
+      "terrainRole": "ground",
+      "evolutionId": "winter_soldier_evolution"
     },
     "shang_chi": {
       "id": "shang_chi",
@@ -1462,7 +1482,8 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "ground"
+      "terrainRole": "ground",
+      "evolutionId": "shang_chi_evolution"
     },
     "moon_knight": {
       "id": "moon_knight",
@@ -1526,7 +1547,8 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "grass"
+      "terrainRole": "grass",
+      "evolutionId": "moon_knight_evolution"
     },
     "she_hulk": {
       "id": "she_hulk",
@@ -1591,7 +1613,8 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "ground"
+      "terrainRole": "ground",
+      "evolutionId": "she_hulk_evolution"
     },
     "jean_grey": {
       "id": "jean_grey",
@@ -1664,7 +1687,8 @@ window.__MARVEL_TD_DATA__ = {
           "propagationRadius": 120,
           "propagationFactor": 0.34
         }
-      }
+      },
+      "evolutionId": "phoenix"
     },
     "cyclops": {
       "id": "cyclops",
@@ -1729,7 +1753,8 @@ window.__MARVEL_TD_DATA__ = {
         }
       },
       "terrainRole": "high",
-      "rangePattern": "x"
+      "rangePattern": "x",
+      "evolutionId": "cyclops_evolution"
     },
     "storm": {
       "id": "storm",
@@ -1817,7 +1842,8 @@ window.__MARVEL_TD_DATA__ = {
             "chance": 0.12
           }
         ]
-      }
+      },
+      "evolutionId": "storm_evolution"
     },
     "silver_surfer": {
       "id": "silver_surfer",
@@ -1884,7 +1910,8 @@ window.__MARVEL_TD_DATA__ = {
         }
       },
       "terrainRole": "flyer",
-      "rangePattern": "x"
+      "rangePattern": "x",
+      "evolutionId": "silver_surfer_evolution"
     },
     "blade": {
       "id": "blade",
@@ -1960,7 +1987,8 @@ window.__MARVEL_TD_DATA__ = {
           }
         ],
         "statModifiers": {}
-      }
+      },
+      "evolutionId": "blade_evolution"
     },
     "ghost_rider": {
       "id": "ghost_rider",
@@ -2036,7 +2064,8 @@ window.__MARVEL_TD_DATA__ = {
           }
         ],
         "statModifiers": {}
-      }
+      },
+      "evolutionId": "ghost_rider_evolution"
     },
     "luke_cage": {
       "id": "luke_cage",
@@ -2101,7 +2130,8 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "ground"
+      "terrainRole": "ground",
+      "evolutionId": "luke_cage_evolution"
     },
     "domino": {
       "id": "domino",
@@ -2173,7 +2203,8 @@ window.__MARVEL_TD_DATA__ = {
         },
         "visualStyle": "energy",
         "projectileColor": "#d8c8ff"
-      }
+      },
+      "evolutionId": "domino_evolution"
     },
     "war_machine": {
       "id": "war_machine",
@@ -2255,7 +2286,8 @@ window.__MARVEL_TD_DATA__ = {
         }
       },
       "terrainRole": "high",
-      "rangePattern": "cross"
+      "rangePattern": "cross",
+      "evolutionId": "war_machine_evolution"
     },
     "nick_fury": {
       "id": "nick_fury",
@@ -2329,7 +2361,8 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "high"
+      "terrainRole": "high",
+      "evolutionId": "nick_fury_evolution"
     },
     "wasp": {
       "id": "wasp",
@@ -2405,7 +2438,8 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "flyer"
+      "terrainRole": "flyer",
+      "evolutionId": "wasp_evolution"
     },
     "nova": {
       "id": "nova",
@@ -2484,7 +2518,8 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "flyer"
+      "terrainRole": "flyer",
+      "evolutionId": "nova_evolution"
     },
     "quake": {
       "id": "quake",
@@ -2567,7 +2602,8 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "ground"
+      "terrainRole": "ground",
+      "evolutionId": "quake_evolution"
     },
     "medusa": {
       "id": "medusa",
@@ -2649,7 +2685,8 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "ground"
+      "terrainRole": "ground",
+      "evolutionId": "medusa_evolution"
     },
     "namor": {
       "id": "namor",
@@ -2724,7 +2761,8 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "aquatic"
+      "terrainRole": "aquatic",
+      "evolutionId": "namor_evolution"
     },
     "iron_fist": {
       "id": "iron_fist",
@@ -2804,7 +2842,8 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "ground"
+      "terrainRole": "ground",
+      "evolutionId": "iron_fist_evolution"
     },
     "punisher": {
       "id": "punisher",
@@ -2878,7 +2917,8 @@ window.__MARVEL_TD_DATA__ = {
         }
       },
       "terrainRole": "high",
-      "rangePattern": "cross"
+      "rangePattern": "cross",
+      "evolutionId": "punisher_evolution"
     },
     "elektra": {
       "id": "elektra",
@@ -2958,7 +2998,8 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "ground"
+      "terrainRole": "ground",
+      "evolutionId": "elektra_evolution"
     },
     "jessica_jones": {
       "id": "jessica_jones",
@@ -3038,7 +3079,8 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "ground"
+      "terrainRole": "ground",
+      "evolutionId": "jessica_jones_evolution"
     },
     "cloak": {
       "id": "cloak",
@@ -3120,7 +3162,8 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "flyer"
+      "terrainRole": "flyer",
+      "evolutionId": "cloak_evolution"
     },
     "dagger": {
       "id": "dagger",
@@ -3206,7 +3249,8 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "flyer"
+      "terrainRole": "flyer",
+      "evolutionId": "dagger_evolution"
     },
     "magik": {
       "id": "magik",
@@ -3296,7 +3340,8 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "ground"
+      "terrainRole": "ground",
+      "evolutionId": "magik_evolution"
     },
     "iceman": {
       "id": "iceman",
@@ -3377,7 +3422,8 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "ground"
+      "terrainRole": "ground",
+      "evolutionId": "iceman_evolution"
     },
     "shuri": {
       "id": "shuri",
@@ -3457,7 +3503,8 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "grass"
+      "terrainRole": "grass",
+      "evolutionId": "shuri_evolution"
     },
     "okoye": {
       "id": "okoye",
@@ -3537,7 +3584,8 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "ground"
+      "terrainRole": "ground",
+      "evolutionId": "okoye_evolution"
     },
     "black_bolt": {
       "id": "black_bolt",
@@ -3621,7 +3669,8 @@ window.__MARVEL_TD_DATA__ = {
         }
       },
       "terrainRole": "flyer",
-      "rangePattern": "ring"
+      "rangePattern": "ring",
+      "evolutionId": "black_bolt_evolution"
     },
     "crystal": {
       "id": "crystal",
@@ -3706,7 +3755,8 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "flyer"
+      "terrainRole": "flyer",
+      "evolutionId": "crystal_evolution"
     },
     "namora": {
       "id": "namora",
@@ -3789,7 +3839,8 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "aquatic"
+      "terrainRole": "aquatic",
+      "evolutionId": "namora_evolution"
     },
     "triton": {
       "id": "triton",
@@ -3870,7 +3921,8 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "aquatic"
+      "terrainRole": "aquatic",
+      "evolutionId": "triton_evolution"
     },
     "black_cat": {
       "id": "black_cat",
@@ -3951,7 +4003,8 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "ground"
+      "terrainRole": "ground",
+      "evolutionId": "black_cat_evolution"
     },
     "elsa_bloodstone": {
       "id": "elsa_bloodstone",
@@ -4039,7 +4092,8 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "high"
+      "terrainRole": "high",
+      "evolutionId": "elsa_bloodstone_evolution"
     },
     "gambit": {
       "id": "gambit",
@@ -4119,7 +4173,8 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "ground"
+      "terrainRole": "ground",
+      "evolutionId": "gambit_evolution"
     },
     "hela": {
       "id": "hela",
@@ -4210,7 +4265,8 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "flyer"
+      "terrainRole": "flyer",
+      "evolutionId": "hela_evolution"
     },
     "human_torch": {
       "id": "human_torch",
@@ -4295,7 +4351,8 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "flyer"
+      "terrainRole": "flyer",
+      "evolutionId": "human_torch_evolution"
     },
     "the_hood": {
       "id": "the_hood",
@@ -4381,7 +4438,8 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "ground"
+      "terrainRole": "ground",
+      "evolutionId": "the_hood_evolution"
     },
     "psylocke": {
       "id": "psylocke",
@@ -4465,7 +4523,8 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "ground"
+      "terrainRole": "ground",
+      "evolutionId": "psylocke_evolution"
     },
     "squirrel_girl": {
       "id": "squirrel_girl",
@@ -4544,7 +4603,8 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "grass"
+      "terrainRole": "grass",
+      "evolutionId": "squirrel_girl_evolution"
     },
     "venom": {
       "id": "venom",
@@ -4635,7 +4695,8 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "ground"
+      "terrainRole": "ground",
+      "evolutionId": "venom_evolution"
     },
     "angela": {
       "id": "angela",
@@ -4714,7 +4775,8 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "flyer"
+      "terrainRole": "flyer",
+      "evolutionId": "angela_evolution"
     },
     "devil_dinosaur": {
       "id": "devil_dinosaur",
@@ -4798,7 +4860,8 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "ground"
+      "terrainRole": "ground",
+      "evolutionId": "devil_dinosaur_evolution"
     },
     "emma_frost": {
       "id": "emma_frost",
@@ -4886,7 +4949,8 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "ground"
+      "terrainRole": "ground",
+      "evolutionId": "emma_frost_evolution"
     },
     "magneto": {
       "id": "magneto",
@@ -4970,7 +5034,8 @@ window.__MARVEL_TD_DATA__ = {
         }
       },
       "terrainRole": "flyer",
-      "rangePattern": "ring"
+      "rangePattern": "ring",
+      "evolutionId": "magneto_evolution"
     },
     "peni_parker": {
       "id": "peni_parker",
@@ -5051,7 +5116,8 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "ground"
+      "terrainRole": "ground",
+      "evolutionId": "peni_parker_evolution"
     },
     "adam_warlock": {
       "id": "adam_warlock",
@@ -5130,7 +5196,8 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "flyer"
+      "terrainRole": "flyer",
+      "evolutionId": "adam_warlock_evolution"
     },
     "deadpool": {
       "id": "deadpool",
@@ -5211,7 +5278,8 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "ground"
+      "terrainRole": "ground",
+      "evolutionId": "deadpool_evolution"
     },
     "invisible_woman": {
       "id": "invisible_woman",
@@ -5288,7 +5356,8 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "flyer"
+      "terrainRole": "flyer",
+      "evolutionId": "invisible_woman_evolution"
     },
     "jeff_the_land_shark": {
       "id": "jeff_the_land_shark",
@@ -5369,7 +5438,8 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "amphibious"
+      "terrainRole": "amphibious",
+      "evolutionId": "jeff_the_land_shark_evolution"
     },
     "jubilee": {
       "id": "jubilee",
@@ -5450,7 +5520,8 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "ground"
+      "terrainRole": "ground",
+      "evolutionId": "jubilee_evolution"
     },
     "loki": {
       "id": "loki",
@@ -5549,7 +5620,8 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "flyer"
+      "terrainRole": "flyer",
+      "evolutionId": "loki_evolution"
     },
     "luna_snow": {
       "id": "luna_snow",
@@ -5633,7 +5705,8 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "ground"
+      "terrainRole": "ground",
+      "evolutionId": "luna_snow_evolution"
     },
     "mantis": {
       "id": "mantis",
@@ -5720,7 +5793,8 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "ground"
+      "terrainRole": "ground",
+      "evolutionId": "mantis_evolution"
     },
     "mister_fantastic": {
       "id": "mister_fantastic",
@@ -5795,7 +5869,8 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "ground"
+      "terrainRole": "ground",
+      "evolutionId": "mister_fantastic_evolution"
     },
     "rocket_raccoon": {
       "id": "rocket_raccoon",
@@ -5873,7 +5948,8 @@ window.__MARVEL_TD_DATA__ = {
         }
       },
       "terrainRole": "high",
-      "rangePattern": "cross"
+      "rangePattern": "cross",
+      "evolutionId": "rocket_raccoon_evolution"
     },
     "nightcrawler": {
       "id": "nightcrawler",
@@ -5965,7 +6041,8 @@ window.__MARVEL_TD_DATA__ = {
             "assets/images/heroes/nightcrawler/shoot/8.png"
           ]
         }
-      }
+      },
+      "evolutionId": "nightcrawler_evolution"
     },
     "ms_marvel": {
       "id": "ms_marvel",
@@ -6044,7 +6121,8 @@ window.__MARVEL_TD_DATA__ = {
             "assets/images/heroes/ms_marvel/shoot/8.png"
           ]
         }
-      }
+      },
+      "evolutionId": "ms_marvel_evolution"
     },
     "yelena_belova": {
       "id": "yelena_belova",
@@ -6126,7 +6204,8 @@ window.__MARVEL_TD_DATA__ = {
         ],
         "visualStyle": "ballistic",
         "projectileColor": "#d8dee9"
-      }
+      },
+      "evolutionId": "yelena_belova_evolution"
     },
     "mbaku": {
       "id": "mbaku",
@@ -6203,7 +6282,8 @@ window.__MARVEL_TD_DATA__ = {
         ],
         "visualStyle": "impact",
         "projectileColor": "#f7c873"
-      }
+      },
+      "evolutionId": "mbaku_evolution"
     },
     "red_guardian": {
       "id": "red_guardian",
@@ -6284,7 +6364,8 @@ window.__MARVEL_TD_DATA__ = {
         ],
         "visualStyle": "impact",
         "projectileColor": "#ef4444"
-      }
+      },
+      "evolutionId": "red_guardian_evolution"
     },
     "korg": {
       "id": "korg",
@@ -6365,7 +6446,8 @@ window.__MARVEL_TD_DATA__ = {
         ],
         "visualStyle": "impact",
         "projectileColor": "#a3a3a3"
-      }
+      },
+      "evolutionId": "korg_evolution"
     },
     "nebula": {
       "id": "nebula",
@@ -6445,7 +6527,8 @@ window.__MARVEL_TD_DATA__ = {
         },
         "visualStyle": "energy",
         "projectileColor": "#7dd3fc"
-      }
+      },
+      "evolutionId": "nebula_evolution"
     },
     "wong": {
       "id": "wong",
@@ -6521,7 +6604,8 @@ window.__MARVEL_TD_DATA__ = {
         },
         "visualStyle": "mystic",
         "projectileColor": "#f59e0b"
-      }
+      },
+      "evolutionId": "wong_evolution"
     },
     "yondu": {
       "id": "yondu",
@@ -6596,7 +6680,8 @@ window.__MARVEL_TD_DATA__ = {
         },
         "visualStyle": "energy",
         "projectileColor": "#ef4444"
-      }
+      },
+      "evolutionId": "yondu_evolution"
     },
     "maria_hill": {
       "id": "maria_hill",
@@ -6671,7 +6756,8 @@ window.__MARVEL_TD_DATA__ = {
         },
         "visualStyle": "energy",
         "projectileColor": "#94a3b8"
-      }
+      },
+      "evolutionId": "maria_hill_evolution"
     },
     "echo": {
       "id": "echo",
@@ -6750,7 +6836,8 @@ window.__MARVEL_TD_DATA__ = {
         },
         "visualStyle": "blade",
         "projectileColor": "#ffffff"
-      }
+      },
+      "evolutionId": "echo_evolution"
     },
     "howard_the_duck": {
       "id": "howard_the_duck",
@@ -6833,7 +6920,8 @@ window.__MARVEL_TD_DATA__ = {
         ],
         "visualStyle": "ballistic",
         "projectileColor": "#facc15"
-      }
+      },
+      "evolutionId": "howard_the_duck_evolution"
     },
     "valkyrie": {
       "id": "valkyrie",
@@ -6913,7 +7001,8 @@ window.__MARVEL_TD_DATA__ = {
         },
         "visualStyle": "blade",
         "projectileColor": "#facc15"
-      }
+      },
+      "evolutionId": "valkyrie_evolution"
     },
     "rogue": {
       "id": "rogue",
@@ -6996,7 +7085,8 @@ window.__MARVEL_TD_DATA__ = {
         ],
         "visualStyle": "impact",
         "projectileColor": "#86efac"
-      }
+      },
+      "evolutionId": "rogue_evolution"
     },
     "beast": {
       "id": "beast",
@@ -7078,7 +7168,8 @@ window.__MARVEL_TD_DATA__ = {
         ],
         "visualStyle": "impact",
         "projectileColor": "#60a5fa"
-      }
+      },
+      "evolutionId": "beast_evolution"
     },
     "cable": {
       "id": "cable",
@@ -7158,7 +7249,8 @@ window.__MARVEL_TD_DATA__ = {
         ],
         "visualStyle": "ballistic",
         "projectileColor": "#38bdf8"
-      }
+      },
+      "evolutionId": "cable_evolution"
     },
     "miles_morales": {
       "id": "miles_morales",
@@ -7241,7 +7333,8 @@ window.__MARVEL_TD_DATA__ = {
         ],
         "visualStyle": "web",
         "projectileColor": "#ef4444"
-      }
+      },
+      "evolutionId": "miles_morales_evolution"
     },
     "sentry": {
       "id": "sentry",
@@ -7323,7 +7416,8 @@ window.__MARVEL_TD_DATA__ = {
         ],
         "visualStyle": "energy",
         "projectileColor": "#fde68a"
-      }
+      },
+      "evolutionId": "sentry_evolution"
     },
     "x_23": {
       "id": "x_23",
@@ -7403,7 +7497,8 @@ window.__MARVEL_TD_DATA__ = {
         },
         "visualStyle": "blade",
         "projectileColor": "#cbd5e1"
-      }
+      },
+      "evolutionId": "x_23_evolution"
     },
     "beta_ray_bill": {
       "id": "beta_ray_bill",
@@ -7486,7 +7581,8 @@ window.__MARVEL_TD_DATA__ = {
         ],
         "visualStyle": "energy",
         "projectileColor": "#facc15"
-      }
+      },
+      "evolutionId": "beta_ray_bill_evolution"
     },
     "drax": {
       "id": "drax",
@@ -7562,7 +7658,8 @@ window.__MARVEL_TD_DATA__ = {
         ],
         "visualStyle": "blade",
         "projectileColor": "#ef4444"
-      }
+      },
+      "evolutionId": "drax_evolution"
     },
     "cosmo": {
       "id": "cosmo",
@@ -7644,7 +7741,8 @@ window.__MARVEL_TD_DATA__ = {
         ],
         "visualStyle": "mystic",
         "projectileColor": "#fde68a"
-      }
+      },
+      "evolutionId": "cosmo_evolution"
     },
     "lady_sif": {
       "id": "lady_sif",
@@ -7724,7 +7822,8 @@ window.__MARVEL_TD_DATA__ = {
         },
         "visualStyle": "blade",
         "projectileColor": "#fbbf24"
-      }
+      },
+      "evolutionId": "lady_sif_evolution"
     },
     "heimdall": {
       "id": "heimdall",
@@ -7804,7 +7903,8 @@ window.__MARVEL_TD_DATA__ = {
         },
         "visualStyle": "energy",
         "projectileColor": "#facc15"
-      }
+      },
+      "evolutionId": "heimdall_evolution"
     },
     "white_tiger": {
       "id": "white_tiger",
@@ -7884,7 +7984,8 @@ window.__MARVEL_TD_DATA__ = {
         },
         "visualStyle": "blade",
         "projectileColor": "#f8fafc"
-      }
+      },
+      "evolutionId": "white_tiger_evolution"
     },
     "tigra": {
       "id": "tigra",
@@ -7963,7 +8064,8 @@ window.__MARVEL_TD_DATA__ = {
         },
         "visualStyle": "blade",
         "projectileColor": "#fb923c"
-      }
+      },
+      "evolutionId": "tigra_evolution"
     },
     "mockingbird": {
       "id": "mockingbird",
@@ -8045,7 +8147,8 @@ window.__MARVEL_TD_DATA__ = {
         ],
         "visualStyle": "impact",
         "projectileColor": "#60a5fa"
-      }
+      },
+      "evolutionId": "mockingbird_evolution"
     },
     "kate_bishop": {
       "id": "kate_bishop",
@@ -8122,7 +8225,8 @@ window.__MARVEL_TD_DATA__ = {
         ],
         "visualStyle": "ballistic",
         "projectileColor": "#a78bfa"
-      }
+      },
+      "evolutionId": "kate_bishop_evolution"
     },
     "profesor_x": {
       "id": "profesor_x",
@@ -8198,7 +8302,8 @@ window.__MARVEL_TD_DATA__ = {
         },
         "visualStyle": "mystic",
         "projectileColor": "#c4b5fd"
-      }
+      },
+      "evolutionId": "profesor_x_evolution"
     }
   },
   "enemies": {
@@ -12134,6 +12239,535 @@ window.__MARVEL_TD_DATA__ = {
         "chainFactor": 0.55,
         "statusDamagePct": 0.12,
         "statusDamageCap": 0.5
+      },
+      "rarity": "Secret"
+    },
+    "cristal_terrigeno": {
+      "id": "cristal_terrigeno",
+      "name": "CRISTAL TERRIGENO",
+      "desc": "+10% dano, +8% alcance y escalado por estados. Activa sobrecargas Inhumanas.",
+      "icon": "assets/images/items/gema_poder.png",
+      "price": 7600,
+      "tier": 4,
+      "slot": "artifact",
+      "set": "cosmic",
+      "effects": {
+        "damagePct": 0.1,
+        "rangePct": 0.08,
+        "statusDamagePct": 0.06,
+        "statusDamageCap": 0.24
+      },
+      "rarity": "Legendary"
+    },
+    "matriz_probabilidad": {
+      "id": "matriz_probabilidad",
+      "name": "MATRIZ DE PROBABILIDAD",
+      "desc": "+9% critico, +30% dano critico y manipulacion de probabilidad.",
+      "icon": "assets/images/items/regulador_cuantico.png",
+      "price": 7400,
+      "tier": 4,
+      "slot": "artifact",
+      "set": "street",
+      "effects": {
+        "critChance": 9,
+        "critDamageBonus": 0.3,
+        "damagePct": 0.05
+      },
+      "rarity": "Legendary"
+    },
+    "manual_combate_elite": {
+      "id": "manual_combate_elite",
+      "name": "MANUAL DE COMBATE ELITE",
+      "desc": "+10% cadencia, +5% critico y 10% penetracion.",
+      "icon": "assets/images/items/brazalete_kun_lun.png",
+      "price": 3650,
+      "tier": 3,
+      "slot": "artifact",
+      "set": "street",
+      "effects": {
+        "fireRatePct": 0.1,
+        "critChance": 5,
+        "armorPenetration": 0.1
+      },
+      "rarity": "Epic"
+    },
+    "traje_moleculas_inestables": {
+      "id": "traje_moleculas_inestables",
+      "name": "TRAJE DE MOLECULAS INESTABLES",
+      "desc": "+8% dano, +10% cadencia y +10% alcance.",
+      "icon": "assets/images/items/protocolo_extremis.png",
+      "price": 7800,
+      "tier": 4,
+      "slot": "armor",
+      "set": "cosmic",
+      "effects": {
+        "damagePct": 0.08,
+        "fireRatePct": 0.1,
+        "rangePct": 0.1
+      },
+      "rarity": "Legendary"
+    },
+    "protocolo_danger_room": {
+      "id": "protocolo_danger_room",
+      "name": "PROTOCOLO DANGER ROOM",
+      "desc": "+8% dano, +8% alcance y +6% critico.",
+      "icon": "assets/images/items/localizador_fury.png",
+      "price": 8100,
+      "tier": 4,
+      "slot": "artifact",
+      "set": "tactical",
+      "effects": {
+        "damagePct": 0.08,
+        "rangePct": 0.08,
+        "critChance": 6
+      },
+      "rarity": "Legendary"
+    },
+    "comunicador_guardianes": {
+      "id": "comunicador_guardianes",
+      "name": "COMUNICADOR DE LOS GUARDIANES",
+      "desc": "+8% dano, +8% alcance, +4% critico y +6% a jefes.",
+      "icon": "assets/images/items/casco_nova.png",
+      "price": 7900,
+      "tier": 4,
+      "slot": "artifact",
+      "set": "cosmic",
+      "effects": {
+        "damagePct": 0.08,
+        "rangePct": 0.08,
+        "critChance": 4,
+        "bossDamagePct": 0.06
+      },
+      "rarity": "Legendary"
+    },
+    "legado_wakanda": {
+      "id": "legado_wakanda",
+      "name": "LEGADO DE WAKANDA",
+      "desc": "+10% dano, +12% contra blindaje y +4% critico.",
+      "icon": "assets/images/items/corazon_wakanda.png",
+      "price": 7700,
+      "tier": 4,
+      "slot": "artifact",
+      "set": "vibranium",
+      "effects": {
+        "damagePct": 0.1,
+        "armorDamagePct": 0.12,
+        "critChance": 4
+      },
+      "rarity": "Legendary"
+    },
+    "runa_asgardiana": {
+      "id": "runa_asgardiana",
+      "name": "RUNA DEL GUERRERO ASGARDIANO",
+      "desc": "+14% dano, +10% a jefes y rebote asgardiano.",
+      "icon": "assets/images/items/cetro_loki.png",
+      "price": 14500,
+      "tier": 5,
+      "slot": "artifact",
+      "set": "asgard",
+      "effects": {
+        "damagePct": 0.14,
+        "bossDamagePct": 0.1,
+        "chainCount": 1,
+        "chainRange": 100,
+        "chainFactor": 0.5
+      },
+      "rarity": "Mythic"
+    },
+    "talisman_tigre": {
+      "id": "talisman_tigre",
+      "name": "TALISMAN DEL ESPIRITU TIGRE",
+      "desc": "+7% critico, +25% dano critico y dano acumulativo por foco.",
+      "icon": "assets/images/items/collar_pantera.png",
+      "price": 6800,
+      "tier": 4,
+      "slot": "artifact",
+      "set": "mystic",
+      "effects": {
+        "critChance": 7,
+        "critDamageBonus": 0.25,
+        "consecutiveDamagePct": 0.02
+      },
+      "rarity": "Legendary"
+    },
+    "redwing_mk2": {
+      "id": "redwing_mk2",
+      "name": "REDWING MK II",
+      "desc": "Detecta sigilo, +10% alcance y +6% dano. Redwing asiste a Falcon.",
+      "icon": "assets/images/items/baliza_fury.png",
+      "price": 3500,
+      "tier": 3,
+      "slot": "artifact",
+      "set": "tactical",
+      "effects": {
+        "detectStealth": true,
+        "rangePct": 0.1,
+        "damagePct": 0.06
+      },
+      "rarity": "Epic"
+    },
+    "baraja_cinetica": {
+      "id": "baraja_cinetica",
+      "name": "BARAJA CINETICA",
+      "desc": "Rebote cinetico, +5% critico y cartas sobrecargadas para Gambit.",
+      "icon": "assets/images/items/anillo_portal.png",
+      "price": 7200,
+      "tier": 4,
+      "slot": "weapon",
+      "set": "street",
+      "effects": {
+        "chainCount": 1,
+        "chainRange": 95,
+        "chainFactor": 0.6,
+        "critChance": 5
+      },
+      "rarity": "Legendary"
+    },
+    "fragmento_bloodstone": {
+      "id": "fragmento_bloodstone",
+      "name": "FRAGMENTO BLOODSTONE",
+      "desc": "+15% a jefes, 12% penetracion y +6% critico.",
+      "icon": "assets/images/items/fragmento_carnage.png",
+      "price": 7500,
+      "tier": 4,
+      "slot": "artifact",
+      "set": "mystic",
+      "effects": {
+        "bossDamagePct": 0.15,
+        "armorPenetration": 0.12,
+        "critChance": 6
+      },
+      "rarity": "Legendary"
+    },
+    "arsenal_deadpool": {
+      "id": "arsenal_deadpool",
+      "name": "ARSENAL SIN FONDO",
+      "desc": "+14% cadencia, +6% critico y pequenas explosiones.",
+      "icon": "assets/images/items/armadura_war_machine.png",
+      "price": 6900,
+      "tier": 4,
+      "slot": "weapon",
+      "set": "street",
+      "effects": {
+        "fireRatePct": 0.14,
+        "critChance": 6,
+        "splashRadius": 30,
+        "splashFactor": 0.25
+      },
+      "rarity": "Legendary"
+    },
+    "totem_tierra_salvaje": {
+      "id": "totem_tierra_salvaje",
+      "name": "TOTEM DE LA TIERRA SALVAJE",
+      "desc": "+12% dano, +8% a jefes y rugido en area.",
+      "icon": "assets/images/items/fertilizante_groot.png",
+      "price": 3400,
+      "tier": 3,
+      "slot": "artifact",
+      "set": "cosmic",
+      "effects": {
+        "damagePct": 0.12,
+        "bossDamagePct": 0.08,
+        "splashRadius": 36,
+        "splashFactor": 0.3
+      },
+      "rarity": "Epic"
+    },
+    "amplificador_criocinetico": {
+      "id": "amplificador_criocinetico",
+      "name": "AMPLIFICADOR CRIOCINETICO",
+      "desc": "Ralentizacion fuerte y +8% dano contra enemigos con estados.",
+      "icon": "assets/images/items/municion_ice.png",
+      "price": 3600,
+      "tier": 3,
+      "slot": "artifact",
+      "set": "tactical",
+      "effects": {
+        "slowChance": 0.3,
+        "slowPower": 0.25,
+        "statusDamagePct": 0.08,
+        "statusDamageCap": 0.24
+      },
+      "rarity": "Epic"
+    },
+    "brazalete_kamala": {
+      "id": "brazalete_kamala",
+      "name": "BRAZALETE DE KAMALA",
+      "desc": "+10% dano, +10% alcance y +4% critico.",
+      "icon": "assets/images/items/guanteletes_gigantes.png",
+      "price": 3300,
+      "tier": 3,
+      "slot": "artifact",
+      "set": "street",
+      "effects": {
+        "damagePct": 0.1,
+        "rangePct": 0.1,
+        "critChance": 4
+      },
+      "rarity": "Epic"
+    },
+    "nucleo_gamma": {
+      "id": "nucleo_gamma",
+      "name": "NUCLEO GAMMA",
+      "desc": "+14% dano, foco acumulativo y splash pequeno.",
+      "icon": "assets/images/items/emisor_termico.png",
+      "price": 7000,
+      "tier": 4,
+      "slot": "artifact",
+      "set": "tactical",
+      "effects": {
+        "damagePct": 0.14,
+        "consecutiveDamagePct": 0.025,
+        "splashRadius": 36,
+        "splashFactor": 0.25
+      },
+      "rarity": "Legendary"
+    },
+    "senal_tippytoe": {
+      "id": "senal_tippytoe",
+      "name": "SENAL DE TIPPY-TOE",
+      "desc": "+12% cadencia, +4% critico y rebote ligero.",
+      "icon": "assets/images/items/telarana_sintetica.png",
+      "price": 3000,
+      "tier": 3,
+      "slot": "artifact",
+      "set": "street",
+      "effects": {
+        "fireRatePct": 0.12,
+        "critChance": 4,
+        "chainCount": 1,
+        "chainRange": 80,
+        "chainFactor": 0.45
+      },
+      "rarity": "Epic"
+    },
+    "stormcaster": {
+      "id": "stormcaster",
+      "name": "STORMCASTER",
+      "desc": "+16% dano, doble cadena y stun breve.",
+      "icon": "assets/images/items/cetro_loki.png",
+      "price": 15000,
+      "tier": 5,
+      "slot": "weapon",
+      "set": "asgard",
+      "effects": {
+        "damagePct": 0.16,
+        "chainCount": 2,
+        "chainRange": 115,
+        "chainFactor": 0.55,
+        "stunChance": 0.18,
+        "stunDuration": 0.25
+      },
+      "rarity": "Mythic"
+    },
+    "capucha_infernal": {
+      "id": "capucha_infernal",
+      "name": "CAPUCHA INFERNAL",
+      "desc": "Maldicion potente y +20% contra enemigos malditos.",
+      "icon": "assets/images/items/capa_levitacion.png",
+      "price": 8100,
+      "tier": 4,
+      "slot": "armor",
+      "set": "mystic",
+      "effects": {
+        "curseChance": 0.3,
+        "curseDuration": 5,
+        "cursePower": 0.014,
+        "damageToCursedPct": 0.2
+      },
+      "rarity": "Legendary"
+    },
+    "nucleo_adaptativo": {
+      "id": "nucleo_adaptativo",
+      "name": "NUCLEO DE COMBATE ADAPTATIVO",
+      "desc": "+8% dano, +10% cadencia, deteccion y 8% penetracion.",
+      "icon": "assets/images/items/nanites_stark_prime.png",
+      "price": 7600,
+      "tier": 4,
+      "slot": "artifact",
+      "set": "tactical",
+      "effects": {
+        "damagePct": 0.08,
+        "fireRatePct": 0.1,
+        "detectStealth": true,
+        "armorPenetration": 0.08
+      },
+      "rarity": "Legendary"
+    },
+    "escudo_guardian_rojo": {
+      "id": "escudo_guardian_rojo",
+      "name": "ESCUDO DEL RED GUARDIAN",
+      "desc": "+8% dano, +12% contra blindaje y +4% critico.",
+      "icon": "assets/images/items/escudo_vibranium.png",
+      "price": 3500,
+      "tier": 3,
+      "slot": "armor",
+      "set": "tactical",
+      "effects": {
+        "damagePct": 0.08,
+        "armorDamagePct": 0.12,
+        "critChance": 4
+      },
+      "rarity": "Epic"
+    },
+    "arsenal_knowhere": {
+      "id": "arsenal_knowhere",
+      "name": "ARSENAL DE KNOWHERE",
+      "desc": "+5% critico, splash, +6% alcance y ataques pesados.",
+      "icon": "assets/images/items/casco_nova.png",
+      "price": 7300,
+      "tier": 4,
+      "slot": "weapon",
+      "set": "cosmic",
+      "effects": {
+        "critChance": 5,
+        "splashRadius": 38,
+        "splashFactor": 0.3,
+        "rangePct": 0.06
+      },
+      "rarity": "Legendary"
+    },
+    "cerebro": {
+      "id": "cerebro",
+      "name": "CEREBRO",
+      "desc": "+22% alcance, deteccion y dano por estados.",
+      "icon": "assets/images/items/localizador_fury.png",
+      "price": 18000,
+      "tier": 5,
+      "slot": "artifact",
+      "set": "tactical",
+      "effects": {
+        "rangePct": 0.22,
+        "detectStealth": true,
+        "statusDamagePct": 0.12,
+        "statusDamageCap": 0.45
+      },
+      "rarity": "Mythic"
+    },
+    "carcaj_flechas_truco": {
+      "id": "carcaj_flechas_truco",
+      "name": "CARCAJ DE FLECHAS TRUCO",
+      "desc": "+6% critico, +10% alcance, slow y armor break.",
+      "icon": "assets/images/items/municion_ice.png",
+      "price": 7100,
+      "tier": 4,
+      "slot": "weapon",
+      "set": "tactical",
+      "effects": {
+        "critChance": 6,
+        "rangePct": 0.1,
+        "slowChance": 0.2,
+        "slowPower": 0.18,
+        "armorBreakChance": 0.2,
+        "armorBreakPower": 0.12
+      },
+      "rarity": "Legendary"
+    },
+    "mjolnir": {
+      "id": "mjolnir",
+      "name": "MJOLNIR",
+      "desc": "Martillo digno: rayos, rebotes y despertar ofensivo del portador.",
+      "icon": "assets/images/items/gema_poder.png",
+      "price": 22000,
+      "tier": 5,
+      "slot": "weapon",
+      "set": "asgard",
+      "effects": {
+        "damagePct": 0.18,
+        "chainCount": 2,
+        "chainRange": 120,
+        "chainFactor": 0.55,
+        "stunChance": 0.18,
+        "stunDuration": 0.24
+      },
+      "rarity": "Mythic"
+    },
+    "pocion_yggdrasil": {
+      "id": "pocion_yggdrasil",
+      "name": "POCION DE YGGDRASIL",
+      "desc": "Reliquia magica para detener el tiempo y amplificar hechizos.",
+      "icon": "assets/images/items/ojo_agamotto.png",
+      "price": 24000,
+      "tier": 5,
+      "slot": "artifact",
+      "set": "mystic",
+      "effects": {
+        "damagePct": 0.14,
+        "rangePct": 0.16,
+        "statusDamagePct": 0.1,
+        "statusDamageCap": 0.42
+      },
+      "rarity": "Mythic"
+    },
+    "darkhold": {
+      "id": "darkhold",
+      "name": "DARKHOLD",
+      "desc": "Grimorio oscuro: maldicion extrema y poder de caos.",
+      "icon": "assets/images/items/orbe_caos_wanda.png",
+      "price": 60000,
+      "tier": 6,
+      "slot": "artifact",
+      "set": "mystic",
+      "effects": {
+        "damagePct": 0.28,
+        "curseChance": 0.45,
+        "curseDuration": 6,
+        "cursePower": 0.018,
+        "statusDamagePct": 0.14,
+        "statusDamageCap": 0.55
+      },
+      "rarity": "Secret"
+    },
+    "diez_anillos": {
+      "id": "diez_anillos",
+      "name": "LOS DIEZ ANILLOS",
+      "desc": "Arma legendaria de combos automaticos y cadenas de impacto.",
+      "icon": "assets/images/items/brazalete_kun_lun.png",
+      "price": 14000,
+      "tier": 5,
+      "slot": "weapon",
+      "set": "mystic",
+      "effects": {
+        "damagePct": 0.14,
+        "fireRatePct": 0.12,
+        "chainCount": 1,
+        "chainRange": 110,
+        "chainFactor": 0.55
+      },
+      "rarity": "Mythic"
+    },
+    "espada_infinito": {
+      "id": "espada_infinito",
+      "name": "ESPADA DEL INFINITO",
+      "desc": "Hoja cosmica de endgame para Dark Surfer.",
+      "icon": "assets/images/items/necroespada.png",
+      "price": 68000,
+      "tier": 6,
+      "slot": "weapon",
+      "set": "cosmic",
+      "effects": {
+        "damagePct": 0.34,
+        "bossDamagePct": 0.22,
+        "armorPenetration": 0.28,
+        "rangePct": 0.12
+      },
+      "rarity": "Secret"
+    },
+    "el_vacio": {
+      "id": "el_vacio",
+      "name": "EL VACIO",
+      "desc": "Entidad oscura que desbloquea The Void y ataques de sombra.",
+      "icon": "assets/images/items/corazon_multiverso.png",
+      "price": 72000,
+      "tier": 6,
+      "slot": "artifact",
+      "set": "mystic",
+      "effects": {
+        "damagePct": 0.36,
+        "bossDamagePct": 0.18,
+        "curseChance": 0.36,
+        "curseDuration": 6,
+        "cursePower": 0.018
       },
       "rarity": "Secret"
     }

@@ -169,7 +169,7 @@ export class CombatSystem {
         target.killCredited = true;
 
         if (attacker.recordKill) {
-            attacker.recordKill(resourceManager);
+            attacker.recordKill(resourceManager, target);
             return;
         }
 

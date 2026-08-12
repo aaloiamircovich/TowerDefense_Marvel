@@ -4,6 +4,7 @@ import { SpriteAnimator } from '../rendering/SpriteAnimator.js';
 import { HeroAbilitySystem } from '../systems/HeroAbilitySystem.js';
 import { aggregateItemEffects } from '../systems/ItemEffectSystem.js';
 import { applyEvolutionStats } from '../systems/EvolutionSystem.js';
+import { buildSignatureAttackContext, renderSignatureVisuals, resolveSignatureAfterAttack, resolveSignatureOnKill } from '../systems/ItemSignatureSystem.js';
 import { getHeroRangePattern, isPointInRangePattern } from '../utils/RangePattern.js';
 import { getScaledSupportAura, normalizeHeroLevel } from '../utils/HeroLevel.js';
 import { TERRAIN } from '../utils/TerrainRules.js';
@@ -54,6 +55,7 @@ export class Hero {
         this.items = [];
         this.consecutiveHits = 0;
         this.lastTargetId = null;
+        this.signatureState = {};
         this.killCount = 0;
         this.combatStats = {
             damageDealt: 0,
@@ -181,9 +183,11 @@ export class Hero {
         this.animator?.faceVector(target.x - this.x, target.y - this.y);
         this.animator?.playAttack();
 
+        const signatureContext = buildSignatureAttackContext(this, target, stats);
+        const attackStats = signatureContext.stats || stats;
         const roll = this.game?.random?.next?.() ?? Math.random();
-        const isCrit = roll * 100 < stats.critChance;
-        let finalDamage = isCrit ? stats.damage * Math.max(1, stats.critDamage || 2) : stats.damage;
+        const isCrit = roll * 100 < attackStats.critChance;
+        let finalDamage = isCrit ? attackStats.damage * Math.max(1, attackStats.critDamage || 2) : attackStats.damage;
         this.combatStats.shots++;
         if (isCrit) this.combatStats.crits++;
         this.generateEconomyOnHit(target);
@@ -213,7 +217,8 @@ export class Hero {
         };
         if (this.game?.spawnProjectile) this.game.spawnProjectile(this.x, this.y, target, projectileConfig);
         else projectiles.push(new Projectile(this.x, this.y, target, projectileConfig));
-        this.abilitySystem.onAttack(target, stats, projectileConfig, projectiles);
+        this.abilitySystem.onAttack(target, attackStats, projectileConfig, projectiles);
+        resolveSignatureAfterAttack(this, target, attackStats, projectileConfig, projectiles, { ...signatureContext, isCrit });
     }
 
     getProjectileEffects(target = null) {
@@ -281,14 +286,16 @@ export class Hero {
         this.combatStats.damageDealt += Math.max(0, amount || 0);
     }
 
-    recordKill(resourceManager) {
+    recordKill(resourceManager, target = null) {
         this.combatStats.kills++;
         this.killCount++;
         this.abilitySystem.onKill();
+        resolveSignatureOnKill(this, target);
     }
 
     isSupportAuraOnly() {
-        return Boolean(this.config.special?.supportAura?.type);
+        return Boolean(this.config.special?.supportAura?.type)
+            && !this.game.progression?.getHeroEvolution?.(this.id)?.allowsSupportAttack;
     }
 
     applySupportAuras(stats) {
@@ -408,6 +415,7 @@ export class Hero {
             this.renderFallback(ctx);
         }
         this.abilitySystem.render(ctx);
+        renderSignatureVisuals(this, ctx);
 
         ctx.fillStyle = '#ffd166';
         ctx.font = 'bold 10px Segoe UI';

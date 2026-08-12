@@ -63,7 +63,8 @@
       "support": 2,
       "detection": 3
     },
-    "terrainRole": "flyer"
+    "terrainRole": "flyer",
+    "evolutionId": "iron_man_extremis"
   },
   "spiderman": {
     "id": "spiderman",
@@ -128,7 +129,8 @@
       "support": 2,
       "detection": 5
     },
-    "terrainRole": "ground"
+    "terrainRole": "ground",
+    "evolutionId": "iron_spider"
   },
   "capitan_america": {
     "id": "capitan_america",
@@ -202,7 +204,8 @@
       },
       "visualStyle": "energy",
       "projectileColor": "#40c9ff"
-    }
+    },
+    "evolutionId": "capitan_america_evolution"
   },
   "thor": {
     "id": "thor",
@@ -278,7 +281,8 @@
           "chance": 0.16
         }
       ]
-    }
+    },
+    "evolutionId": "thor_evolution"
   },
   "hulk": {
     "id": "hulk",
@@ -343,7 +347,8 @@
       "support": 1,
       "detection": 1
     },
-    "terrainRole": "ground"
+    "terrainRole": "ground",
+    "evolutionId": "hulk_evolution"
   },
   "black_widow": {
     "id": "black_widow",
@@ -418,7 +423,8 @@
         }
       ],
       "statModifiers": {}
-    }
+    },
+    "evolutionId": "black_widow_evolution"
   },
   "hawkeye": {
     "id": "hawkeye",
@@ -483,7 +489,8 @@
       "detection": 4
     },
     "terrainRole": "high",
-    "rangePattern": "cross"
+    "rangePattern": "cross",
+    "evolutionId": "hawkeye_evolution"
   },
   "black_panther": {
     "id": "black_panther",
@@ -566,7 +573,8 @@
           "chance": 0.12
         }
       ]
-    }
+    },
+    "evolutionId": "black_panther_evolution"
   },
   "doctor_strange": {
     "id": "doctor_strange",
@@ -643,7 +651,8 @@
           "chance": 0.28
         }
       ]
-    }
+    },
+    "evolutionId": "doctor_strange_evolution"
   },
   "captain_marvel": {
     "id": "captain_marvel",
@@ -720,7 +729,8 @@
         }
       ],
       "statModifiers": {}
-    }
+    },
+    "evolutionId": "captain_marvel_evolution"
   },
   "wolverine": {
     "id": "wolverine",
@@ -785,7 +795,8 @@
         ]
       }
     },
-    "terrainRole": "ground"
+    "terrainRole": "ground",
+    "evolutionId": "wolverine_evolution"
   },
   "daredevil": {
     "id": "daredevil",
@@ -849,7 +860,8 @@
         ]
       }
     },
-    "terrainRole": "grass"
+    "terrainRole": "grass",
+    "evolutionId": "daredevil_evolution"
   },
   "ant_man": {
     "id": "ant_man",
@@ -913,7 +925,8 @@
         ]
       }
     },
-    "terrainRole": "grass"
+    "terrainRole": "grass",
+    "evolutionId": "ant_man_evolution"
   },
   "star_lord": {
     "id": "star_lord",
@@ -977,7 +990,8 @@
         ]
       }
     },
-    "terrainRole": "grass"
+    "terrainRole": "grass",
+    "evolutionId": "star_lord_evolution"
   },
   "groot": {
     "id": "groot",
@@ -1052,7 +1066,8 @@
           "chance": 0.42
         }
       ]
-    }
+    },
+    "evolutionId": "groot_evolution"
   },
   "gamora": {
     "id": "gamora",
@@ -1117,7 +1132,8 @@
         ]
       }
     },
-    "terrainRole": "ground"
+    "terrainRole": "ground",
+    "evolutionId": "gamora_evolution"
   },
   "scarlet_witch": {
     "id": "scarlet_witch",
@@ -1199,7 +1215,8 @@
         }
       ],
       "statModifiers": {}
-    }
+    },
+    "evolutionId": "scarlet_witch_evolution"
   },
   "vision": {
     "id": "vision",
@@ -1265,7 +1282,8 @@
       "support": 2,
       "detection": 5
     },
-    "terrainRole": "flyer"
+    "terrainRole": "flyer",
+    "evolutionId": "vision_evolution"
   },
   "falcon": {
     "id": "falcon",
@@ -1331,7 +1349,8 @@
       "support": 5,
       "detection": 5
     },
-    "terrainRole": "flyer"
+    "terrainRole": "flyer",
+    "evolutionId": "falcon_evolution"
   },
   "winter_soldier": {
     "id": "winter_soldier",
@@ -1396,7 +1415,8 @@
         ]
       }
     },
-    "terrainRole": "ground"
+    "terrainRole": "ground",
+    "evolutionId": "winter_soldier_evolution"
   },
   "shang_chi": {
     "id": "shang_chi",
@@ -1461,7 +1481,8 @@
         ]
       }
     },
-    "terrainRole": "ground"
+    "terrainRole": "ground",
+    "evolutionId": "shang_chi_evolution"
   },
   "moon_knight": {
     "id": "moon_knight",
@@ -1525,7 +1546,8 @@
         ]
       }
     },
-    "terrainRole": "grass"
+    "terrainRole": "grass",
+    "evolutionId": "moon_knight_evolution"
   },
   "she_hulk": {
     "id": "she_hulk",
@@ -1590,7 +1612,8 @@
         ]
       }
     },
-    "terrainRole": "ground"
+    "terrainRole": "ground",
+    "evolutionId": "she_hulk_evolution"
   },
   "jean_grey": {
     "id": "jean_grey",
@@ -1663,7 +1686,8 @@
         "propagationRadius": 120,
         "propagationFactor": 0.34
       }
-    }
+    },
+    "evolutionId": "phoenix"
   },
   "cyclops": {
     "id": "cyclops",
@@ -1728,7 +1752,8 @@
       }
     },
     "terrainRole": "high",
-    "rangePattern": "x"
+    "rangePattern": "x",
+    "evolutionId": "cyclops_evolution"
   },
   "storm": {
     "id": "storm",
@@ -1816,7 +1841,8 @@
           "chance": 0.12
         }
       ]
-    }
+    },
+    "evolutionId": "storm_evolution"
   },
   "silver_surfer": {
     "id": "silver_surfer",
@@ -1883,7 +1909,8 @@
       }
     },
     "terrainRole": "flyer",
-    "rangePattern": "x"
+    "rangePattern": "x",
+    "evolutionId": "silver_surfer_evolution"
   },
   "blade": {
     "id": "blade",
@@ -1959,7 +1986,8 @@
         }
       ],
       "statModifiers": {}
-    }
+    },
+    "evolutionId": "blade_evolution"
   },
   "ghost_rider": {
     "id": "ghost_rider",
@@ -2035,7 +2063,8 @@
         }
       ],
       "statModifiers": {}
-    }
+    },
+    "evolutionId": "ghost_rider_evolution"
   },
   "luke_cage": {
     "id": "luke_cage",
@@ -2100,7 +2129,8 @@
         ]
       }
     },
-    "terrainRole": "ground"
+    "terrainRole": "ground",
+    "evolutionId": "luke_cage_evolution"
   },
   "domino": {
     "id": "domino",
@@ -2172,7 +2202,8 @@
       },
       "visualStyle": "energy",
       "projectileColor": "#d8c8ff"
-    }
+    },
+    "evolutionId": "domino_evolution"
   },
   "war_machine": {
     "id": "war_machine",
@@ -2254,7 +2285,8 @@
       }
     },
     "terrainRole": "high",
-    "rangePattern": "cross"
+    "rangePattern": "cross",
+    "evolutionId": "war_machine_evolution"
   },
   "nick_fury": {
     "id": "nick_fury",
@@ -2328,7 +2360,8 @@
         ]
       }
     },
-    "terrainRole": "high"
+    "terrainRole": "high",
+    "evolutionId": "nick_fury_evolution"
   },
   "wasp": {
     "id": "wasp",
@@ -2404,7 +2437,8 @@
         ]
       }
     },
-    "terrainRole": "flyer"
+    "terrainRole": "flyer",
+    "evolutionId": "wasp_evolution"
   },
   "nova": {
     "id": "nova",
@@ -2483,7 +2517,8 @@
         ]
       }
     },
-    "terrainRole": "flyer"
+    "terrainRole": "flyer",
+    "evolutionId": "nova_evolution"
   },
   "quake": {
     "id": "quake",
@@ -2566,7 +2601,8 @@
         ]
       }
     },
-    "terrainRole": "ground"
+    "terrainRole": "ground",
+    "evolutionId": "quake_evolution"
   },
   "medusa": {
     "id": "medusa",
@@ -2648,7 +2684,8 @@
         ]
       }
     },
-    "terrainRole": "ground"
+    "terrainRole": "ground",
+    "evolutionId": "medusa_evolution"
   },
   "namor": {
     "id": "namor",
@@ -2723,7 +2760,8 @@
         ]
       }
     },
-    "terrainRole": "aquatic"
+    "terrainRole": "aquatic",
+    "evolutionId": "namor_evolution"
   },
   "iron_fist": {
     "id": "iron_fist",
@@ -2803,7 +2841,8 @@
         ]
       }
     },
-    "terrainRole": "ground"
+    "terrainRole": "ground",
+    "evolutionId": "iron_fist_evolution"
   },
   "punisher": {
     "id": "punisher",
@@ -2877,7 +2916,8 @@
       }
     },
     "terrainRole": "high",
-    "rangePattern": "cross"
+    "rangePattern": "cross",
+    "evolutionId": "punisher_evolution"
   },
   "elektra": {
     "id": "elektra",
@@ -2957,7 +2997,8 @@
         ]
       }
     },
-    "terrainRole": "ground"
+    "terrainRole": "ground",
+    "evolutionId": "elektra_evolution"
   },
   "jessica_jones": {
     "id": "jessica_jones",
@@ -3037,7 +3078,8 @@
         ]
       }
     },
-    "terrainRole": "ground"
+    "terrainRole": "ground",
+    "evolutionId": "jessica_jones_evolution"
   },
   "cloak": {
     "id": "cloak",
@@ -3119,7 +3161,8 @@
         ]
       }
     },
-    "terrainRole": "flyer"
+    "terrainRole": "flyer",
+    "evolutionId": "cloak_evolution"
   },
   "dagger": {
     "id": "dagger",
@@ -3205,7 +3248,8 @@
         ]
       }
     },
-    "terrainRole": "flyer"
+    "terrainRole": "flyer",
+    "evolutionId": "dagger_evolution"
   },
   "magik": {
     "id": "magik",
@@ -3295,7 +3339,8 @@
         ]
       }
     },
-    "terrainRole": "ground"
+    "terrainRole": "ground",
+    "evolutionId": "magik_evolution"
   },
   "iceman": {
     "id": "iceman",
@@ -3376,7 +3421,8 @@
         ]
       }
     },
-    "terrainRole": "ground"
+    "terrainRole": "ground",
+    "evolutionId": "iceman_evolution"
   },
   "shuri": {
     "id": "shuri",
@@ -3456,7 +3502,8 @@
         ]
       }
     },
-    "terrainRole": "grass"
+    "terrainRole": "grass",
+    "evolutionId": "shuri_evolution"
   },
   "okoye": {
     "id": "okoye",
@@ -3536,7 +3583,8 @@
         ]
       }
     },
-    "terrainRole": "ground"
+    "terrainRole": "ground",
+    "evolutionId": "okoye_evolution"
   },
   "black_bolt": {
     "id": "black_bolt",
@@ -3620,7 +3668,8 @@
       }
     },
     "terrainRole": "flyer",
-    "rangePattern": "ring"
+    "rangePattern": "ring",
+    "evolutionId": "black_bolt_evolution"
   },
   "crystal": {
     "id": "crystal",
@@ -3705,7 +3754,8 @@
         ]
       }
     },
-    "terrainRole": "flyer"
+    "terrainRole": "flyer",
+    "evolutionId": "crystal_evolution"
   },
   "namora": {
     "id": "namora",
@@ -3788,7 +3838,8 @@
         ]
       }
     },
-    "terrainRole": "aquatic"
+    "terrainRole": "aquatic",
+    "evolutionId": "namora_evolution"
   },
   "triton": {
     "id": "triton",
@@ -3869,7 +3920,8 @@
         ]
       }
     },
-    "terrainRole": "aquatic"
+    "terrainRole": "aquatic",
+    "evolutionId": "triton_evolution"
   },
   "black_cat": {
     "id": "black_cat",
@@ -3950,7 +4002,8 @@
         ]
       }
     },
-    "terrainRole": "ground"
+    "terrainRole": "ground",
+    "evolutionId": "black_cat_evolution"
   },
   "elsa_bloodstone": {
     "id": "elsa_bloodstone",
@@ -4038,7 +4091,8 @@
         ]
       }
     },
-    "terrainRole": "high"
+    "terrainRole": "high",
+    "evolutionId": "elsa_bloodstone_evolution"
   },
   "gambit": {
     "id": "gambit",
@@ -4118,7 +4172,8 @@
         ]
       }
     },
-    "terrainRole": "ground"
+    "terrainRole": "ground",
+    "evolutionId": "gambit_evolution"
   },
   "hela": {
     "id": "hela",
@@ -4209,7 +4264,8 @@
         ]
       }
     },
-    "terrainRole": "flyer"
+    "terrainRole": "flyer",
+    "evolutionId": "hela_evolution"
   },
   "human_torch": {
     "id": "human_torch",
@@ -4294,7 +4350,8 @@
         ]
       }
     },
-    "terrainRole": "flyer"
+    "terrainRole": "flyer",
+    "evolutionId": "human_torch_evolution"
   },
   "the_hood": {
     "id": "the_hood",
@@ -4380,7 +4437,8 @@
         ]
       }
     },
-    "terrainRole": "ground"
+    "terrainRole": "ground",
+    "evolutionId": "the_hood_evolution"
   },
   "psylocke": {
     "id": "psylocke",
@@ -4464,7 +4522,8 @@
         ]
       }
     },
-    "terrainRole": "ground"
+    "terrainRole": "ground",
+    "evolutionId": "psylocke_evolution"
   },
   "squirrel_girl": {
     "id": "squirrel_girl",
@@ -4543,7 +4602,8 @@
         ]
       }
     },
-    "terrainRole": "grass"
+    "terrainRole": "grass",
+    "evolutionId": "squirrel_girl_evolution"
   },
   "venom": {
     "id": "venom",
@@ -4634,7 +4694,8 @@
         ]
       }
     },
-    "terrainRole": "ground"
+    "terrainRole": "ground",
+    "evolutionId": "venom_evolution"
   },
   "angela": {
     "id": "angela",
@@ -4713,7 +4774,8 @@
         ]
       }
     },
-    "terrainRole": "flyer"
+    "terrainRole": "flyer",
+    "evolutionId": "angela_evolution"
   },
   "devil_dinosaur": {
     "id": "devil_dinosaur",
@@ -4797,7 +4859,8 @@
         ]
       }
     },
-    "terrainRole": "ground"
+    "terrainRole": "ground",
+    "evolutionId": "devil_dinosaur_evolution"
   },
   "emma_frost": {
     "id": "emma_frost",
@@ -4885,7 +4948,8 @@
         ]
       }
     },
-    "terrainRole": "ground"
+    "terrainRole": "ground",
+    "evolutionId": "emma_frost_evolution"
   },
   "magneto": {
     "id": "magneto",
@@ -4969,7 +5033,8 @@
       }
     },
     "terrainRole": "flyer",
-    "rangePattern": "ring"
+    "rangePattern": "ring",
+    "evolutionId": "magneto_evolution"
   },
   "peni_parker": {
     "id": "peni_parker",
@@ -5050,7 +5115,8 @@
         ]
       }
     },
-    "terrainRole": "ground"
+    "terrainRole": "ground",
+    "evolutionId": "peni_parker_evolution"
   },
   "adam_warlock": {
     "id": "adam_warlock",
@@ -5129,7 +5195,8 @@
         ]
       }
     },
-    "terrainRole": "flyer"
+    "terrainRole": "flyer",
+    "evolutionId": "adam_warlock_evolution"
   },
   "deadpool": {
     "id": "deadpool",
@@ -5210,7 +5277,8 @@
         ]
       }
     },
-    "terrainRole": "ground"
+    "terrainRole": "ground",
+    "evolutionId": "deadpool_evolution"
   },
   "invisible_woman": {
     "id": "invisible_woman",
@@ -5287,7 +5355,8 @@
         ]
       }
     },
-    "terrainRole": "flyer"
+    "terrainRole": "flyer",
+    "evolutionId": "invisible_woman_evolution"
   },
   "jeff_the_land_shark": {
     "id": "jeff_the_land_shark",
@@ -5368,7 +5437,8 @@
         ]
       }
     },
-    "terrainRole": "amphibious"
+    "terrainRole": "amphibious",
+    "evolutionId": "jeff_the_land_shark_evolution"
   },
   "jubilee": {
     "id": "jubilee",
@@ -5449,7 +5519,8 @@
         ]
       }
     },
-    "terrainRole": "ground"
+    "terrainRole": "ground",
+    "evolutionId": "jubilee_evolution"
   },
   "loki": {
     "id": "loki",
@@ -5548,7 +5619,8 @@
         ]
       }
     },
-    "terrainRole": "flyer"
+    "terrainRole": "flyer",
+    "evolutionId": "loki_evolution"
   },
   "luna_snow": {
     "id": "luna_snow",
@@ -5632,7 +5704,8 @@
         ]
       }
     },
-    "terrainRole": "ground"
+    "terrainRole": "ground",
+    "evolutionId": "luna_snow_evolution"
   },
   "mantis": {
     "id": "mantis",
@@ -5719,7 +5792,8 @@
         ]
       }
     },
-    "terrainRole": "ground"
+    "terrainRole": "ground",
+    "evolutionId": "mantis_evolution"
   },
   "mister_fantastic": {
     "id": "mister_fantastic",
@@ -5794,7 +5868,8 @@
         ]
       }
     },
-    "terrainRole": "ground"
+    "terrainRole": "ground",
+    "evolutionId": "mister_fantastic_evolution"
   },
   "rocket_raccoon": {
     "id": "rocket_raccoon",
@@ -5872,7 +5947,8 @@
       }
     },
     "terrainRole": "high",
-    "rangePattern": "cross"
+    "rangePattern": "cross",
+    "evolutionId": "rocket_raccoon_evolution"
   },
   "nightcrawler": {
     "id": "nightcrawler",
@@ -5964,7 +6040,8 @@
           "assets/images/heroes/nightcrawler/shoot/8.png"
         ]
       }
-    }
+    },
+    "evolutionId": "nightcrawler_evolution"
   },
   "ms_marvel": {
     "id": "ms_marvel",
@@ -6043,7 +6120,8 @@
           "assets/images/heroes/ms_marvel/shoot/8.png"
         ]
       }
-    }
+    },
+    "evolutionId": "ms_marvel_evolution"
   },
   "yelena_belova": {
     "id": "yelena_belova",
@@ -6125,7 +6203,8 @@
       ],
       "visualStyle": "ballistic",
       "projectileColor": "#d8dee9"
-    }
+    },
+    "evolutionId": "yelena_belova_evolution"
   },
   "mbaku": {
     "id": "mbaku",
@@ -6202,7 +6281,8 @@
       ],
       "visualStyle": "impact",
       "projectileColor": "#f7c873"
-    }
+    },
+    "evolutionId": "mbaku_evolution"
   },
   "red_guardian": {
     "id": "red_guardian",
@@ -6283,7 +6363,8 @@
       ],
       "visualStyle": "impact",
       "projectileColor": "#ef4444"
-    }
+    },
+    "evolutionId": "red_guardian_evolution"
   },
   "korg": {
     "id": "korg",
@@ -6364,7 +6445,8 @@
       ],
       "visualStyle": "impact",
       "projectileColor": "#a3a3a3"
-    }
+    },
+    "evolutionId": "korg_evolution"
   },
   "nebula": {
     "id": "nebula",
@@ -6444,7 +6526,8 @@
       },
       "visualStyle": "energy",
       "projectileColor": "#7dd3fc"
-    }
+    },
+    "evolutionId": "nebula_evolution"
   },
   "wong": {
     "id": "wong",
@@ -6520,7 +6603,8 @@
       },
       "visualStyle": "mystic",
       "projectileColor": "#f59e0b"
-    }
+    },
+    "evolutionId": "wong_evolution"
   },
   "yondu": {
     "id": "yondu",
@@ -6595,7 +6679,8 @@
       },
       "visualStyle": "energy",
       "projectileColor": "#ef4444"
-    }
+    },
+    "evolutionId": "yondu_evolution"
   },
   "maria_hill": {
     "id": "maria_hill",
@@ -6670,7 +6755,8 @@
       },
       "visualStyle": "energy",
       "projectileColor": "#94a3b8"
-    }
+    },
+    "evolutionId": "maria_hill_evolution"
   },
   "echo": {
     "id": "echo",
@@ -6749,7 +6835,8 @@
       },
       "visualStyle": "blade",
       "projectileColor": "#ffffff"
-    }
+    },
+    "evolutionId": "echo_evolution"
   },
   "howard_the_duck": {
     "id": "howard_the_duck",
@@ -6832,7 +6919,8 @@
       ],
       "visualStyle": "ballistic",
       "projectileColor": "#facc15"
-    }
+    },
+    "evolutionId": "howard_the_duck_evolution"
   },
   "valkyrie": {
     "id": "valkyrie",
@@ -6912,7 +7000,8 @@
       },
       "visualStyle": "blade",
       "projectileColor": "#facc15"
-    }
+    },
+    "evolutionId": "valkyrie_evolution"
   },
   "rogue": {
     "id": "rogue",
@@ -6995,7 +7084,8 @@
       ],
       "visualStyle": "impact",
       "projectileColor": "#86efac"
-    }
+    },
+    "evolutionId": "rogue_evolution"
   },
   "beast": {
     "id": "beast",
@@ -7077,7 +7167,8 @@
       ],
       "visualStyle": "impact",
       "projectileColor": "#60a5fa"
-    }
+    },
+    "evolutionId": "beast_evolution"
   },
   "cable": {
     "id": "cable",
@@ -7157,7 +7248,8 @@
       ],
       "visualStyle": "ballistic",
       "projectileColor": "#38bdf8"
-    }
+    },
+    "evolutionId": "cable_evolution"
   },
   "miles_morales": {
     "id": "miles_morales",
@@ -7240,7 +7332,8 @@
       ],
       "visualStyle": "web",
       "projectileColor": "#ef4444"
-    }
+    },
+    "evolutionId": "miles_morales_evolution"
   },
   "sentry": {
     "id": "sentry",
@@ -7322,7 +7415,8 @@
       ],
       "visualStyle": "energy",
       "projectileColor": "#fde68a"
-    }
+    },
+    "evolutionId": "sentry_evolution"
   },
   "x_23": {
     "id": "x_23",
@@ -7402,7 +7496,8 @@
       },
       "visualStyle": "blade",
       "projectileColor": "#cbd5e1"
-    }
+    },
+    "evolutionId": "x_23_evolution"
   },
   "beta_ray_bill": {
     "id": "beta_ray_bill",
@@ -7485,7 +7580,8 @@
       ],
       "visualStyle": "energy",
       "projectileColor": "#facc15"
-    }
+    },
+    "evolutionId": "beta_ray_bill_evolution"
   },
   "drax": {
     "id": "drax",
@@ -7561,7 +7657,8 @@
       ],
       "visualStyle": "blade",
       "projectileColor": "#ef4444"
-    }
+    },
+    "evolutionId": "drax_evolution"
   },
   "cosmo": {
     "id": "cosmo",
@@ -7643,7 +7740,8 @@
       ],
       "visualStyle": "mystic",
       "projectileColor": "#fde68a"
-    }
+    },
+    "evolutionId": "cosmo_evolution"
   },
   "lady_sif": {
     "id": "lady_sif",
@@ -7723,7 +7821,8 @@
       },
       "visualStyle": "blade",
       "projectileColor": "#fbbf24"
-    }
+    },
+    "evolutionId": "lady_sif_evolution"
   },
   "heimdall": {
     "id": "heimdall",
@@ -7803,7 +7902,8 @@
       },
       "visualStyle": "energy",
       "projectileColor": "#facc15"
-    }
+    },
+    "evolutionId": "heimdall_evolution"
   },
   "white_tiger": {
     "id": "white_tiger",
@@ -7883,7 +7983,8 @@
       },
       "visualStyle": "blade",
       "projectileColor": "#f8fafc"
-    }
+    },
+    "evolutionId": "white_tiger_evolution"
   },
   "tigra": {
     "id": "tigra",
@@ -7962,7 +8063,8 @@
       },
       "visualStyle": "blade",
       "projectileColor": "#fb923c"
-    }
+    },
+    "evolutionId": "tigra_evolution"
   },
   "mockingbird": {
     "id": "mockingbird",
@@ -8044,7 +8146,8 @@
       ],
       "visualStyle": "impact",
       "projectileColor": "#60a5fa"
-    }
+    },
+    "evolutionId": "mockingbird_evolution"
   },
   "kate_bishop": {
     "id": "kate_bishop",
@@ -8121,7 +8224,8 @@
       ],
       "visualStyle": "ballistic",
       "projectileColor": "#a78bfa"
-    }
+    },
+    "evolutionId": "kate_bishop_evolution"
   },
   "profesor_x": {
     "id": "profesor_x",
@@ -8197,6 +8301,7 @@
       },
       "visualStyle": "mystic",
       "projectileColor": "#c4b5fd"
-    }
+    },
+    "evolutionId": "profesor_x_evolution"
   }
 }

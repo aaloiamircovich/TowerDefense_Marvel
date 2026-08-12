@@ -299,29 +299,40 @@ test('rankings de modos se guardan separados de campaña', () => {
     assert.equal(manager.getMapProgress('level_1').bestWave, 0);
 });
 
-test('evoluciones quedan desactivadas hasta que el roster completo tenga sprites', () => {
+test('evoluciones se activan automaticamente por nivel y respetan objetos signature', () => {
     const manager = new ProgressionManager(new MemoryStorage());
     const game = createGame();
     manager.initialize(game, data);
-    manager.startProfile('iron_man');
+    manager.startProfile('capitan_america');
 
-    assert.equal(manager.setHeroEvolution('iron_man', 'iron_man_extremis'), false);
-    assert.equal(manager.getHeroEvolution('iron_man'), null);
-    assert.deepEqual(game.activeTeam.map((hero) => hero.id), ['iron_man']);
+    manager.setHeroLevel('capitan_america', 49);
+    assert.equal(manager.getHeroEvolution('capitan_america'), null);
+
+    manager.setHeroLevel('capitan_america', 50);
+    const base = manager.getHeroEvolution('capitan_america');
+    assert.equal(base.id, 'capitan_america_evolution');
+    assert.equal(base.activeItemId, undefined);
+
+    manager.addOwnedItem('mjolnir');
+    assert.equal(manager.equipItem('capitan_america', 'mjolnir'), true);
+    const withItem = manager.getHeroEvolution('capitan_america');
+    assert.equal(withItem.activeItemId, 'mjolnir');
+    assert.equal(withItem.allowsSupportAttack, true);
+    assert.ok(withItem.stats.damage > base.stats.damage);
 });
 
-test('saneado elimina evoluciones antiguas guardadas si el heroe no las declara', () => {
+test('saneado conserva solo evoluciones guardadas que pertenecen al heroe', () => {
     const storage = new MemoryStorage();
     storage.setItem(SAVE_KEY, JSON.stringify({
         version: SAVE_VERSION,
-        unlockedHeroIds: ['thor'],
+        unlockedHeroIds: ['thor', 'iron_man'],
         activeTeamIds: ['thor'],
-        selectedEvolutions: { thor: 'rune_king_thor' }
+        selectedEvolutions: { thor: 'thor_evolution', iron_man: 'phoenix' }
     }));
-    const manager = new ProgressionManager(new MemoryStorage());
+    const manager = new ProgressionManager(storage);
     manager.initialize(createGame(), data);
 
-    assert.deepEqual(manager.state.selectedEvolutions, {});
+    assert.deepEqual(manager.state.selectedEvolutions, { thor: 'thor_evolution' });
 });
 
 test('maestria recompensa desafios una sola vez y el codice persiste hallazgos', () => {

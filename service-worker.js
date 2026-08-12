@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hero-td-v2.44.0-boss-balance-v1-20260811';
+const CACHE_NAME = 'hero-td-v2.44.0-evolutions-signature-items-v1-20260811';
 const CORE_ASSETS = [
     './', './index.html', './styles.css', './manifest.webmanifest',
     './data/bootstrapData.js', './data/sprite-atlas.js', './data/heroes.json', './data/enemies.json',
@@ -34,7 +34,7 @@ const CORE_ASSETS = [
     './src/rendering/CombatVfx.js', './src/rendering/ImageCache.js', './src/rendering/ManhattanManualMap.js', './src/rendering/PixelMapRenderer.js', './src/rendering/SpriteAnimator.js',
     './src/systems/AvengerKitSystem.js', './src/systems/CosmicKitSystem.js', './src/systems/StreetKitSystem.js', './src/systems/MutantKitSystem.js', './src/systems/CombatSystem.js', './src/systems/EncounterDirector.js', './src/systems/EnemyBehaviorSystem.js', './src/systems/HeroAbilitySystem.js',
     './src/systems/GameModeSystem.js', './src/systems/EvolutionSystem.js', './src/systems/MasteryCodexSystem.js', './src/systems/ReplaySystem.js', './src/systems/MissionSystem.js', './src/systems/PerformanceMonitor.js', './src/systems/ProgressionManager.js', './src/systems/TeamSynergySystem.js',
-    './src/systems/ItemEffectSystem.js', './src/systems/ResourceManager.js', './src/systems/ShopSystem.js', './src/systems/TacticalActionSystem.js',
+    './src/systems/ItemEffectSystem.js', './src/systems/ItemSignatureSystem.js', './src/systems/ResourceManager.js', './src/systems/ShopSystem.js', './src/systems/TacticalActionSystem.js',
     './src/systems/UIManager.js', './src/systems/WaveManager.js',
     './src/ui/CampaignPanel.js', './src/ui/InventoryPanel.js', './src/ui/ProfilePanel.js', './src/ui/SettingsPanel.js', './src/ui/TeamBuilderPanel.js', './src/ui/TooltipController.js',
     './src/utils/HeroLevel.js', './src/utils/I18n.js', './src/utils/Loader.js', './src/utils/ObjectPool.js', './src/utils/PathUtils.js', './src/utils/Random.js', './src/utils/RangePattern.js'

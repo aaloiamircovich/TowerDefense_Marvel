@@ -19,7 +19,7 @@ test('validate-data acepta el contrato de datos actual', () => {
 
 test('validate-data bloquea evoluciones parciales del roster', () => {
     const workspace = createDataWorkspace((data) => {
-        data.heroes.iron_man.evolutionId = 'iron_man_extremis';
+        delete data.heroes.iron_man.evolutionId;
     });
     const result = runValidator(workspace);
 
