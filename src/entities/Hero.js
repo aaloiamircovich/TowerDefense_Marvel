@@ -8,6 +8,7 @@ import { buildSignatureAttackContext, renderSignatureVisuals, resolveSignatureAf
 import { getHeroRangePattern, isPointInRangePattern } from '../utils/RangePattern.js';
 import { getScaledSupportAura, normalizeHeroLevel } from '../utils/HeroLevel.js';
 import { TERRAIN } from '../utils/TerrainRules.js';
+import { resolveHeroVisual } from '../utils/HeroVisuals.js';
 
 export function buildHeroTargetIntent(hero, enemies = [], stats = null) {
     if (!hero?.getBestTarget) return null;
@@ -74,9 +75,23 @@ export class Hero {
         this.flashTimer = 0;
         this.stunTimer = 0;
         this.visualTime = 0;
-        this.animator = config.visual ? new SpriteAnimator(config.visual) : null;
-        this.legacyImage = getCachedImage(config.sprite);
+        this.activeVisualId = null;
+        this.animator = null;
+        this.legacyImage = null;
+        this.syncVisual();
         this.abilitySystem = new HeroAbilitySystem(this);
+    }
+
+    syncVisual() {
+        const resolved = resolveHeroVisual(this.config, this.game);
+        const visualId = `${resolved.id}:${resolved.sprite || ''}`;
+        if (this.activeVisualId === visualId) return;
+
+        const previousFacing = this.animator?.facing || resolved.visual?.defaultDirection || 'south';
+        this.activeVisualId = visualId;
+        this.animator = resolved.visual ? new SpriteAnimator(resolved.visual) : null;
+        if (this.animator) this.animator.facing = previousFacing;
+        this.legacyImage = getCachedImage(resolved.sprite);
     }
 
     getEffectiveStats() {
@@ -129,6 +144,7 @@ export class Hero {
     }
 
     update(dt, enemies, projectiles) {
+        this.syncVisual();
         this.timer += dt;
         this.flashTimer = Math.max(0, this.flashTimer - dt);
         this.stunTimer = Math.max(0, this.stunTimer - dt);

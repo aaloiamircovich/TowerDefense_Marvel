@@ -4,6 +4,7 @@ import { PAIR_SYNERGIES, SYNERGY_DEFINITIONS, analyzeTeam } from './TeamSynergyS
 import { getMusicTrack } from '../audio/AudioManager.js';
 import { HERO_MAX_LEVEL, getHeroDamageAtLevel, normalizeHeroLevel } from '../utils/HeroLevel.js';
 import { CAMPAIGN_MAX_WAVES, isBossWave } from '../utils/LevelProgression.js';
+import { resolveEvolutionVisualContract } from '../utils/HeroVisuals.js';
 
 const SAVE_KEY = 'tower-defense-marvel-save';
 const SAVE_VERSION = 9;
@@ -610,6 +611,7 @@ export class ProgressionManager {
             target.damage = config.damage;
             target.range = config.range;
             target.fireRate = config.fireRate;
+            target.syncVisual?.();
             return target;
         }
 
@@ -628,6 +630,24 @@ export class ProgressionManager {
         target.damage = getHeroDamageAtLevel(target.baseDamage, level, target.rarity || source.rarity);
         target.range = target.baseRange;
         target.fireRate = target.baseFireRate;
+        this.applyHeroEvolutionVisual(target);
+        return target;
+    }
+
+    applyHeroEvolutionVisual(target) {
+        if (!target?.id) return target;
+        const evolution = this.getHeroEvolution(target.id);
+        const contract = resolveEvolutionVisualContract(this.data?.evolutionVisuals || {}, evolution);
+        if (!contract?.visual) {
+            delete target.activeEvolutionVisualId;
+            delete target.evolutionSprite;
+            delete target.evolutionVisual;
+            return target;
+        }
+
+        target.activeEvolutionVisualId = contract.id || evolution?.transformId || evolution?.id;
+        target.evolutionSprite = contract.sprite || contract.visual.portrait;
+        target.evolutionVisual = contract.visual;
         return target;
     }
 

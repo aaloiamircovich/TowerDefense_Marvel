@@ -68,3 +68,42 @@ test('Loki, Magneto y Hela usan sprites de villano configurados', () => {
         });
     }
 });
+
+test('enemigos faltantes importados desde Enemigos tienen contratos visuales', () => {
+    const normalExpectations = {
+        hydra_soldier: 6,
+        sentinel: 6,
+        outrider: 6,
+        doombot: 8,
+        hellfire_guard: 9,
+        brotherhood_mutant: 9,
+        ultron_drone: 6,
+        mercenary_raider: 9,
+        asgardian_traitor: 9,
+        dark_zealot: 9
+    };
+    for (const [id, walkCount] of Object.entries(normalExpectations)) {
+        assertEnemyVisual(enemies.normal[id], {
+            size: 96,
+            walkCounts: { south: walkCount, north: walkCount, east: walkCount, west: walkCount },
+            attackCount: 0
+        });
+    }
+
+    const bossExpectations = {
+        doctor_doom: 6,
+        green_goblin: 9,
+        red_skull: 8,
+        kingpin: 8,
+        apocalypse: 9,
+        carnage: 9,
+        dormammu: 9
+    };
+    for (const [id, walkCount] of Object.entries(bossExpectations)) {
+        assertEnemyVisual(enemies.bosses[id], {
+            size: 96,
+            walkCounts: { south: walkCount, north: walkCount, east: walkCount, west: walkCount },
+            attackCount: 9
+        });
+    }
+});

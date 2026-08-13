@@ -15,6 +15,63 @@
       "threat": 2,
       "statusResistances": {
         "slow": 0.1
+      },
+      "sprite": "assets/images/enemies/hydra_soldier/portrait.png",
+      "visual": {
+        "defaultDirection": "south",
+        "walk": {
+          "frames": {
+            "north": [
+              "assets/images/enemies/hydra_soldier/walk/north/0.png",
+              "assets/images/enemies/hydra_soldier/walk/north/1.png",
+              "assets/images/enemies/hydra_soldier/walk/north/2.png",
+              "assets/images/enemies/hydra_soldier/walk/north/3.png",
+              "assets/images/enemies/hydra_soldier/walk/north/4.png",
+              "assets/images/enemies/hydra_soldier/walk/north/5.png"
+            ],
+            "south": [
+              "assets/images/enemies/hydra_soldier/walk/south/0.png",
+              "assets/images/enemies/hydra_soldier/walk/south/1.png",
+              "assets/images/enemies/hydra_soldier/walk/south/2.png",
+              "assets/images/enemies/hydra_soldier/walk/south/3.png",
+              "assets/images/enemies/hydra_soldier/walk/south/4.png",
+              "assets/images/enemies/hydra_soldier/walk/south/5.png"
+            ],
+            "west": [
+              "assets/images/enemies/hydra_soldier/walk/west/0.png",
+              "assets/images/enemies/hydra_soldier/walk/west/1.png",
+              "assets/images/enemies/hydra_soldier/walk/west/2.png",
+              "assets/images/enemies/hydra_soldier/walk/west/3.png",
+              "assets/images/enemies/hydra_soldier/walk/west/4.png",
+              "assets/images/enemies/hydra_soldier/walk/west/5.png"
+            ],
+            "east": [
+              "assets/images/enemies/hydra_soldier/walk/east/0.png",
+              "assets/images/enemies/hydra_soldier/walk/east/1.png",
+              "assets/images/enemies/hydra_soldier/walk/east/2.png",
+              "assets/images/enemies/hydra_soldier/walk/east/3.png",
+              "assets/images/enemies/hydra_soldier/walk/east/4.png",
+              "assets/images/enemies/hydra_soldier/walk/east/5.png"
+            ]
+          },
+          "fps": 8
+        },
+        "idle": {
+          "south": "assets/images/enemies/hydra_soldier/idle/south.png",
+          "north-west": "assets/images/enemies/hydra_soldier/idle/north-west.png",
+          "north": "assets/images/enemies/hydra_soldier/idle/north.png",
+          "south-west": "assets/images/enemies/hydra_soldier/idle/south-west.png",
+          "west": "assets/images/enemies/hydra_soldier/idle/west.png",
+          "north-east": "assets/images/enemies/hydra_soldier/idle/north-east.png",
+          "east": "assets/images/enemies/hydra_soldier/idle/east.png",
+          "south-east": "assets/images/enemies/hydra_soldier/idle/south-east.png"
+        },
+        "anchor": {
+          "y": 0.62,
+          "x": 0.5
+        },
+        "portrait": "assets/images/enemies/hydra_soldier/portrait.png",
+        "size": 96
       }
     },
     "aim_scientist": {
@@ -103,6 +160,63 @@
       "statusResistances": {
         "stun": 0.25,
         "poison": 0.35
+      },
+      "sprite": "assets/images/enemies/sentinel/portrait.png",
+      "visual": {
+        "defaultDirection": "south",
+        "walk": {
+          "frames": {
+            "north": [
+              "assets/images/enemies/sentinel/walk/north/0.png",
+              "assets/images/enemies/sentinel/walk/north/1.png",
+              "assets/images/enemies/sentinel/walk/north/2.png",
+              "assets/images/enemies/sentinel/walk/north/3.png",
+              "assets/images/enemies/sentinel/walk/north/4.png",
+              "assets/images/enemies/sentinel/walk/north/5.png"
+            ],
+            "south": [
+              "assets/images/enemies/sentinel/walk/south/0.png",
+              "assets/images/enemies/sentinel/walk/south/1.png",
+              "assets/images/enemies/sentinel/walk/south/2.png",
+              "assets/images/enemies/sentinel/walk/south/3.png",
+              "assets/images/enemies/sentinel/walk/south/4.png",
+              "assets/images/enemies/sentinel/walk/south/5.png"
+            ],
+            "west": [
+              "assets/images/enemies/sentinel/walk/west/0.png",
+              "assets/images/enemies/sentinel/walk/west/1.png",
+              "assets/images/enemies/sentinel/walk/west/2.png",
+              "assets/images/enemies/sentinel/walk/west/3.png",
+              "assets/images/enemies/sentinel/walk/west/4.png",
+              "assets/images/enemies/sentinel/walk/west/5.png"
+            ],
+            "east": [
+              "assets/images/enemies/sentinel/walk/east/0.png",
+              "assets/images/enemies/sentinel/walk/east/1.png",
+              "assets/images/enemies/sentinel/walk/east/2.png",
+              "assets/images/enemies/sentinel/walk/east/3.png",
+              "assets/images/enemies/sentinel/walk/east/4.png",
+              "assets/images/enemies/sentinel/walk/east/5.png"
+            ]
+          },
+          "fps": 8
+        },
+        "idle": {
+          "south": "assets/images/enemies/sentinel/idle/south.png",
+          "north-west": "assets/images/enemies/sentinel/idle/north-west.png",
+          "north": "assets/images/enemies/sentinel/idle/north.png",
+          "south-west": "assets/images/enemies/sentinel/idle/south-west.png",
+          "west": "assets/images/enemies/sentinel/idle/west.png",
+          "north-east": "assets/images/enemies/sentinel/idle/north-east.png",
+          "east": "assets/images/enemies/sentinel/idle/east.png",
+          "south-east": "assets/images/enemies/sentinel/idle/south-east.png"
+        },
+        "anchor": {
+          "y": 0.62,
+          "x": 0.5
+        },
+        "portrait": "assets/images/enemies/sentinel/portrait.png",
+        "size": 96
       }
     },
     "outrider": {
@@ -119,6 +233,63 @@
       "threat": 2,
       "statusResistances": {
         "stun": 0.15
+      },
+      "sprite": "assets/images/enemies/outrider/portrait.png",
+      "visual": {
+        "defaultDirection": "south",
+        "walk": {
+          "frames": {
+            "north": [
+              "assets/images/enemies/outrider/walk/north/0.png",
+              "assets/images/enemies/outrider/walk/north/1.png",
+              "assets/images/enemies/outrider/walk/north/2.png",
+              "assets/images/enemies/outrider/walk/north/3.png",
+              "assets/images/enemies/outrider/walk/north/4.png",
+              "assets/images/enemies/outrider/walk/north/5.png"
+            ],
+            "south": [
+              "assets/images/enemies/outrider/walk/south/0.png",
+              "assets/images/enemies/outrider/walk/south/1.png",
+              "assets/images/enemies/outrider/walk/south/2.png",
+              "assets/images/enemies/outrider/walk/south/3.png",
+              "assets/images/enemies/outrider/walk/south/4.png",
+              "assets/images/enemies/outrider/walk/south/5.png"
+            ],
+            "west": [
+              "assets/images/enemies/outrider/walk/west/0.png",
+              "assets/images/enemies/outrider/walk/west/1.png",
+              "assets/images/enemies/outrider/walk/west/2.png",
+              "assets/images/enemies/outrider/walk/west/3.png",
+              "assets/images/enemies/outrider/walk/west/4.png",
+              "assets/images/enemies/outrider/walk/west/5.png"
+            ],
+            "east": [
+              "assets/images/enemies/outrider/walk/east/0.png",
+              "assets/images/enemies/outrider/walk/east/1.png",
+              "assets/images/enemies/outrider/walk/east/2.png",
+              "assets/images/enemies/outrider/walk/east/3.png",
+              "assets/images/enemies/outrider/walk/east/4.png",
+              "assets/images/enemies/outrider/walk/east/5.png"
+            ]
+          },
+          "fps": 8
+        },
+        "idle": {
+          "south": "assets/images/enemies/outrider/idle/south.png",
+          "north-west": "assets/images/enemies/outrider/idle/north-west.png",
+          "north": "assets/images/enemies/outrider/idle/north.png",
+          "south-west": "assets/images/enemies/outrider/idle/south-west.png",
+          "west": "assets/images/enemies/outrider/idle/west.png",
+          "north-east": "assets/images/enemies/outrider/idle/north-east.png",
+          "east": "assets/images/enemies/outrider/idle/east.png",
+          "south-east": "assets/images/enemies/outrider/idle/south-east.png"
+        },
+        "anchor": {
+          "y": 0.62,
+          "x": 0.5
+        },
+        "portrait": "assets/images/enemies/outrider/portrait.png",
+        "size": 96
       }
     },
     "chitauri_warrior": {
@@ -467,7 +638,72 @@
       "summonId": "ultron_drone",
       "summonLimit": 2,
       "behaviorCooldown": 7,
-      "threat": 4
+      "threat": 4,
+      "sprite": "assets/images/enemies/doombot/portrait.png",
+      "visual": {
+        "defaultDirection": "south",
+        "walk": {
+          "frames": {
+            "north": [
+              "assets/images/enemies/doombot/walk/north/0.png",
+              "assets/images/enemies/doombot/walk/north/1.png",
+              "assets/images/enemies/doombot/walk/north/2.png",
+              "assets/images/enemies/doombot/walk/north/3.png",
+              "assets/images/enemies/doombot/walk/north/4.png",
+              "assets/images/enemies/doombot/walk/north/5.png",
+              "assets/images/enemies/doombot/walk/north/6.png",
+              "assets/images/enemies/doombot/walk/north/7.png"
+            ],
+            "south": [
+              "assets/images/enemies/doombot/walk/south/0.png",
+              "assets/images/enemies/doombot/walk/south/1.png",
+              "assets/images/enemies/doombot/walk/south/2.png",
+              "assets/images/enemies/doombot/walk/south/3.png",
+              "assets/images/enemies/doombot/walk/south/4.png",
+              "assets/images/enemies/doombot/walk/south/5.png",
+              "assets/images/enemies/doombot/walk/south/6.png",
+              "assets/images/enemies/doombot/walk/south/7.png"
+            ],
+            "west": [
+              "assets/images/enemies/doombot/walk/west/0.png",
+              "assets/images/enemies/doombot/walk/west/1.png",
+              "assets/images/enemies/doombot/walk/west/2.png",
+              "assets/images/enemies/doombot/walk/west/3.png",
+              "assets/images/enemies/doombot/walk/west/4.png",
+              "assets/images/enemies/doombot/walk/west/5.png",
+              "assets/images/enemies/doombot/walk/west/6.png",
+              "assets/images/enemies/doombot/walk/west/7.png"
+            ],
+            "east": [
+              "assets/images/enemies/doombot/walk/east/0.png",
+              "assets/images/enemies/doombot/walk/east/1.png",
+              "assets/images/enemies/doombot/walk/east/2.png",
+              "assets/images/enemies/doombot/walk/east/3.png",
+              "assets/images/enemies/doombot/walk/east/4.png",
+              "assets/images/enemies/doombot/walk/east/5.png",
+              "assets/images/enemies/doombot/walk/east/6.png",
+              "assets/images/enemies/doombot/walk/east/7.png"
+            ]
+          },
+          "fps": 8
+        },
+        "idle": {
+          "south": "assets/images/enemies/doombot/idle/south.png",
+          "north-west": "assets/images/enemies/doombot/idle/north-west.png",
+          "north": "assets/images/enemies/doombot/idle/north.png",
+          "south-west": "assets/images/enemies/doombot/idle/south-west.png",
+          "west": "assets/images/enemies/doombot/idle/west.png",
+          "north-east": "assets/images/enemies/doombot/idle/north-east.png",
+          "east": "assets/images/enemies/doombot/idle/east.png",
+          "south-east": "assets/images/enemies/doombot/idle/south-east.png"
+        },
+        "anchor": {
+          "y": 0.62,
+          "x": 0.5
+        },
+        "portrait": "assets/images/enemies/doombot/portrait.png",
+        "size": 96
+      }
     },
     "hellfire_guard": {
       "id": "hellfire_guard",
@@ -482,7 +718,76 @@
       "archetype": "support",
       "healPower": 0.08,
       "behaviorCooldown": 4,
-      "threat": 3
+      "threat": 3,
+      "sprite": "assets/images/enemies/hellfire_guard/portrait.png",
+      "visual": {
+        "defaultDirection": "south",
+        "walk": {
+          "frames": {
+            "north": [
+              "assets/images/enemies/hellfire_guard/walk/north/0.png",
+              "assets/images/enemies/hellfire_guard/walk/north/1.png",
+              "assets/images/enemies/hellfire_guard/walk/north/2.png",
+              "assets/images/enemies/hellfire_guard/walk/north/3.png",
+              "assets/images/enemies/hellfire_guard/walk/north/4.png",
+              "assets/images/enemies/hellfire_guard/walk/north/5.png",
+              "assets/images/enemies/hellfire_guard/walk/north/6.png",
+              "assets/images/enemies/hellfire_guard/walk/north/7.png",
+              "assets/images/enemies/hellfire_guard/walk/north/8.png"
+            ],
+            "south": [
+              "assets/images/enemies/hellfire_guard/walk/south/0.png",
+              "assets/images/enemies/hellfire_guard/walk/south/1.png",
+              "assets/images/enemies/hellfire_guard/walk/south/2.png",
+              "assets/images/enemies/hellfire_guard/walk/south/3.png",
+              "assets/images/enemies/hellfire_guard/walk/south/4.png",
+              "assets/images/enemies/hellfire_guard/walk/south/5.png",
+              "assets/images/enemies/hellfire_guard/walk/south/6.png",
+              "assets/images/enemies/hellfire_guard/walk/south/7.png",
+              "assets/images/enemies/hellfire_guard/walk/south/8.png"
+            ],
+            "west": [
+              "assets/images/enemies/hellfire_guard/walk/west/0.png",
+              "assets/images/enemies/hellfire_guard/walk/west/1.png",
+              "assets/images/enemies/hellfire_guard/walk/west/2.png",
+              "assets/images/enemies/hellfire_guard/walk/west/3.png",
+              "assets/images/enemies/hellfire_guard/walk/west/4.png",
+              "assets/images/enemies/hellfire_guard/walk/west/5.png",
+              "assets/images/enemies/hellfire_guard/walk/west/6.png",
+              "assets/images/enemies/hellfire_guard/walk/west/7.png",
+              "assets/images/enemies/hellfire_guard/walk/west/8.png"
+            ],
+            "east": [
+              "assets/images/enemies/hellfire_guard/walk/east/0.png",
+              "assets/images/enemies/hellfire_guard/walk/east/1.png",
+              "assets/images/enemies/hellfire_guard/walk/east/2.png",
+              "assets/images/enemies/hellfire_guard/walk/east/3.png",
+              "assets/images/enemies/hellfire_guard/walk/east/4.png",
+              "assets/images/enemies/hellfire_guard/walk/east/5.png",
+              "assets/images/enemies/hellfire_guard/walk/east/6.png",
+              "assets/images/enemies/hellfire_guard/walk/east/7.png",
+              "assets/images/enemies/hellfire_guard/walk/east/8.png"
+            ]
+          },
+          "fps": 8
+        },
+        "idle": {
+          "south": "assets/images/enemies/hellfire_guard/idle/south.png",
+          "north-west": "assets/images/enemies/hellfire_guard/idle/north-west.png",
+          "north": "assets/images/enemies/hellfire_guard/idle/north.png",
+          "south-west": "assets/images/enemies/hellfire_guard/idle/south-west.png",
+          "west": "assets/images/enemies/hellfire_guard/idle/west.png",
+          "north-east": "assets/images/enemies/hellfire_guard/idle/north-east.png",
+          "east": "assets/images/enemies/hellfire_guard/idle/east.png",
+          "south-east": "assets/images/enemies/hellfire_guard/idle/south-east.png"
+        },
+        "anchor": {
+          "y": 0.62,
+          "x": 0.5
+        },
+        "portrait": "assets/images/enemies/hellfire_guard/portrait.png",
+        "size": 96
+      }
     },
     "frost_giant_scout": {
       "id": "frost_giant_scout",
@@ -629,7 +934,76 @@
       "faction": "Hermandad Mutante",
       "archetype": "support",
       "healPower": 0.05,
-      "threat": 3
+      "threat": 3,
+      "sprite": "assets/images/enemies/brotherhood_mutant/portrait.png",
+      "visual": {
+        "defaultDirection": "south",
+        "walk": {
+          "frames": {
+            "north": [
+              "assets/images/enemies/brotherhood_mutant/walk/north/0.png",
+              "assets/images/enemies/brotherhood_mutant/walk/north/1.png",
+              "assets/images/enemies/brotherhood_mutant/walk/north/2.png",
+              "assets/images/enemies/brotherhood_mutant/walk/north/3.png",
+              "assets/images/enemies/brotherhood_mutant/walk/north/4.png",
+              "assets/images/enemies/brotherhood_mutant/walk/north/5.png",
+              "assets/images/enemies/brotherhood_mutant/walk/north/6.png",
+              "assets/images/enemies/brotherhood_mutant/walk/north/7.png",
+              "assets/images/enemies/brotherhood_mutant/walk/north/8.png"
+            ],
+            "south": [
+              "assets/images/enemies/brotherhood_mutant/walk/south/0.png",
+              "assets/images/enemies/brotherhood_mutant/walk/south/1.png",
+              "assets/images/enemies/brotherhood_mutant/walk/south/2.png",
+              "assets/images/enemies/brotherhood_mutant/walk/south/3.png",
+              "assets/images/enemies/brotherhood_mutant/walk/south/4.png",
+              "assets/images/enemies/brotherhood_mutant/walk/south/5.png",
+              "assets/images/enemies/brotherhood_mutant/walk/south/6.png",
+              "assets/images/enemies/brotherhood_mutant/walk/south/7.png",
+              "assets/images/enemies/brotherhood_mutant/walk/south/8.png"
+            ],
+            "west": [
+              "assets/images/enemies/brotherhood_mutant/walk/west/0.png",
+              "assets/images/enemies/brotherhood_mutant/walk/west/1.png",
+              "assets/images/enemies/brotherhood_mutant/walk/west/2.png",
+              "assets/images/enemies/brotherhood_mutant/walk/west/3.png",
+              "assets/images/enemies/brotherhood_mutant/walk/west/4.png",
+              "assets/images/enemies/brotherhood_mutant/walk/west/5.png",
+              "assets/images/enemies/brotherhood_mutant/walk/west/6.png",
+              "assets/images/enemies/brotherhood_mutant/walk/west/7.png",
+              "assets/images/enemies/brotherhood_mutant/walk/west/8.png"
+            ],
+            "east": [
+              "assets/images/enemies/brotherhood_mutant/walk/east/0.png",
+              "assets/images/enemies/brotherhood_mutant/walk/east/1.png",
+              "assets/images/enemies/brotherhood_mutant/walk/east/2.png",
+              "assets/images/enemies/brotherhood_mutant/walk/east/3.png",
+              "assets/images/enemies/brotherhood_mutant/walk/east/4.png",
+              "assets/images/enemies/brotherhood_mutant/walk/east/5.png",
+              "assets/images/enemies/brotherhood_mutant/walk/east/6.png",
+              "assets/images/enemies/brotherhood_mutant/walk/east/7.png",
+              "assets/images/enemies/brotherhood_mutant/walk/east/8.png"
+            ]
+          },
+          "fps": 8
+        },
+        "idle": {
+          "south": "assets/images/enemies/brotherhood_mutant/idle/south.png",
+          "north-west": "assets/images/enemies/brotherhood_mutant/idle/north-west.png",
+          "north": "assets/images/enemies/brotherhood_mutant/idle/north.png",
+          "south-west": "assets/images/enemies/brotherhood_mutant/idle/south-west.png",
+          "west": "assets/images/enemies/brotherhood_mutant/idle/west.png",
+          "north-east": "assets/images/enemies/brotherhood_mutant/idle/north-east.png",
+          "east": "assets/images/enemies/brotherhood_mutant/idle/east.png",
+          "south-east": "assets/images/enemies/brotherhood_mutant/idle/south-east.png"
+        },
+        "anchor": {
+          "y": 0.62,
+          "x": 0.5
+        },
+        "portrait": "assets/images/enemies/brotherhood_mutant/portrait.png",
+        "size": 96
+      }
     },
     "ultron_drone": {
       "id": "ultron_drone",
@@ -649,6 +1023,63 @@
       "threat": 2,
       "resistances": {
         "Tecnol?gico": 0.15
+      },
+      "sprite": "assets/images/enemies/ultron_drone/portrait.png",
+      "visual": {
+        "defaultDirection": "south",
+        "walk": {
+          "frames": {
+            "north": [
+              "assets/images/enemies/ultron_drone/walk/north/0.png",
+              "assets/images/enemies/ultron_drone/walk/north/1.png",
+              "assets/images/enemies/ultron_drone/walk/north/2.png",
+              "assets/images/enemies/ultron_drone/walk/north/3.png",
+              "assets/images/enemies/ultron_drone/walk/north/4.png",
+              "assets/images/enemies/ultron_drone/walk/north/5.png"
+            ],
+            "south": [
+              "assets/images/enemies/ultron_drone/walk/south/0.png",
+              "assets/images/enemies/ultron_drone/walk/south/1.png",
+              "assets/images/enemies/ultron_drone/walk/south/2.png",
+              "assets/images/enemies/ultron_drone/walk/south/3.png",
+              "assets/images/enemies/ultron_drone/walk/south/4.png",
+              "assets/images/enemies/ultron_drone/walk/south/5.png"
+            ],
+            "west": [
+              "assets/images/enemies/ultron_drone/walk/west/0.png",
+              "assets/images/enemies/ultron_drone/walk/west/1.png",
+              "assets/images/enemies/ultron_drone/walk/west/2.png",
+              "assets/images/enemies/ultron_drone/walk/west/3.png",
+              "assets/images/enemies/ultron_drone/walk/west/4.png",
+              "assets/images/enemies/ultron_drone/walk/west/5.png"
+            ],
+            "east": [
+              "assets/images/enemies/ultron_drone/walk/east/0.png",
+              "assets/images/enemies/ultron_drone/walk/east/1.png",
+              "assets/images/enemies/ultron_drone/walk/east/2.png",
+              "assets/images/enemies/ultron_drone/walk/east/3.png",
+              "assets/images/enemies/ultron_drone/walk/east/4.png",
+              "assets/images/enemies/ultron_drone/walk/east/5.png"
+            ]
+          },
+          "fps": 8
+        },
+        "idle": {
+          "south": "assets/images/enemies/ultron_drone/idle/south.png",
+          "north-west": "assets/images/enemies/ultron_drone/idle/north-west.png",
+          "north": "assets/images/enemies/ultron_drone/idle/north.png",
+          "south-west": "assets/images/enemies/ultron_drone/idle/south-west.png",
+          "west": "assets/images/enemies/ultron_drone/idle/west.png",
+          "north-east": "assets/images/enemies/ultron_drone/idle/north-east.png",
+          "east": "assets/images/enemies/ultron_drone/idle/east.png",
+          "south-east": "assets/images/enemies/ultron_drone/idle/south-east.png"
+        },
+        "anchor": {
+          "y": 0.62,
+          "x": 0.5
+        },
+        "portrait": "assets/images/enemies/ultron_drone/portrait.png",
+        "size": 96
       }
     },
     "mercenary_raider": {
@@ -662,7 +1093,76 @@
       "stealth": false,
       "faction": "Mercenarios",
       "archetype": "runner",
-      "threat": 2
+      "threat": 2,
+      "sprite": "assets/images/enemies/mercenary_raider/portrait.png",
+      "visual": {
+        "defaultDirection": "south",
+        "walk": {
+          "frames": {
+            "north": [
+              "assets/images/enemies/mercenary_raider/walk/north/0.png",
+              "assets/images/enemies/mercenary_raider/walk/north/1.png",
+              "assets/images/enemies/mercenary_raider/walk/north/2.png",
+              "assets/images/enemies/mercenary_raider/walk/north/3.png",
+              "assets/images/enemies/mercenary_raider/walk/north/4.png",
+              "assets/images/enemies/mercenary_raider/walk/north/5.png",
+              "assets/images/enemies/mercenary_raider/walk/north/6.png",
+              "assets/images/enemies/mercenary_raider/walk/north/7.png",
+              "assets/images/enemies/mercenary_raider/walk/north/8.png"
+            ],
+            "south": [
+              "assets/images/enemies/mercenary_raider/walk/south/0.png",
+              "assets/images/enemies/mercenary_raider/walk/south/1.png",
+              "assets/images/enemies/mercenary_raider/walk/south/2.png",
+              "assets/images/enemies/mercenary_raider/walk/south/3.png",
+              "assets/images/enemies/mercenary_raider/walk/south/4.png",
+              "assets/images/enemies/mercenary_raider/walk/south/5.png",
+              "assets/images/enemies/mercenary_raider/walk/south/6.png",
+              "assets/images/enemies/mercenary_raider/walk/south/7.png",
+              "assets/images/enemies/mercenary_raider/walk/south/8.png"
+            ],
+            "west": [
+              "assets/images/enemies/mercenary_raider/walk/west/0.png",
+              "assets/images/enemies/mercenary_raider/walk/west/1.png",
+              "assets/images/enemies/mercenary_raider/walk/west/2.png",
+              "assets/images/enemies/mercenary_raider/walk/west/3.png",
+              "assets/images/enemies/mercenary_raider/walk/west/4.png",
+              "assets/images/enemies/mercenary_raider/walk/west/5.png",
+              "assets/images/enemies/mercenary_raider/walk/west/6.png",
+              "assets/images/enemies/mercenary_raider/walk/west/7.png",
+              "assets/images/enemies/mercenary_raider/walk/west/8.png"
+            ],
+            "east": [
+              "assets/images/enemies/mercenary_raider/walk/east/0.png",
+              "assets/images/enemies/mercenary_raider/walk/east/1.png",
+              "assets/images/enemies/mercenary_raider/walk/east/2.png",
+              "assets/images/enemies/mercenary_raider/walk/east/3.png",
+              "assets/images/enemies/mercenary_raider/walk/east/4.png",
+              "assets/images/enemies/mercenary_raider/walk/east/5.png",
+              "assets/images/enemies/mercenary_raider/walk/east/6.png",
+              "assets/images/enemies/mercenary_raider/walk/east/7.png",
+              "assets/images/enemies/mercenary_raider/walk/east/8.png"
+            ]
+          },
+          "fps": 8
+        },
+        "idle": {
+          "south": "assets/images/enemies/mercenary_raider/idle/south.png",
+          "north-west": "assets/images/enemies/mercenary_raider/idle/north-west.png",
+          "north": "assets/images/enemies/mercenary_raider/idle/north.png",
+          "south-west": "assets/images/enemies/mercenary_raider/idle/south-west.png",
+          "west": "assets/images/enemies/mercenary_raider/idle/west.png",
+          "north-east": "assets/images/enemies/mercenary_raider/idle/north-east.png",
+          "east": "assets/images/enemies/mercenary_raider/idle/east.png",
+          "south-east": "assets/images/enemies/mercenary_raider/idle/south-east.png"
+        },
+        "anchor": {
+          "y": 0.62,
+          "x": 0.5
+        },
+        "portrait": "assets/images/enemies/mercenary_raider/portrait.png",
+        "size": 96
+      }
     },
     "kree_commander": {
       "id": "kree_commander",
@@ -818,7 +1318,76 @@
       "stealth": false,
       "faction": "Ejército de Malekith",
       "archetype": "soldier",
-      "threat": 4
+      "threat": 4,
+      "sprite": "assets/images/enemies/asgardian_traitor/portrait.png",
+      "visual": {
+        "defaultDirection": "south",
+        "walk": {
+          "frames": {
+            "north": [
+              "assets/images/enemies/asgardian_traitor/walk/north/0.png",
+              "assets/images/enemies/asgardian_traitor/walk/north/1.png",
+              "assets/images/enemies/asgardian_traitor/walk/north/2.png",
+              "assets/images/enemies/asgardian_traitor/walk/north/3.png",
+              "assets/images/enemies/asgardian_traitor/walk/north/4.png",
+              "assets/images/enemies/asgardian_traitor/walk/north/5.png",
+              "assets/images/enemies/asgardian_traitor/walk/north/6.png",
+              "assets/images/enemies/asgardian_traitor/walk/north/7.png",
+              "assets/images/enemies/asgardian_traitor/walk/north/8.png"
+            ],
+            "south": [
+              "assets/images/enemies/asgardian_traitor/walk/south/0.png",
+              "assets/images/enemies/asgardian_traitor/walk/south/1.png",
+              "assets/images/enemies/asgardian_traitor/walk/south/2.png",
+              "assets/images/enemies/asgardian_traitor/walk/south/3.png",
+              "assets/images/enemies/asgardian_traitor/walk/south/4.png",
+              "assets/images/enemies/asgardian_traitor/walk/south/5.png",
+              "assets/images/enemies/asgardian_traitor/walk/south/6.png",
+              "assets/images/enemies/asgardian_traitor/walk/south/7.png",
+              "assets/images/enemies/asgardian_traitor/walk/south/8.png"
+            ],
+            "west": [
+              "assets/images/enemies/asgardian_traitor/walk/west/0.png",
+              "assets/images/enemies/asgardian_traitor/walk/west/1.png",
+              "assets/images/enemies/asgardian_traitor/walk/west/2.png",
+              "assets/images/enemies/asgardian_traitor/walk/west/3.png",
+              "assets/images/enemies/asgardian_traitor/walk/west/4.png",
+              "assets/images/enemies/asgardian_traitor/walk/west/5.png",
+              "assets/images/enemies/asgardian_traitor/walk/west/6.png",
+              "assets/images/enemies/asgardian_traitor/walk/west/7.png",
+              "assets/images/enemies/asgardian_traitor/walk/west/8.png"
+            ],
+            "east": [
+              "assets/images/enemies/asgardian_traitor/walk/east/0.png",
+              "assets/images/enemies/asgardian_traitor/walk/east/1.png",
+              "assets/images/enemies/asgardian_traitor/walk/east/2.png",
+              "assets/images/enemies/asgardian_traitor/walk/east/3.png",
+              "assets/images/enemies/asgardian_traitor/walk/east/4.png",
+              "assets/images/enemies/asgardian_traitor/walk/east/5.png",
+              "assets/images/enemies/asgardian_traitor/walk/east/6.png",
+              "assets/images/enemies/asgardian_traitor/walk/east/7.png",
+              "assets/images/enemies/asgardian_traitor/walk/east/8.png"
+            ]
+          },
+          "fps": 8
+        },
+        "idle": {
+          "south": "assets/images/enemies/asgardian_traitor/idle/south.png",
+          "north-west": "assets/images/enemies/asgardian_traitor/idle/north-west.png",
+          "north": "assets/images/enemies/asgardian_traitor/idle/north.png",
+          "south-west": "assets/images/enemies/asgardian_traitor/idle/south-west.png",
+          "west": "assets/images/enemies/asgardian_traitor/idle/west.png",
+          "north-east": "assets/images/enemies/asgardian_traitor/idle/north-east.png",
+          "east": "assets/images/enemies/asgardian_traitor/idle/east.png",
+          "south-east": "assets/images/enemies/asgardian_traitor/idle/south-east.png"
+        },
+        "anchor": {
+          "y": 0.62,
+          "x": 0.5
+        },
+        "portrait": "assets/images/enemies/asgardian_traitor/portrait.png",
+        "size": 96
+      }
     },
     "dark_elf_skirmisher": {
       "id": "dark_elf_skirmisher",
@@ -865,7 +1434,76 @@
       "archetype": "support",
       "healPower": 0.05,
       "behaviorCooldown": 5,
-      "threat": 4
+      "threat": 4,
+      "sprite": "assets/images/enemies/dark_zealot/portrait.png",
+      "visual": {
+        "defaultDirection": "south",
+        "walk": {
+          "frames": {
+            "north": [
+              "assets/images/enemies/dark_zealot/walk/north/0.png",
+              "assets/images/enemies/dark_zealot/walk/north/1.png",
+              "assets/images/enemies/dark_zealot/walk/north/2.png",
+              "assets/images/enemies/dark_zealot/walk/north/3.png",
+              "assets/images/enemies/dark_zealot/walk/north/4.png",
+              "assets/images/enemies/dark_zealot/walk/north/5.png",
+              "assets/images/enemies/dark_zealot/walk/north/6.png",
+              "assets/images/enemies/dark_zealot/walk/north/7.png",
+              "assets/images/enemies/dark_zealot/walk/north/8.png"
+            ],
+            "south": [
+              "assets/images/enemies/dark_zealot/walk/south/0.png",
+              "assets/images/enemies/dark_zealot/walk/south/1.png",
+              "assets/images/enemies/dark_zealot/walk/south/2.png",
+              "assets/images/enemies/dark_zealot/walk/south/3.png",
+              "assets/images/enemies/dark_zealot/walk/south/4.png",
+              "assets/images/enemies/dark_zealot/walk/south/5.png",
+              "assets/images/enemies/dark_zealot/walk/south/6.png",
+              "assets/images/enemies/dark_zealot/walk/south/7.png",
+              "assets/images/enemies/dark_zealot/walk/south/8.png"
+            ],
+            "west": [
+              "assets/images/enemies/dark_zealot/walk/west/0.png",
+              "assets/images/enemies/dark_zealot/walk/west/1.png",
+              "assets/images/enemies/dark_zealot/walk/west/2.png",
+              "assets/images/enemies/dark_zealot/walk/west/3.png",
+              "assets/images/enemies/dark_zealot/walk/west/4.png",
+              "assets/images/enemies/dark_zealot/walk/west/5.png",
+              "assets/images/enemies/dark_zealot/walk/west/6.png",
+              "assets/images/enemies/dark_zealot/walk/west/7.png",
+              "assets/images/enemies/dark_zealot/walk/west/8.png"
+            ],
+            "east": [
+              "assets/images/enemies/dark_zealot/walk/east/0.png",
+              "assets/images/enemies/dark_zealot/walk/east/1.png",
+              "assets/images/enemies/dark_zealot/walk/east/2.png",
+              "assets/images/enemies/dark_zealot/walk/east/3.png",
+              "assets/images/enemies/dark_zealot/walk/east/4.png",
+              "assets/images/enemies/dark_zealot/walk/east/5.png",
+              "assets/images/enemies/dark_zealot/walk/east/6.png",
+              "assets/images/enemies/dark_zealot/walk/east/7.png",
+              "assets/images/enemies/dark_zealot/walk/east/8.png"
+            ]
+          },
+          "fps": 8
+        },
+        "idle": {
+          "south": "assets/images/enemies/dark_zealot/idle/south.png",
+          "north-west": "assets/images/enemies/dark_zealot/idle/north-west.png",
+          "north": "assets/images/enemies/dark_zealot/idle/north.png",
+          "south-west": "assets/images/enemies/dark_zealot/idle/south-west.png",
+          "west": "assets/images/enemies/dark_zealot/idle/west.png",
+          "north-east": "assets/images/enemies/dark_zealot/idle/north-east.png",
+          "east": "assets/images/enemies/dark_zealot/idle/east.png",
+          "south-east": "assets/images/enemies/dark_zealot/idle/south-east.png"
+        },
+        "anchor": {
+          "y": 0.62,
+          "x": 0.5
+        },
+        "portrait": "assets/images/enemies/dark_zealot/portrait.png",
+        "size": 96
+      }
     },
     "savage_raptor": {
       "id": "savage_raptor",
@@ -1071,7 +1709,78 @@
       "reward": 1500,
       "armor": 0.5,
       "stealth": false,
-      "immuneToStun": true
+      "immuneToStun": true,
+      "sprite": "assets/images/enemies/doctor_doom/portrait.png",
+      "visual": {
+        "defaultDirection": "south",
+        "walk": {
+          "frames": {
+            "north": [
+              "assets/images/enemies/doctor_doom/walk/north/0.png",
+              "assets/images/enemies/doctor_doom/walk/north/1.png",
+              "assets/images/enemies/doctor_doom/walk/north/2.png",
+              "assets/images/enemies/doctor_doom/walk/north/3.png",
+              "assets/images/enemies/doctor_doom/walk/north/4.png",
+              "assets/images/enemies/doctor_doom/walk/north/5.png"
+            ],
+            "south": [
+              "assets/images/enemies/doctor_doom/walk/south/0.png",
+              "assets/images/enemies/doctor_doom/walk/south/1.png",
+              "assets/images/enemies/doctor_doom/walk/south/2.png",
+              "assets/images/enemies/doctor_doom/walk/south/3.png",
+              "assets/images/enemies/doctor_doom/walk/south/4.png",
+              "assets/images/enemies/doctor_doom/walk/south/5.png"
+            ],
+            "west": [
+              "assets/images/enemies/doctor_doom/walk/west/0.png",
+              "assets/images/enemies/doctor_doom/walk/west/1.png",
+              "assets/images/enemies/doctor_doom/walk/west/2.png",
+              "assets/images/enemies/doctor_doom/walk/west/3.png",
+              "assets/images/enemies/doctor_doom/walk/west/4.png",
+              "assets/images/enemies/doctor_doom/walk/west/5.png"
+            ],
+            "east": [
+              "assets/images/enemies/doctor_doom/walk/east/0.png",
+              "assets/images/enemies/doctor_doom/walk/east/1.png",
+              "assets/images/enemies/doctor_doom/walk/east/2.png",
+              "assets/images/enemies/doctor_doom/walk/east/3.png",
+              "assets/images/enemies/doctor_doom/walk/east/4.png",
+              "assets/images/enemies/doctor_doom/walk/east/5.png"
+            ]
+          },
+          "fps": 8
+        },
+        "idle": {
+          "south": "assets/images/enemies/doctor_doom/idle/south.png",
+          "north-west": "assets/images/enemies/doctor_doom/idle/north-west.png",
+          "north": "assets/images/enemies/doctor_doom/idle/north.png",
+          "south-west": "assets/images/enemies/doctor_doom/idle/south-west.png",
+          "west": "assets/images/enemies/doctor_doom/idle/west.png",
+          "north-east": "assets/images/enemies/doctor_doom/idle/north-east.png",
+          "east": "assets/images/enemies/doctor_doom/idle/east.png",
+          "south-east": "assets/images/enemies/doctor_doom/idle/south-east.png"
+        },
+        "attack": {
+          "frames": [
+            "assets/images/enemies/doctor_doom/attack/0.png",
+            "assets/images/enemies/doctor_doom/attack/1.png",
+            "assets/images/enemies/doctor_doom/attack/2.png",
+            "assets/images/enemies/doctor_doom/attack/3.png",
+            "assets/images/enemies/doctor_doom/attack/4.png",
+            "assets/images/enemies/doctor_doom/attack/5.png",
+            "assets/images/enemies/doctor_doom/attack/6.png",
+            "assets/images/enemies/doctor_doom/attack/7.png",
+            "assets/images/enemies/doctor_doom/attack/8.png"
+          ],
+          "fps": 10
+        },
+        "anchor": {
+          "y": 0.62,
+          "x": 0.5
+        },
+        "portrait": "assets/images/enemies/doctor_doom/portrait.png",
+        "size": 96
+      }
     },
     "magneto": {
       "id": "magneto",
@@ -1189,6 +1898,89 @@
       "immuneToSlow": false,
       "statusResistances": {
         "slow": 0.3
+      },
+      "sprite": "assets/images/enemies/green_goblin/portrait.png",
+      "visual": {
+        "defaultDirection": "south",
+        "walk": {
+          "frames": {
+            "north": [
+              "assets/images/enemies/green_goblin/walk/north/0.png",
+              "assets/images/enemies/green_goblin/walk/north/1.png",
+              "assets/images/enemies/green_goblin/walk/north/2.png",
+              "assets/images/enemies/green_goblin/walk/north/3.png",
+              "assets/images/enemies/green_goblin/walk/north/4.png",
+              "assets/images/enemies/green_goblin/walk/north/5.png",
+              "assets/images/enemies/green_goblin/walk/north/6.png",
+              "assets/images/enemies/green_goblin/walk/north/7.png",
+              "assets/images/enemies/green_goblin/walk/north/8.png"
+            ],
+            "south": [
+              "assets/images/enemies/green_goblin/walk/south/0.png",
+              "assets/images/enemies/green_goblin/walk/south/1.png",
+              "assets/images/enemies/green_goblin/walk/south/2.png",
+              "assets/images/enemies/green_goblin/walk/south/3.png",
+              "assets/images/enemies/green_goblin/walk/south/4.png",
+              "assets/images/enemies/green_goblin/walk/south/5.png",
+              "assets/images/enemies/green_goblin/walk/south/6.png",
+              "assets/images/enemies/green_goblin/walk/south/7.png",
+              "assets/images/enemies/green_goblin/walk/south/8.png"
+            ],
+            "west": [
+              "assets/images/enemies/green_goblin/walk/west/0.png",
+              "assets/images/enemies/green_goblin/walk/west/1.png",
+              "assets/images/enemies/green_goblin/walk/west/2.png",
+              "assets/images/enemies/green_goblin/walk/west/3.png",
+              "assets/images/enemies/green_goblin/walk/west/4.png",
+              "assets/images/enemies/green_goblin/walk/west/5.png",
+              "assets/images/enemies/green_goblin/walk/west/6.png",
+              "assets/images/enemies/green_goblin/walk/west/7.png",
+              "assets/images/enemies/green_goblin/walk/west/8.png"
+            ],
+            "east": [
+              "assets/images/enemies/green_goblin/walk/east/0.png",
+              "assets/images/enemies/green_goblin/walk/east/1.png",
+              "assets/images/enemies/green_goblin/walk/east/2.png",
+              "assets/images/enemies/green_goblin/walk/east/3.png",
+              "assets/images/enemies/green_goblin/walk/east/4.png",
+              "assets/images/enemies/green_goblin/walk/east/5.png",
+              "assets/images/enemies/green_goblin/walk/east/6.png",
+              "assets/images/enemies/green_goblin/walk/east/7.png",
+              "assets/images/enemies/green_goblin/walk/east/8.png"
+            ]
+          },
+          "fps": 8
+        },
+        "idle": {
+          "south": "assets/images/enemies/green_goblin/idle/south.png",
+          "north-west": "assets/images/enemies/green_goblin/idle/north-west.png",
+          "north": "assets/images/enemies/green_goblin/idle/north.png",
+          "south-west": "assets/images/enemies/green_goblin/idle/south-west.png",
+          "west": "assets/images/enemies/green_goblin/idle/west.png",
+          "north-east": "assets/images/enemies/green_goblin/idle/north-east.png",
+          "east": "assets/images/enemies/green_goblin/idle/east.png",
+          "south-east": "assets/images/enemies/green_goblin/idle/south-east.png"
+        },
+        "attack": {
+          "frames": [
+            "assets/images/enemies/green_goblin/attack/0.png",
+            "assets/images/enemies/green_goblin/attack/1.png",
+            "assets/images/enemies/green_goblin/attack/2.png",
+            "assets/images/enemies/green_goblin/attack/3.png",
+            "assets/images/enemies/green_goblin/attack/4.png",
+            "assets/images/enemies/green_goblin/attack/5.png",
+            "assets/images/enemies/green_goblin/attack/6.png",
+            "assets/images/enemies/green_goblin/attack/7.png",
+            "assets/images/enemies/green_goblin/attack/8.png"
+          ],
+          "fps": 10
+        },
+        "anchor": {
+          "y": 0.62,
+          "x": 0.5
+        },
+        "portrait": "assets/images/enemies/green_goblin/portrait.png",
+        "size": 96
       }
     },
     "red_skull": {
@@ -1201,7 +1993,86 @@
       "reward": 1000,
       "armor": 0.3,
       "stealth": false,
-      "immuneToStun": false
+      "immuneToStun": false,
+      "sprite": "assets/images/enemies/red_skull/portrait.png",
+      "visual": {
+        "defaultDirection": "south",
+        "walk": {
+          "frames": {
+            "north": [
+              "assets/images/enemies/red_skull/walk/north/0.png",
+              "assets/images/enemies/red_skull/walk/north/1.png",
+              "assets/images/enemies/red_skull/walk/north/2.png",
+              "assets/images/enemies/red_skull/walk/north/3.png",
+              "assets/images/enemies/red_skull/walk/north/4.png",
+              "assets/images/enemies/red_skull/walk/north/5.png",
+              "assets/images/enemies/red_skull/walk/north/6.png",
+              "assets/images/enemies/red_skull/walk/north/7.png"
+            ],
+            "south": [
+              "assets/images/enemies/red_skull/walk/south/0.png",
+              "assets/images/enemies/red_skull/walk/south/1.png",
+              "assets/images/enemies/red_skull/walk/south/2.png",
+              "assets/images/enemies/red_skull/walk/south/3.png",
+              "assets/images/enemies/red_skull/walk/south/4.png",
+              "assets/images/enemies/red_skull/walk/south/5.png",
+              "assets/images/enemies/red_skull/walk/south/6.png",
+              "assets/images/enemies/red_skull/walk/south/7.png"
+            ],
+            "west": [
+              "assets/images/enemies/red_skull/walk/west/0.png",
+              "assets/images/enemies/red_skull/walk/west/1.png",
+              "assets/images/enemies/red_skull/walk/west/2.png",
+              "assets/images/enemies/red_skull/walk/west/3.png",
+              "assets/images/enemies/red_skull/walk/west/4.png",
+              "assets/images/enemies/red_skull/walk/west/5.png",
+              "assets/images/enemies/red_skull/walk/west/6.png",
+              "assets/images/enemies/red_skull/walk/west/7.png"
+            ],
+            "east": [
+              "assets/images/enemies/red_skull/walk/east/0.png",
+              "assets/images/enemies/red_skull/walk/east/1.png",
+              "assets/images/enemies/red_skull/walk/east/2.png",
+              "assets/images/enemies/red_skull/walk/east/3.png",
+              "assets/images/enemies/red_skull/walk/east/4.png",
+              "assets/images/enemies/red_skull/walk/east/5.png",
+              "assets/images/enemies/red_skull/walk/east/6.png",
+              "assets/images/enemies/red_skull/walk/east/7.png"
+            ]
+          },
+          "fps": 8
+        },
+        "idle": {
+          "south": "assets/images/enemies/red_skull/idle/south.png",
+          "north-west": "assets/images/enemies/red_skull/idle/north-west.png",
+          "north": "assets/images/enemies/red_skull/idle/north.png",
+          "south-west": "assets/images/enemies/red_skull/idle/south-west.png",
+          "west": "assets/images/enemies/red_skull/idle/west.png",
+          "north-east": "assets/images/enemies/red_skull/idle/north-east.png",
+          "east": "assets/images/enemies/red_skull/idle/east.png",
+          "south-east": "assets/images/enemies/red_skull/idle/south-east.png"
+        },
+        "attack": {
+          "frames": [
+            "assets/images/enemies/red_skull/attack/0.png",
+            "assets/images/enemies/red_skull/attack/1.png",
+            "assets/images/enemies/red_skull/attack/2.png",
+            "assets/images/enemies/red_skull/attack/3.png",
+            "assets/images/enemies/red_skull/attack/4.png",
+            "assets/images/enemies/red_skull/attack/5.png",
+            "assets/images/enemies/red_skull/attack/6.png",
+            "assets/images/enemies/red_skull/attack/7.png",
+            "assets/images/enemies/red_skull/attack/8.png"
+          ],
+          "fps": 10
+        },
+        "anchor": {
+          "y": 0.62,
+          "x": 0.5
+        },
+        "portrait": "assets/images/enemies/red_skull/portrait.png",
+        "size": 96
+      }
     },
     "ultron_prime": {
       "id": "ultron_prime",
@@ -1341,7 +2212,86 @@
       "reward": 1500,
       "armor": 0.45,
       "stealth": false,
-      "immuneToSlow": true
+      "immuneToSlow": true,
+      "sprite": "assets/images/enemies/kingpin/portrait.png",
+      "visual": {
+        "defaultDirection": "south",
+        "walk": {
+          "frames": {
+            "north": [
+              "assets/images/enemies/kingpin/walk/north/0.png",
+              "assets/images/enemies/kingpin/walk/north/1.png",
+              "assets/images/enemies/kingpin/walk/north/2.png",
+              "assets/images/enemies/kingpin/walk/north/3.png",
+              "assets/images/enemies/kingpin/walk/north/4.png",
+              "assets/images/enemies/kingpin/walk/north/5.png",
+              "assets/images/enemies/kingpin/walk/north/6.png",
+              "assets/images/enemies/kingpin/walk/north/7.png"
+            ],
+            "south": [
+              "assets/images/enemies/kingpin/walk/south/0.png",
+              "assets/images/enemies/kingpin/walk/south/1.png",
+              "assets/images/enemies/kingpin/walk/south/2.png",
+              "assets/images/enemies/kingpin/walk/south/3.png",
+              "assets/images/enemies/kingpin/walk/south/4.png",
+              "assets/images/enemies/kingpin/walk/south/5.png",
+              "assets/images/enemies/kingpin/walk/south/6.png",
+              "assets/images/enemies/kingpin/walk/south/7.png"
+            ],
+            "west": [
+              "assets/images/enemies/kingpin/walk/west/0.png",
+              "assets/images/enemies/kingpin/walk/west/1.png",
+              "assets/images/enemies/kingpin/walk/west/2.png",
+              "assets/images/enemies/kingpin/walk/west/3.png",
+              "assets/images/enemies/kingpin/walk/west/4.png",
+              "assets/images/enemies/kingpin/walk/west/5.png",
+              "assets/images/enemies/kingpin/walk/west/6.png",
+              "assets/images/enemies/kingpin/walk/west/7.png"
+            ],
+            "east": [
+              "assets/images/enemies/kingpin/walk/east/0.png",
+              "assets/images/enemies/kingpin/walk/east/1.png",
+              "assets/images/enemies/kingpin/walk/east/2.png",
+              "assets/images/enemies/kingpin/walk/east/3.png",
+              "assets/images/enemies/kingpin/walk/east/4.png",
+              "assets/images/enemies/kingpin/walk/east/5.png",
+              "assets/images/enemies/kingpin/walk/east/6.png",
+              "assets/images/enemies/kingpin/walk/east/7.png"
+            ]
+          },
+          "fps": 8
+        },
+        "idle": {
+          "south": "assets/images/enemies/kingpin/idle/south.png",
+          "north-west": "assets/images/enemies/kingpin/idle/north-west.png",
+          "north": "assets/images/enemies/kingpin/idle/north.png",
+          "south-west": "assets/images/enemies/kingpin/idle/south-west.png",
+          "west": "assets/images/enemies/kingpin/idle/west.png",
+          "north-east": "assets/images/enemies/kingpin/idle/north-east.png",
+          "east": "assets/images/enemies/kingpin/idle/east.png",
+          "south-east": "assets/images/enemies/kingpin/idle/south-east.png"
+        },
+        "attack": {
+          "frames": [
+            "assets/images/enemies/kingpin/attack/0.png",
+            "assets/images/enemies/kingpin/attack/1.png",
+            "assets/images/enemies/kingpin/attack/2.png",
+            "assets/images/enemies/kingpin/attack/3.png",
+            "assets/images/enemies/kingpin/attack/4.png",
+            "assets/images/enemies/kingpin/attack/5.png",
+            "assets/images/enemies/kingpin/attack/6.png",
+            "assets/images/enemies/kingpin/attack/7.png",
+            "assets/images/enemies/kingpin/attack/8.png"
+          ],
+          "fps": 10
+        },
+        "anchor": {
+          "y": 0.62,
+          "x": 0.5
+        },
+        "portrait": "assets/images/enemies/kingpin/portrait.png",
+        "size": 96
+      }
     },
     "kang": {
       "id": "kang",
@@ -1449,7 +2399,90 @@
       "armor": 0.42,
       "stealth": false,
       "immuneToStun": true,
-      "immuneToSlow": true
+      "immuneToSlow": true,
+      "sprite": "assets/images/enemies/apocalypse/portrait.png",
+      "visual": {
+        "defaultDirection": "south",
+        "walk": {
+          "frames": {
+            "north": [
+              "assets/images/enemies/apocalypse/walk/north/0.png",
+              "assets/images/enemies/apocalypse/walk/north/1.png",
+              "assets/images/enemies/apocalypse/walk/north/2.png",
+              "assets/images/enemies/apocalypse/walk/north/3.png",
+              "assets/images/enemies/apocalypse/walk/north/4.png",
+              "assets/images/enemies/apocalypse/walk/north/5.png",
+              "assets/images/enemies/apocalypse/walk/north/6.png",
+              "assets/images/enemies/apocalypse/walk/north/7.png",
+              "assets/images/enemies/apocalypse/walk/north/8.png"
+            ],
+            "south": [
+              "assets/images/enemies/apocalypse/walk/south/0.png",
+              "assets/images/enemies/apocalypse/walk/south/1.png",
+              "assets/images/enemies/apocalypse/walk/south/2.png",
+              "assets/images/enemies/apocalypse/walk/south/3.png",
+              "assets/images/enemies/apocalypse/walk/south/4.png",
+              "assets/images/enemies/apocalypse/walk/south/5.png",
+              "assets/images/enemies/apocalypse/walk/south/6.png",
+              "assets/images/enemies/apocalypse/walk/south/7.png",
+              "assets/images/enemies/apocalypse/walk/south/8.png"
+            ],
+            "west": [
+              "assets/images/enemies/apocalypse/walk/west/0.png",
+              "assets/images/enemies/apocalypse/walk/west/1.png",
+              "assets/images/enemies/apocalypse/walk/west/2.png",
+              "assets/images/enemies/apocalypse/walk/west/3.png",
+              "assets/images/enemies/apocalypse/walk/west/4.png",
+              "assets/images/enemies/apocalypse/walk/west/5.png",
+              "assets/images/enemies/apocalypse/walk/west/6.png",
+              "assets/images/enemies/apocalypse/walk/west/7.png",
+              "assets/images/enemies/apocalypse/walk/west/8.png"
+            ],
+            "east": [
+              "assets/images/enemies/apocalypse/walk/east/0.png",
+              "assets/images/enemies/apocalypse/walk/east/1.png",
+              "assets/images/enemies/apocalypse/walk/east/2.png",
+              "assets/images/enemies/apocalypse/walk/east/3.png",
+              "assets/images/enemies/apocalypse/walk/east/4.png",
+              "assets/images/enemies/apocalypse/walk/east/5.png",
+              "assets/images/enemies/apocalypse/walk/east/6.png",
+              "assets/images/enemies/apocalypse/walk/east/7.png",
+              "assets/images/enemies/apocalypse/walk/east/8.png"
+            ]
+          },
+          "fps": 8
+        },
+        "idle": {
+          "south": "assets/images/enemies/apocalypse/idle/south.png",
+          "north-west": "assets/images/enemies/apocalypse/idle/north-west.png",
+          "north": "assets/images/enemies/apocalypse/idle/north.png",
+          "south-west": "assets/images/enemies/apocalypse/idle/south-west.png",
+          "west": "assets/images/enemies/apocalypse/idle/west.png",
+          "north-east": "assets/images/enemies/apocalypse/idle/north-east.png",
+          "east": "assets/images/enemies/apocalypse/idle/east.png",
+          "south-east": "assets/images/enemies/apocalypse/idle/south-east.png"
+        },
+        "attack": {
+          "frames": [
+            "assets/images/enemies/apocalypse/attack/0.png",
+            "assets/images/enemies/apocalypse/attack/1.png",
+            "assets/images/enemies/apocalypse/attack/2.png",
+            "assets/images/enemies/apocalypse/attack/3.png",
+            "assets/images/enemies/apocalypse/attack/4.png",
+            "assets/images/enemies/apocalypse/attack/5.png",
+            "assets/images/enemies/apocalypse/attack/6.png",
+            "assets/images/enemies/apocalypse/attack/7.png",
+            "assets/images/enemies/apocalypse/attack/8.png"
+          ],
+          "fps": 10
+        },
+        "anchor": {
+          "y": 0.62,
+          "x": 0.5
+        },
+        "portrait": "assets/images/enemies/apocalypse/portrait.png",
+        "size": 96
+      }
     },
     "carnage": {
       "id": "carnage",
@@ -1466,6 +2499,89 @@
       "statusResistances": {
         "slow": 0.45,
         "poison": 0.25
+      },
+      "sprite": "assets/images/enemies/carnage/portrait.png",
+      "visual": {
+        "defaultDirection": "south",
+        "walk": {
+          "frames": {
+            "north": [
+              "assets/images/enemies/carnage/walk/north/0.png",
+              "assets/images/enemies/carnage/walk/north/1.png",
+              "assets/images/enemies/carnage/walk/north/2.png",
+              "assets/images/enemies/carnage/walk/north/3.png",
+              "assets/images/enemies/carnage/walk/north/4.png",
+              "assets/images/enemies/carnage/walk/north/5.png",
+              "assets/images/enemies/carnage/walk/north/6.png",
+              "assets/images/enemies/carnage/walk/north/7.png",
+              "assets/images/enemies/carnage/walk/north/8.png"
+            ],
+            "south": [
+              "assets/images/enemies/carnage/walk/south/0.png",
+              "assets/images/enemies/carnage/walk/south/1.png",
+              "assets/images/enemies/carnage/walk/south/2.png",
+              "assets/images/enemies/carnage/walk/south/3.png",
+              "assets/images/enemies/carnage/walk/south/4.png",
+              "assets/images/enemies/carnage/walk/south/5.png",
+              "assets/images/enemies/carnage/walk/south/6.png",
+              "assets/images/enemies/carnage/walk/south/7.png",
+              "assets/images/enemies/carnage/walk/south/8.png"
+            ],
+            "west": [
+              "assets/images/enemies/carnage/walk/west/0.png",
+              "assets/images/enemies/carnage/walk/west/1.png",
+              "assets/images/enemies/carnage/walk/west/2.png",
+              "assets/images/enemies/carnage/walk/west/3.png",
+              "assets/images/enemies/carnage/walk/west/4.png",
+              "assets/images/enemies/carnage/walk/west/5.png",
+              "assets/images/enemies/carnage/walk/west/6.png",
+              "assets/images/enemies/carnage/walk/west/7.png",
+              "assets/images/enemies/carnage/walk/west/8.png"
+            ],
+            "east": [
+              "assets/images/enemies/carnage/walk/east/0.png",
+              "assets/images/enemies/carnage/walk/east/1.png",
+              "assets/images/enemies/carnage/walk/east/2.png",
+              "assets/images/enemies/carnage/walk/east/3.png",
+              "assets/images/enemies/carnage/walk/east/4.png",
+              "assets/images/enemies/carnage/walk/east/5.png",
+              "assets/images/enemies/carnage/walk/east/6.png",
+              "assets/images/enemies/carnage/walk/east/7.png",
+              "assets/images/enemies/carnage/walk/east/8.png"
+            ]
+          },
+          "fps": 8
+        },
+        "idle": {
+          "south": "assets/images/enemies/carnage/idle/south.png",
+          "north-west": "assets/images/enemies/carnage/idle/north-west.png",
+          "north": "assets/images/enemies/carnage/idle/north.png",
+          "south-west": "assets/images/enemies/carnage/idle/south-west.png",
+          "west": "assets/images/enemies/carnage/idle/west.png",
+          "north-east": "assets/images/enemies/carnage/idle/north-east.png",
+          "east": "assets/images/enemies/carnage/idle/east.png",
+          "south-east": "assets/images/enemies/carnage/idle/south-east.png"
+        },
+        "attack": {
+          "frames": [
+            "assets/images/enemies/carnage/attack/0.png",
+            "assets/images/enemies/carnage/attack/1.png",
+            "assets/images/enemies/carnage/attack/2.png",
+            "assets/images/enemies/carnage/attack/3.png",
+            "assets/images/enemies/carnage/attack/4.png",
+            "assets/images/enemies/carnage/attack/5.png",
+            "assets/images/enemies/carnage/attack/6.png",
+            "assets/images/enemies/carnage/attack/7.png",
+            "assets/images/enemies/carnage/attack/8.png"
+          ],
+          "fps": 10
+        },
+        "anchor": {
+          "y": 0.62,
+          "x": 0.5
+        },
+        "portrait": "assets/images/enemies/carnage/portrait.png",
+        "size": 96
       }
     },
     "hela": {
@@ -1590,7 +2706,90 @@
       "armor": 0.2,
       "stealth": false,
       "immuneToStun": true,
-      "immuneToSlow": true
+      "immuneToSlow": true,
+      "sprite": "assets/images/enemies/dormammu/portrait.png",
+      "visual": {
+        "defaultDirection": "south",
+        "walk": {
+          "frames": {
+            "north": [
+              "assets/images/enemies/dormammu/walk/north/0.png",
+              "assets/images/enemies/dormammu/walk/north/1.png",
+              "assets/images/enemies/dormammu/walk/north/2.png",
+              "assets/images/enemies/dormammu/walk/north/3.png",
+              "assets/images/enemies/dormammu/walk/north/4.png",
+              "assets/images/enemies/dormammu/walk/north/5.png",
+              "assets/images/enemies/dormammu/walk/north/6.png",
+              "assets/images/enemies/dormammu/walk/north/7.png",
+              "assets/images/enemies/dormammu/walk/north/8.png"
+            ],
+            "south": [
+              "assets/images/enemies/dormammu/walk/south/0.png",
+              "assets/images/enemies/dormammu/walk/south/1.png",
+              "assets/images/enemies/dormammu/walk/south/2.png",
+              "assets/images/enemies/dormammu/walk/south/3.png",
+              "assets/images/enemies/dormammu/walk/south/4.png",
+              "assets/images/enemies/dormammu/walk/south/5.png",
+              "assets/images/enemies/dormammu/walk/south/6.png",
+              "assets/images/enemies/dormammu/walk/south/7.png",
+              "assets/images/enemies/dormammu/walk/south/8.png"
+            ],
+            "west": [
+              "assets/images/enemies/dormammu/walk/west/0.png",
+              "assets/images/enemies/dormammu/walk/west/1.png",
+              "assets/images/enemies/dormammu/walk/west/2.png",
+              "assets/images/enemies/dormammu/walk/west/3.png",
+              "assets/images/enemies/dormammu/walk/west/4.png",
+              "assets/images/enemies/dormammu/walk/west/5.png",
+              "assets/images/enemies/dormammu/walk/west/6.png",
+              "assets/images/enemies/dormammu/walk/west/7.png",
+              "assets/images/enemies/dormammu/walk/west/8.png"
+            ],
+            "east": [
+              "assets/images/enemies/dormammu/walk/east/0.png",
+              "assets/images/enemies/dormammu/walk/east/1.png",
+              "assets/images/enemies/dormammu/walk/east/2.png",
+              "assets/images/enemies/dormammu/walk/east/3.png",
+              "assets/images/enemies/dormammu/walk/east/4.png",
+              "assets/images/enemies/dormammu/walk/east/5.png",
+              "assets/images/enemies/dormammu/walk/east/6.png",
+              "assets/images/enemies/dormammu/walk/east/7.png",
+              "assets/images/enemies/dormammu/walk/east/8.png"
+            ]
+          },
+          "fps": 8
+        },
+        "idle": {
+          "south": "assets/images/enemies/dormammu/idle/south.png",
+          "north-west": "assets/images/enemies/dormammu/idle/north-west.png",
+          "north": "assets/images/enemies/dormammu/idle/north.png",
+          "south-west": "assets/images/enemies/dormammu/idle/south-west.png",
+          "west": "assets/images/enemies/dormammu/idle/west.png",
+          "north-east": "assets/images/enemies/dormammu/idle/north-east.png",
+          "east": "assets/images/enemies/dormammu/idle/east.png",
+          "south-east": "assets/images/enemies/dormammu/idle/south-east.png"
+        },
+        "attack": {
+          "frames": [
+            "assets/images/enemies/dormammu/attack/0.png",
+            "assets/images/enemies/dormammu/attack/1.png",
+            "assets/images/enemies/dormammu/attack/2.png",
+            "assets/images/enemies/dormammu/attack/3.png",
+            "assets/images/enemies/dormammu/attack/4.png",
+            "assets/images/enemies/dormammu/attack/5.png",
+            "assets/images/enemies/dormammu/attack/6.png",
+            "assets/images/enemies/dormammu/attack/7.png",
+            "assets/images/enemies/dormammu/attack/8.png"
+          ],
+          "fps": 10
+        },
+        "anchor": {
+          "y": 0.62,
+          "x": 0.5
+        },
+        "portrait": "assets/images/enemies/dormammu/portrait.png",
+        "size": 96
+      }
     },
     "galactus": {
       "id": "galactus",

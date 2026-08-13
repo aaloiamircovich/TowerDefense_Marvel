@@ -1,5 +1,5 @@
 const imageCache = new Map();
-const ASSET_VERSION = 'battle-sprites-20260713';
+const ASSET_VERSION = 'evolution-enemy-sprites-20260812';
 
 function versionAssetSource(source) {
     if (!source?.startsWith?.('assets/images/')) return source;

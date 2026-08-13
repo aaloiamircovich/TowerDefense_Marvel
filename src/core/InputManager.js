@@ -4,6 +4,7 @@ import { getNextTargetingPriority } from '../systems/UIManager.js';
 import { getClosestPointOnPath } from '../utils/PathUtils.js';
 import { buildHeroTargetIntent } from '../entities/Hero.js';
 import { getHeroRangePattern, getRangePatternLabel, isPointInRangePattern } from '../utils/RangePattern.js';
+import { resolveHeroVisual } from '../utils/HeroVisuals.js';
 import {
     canPlaceOnTerrain,
     getAllowedTerrainLabels,
@@ -681,10 +682,11 @@ export class InputManager {
     }
 
     drawHeroGhost(ctx, x, y, valid) {
-        const source = this.placingHero.visual?.idle?.south || this.placingHero.visual?.portrait || this.placingHero.sprite;
+        const resolved = resolveHeroVisual(this.placingHero, this.game);
+        const source = resolved.visual?.idle?.south || resolved.visual?.portrait || resolved.sprite;
         const { image, frame } = getSpriteFrame(source);
         if (!image?.complete || image.naturalWidth <= 0) return;
-        const size = Math.min(this.placingHero.visual?.size || 72, 86);
+        const size = Math.min(resolved.visual?.size || this.placingHero.visual?.size || 72, 86);
         ctx.globalAlpha = valid ? 0.78 : 0.42;
         if (frame) {
             ctx.drawImage(image, frame.x, frame.y, frame.width, frame.height, x - size / 2, y - size / 2, size, size);

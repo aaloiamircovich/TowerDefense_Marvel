@@ -2,6 +2,7 @@ import { formatEffectSummary, getSynergyMenuModel } from '../systems/TeamSynergy
 import { EVOLUTION_CATALOG } from '../systems/EvolutionSystem.js';
 import { buildVillainCodexModel } from '../systems/VillainCodexSystem.js';
 import { HERO_RARITIES, getRarityClass, normalizeRarity } from '../utils/Rarity.js';
+import { resolveEvolutionVisualContract } from '../utils/HeroVisuals.js';
 import { buildItemEquipDeltaRows, renderItemDeltaRows } from './InventoryPanel.js';
 
 const METRIC_LABELS = {
@@ -344,12 +345,17 @@ export class TeamBuilderPanel {
             <div class="villain-codex-grid evolution-codex-grid">
                 ${entries.map((evolution) => {
                     const hero = game.heroDatabase[evolution.baseHeroId];
+                    const visualContract = resolveEvolutionVisualContract(game.evolutionVisualDatabase, evolution)
+                        || (evolution.itemTransforms || []).map((entry) => game.evolutionVisualDatabase?.[entry.id]).find(Boolean);
+                    const sprite = visualContract?.visual?.idle?.south
+                        || visualContract?.visual?.portrait
+                        || this.getCollectionSprite(hero);
                     const transforms = (evolution.itemTransforms || [])
                         .map((entry) => game.itemDatabase?.[entry.itemId]?.name || entry.itemId)
                         .join(', ');
                     return `
                         <article class="villain-card unlocked evolution-card">
-                            ${this.ui.renderSprite(hero.sprite, hero.name)}
+                            ${this.ui.renderSprite(sprite, evolution.name)}
                             <div>
                                 <h3>${hero.name}</h3>
                                 <small>Nivel ${evolution.requiredLevel} · ${evolution.name}</small>

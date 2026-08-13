@@ -98,7 +98,8 @@ async function initGame() {
             enemies: './data/enemies.json',
             waves: './data/waves.json',
             levels: './data/levels.json',
-            items: './data/items.json'
+            items: './data/items.json',
+            evolutionVisuals: './data/evolutionVisuals.json'
         });
 
         if (!data.heroes || !data.enemies || !data.levels || !data.items) {
@@ -108,6 +109,7 @@ async function initGame() {
         game.heroDatabase = data.heroes;
         game.enemyDatabase = data.enemies;
         game.itemDatabase = data.items;
+        game.evolutionVisualDatabase = data.evolutionVisuals || {};
         game.levelsData = data.levels;
         game.waveData = data.waves || [];
         game.unlockedHeroes = [];

@@ -10,8 +10,9 @@ import { getHeroBoxCost } from './ShopSystem.js';
 import { getAllowedTerrainLabels } from '../utils/TerrainRules.js';
 import { getRarityClass, normalizeRarity } from '../utils/Rarity.js';
 import { HERO_MAX_LEVEL, calculateHeroLevelCost, getHeroDamageAtLevel, getHeroLevelUpgradeSteps, getScaledSupportAura, normalizeHeroLevel } from '../utils/HeroLevel.js';
+import { pickHeroDisplaySprite } from '../utils/HeroVisuals.js';
 
-const ASSET_VERSION = 'battle-sprites-20260713';
+const ASSET_VERSION = 'evolution-enemy-sprites-20260812';
 
 function versionAssetSource(source) {
     if (!source?.startsWith?.('assets/images/')) return source;
@@ -2628,13 +2629,6 @@ export class UIManager {
 
     getHeroDisplaySprite(hero) {
         if (!hero) return null;
-        const config = hero.config || hero;
-        if (config.id === 'iron_man' || config.id === 'spiderman') {
-            return config.visual?.idle?.south
-                || config.visual?.sprites?.south
-                || config.visual?.portrait
-                || config.sprite;
-        }
-        return config.visual?.portrait || config.sprite;
+        return pickHeroDisplaySprite(hero, this.game);
     }
 }

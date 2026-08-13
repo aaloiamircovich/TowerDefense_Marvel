@@ -1,5 +1,6 @@
 import { preloadImages } from './ImageCache.js';
 import { collectVisualSources } from './SpriteAnimator.js';
+import { collectHeroVisualSources } from '../utils/HeroVisuals.js';
 
 export class AssetPreloader {
     constructor(loader = preloadImages) {
@@ -32,7 +33,10 @@ export class AssetPreloader {
 }
 
 export function collectHeroPreloadSources(heroes = []) {
-    return uniqueSources(heroes.flatMap((hero) => collectVisualSources(hero?.visual)));
+    return uniqueSources([
+        ...heroes.flatMap((hero) => collectVisualSources(hero?.visual)),
+        ...collectHeroVisualSources(heroes)
+    ]);
 }
 
 export function collectLevelPreloadSources(level = null) {

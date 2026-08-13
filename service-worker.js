@@ -1,8 +1,8 @@
-const CACHE_NAME = 'hero-td-v2.44.0-evolutions-signature-items-v1-20260811';
+const CACHE_NAME = 'hero-td-v2.44.1-evolution-enemy-sprites-v1-20260812';
 const CORE_ASSETS = [
     './', './index.html', './styles.css', './manifest.webmanifest',
     './data/bootstrapData.js', './data/sprite-atlas.js', './data/heroes.json', './data/enemies.json',
-    './data/items.json', './data/levels.json', './data/waves.json', './data/TypeChart.js',
+    './data/items.json', './data/evolutionVisuals.json', './data/levels.json', './data/waves.json', './data/TypeChart.js',
     './assets/images/heroes/atlas.png', './assets/images/heroes/iron_man/portrait.png',
     './assets/images/heroes/spiderman/portrait.png', './assets/images/heroes/capitan_america/portrait.png',
     './assets/images/heroes/thor/portrait.png', './assets/images/heroes/doctor_strange/portrait.png',
@@ -37,7 +37,7 @@ const CORE_ASSETS = [
     './src/systems/ItemEffectSystem.js', './src/systems/ItemSignatureSystem.js', './src/systems/ResourceManager.js', './src/systems/ShopSystem.js', './src/systems/TacticalActionSystem.js',
     './src/systems/UIManager.js', './src/systems/WaveManager.js',
     './src/ui/CampaignPanel.js', './src/ui/InventoryPanel.js', './src/ui/ProfilePanel.js', './src/ui/SettingsPanel.js', './src/ui/TeamBuilderPanel.js', './src/ui/TooltipController.js',
-    './src/utils/HeroLevel.js', './src/utils/I18n.js', './src/utils/Loader.js', './src/utils/ObjectPool.js', './src/utils/PathUtils.js', './src/utils/Random.js', './src/utils/RangePattern.js'
+    './src/utils/HeroLevel.js', './src/utils/HeroVisuals.js', './src/utils/I18n.js', './src/utils/Loader.js', './src/utils/ObjectPool.js', './src/utils/PathUtils.js', './src/utils/Random.js', './src/utils/RangePattern.js'
 ];
 
 self.addEventListener('install', (event) => {
