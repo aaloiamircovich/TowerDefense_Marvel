@@ -386,7 +386,6 @@ export class GameLoop {
 
         const drawers = {
             avengers: () => this.drawAvengersSetDressing(ctx, accent, shadow),
-            wakanda: () => this.drawWakandaSetDressing(ctx, accent, shadow),
             sanctum: () => this.drawSanctumSetDressing(ctx, accent, shadow),
             'x-mansion': () => this.drawXMansionSetDressing(ctx, accent, shadow),
             knowhere: () => this.drawKnowhereSetDressing(ctx, accent, shadow),
@@ -417,13 +416,6 @@ export class GameLoop {
         this.drawPanelArray(ctx, [[58, 58, 156, 82], [584, 66, 128, 92], [88, 430, 164, 76], [612, 386, 126, 110]], accent, shadow);
         this.drawConduit(ctx, [[96, 100], [278, 100], [278, 260], [506, 260], [506, 468], [700, 468]], accent);
         this.drawCanvasLabel(ctx, 'A', 374, 318, 82, accent, 0.2);
-    }
-
-    drawWakandaSetDressing(ctx, accent, shadow) {
-        this.drawChevronField(ctx, 42, 56, 180, 120, accent);
-        this.drawChevronField(ctx, 562, 362, 182, 142, accent);
-        this.drawConduit(ctx, [[112, 500], [254, 438], [420, 438], [596, 308], [724, 308]], '#b865ff');
-        this.drawCanvasLabel(ctx, 'W', 372, 310, 86, accent, 0.18);
     }
 
     drawSanctumSetDressing(ctx, accent, shadow) {

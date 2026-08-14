@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { distanceToPath, getClosestPointOnPath, isOrthogonalPath, normalizePath, removeDuplicatePoints } from '../src/utils/PathUtils.js';
+import { distanceToPath, getClosestPointOnPath, isOrthogonalPath, normalizeLevelPath, normalizePath, removeDuplicatePoints } from '../src/utils/PathUtils.js';
 
 test('normalizePath crea entrada y salida fuera del mapa', () => {
     const result = normalizePath([
@@ -35,6 +35,21 @@ test('normalizePath respeta entradas y salidas verticales', () => {
 
     assert.deepEqual(result[0], { x: 400, y: -40 });
     assert.deepEqual(result.at(-1), { x: 700, y: 640 });
+    assert.equal(isOrthogonalPath(result), true);
+});
+
+test('normalizeLevelPath conserva rutas exactas de mapas manuales', () => {
+    const level = {
+        rendering: { pathMode: 'exact' },
+        path: [
+            { x: 80, y: 592 },
+            { x: 80, y: 400 },
+            { x: 368, y: 400 }
+        ]
+    };
+    const result = normalizeLevelPath(level, 800, 600);
+
+    assert.deepEqual(result, level.path);
     assert.equal(isOrthogonalPath(result), true);
 });
 

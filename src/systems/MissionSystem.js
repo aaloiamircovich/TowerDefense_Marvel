@@ -1,4 +1,4 @@
-import { normalizePath } from '../utils/PathUtils.js';
+import { normalizeExactPath, normalizePath } from '../utils/PathUtils.js';
 
 const DEFAULT_METRICS = {
     kills: 0,
@@ -25,8 +25,6 @@ export class MissionSystem {
             completed: new Set(this.game.progression?.getMapProgress(level.id).missionObjectives || []),
             waveStartLives: this.game.resourceManager?.lives || 0,
             blackout: 0,
-            vibranium: 0,
-            shieldCharges: level.mission?.mechanic?.type === 'vibranium' ? 1 : 0,
             cycleTimer: level.mission?.mechanic?.cycle || 6,
             inverted: false,
             vegetation: level.mission?.mechanic?.vegetation || 0,
@@ -45,10 +43,7 @@ export class MissionSystem {
         this.state.affectedEnemies.clear();
         this.state.activeLandmarks.clear();
 
-        if (type === 'vibranium') {
-            this.switchReactiveRoute(waveNumber);
-            this.state.message = `Ruta cinética ${waveNumber % 2 === 0 ? 'Dorada' : 'Pantera'} activa.`;
-        } else if (type === 'bifrost') {
+        if (type === 'bifrost') {
             this.switchReactiveRoute(waveNumber);
             this.state.message = `Ancla ${waveNumber % 2 === 0 ? 'Vanaheim' : 'Asgard'} conectada al Bifrost.`;
         } else if (type === 'inversion') {
@@ -170,18 +165,6 @@ export class MissionSystem {
         this.state.metrics.kills++;
         if (enemy.isBoss) this.state.metrics.bosses++;
 
-        if (this.level.mission?.mechanic?.type === 'vibranium') {
-            this.state.vibranium++;
-            if (this.state.vibranium >= 6) {
-                this.state.vibranium = 0;
-                this.state.shieldCharges = Math.min(3, this.state.shieldCharges + 1);
-                this.state.metrics.mechanicUses++;
-                this.game.enemies.forEach((target) => target.applyStatus({ type: 'armorBreak', duration: 4, power: 0.12 }));
-                this.state.message = 'Pulso de Vibranium: armaduras fracturadas y escudo recargado.';
-                this.publish();
-            }
-        }
-
         const type = this.level.mission?.mechanic?.type;
         if (type === 'salvage' && this.state.metrics.kills % 8 === 0) {
             this.game.resourceManager.addCredits(40);
@@ -199,13 +182,6 @@ export class MissionSystem {
 
     handleLeak(enemy) {
         if (!this.state) return false;
-        if (this.level.mission?.mechanic?.type === 'vibranium' && this.state.shieldCharges > 0) {
-            this.state.shieldCharges--;
-            this.state.metrics.mechanicUses++;
-            this.state.message = `Escudo cinético absorbió a ${enemy.name}.`;
-            this.publish();
-            return true;
-        }
         this.state.metrics.leaks++;
         return false;
     }
@@ -239,7 +215,9 @@ export class MissionSystem {
         const routes = this.level.alternatePaths || [];
         const route = routes[index];
         if (!route) return;
-        this.game.path = normalizePath(route, this.game.canvas.width, this.game.canvas.height);
+        this.game.path = this.level.rendering?.pathMode === 'exact'
+            ? normalizeExactPath(route, this.game.canvas.width, this.game.canvas.height)
+            : normalizePath(route, this.game.canvas.width, this.game.canvas.height);
         this.game.generateLevelMap();
     }
 
@@ -264,8 +242,6 @@ export class MissionSystem {
             mechanicLabel: mechanic.label || 'Defensa táctica',
             message: this.state.message,
             blackout: Math.ceil(this.state.blackout),
-            shieldCharges: this.state.shieldCharges,
-            vibranium: this.state.vibranium,
             objectives: (this.level.mission?.objectives || []).map((objective) => ({
                 ...objective,
                 value: Math.min(objective.target, this.state.metrics[objective.metric] || 0),
@@ -284,12 +260,6 @@ export class MissionSystem {
         ctx.save();
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-
-        if (mechanic.type === 'vibranium') {
-            (mechanic.nodes || []).forEach((node) => drawToken(ctx, node.x, node.y, '#b865ff', 'V'));
-            const exit = this.game.path.at(-2);
-            if (exit) drawZone(ctx, { ...exit, radius: 34 }, '#d4af37', `ESC ${this.state.shieldCharges}`);
-        }
 
         if (mechanic.type === 'bifrost') {
             (mechanic.portals || []).forEach((portal, index) => drawZone(ctx, portal, '#65cdff', `BIF ${index + 1}`));

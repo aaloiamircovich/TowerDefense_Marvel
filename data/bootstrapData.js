@@ -11647,7 +11647,7 @@ window.__MARVEL_TD_DATA__ = {
       "id": "level_3",
       "name": "Reino de Wakanda",
       "description": "Mercenarios buscan las minas de Vibranium. Usa el terreno selvático y los canales para proteger Birnin Zana.",
-      "thumbnail": "wakanda",
+      "thumbnail": "assets/images/maps/wakanda.png",
       "difficulty": "Difícil",
       "theme": {
         "id": "wakanda",
@@ -11658,31 +11658,21 @@ window.__MARVEL_TD_DATA__ = {
       "mission": {
         "operation": "Escudo de Birnin Zana",
         "speaker": "Shuri",
-        "briefing": "Los raíles magnéticos redirigen el acceso a la ciudad entre oleadas. Cada seis enemigos derrotados cargan un pulso de Vibranium que fractura armaduras y añade una carga al escudo cinético.",
-        "dialogue": "El Vibranium recuerda cada impacto. Denle suficiente energía y la ciudad devolverá el golpe.",
+        "briefing": "Los invasores ya encontraron un corredor hacia Birnin Zana. Defiende el trayecto marcado entre roca, agua y terrazas de Wakanda.",
+        "dialogue": "Esta vez no hay red automática que nos cubra. El camino está trazado; hay que sostenerlo con el equipo.",
         "mechanic": {
-          "type": "vibranium",
-          "label": "Red cinética",
-          "description": "La ruta cambia entre oleadas. Cada seis bajas libera un pulso antiarmadura y recarga el escudo que absorbe fugas.",
-          "status": "Escudo cinético con una carga inicial.",
-          "nodes": [
-            {
-              "x": 300,
-              "y": 300
-            },
-            {
-              "x": 560,
-              "y": 470
-            }
-          ]
+          "type": "manual_assault",
+          "label": "Camino de Wakanda",
+          "description": "Los enemigos siguen el trayecto definido manualmente desde el spawn hasta la base.",
+          "status": "Ruta manual activa; coloca defensas alrededor del corredor."
         },
         "objectives": [
           {
-            "id": "wakanda_pulses",
-            "label": "Tecnología de Shuri",
-            "description": "Activa o consume la red cinética 4 veces.",
-            "metric": "mechanicUses",
-            "target": 4,
+            "id": "wakanda_route_hold",
+            "label": "Defensa del corredor",
+            "description": "Derrota a 90 invasores en el trayecto manual de Wakanda.",
+            "metric": "kills",
+            "target": 90,
             "reward": 280
           },
           {
@@ -11695,91 +11685,87 @@ window.__MARVEL_TD_DATA__ = {
           }
         ]
       },
+      "rendering": {
+        "style": "image-map",
+        "camera": "top-down-rpg",
+        "source": "wakanda-photo-grid",
+        "image": "assets/images/maps/wakanda.png",
+        "tileSize": 32,
+        "targetSpriteSize": 64,
+        "pathMode": "exact",
+        "terrainRows": [
+          "MMMMMMMBBBBMBMMBMMBMBBBBB",
+          "MMMMMMMBBBBBBBBBBBBBBBBBB",
+          "BBBBBBMBBMBPPPPPPPPPPPPBM",
+          "BBBBBBMBBBBPBBBBBBBBBBPBB",
+          "BBBBBBMBBBBPBWWWWWWWWBPBM",
+          "BBBBBBMBBMBPBWWWBBWWWBPBB",
+          "BBBBBBMBBBBPBWWWBBWWWBPBB",
+          "MMMMMMMBBMBPBWWWBBWWWBPBB",
+          "BBBBBBBBBBBPBWWWBBWWWBPBB",
+          "BBBBBBBBBBBPBWWWWWWWWBPBB",
+          "BMMBBBMBBBBPBWWWWWWWWBPBM",
+          "BBBBBBBBBBBPBBBBBBBBBBPBB",
+          "BBPPPPPPPPPPPPPPPPPPPPPBB",
+          "BBPBBBBBBBBPBBBBBBBBBBBBM",
+          "BBPBWWWWWWBPBBBMBBBBBMBMB",
+          "MBPBWWBBWWBPBBBMMMMMMMMMM",
+          "BBPBWWBBWWBPBMBMMMMMMMMMM",
+          "MBPBWWBBWWBPBBBMMMMMMMMMM",
+          "MBPBWWBBWWBBBBBMMMMMMMMMM"
+        ]
+      },
       "path": [
         {
-          "x": 400,
-          "y": 0
+          "x": 80,
+          "y": 592
         },
         {
-          "x": 400,
-          "y": 200
-        },
-        {
-          "x": 120,
-          "y": 200
-        },
-        {
-          "x": 120,
+          "x": 80,
           "y": 400
         },
         {
-          "x": 700,
+          "x": 720,
           "y": 400
         },
         {
-          "x": 700,
-          "y": 600
+          "x": 720,
+          "y": 80
+        },
+        {
+          "x": 368,
+          "y": 80
+        },
+        {
+          "x": 368,
+          "y": 560
         }
       ],
       "alternatePaths": [
         [
           {
-            "x": 400,
-            "y": 0
+            "x": 80,
+            "y": 592
           },
           {
-            "x": 400,
-            "y": 200
-          },
-          {
-            "x": 120,
-            "y": 200
-          },
-          {
-            "x": 120,
+            "x": 80,
             "y": 400
           },
           {
-            "x": 700,
+            "x": 720,
             "y": 400
           },
           {
-            "x": 700,
-            "y": 600
-          }
-        ],
-        [
-          {
-            "x": 400,
-            "y": 0
+            "x": 720,
+            "y": 80
           },
           {
-            "x": 400,
-            "y": 120
+            "x": 368,
+            "y": 80
           },
           {
-            "x": 640,
-            "y": 120
-          },
-          {
-            "x": 640,
-            "y": 300
-          },
-          {
-            "x": 200,
-            "y": 300
-          },
-          {
-            "x": 200,
-            "y": 520
-          },
-          {
-            "x": 700,
-            "y": 520
-          },
-          {
-            "x": 700,
-            "y": 600
+            "x": 368,
+            "y": 560
           }
         ]
       ]

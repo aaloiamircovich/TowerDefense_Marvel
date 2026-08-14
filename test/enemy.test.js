@@ -64,6 +64,27 @@ test('Enemy corrige desplazamientos externos al punto mas cercano de la ruta', (
     assert.equal(enemy.distanceTravelled, 180);
 });
 
+test('Enemy en ruta exacta entra visualmente en la meta antes de fugar', () => {
+    const game = { currentLevel: { rendering: { pathMode: 'exact', tileSize: 32 } } };
+    const enemy = new Enemy({ id: 'test', hp: 100, speed: 100, visual: { size: 96 } }, [
+        { x: 40, y: 40 },
+        { x: 40, y: 100 }
+    ], game);
+
+    enemy.moveForward(60);
+    assert.equal(enemy.x, 40);
+    assert.equal(enemy.y, 100);
+    assert.equal(enemy.hasReachedEnd, false);
+
+    enemy.moveForward(12);
+    assert.equal(enemy.y, 112);
+    assert.equal(enemy.hasReachedEnd, false);
+
+    enemy.moveForward(13);
+    assert.equal(enemy.y, 124);
+    assert.equal(enemy.hasReachedEnd, true);
+});
+
 test('Enemigos voladores se dibujan centrados sobre la ruta', () => {
     const enemy = new Enemy({ id: 'flyer', name: 'Centinela Nova', hp: 100, speed: 0, flying: true }, [
         { x: 0, y: 40 },

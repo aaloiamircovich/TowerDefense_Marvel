@@ -4,7 +4,7 @@ import { UIManager } from './systems/UIManager.js';
 import { InputManager } from './core/InputManager.js';
 import { ResourceManager } from './systems/ResourceManager.js';
 import { WaveManager } from './systems/WaveManager.js';
-import { normalizePath } from './utils/PathUtils.js';
+import { normalizeLevelPath } from './utils/PathUtils.js';
 import { AssetPreloader } from './rendering/AssetPreloader.js';
 import { ProgressionManager } from './systems/ProgressionManager.js';
 import { ShopSystem } from './systems/ShopSystem.js';
@@ -159,7 +159,7 @@ async function initGame() {
             game.isGameOver = false;
             game.missionSummaryRecorded = false;
             game.gridSize = levelConfig.rendering?.tileSize || 40;
-            game.path = normalizePath(levelConfig.path, game.canvas.width, game.canvas.height);
+            game.path = normalizeLevelPath(levelConfig, game.canvas.width, game.canvas.height);
             document.body.dataset.levelTheme = levelConfig.theme?.id || 'new-york';
             game.generateLevelMap();
             game.missionSystem.loadLevel(levelConfig);

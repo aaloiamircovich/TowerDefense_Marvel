@@ -25,6 +25,23 @@ export function normalizePath(path, width, height, margin = 40) {
     return removeDuplicatePoints(safePath);
 }
 
+export function normalizeLevelPath(level, width, height, margin = 40) {
+    if (level?.rendering?.pathMode === 'exact') {
+        return normalizeExactPath(level.path, width, height);
+    }
+
+    return normalizePath(level?.path, width, height, margin);
+}
+
+export function normalizeExactPath(path, width, height) {
+    if (!Array.isArray(path) || path.length < 2) return createFallbackPath(width, height, 0);
+
+    return removeDuplicatePoints(path.map((point) => ({
+        x: clamp(Number(point.x), 0, width),
+        y: clamp(Number(point.y), 0, height)
+    })));
+}
+
 export function isOrthogonalPath(path) {
     if (!Array.isArray(path) || path.length < 2) return false;
 

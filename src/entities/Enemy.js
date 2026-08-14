@@ -28,6 +28,33 @@ const TELEGRAPH_THEMES = {
     Mutante: { color: '#c7f464', accent: '#69e58c', dash: [7, 7], label: 'MUTACION' }
 };
 
+function buildEnemyTravelPath(path, level, renderedSize = 30) {
+    if (!Array.isArray(path) || path.length < 2 || level?.rendering?.pathMode !== 'exact') return path;
+
+    const previous = path[path.length - 2];
+    const end = path[path.length - 1];
+    const dx = Number(end.x) - Number(previous.x);
+    const dy = Number(end.y) - Number(previous.y);
+    const length = Math.hypot(dx, dy);
+    if (!length) return path;
+
+    const tileSize = Number(level?.rendering?.tileSize || 32);
+    const configuredPadding = Number(level?.rendering?.goalOvershoot);
+    const padding = Number.isFinite(configuredPadding) && configuredPadding >= 0
+        ? configuredPadding
+        : Math.max(12, Math.round(tileSize * 0.75), Math.round(Number(renderedSize || 30) * 0.22));
+
+    if (padding <= 0) return path;
+
+    return [
+        ...path,
+        {
+            x: end.x + (dx / length) * padding,
+            y: end.y + (dy / length) * padding
+        }
+    ];
+}
+
 export function buildBossTelegraphTheme(enemy = {}, phase = {}) {
     const category = phase.category || enemy.category || enemy.config?.category || 'Urbano';
     const base = TELEGRAPH_THEMES[category] || TELEGRAPH_THEMES.Urbano;
@@ -110,10 +137,11 @@ export class Enemy {
         this.animator = this.visual ? new SpriteAnimator(this.visual) : null;
         this.debuffs = [];
 
-        this.path = path;
+        const renderedSize = Number(config.visual?.size || config.visualSize || (this.isFinalBoss ? 96 : this.isBoss ? 96 : 30));
+        this.path = buildEnemyTravelPath(path, game?.currentLevel, renderedSize);
         this.pathIndex = 0;
-        this.x = path?.[0]?.x || 0;
-        this.y = path?.[0]?.y || 0;
+        this.x = this.path?.[0]?.x || 0;
+        this.y = this.path?.[0]?.y || 0;
         this.size = config.visualSize || (this.isFinalBoss ? 62 : this.isBoss ? 54 : 30);
         this.isAlive = true;
         this.hasReachedEnd = false;

@@ -1465,9 +1465,7 @@ export class UIManager {
         if (!container || !snapshot) return;
         const specialStatus = snapshot.blackout > 0
             ? `<b>Corte: ${snapshot.blackout}s</b>`
-            : snapshot.shieldCharges > 0
-                ? `<b>Escudo: ${snapshot.shieldCharges} · Vibranium ${snapshot.vibranium}/6</b>`
-                : '';
+            : '';
         container.innerHTML = `
             <div class="mission-heading"><strong>${snapshot.operation}</strong><span>${snapshot.mechanicLabel}</span></div>
             <p>${snapshot.message}</p>

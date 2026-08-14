@@ -1,8 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
 import { MANHATTAN_MANUAL_FORCE_GRASS_TILE_IDS, MANHATTAN_MANUAL_ROWS } from '../src/rendering/ManhattanManualMap.js';
-import { buildPixelTerrainMap, getManhattanTileId, isImageMapLevel, isPixelMapLevel, TERRAIN } from '../src/rendering/PixelMapRenderer.js';
+import { buildPixelTerrainMap, getManhattanTileId, isImageMapLevel, isPixelMapLevel, TERRAIN, usesTerrainRowsMap } from '../src/rendering/PixelMapRenderer.js';
 import { canPlaceOnTerrain } from '../src/utils/TerrainRules.js';
+
+const levels = JSON.parse(fs.readFileSync(new URL('../data/levels.json', import.meta.url), 'utf8'));
 
 test('buildPixelTerrainMap crea una grilla Manhattan de 32 px', () => {
     const level = { theme: { id: 'new-york' }, rendering: { style: 'pixelart', tileSize: 32 } };
@@ -55,6 +58,37 @@ test('Manhattan manual mantiene colocable el pasto debajo de la calle', () => {
     assert.equal(map[10][24], TERRAIN.grass);
     assert.equal(canPlaceOnTerrain(grassHero, map[10][14]), true);
     assert.equal(canPlaceOnTerrain(grassHero, map[10][24]), true);
+});
+
+test('Wakanda manual usa foto, agua, montana y camino desde los cuadros importados', () => {
+    const level = levels.find((entry) => entry.id === 'level_3');
+    const canvas = { width: 800, height: 600 };
+    const map = buildPixelTerrainMap(level, canvas, 32);
+    const grassHero = { allowedTerrains: [TERRAIN.grass] };
+    const flatMap = map.flat();
+
+    assert.equal(isImageMapLevel(level), true);
+    assert.equal(isPixelMapLevel(level), false);
+    assert.equal(usesTerrainRowsMap(level), true);
+    assert.equal(level.rendering.image, 'assets/images/maps/wakanda.png');
+    assert.equal(map.length, 19);
+    assert.equal(map[0].length, 25);
+    assert.equal(map[0][0], TERRAIN.mountain);
+    assert.equal(map[4][13], TERRAIN.water);
+    assert.equal(map[1][11], TERRAIN.blocked);
+    assert.equal(map[2][11], TERRAIN.path);
+    assert.equal(map[2][22], TERRAIN.path);
+    assert.equal(map[18][2], TERRAIN.path);
+    assert.equal(map[17][11], TERRAIN.path);
+    assert.equal(map[10][22], TERRAIN.path);
+    assert.equal(map[3][0], TERRAIN.blocked);
+    assert.equal(flatMap.filter((terrain) => terrain === TERRAIN.blocked).length, 254);
+    assert.equal(flatMap.filter((terrain) => terrain === TERRAIN.mountain).length, 89);
+    assert.equal(flatMap.filter((terrain) => terrain === TERRAIN.water).length, 70);
+    assert.equal(flatMap.filter((terrain) => terrain === TERRAIN.path).length, 62);
+    assert.equal(flatMap.filter((terrain) => terrain === TERRAIN.grass).length, 0);
+    assert.equal(canPlaceOnTerrain(grassHero, map[3][0]), false);
+    assert.equal(canPlaceOnTerrain(grassHero, map[18][2]), false);
 });
 
 test('mapa RPG Maker usa imagen y matriz logica de terreno', () => {

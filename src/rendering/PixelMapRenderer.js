@@ -104,6 +104,10 @@ export function usesManualManhattanMap(level) {
     return level?.theme?.id === 'new-york' && level?.rendering?.source === 'manual-grid';
 }
 
+export function usesTerrainRowsMap(level) {
+    return Array.isArray(level?.rendering?.terrainRows);
+}
+
 export function getManhattanTileId(x, y, cols = 25) {
     return y * cols + x + 1;
 }
@@ -113,6 +117,8 @@ export function buildPixelTerrainMap(level, canvas, tileSize) {
 
     const cols = Math.ceil(canvas.width / tileSize);
     const rows = Math.ceil(canvas.height / tileSize);
+    if (usesTerrainRowsMap(level)) return buildTerrainRowsMap(level.rendering.terrainRows, cols, rows);
+
     if (usesManualManhattanMap(level)) {
         return MANHATTAN_MANUAL_ROWS.map((row, y) => row.map((tileKey, x) => getTerrainForManualTile(tileKey, x, y)));
     }
@@ -200,6 +206,10 @@ export function drawPixelMapOverlays(ctx, game) {
         if (isTilePlanModeEnabled()) drawTilePlanOverlay(ctx, game);
         return;
     }
+    if (usesTerrainRowsMap(game.currentLevel) || game.currentLevel?.theme?.id !== 'new-york') {
+        if (isTilePlanModeEnabled()) drawTilePlanOverlay(ctx, game);
+        return;
+    }
     if (tilesetReady()) drawMarvelCityOverlays(ctx);
     else {
         drawHudsonRail(ctx);
@@ -218,7 +228,10 @@ function tilesetReady() {
 function buildImageTerrainMap(level, canvas, tileSize) {
     const cols = Math.ceil(canvas.width / tileSize);
     const rows = Math.ceil(canvas.height / tileSize);
-    const sourceRows = level.rendering.terrainRows || [];
+    return buildTerrainRowsMap(level.rendering.terrainRows || [], cols, rows);
+}
+
+function buildTerrainRowsMap(sourceRows, cols, rows) {
     const terrainMap = [];
 
     for (let y = 0; y < rows; y++) {

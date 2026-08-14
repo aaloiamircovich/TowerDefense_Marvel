@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { MissionSystem } from '../src/systems/MissionSystem.js';
-import { isOrthogonalPath } from '../src/utils/PathUtils.js';
+import { isOrthogonalPath, normalizeLevelPath } from '../src/utils/PathUtils.js';
 
 const levels = JSON.parse(fs.readFileSync(new URL('../data/levels.json', import.meta.url), 'utf8'));
 
@@ -46,17 +46,22 @@ test('Base Avengers ya no usa puerta ni auxiliar', () => {
     assert.equal(mission.state.metrics.mechanicUses, 0);
 });
 
-test('Wakanda alterna rutas ortogonales y absorbe una fuga', () => {
+test('Wakanda usa ruta manual exacta sin red cinetica anterior', () => {
     const game = createGame();
+    game.path = normalizeLevelPath(levels[2], game.canvas.width, game.canvas.height);
     const mission = new MissionSystem(game);
     mission.loadLevel(levels[2]);
     mission.onWaveStart(2);
 
+    assert.equal(levels[2].mission.mechanic.type, 'manual_assault');
     assert.equal(isOrthogonalPath(game.path), true);
-    assert.equal(game.mapRegenerations, 1);
-    assert.equal(mission.handleLeak({ name: 'Outrider' }), true);
-    assert.equal(mission.state.shieldCharges, 0);
-    assert.equal(mission.state.metrics.leaks, 0);
+    assert.deepEqual(game.path[0], levels[2].path[0]);
+    assert.deepEqual(game.path.slice(3, 5), [{ x: 720, y: 80 }, { x: 368, y: 80 }]);
+    assert.deepEqual(game.path.at(-1), levels[2].path.at(-1));
+    assert.equal(game.mapRegenerations, 0);
+    assert.equal(mission.handleLeak({ name: 'Outrider' }), false);
+    assert.equal('shieldCharges' in mission.state, false);
+    assert.equal(mission.state.metrics.leaks, 1);
 });
 
 test('Las runas del Sanctum marcan enemigos dentro de su zona', () => {
