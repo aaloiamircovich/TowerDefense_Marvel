@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hero-td-v2.44.1-evolution-enemy-sprites-v1-20260812';
+const CACHE_NAME = 'hero-td-v2.44.0-item-sprites-wakanda-map-v1-20260814';
 const CORE_ASSETS = [
     './', './index.html', './styles.css', './manifest.webmanifest',
     './data/bootstrapData.js', './data/sprite-atlas.js', './data/heroes.json', './data/enemies.json',
@@ -27,6 +27,7 @@ const CORE_ASSETS = [
     './assets/images/ui/mythic-pride-gradient-20260811.jpg',
     './assets/fonts/avengeance-heroic-avenger-bd.ttf',
     './assets/images/tiles/base_vengadores_rpgmaker.png',
+    './assets/images/maps/wakanda.png',
     './assets/icons/icon-192.png', './assets/icons/icon-512.png',
     './src/main.js', './src/config/AppConfig.js', './src/pwa/register.js',
     './src/audio/AudioManager.js', './src/core/GameLoop.js', './src/core/InputManager.js',
