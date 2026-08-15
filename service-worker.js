@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hero-td-v2.44.0-wakanda-goal-touch-v1-20260814';
+const CACHE_NAME = 'hero-td-v2.44.0-item-sprites-v1-20260814';
 const CORE_ASSETS = [
     './', './index.html', './styles.css', './manifest.webmanifest',
     './data/bootstrapData.js', './data/sprite-atlas.js', './data/heroes.json', './data/enemies.json',
