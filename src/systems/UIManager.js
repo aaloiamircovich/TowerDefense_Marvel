@@ -9,6 +9,7 @@ import { WaveReportPanel } from '../ui/WaveReportPanel.js';
 import { RadarPanel } from '../ui/RadarPanel.js';
 import { ShopPanel } from '../ui/ShopPanel.js';
 import { StarterPanel } from '../ui/StarterPanel.js';
+import { EndStatePanel } from '../ui/EndStatePanel.js';
 import { SET_BONUSES, SLOT_LABELS } from './ItemEffectSystem.js';
 import { getAllowedTerrainLabels } from '../utils/TerrainRules.js';
 import { getRarityClass, normalizeRarity } from '../utils/Rarity.js';
@@ -1260,6 +1261,7 @@ export class UIManager {
             buildShopSetProgress
         });
         this.starterPanel = new StarterPanel(this);
+        this.endStatePanel = new EndStatePanel(this);
         this.tooltipController = new TooltipController();
 
         this.initListeners();
@@ -2437,67 +2439,28 @@ export class UIManager {
     handleGacha() {
         return this.getShopPanel().handleGacha();
     }
+
+    getEndStatePanel() {
+        if (!this.endStatePanel) this.endStatePanel = new EndStatePanel(this);
+        return this.endStatePanel;
+    }
+
     showGameOver() {
         this.game.audio?.play('warning');
-        this.showPanelOverlay(false);
-        const modeSnapshot = this.game.modeSystem?.getSnapshot();
-        this.panelContent.innerHTML = `
-            <div class="end-state">
-                <h2>${modeSnapshot ? `${modeSnapshot.name}: finalizada` : 'Base destruida'}</h2>
-                <p>Llegaste hasta la oleada ${this.game.waveManager?.currentWave || 1}.${modeSnapshot ? ` Puntuación ${modeSnapshot.score}.` : ' Ajusta el equipo y vuelve a intentarlo.'}</p>
-                ${this.renderMissionSummary(this.game.progression?.state.lastMissionSummary)}
-                <button class="btn-primary" id="retry-run">Reintentar</button>
-            </div>
-        `;
-        document.getElementById('retry-run')?.addEventListener('click', () => {
-            if (modeSnapshot) this.game.modeSystem.start(modeSnapshot.id);
-            else this.game.retryCampaignFromFirstWave?.();
-            this.renderHeroRoster(this.game.activeTeam, (hero) => this.game.inputManager.setPlacementMode(hero));
-            this.closePanel();
-            this.game.start();
-        });
+        return this.getEndStatePanel().showGameOver();
     }
 
     showVictory() {
         this.game.audio?.play('victory');
-        const modeSnapshot = this.game.modeSystem?.getSnapshot();
-        if (modeSnapshot) {
-            this.showModeResult(`${modeSnapshot.name}: completado`, modeSnapshot);
-            return;
-        }
-        this.showPanelOverlay(false);
-        this.panelContent.innerHTML = `
-            <div class="end-state">
-                <h2>Victoria</h2>
-                <p>Completaste el mapa con ${this.game.stars} estrellas.</p>
-                ${this.renderMissionSummary(this.game.progression?.state.lastMissionSummary)}
-                <button class="btn-primary" id="victory-close">Volver al mapa</button>
-            </div>
-        `;
-        document.getElementById('victory-close')?.addEventListener('click', () => {
-            document.getElementById('close-panel-btn')?.classList.remove('hidden');
-            this.closePanel();
-        });
+        return this.getEndStatePanel().showVictory();
     }
 
     renderMissionSummary(summary) {
-        if (!summary) return '';
-        return `<div class="mission-summary"><strong>Informe de mision</strong><span><b>${Math.round(summary.totals.damage)}</b> dano</span><span><b>${summary.totals.kills}</b> bajas</span><span><b>${summary.totals.abilities}</b> habilidades</span><span><b>$${Math.round(summary.totals.credits)}</b> generados</span><small>Destacado: ${summary.bestHero} · ${summary.lives} vidas restantes</small></div>`;
+        return this.getEndStatePanel().renderMissionSummary(summary);
     }
 
     showFatalError(error) {
-        this.game?.pause?.();
-        this.showPanelOverlay(false);
-        this.panelContent.innerHTML = `
-            <div class="end-state error-state" role="alert">
-                <i class="fas fa-triangle-exclamation"></i>
-                <h2>No se pudo iniciar la misión</h2>
-                <p id="fatal-error-copy"></p>
-                <button class="btn-primary" id="reload-game">Reintentar carga</button>
-            </div>
-        `;
-        document.getElementById('fatal-error-copy').textContent = error?.message || 'Revisa los datos del juego e inténtalo nuevamente.';
-        document.getElementById('reload-game')?.addEventListener('click', () => window.location.reload());
+        return this.getEndStatePanel().showFatalError(error);
     }
 
     getTerrainText(terrains) {

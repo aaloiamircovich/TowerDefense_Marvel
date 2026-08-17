@@ -5849,7 +5849,7 @@ select {
     box-shadow: 0 8px 22px rgba(0, 0, 0, 0.5);
 }
 
-.error-state i {
+.error-state > i {
     color: var(--accent-red);
     font-size: 42px;
 }
@@ -6143,10 +6143,141 @@ body.reduce-motion :is(.collection-card, .starter-card, .hero-portrait):is(.rari
 .end-state {
     display: grid;
     justify-items: center;
-    gap: 16px;
-    max-width: 520px;
-    margin: 60px auto;
+    gap: 14px;
+    width: min(680px, 100%);
+    margin: 34px auto;
+    padding: 26px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-top-color: var(--level-accent);
+    border-radius: 8px;
+    background:
+        linear-gradient(135deg, rgba(20, 201, 255, 0.08), transparent 42%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.015)),
+        rgba(6, 12, 22, 0.92);
+    box-shadow: 0 22px 48px rgba(0, 0, 0, 0.42);
     text-align: center;
+}
+
+.end-state-defeat {
+    border-top-color: var(--accent-red);
+}
+
+.end-state-victory {
+    border-top-color: var(--bright-yellow);
+}
+
+.end-state-emblem {
+    display: grid;
+    place-items: center;
+    width: 58px;
+    height: 58px;
+    border: 1px solid color-mix(in srgb, var(--level-accent), transparent 45%);
+    border-radius: 50%;
+    background:
+        radial-gradient(circle, color-mix(in srgb, var(--level-accent), transparent 72%), transparent 68%),
+        rgba(8, 18, 32, 0.8);
+    color: var(--level-accent);
+    box-shadow: 0 0 24px color-mix(in srgb, var(--level-accent), transparent 72%);
+}
+
+.end-state-defeat .end-state-emblem,
+.error-state .end-state-emblem {
+    border-color: color-mix(in srgb, var(--accent-red), transparent 42%);
+    color: var(--accent-red);
+    box-shadow: 0 0 24px rgba(255, 56, 83, 0.24);
+}
+
+.end-state-victory .end-state-emblem {
+    border-color: color-mix(in srgb, var(--bright-yellow), transparent 42%);
+    color: var(--bright-yellow);
+    box-shadow: 0 0 24px rgba(255, 214, 102, 0.24);
+}
+
+.end-state-emblem i {
+    font-size: 26px;
+}
+
+.end-state h2 {
+    margin: 0;
+}
+
+.end-state > p {
+    max-width: 52ch;
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.45;
+}
+
+.end-state-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+}
+
+.end-state-actions .btn-primary {
+    min-width: 190px;
+}
+
+.mission-summary-upgraded {
+    grid-template-columns: repeat(4, minmax(100px, 1fr));
+    width: 100%;
+    max-width: 620px;
+    margin: 6px auto 4px;
+}
+
+.mission-summary-title {
+    display: grid;
+    grid-column: 1 / -1;
+    gap: 3px;
+    padding-bottom: 4px;
+    text-align: center;
+}
+
+.mission-summary-title strong {
+    color: var(--bright-yellow);
+}
+
+.mission-summary-title small,
+.mission-summary-upgraded span small {
+    grid-column: auto;
+}
+
+.mission-summary-upgraded span {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 3px 7px;
+    align-items: center;
+    min-height: 64px;
+}
+
+.mission-summary-upgraded span i {
+    color: var(--level-accent);
+    font-size: 13px;
+}
+
+.mission-summary-upgraded span small {
+    color: var(--muted);
+    font-size: 10px;
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+.mission-summary-upgraded span b {
+    grid-column: 1 / -1;
+    color: var(--text);
+    font-size: 16px;
+    line-height: 1;
+}
+
+@media (max-width: 680px) {
+    .end-state {
+        padding: 20px;
+    }
+
+    .mission-summary-upgraded {
+        grid-template-columns: repeat(2, minmax(100px, 1fr));
+    }
 }
 
 @media (min-width: 821px) and (max-width: 1180px) {
