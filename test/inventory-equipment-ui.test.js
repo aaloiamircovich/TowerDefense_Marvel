@@ -59,6 +59,7 @@ test('inventario filtra objetos libres y equipados desde la vista compacta', () 
 
     panel.statusFilter = 'equipped';
     panel.render();
+    assert.match(ui.panelContent.innerHTML, /inventory-rarity-strip[\s\S]*rarity-common[\s\S]*x1[\s\S]*rarity-rare[\s\S]*x1/);
     assert.match(ui.panelContent.innerHTML, /data-status="equipped" aria-pressed="true"/);
     assert.match(ui.panelContent.innerHTML, /data-item-id="reactor_arc"/);
     assert.doesNotMatch(ui.panelContent.innerHTML, /data-item-id="lentes_edith"/);

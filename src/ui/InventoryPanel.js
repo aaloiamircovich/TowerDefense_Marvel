@@ -1,5 +1,5 @@
 import { aggregateItemEffects, ITEM_SLOTS, SET_BONUSES, SLOT_LABELS } from '../systems/ItemEffectSystem.js';
-import { getRarityClass, normalizeRarity } from '../utils/Rarity.js';
+import { HERO_RARITIES, getRarityClass, normalizeRarity } from '../utils/Rarity.js';
 
 const ITEM_EFFECT_LABELS = {
     damagePct: 'Dano',
@@ -104,6 +104,7 @@ export class InventoryPanel {
         const entries = allEntries.filter((entry) => this.passesInventoryFilters(entry));
         const equippedCount = allEntries.reduce((total, entry) => total + entry.equippedHeroes.length, 0);
         const freeCount = allEntries.reduce((total, entry) => total + entry.freeCount, 0);
+        const raritySummary = this.buildRaritySummary(allEntries);
         const statusOptions = [
             ['all', 'Todos'],
             ['free', 'Libres'],
@@ -121,10 +122,17 @@ export class InventoryPanel {
                     <h3>Objetos</h3>
                     <p>Click en un objeto para elegir a qué héroe equiparlo.</p>
                 </div>
-                <div class="inventory-loadout-readout">
-                    <span><b>${allEntries.length}</b><small>tipos</small></span>
-                    <span><b>${freeCount}</b><small>libres</small></span>
-                    <span><b>${equippedCount}</b><small>equipados</small></span>
+                <div class="inventory-command-stack">
+                    <div class="inventory-loadout-readout">
+                        <span><b>${allEntries.length}</b><small>tipos</small></span>
+                        <span><b>${freeCount}</b><small>libres</small></span>
+                        <span><b>${equippedCount}</b><small>equipados</small></span>
+                    </div>
+                    <div class="inventory-rarity-strip" aria-label="Objetos por rareza">
+                        ${raritySummary.length
+                            ? raritySummary.map(({ rarity, count }) => `<span class="${getRarityClass(rarity)}"><b>${rarity}</b><small>x${count}</small></span>`).join('')
+                            : '<span><b>Sin objetos</b><small>x0</small></span>'}
+                    </div>
                 </div>
             </section>
 
@@ -182,6 +190,17 @@ export class InventoryPanel {
             })
             .filter((entry) => entry.totalCount > 0)
             .sort((a, b) => a.item.tier - b.item.tier || a.item.name.localeCompare(b.item.name));
+    }
+
+    buildRaritySummary(entries) {
+        const counts = new Map();
+        entries.forEach(({ item, totalCount }) => {
+            const rarity = normalizeRarity(item.rarity);
+            counts.set(rarity, (counts.get(rarity) || 0) + totalCount);
+        });
+        return HERO_RARITIES
+            .map((rarity) => ({ rarity, count: counts.get(rarity) || 0 }))
+            .filter((entry) => entry.count > 0);
     }
 
     passesInventoryFilters({ item, totalCount, freeCount, equippedHeroes }) {

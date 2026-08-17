@@ -8686,6 +8686,12 @@ canvas {
     font-size: 12px;
 }
 
+.inventory-command-stack {
+    display: grid;
+    gap: 7px;
+    min-width: 280px;
+}
+
 .profile-command-meter {
     display: grid;
     place-items: center;
@@ -8924,6 +8930,47 @@ canvas {
     display: grid;
     grid-template-columns: repeat(3, 68px);
     gap: 6px;
+}
+
+.inventory-rarity-strip {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 6px;
+    min-width: 0;
+}
+
+.inventory-rarity-strip span {
+    display: inline-grid;
+    grid-template-columns: auto auto;
+    align-items: center;
+    gap: 6px;
+    min-height: 25px;
+    max-width: 122px;
+    padding: 4px 7px;
+    border: 1px solid color-mix(in srgb, var(--rarity-color, var(--level-accent)), transparent 50%);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--rarity-color, var(--level-accent)), transparent 88%);
+}
+
+.inventory-rarity-strip b,
+.inventory-rarity-strip small {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.inventory-rarity-strip b {
+    color: var(--rarity-color, var(--text));
+    font-size: 9px;
+    text-transform: uppercase;
+}
+
+.inventory-rarity-strip small {
+    color: var(--bright-yellow);
+    font-size: 9px;
+    font-weight: 900;
 }
 
 .inventory-loadout-readout span {
@@ -10229,6 +10276,14 @@ button:disabled,
     .inventory-command-header,
     .inventory-loadout-readout {
         grid-template-columns: 1fr;
+    }
+
+    .inventory-command-stack {
+        min-width: 0;
+    }
+
+    .inventory-rarity-strip {
+        justify-content: flex-start;
     }
 
     .inventory-filters--compact {
