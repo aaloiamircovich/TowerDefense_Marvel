@@ -74,6 +74,10 @@ test('ProfilePanel muestra racha y emblemas de contrato', () => {
 
     assert.match(panelContent.innerHTML, /profile-tabs/);
     assert.match(panelContent.innerHTML, /data-profile-view="summary" role="tab" aria-selected="true"/);
+    assert.match(panelContent.innerHTML, /profile-tab-badge/);
+    assert.match(panelContent.innerHTML, /Resumen: 0% completado/);
+    assert.match(panelContent.innerHTML, /Contratos: 4 de 4 contratos/);
+    assert.match(panelContent.innerHTML, /Códice: 0 de 5 entradas/);
     assert.match(panelContent.innerHTML, /Maestria heroica/);
     assert.match(panelContent.innerHTML, /Codice descubierto/);
     assert.match(panelContent.innerHTML, /profile-summary-grid/);

@@ -8699,6 +8699,29 @@ canvas {
     font-size: 13px;
 }
 
+.profile-tab span {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.profile-tab-badge {
+    min-width: 32px;
+    max-width: 64px;
+    overflow: hidden;
+    padding: 3px 6px;
+    border: 1px solid rgba(252, 163, 17, 0.35);
+    border-radius: 999px;
+    background: rgba(252, 163, 17, 0.1);
+    color: var(--bright-yellow);
+    font-size: 9px;
+    line-height: 1;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 .profile-tab.active,
 .profile-tab:hover,
 .profile-tab:focus-visible {

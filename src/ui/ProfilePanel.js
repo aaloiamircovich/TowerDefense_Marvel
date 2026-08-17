@@ -42,14 +42,18 @@ export class ProfilePanel {
             .join('');
         const masteryCompleted = masteryEntries.reduce((total, entry) => total + entry.completed.length, 0);
         const masteryTotal = masteryEntries.length * MASTERY_CHALLENGES.length;
+        const codexTotals = Object.values(codex).reduce((total, value) => ({
+            found: total.found + Number(value.found || 0),
+            total: total.total + Number(value.total || 0)
+        }), { found: 0, total: 0 });
         const codexSummary = Object.entries(codex)
             .map(([key, value]) => `<span><b>${value.found}/${value.total}</b>${({ heroes: 'Heroes', enemies: 'Enemigos', items: 'Objetos', factions: 'Facciones', mechanics: 'Mecanicas' })[key]}</span>`)
             .join('');
         const tabs = [
-            { id: 'summary', label: 'Resumen', icon: 'fa-chart-pie' },
-            { id: 'contracts', label: 'Contratos', icon: 'fa-file-signature' },
-            { id: 'codex', label: 'Códice', icon: 'fa-book-open' },
-            { id: 'history', label: 'Historial', icon: 'fa-clock-rotate-left' }
+            { id: 'summary', label: 'Resumen', icon: 'fa-chart-pie', badge: `${completion}%`, badgeLabel: `${completion}% completado` },
+            { id: 'contracts', label: 'Contratos', icon: 'fa-file-signature', badge: `${weekly.completed}/${weekly.total}`, badgeLabel: `${weekly.completed} de ${weekly.total} contratos` },
+            { id: 'codex', label: 'Códice', icon: 'fa-book-open', badge: `${codexTotals.found}/${codexTotals.total}`, badgeLabel: `${codexTotals.found} de ${codexTotals.total} entradas` },
+            { id: 'history', label: 'Historial', icon: 'fa-clock-rotate-left', badge: statistics.waves, badgeLabel: `${statistics.waves} oleadas` }
         ];
         const sections = {
             summary: `
@@ -116,7 +120,7 @@ export class ProfilePanel {
                 <div class="detail-card"><h3>Rendimiento</h3><p><span>Frame p95</span><strong>${(performance.p95Ms || 0).toFixed(1)} ms</strong></p><p><span>Memoria pico</span><strong>${(performance.peakMemoryMb || 0).toFixed(1)} MB</strong></p><p><span>Pico de entidades</span><strong>${performance.peakEntities || 0}</strong></p><p><span>Proyectiles reciclados</span><strong>${pool.reused || 0}</strong></p></div>
             </div>
             <nav class="profile-tabs" role="tablist" aria-label="Secciones de perfil">
-                ${tabs.map((tab) => `<button class="profile-tab ${this.activeView === tab.id ? 'active' : ''}" data-profile-view="${tab.id}" role="tab" aria-selected="${this.activeView === tab.id}" type="button"><i class="fas ${tab.icon}"></i><span>${tab.label}</span></button>`).join('')}
+                ${tabs.map((tab) => `<button class="profile-tab ${this.activeView === tab.id ? 'active' : ''}" data-profile-view="${tab.id}" role="tab" aria-selected="${this.activeView === tab.id}" aria-label="${tab.label}: ${tab.badgeLabel}" type="button"><i class="fas ${tab.icon}"></i><span>${tab.label}</span><b class="profile-tab-badge">${tab.badge}</b></button>`).join('')}
             </nav>
             <div class="profile-tab-panel profile-view-${this.activeView}" role="tabpanel">
                 ${sections[this.activeView]}
