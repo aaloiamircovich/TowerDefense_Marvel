@@ -6,6 +6,7 @@ import { InventoryPanel } from '../ui/InventoryPanel.js';
 import { TeamBuilderPanel } from '../ui/TeamBuilderPanel.js';
 import { ModePanel } from '../ui/ModePanel.js';
 import { WaveReportPanel } from '../ui/WaveReportPanel.js';
+import { RadarPanel } from '../ui/RadarPanel.js';
 import { SET_BONUSES, SLOT_LABELS } from './ItemEffectSystem.js';
 import { getHeroBoxCost } from './ShopSystem.js';
 import { getAllowedTerrainLabels } from '../utils/TerrainRules.js';
@@ -1249,6 +1250,10 @@ export class UIManager {
             buildState: buildWaveReportState,
             buildAction: buildWaveReportActionState
         });
+        this.radarPanel = new RadarPanel(this, {
+            buildWaveReportState,
+            buildWaveReportActionState
+        });
         this.tooltipController = new TooltipController();
 
         this.initListeners();
@@ -2282,96 +2287,15 @@ export class UIManager {
     }
 
     renderRadarPanel(title = 'Radar tactico') {
-        const wave = this.game.waveManager?.currentWave || 1;
-        const map = this.game.currentLevel?.theme?.label || this.game.currentLevel?.name || 'Mapa';
-        const sections = [
-            this.renderRadarSection('wave-intel', 'Inteligencia de oleada', 'fa-satellite-dish', 'La siguiente oleada aun no tiene lectura.'),
-            this.renderRadarSection('mission-status', 'Estado de mision', 'fa-flag', 'Sin objetivos especiales activos.'),
-            this.renderRadarSection('mode-status', 'Modo especial', 'fa-layer-group', 'Modo campaña estándar.'),
-            this.renderRadarSection('spawn-queue', 'Refuerzos en cola', 'fa-person-running', 'No hay refuerzos pendientes.'),
-            this.renderRadarSection('boss-hud', 'Jefe activo', 'fa-skull-crossbones', 'No hay jefe activo.'),
-            this.renderRadarSection('wave-report', 'Informe de oleada', 'fa-chart-line', 'Completa una oleada para generar informe.'),
-            this.renderRadarSection('enemy-info-panel', 'Archivo enemigo', 'fa-skull', 'Selecciona una carta de enemigo en el panel derecho para inspeccionarlo.')
-        ].join('');
-
-        this.panelContent.innerHTML = `
-            <section class="radar-panel">
-                <div class="radar-hero">
-                    <div>
-                        <span class="briefing-kicker">CONSOLA DE RADAR</span>
-                        <h2>${escapeHtml(title)}</h2>
-                        <p>Lecturas tacticas, ayudas, reportes y sistemas que antes ocupaban el panel derecho.</p>
-                    </div>
-                    <div class="radar-readout">
-                        <span><small>Mapa</small><b>${escapeHtml(map)}</b></span>
-                        <span><small>Oleada</small><b>${wave}</b></span>
-                    </div>
-                </div>
-                <div class="radar-grid">
-                    ${sections}
-                </div>
-            </section>
-        `;
-        this.bindRadarPanelActions();
+        return this.radarPanel.render(title);
     }
 
     renderRadarSection(sourceId, title, icon, emptyMessage) {
-        const source = document.getElementById(sourceId);
-        const hidden = source?.classList.contains('hidden');
-        const content = source?.innerHTML?.trim();
-        const isEmptyEnemyPanel = sourceId === 'enemy-info-panel'
-            && !source?.querySelector('#enemy-info-content:not(.hidden)');
-        const hasContent = Boolean(content) && !hidden && !isEmptyEnemyPanel;
-
-        return `
-            <article class="radar-section radar-section-${sourceId}">
-                <header>
-                    <i class="fas ${icon}"></i>
-                    <strong>${escapeHtml(title)}</strong>
-                </header>
-                <div class="radar-section-body">
-                    ${hasContent ? content : `<p class="radar-empty">${escapeHtml(emptyMessage)}</p>`}
-                </div>
-            </article>
-        `;
+        return this.radarPanel.renderSection(sourceId, title, icon, emptyMessage);
     }
 
     bindRadarPanelActions() {
-        this.panelContent.querySelectorAll('[data-prep-action]').forEach((button) => button.addEventListener('click', () => {
-            const heroId = button.dataset.heroId;
-            if (button.dataset.prepAction === 'deploy') {
-                const hero = this.game.activeTeam?.find((candidate) => candidate.id === heroId);
-                if (!hero) return;
-                this.closePanel();
-                this.game.inputManager?.setPlacementMode(hero);
-                this.showToast(`${hero.name}: elige una posicion`, 'info');
-                this.game.audio?.play('ui');
-            }
-            if (button.dataset.prepAction === 'upgrade' && this.quickUpgradeHeroById(heroId)) {
-                this.renderRadarPanel('Radar tactico');
-            }
-        }));
-        this.panelContent.querySelectorAll('[data-branch]').forEach((button) => button.addEventListener('click', () => {
-            const changed = this.game.waveManager?.chooseBranch(button.dataset.branch);
-            if (changed) {
-                this.renderHeroRoster(this.game.activeTeam, (hero) => this.game.inputManager.setPlacementMode(hero));
-                this.renderRadarPanel('Radar tactico');
-            }
-            this.game.audio?.play('ui');
-        }));
-        this.panelContent.querySelector('#wave-report-action')?.addEventListener('click', () => {
-            const report = this.lastWaveReport;
-            if (!report) return;
-            const action = buildWaveReportActionState(
-                buildWaveReportState(report),
-                this.game.heroes || [],
-                this.game.resourceManager?.credits || 0,
-                (level, amount) => this.calculateLevelCost(level, amount)
-            );
-            if (action?.heroId && this.quickUpgradeHeroById(action.heroId)) this.renderRadarPanel('Radar tactico');
-        });
-        this.panelContent.querySelector('#extract-mode')?.addEventListener('click', () => this.game.modeSystem.extract());
-        this.panelContent.querySelector('#repair-mode')?.addEventListener('click', () => this.game.modeSystem.repair());
+        return this.radarPanel.bindActions();
     }
 
     renderShop(title) {
