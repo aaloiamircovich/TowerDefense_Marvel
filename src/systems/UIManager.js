@@ -1932,15 +1932,16 @@ export class UIManager {
             ['Crítico', `${critChance}%${this.formatStatDelta(critChance, baseCritChance, '%')}`],
             ['Alcance', `${range}${this.formatStatDelta(range, baseRange)}`]
         ];
-        const submenuTitles = {
-            equipment: 'Equipar objeto',
-            combat: 'Registro de combate'
-        };
-        let submenu = '';
+        const detailTabs = [
+            { id: 'summary', label: 'Resumen', icon: 'fa-id-card' },
+            { id: 'equipment', label: 'Objeto', icon: 'fa-shield-alt' },
+            { id: 'combat', label: 'Combate', icon: 'fa-chart-line' }
+        ];
+        let detailBody = '';
 
         if (activeDetailView === 'equipment') {
-            submenu = `
-                <div class="equipment-card">
+            detailBody = `
+                <div class="equipment-card hero-tab-equipment">
                     <h3>Equipamiento</h3>
                     <div class="hero-equipment-slots single-equipment-slot">
                         <div class="item-slot ${equippedItem ? 'filled' : ''}">
@@ -1953,8 +1954,8 @@ export class UIManager {
                 </div>
             `;
         } else if (activeDetailView === 'combat') {
-            submenu = `
-                <div class="hero-detail-subpanel detail-card">
+            detailBody = `
+                <div class="hero-detail-subpanel detail-card hero-tab-combat">
                     <h3>Combate</h3>
                     <p><span>Daño total</span><strong>${Math.round(combat.damageDealt || 0)}</strong></p>
                     <p><span>Bajas</span><strong>${combat.kills || 0}</strong></p>
@@ -1962,6 +1963,58 @@ export class UIManager {
                     <p><span>Críticos</span><strong>${combat.crits || 0}</strong></p>
                     <p><span>Habilidades</span><strong>${combat.abilityActivations || 0}</strong></p>
                 </div>
+            `;
+        } else {
+            detailBody = `
+                <div class="hero-identity-card">
+                    <span><small>Tipo</small><strong>${escapeHtml(config.category || 'Heroe')}</strong></span>
+                    <span><small>Rareza</small><b class="rarity-badge ${rarityClass}">${rarity}</b></span>
+                    ${identityTags.length ? `<div class="hero-tag-list">${identityTags.map((tag) => `<span>${escapeHtml(tag)}</span>`).join('')}</div>` : ''}
+                </div>
+
+                <div class="hero-ability-compact">
+                    <div>
+                        <h3>${config.ability || 'Ataque básico'}</h3>
+                        <p>${config.abilityDesc || 'Ataca al enemigo objetivo con su daño base.'}</p>
+                    </div>
+                    ${config.niche ? `<b>${config.niche}</b>` : ''}
+                </div>
+
+                ${waveFitView ? `
+                    <div class="hero-wave-fit-compact ${escapeHtml(waveFitView.id)}" aria-label="${escapeHtml(waveFitView.ariaLabel)}">
+                        <span><small>Lectura de oleada</small><strong><i class="fas fa-crosshairs"></i>${escapeHtml(waveFitView.label)}</strong></span>
+                        <b>${escapeHtml(waveFitView.scoreLabel)}</b>
+                        <em>${escapeHtml(waveFitView.reasonText)}</em>
+                    </div>
+                ` : ''}
+
+                <div class="hero-tactic-compact">
+                    <div>
+                        <small>Terreno</small>
+                        <strong>${terrains}</strong>
+                    </div>
+                    <label>
+                        <small>Apuntar a</small>
+                        <select id="targeting-select">
+                            ${TARGETING_PRIORITIES.map((priority) => `<option value="${priority}" ${currentTargeting === priority ? 'selected' : ''}>${priority}</option>`).join('')}
+                        </select>
+                    </label>
+                </div>
+
+                ${abilityState ? `
+                    <div class="ability-status ${abilityState.ready ? 'ready' : ''}">
+                        <span>${abilityState.label}</span>
+                        ${abilityState.progress === null ? '' : `<div class="ability-meter"><i style="width:${Math.round(abilityState.progress * 100)}%"></i></div>`}
+                    </div>
+                ` : ''}
+                ${kitControl ? `
+                    <div class="kit-mode-control" role="group" aria-label="${kitControl.label}">
+                        <span>${kitControl.label}</span>
+                        <div>
+                            ${kitControl.options.map((option) => `<button class="kit-mode-btn ${option.id === kitControl.value ? 'active' : ''}" data-mode="${option.id}" aria-pressed="${option.id === kitControl.value}">${option.label}</button>`).join('')}
+                        </div>
+                    </div>
+                ` : ''}
             `;
         }
 
@@ -1995,71 +2048,14 @@ export class UIManager {
                             ${compactStats.map(([label, value]) => `<span><small>${label}</small><strong>${value}</strong></span>`).join('')}
                         </div>
 
-                        <div class="hero-identity-card">
-                            <span><small>Tipo</small><strong>${escapeHtml(config.category || 'Heroe')}</strong></span>
-                            <span><small>Rareza</small><b class="rarity-badge ${rarityClass}">${rarity}</b></span>
-                            ${identityTags.length ? `<div class="hero-tag-list">${identityTags.map((tag) => `<span>${escapeHtml(tag)}</span>`).join('')}</div>` : ''}
+                        <div class="hero-detail-tabs" role="tablist" aria-label="Detalle de heroe">
+                            ${detailTabs.map((tab) => `<button class="hero-detail-tab ${activeDetailView === tab.id ? 'active' : ''}" data-view="${tab.id}" role="tab" aria-selected="${activeDetailView === tab.id}" type="button"><i class="fas ${tab.icon}"></i><span>${tab.label}</span></button>`).join('')}
                         </div>
 
-                        <div class="hero-ability-compact">
-                            <div>
-                                <h3>${config.ability || 'Ataque básico'}</h3>
-                                <p>${config.abilityDesc || 'Ataca al enemigo objetivo con su daño base.'}</p>
-                            </div>
-                            ${config.niche ? `<b>${config.niche}</b>` : ''}
-                        </div>
-
-                        ${waveFitView ? `
-                            <div class="hero-wave-fit-compact ${escapeHtml(waveFitView.id)}" aria-label="${escapeHtml(waveFitView.ariaLabel)}">
-                                <span><small>Lectura de oleada</small><strong><i class="fas fa-crosshairs"></i>${escapeHtml(waveFitView.label)}</strong></span>
-                                <b>${escapeHtml(waveFitView.scoreLabel)}</b>
-                                <em>${escapeHtml(waveFitView.reasonText)}</em>
-                            </div>
-                        ` : ''}
-
-                        <div class="hero-tactic-compact">
-                            <div>
-                                <small>Terreno</small>
-                                <strong>${terrains}</strong>
-                            </div>
-                            <label>
-                                <small>Apuntar a</small>
-                                <select id="targeting-select">
-                                    ${TARGETING_PRIORITIES.map((priority) => `<option value="${priority}" ${currentTargeting === priority ? 'selected' : ''}>${priority}</option>`).join('')}
-                                </select>
-                            </label>
-                        </div>
-
-                        ${abilityState ? `
-                            <div class="ability-status ${abilityState.ready ? 'ready' : ''}">
-                                <span>${abilityState.label}</span>
-                                ${abilityState.progress === null ? '' : `<div class="ability-meter"><i style="width:${Math.round(abilityState.progress * 100)}%"></i></div>`}
-                            </div>
-                        ` : ''}
-                        ${kitControl ? `
-                            <div class="kit-mode-control" role="group" aria-label="${kitControl.label}">
-                                <span>${kitControl.label}</span>
-                                <div>
-                                    ${kitControl.options.map((option) => `<button class="kit-mode-btn ${option.id === kitControl.value ? 'active' : ''}" data-mode="${option.id}" aria-pressed="${option.id === kitControl.value}">${option.label}</button>`).join('')}
-                                </div>
-                            </div>
-                        ` : ''}
-
-                        <div class="hero-detail-actions">
-                            <button class="hero-detail-menu-btn ${activeDetailView === 'equipment' ? 'active' : ''}" data-view="equipment"><i class="fas fa-shield-alt"></i><span>Objeto</span></button>
-                            <button class="hero-detail-menu-btn ${activeDetailView === 'combat' ? 'active' : ''}" data-view="combat"><i class="fas fa-chart-line"></i><span>Combate</span></button>
+                        <div class="hero-detail-tab-panel ${activeDetailView}" role="tabpanel">
+                            ${detailBody}
                         </div>
                     </div>
-
-                    ${activeDetailView !== 'summary' ? `
-                        <section class="hero-submenu">
-                            <header>
-                                <h3>${submenuTitles[activeDetailView]}</h3>
-                                <button class="hero-detail-back icon-command" title="Volver"><i class="fas fa-times"></i></button>
-                            </header>
-                            ${submenu}
-                        </section>
-                    ` : ''}
                 </section>
             </div>
         `;
@@ -2082,12 +2078,8 @@ export class UIManager {
             this.renderHeroDetails(hero, activeDetailView);
         }));
 
-        this.panelContent.querySelectorAll('.hero-detail-menu-btn').forEach((button) => {
+        this.panelContent.querySelectorAll('.hero-detail-tab').forEach((button) => {
             button.addEventListener('click', () => this.renderHeroDetails(hero, button.dataset.view || 'summary'));
-        });
-
-        this.panelContent.querySelector('.hero-detail-back')?.addEventListener('click', () => {
-            this.renderHeroDetails(hero);
         });
 
         document.getElementById('reposition-hero')?.addEventListener('click', () => {

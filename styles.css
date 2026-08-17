@@ -3291,63 +3291,55 @@ body.panel-open {
     margin-top: 4px;
 }
 
-.hero-detail-actions {
+.hero-detail-tabs {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 8px;
+    gap: 4px;
+    padding: 4px;
+    border: 1px solid rgba(64, 201, 255, 0.18);
+    border-radius: 8px;
+    background: rgba(3, 7, 12, 0.58);
 }
 
-.hero-detail-menu-btn {
-    display: grid;
-    place-items: center;
-    gap: 5px;
-    min-height: 58px;
-    padding: 8px;
-    border: 1px solid rgba(64, 201, 255, 0.22);
-    border-radius: 7px;
-    background: rgba(8, 14, 22, 0.82);
+.hero-detail-tab {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-width: 0;
+    min-height: 34px;
+    padding: 7px 8px;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    background: transparent;
     color: var(--muted);
+    font-size: 11px;
     font-weight: 900;
     cursor: pointer;
     text-transform: uppercase;
 }
 
-.hero-detail-menu-btn i {
+.hero-detail-tab i {
     color: var(--level-accent);
-    font-size: 16px;
+    font-size: 13px;
 }
 
-.hero-detail-menu-btn.active,
-.hero-detail-menu-btn:hover {
-    border-color: var(--level-accent);
+.hero-detail-tab.active,
+.hero-detail-tab:hover,
+.hero-detail-tab:focus-visible {
+    border-color: rgba(64, 201, 255, 0.34);
     color: var(--text);
     background: rgba(64, 201, 255, 0.12);
+    outline: none;
 }
 
-.hero-submenu {
+.hero-detail-tab-panel {
     display: grid;
     gap: 12px;
 }
 
-.hero-submenu > header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    padding: 10px 12px;
-    border: 1px solid rgba(64, 201, 255, 0.24);
-    border-radius: 8px;
-    background: rgba(5, 8, 13, 0.72);
-}
-
-.hero-submenu > header h3 {
-    margin: 0;
-    color: var(--level-accent);
-}
-
-.hero-submenu .upgrade-tree,
-.hero-submenu .equipment-card,
-.hero-detail-subpanel {
+.hero-tab-equipment,
+.hero-tab-combat {
     margin: 0;
 }
 
@@ -6392,7 +6384,6 @@ body.tactical-paused #gameCanvas {
     .hero-detail,
     .stats-grid,
     .hero-stat-strip,
-    .hero-detail-actions,
     .hero-tactic-compact,
     .hero-ability-compact,
     .hero-wave-fit-compact,
