@@ -72,8 +72,12 @@ test('StarterPanel renderiza cartas tacticas y selecciona heroe inicial', () => 
         assert.ok(calls.includes('pause'));
         assert.ok(calls.includes('overlay:false'));
         assert.match(panelContent.innerHTML, /PRIMER DESPLIEGUE/);
+        assert.match(panelContent.innerHTML, /starter-summary-strip/);
+        assert.match(panelContent.innerHTML, /Opciones/);
         assert.match(panelContent.innerHTML, /Black Widow/);
         assert.match(panelContent.innerHTML, /saboteo de soporte/);
+        assert.match(panelContent.innerHTML, /Hawkeye/);
+        assert.match(panelContent.innerHTML, /Daño 3/);
         assert.match(panelContent.innerHTML, /Radar/);
         assert.match(panelContent.innerHTML, /Control/);
 

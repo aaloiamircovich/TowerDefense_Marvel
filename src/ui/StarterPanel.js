@@ -32,6 +32,7 @@ export class StarterPanel {
                     <h2>Elige tu héroe inicial</h2>
                     <p>Tu primera defensa define el ritmo de las primeras oleadas.</p>
                 </div>
+                ${this.renderStarterSummary(starters)}
                 <div class="starter-grid">
                     ${starters.map((hero) => this.renderCard(hero)).join('')}
                 </div>
@@ -78,8 +79,40 @@ export class StarterPanel {
         `;
     }
 
+    renderStarterSummary(starters) {
+        const leaders = Object.entries(METRIC_LABELS).map(([key, meta]) => {
+            const leader = starters.reduce((best, hero) => {
+                const value = this.getMetricValue(hero, key);
+                return value > best.value ? { hero, value } : best;
+            }, { hero: starters[0], value: this.getMetricValue(starters[0], key) });
+            return { ...meta, key, hero: leader.hero, value: leader.value };
+        });
+        return `
+            <div class="starter-summary-strip" aria-label="Comparativa de heroes iniciales">
+                <span><i class="fas fa-users"></i><b>${starters.length}</b><small>Opciones</small></span>
+                ${leaders.map((entry) => `
+                    <span>
+                        <i class="fas ${entry.icon}"></i>
+                        <b>${escapeHtml(entry.hero?.name || 'Equipo')}</b>
+                        <small>${entry.label} ${entry.value}</small>
+                    </span>
+                `).join('')}
+            </div>
+        `;
+    }
+
     getNicheText(hero) {
         return hero.niche || hero.ability || hero.category || 'defensa equilibrada';
+    }
+
+    getMetricValue(hero, key) {
+        if (!hero) return 0;
+        const direct = Number(hero.teamMetrics?.[key]);
+        if (Number.isFinite(direct) && direct > 0) return direct;
+        if (key === 'damage') return Math.max(1, Math.round((Number(hero.damage) || 0) / 10));
+        if (key === 'control') return Math.max(1, Math.round((Number(hero.range) || 0) / 50));
+        if (key === 'detection') return hero.canSeeStealth ? 2 : 0;
+        return 0;
     }
 
     getMetrics(hero) {

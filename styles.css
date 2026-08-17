@@ -9683,6 +9683,56 @@ button.team-slot-filled:not(:disabled):active img {
     gap: 18px;
 }
 
+.starter-summary-strip {
+    display: grid;
+    grid-template-columns: 0.7fr repeat(4, minmax(0, 1fr));
+    gap: 8px;
+    padding: 10px;
+    border: 1px solid rgba(64, 201, 255, 0.22);
+    border-radius: 8px;
+    background:
+        linear-gradient(135deg, color-mix(in srgb, var(--level-accent), transparent 91%), transparent),
+        rgba(3, 7, 12, 0.58);
+}
+
+.starter-summary-strip span {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: 2px 7px;
+    min-width: 0;
+    padding: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 7px;
+    background: rgba(5, 12, 22, 0.48);
+}
+
+.starter-summary-strip i {
+    color: var(--level-accent);
+    font-size: 12px;
+}
+
+.starter-summary-strip b,
+.starter-summary-strip small {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.starter-summary-strip b {
+    color: #ffffff;
+    font-size: 12px;
+}
+
+.starter-summary-strip small {
+    grid-column: 1 / -1;
+    color: var(--muted);
+    font-size: 9px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
 .starter-card-upgraded {
     grid-template-rows: auto auto minmax(48px, auto);
     align-content: start;
@@ -10171,6 +10221,10 @@ button:disabled,
 
     .shop-recruit-strip {
         grid-template-columns: 1fr;
+    }
+
+    .starter-summary-strip {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .shop-command-header,
