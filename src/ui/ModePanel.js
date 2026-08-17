@@ -133,6 +133,7 @@ export class ModePanel {
                     <span><i class="fas fa-trophy"></i><small>Record</small><b>${formatNumber(snapshot.best)}</b></span>
                 </div>
                 ${this.ui.renderMissionSummary(this.ui.game.progression?.state.lastMissionSummary)}
+                ${this.renderModeResultCoach(snapshot)}
                 <div class="end-state-actions end-state-actions--compact">
                     <button class="btn-primary" id="mode-result-map">Volver a modos</button>
                 </div>
@@ -142,5 +143,31 @@ export class ModePanel {
             document.getElementById('close-panel-btn')?.classList.remove('hidden');
             this.ui.renderMap('Mapa y modos');
         });
+    }
+
+    renderModeResultCoach(snapshot = {}) {
+        const score = Math.round(Number(snapshot.score) || 0);
+        const best = Math.round(Number(snapshot.best) || 0);
+        const remaining = Math.max(0, best - score);
+        const wave = Math.max(1, Math.round(Number(snapshot.wave) || 1));
+        const cards = [
+            { icon: 'fa-trophy', label: 'Record', value: remaining ? `${formatNumber(remaining)} pts faltantes` : 'Marca superada' },
+            { icon: 'fa-signal', label: 'Siguiente', value: `Preparar oleada ${formatNumber(wave + 1)}` },
+            { icon: 'fa-map', label: 'Salida', value: 'Volver a modos' }
+        ];
+        return `
+            <div class="end-state-coach mode">
+                <strong>Lectura de modo</strong>
+                <div>
+                    ${cards.map((card) => `
+                        <span>
+                            <i class="fas ${card.icon}"></i>
+                            <small>${escapeHtml(card.label)}</small>
+                            <b>${escapeHtml(card.value)}</b>
+                        </span>
+                    `).join('')}
+                </div>
+            </div>
+        `;
     }
 }

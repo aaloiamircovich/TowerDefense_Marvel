@@ -7316,6 +7316,13 @@ body.reduce-motion :is(.collection-card, .starter-card, .hero-portrait):is(.rari
         rgba(4, 10, 19, 0.62);
 }
 
+.end-state-coach.mode {
+    border-color: color-mix(in srgb, #40c9ff, transparent 58%);
+    background:
+        linear-gradient(135deg, rgba(64, 201, 255, 0.1), transparent),
+        rgba(4, 10, 19, 0.62);
+}
+
 .end-state-coach > strong {
     color: var(--bright-yellow);
     font-size: 12px;

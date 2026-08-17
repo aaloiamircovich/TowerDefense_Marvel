@@ -118,6 +118,9 @@ test('ModePanel renderiza resultado especial con lectura tactica compacta', () =
         assert.match(ui.panelContent.innerHTML, /MODO ESPECIAL/);
         assert.match(ui.panelContent.innerHTML, /end-state-readout/);
         assert.match(ui.panelContent.innerHTML, /1\.240/);
+        assert.match(ui.panelContent.innerHTML, /Lectura de modo/);
+        assert.match(ui.panelContent.innerHTML, /760 pts faltantes/);
+        assert.match(ui.panelContent.innerHTML, /Preparar oleada 10/);
         assert.ok(calls.includes('summary:Storm'));
 
         resultButton.listeners.click();
