@@ -30,13 +30,21 @@ export class ProfilePanel {
         const statistics = progression.state.statistics;
         const starTarget = Math.max(1, game.levelsData.length * (game.waveManager?.maxWaves || CAMPAIGN_MAX_WAVES));
         const completion = Math.min(100, Math.round((game.stars / starTarget) * 100));
-        const masteryRows = game.unlockedHeroes.map((hero) => {
+        const masteryEntries = game.unlockedHeroes.map((hero) => {
             const completed = progression.getHeroMastery(hero.id).completed;
-            const challengeLabels = MASTERY_CHALLENGES
-                .map((challenge) => `${completed.includes(challenge.id) ? 'OK' : '--'} ${challenge.name}`)
-                .join(' | ');
-            return `<div class="mastery-row"><span>${hero.name}</span><strong>${completed.length}/${MASTERY_CHALLENGES.length}</strong><small>${challengeLabels}</small></div>`;
-        }).join('');
+            return { hero, completed, total: MASTERY_CHALLENGES.length };
+        });
+        const masteryRows = masteryEntries.map((entry) => this.renderMasteryRow(entry)).join('');
+        const masteryPreview = [...masteryEntries]
+            .sort((a, b) => b.completed.length - a.completed.length || a.hero.name.localeCompare(b.hero.name))
+            .slice(0, 6)
+            .map((entry) => this.renderMasteryPreview(entry))
+            .join('');
+        const masteryCompleted = masteryEntries.reduce((total, entry) => total + entry.completed.length, 0);
+        const masteryTotal = masteryEntries.length * MASTERY_CHALLENGES.length;
+        const codexSummary = Object.entries(codex)
+            .map(([key, value]) => `<span><b>${value.found}/${value.total}</b>${({ heroes: 'Heroes', enemies: 'Enemigos', items: 'Objetos', factions: 'Facciones', mechanics: 'Mecanicas' })[key]}</span>`)
+            .join('');
         const tabs = [
             { id: 'summary', label: 'Resumen', icon: 'fa-chart-pie' },
             { id: 'contracts', label: 'Contratos', icon: 'fa-file-signature' },
@@ -45,8 +53,20 @@ export class ProfilePanel {
         ];
         const sections = {
             summary: `
-                <section class="profile-meta-section"><h3>Maestria heroica</h3>${masteryRows || '<p>Recluta un heroe para iniciar desafios.</p>'}</section>
-                <section class="profile-meta-section"><h3>Codice descubierto</h3><div class="codex-summary">${Object.entries(codex).map(([key, value]) => `<span><b>${value.found}/${value.total}</b>${({ heroes: 'Heroes', enemies: 'Enemigos', items: 'Objetos', factions: 'Facciones', mechanics: 'Mecanicas' })[key]}</span>`).join('')}</div></section>
+                <section class="profile-summary-grid">
+                    <article class="profile-meta-section profile-summary-panel">
+                        <h3>Maestria heroica <span>${masteryCompleted}/${masteryTotal || 0}</span></h3>
+                        <div class="profile-mini-masteries">
+                            ${masteryPreview || '<p>Recluta un heroe para iniciar desafios.</p>'}
+                        </div>
+                        <button class="btn-primary ghost profile-open-tab" data-profile-view="codex" type="button"><i class="fas fa-book-open"></i> Ver detalle completo</button>
+                    </article>
+                    <article class="profile-meta-section profile-summary-panel">
+                        <h3>Codice descubierto</h3>
+                        <div class="codex-summary profile-codex-strip">${codexSummary}</div>
+                        <button class="btn-primary ghost profile-open-tab" data-profile-view="codex" type="button"><i class="fas fa-layer-group"></i> Abrir codice</button>
+                    </article>
+                </section>
             `,
             contracts: `
                 <section class="profile-meta-section">
@@ -65,7 +85,7 @@ export class ProfilePanel {
                 <section class="profile-meta-section"><h3>Retos de agrupacion <span>${synergyChallenges.completed}/${synergyChallenges.total}</span></h3><div class="weekly-contract-list synergy-challenge-list">${synergyChallenges.challenges.slice(0, 8).map((challenge) => this.renderSynergyChallenge(challenge)).join('')}</div></section>
             `,
             codex: `
-                <section class="profile-meta-section"><h3>Codice descubierto</h3><div class="codex-summary">${Object.entries(codex).map(([key, value]) => `<span><b>${value.found}/${value.total}</b>${({ heroes: 'Heroes', enemies: 'Enemigos', items: 'Objetos', factions: 'Facciones', mechanics: 'Mecanicas' })[key]}</span>`).join('')}</div></section>
+                <section class="profile-meta-section"><h3>Codice descubierto</h3><div class="codex-summary">${codexSummary}</div></section>
                 <section class="profile-meta-section"><h3>Maestria heroica</h3>${masteryRows || '<p>Recluta un heroe para iniciar desafios.</p>'}</section>
                 <section class="profile-meta-section"><h3>Logros</h3><div class="achievement-list">${Object.entries(ACHIEVEMENT_CATALOG).map(([id, achievement]) => this.renderAchievement(id, achievement, progression.state.achievements.includes(id))).join('')}</div></section>
             `,
@@ -104,6 +124,24 @@ export class ProfilePanel {
             <div class="release-notice"><strong>Super Hero TD v${APP_VERSION}</strong><span>${FAN_PROJECT_NOTICE}</span></div>
         `;
         this.bindListeners();
+    }
+
+    renderMasteryRow(entry) {
+        const challengeLabels = MASTERY_CHALLENGES
+            .map((challenge) => `${entry.completed.includes(challenge.id) ? 'OK' : '--'} ${challenge.name}`)
+            .join(' | ');
+        return `<div class="mastery-row"><span>${entry.hero.name}</span><strong>${entry.completed.length}/${entry.total}</strong><small>${challengeLabels}</small></div>`;
+    }
+
+    renderMasteryPreview(entry) {
+        const progress = entry.total ? Math.round((entry.completed.length / entry.total) * 100) : 0;
+        return `
+            <span class="profile-mastery-chip" style="--mastery-progress:${progress}%">
+                <b>${entry.hero.name}</b>
+                <small>${entry.completed.length}/${entry.total} desafios</small>
+                <i aria-hidden="true"></i>
+            </span>
+        `;
     }
 
     renderContract(contract) {

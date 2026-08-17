@@ -8339,6 +8339,80 @@ canvas {
     gap: 12px;
 }
 
+.profile-summary-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    gap: 12px;
+}
+
+.profile-summary-panel {
+    display: grid;
+    align-content: start;
+    gap: 12px;
+    margin-top: 0;
+}
+
+.profile-summary-panel h3 {
+    margin-bottom: 0;
+}
+
+.profile-mini-masteries {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(165px, 1fr));
+    gap: 8px;
+}
+
+.profile-mastery-chip {
+    --mastery-progress: 0%;
+    display: grid;
+    gap: 5px;
+    min-width: 0;
+    padding: 10px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 8px;
+    background:
+        linear-gradient(135deg, color-mix(in srgb, var(--level-accent), transparent 91%), transparent),
+        rgba(3, 7, 12, 0.62);
+}
+
+.profile-mastery-chip b,
+.profile-mastery-chip small {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.profile-mastery-chip b {
+    color: #ffffff;
+    font-size: 12px;
+}
+
+.profile-mastery-chip small {
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.profile-mastery-chip i {
+    display: block;
+    width: var(--mastery-progress);
+    height: 4px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--level-accent), var(--bright-yellow));
+    box-shadow: 0 0 12px color-mix(in srgb, var(--level-accent), transparent 44%);
+}
+
+.profile-open-tab {
+    justify-self: start;
+    min-height: 34px;
+}
+
+.profile-codex-strip {
+    align-content: start;
+}
+
 .profile-stat-card,
 .detail-card,
 .inventory-card,
@@ -9629,6 +9703,15 @@ button:disabled,
 
     .profile-tabs {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .profile-summary-grid,
+    .profile-mini-masteries {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-open-tab {
+        justify-self: stretch;
     }
 
     .radar-hero,

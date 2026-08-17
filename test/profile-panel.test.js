@@ -46,9 +46,13 @@ test('ProfilePanel muestra racha y emblemas de contrato', () => {
         }),
         getSynergyChallengeSnapshot: () => ({ completed: 0, total: 0, challenges: [] }),
         getCredits: () => 1200,
-        getHeroMastery: () => ({ completed: [] }),
+        getHeroMastery: (heroId) => ({ completed: heroId === 'hero_1' ? ['waves', 'kills'] : [] }),
         exportBuildCode: () => 'BUILD'
     };
+    const unlockedHeroes = Array.from({ length: 8 }, (_item, index) => ({
+        id: `hero_${index + 1}`,
+        name: `Hero ${index + 1}`
+    }));
     const ui = {
         panelContent,
         showToast: () => {},
@@ -57,7 +61,7 @@ test('ProfilePanel muestra racha y emblemas de contrato', () => {
             levelsData: [{ id: 'level_1' }],
             waveManager: { maxWaves: 100 },
             stars: 0,
-            unlockedHeroes: [],
+            unlockedHeroes,
             activeTeam: [],
             currentLevel: { theme: { label: 'Base Avengers', brief: 'Defensa tactica' } },
             teamSynergy: { getSnapshot: () => ({ families: [], pairs: [], distinctTags: 0 }) },
@@ -72,7 +76,14 @@ test('ProfilePanel muestra racha y emblemas de contrato', () => {
     assert.match(panelContent.innerHTML, /data-profile-view="summary" role="tab" aria-selected="true"/);
     assert.match(panelContent.innerHTML, /Maestria heroica/);
     assert.match(panelContent.innerHTML, /Codice descubierto/);
+    assert.match(panelContent.innerHTML, /profile-summary-grid/);
+    assert.match(panelContent.innerHTML, /profile-mini-masteries/);
+    assert.match(panelContent.innerHTML, /Ver detalle completo/);
+    assert.doesNotMatch(panelContent.innerHTML, /Hero 8/);
     assert.doesNotMatch(panelContent.innerHTML, /Contratos semanales/);
+
+    panel.render('Perfil', 'codex');
+    assert.match(panelContent.innerHTML, /Hero 8/);
 
     panel.render('Perfil', 'contracts');
     assert.match(panelContent.innerHTML, /Contratos semanales/);
