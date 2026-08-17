@@ -6770,6 +6770,47 @@ body::before {
     font-size: 8px;
 }
 
+.hero-card-main {
+    display: grid;
+    justify-items: center;
+    gap: 6px;
+    width: 100%;
+    min-width: 0;
+}
+
+.hero-card-status {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 5px;
+    min-height: 20px;
+}
+
+.hero-card-status span {
+    display: inline-flex;
+    align-items: center;
+    min-height: 18px;
+    margin: 0;
+    padding: 3px 6px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 999px;
+    background: rgba(3, 8, 14, 0.46);
+    color: var(--muted);
+    font-size: 9px;
+    font-weight: 900;
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+.hero-card-field-state.active {
+    border-color: rgba(70, 211, 105, 0.28);
+    color: #6df58f;
+}
+
+.hero-card-field-state.bench {
+    color: #aeb9c7;
+}
+
 .hero-card > div:not(.hero-actions) > span {
     display: none;
     color: #bfccd9;
@@ -6781,6 +6822,18 @@ body::before {
     border: 1px solid color-mix(in srgb, var(--fit-color, var(--level-accent)), transparent 66%);
     background:
         linear-gradient(90deg, color-mix(in srgb, var(--fit-color, var(--level-accent)), transparent 82%), rgba(255, 255, 255, 0.025));
+}
+
+.hero-card .roster-wave-fit {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    width: 100%;
+    margin-top: 0;
+    text-align: left;
+}
+
+.hero-card .roster-wave-fit span:last-child {
+    grid-column: 1 / -1;
 }
 
 .hero-card .hero-actions {

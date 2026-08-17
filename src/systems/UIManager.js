@@ -10,6 +10,7 @@ import { RadarPanel } from '../ui/RadarPanel.js';
 import { ShopPanel } from '../ui/ShopPanel.js';
 import { StarterPanel } from '../ui/StarterPanel.js';
 import { EndStatePanel } from '../ui/EndStatePanel.js';
+import { HeroRosterPanel } from '../ui/HeroRosterPanel.js';
 import { SET_BONUSES, SLOT_LABELS } from './ItemEffectSystem.js';
 import { getAllowedTerrainLabels } from '../utils/TerrainRules.js';
 import { getRarityClass, normalizeRarity } from '../utils/Rarity.js';
@@ -1262,6 +1263,12 @@ export class UIManager {
         });
         this.starterPanel = new StarterPanel(this);
         this.endStatePanel = new EndStatePanel(this);
+        this.heroRosterPanel = new HeroRosterPanel(this, {
+            evaluateHeroWaveFit,
+            buildTargetingControlState,
+            getNextTargetingPriority,
+            buildRosterWaveFitView
+        });
         this.tooltipController = new TooltipController();
 
         this.initListeners();
@@ -2364,64 +2371,20 @@ export class UIManager {
         return this.getStarterPanel().render(starters, onSelect);
     }
 
-    renderHeroRoster(activeTeam, onSelect) {
-        if (!this.heroGrid) return;
-        this.heroGrid.innerHTML = '';
-        const waveSummary = this.nextWaveSummary || (!this.game.waveManager?.isWaveActive ? this.game.waveManager?.buildPreparedSummary?.() : null);
-        const credits = this.game.resourceManager?.credits || 0;
+    getHeroRosterPanel() {
+        if (!this.heroRosterPanel) {
+            this.heroRosterPanel = new HeroRosterPanel(this, {
+                evaluateHeroWaveFit,
+                buildTargetingControlState,
+                getNextTargetingPriority,
+                buildRosterWaveFitView
+            });
+        }
+        return this.heroRosterPanel;
+    }
 
-        activeTeam.forEach((hero) => {
-            const deployedHero = this.game.heroes.find((unit) => unit.id === hero.id);
-            const deployed = Boolean(deployedHero);
-            const fit = evaluateHeroWaveFit(deployedHero || hero, waveSummary, credits);
-            const quickUpgradeCost = deployedHero ? this.getHeroUpgradeCost(deployedHero, 1) : 0;
-            const canQuickUpgrade = this.canAffordHeroUpgrade(deployedHero, 1);
-            const quickUpgradeTooltip = Number.isFinite(quickUpgradeCost) ? `Mejora rapida $${quickUpgradeCost}` : 'Nivel maximo';
-            const targetingState = deployedHero ? buildTargetingControlState(deployedHero.targetingPriority || hero.targetingPriority) : null;
-            const rarity = normalizeRarity(hero.rarity);
-            const rarityClass = getRarityClass(rarity);
-            const card = document.createElement('article');
-            card.className = `hero-card ${rarityClass} ${deployed ? 'deployed' : ''} wave-fit-${fit.id}`;
-            card.dataset.testid = `hero-card-${hero.id}`;
-            card.dataset.rarity = rarity;
-            card.dataset.waveFit = fit.id;
-            card.innerHTML = `
-                <div class="hero-card-sprite">${this.renderSprite(this.getHeroDisplaySprite(hero), hero.name)}</div>
-                <div>
-                    <div class="hero-card-heading">
-                        <strong>${hero.name}</strong>
-                        <span class="rarity-badge ${rarityClass}">${rarity}</span>
-                    </div>
-                </div>
-                <div class="hero-actions">
-                    <button class="btn-action place-btn" data-testid="hero-place-${hero.id}" title="${deployed ? 'Reposicionar' : 'Colocar'}" aria-label="${deployed ? 'Reposicionar' : 'Colocar'}" data-tooltip="${deployed ? 'Mover libremente' : 'Colocar héroe gratis'}"><i class="fas ${deployed ? 'fa-arrows-alt' : 'fa-map-marker-alt'}"></i></button>
-                    ${deployedHero ? `<button class="btn-action upgrade-btn ${canQuickUpgrade ? '' : 'is-unaffordable'}" data-testid="hero-upgrade-${hero.id}" data-quick-upgrade-id="${hero.id}" data-affordable="${canQuickUpgrade ? 'true' : 'false'}" title="Mejorar en campo" aria-label="Mejorar ${hero.name}" data-tooltip="${quickUpgradeTooltip}"><i class="fas fa-arrow-up"></i></button>` : ''}
-                    ${targetingState ? `<button class="btn-action target-btn" data-testid="hero-target-${hero.id}" title="${targetingState.tooltip}" aria-label="${targetingState.ariaLabel}" data-tooltip="${targetingState.tooltip}"><i class="fas ${targetingState.icon}"></i><span>${targetingState.label}</span></button>` : ''}
-                    <button class="btn-action stats-btn" title="Mejoras" aria-label="Mejoras" data-tooltip="Estadísticas y mejoras"><i class="fas fa-chart-bar"></i></button>
-                </div>
-            `;
-            card.querySelector('.place-btn').addEventListener('click', (event) => {
-                event.stopPropagation();
-                if (deployedHero) this.game.inputManager.setRepositionMode(deployedHero);
-                else onSelect(hero);
-            });
-            card.querySelector('.stats-btn').addEventListener('click', (event) => {
-                event.stopPropagation();
-                const deployedHero = this.findDeployedHeroById(hero.id);
-                this.inspectUnit(deployedHero || hero);
-            });
-            card.querySelector('.target-btn')?.addEventListener('click', (event) => {
-                event.stopPropagation();
-                const nextPriority = getNextTargetingPriority(deployedHero.targetingPriority || hero.targetingPriority);
-                deployedHero.targetingPriority = nextPriority;
-                if (deployedHero.config) deployedHero.config.targetingPriority = nextPriority;
-                hero.targetingPriority = nextPriority;
-                this.showToast(`${deployedHero.name || hero.name}: objetivo ${nextPriority}`, 'info');
-                this.renderHeroRoster(this.game.activeTeam, (config) => this.game.inputManager.setPlacementMode(config));
-            });
-            this.heroGrid.appendChild(card);
-        });
-        this.renderOnboardingCoach();
+    renderHeroRoster(activeTeam, onSelect) {
+        return this.getHeroRosterPanel().render(activeTeam, onSelect);
     }
 
     buildGachaRevealSequence(finalHero, count = 12) {
