@@ -4610,6 +4610,111 @@ body.panel-open {
     margin: 10px 0 14px;
 }
 
+.collection-command-header {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(360px, 0.88fr);
+    align-items: center;
+    gap: 12px;
+    margin: 10px 0 12px;
+    padding: 12px 14px;
+    border: 1px solid color-mix(in srgb, var(--level-accent), transparent 50%);
+    border-radius: 8px;
+    background:
+        linear-gradient(135deg, color-mix(in srgb, var(--level-accent), transparent 88%), transparent 64%),
+        rgba(5, 9, 15, 0.86);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.collection-command-copy {
+    display: grid;
+    gap: 4px;
+    min-width: 0;
+}
+
+.collection-command-copy > strong,
+.collection-command-copy > small {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.collection-command-copy > strong {
+    color: #ffffff;
+    font-size: 18px;
+    line-height: 1.1;
+}
+
+.collection-command-copy > small {
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.collection-filter-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    min-width: 0;
+    margin-top: 3px;
+}
+
+.collection-filter-pills span {
+    max-width: 190px;
+    overflow: hidden;
+    padding: 4px 7px;
+    border: 1px solid rgba(64, 201, 255, 0.24);
+    border-radius: 999px;
+    background: rgba(64, 201, 255, 0.08);
+    color: #c8eaff;
+    font-size: 9px;
+    font-weight: 900;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.collection-command-readout {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+}
+
+.collection-command-readout span {
+    display: grid;
+    place-items: center;
+    min-width: 0;
+    min-height: 54px;
+    padding: 7px 6px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 7px;
+    background: rgba(3, 7, 12, 0.52);
+    text-align: center;
+}
+
+.collection-command-readout i {
+    color: var(--level-accent);
+    font-size: 13px;
+}
+
+.collection-command-readout small,
+.collection-command-readout b {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.collection-command-readout small {
+    color: var(--muted);
+    font-size: 8px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.collection-command-readout b {
+    color: var(--bright-yellow);
+    font-size: 12px;
+}
+
 .collection-view-tab {
     display: inline-flex;
     align-items: center;
@@ -7581,6 +7686,8 @@ body.tactical-paused #gameCanvas {
 
     .campaign-ops-strip,
     .campaign-progress-readout,
+    .collection-command-header,
+    .collection-command-readout,
     .codex-command-header,
     .codex-readout,
     .map-list {
@@ -7588,6 +7695,11 @@ body.tactical-paused #gameCanvas {
     }
 
     .campaign-ops-copy strong {
+        white-space: normal;
+    }
+
+    .collection-command-copy > strong,
+    .collection-command-copy > small {
         white-space: normal;
     }
 

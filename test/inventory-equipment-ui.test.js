@@ -150,6 +150,40 @@ test('coleccion filtra heroes obtenidos y faltantes', () => {
     assert.match(panel.renderCollectionFilters(2, 3), /collection-ownership-select/);
 });
 
+test('coleccion resume equipo filtros y agrupaciones en cabecera compacta', () => {
+    const ui = createUiStub();
+    ui.inventoryPanel.pendingEquipItemId = null;
+    ui.game.activeTeam = [data.heroes.iron_man, data.heroes.spiderman];
+    const panel = new TeamBuilderPanel(ui);
+    panel.searchQuery = 'iron';
+    panel.rarityFilter = 'Rare';
+    panel.ownershipFilter = 'owned';
+    panel.sortMode = 'rarity-desc';
+
+    const readyHeroes = [data.heroes.iron_man, data.heroes.spiderman, data.heroes.thor];
+    const unlockedIds = new Set(ui.game.progression.state.unlockedHeroIds);
+    const html = panel.renderCollectionCommandHeader({
+        readyHeroes,
+        filteredHeroes: [data.heroes.iron_man],
+        unlockedIds,
+        snapshot: {
+            families: [{ activeTier: { count: 2 } }, { activeTier: null }],
+            pairs: [{ active: true }, { active: false }]
+        }
+    });
+
+    assert.match(html, /collection-command-header/);
+    assert.match(html, /Heroes disponibles/);
+    assert.match(html, /1\/3 visibles/);
+    assert.match(html, /2\/6/);
+    assert.match(html, /2\/3/);
+    assert.match(html, /2 activas/);
+    assert.match(html, /Busqueda: iron/);
+    assert.match(html, /Rareza: Rare/);
+    assert.match(html, /Solo obtenidos/);
+    assert.match(html, /Orden: Rareza alta/);
+});
+
 test('tienda de skins queda como panel independiente vacio', () => {
     const ui = Object.create(UIManager.prototype);
     ui.panelContent = { innerHTML: '' };

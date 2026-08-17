@@ -42,6 +42,7 @@ export class TeamBuilderPanel {
                 <h2>${title}</h2>
                 <strong>${game.activeTeam.length}/6 activos · despliegue libre</strong>
             </div>
+            ${this.renderCollectionCommandHeader({ readyHeroes, filteredHeroes, unlockedIds, snapshot })}
             ${this.renderCollectionTabs()}
 
             ${this.viewMode === 'heroes' ? `<section class="team-builder-summary">
@@ -134,6 +135,65 @@ export class TeamBuilderPanel {
                 <em><b>${group.needed > 0 ? 'Faltan' : 'Estado'}:</b> ${group.needed > 0 ? missingLabel : stateLabel}</em>
             </article>
         `;
+    }
+
+    renderCollectionCommandHeader({ readyHeroes, filteredHeroes, unlockedIds, snapshot }) {
+        const ownedCount = readyHeroes.filter((hero) => unlockedIds.has(hero.id)).length;
+        const activeSynergyCount = snapshot.families.filter((family) => family.activeTier).length
+            + snapshot.pairs.filter((pair) => pair.active).length;
+        const pendingItem = this.getPendingInventoryItem();
+        const filterLabels = this.getActiveFilterLabels();
+        const modeText = pendingItem
+            ? `Equipando ${pendingItem.name}`
+            : `${filteredHeroes.length}/${readyHeroes.length} visibles`;
+        return `
+            <section class="collection-command-header" aria-label="Resumen de coleccion">
+                <div class="collection-command-copy">
+                    <span class="briefing-kicker">ARCHIVO DE EQUIPO</span>
+                    <strong>${this.getViewLabel()}</strong>
+                    <small>${modeText}</small>
+                    <div class="collection-filter-pills">
+                        ${filterLabels.map((label) => `<span>${this.escapeHtml(label)}</span>`).join('')}
+                    </div>
+                </div>
+                <div class="collection-command-readout">
+                    <span><i class="fas fa-user-shield"></i><small>Equipo</small><b>${this.ui.game.activeTeam.length}/6</b></span>
+                    <span><i class="fas fa-id-badge"></i><small>Heroes</small><b>${ownedCount}/${readyHeroes.length}</b></span>
+                    <span><i class="fas fa-people-group"></i><small>Agrup.</small><b>${activeSynergyCount} activas</b></span>
+                    <span><i class="fas fa-filter"></i><small>Filtros</small><b>${Math.max(0, filterLabels.length - (filterLabels[0] === 'Sin filtros' ? 1 : 0))}</b></span>
+                </div>
+            </section>
+        `;
+    }
+
+    getViewLabel() {
+        const labels = {
+            heroes: 'Heroes disponibles',
+            villains: 'Diccionario de villanos',
+            evolutions: 'Diccionario de evoluciones'
+        };
+        return labels[this.viewMode] || labels.heroes;
+    }
+
+    getActiveFilterLabels() {
+        const labels = [];
+        const query = this.searchQuery.trim();
+        if (query) labels.push(`Busqueda: ${query}`);
+        if (this.rarityFilter !== 'all') labels.push(`Rareza: ${normalizeRarity(this.rarityFilter)}`);
+        if (this.ownershipFilter !== 'all') {
+            labels.push(this.ownershipFilter === 'owned' ? 'Solo obtenidos' : 'Solo faltantes');
+        }
+        if (this.sortMode !== 'az') labels.push(`Orden: ${this.getSortLabel(this.sortMode)}`);
+        return labels.length ? labels : ['Sin filtros'];
+    }
+
+    getSortLabel(sortMode) {
+        const labels = {
+            za: 'Z-A',
+            'rarity-desc': 'Rareza alta',
+            'rarity-asc': 'Rareza baja'
+        };
+        return labels[sortMode] || 'A-Z';
     }
 
     getPendingInventoryItem() {
@@ -483,5 +543,9 @@ export class TeamBuilderPanel {
             .replaceAll('"', '&quot;')
             .replaceAll('<', '&lt;')
             .replaceAll('>', '&gt;');
+    }
+
+    escapeHtml(value = '') {
+        return this.escapeAttribute(value);
     }
 }
