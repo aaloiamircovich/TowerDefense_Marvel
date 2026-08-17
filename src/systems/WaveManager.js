@@ -134,13 +134,13 @@ export function getWaveHealthCurve(wave = 1, isBoss = false) {
     const bossFactor = safeWave <= 30
         ? 1.8
         : safeWave <= 79
-            ? 1.85 + (safeWave - 30) * 0.012
-            : 2.45 + (safeWave - 79) * 0.014;
+            ? 1.4 + (safeWave - 30) * 0.004
+            : 1.6 + (safeWave - 79) * 0.006;
     return curve * bossFactor;
 }
 
 export function getFinalBossHealthCurve(wave = CAMPAIGN_MAX_WAVES) {
-    return getWaveHealthCurve(wave, false) * 0.62;
+    return getWaveHealthCurve(wave, false) * 0.11;
 }
 
 export function getLevelHealthFactor(level = {}, levelIndex = 0) {

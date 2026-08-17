@@ -172,8 +172,9 @@ test('curva de salud escala suave, exponencial y extrema por oleada', () => {
     assert.ok(wave30 > wave1 * 2);
     assert.ok(wave60 > wave30 * 3);
     assert.ok(wave100 > wave60 * 10);
-    assert.ok(boss100 > wave100 * 2.7);
+    assert.ok(boss100 > wave100 * 1.7);
     assert.ok(final100 < wave100);
+    assert.ok(final100 > wave30 * 4);
 });
 
 test('factor de salud sube con dificultad fija y posicion del mapa', () => {
