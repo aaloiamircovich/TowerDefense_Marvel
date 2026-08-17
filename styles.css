@@ -7909,6 +7909,108 @@ button.team-slot-filled:not(:disabled):active img {
     transform: translate3d(0, -3px, 0) scale(1.055);
 }
 
+.starter-panel {
+    display: grid;
+    gap: 18px;
+}
+
+.starter-card-upgraded {
+    grid-template-rows: auto auto minmax(48px, auto);
+    align-content: start;
+    min-height: 286px;
+}
+
+.starter-sprite-frame {
+    display: grid;
+    place-items: center;
+    width: min(142px, 58vw);
+    aspect-ratio: 1;
+    border: 1px solid color-mix(in srgb, var(--rarity-color, var(--level-accent)), transparent 58%);
+    border-radius: 8px;
+    background:
+        radial-gradient(circle at 50% 42%, color-mix(in srgb, var(--rarity-color, var(--level-accent)), transparent 72%), transparent 64%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.02)),
+        rgba(3, 7, 12, 0.34);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.1),
+        0 14px 22px rgba(0, 0, 0, 0.28),
+        0 0 18px color-mix(in srgb, var(--rarity-color, var(--level-accent)), transparent 70%);
+}
+
+.starter-sprite-frame img,
+.starter-sprite-frame .sprite-fallback {
+    width: 128px;
+    height: 128px;
+    object-fit: contain;
+    image-rendering: pixelated;
+}
+
+.starter-card-copy {
+    display: grid;
+    gap: 7px;
+    justify-items: center;
+    min-width: 0;
+    text-align: center;
+}
+
+.starter-card-copy em {
+    max-width: 24ch;
+    min-height: 30px;
+    color: var(--muted);
+    font-size: 12px;
+    font-style: normal;
+    line-height: 1.25;
+}
+
+.starter-card-upgraded .starter-rarity-line {
+    align-items: center;
+    gap: 6px;
+}
+
+.starter-stat-strip {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    width: 100%;
+}
+
+.starter-stat-strip span {
+    display: grid;
+    grid-template-columns: auto auto;
+    align-items: center;
+    justify-content: center;
+    gap: 2px 6px;
+    min-height: 46px;
+    padding: 7px 8px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
+    background: rgba(5, 12, 22, 0.42);
+    color: var(--text);
+}
+
+.starter-stat-strip i {
+    color: var(--rarity-color, var(--accent));
+    font-size: 12px;
+}
+
+.starter-stat-strip b {
+    color: var(--text);
+    line-height: 1;
+}
+
+.starter-stat-strip small {
+    grid-column: 1 / -1;
+    color: var(--muted);
+    font-size: 10px;
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+.starter-card-upgraded:hover .starter-sprite-frame,
+.starter-card-upgraded:focus-visible .starter-sprite-frame {
+    transform: translate3d(0, -3px, 0) scale(1.03);
+}
+
 .team-hero-card {
     align-content: start;
     gap: 6px;

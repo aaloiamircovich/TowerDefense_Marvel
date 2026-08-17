@@ -8,6 +8,7 @@ import { ModePanel } from '../ui/ModePanel.js';
 import { WaveReportPanel } from '../ui/WaveReportPanel.js';
 import { RadarPanel } from '../ui/RadarPanel.js';
 import { ShopPanel } from '../ui/ShopPanel.js';
+import { StarterPanel } from '../ui/StarterPanel.js';
 import { SET_BONUSES, SLOT_LABELS } from './ItemEffectSystem.js';
 import { getAllowedTerrainLabels } from '../utils/TerrainRules.js';
 import { getRarityClass, normalizeRarity } from '../utils/Rarity.js';
@@ -1258,6 +1259,7 @@ export class UIManager {
             buildShopItemInsight,
             buildShopSetProgress
         });
+        this.starterPanel = new StarterPanel(this);
         this.tooltipController = new TooltipController();
 
         this.initListeners();
@@ -2351,38 +2353,13 @@ export class UIManager {
         this.settingsPanel.render(title);
     }
 
+    getStarterPanel() {
+        if (!this.starterPanel) this.starterPanel = new StarterPanel(this);
+        return this.starterPanel;
+    }
+
     renderStarterSelector(starters, onSelect) {
-        this.game.pause();
-        this.showPanelOverlay(false);
-
-        this.panelContent.innerHTML = `
-            <div class="starter-header">
-                <h2>Elige tu héroe inicial</h2>
-                <p>Tu primera defensa define el ritmo de las primeras oleadas.</p>
-            </div>
-            <div class="starter-grid">
-                ${starters.map((hero) => {
-                    const rarity = normalizeRarity(hero.rarity);
-                    const rarityClass = getRarityClass(rarity);
-                    return `
-                    <button class="starter-card ${rarityClass}" data-id="${hero.id}" data-testid="starter-${hero.id}" data-rarity="${rarity}">
-                        ${this.renderSprite(this.getHeroDisplaySprite(hero), hero.name)}
-                        <strong>${hero.name}</strong>
-                        <span class="starter-rarity-line"><b class="rarity-badge ${rarityClass}">${rarity}</b></span>
-                    </button>
-                `;
-                }).join('')}
-            </div>
-        `;
-
-        this.panelContent.querySelectorAll('.starter-card').forEach((card) => {
-            card.addEventListener('click', () => {
-                const selected = starters.find((hero) => hero.id === card.dataset.id);
-                document.getElementById('close-panel-btn')?.classList.remove('hidden');
-                this.closePanel();
-                onSelect(selected);
-            });
-        });
+        return this.getStarterPanel().render(starters, onSelect);
     }
 
     renderHeroRoster(activeTeam, onSelect) {
