@@ -19,6 +19,9 @@ test('ShopPanel renderiza tienda progresiva y delega compra de objetos', () => {
     panel.render('Tienda');
 
     assert.match(panelContent.innerHTML, /Tienda/);
+    assert.match(panelContent.innerHTML, /shop-command-header/);
+    assert.match(panelContent.innerHTML, /shop-economy-readout/);
+    assert.match(panelContent.innerHTML, /\+\$60/);
     assert.match(panelContent.innerHTML, /shop-recruit-strip/);
     assert.match(panelContent.innerHTML, /shop-grid--compact/);
     assert.match(panelContent.innerHTML, /RECLUTAR POR \$500/);
@@ -36,11 +39,17 @@ test('ShopPanel recluta heroe, actualiza costo y permite tienda de skins vacia',
     const resultNode = createNodeStub();
     const fundsLabel = createNodeStub();
     const pityTrack = createNodeStub();
+    const creditsReadout = createNodeStub();
+    const boxReadout = createNodeStub();
+    const pityReadout = createNodeStub();
     const panelContent = createPanelContentStub({
         '#gacha-btn': gachaButton,
         '#gacha-res': resultNode,
         '.panel-title-row strong': fundsLabel,
         '.pity-track': pityTrack,
+        '[data-shop-readout="credits"]': creditsReadout,
+        '[data-shop-readout="box-cost"]': boxReadout,
+        '[data-shop-readout="pity"]': pityReadout,
         '.btn-buy-item': []
     });
     const calls = [];
@@ -67,6 +76,9 @@ test('ShopPanel recluta heroe, actualiza costo y permite tienda de skins vacia',
     assert.match(resultNode.innerHTML, /gacha-reveal/);
     assert.match(resultNode.innerHTML, /Spider-Man/);
     assert.equal(fundsLabel.textContent, '$1200 creditos');
+    assert.equal(creditsReadout.textContent, '$1200');
+    assert.equal(boxReadout.textContent, 'Completa');
+    assert.equal(pityReadout.textContent, '1/4');
     assert.match(pityTrack.innerHTML, /Garantía/);
     assert.match(pityTrack.innerHTML, /1\/4/);
     assert.equal(gachaButton.disabled, true);

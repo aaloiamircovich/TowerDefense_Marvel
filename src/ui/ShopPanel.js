@@ -24,16 +24,27 @@ export class ShopPanel {
         const credits = this.ui.game.progression.getCredits();
         const fundsText = this.ui.game.progression.state.settings.adminMode ? '∞' : `$${credits}`;
         const recruitCost = getHeroBoxCost(this.ui.game.progression.state.shop);
+        const pityValue = Math.min(4, this.ui.game.progression.state.shop.heroPity);
+        const nextRecruitCost = Math.ceil(recruitCost * 1.12);
 
         this.ui.panelContent.innerHTML = `
-            <div class="panel-title-row"><h2>${title}</h2><strong>${fundsText} creditos</strong></div>
+            <section class="shop-command-header">
+                <div class="panel-title-row shop-title-row"><h2>${title}</h2><strong>${fundsText} creditos</strong></div>
+                <div class="shop-economy-readout">
+                    <span><small>Creditos</small><b data-shop-readout="credits">${fundsText}</b></span>
+                    <span><small>Caja</small><b data-shop-readout="box-cost">$${recruitCost}</b></span>
+                    <span><small>Garantia</small><b data-shop-readout="pity">${pityValue}/4</b></span>
+                    <span><small>Arsenal</small><b>${rotation.length}/3</b></span>
+                    <span><small>Siguiente</small><b>+$${nextRecruitCost - recruitCost}</b></span>
+                </div>
+            </section>
             <section class="shop-recruit-strip">
                 <div class="shop-recruit-copy">
                     <span class="briefing-kicker">CAJA DE RECLUTAMIENTO</span>
                     <strong>Héroe aleatorio sin duplicados</strong>
                     <small>La quinta apertura común garantiza Rare o superior.</small>
                 </div>
-                <div class="pity-track compact"><span>Garantía</span><b>${Math.min(4, this.ui.game.progression.state.shop.heroPity)}/4</b></div>
+                <div class="pity-track compact"><span>Garantía</span><b>${pityValue}/4</b></div>
                 <button class="btn-primary" id="gacha-btn">RECLUTAR POR $${recruitCost}</button>
             </section>
             <div id="gacha-res" class="result-copy shop-reveal-dock"></div>
@@ -243,9 +254,14 @@ export class ShopPanel {
         if (fundsLabel) {
             const fundsText = this.ui.game.progression.state.settings.adminMode ? '∞' : `$${this.ui.game.progression.getCredits()}`;
             fundsLabel.textContent = `${fundsText} creditos`;
+            const creditsReadout = this.ui.panelContent.querySelector('[data-shop-readout="credits"]');
+            if (creditsReadout) creditsReadout.textContent = fundsText;
         }
         const pityTrack = this.ui.panelContent.querySelector('.pity-track');
-        if (pityTrack) pityTrack.innerHTML = `<span>Garantía</span><b>${Math.min(4, this.ui.game.progression.state.shop.heroPity)}/4</b>`;
+        const pityValue = Math.min(4, this.ui.game.progression.state.shop.heroPity);
+        if (pityTrack) pityTrack.innerHTML = `<span>Garantía</span><b>${pityValue}/4</b>`;
+        const pityReadout = this.ui.panelContent.querySelector('[data-shop-readout="pity"]');
+        if (pityReadout) pityReadout.textContent = `${pityValue}/4`;
 
         this.startGachaRevealAnimation(result, () => {
             const nextPool = Object.values(this.ui.game.heroDatabase || {})
@@ -255,6 +271,8 @@ export class ShopPanel {
                 button.disabled = nextPool.length === 0;
                 const nextCost = getHeroBoxCost(this.ui.game.progression.state.shop);
                 button.textContent = nextPool.length === 0 ? 'PLANTILLA COMPLETA' : `RECLUTAR POR $${nextCost}`;
+                const boxReadout = this.ui.panelContent.querySelector('[data-shop-readout="box-cost"]');
+                if (boxReadout) boxReadout.textContent = nextPool.length === 0 ? 'Completa' : `$${nextCost}`;
             }
         });
     }
