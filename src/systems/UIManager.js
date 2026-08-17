@@ -5,6 +5,7 @@ import { TooltipController } from '../ui/TooltipController.js';
 import { InventoryPanel } from '../ui/InventoryPanel.js';
 import { TeamBuilderPanel } from '../ui/TeamBuilderPanel.js';
 import { ModePanel } from '../ui/ModePanel.js';
+import { WaveReportPanel } from '../ui/WaveReportPanel.js';
 import { SET_BONUSES, SLOT_LABELS } from './ItemEffectSystem.js';
 import { getHeroBoxCost } from './ShopSystem.js';
 import { getAllowedTerrainLabels } from '../utils/TerrainRules.js';
@@ -1244,6 +1245,10 @@ export class UIManager {
         this.inventoryPanel = new InventoryPanel(this);
         this.teamBuilderPanel = new TeamBuilderPanel(this);
         this.modePanel = new ModePanel(this);
+        this.waveReportPanel = new WaveReportPanel(this, {
+            buildState: buildWaveReportState,
+            buildAction: buildWaveReportActionState
+        });
         this.tooltipController = new TooltipController();
 
         this.initListeners();
@@ -1570,89 +1575,11 @@ export class UIManager {
     }
 
     clearWaveReport() {
-        const container = document.getElementById('wave-report');
-        this.lastWaveReport = null;
-        if (!container) return;
-        container.classList.add('hidden');
-        container.innerHTML = '';
-        this.renderOnboardingCoach();
+        return this.waveReportPanel.clear();
     }
 
     renderWaveReport(report) {
-        const container = document.getElementById('wave-report');
-        if (!container) return null;
-        const state = buildWaveReportState(report);
-        const action = buildWaveReportActionState(
-            state,
-            this.game.heroes || [],
-            this.game.resourceManager?.credits || 0,
-            (level, amount) => this.calculateLevelCost(level, amount)
-        );
-        this.lastWaveReport = report;
-        container.className = `wave-report report-${state.tone}`;
-        container.setAttribute('aria-label', `${state.label}. ${state.advice}`);
-        container.innerHTML = `
-            <div class="wave-report-heading">
-                <div>
-                    <span>Informe oleada ${state.wave}</span>
-                    <strong>${state.label}</strong>
-                </div>
-                <b class="wave-report-grade grade-${state.grade.tone}" title="${escapeHtml(state.grade.detail)}">
-                    <em>${state.grade.medal}</em>
-                    <small>${state.grade.score}</small>
-                </b>
-            </div>
-            <div class="wave-report-grid">
-                <span><b>${state.leaks}</b> fugas</span>
-                <span><b>${state.kills}</b> bajas</span>
-                <span><b>${state.damage}</b> dano</span>
-                <span><b>$${state.credits}</b> creditos</span>
-                ${state.cleanBonus > 0 ? `<span><b>+$${state.cleanBonus}</b> perfecta</span>` : ''}
-            </div>
-            <div class="wave-report-rating grade-${state.grade.tone}" aria-label="${escapeHtml(state.grade.label)}: ${escapeHtml(state.grade.detail)}">
-                <strong>${escapeHtml(state.grade.label)}</strong>
-                <span>${escapeHtml(state.grade.detail)}</span>
-            </div>
-            <div class="wave-report-mvp">
-                <i class="fas fa-star"></i>
-                <span>${state.bestHero}: ${state.bestHeroKills} bajas - ${state.bestHeroDamage} dano</span>
-            </div>
-            ${state.tacticalContribution.active ? `<div class="wave-tactical-contribution" aria-label="Contribucion tactica de la oleada">
-                <strong><i class="fas fa-chart-line"></i> Valor tactico ${state.tacticalContribution.score}</strong>
-                <div>
-                    ${state.tacticalContribution.metrics.map((metric) => `<span class="${escapeHtml(metric.id)}">
-                        <i class="fas ${escapeHtml(metric.icon)}"></i>
-                        <b>${metric.value}${escapeHtml(metric.suffix)}</b>
-                        <small>${escapeHtml(metric.label)}</small>
-                    </span>`).join('')}
-                </div>
-                ${state.tacticalContribution.heroes.length ? `<em>${state.tacticalContribution.heroes.map((hero) => `${escapeHtml(hero.name)}: ${escapeHtml(hero.detail)}`).join(' / ')}</em>` : ''}
-            </div>` : ''}
-            <div class="wave-report-lesson lesson-${state.lesson.tone}" aria-label="${escapeHtml(state.lesson.label)}: ${escapeHtml(state.lesson.detail)}">
-                <strong>${escapeHtml(state.lesson.label)}</strong>
-                <span>${escapeHtml(state.lesson.detail)}</span>
-            </div>
-            ${state.leakIntel.items.length ? `<div class="wave-leak-intel" aria-label="${escapeHtml(state.leakIntel.label)}">
-                <strong><i class="fas fa-route"></i> ${escapeHtml(state.leakIntel.label)}</strong>
-                ${state.leakIntel.items.map((item) => `<span class="${escapeHtml(item.tone)}">
-                    <b>${escapeHtml(item.name)}</b>
-                    <small>${escapeHtml(item.detail)}</small>
-                </span>`).join('')}
-                ${state.leakIntel.overflow > 0 ? `<em>+${state.leakIntel.overflow} mas</em>` : ''}
-            </div>` : ''}
-            <p>${state.advice}</p>
-            ${action ? `<div class="wave-report-action report-action-${action.type}">
-                <span>${action.reason}</span>
-                ${action.type === 'upgrade'
-                    ? `<button id="wave-report-action" class="btn-mode-action">${action.label} $${action.cost}</button>`
-                    : `<small>${action.label}</small>`}
-            </div>` : ''}
-        `;
-        document.getElementById('wave-report-action')?.addEventListener('click', () => {
-            if (this.quickUpgradeHeroById(action.heroId)) this.renderWaveReport(this.lastWaveReport);
-        });
-        this.renderOnboardingCoach();
-        return state;
+        return this.waveReportPanel.render(report);
     }
 
     updatePerformance(snapshot, poolStats = {}) {
