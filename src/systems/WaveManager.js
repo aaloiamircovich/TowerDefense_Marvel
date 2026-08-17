@@ -245,6 +245,7 @@ export class WaveManager {
     buildPreparedSummary() {
         return {
             ...this.getWaveSummary(),
+            bossMilestone: this.getBossMilestone(),
             spawnTimeline: this.getSpawnTimeline(),
             perfectBonus: this.getPerfectWaveBonus(),
             branchOptions: this.director.getBranchOptions(this.currentWave),
@@ -290,6 +291,35 @@ export class WaveManager {
         if (safeWave <= 50) return 1;
         if (safeWave <= 75) return 1.1;
         return 1.18 + (safeWave - 75) * 0.004;
+    }
+
+    getBossMilestone() {
+        const boss = this.preparedQueue
+            .map((entry) => entry.config)
+            .find((config) => config?.isBoss);
+        if (!boss) return null;
+
+        const wave = Math.max(1, Math.floor(Number(this.currentWave) || 1));
+        const isFinalBoss = Boolean(boss.isFinalBoss || isFinalBossWave(wave, this.maxWaves));
+        const miniIndex = Math.max(1, Math.floor(wave / MINI_BOSS_WAVE_INTERVAL));
+        const maxMiniBosses = Math.max(1, Math.floor((this.maxWaves - 1) / MINI_BOSS_WAVE_INTERVAL));
+
+        return {
+            wave,
+            bossId: boss.id || '',
+            bossName: boss.name || 'Jefe',
+            isFinalBoss,
+            label: isFinalBoss ? 'Final boss' : `Mini boss ${Math.min(miniIndex, maxMiniBosses)}/${maxMiniBosses}`,
+            warning: isFinalBoss
+                ? 'Si Thanos llega a la base, la campaña termina.'
+                : 'Si el boss llega a la base, pierdes la run.',
+            hp: Math.round(Number(boss.hp || 0)),
+            armor: Number(boss.armor || 0),
+            speed: Math.round(Number(boss.speed || 0)),
+            reward: Math.round(Number(boss.reward || 0)),
+            phaseCount: Array.isArray(boss.phases) ? boss.phases.length : 0,
+            threat: Math.max(1, Number(boss.threat || 5))
+        };
     }
 
     getWaveModifier() {

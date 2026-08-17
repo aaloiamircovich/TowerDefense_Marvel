@@ -46,6 +46,31 @@ test('WaveManager reserva jefes para oleadas 25, 50, 75 y 100', () => {
     assert.equal(manager.preparedQueue[0].config.id, 'loki');
 });
 
+test('WaveManager expone briefing de milestone solo en oleadas de boss', () => {
+    const manager = new WaveManager(createGame('avengers'), enemies);
+    manager.currentWave = 24;
+    manager.prepareNextWave();
+
+    assert.equal(manager.buildPreparedSummary().bossMilestone, null);
+
+    manager.currentWave = 25;
+    manager.prepareNextWave();
+    const mini = manager.buildPreparedSummary().bossMilestone;
+
+    assert.equal(mini.label, 'Mini boss 1/3');
+    assert.equal(mini.bossName, 'Ultrón Prime');
+    assert.equal(mini.isFinalBoss, false);
+    assert.match(mini.warning, /pierdes/);
+
+    manager.currentWave = 100;
+    manager.prepareNextWave();
+    const finalBoss = manager.buildPreparedSummary().bossMilestone;
+
+    assert.equal(finalBoss.label, 'Final boss');
+    assert.equal(finalBoss.isFinalBoss, true);
+    assert.equal(finalBoss.bossName, 'Thanos (Guantelete)');
+});
+
 test('WaveManager mantiene a Ultron como primer mini boss vencible en Base Avengers', () => {
     const game = createGame('avengers');
     game.currentLevel = { id: 'level_1', theme: { id: 'avengers' }, difficulty: 'Fácil' };

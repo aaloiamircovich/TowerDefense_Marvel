@@ -35,20 +35,25 @@ export function buildWaveLaunchState(enabled, summary = null) {
     const score = summary?.pressureScore ?? 0;
     const perfectBonus = Math.max(0, Number(summary?.perfectBonus || 0));
     const bonusCopy = perfectBonus > 0 ? ` | Perfecta +$${perfectBonus}` : '';
-    const primary = tier === 'critical'
+    const bossMilestone = summary?.bossMilestone || null;
+    const primary = bossMilestone?.isFinalBoss
+        ? 'ENFRENTAR FINAL BOSS'
+        : bossMilestone
+            ? 'ENFRENTAR BOSS'
+            : tier === 'critical'
         ? 'INICIAR CON RIESGO'
         : tier === 'high'
             ? 'INICIAR ALERTA'
             : 'INICIAR OLEADA';
+    const bossCopy = bossMilestone ? `${bossMilestone.label || 'Boss'} · ` : '';
+    const bossWarning = bossMilestone?.warning ? ` ${bossMilestone.warning}` : '';
 
     return {
         tier,
         primary,
-        secondary: `${tierLabel} · ${score}`,
-        ariaLabel: `${primary}. ${tierLabel}. Puntaje ${score}.`,
-        tooltip: summary?.threatTier?.advice || 'Iniciar siguiente oleada',
-        secondary: perfectBonus > 0 ? `${tierLabel} | ${score}${bonusCopy}` : `${tierLabel} \u00B7 ${score}`,
-        ariaLabel: `${primary}. ${tierLabel}. Puntaje ${score}.${perfectBonus > 0 ? ` Bonus perfecto ${perfectBonus}.` : ''}`
+        secondary: perfectBonus > 0 ? `${bossCopy}${tierLabel} | ${score}${bonusCopy}` : `${bossCopy}${tierLabel} \u00B7 ${score}`,
+        ariaLabel: `${primary}. ${bossCopy}${tierLabel}. Puntaje ${score}.${perfectBonus > 0 ? ` Bonus perfecto ${perfectBonus}.` : ''}${bossWarning}`,
+        tooltip: bossMilestone?.warning || summary?.threatTier?.advice || 'Iniciar siguiente oleada'
     };
 }
 
@@ -413,6 +418,62 @@ export function buildCounterCoverageModel(summary = null, activeTeam = [], deplo
         total: entries.length,
         ready: covered === entries.length,
         entries
+    };
+}
+
+export function buildBossMilestoneState(uniqueEnemies = [], waveNumber = 1, summary = null) {
+    const milestone = summary?.bossMilestone || null;
+    const boss = (uniqueEnemies || []).find((enemy) => enemy?.isBoss) || null;
+    if (!milestone && !boss && !summary?.hasBoss) return null;
+
+    const wave = Math.max(1, Math.floor(Number(milestone?.wave || waveNumber) || 1));
+    const isFinalBoss = Boolean(milestone?.isFinalBoss || boss?.isFinalBoss || wave >= 100);
+    const mergedBoss = {
+        ...(boss || {}),
+        isBoss: true,
+        isFinalBoss,
+        name: milestone?.bossName || boss?.name || 'Jefe',
+        hp: milestone?.hp ?? boss?.hp,
+        armor: milestone?.armor ?? boss?.armor,
+        speed: milestone?.speed ?? boss?.speed,
+        reward: milestone?.reward ?? boss?.reward,
+        threat: milestone?.threat ?? boss?.threat ?? 5
+    };
+    const intel = buildEnemyIntel(mergedBoss);
+    const phaseCount = Number(milestone?.phaseCount ?? (Array.isArray(boss?.phases) ? boss.phases.length : 0));
+    const armorPct = Math.round(Number(mergedBoss.armor || 0) * 100);
+    const hp = Math.max(0, Math.round(Number(mergedBoss.hp || 0)));
+    const speed = Math.max(0, Math.round(Number(mergedBoss.speed || 0)));
+    const counters = [];
+    const addCounter = (condition, label) => {
+        if (condition && !counters.includes(label)) counters.push(label);
+    };
+
+    addCounter(true, 'DPS sostenido');
+    addCounter(armorPct >= 20, 'Perforacion');
+    addCounter(Boolean(mergedBoss.stealth), 'Deteccion');
+    addCounter(Number(mergedBoss.statusResistance || 0) >= 0.25 || mergedBoss.immuneToStun || mergedBoss.immuneToSlow, 'Control dosificado');
+    addCounter(phaseCount > 0, 'Leer fases');
+
+    return {
+        wave,
+        tone: isFinalBoss ? 'final' : 'mini',
+        title: milestone?.label || (isFinalBoss ? 'Final boss' : `Mini boss ${Math.max(1, Math.floor(wave / 25))}/3`),
+        name: mergedBoss.name,
+        portrait: mergedBoss.visual?.portrait || mergedBoss.sprite || '',
+        warning: milestone?.warning || (isFinalBoss ? 'Si el final boss llega a la base, pierdes.' : 'Si el boss llega a la base, pierdes la run.'),
+        counter: intel.counter,
+        counterDetail: intel.counterDetail,
+        counters: counters.slice(0, 5),
+        stats: [
+            { label: 'Vida', value: hp > 0 ? hp.toLocaleString('es-AR') : '?' },
+            { label: 'Armadura', value: `${armorPct}%` },
+            { label: 'Velocidad', value: speed || '?' },
+            { label: 'Fases', value: phaseCount || 1 }
+        ],
+        reward: Math.max(0, Math.round(Number(mergedBoss.reward || 0))),
+        traits: intel.traits,
+        isFinalBoss
     };
 }
 
@@ -1701,6 +1762,7 @@ export class UIManager {
                 this.game.heroes || []
             )
             : null;
+        const bossMilestone = buildBossMilestoneState(uniqueEnemies, waveNumber, summary);
 
         if (numberEl) numberEl.textContent = waveNumber;
         if (intelEl) {
@@ -1716,6 +1778,24 @@ export class UIManager {
                         <div><strong>${summary.readiness?.label || 'Sin defensa'}</strong><span>${summary.readiness?.advice || 'Despliega al menos un heroe antes de iniciar.'}</span></div>
                         <b>${summary.readiness?.score || 0}</b>
                     </div>
+                    ${bossMilestone ? `<div class="wave-boss-telegraph ${bossMilestone.tone}" data-testid="wave-boss-telegraph" aria-label="${escapeHtml(`${bossMilestone.title}: ${bossMilestone.name}. ${bossMilestone.warning}`)}">
+                        <div class="wave-boss-portrait">
+                            ${bossMilestone.portrait
+                                ? `<img src="${escapeHtml(bossMilestone.portrait)}" alt="" loading="lazy">`
+                                : `<span>${escapeHtml(bossMilestone.name.charAt(0))}</span>`}
+                        </div>
+                        <div class="wave-boss-copy">
+                            <span>${escapeHtml(bossMilestone.title)} · Oleada ${bossMilestone.wave}</span>
+                            <strong>${escapeHtml(bossMilestone.name)}</strong>
+                            <small><i class="fas fa-triangle-exclamation"></i>${escapeHtml(bossMilestone.warning)}</small>
+                        </div>
+                        <div class="wave-boss-stats">
+                            ${bossMilestone.stats.map((stat) => `<span><b>${escapeHtml(stat.value)}</b><small>${escapeHtml(stat.label)}</small></span>`).join('')}
+                        </div>
+                        <div class="wave-boss-counters">
+                            ${bossMilestone.counters.map((counter) => `<b>${escapeHtml(counter)}</b>`).join('')}
+                        </div>
+                    </div>` : ''}
                     <div class="wave-summary">
                         <span><b>${summary.total}</b> enemigos</span>
                         <span><b>$${summary.reward}</b> botín</span>

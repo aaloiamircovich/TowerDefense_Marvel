@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildBossHudState, buildCombatPressureState, buildCounterCoverageModel, buildEnemyIntel, buildLeakIntel, buildOnboardingCoachState, buildPressureActionState, buildRosterWaveFitView, buildShopItemInsight, buildShopSetProgress, buildSpawnQueueState, buildStatusLegendModel, buildStealthCoverageState, buildTacticalContributionModel, buildTargetingControlState, buildWaveLaunchState, buildWavePrepActionControl, buildWavePreparationPlan, buildWaveReportActionState, buildWaveReportGrade, buildWaveReportLesson, buildWaveReportState, evaluateHeroWaveFit, getNextTargetingPriority, UIManager } from '../src/systems/UIManager.js';
+import { buildBossHudState, buildBossMilestoneState, buildCombatPressureState, buildCounterCoverageModel, buildEnemyIntel, buildLeakIntel, buildOnboardingCoachState, buildPressureActionState, buildRosterWaveFitView, buildShopItemInsight, buildShopSetProgress, buildSpawnQueueState, buildStatusLegendModel, buildStealthCoverageState, buildTacticalContributionModel, buildTargetingControlState, buildWaveLaunchState, buildWavePrepActionControl, buildWavePreparationPlan, buildWaveReportActionState, buildWaveReportGrade, buildWaveReportLesson, buildWaveReportState, evaluateHeroWaveFit, getNextTargetingPriority, UIManager } from '../src/systems/UIManager.js';
 import { calculateHeroLevelCost } from '../src/utils/HeroLevel.js';
 
 test('buildWaveLaunchState muestra riesgo critico en el CTA', () => {
@@ -37,6 +37,25 @@ test('buildWaveLaunchState anticipa bonus por oleada perfecta', () => {
 
     assert.equal(state.secondary, 'Amenaza media | 14 | Perfecta +$30');
     assert.match(state.ariaLabel, /Bonus perfecto 30/);
+});
+
+test('buildWaveLaunchState convierte bosses en CTA de enfrentamiento', () => {
+    const mini = buildWaveLaunchState(true, {
+        pressureScore: 28,
+        bossMilestone: { label: 'Mini boss 1/3', warning: 'Si el boss llega a la base, pierdes la run.' },
+        threatTier: { id: 'critical', label: 'Amenaza critica', advice: 'Invierte antes de iniciar.' }
+    });
+    const final = buildWaveLaunchState(true, {
+        pressureScore: 40,
+        bossMilestone: { label: 'Final boss', isFinalBoss: true, warning: 'Si Thanos llega a la base, la campaña termina.' },
+        threatTier: { id: 'critical', label: 'Amenaza critica', advice: 'Invierte antes de iniciar.' }
+    });
+
+    assert.equal(mini.primary, 'ENFRENTAR BOSS');
+    assert.match(mini.secondary, /Mini boss 1\/3/);
+    assert.equal(mini.tooltip, 'Si el boss llega a la base, pierdes la run.');
+    assert.equal(final.primary, 'ENFRENTAR FINAL BOSS');
+    assert.match(final.ariaLabel, /Thanos/);
 });
 
 test('buildWaveLaunchState bloquea lectura cuando la oleada esta activa', () => {
@@ -162,6 +181,45 @@ test('buildCounterCoverageModel distingue counters en campo, banco y faltantes',
         ['control', 'warning']
     ]);
     assert.match(model.entries[0].detail, /Spider-Man/);
+});
+
+test('buildBossMilestoneState resume mini boss con stats y counters visibles', () => {
+    const state = buildBossMilestoneState([
+        { id: 'ultron_prime', name: 'Ultron Prime', isBoss: true, hp: 15400, armor: 0.34, speed: 38, reward: 2000, phases: [{ name: 'Drones' }], threat: 5 }
+    ], 25, {
+        hasBoss: true,
+        bossMilestone: {
+            wave: 25,
+            bossName: 'Ultron Prime',
+            label: 'Mini boss 1/3',
+            warning: 'Si el boss llega a la base, pierdes la run.',
+            hp: 15400,
+            armor: 0.34,
+            speed: 38,
+            reward: 2000,
+            phaseCount: 1,
+            threat: 5
+        }
+    });
+
+    assert.equal(state.title, 'Mini boss 1/3');
+    assert.equal(state.name, 'Ultron Prime');
+    assert.equal(state.tone, 'mini');
+    assert.ok(state.counters.includes('DPS sostenido'));
+    assert.ok(state.counters.includes('Perforacion'));
+    assert.deepEqual(state.stats.map((stat) => stat.label), ['Vida', 'Armadura', 'Velocidad', 'Fases']);
+});
+
+test('buildBossMilestoneState distingue final boss fatal', () => {
+    const state = buildBossMilestoneState([
+        { id: 'thanos_final', name: 'Thanos', isBoss: true, isFinalBoss: true, hp: 900000, armor: 0.55, speed: 25, immuneToStun: true }
+    ], 100, null);
+
+    assert.equal(state.tone, 'final');
+    assert.equal(state.isFinalBoss, true);
+    assert.equal(state.title, 'Final boss');
+    assert.match(state.warning, /pierdes/);
+    assert.ok(state.counters.includes('Control dosificado'));
 });
 
 test('buildStealthCoverageState distingue detector desplegado, banco y faltante', () => {
