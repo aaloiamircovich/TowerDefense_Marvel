@@ -6851,6 +6851,75 @@ select {
     font-size: 12px;
 }
 
+.settings-status-strip {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 6px;
+}
+
+.settings-status-chip {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    column-gap: 7px;
+    row-gap: 2px;
+    min-width: 0;
+    min-height: 38px;
+    padding: 7px 8px;
+    border: 1px solid rgba(64, 201, 255, 0.16);
+    border-radius: 7px;
+    background: rgba(3, 7, 12, 0.42);
+}
+
+.settings-status-chip i {
+    grid-row: 1 / 3;
+    color: var(--level-accent);
+}
+
+.settings-status-chip small,
+.settings-status-chip b {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.settings-status-chip small {
+    color: var(--muted);
+    font-size: 8px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.settings-status-chip b {
+    color: var(--text);
+    font-size: 11px;
+}
+
+.settings-status-chip.ready {
+    border-color: rgba(55, 214, 122, 0.28);
+}
+
+.settings-status-chip.ready i,
+.settings-status-chip.ready b {
+    color: #7ef0a4;
+}
+
+.settings-status-chip.danger {
+    border-color: rgba(239, 68, 68, 0.34);
+    background: rgba(70, 8, 16, 0.24);
+}
+
+.settings-status-chip.danger i,
+.settings-status-chip.danger b {
+    color: #ff6b7a;
+}
+
+.settings-status-chip.muted {
+    opacity: 0.72;
+}
+
 .settings-grid--compact {
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 8px;
@@ -7814,6 +7883,7 @@ body.tactical-paused #gameCanvas {
     .settings-layout--compact,
     .settings-command-header,
     .settings-readout,
+    .settings-status-strip,
     .settings-split-controls,
     .volume-control,
     .settings-actions {

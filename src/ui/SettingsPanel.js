@@ -44,6 +44,13 @@ export class SettingsPanel {
         const enabledOptions = BOOLEAN_SETTINGS.filter(([key]) => settings[key]).length;
         const masterVolume = Math.round((settings.masterVolume ?? 0) * 100);
         const currentTrack = MUSIC_TRACKS.find((track) => track.id === settings.musicTrackId)?.title || MUSIC_TRACKS[0]?.title || '-';
+        const statusChips = [
+            { icon: 'fa-language', label: t('language'), value: locale.toUpperCase(), tone: 'neutral' },
+            { icon: 'fa-desktop', label: t('uiSize'), value: t(settings.uiScale || 'normal'), tone: 'neutral' },
+            { icon: 'fa-volume-high', label: t('gameAudio'), value: settings.audio ? t('enabled') : t('disabled'), tone: settings.audio ? 'ready' : 'muted' },
+            { icon: 'fa-repeat', label: t('musicLoop'), value: settings.musicLoop ? t('enabled') : t('disabled'), tone: settings.musicLoop ? 'ready' : 'muted' },
+            { icon: 'fa-user-shield', label: t('adminMode'), value: settings.adminMode ? t('enabled') : t('disabled'), tone: settings.adminMode ? 'danger' : 'muted' }
+        ];
 
         this.ui.panelContent.innerHTML = `
             <section class="settings-command-header">
@@ -56,6 +63,9 @@ export class SettingsPanel {
                     <span><small>${t('activeOptions')}</small><b>${enabledOptions}/${BOOLEAN_SETTINGS.length}</b></span>
                     <span><small>${t('masterAudio')}</small><b>${masterVolume}%</b></span>
                     <span><small>${t('currentTrack')}</small><b>${currentTrack}</b></span>
+                </div>
+                <div class="settings-status-strip" aria-label="${t('settings')}">
+                    ${statusChips.map((chip) => `<span class="settings-status-chip ${chip.tone}"><i class="fas ${chip.icon}"></i><small>${chip.label}</small><b>${chip.value}</b></span>`).join('')}
                 </div>
             </section>
             <div class="settings-layout settings-layout--compact">
@@ -124,6 +134,8 @@ export class SettingsPanel {
 
     bind() {
         const { game } = this.ui;
+        const locale = game.progression.state.settings.locale || 'es';
+        const t = (key) => translate(key, locale);
         this.ui.panelContent.querySelectorAll('input[type="checkbox"][data-setting]').forEach((input) => {
             input.addEventListener('change', () => {
                 game.progression.updateSetting(input.dataset.setting, input.checked);
