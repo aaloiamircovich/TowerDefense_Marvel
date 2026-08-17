@@ -60,6 +60,10 @@ test('SettingsPanel usa el locale guardado para renderizar textos reales', () =>
         panel.render();
 
         assert.match(panelContent.html, /<h2>Settings<\/h2>/);
+        assert.match(panelContent.html, /settings-layout--compact/);
+        assert.match(panelContent.html, /settings-grid--compact/);
+        assert.match(panelContent.html, /settings-split-controls/);
+        assert.match(panelContent.html, /settings-actions--inline/);
         assert.match(panelContent.html, /Game and accessibility/);
         assert.match(panelContent.html, /Show tactical grid/);
         assert.match(panelContent.html, /Crisp pixel art/);

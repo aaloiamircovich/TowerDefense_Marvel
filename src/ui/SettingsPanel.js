@@ -44,10 +44,10 @@ export class SettingsPanel {
 
         this.ui.panelContent.innerHTML = `
             <h2>${panelTitle}</h2>
-            <div class="settings-layout">
-                <section class="settings-section">
+            <div class="settings-layout settings-layout--compact">
+                <section class="settings-section settings-section--toggles">
                     <h3>${t('gameplayAccessibility')}</h3>
-                    <div class="settings-grid">
+                    <div class="settings-grid settings-grid--compact">
                         ${BOOLEAN_SETTINGS.map(([key, id, labelKey]) => `<label class="setting-toggle"><input type="checkbox" id="${id}" data-setting="${key}" ${settings[key] ? 'checked' : ''}><span>${t(labelKey)}</span></label>`).join('')}
                     </div>
                 </section>
@@ -55,16 +55,6 @@ export class SettingsPanel {
                     <h3>${t('controls')}</h3>
                     <div class="key-binding-grid">${KEY_BINDINGS.map(([key, labelKey]) => `<label><span>${t(labelKey)}</span><input data-key-binding="${key}" maxlength="12" value="${settings.keyBindings[key]}"></label>`).join('')}</div>
                     <small>${t('controllerHint')}</small>
-                </section>
-                <section class="settings-section">
-                    <h3>${t('language')}</h3>
-                    <div class="ui-scale-switch" role="group" aria-label="${t('language')}">
-                        ${getSupportedLocales().map((supportedLocale) => `<button data-locale="${supportedLocale}" class="${settings.locale === supportedLocale ? 'active' : ''}">${supportedLocale.toUpperCase()}</button>`).join('')}
-                    </div>
-                </section>
-                <section class="settings-section">
-                    <h3>${t('saveData')}</h3>
-                    <div class="settings-actions"><button class="btn-primary ghost" id="export-save"><i class="fas fa-download"></i> ${t('export')}</button><button class="btn-primary ghost" id="import-save"><i class="fas fa-upload"></i> ${t('import')}</button><button class="btn-primary ghost" id="export-replay"><i class="fas fa-film"></i> ${t('replay')}</button><button class="btn-primary danger" id="reset-all-game"><i class="fas fa-trash"></i> ${t('resetAllGame')}</button><input id="import-save-file" type="file" accept="application/json,.json" hidden></div>
                 </section>
                 <section class="settings-section">
                     <h3>${t('audioMix')}</h3>
@@ -76,6 +66,27 @@ export class SettingsPanel {
                         <label class="setting-toggle"><input type="checkbox" id="toggle-music-loop" ${settings.musicLoop ? 'checked' : ''}><span>${t('musicLoop')}</span></label>
                     </div>
                 </section>
+                <section class="settings-section settings-section--interface">
+                    <h3>${t('language')} / ${t('uiSize')}</h3>
+                    <div class="settings-split-controls">
+                        <div>
+                            <span>${t('language')}</span>
+                            <div class="ui-scale-switch" role="group" aria-label="${t('language')}">
+                                ${getSupportedLocales().map((supportedLocale) => `<button data-locale="${supportedLocale}" class="${settings.locale === supportedLocale ? 'active' : ''}">${supportedLocale.toUpperCase()}</button>`).join('')}
+                            </div>
+                        </div>
+                        <div>
+                            <span>${t('uiSize')}</span>
+                            <div class="ui-scale-switch" role="group" aria-label="${t('uiSize')}">
+                                ${UI_SCALES.map(([value, labelKey]) => `<button data-scale="${value}" class="${settings.uiScale === value ? 'active' : ''}" aria-pressed="${settings.uiScale === value}">${t(labelKey)}</button>`).join('')}
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="settings-section">
+                    <h3>${t('saveData')}</h3>
+                    <div class="settings-actions"><button class="btn-primary ghost" id="export-save"><i class="fas fa-download"></i> ${t('export')}</button><button class="btn-primary ghost" id="import-save"><i class="fas fa-upload"></i> ${t('import')}</button><button class="btn-primary ghost" id="export-replay"><i class="fas fa-film"></i> ${t('replay')}</button><button class="btn-primary danger" id="reset-all-game"><i class="fas fa-trash"></i> ${t('resetAllGame')}</button><input id="import-save-file" type="file" accept="application/json,.json" hidden></div>
+                </section>
                 <section class="settings-section admin-settings ${settings.adminMode ? 'admin-active' : ''}">
                     <h3>${t('adminMode')}</h3>
                     <p>${settings.adminMode ? t('adminModeActive') : t('adminModeHint')}</p>
@@ -85,16 +96,13 @@ export class SettingsPanel {
                             : `<input id="admin-password" type="password" inputmode="numeric" maxlength="8" placeholder="${t('adminPassword')}"><button class="btn-primary ghost" id="enable-admin-mode"><i class="fas fa-unlock"></i> ${t('enableAdmin')}</button>`}
                     </div>
                 </section>
-                <section class="settings-section">
-                    <h3>${t('uiSize')}</h3>
-                    <div class="ui-scale-switch" role="group" aria-label="${t('uiSize')}">
-                        ${UI_SCALES.map(([value, labelKey]) => `<button data-scale="${value}" class="${settings.uiScale === value ? 'active' : ''}" aria-pressed="${settings.uiScale === value}">${t(labelKey)}</button>`).join('')}
-                    </div>
-                </section>
-                <div class="settings-actions">
+                <section class="settings-section settings-section--quick">
+                    <h3>${t('restartLevel')}</h3>
+                    <div class="settings-actions settings-actions--inline">
                     <button class="btn-primary ghost" id="reset-placement"><i class="fas fa-ban"></i> ${t('cancelPlacement')}</button>
                     <button class="btn-primary danger" id="clear-run"><i class="fas fa-rotate-left"></i> ${t('restartLevel')}</button>
-                </div>
+                    </div>
+                </section>
             </div>
         `;
         this.bind();

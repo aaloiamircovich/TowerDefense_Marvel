@@ -6014,6 +6014,11 @@ select {
     gap: 12px;
 }
 
+.settings-grid--compact {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 8px;
+}
+
 .setting-toggle {
     display: flex;
     align-items: center;
@@ -6025,6 +6030,12 @@ select {
     background: rgba(20, 31, 45, 0.9);
     color: var(--text);
     font-weight: 700;
+}
+
+.settings-layout--compact .setting-toggle {
+    min-height: 38px;
+    padding: 8px 10px;
+    font-size: 12px;
 }
 
 .setting-toggle input {
@@ -6044,8 +6055,30 @@ select {
     gap: 22px;
 }
 
+.settings-layout--compact {
+    grid-template-columns: repeat(2, minmax(260px, 1fr));
+    gap: 12px;
+}
+
+.settings-layout--compact .settings-section {
+    min-width: 0;
+    padding: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 8px;
+    background:
+        linear-gradient(135deg, color-mix(in srgb, var(--level-accent), transparent 92%), transparent),
+        rgba(5, 9, 15, 0.74);
+}
+
+.settings-section--toggles,
+.settings-section--quick {
+    grid-column: 1 / -1;
+}
+
 .settings-section h3 {
+    margin: 0 0 10px;
     color: var(--level-accent);
+    font-size: 14px;
 }
 
 .volume-control {
@@ -6054,6 +6087,12 @@ select {
     gap: 12px;
     align-items: center;
     color: var(--text);
+}
+
+.settings-layout--compact .volume-control {
+    grid-template-columns: minmax(96px, 0.8fr) minmax(120px, 1.6fr) 44px;
+    gap: 8px;
+    font-size: 12px;
 }
 
 .volume-control input {
@@ -6073,6 +6112,11 @@ select {
     align-items: stretch;
 }
 
+.settings-layout--compact .music-picker {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+}
+
 .music-picker label:not(.setting-toggle) {
     display: grid;
     gap: 6px;
@@ -6082,6 +6126,11 @@ select {
     background: rgba(8, 18, 30, 0.86);
     color: var(--text);
     font-weight: 800;
+}
+
+.settings-layout--compact .music-picker label:not(.setting-toggle) {
+    padding: 9px 10px;
+    font-size: 12px;
 }
 
 .music-picker select,
@@ -6112,6 +6161,28 @@ select {
     margin: 0;
 }
 
+.settings-split-controls {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.settings-split-controls > div {
+    display: grid;
+    gap: 6px;
+    padding: 9px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    background: rgba(3, 7, 12, 0.42);
+}
+
+.settings-split-controls span {
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
 .ui-scale-switch {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -6137,6 +6208,10 @@ select {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 10px;
+}
+
+.settings-actions--inline {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 #ui-tooltip {
@@ -6731,6 +6806,8 @@ body.tactical-paused #gameCanvas {
         grid-template-columns: 1fr;
     }
 
+    .settings-layout--compact,
+    .settings-split-controls,
     .volume-control,
     .settings-actions {
         grid-template-columns: 1fr;
