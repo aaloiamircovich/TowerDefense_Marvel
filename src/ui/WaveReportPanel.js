@@ -51,38 +51,52 @@ export class WaveReportPanel {
         return `
             <div class="wave-report-heading">
                 <div>
-                    <span>Informe oleada ${state.wave}</span>
-                    <strong>${state.label}</strong>
+                    <span>Informe oleada ${escapeHtml(state.wave)}</span>
+                    <strong>${escapeHtml(state.label)}</strong>
                 </div>
-                <b class="wave-report-grade grade-${state.grade.tone}" title="${escapeHtml(state.grade.detail)}">
-                    <em>${state.grade.medal}</em>
-                    <small>${state.grade.score}</small>
+                <b class="wave-report-grade grade-${escapeHtml(state.grade.tone)}" title="${escapeHtml(state.grade.detail)}">
+                    <em>${escapeHtml(state.grade.medal)}</em>
+                    <small>${escapeHtml(state.grade.score)}</small>
                 </b>
             </div>
-            <div class="wave-report-grid">
-                <span><b>${state.leaks}</b> fugas</span>
-                <span><b>${state.kills}</b> bajas</span>
-                <span><b>${state.damage}</b> dano</span>
-                <span><b>$${state.credits}</b> creditos</span>
-                ${state.cleanBonus > 0 ? `<span><b>+$${state.cleanBonus}</b> perfecta</span>` : ''}
+            <div class="wave-report-scoreline">
+                <div class="wave-report-rating grade-${escapeHtml(state.grade.tone)}" aria-label="${escapeHtml(state.grade.label)}: ${escapeHtml(state.grade.detail)}">
+                    <strong>${escapeHtml(state.grade.label)}</strong>
+                    <span>${escapeHtml(state.grade.detail)}</span>
+                </div>
+                <div class="wave-report-mvp">
+                    <i class="fas fa-star"></i>
+                    <span>
+                        <small>MVP</small>
+                        <b>${escapeHtml(state.bestHero)}</b>
+                        <em>${escapeHtml(state.bestHeroKills)} bajas | ${escapeHtml(state.bestHeroDamage)} dano</em>
+                    </span>
+                </div>
             </div>
-            <div class="wave-report-rating grade-${state.grade.tone}" aria-label="${escapeHtml(state.grade.label)}: ${escapeHtml(state.grade.detail)}">
-                <strong>${escapeHtml(state.grade.label)}</strong>
-                <span>${escapeHtml(state.grade.detail)}</span>
-            </div>
-            <div class="wave-report-mvp">
-                <i class="fas fa-star"></i>
-                <span>${state.bestHero}: ${state.bestHeroKills} bajas - ${state.bestHeroDamage} dano</span>
+            <div class="wave-report-grid wave-report-grid--upgraded">
+                ${this.renderMetric({ icon: 'fa-route', label: 'Fugas', value: state.leaks, tone: state.leaks > 0 ? 'danger' : 'safe' })}
+                ${this.renderMetric({ icon: 'fa-skull', label: 'Bajas', value: state.kills })}
+                ${this.renderMetric({ icon: 'fa-bolt', label: 'Dano', value: state.damage })}
+                ${this.renderMetric({ icon: 'fa-coins', label: 'Creditos', value: `$${state.credits}` })}
+                ${state.cleanBonus > 0 ? this.renderMetric({ icon: 'fa-shield-heart', label: 'Perfecta', value: `+$${state.cleanBonus}`, tone: 'reward' }) : ''}
             </div>
             ${this.renderTacticalContribution(state.tacticalContribution)}
-            <div class="wave-report-lesson lesson-${state.lesson.tone}" aria-label="${escapeHtml(state.lesson.label)}: ${escapeHtml(state.lesson.detail)}">
+            <div class="wave-report-lesson lesson-${escapeHtml(state.lesson.tone)}" aria-label="${escapeHtml(state.lesson.label)}: ${escapeHtml(state.lesson.detail)}">
                 <strong>${escapeHtml(state.lesson.label)}</strong>
                 <span>${escapeHtml(state.lesson.detail)}</span>
             </div>
             ${this.renderLeakIntel(state.leakIntel)}
-            <p>${state.advice}</p>
+            <p class="wave-report-advice"><i class="fas fa-compass"></i><span>${escapeHtml(state.advice)}</span></p>
             ${this.renderAction(action)}
         `;
+    }
+
+    renderMetric(metric) {
+        return `<span class="wave-report-metric metric-${escapeHtml(metric.tone || 'neutral')}">
+            <i class="fas ${escapeHtml(metric.icon)}"></i>
+            <b>${escapeHtml(metric.value)}</b>
+            <small>${escapeHtml(metric.label)}</small>
+        </span>`;
     }
 
     renderTacticalContribution(contribution) {
@@ -114,11 +128,12 @@ export class WaveReportPanel {
 
     renderAction(action) {
         if (!action) return '';
-        return `<div class="wave-report-action report-action-${action.type}">
-            <span>${action.reason}</span>
+        const type = escapeHtml(action.type);
+        return `<div class="wave-report-action report-action-${type}">
+            <span>${escapeHtml(action.reason)}</span>
             ${action.type === 'upgrade'
-                ? `<button id="wave-report-action" class="btn-mode-action">${action.label} $${action.cost}</button>`
-                : `<small>${action.label}</small>`}
+                ? `<button id="wave-report-action" class="btn-mode-action">${escapeHtml(action.label)} $${escapeHtml(action.cost)}</button>`
+                : `<small>${escapeHtml(action.label)}</small>`}
         </div>`;
     }
 }

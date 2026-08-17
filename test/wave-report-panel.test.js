@@ -38,7 +38,7 @@ test('WaveReportPanel renderiza informe y delega mejora recomendada', () => {
             heroId: 'iron_man',
             label: 'Mejorar Iron Man',
             cost: 240,
-            reason: 'Aprovecha el MVP'
+            reason: 'Aprovecha <MVP>'
         })
     });
 
@@ -46,7 +46,12 @@ test('WaveReportPanel renderiza informe y delega mejora recomendada', () => {
         const state = panel.render({ wave: 3 });
         assert.equal(state.label, 'Oleada asegurada');
         assert.match(container.innerHTML, /Informe oleada 3/);
+        assert.match(container.innerHTML, /wave-report-scoreline/);
+        assert.match(container.innerHTML, /wave-report-advice/);
+        assert.match(container.innerHTML, /metric-safe/);
+        assert.match(container.innerHTML, /MVP/);
         assert.match(container.innerHTML, /Mejorar Iron Man/);
+        assert.match(container.innerHTML, /Aprovecha &lt;MVP&gt;/);
 
         actionButton.listeners.click();
         assert.equal(upgrades, 1);

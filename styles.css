@@ -61,6 +61,7 @@ body.simple-ui #wave-preview {
 body.simple-ui #wave-intel .wave-timeline,
 body.simple-ui #wave-intel .wave-status-legend,
 body.simple-ui #wave-intel .wave-counter-coverage,
+body.simple-ui .wave-report-scoreline,
 body.simple-ui .wave-report-rating,
 body.simple-ui .wave-report-mvp {
     display: none;
@@ -2136,11 +2137,13 @@ canvas {
 .wave-report {
     --report-color: var(--level-accent);
     display: grid;
-    gap: 8px;
-    padding: 10px 12px;
+    gap: 9px;
+    padding: 11px 12px;
     border-bottom: 1px solid var(--border);
     border-left: 3px solid var(--report-color);
-    background: color-mix(in srgb, var(--report-color), transparent 92%);
+    background:
+        linear-gradient(135deg, color-mix(in srgb, var(--report-color), transparent 88%), transparent 50%),
+        rgba(5, 10, 18, 0.8);
 }
 
 .wave-report.hidden {
@@ -2151,7 +2154,7 @@ canvas {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
     align-items: center;
-    gap: 2px;
+    gap: 8px;
 }
 
 .wave-report-heading div {
@@ -2172,6 +2175,7 @@ canvas {
     color: var(--report-color);
     font-size: 12px;
     text-transform: uppercase;
+    overflow-wrap: anywhere;
 }
 
 .wave-report-grade {
@@ -2200,6 +2204,12 @@ canvas {
     line-height: 1;
 }
 
+.wave-report-scoreline {
+    display: grid;
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+    gap: 7px;
+}
+
 .wave-report-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2208,7 +2218,9 @@ canvas {
 
 .wave-report-grid span {
     display: grid;
-    gap: 2px;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 2px 6px;
+    align-items: center;
     min-width: 0;
     padding: 7px;
     border: 1px solid rgba(255, 255, 255, 0.08);
@@ -2219,9 +2231,38 @@ canvas {
     text-transform: uppercase;
 }
 
+.wave-report-grid i {
+    color: var(--report-color);
+    font-size: 11px;
+}
+
 .wave-report-grid b {
     color: var(--text);
     font-size: 13px;
+    line-height: 1;
+    overflow-wrap: anywhere;
+}
+
+.wave-report-grid small {
+    grid-column: 1 / -1;
+    color: var(--muted);
+    font-size: 9px;
+    line-height: 1;
+}
+
+.wave-report-metric.metric-safe i,
+.wave-report-metric.metric-safe b {
+    color: #46d369;
+}
+
+.wave-report-metric.metric-danger i,
+.wave-report-metric.metric-danger b {
+    color: #ff8f3d;
+}
+
+.wave-report-metric.metric-reward i,
+.wave-report-metric.metric-reward b {
+    color: var(--bright-yellow);
 }
 
 .wave-report-rating {
@@ -2256,10 +2297,14 @@ canvas {
 
 .wave-report-mvp {
     display: grid;
-    grid-template-columns: 18px minmax(0, 1fr);
+    grid-template-columns: 26px minmax(0, 1fr);
     align-items: center;
-    gap: 6px;
+    gap: 8px;
     min-width: 0;
+    padding: 7px;
+    border: 1px solid rgba(252, 163, 17, 0.18);
+    border-radius: 7px;
+    background: rgba(252, 163, 17, 0.06);
     color: var(--text);
     font-size: 10px;
 }
@@ -2267,11 +2312,32 @@ canvas {
 .wave-report-mvp i {
     color: var(--bright-yellow);
     text-align: center;
+    filter: drop-shadow(0 0 6px rgba(252, 163, 17, 0.35));
 }
 
 .wave-report-mvp span {
+    display: grid;
+    gap: 2px;
+    min-width: 0;
+}
+
+.wave-report-mvp small,
+.wave-report-mvp em {
     min-width: 0;
     overflow: hidden;
+    color: var(--muted);
+    font-size: 9px;
+    font-style: normal;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.wave-report-mvp b {
+    overflow: hidden;
+    color: var(--text);
+    font-size: 11px;
+    line-height: 1.1;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
@@ -2423,6 +2489,22 @@ canvas {
     line-height: 1.35;
 }
 
+.wave-report-advice {
+    display: grid;
+    grid-template-columns: 18px minmax(0, 1fr);
+    align-items: center;
+    gap: 7px;
+    padding: 7px;
+    border: 1px solid color-mix(in srgb, var(--report-color), transparent 70%);
+    border-radius: 7px;
+    background: color-mix(in srgb, var(--report-color), transparent 92%);
+}
+
+.wave-report-advice i {
+    color: var(--report-color);
+    text-align: center;
+}
+
 .wave-report-action {
     display: grid;
     gap: 6px;
@@ -2447,6 +2529,12 @@ canvas {
 .report-action-saving small {
     color: var(--report-color);
     font-weight: 800;
+}
+
+@media (max-width: 760px) {
+    .wave-report-scoreline {
+        grid-template-columns: 1fr;
+    }
 }
 
 .report-clean { --report-color: #46d369; }
@@ -8686,11 +8774,18 @@ canvas {
 .radar-section-body .wave-report-mvp,
 .radar-section-body .wave-report-lesson,
 .radar-section-body .wave-report-action,
+.radar-section-body .wave-report-advice,
 .radar-section-body .wave-leak-intel,
 .radar-section-body .wave-tactical-contribution,
 .radar-section-body .mission-objectives-mini,
 .radar-section-body .stat-list {
     max-width: 100%;
+}
+
+.radar-section-body .wave-report-scoreline {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 8px;
 }
 
 .radar-section-body .wave-summary,
