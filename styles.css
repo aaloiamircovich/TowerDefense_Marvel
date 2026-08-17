@@ -6521,6 +6521,71 @@ select {
     gap: 12px;
 }
 
+.settings-command-header {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(250px, 0.72fr);
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 14px;
+    padding: 14px;
+    border: 1px solid color-mix(in srgb, var(--level-accent), transparent 50%);
+    border-radius: 8px;
+    background:
+        linear-gradient(135deg, color-mix(in srgb, var(--level-accent), transparent 88%), transparent 62%),
+        rgba(5, 9, 15, 0.86);
+}
+
+.settings-command-header h2 {
+    margin: 2px 0 4px;
+    color: #ffffff;
+    font-size: clamp(25px, 3vw, 34px);
+    line-height: 1;
+}
+
+.settings-command-header p {
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.45;
+}
+
+.settings-readout {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 7px;
+}
+
+.settings-readout span {
+    display: grid;
+    place-items: center;
+    min-width: 0;
+    min-height: 58px;
+    padding: 8px;
+    border: 1px solid color-mix(in srgb, var(--level-accent), transparent 62%);
+    border-radius: 8px;
+    background: rgba(3, 7, 12, 0.52);
+    text-align: center;
+}
+
+.settings-readout small,
+.settings-readout b {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.settings-readout small {
+    color: var(--muted);
+    font-size: 8px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.settings-readout b {
+    color: var(--bright-yellow);
+    font-size: 12px;
+}
+
 .settings-grid--compact {
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 8px;
@@ -7406,6 +7471,8 @@ body.tactical-paused #gameCanvas {
     }
 
     .settings-layout--compact,
+    .settings-command-header,
+    .settings-readout,
     .settings-split-controls,
     .volume-control,
     .settings-actions {

@@ -42,6 +42,7 @@ test('SettingsPanel usa el locale guardado para renderizar textos reales', () =>
                         sfxVolume: 0.75,
                         uiScale: 'normal',
                         locale: 'en',
+                        musicTrackId: 'the-avengers-theme-song',
                         keyBindings: {
                             pause: 'p',
                             speed: 'f',
@@ -60,6 +61,11 @@ test('SettingsPanel usa el locale guardado para renderizar textos reales', () =>
         panel.render();
 
         assert.match(panelContent.html, /<h2>Settings<\/h2>/);
+        assert.match(panelContent.html, /settings-command-header/);
+        assert.match(panelContent.html, /settings-readout/);
+        assert.match(panelContent.html, /Active options/);
+        assert.match(panelContent.html, /Master audio/);
+        assert.match(panelContent.html, /80%/);
         assert.match(panelContent.html, /settings-layout--compact/);
         assert.match(panelContent.html, /settings-grid--compact/);
         assert.match(panelContent.html, /settings-split-controls/);

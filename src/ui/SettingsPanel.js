@@ -41,9 +41,23 @@ export class SettingsPanel {
         const locale = settings.locale || 'es';
         const t = (key) => translate(key, locale);
         const panelTitle = title === 'Ajustes' ? t('settings') : title;
+        const enabledOptions = BOOLEAN_SETTINGS.filter(([key]) => settings[key]).length;
+        const masterVolume = Math.round((settings.masterVolume ?? 0) * 100);
+        const currentTrack = MUSIC_TRACKS.find((track) => track.id === settings.musicTrackId)?.title || MUSIC_TRACKS[0]?.title || '-';
 
         this.ui.panelContent.innerHTML = `
-            <h2>${panelTitle}</h2>
+            <section class="settings-command-header">
+                <div>
+                    <span class="briefing-kicker">${t('settings')}</span>
+                    <h2>${panelTitle}</h2>
+                    <p>${t('settingsBrief')}</p>
+                </div>
+                <div class="settings-readout">
+                    <span><small>${t('activeOptions')}</small><b>${enabledOptions}/${BOOLEAN_SETTINGS.length}</b></span>
+                    <span><small>${t('masterAudio')}</small><b>${masterVolume}%</b></span>
+                    <span><small>${t('currentTrack')}</small><b>${currentTrack}</b></span>
+                </div>
+            </section>
             <div class="settings-layout settings-layout--compact">
                 <section class="settings-section settings-section--toggles">
                     <h3>${t('gameplayAccessibility')}</h3>

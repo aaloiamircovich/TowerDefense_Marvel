@@ -1,6 +1,10 @@
 const STRINGS = {
     es: {
         settings: 'Ajustes',
+        settingsBrief: 'Configura accesibilidad, controles, audio, guardado y herramientas de prueba.',
+        activeOptions: 'Opciones activas',
+        masterAudio: 'Audio general',
+        currentTrack: 'Pista actual',
         gameplayAccessibility: 'Juego y accesibilidad',
         controls: 'Controles',
         controllerHint: 'Mando: A inicia oleada, B cancela, Start pausa y LB/RB cambia de heroe.',
@@ -50,6 +54,10 @@ const STRINGS = {
     },
     en: {
         settings: 'Settings',
+        settingsBrief: 'Configure accessibility, controls, audio, save data, and test tools.',
+        activeOptions: 'Active options',
+        masterAudio: 'Master audio',
+        currentTrack: 'Current track',
         gameplayAccessibility: 'Game and accessibility',
         controls: 'Controls',
         controllerHint: 'Gamepad: A starts wave, B cancels, Start pauses, and LB/RB changes hero.',
