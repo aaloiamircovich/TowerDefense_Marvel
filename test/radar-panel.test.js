@@ -86,6 +86,15 @@ test('RadarPanel centraliza secciones tacticas y delega acciones interactivas', 
         assert.match(panelContent.innerHTML, /Base de los Vengadores/);
         assert.match(panelContent.innerHTML, /Informe listo/);
         assert.match(panelContent.innerHTML, /Selecciona una carta/);
+        assert.match(panelContent.innerHTML, /radar-priority-strip/);
+        assert.match(panelContent.innerHTML, /Activos/);
+        assert.match(panelContent.innerHTML, /4\/7/);
+        assert.match(panelContent.innerHTML, /Prioridad/);
+        assert.match(panelContent.innerHTML, /Inteligencia de oleada/);
+        assert.match(panelContent.innerHTML, /radar-section-state/);
+        assert.match(panelContent.innerHTML, /Activo/);
+        assert.match(panelContent.innerHTML, /Sin lectura/);
+        assert.doesNotMatch(panelContent.innerHTML, /panel derecho/);
 
         deployButton.listeners.click();
         upgradeButton.listeners.click();

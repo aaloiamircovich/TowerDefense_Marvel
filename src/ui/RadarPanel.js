@@ -7,6 +7,58 @@ function escapeHtml(value = '') {
         .replaceAll("'", '&#039;');
 }
 
+const RADAR_SECTION_DEFINITIONS = [
+    {
+        id: 'wave-intel',
+        title: 'Inteligencia de oleada',
+        icon: 'fa-satellite-dish',
+        empty: 'La siguiente oleada aun no tiene lectura.',
+        priority: 2
+    },
+    {
+        id: 'mission-status',
+        title: 'Estado de mision',
+        icon: 'fa-flag',
+        empty: 'Sin objetivos especiales activos.',
+        priority: 6
+    },
+    {
+        id: 'mode-status',
+        title: 'Modo especial',
+        icon: 'fa-layer-group',
+        empty: 'Modo campana estandar.',
+        priority: 5
+    },
+    {
+        id: 'spawn-queue',
+        title: 'Refuerzos en cola',
+        icon: 'fa-person-running',
+        empty: 'No hay refuerzos pendientes.',
+        priority: 4
+    },
+    {
+        id: 'boss-hud',
+        title: 'Jefe activo',
+        icon: 'fa-skull-crossbones',
+        empty: 'No hay jefe activo.',
+        priority: 1
+    },
+    {
+        id: 'wave-report',
+        title: 'Informe de oleada',
+        icon: 'fa-chart-line',
+        empty: 'Completa una oleada para generar informe.',
+        priority: 3
+    },
+    {
+        id: 'enemy-info-panel',
+        title: 'Archivo enemigo',
+        icon: 'fa-skull',
+        empty: 'Selecciona una carta de enemigo para inspeccionarlo.',
+        priority: 7
+    }
+];
+
 export class RadarPanel {
     constructor(ui, builders = {}) {
         this.ui = ui;
@@ -17,28 +69,30 @@ export class RadarPanel {
     render(title = 'Radar tactico') {
         const wave = this.ui.game.waveManager?.currentWave || 1;
         const map = this.ui.game.currentLevel?.theme?.label || this.ui.game.currentLevel?.name || 'Mapa';
-        const sections = [
-            this.renderSection('wave-intel', 'Inteligencia de oleada', 'fa-satellite-dish', 'La siguiente oleada aun no tiene lectura.'),
-            this.renderSection('mission-status', 'Estado de mision', 'fa-flag', 'Sin objetivos especiales activos.'),
-            this.renderSection('mode-status', 'Modo especial', 'fa-layer-group', 'Modo campaña estándar.'),
-            this.renderSection('spawn-queue', 'Refuerzos en cola', 'fa-person-running', 'No hay refuerzos pendientes.'),
-            this.renderSection('boss-hud', 'Jefe activo', 'fa-skull-crossbones', 'No hay jefe activo.'),
-            this.renderSection('wave-report', 'Informe de oleada', 'fa-chart-line', 'Completa una oleada para generar informe.'),
-            this.renderSection('enemy-info-panel', 'Archivo enemigo', 'fa-skull', 'Selecciona una carta de enemigo en el panel derecho para inspeccionarlo.')
-        ].join('');
+        const sectionModels = RADAR_SECTION_DEFINITIONS.map((definition) => this.buildSectionModel(definition));
+        const activeSections = sectionModels.filter((section) => section.hasContent);
+        const priorityTitle = [...activeSections]
+            .sort((a, b) => a.priority - b.priority)
+            .at(0)?.title || 'Patrulla';
+        const sections = sectionModels.map((section) => this.renderSection(section)).join('');
 
         this.ui.panelContent.innerHTML = `
             <section class="radar-panel">
-                <div class="radar-hero">
-                    <div>
+                <div class="radar-hero radar-hero-upgraded">
+                    <div class="radar-hero-copy">
                         <span class="briefing-kicker">CONSOLA DE RADAR</span>
                         <h2>${escapeHtml(title)}</h2>
-                        <p>Lecturas tacticas, ayudas, reportes y sistemas que antes ocupaban el panel derecho.</p>
+                        <p>Prioridades de combate, reportes de oleada y alertas activas del mapa.</p>
                     </div>
                     <div class="radar-readout">
                         <span><small>Mapa</small><b>${escapeHtml(map)}</b></span>
                         <span><small>Oleada</small><b>${wave}</b></span>
+                        <span><small>Activos</small><b>${activeSections.length}/${sectionModels.length}</b></span>
                     </div>
+                </div>
+                <div class="radar-priority-strip">
+                    <span><small>Prioridad</small><b>${escapeHtml(priorityTitle)}</b></span>
+                    <span><small>Canales</small><b>${activeSections.length ? 'Lectura activa' : 'Sin alertas'}</b></span>
                 </div>
                 <div class="radar-grid">
                     ${sections}
@@ -48,22 +102,35 @@ export class RadarPanel {
         this.bindActions();
     }
 
-    renderSection(sourceId, title, icon, emptyMessage) {
-        const source = document.getElementById(sourceId);
+    buildSectionModel(definition) {
+        const source = document.getElementById(definition.id);
         const hidden = source?.classList.contains('hidden');
         const content = source?.innerHTML?.trim();
-        const isEmptyEnemyPanel = sourceId === 'enemy-info-panel'
+        const isEmptyEnemyPanel = definition.id === 'enemy-info-panel'
             && !source?.querySelector('#enemy-info-content:not(.hidden)');
         const hasContent = Boolean(content) && !hidden && !isEmptyEnemyPanel;
 
+        return {
+            ...definition,
+            content: hasContent ? content : '',
+            hasContent,
+            stateClass: hasContent ? 'active' : 'empty',
+            stateLabel: hasContent ? 'Activo' : 'Sin lectura'
+        };
+    }
+
+    renderSection(section) {
         return `
-            <article class="radar-section radar-section-${sourceId}">
+            <article class="radar-section radar-section-${escapeHtml(section.id)} ${section.stateClass}">
                 <header>
-                    <i class="fas ${icon}"></i>
-                    <strong>${escapeHtml(title)}</strong>
+                    <span>
+                        <i class="fas ${escapeHtml(section.icon)}"></i>
+                        <strong>${escapeHtml(section.title)}</strong>
+                    </span>
+                    <b class="radar-section-state">${escapeHtml(section.stateLabel)}</b>
                 </header>
                 <div class="radar-section-body">
-                    ${hasContent ? content : `<p class="radar-empty">${escapeHtml(emptyMessage)}</p>`}
+                    ${section.hasContent ? section.content : `<p class="radar-empty">${escapeHtml(section.empty)}</p>`}
                 </div>
             </article>
         `;

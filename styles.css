@@ -8769,21 +8769,33 @@ canvas {
         rgba(5, 9, 15, 0.92);
 }
 
+.radar-hero-upgraded {
+    align-items: stretch;
+}
+
+.radar-hero-copy {
+    display: grid;
+    align-content: center;
+    gap: 6px;
+    min-width: 0;
+}
+
 .radar-hero h2 {
-    margin: 4px 0 6px;
+    margin: 0;
     color: #ffffff;
     font-size: clamp(28px, 4vw, 44px);
     line-height: 1;
 }
 
 .radar-hero p {
+    margin: 0;
     color: var(--muted);
     line-height: 1.45;
 }
 
 .radar-readout {
     display: grid;
-    grid-template-columns: repeat(2, 108px);
+    grid-template-columns: repeat(3, 96px);
     gap: 8px;
 }
 
@@ -8814,6 +8826,43 @@ canvas {
     white-space: nowrap;
 }
 
+.radar-priority-strip {
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+    gap: 10px;
+}
+
+.radar-priority-strip span {
+    min-width: 0;
+    padding: 10px 12px;
+    border: 1px solid color-mix(in srgb, var(--level-accent), transparent 64%);
+    border-radius: 8px;
+    background:
+        linear-gradient(90deg, color-mix(in srgb, var(--level-accent), transparent 88%), transparent),
+        rgba(4, 8, 14, 0.72);
+}
+
+.radar-priority-strip small,
+.radar-priority-strip b {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.radar-priority-strip small {
+    color: var(--muted);
+    font-size: 9px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.radar-priority-strip b {
+    margin-top: 2px;
+    color: var(--bright-yellow);
+    font-size: 13px;
+}
+
 .radar-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -8821,6 +8870,7 @@ canvas {
 }
 
 .radar-section {
+    position: relative;
     overflow: hidden;
     border: 1px solid rgba(255, 255, 255, 0.09);
     border-radius: 8px;
@@ -8830,6 +8880,19 @@ canvas {
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
+.radar-section.active {
+    border-color: color-mix(in srgb, var(--level-accent), transparent 54%);
+    background:
+        linear-gradient(135deg, color-mix(in srgb, var(--level-accent), transparent 88%), transparent 62%),
+        rgba(5, 9, 15, 0.84);
+}
+
+.radar-section.empty {
+    background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.025), transparent),
+        rgba(5, 9, 15, 0.58);
+}
+
 .radar-section-wave-intel,
 .radar-section-wave-report,
 .radar-section-enemy-info-panel {
@@ -8837,7 +8900,8 @@ canvas {
 }
 
 .radar-section header {
-    display: flex;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
     align-items: center;
     gap: 9px;
     padding: 11px 13px;
@@ -8846,6 +8910,34 @@ canvas {
     font-size: 12px;
     font-weight: 900;
     text-transform: uppercase;
+}
+
+.radar-section header > span {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    min-width: 0;
+}
+
+.radar-section header strong {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.radar-section-state {
+    padding: 3px 7px;
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 999px;
+    color: var(--muted);
+    font-size: 9px;
+    line-height: 1;
+}
+
+.radar-section.active .radar-section-state {
+    border-color: color-mix(in srgb, var(--level-accent), transparent 50%);
+    color: var(--bright-yellow);
+    background: color-mix(in srgb, var(--level-accent), transparent 86%);
 }
 
 .radar-section-body {
@@ -9541,6 +9633,7 @@ button:disabled,
 
     .radar-hero,
     .radar-readout,
+    .radar-priority-strip,
     .radar-grid {
         grid-template-columns: 1fr;
     }
