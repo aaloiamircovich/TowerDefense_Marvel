@@ -5,7 +5,8 @@ import { ProfilePanel } from '../src/ui/ProfilePanel.js';
 test('ProfilePanel muestra racha y emblemas de contrato', () => {
     const panelContent = {
         innerHTML: '',
-        querySelector: () => null
+        querySelector: () => null,
+        querySelectorAll: () => []
     };
     const progression = {
         state: {
@@ -64,10 +65,19 @@ test('ProfilePanel muestra racha y emblemas de contrato', () => {
         }
     };
 
-    new ProfilePanel(ui).render();
+    const panel = new ProfilePanel(ui);
+    panel.render();
 
+    assert.match(panelContent.innerHTML, /profile-tabs/);
+    assert.match(panelContent.innerHTML, /data-profile-view="summary" role="tab" aria-selected="true"/);
+    assert.match(panelContent.innerHTML, /Maestria heroica/);
+    assert.match(panelContent.innerHTML, /Codice descubierto/);
+    assert.doesNotMatch(panelContent.innerHTML, /Contratos semanales/);
+
+    panel.render('Perfil', 'contracts');
     assert.match(panelContent.innerHTML, /Contratos semanales/);
     assert.match(panelContent.innerHTML, /racha 2/);
     assert.match(panelContent.innerHTML, /Emblemas de contrato/);
     assert.match(panelContent.innerHTML, /Operador semanal/);
+    assert.match(panelContent.innerHTML, /Retos de agrupacion/);
 });

@@ -6,9 +6,13 @@ import { CAMPAIGN_MAX_WAVES } from '../utils/LevelProgression.js';
 export class ProfilePanel {
     constructor(ui) {
         this.ui = ui;
+        this.activeView = 'summary';
+        this.title = 'Perfil';
     }
 
-    render(title = 'Perfil') {
+    render(title = 'Perfil', view = this.activeView) {
+        this.title = title;
+        this.activeView = ['summary', 'contracts', 'codex', 'history'].includes(view) ? view : 'summary';
         const { game, panelContent } = this.ui;
         const progression = game.progression;
         const maps = Object.values(progression.state.mapProgress);
@@ -33,6 +37,43 @@ export class ProfilePanel {
                 .join(' | ');
             return `<div class="mastery-row"><span>${hero.name}</span><strong>${completed.length}/${MASTERY_CHALLENGES.length}</strong><small>${challengeLabels}</small></div>`;
         }).join('');
+        const tabs = [
+            { id: 'summary', label: 'Resumen', icon: 'fa-chart-pie' },
+            { id: 'contracts', label: 'Contratos', icon: 'fa-file-signature' },
+            { id: 'codex', label: 'Códice', icon: 'fa-book-open' },
+            { id: 'history', label: 'Historial', icon: 'fa-clock-rotate-left' }
+        ];
+        const sections = {
+            summary: `
+                <section class="profile-meta-section"><h3>Maestria heroica</h3>${masteryRows || '<p>Recluta un heroe para iniciar desafios.</p>'}</section>
+                <section class="profile-meta-section"><h3>Codice descubierto</h3><div class="codex-summary">${Object.entries(codex).map(([key, value]) => `<span><b>${value.found}/${value.total}</b>${({ heroes: 'Heroes', enemies: 'Enemigos', items: 'Objetos', factions: 'Facciones', mechanics: 'Mecanicas' })[key]}</span>`).join('')}</div></section>
+            `,
+            contracts: `
+                <section class="profile-meta-section">
+                    <h3>Contratos semanales <span>${weekly.completed}/${weekly.total} · racha ${weekly.streak}</span></h3>
+                    <div class="weekly-streak-strip">
+                        <span><b>${weekly.streak}</b>Actual</span>
+                        <span><b>${weekly.bestStreak}</b>Mejor racha</span>
+                        <span><b>${weekly.perfectWeeks}</b>Semanas perfectas</span>
+                    </div>
+                    <div class="weekly-contract-list">${weekly.contracts.map((contract) => this.renderContract(contract)).join('')}</div>
+                </section>
+                <section class="profile-meta-section">
+                    <h3>Emblemas de contrato <span>${contractEmblems.unlocked}/${contractEmblems.total}</span></h3>
+                    <div class="contract-emblem-list">${contractEmblems.emblems.map((emblem) => this.renderContractEmblem(emblem)).join('')}</div>
+                </section>
+                <section class="profile-meta-section"><h3>Retos de agrupacion <span>${synergyChallenges.completed}/${synergyChallenges.total}</span></h3><div class="weekly-contract-list synergy-challenge-list">${synergyChallenges.challenges.slice(0, 8).map((challenge) => this.renderSynergyChallenge(challenge)).join('')}</div></section>
+            `,
+            codex: `
+                <section class="profile-meta-section"><h3>Codice descubierto</h3><div class="codex-summary">${Object.entries(codex).map(([key, value]) => `<span><b>${value.found}/${value.total}</b>${({ heroes: 'Heroes', enemies: 'Enemigos', items: 'Objetos', factions: 'Facciones', mechanics: 'Mecanicas' })[key]}</span>`).join('')}</div></section>
+                <section class="profile-meta-section"><h3>Maestria heroica</h3>${masteryRows || '<p>Recluta un heroe para iniciar desafios.</p>'}</section>
+                <section class="profile-meta-section"><h3>Logros</h3><div class="achievement-list">${Object.entries(ACHIEVEMENT_CATALOG).map(([id, achievement]) => this.renderAchievement(id, achievement, progression.state.achievements.includes(id))).join('')}</div></section>
+            `,
+            history: `
+                <section class="profile-meta-section"><h3>Historial</h3><div class="codex-summary"><span><b>${statistics.missions}</b>Misiones</span><span><b>${statistics.victories}</b>Victorias</span><span><b>${statistics.waves}</b>Oleadas</span><span><b>${statistics.enemiesDefeated}</b>Enemigos</span><span><b>${statistics.damageDealt}</b>Dano</span></div></section>
+                <section class="profile-meta-section"><h3>Codigos compartibles</h3><div class="build-code-panel"><div><button class="btn-primary ghost" id="copy-build-code"><i class="fas fa-share-nodes"></i> Copiar build</button><button class="btn-primary ghost" id="copy-replay-code"><i class="fas fa-film"></i> Copiar replay</button></div><textarea id="build-code-output" readonly rows="2" aria-label="Codigo compartible"></textarea></div></section>
+            `
+        };
 
         panelContent.innerHTML = `
             <section class="profile-command-header">
@@ -54,25 +95,12 @@ export class ProfilePanel {
                 <div class="detail-card"><h3>Zona Marvel</h3><p><span>Mapa</span><strong>${game.currentLevel?.theme?.label || game.currentLevel?.name || 'Mapa'}</strong></p><p><span>Ambiente</span><strong>${game.currentLevel?.theme?.brief || 'Defensa tactica'}</strong></p></div>
                 <div class="detail-card"><h3>Rendimiento</h3><p><span>Frame p95</span><strong>${(performance.p95Ms || 0).toFixed(1)} ms</strong></p><p><span>Memoria pico</span><strong>${(performance.peakMemoryMb || 0).toFixed(1)} MB</strong></p><p><span>Pico de entidades</span><strong>${performance.peakEntities || 0}</strong></p><p><span>Proyectiles reciclados</span><strong>${pool.reused || 0}</strong></p></div>
             </div>
-            <section class="profile-meta-section"><h3>Maestria heroica</h3>${masteryRows || '<p>Recluta un heroe para iniciar desafios.</p>'}</section>
-            <section class="profile-meta-section">
-                <h3>Contratos semanales <span>${weekly.completed}/${weekly.total} · racha ${weekly.streak}</span></h3>
-                <div class="weekly-streak-strip">
-                    <span><b>${weekly.streak}</b>Actual</span>
-                    <span><b>${weekly.bestStreak}</b>Mejor racha</span>
-                    <span><b>${weekly.perfectWeeks}</b>Semanas perfectas</span>
-                </div>
-                <div class="weekly-contract-list">${weekly.contracts.map((contract) => this.renderContract(contract)).join('')}</div>
-            </section>
-            <section class="profile-meta-section">
-                <h3>Emblemas de contrato <span>${contractEmblems.unlocked}/${contractEmblems.total}</span></h3>
-                <div class="contract-emblem-list">${contractEmblems.emblems.map((emblem) => this.renderContractEmblem(emblem)).join('')}</div>
-            </section>
-            <section class="profile-meta-section"><h3>Retos de agrupacion <span>${synergyChallenges.completed}/${synergyChallenges.total}</span></h3><div class="weekly-contract-list synergy-challenge-list">${synergyChallenges.challenges.slice(0, 8).map((challenge) => this.renderSynergyChallenge(challenge)).join('')}</div></section>
-            <section class="profile-meta-section"><h3>Codice descubierto</h3><div class="codex-summary">${Object.entries(codex).map(([key, value]) => `<span><b>${value.found}/${value.total}</b>${({ heroes: 'Heroes', enemies: 'Enemigos', items: 'Objetos', factions: 'Facciones', mechanics: 'Mecanicas' })[key]}</span>`).join('')}</div></section>
-            <section class="profile-meta-section"><h3>Historial</h3><div class="codex-summary"><span><b>${statistics.missions}</b>Misiones</span><span><b>${statistics.victories}</b>Victorias</span><span><b>${statistics.waves}</b>Oleadas</span><span><b>${statistics.enemiesDefeated}</b>Enemigos</span><span><b>${statistics.damageDealt}</b>Dano</span></div></section>
-            <section class="profile-meta-section"><h3>Codigos compartibles</h3><div class="build-code-panel"><div><button class="btn-primary ghost" id="copy-build-code"><i class="fas fa-share-nodes"></i> Copiar build</button><button class="btn-primary ghost" id="copy-replay-code"><i class="fas fa-film"></i> Copiar replay</button></div><textarea id="build-code-output" readonly rows="2" aria-label="Codigo compartible"></textarea></div></section>
-            <section class="profile-meta-section"><h3>Logros</h3><div class="achievement-list">${Object.entries(ACHIEVEMENT_CATALOG).map(([id, achievement]) => this.renderAchievement(id, achievement, progression.state.achievements.includes(id))).join('')}</div></section>
+            <nav class="profile-tabs" role="tablist" aria-label="Secciones de perfil">
+                ${tabs.map((tab) => `<button class="profile-tab ${this.activeView === tab.id ? 'active' : ''}" data-profile-view="${tab.id}" role="tab" aria-selected="${this.activeView === tab.id}" type="button"><i class="fas ${tab.icon}"></i><span>${tab.label}</span></button>`).join('')}
+            </nav>
+            <div class="profile-tab-panel profile-view-${this.activeView}" role="tabpanel">
+                ${sections[this.activeView]}
+            </div>
             <div class="release-notice"><strong>Super Hero TD v${APP_VERSION}</strong><span>${FAN_PROJECT_NOTICE}</span></div>
         `;
         this.bindListeners();
@@ -116,6 +144,9 @@ export class ProfilePanel {
     }
 
     bindListeners() {
+        this.ui.panelContent.querySelectorAll('[data-profile-view]').forEach((button) => {
+            button.addEventListener('click', () => this.render(this.title, button.dataset.profileView));
+        });
         const button = this.ui.panelContent.querySelector('#copy-build-code');
         const replayButton = this.ui.panelContent.querySelector('#copy-replay-code');
         const output = this.ui.panelContent.querySelector('#build-code-output');

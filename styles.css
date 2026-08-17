@@ -7337,6 +7337,56 @@ canvas {
     grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
 }
 
+.profile-tabs {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 5px;
+    margin: 16px 0 12px;
+    padding: 5px;
+    border: 1px solid rgba(64, 201, 255, 0.18);
+    border-radius: 8px;
+    background:
+        linear-gradient(135deg, color-mix(in srgb, var(--level-accent), transparent 92%), transparent),
+        rgba(3, 7, 12, 0.64);
+}
+
+.profile-tab {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-width: 0;
+    min-height: 36px;
+    padding: 7px 9px;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 900;
+    cursor: pointer;
+    text-transform: uppercase;
+}
+
+.profile-tab i {
+    color: var(--level-accent);
+    font-size: 13px;
+}
+
+.profile-tab.active,
+.profile-tab:hover,
+.profile-tab:focus-visible {
+    border-color: rgba(64, 201, 255, 0.36);
+    color: #ffffff;
+    background: rgba(64, 201, 255, 0.12);
+    outline: none;
+}
+
+.profile-tab-panel {
+    display: grid;
+    gap: 12px;
+}
+
 .profile-stat-card,
 .detail-card,
 .inventory-card,
@@ -8514,6 +8564,10 @@ button:disabled,
         width: 100%;
         height: auto;
         min-height: 92px;
+    }
+
+    .profile-tabs {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .radar-hero,
