@@ -47,8 +47,12 @@ test('WaveReportPanel renderiza informe y delega mejora recomendada', () => {
         assert.equal(state.label, 'Oleada asegurada');
         assert.match(container.innerHTML, /Informe oleada 3/);
         assert.match(container.innerHTML, /wave-report-scoreline/);
+        assert.match(container.innerHTML, /wave-reward-strip/);
         assert.match(container.innerHTML, /wave-report-advice/);
         assert.match(container.innerHTML, /metric-safe/);
+        assert.match(container.innerHTML, /\+\$320/);
+        assert.match(container.innerHTML, /Objetivos/);
+        assert.match(container.innerHTML, /Extras/);
         assert.match(container.innerHTML, /MVP/);
         assert.match(container.innerHTML, /Mejorar Iron Man/);
         assert.match(container.innerHTML, /Aprovecha &lt;MVP&gt;/);
@@ -94,7 +98,9 @@ function buildReportState() {
         kills: 12,
         damage: 1800,
         credits: 320,
+        bounty: 260,
         cleanBonus: 36,
+        metaReward: 14,
         bestHero: 'Iron Man',
         bestHeroKills: 7,
         bestHeroDamage: 1200,

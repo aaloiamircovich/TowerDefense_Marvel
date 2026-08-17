@@ -2265,6 +2265,58 @@ canvas {
     color: var(--bright-yellow);
 }
 
+.wave-reward-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(92px, 1fr));
+    gap: 6px;
+}
+
+.wave-reward-strip span {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: 2px 6px;
+    min-width: 0;
+    padding: 7px;
+    border: 1px solid rgba(252, 163, 17, 0.15);
+    border-radius: 6px;
+    background: rgba(252, 163, 17, 0.055);
+}
+
+.wave-reward-strip span.total {
+    border-color: rgba(252, 163, 17, 0.34);
+    background:
+        linear-gradient(135deg, rgba(252, 163, 17, 0.13), transparent),
+        rgba(5, 7, 11, 0.34);
+}
+
+.wave-reward-strip i {
+    color: var(--bright-yellow);
+    font-size: 11px;
+}
+
+.wave-reward-strip b,
+.wave-reward-strip small {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.wave-reward-strip b {
+    color: var(--bright-yellow);
+    font-size: 12px;
+    line-height: 1;
+}
+
+.wave-reward-strip small {
+    grid-column: 1 / -1;
+    color: var(--muted);
+    font-size: 9px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
 .wave-report-rating {
     display: grid;
     gap: 3px;
