@@ -7,6 +7,10 @@ function escapeHtml(value = '') {
         .replaceAll("'", '&#39;');
 }
 
+function formatNumber(value = 0) {
+    return Math.round(Number(value) || 0).toLocaleString('es-AR');
+}
+
 export function buildModeStatusView(snapshot = null) {
     if (!snapshot) return null;
     const detail = snapshot.streakDetail || snapshot.detail || '';
@@ -52,12 +56,26 @@ export class ModePanel {
 
     showResult(title, snapshot) {
         this.ui.showPanelOverlay(false);
+        const detail = snapshot.streakDetail || snapshot.detail || 'Operacion finalizada';
         this.ui.panelContent.innerHTML = `
-            <div class="end-state">
-                <h2>${escapeHtml(title)}</h2>
-                <p>${Math.round(snapshot.score || 0)} puntos | oleada ${Math.round(snapshot.wave || 1)} | record ${Math.round(snapshot.best || 0)}</p>
+            <div class="end-state end-state-mode">
+                <div class="end-state-banner">
+                    <div class="end-state-emblem"><i class="fas fa-flag-checkered"></i></div>
+                    <div class="end-state-copy">
+                        <span class="briefing-kicker">MODO ESPECIAL</span>
+                        <h2>${escapeHtml(title)}</h2>
+                        <p>${escapeHtml(detail)}</p>
+                    </div>
+                </div>
+                <div class="end-state-readout">
+                    <span><i class="fas fa-chart-line"></i><small>Puntos</small><b>${formatNumber(snapshot.score)}</b></span>
+                    <span><i class="fas fa-signal"></i><small>Oleada</small><b>${formatNumber(snapshot.wave || 1)}</b></span>
+                    <span><i class="fas fa-trophy"></i><small>Record</small><b>${formatNumber(snapshot.best)}</b></span>
+                </div>
                 ${this.ui.renderMissionSummary(this.ui.game.progression?.state.lastMissionSummary)}
-                <button class="btn-primary" id="mode-result-map">Volver a modos</button>
+                <div class="end-state-actions end-state-actions--compact">
+                    <button class="btn-primary" id="mode-result-map">Volver a modos</button>
+                </div>
             </div>
         `;
         document.getElementById('mode-result-map')?.addEventListener('click', () => {

@@ -20,7 +20,10 @@ test('EndStatePanel renderiza derrota y reintenta sin resetear progreso externo'
 
         assert.match(ui.panelContent.innerHTML, /OPERACION FALLIDA/);
         assert.match(ui.panelContent.innerHTML, /Base destruida/);
+        assert.match(ui.panelContent.innerHTML, /end-state-readout/);
+        assert.match(ui.panelContent.innerHTML, /Mapa actual/);
         assert.match(ui.panelContent.innerHTML, /Informe de mision/);
+        assert.match(ui.panelContent.innerHTML, /mission-summary-grid/);
         assert.match(ui.panelContent.innerHTML, /Black Widow/);
 
         retryButton.listeners.click();
@@ -69,6 +72,7 @@ test('EndStatePanel renderiza victoria y error fatal con acciones principales', 
 
         assert.match(ui.panelContent.innerHTML, /OPERACION COMPLETADA/);
         assert.match(ui.panelContent.innerHTML, /47 estrellas/);
+        assert.match(ui.panelContent.innerHTML, /Mejor unidad/);
 
         victoryButton.listeners.click();
         assert.equal(closeButton.removedClass, 'hidden');

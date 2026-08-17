@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildModeStatusView } from '../src/ui/ModePanel.js';
+import { ModePanel, buildModeStatusView } from '../src/ui/ModePanel.js';
 
 test('buildModeStatusView oculta el panel sin modo activo', () => {
     assert.equal(buildModeStatusView(null), null);
@@ -32,3 +32,74 @@ test('buildModeStatusView escapa texto dinamico de modo', () => {
     assert.match(view.html, /&lt;script&gt;/);
     assert.match(view.html, /&lt;b&gt;detalle&lt;\/b&gt;/);
 });
+
+test('ModePanel renderiza resultado especial con lectura tactica compacta', () => {
+    const previousDocument = globalThis.document;
+    const resultButton = createButtonStub();
+    const closeButton = createCloseButtonStub();
+    const calls = [];
+    globalThis.document = {
+        getElementById(id) {
+            return {
+                'mode-result-map': resultButton,
+                'close-panel-btn': closeButton
+            }[id] || null;
+        }
+    };
+
+    const ui = {
+        panelContent: { innerHTML: '' },
+        game: { progression: { state: { lastMissionSummary: { bestHero: 'Storm' } } } },
+        showPanelOverlay(value) {
+            calls.push(`overlay:${value}`);
+        },
+        renderMissionSummary(summary) {
+            calls.push(`summary:${summary.bestHero}`);
+            return '<div class="mission-summary mission-summary-upgraded"><div class="mission-summary-grid"></div></div>';
+        },
+        renderMap(title) {
+            calls.push(`map:${title}`);
+        }
+    };
+
+    try {
+        new ModePanel(ui).showResult('Extraccion completada', {
+            score: 1240,
+            wave: 9,
+            best: 2000,
+            detail: 'Operacion cerrada'
+        });
+
+        assert.match(ui.panelContent.innerHTML, /MODO ESPECIAL/);
+        assert.match(ui.panelContent.innerHTML, /end-state-readout/);
+        assert.match(ui.panelContent.innerHTML, /1\.240/);
+        assert.ok(calls.includes('summary:Storm'));
+
+        resultButton.listeners.click();
+        assert.equal(closeButton.removedClass, 'hidden');
+        assert.ok(calls.includes('map:Mapa y modos'));
+    } finally {
+        globalThis.document = previousDocument;
+    }
+});
+
+function createButtonStub() {
+    return {
+        listeners: {},
+        addEventListener(event, handler) {
+            this.listeners[event] = handler;
+        }
+    };
+}
+
+function createCloseButtonStub() {
+    const button = {
+        removedClass: null,
+        classList: {
+            remove(className) {
+                button.removedClass = className;
+            }
+        }
+    };
+    return button;
+}

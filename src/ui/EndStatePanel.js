@@ -20,6 +20,9 @@ export class EndStatePanel {
         this.ui.showPanelOverlay(false);
         const modeSnapshot = this.ui.game.modeSystem?.getSnapshot();
         const wave = this.ui.game.waveManager?.currentWave || 1;
+        const summary = this.ui.game.progression?.state.lastMissionSummary;
+        const lives = summary?.lives ?? this.ui.game.resourceManager?.lives ?? 0;
+        const levelName = this.ui.game.currentLevel?.name || 'Mapa actual';
         const title = modeSnapshot ? `${modeSnapshot.name}: finalizada` : 'Base destruida';
         const subtitle = modeSnapshot
             ? `${formatNumber(modeSnapshot.score)} puntos | oleada ${formatNumber(wave)}`
@@ -27,12 +30,22 @@ export class EndStatePanel {
 
         this.ui.panelContent.innerHTML = `
             <section class="end-state end-state-defeat">
-                <div class="end-state-emblem"><i class="fas fa-triangle-exclamation"></i></div>
-                <span class="briefing-kicker">OPERACION FALLIDA</span>
-                <h2>${escapeHtml(title)}</h2>
-                <p>${escapeHtml(subtitle)}</p>
-                ${this.renderMissionSummary(this.ui.game.progression?.state.lastMissionSummary)}
-                <div class="end-state-actions">
+                <div class="end-state-banner">
+                    <div class="end-state-emblem"><i class="fas fa-triangle-exclamation"></i></div>
+                    <div class="end-state-copy">
+                        <span class="briefing-kicker">OPERACION FALLIDA</span>
+                        <h2>${escapeHtml(title)}</h2>
+                        <p>${escapeHtml(subtitle)}</p>
+                    </div>
+                </div>
+                ${this.renderRunReadout([
+                    { label: 'Mapa', value: levelName, icon: 'fa-map' },
+                    { label: 'Oleada', value: formatNumber(wave), icon: 'fa-signal' },
+                    { label: modeSnapshot ? 'Puntos' : 'Estrellas', value: formatNumber(modeSnapshot?.score ?? this.ui.game.stars), icon: modeSnapshot ? 'fa-chart-line' : 'fa-star' },
+                    { label: 'Vidas', value: formatNumber(lives), icon: 'fa-heart' }
+                ])}
+                ${this.renderMissionSummary(summary)}
+                <div class="end-state-actions end-state-actions--compact">
                     <button class="btn-primary" id="retry-run"><i class="fas fa-rotate-right"></i> Reintentar</button>
                 </div>
             </section>
@@ -55,14 +68,26 @@ export class EndStatePanel {
         }
 
         this.ui.showPanelOverlay(false);
+        const summary = this.ui.game.progression?.state.lastMissionSummary;
+        const levelName = this.ui.game.currentLevel?.name || 'Mapa actual';
         this.ui.panelContent.innerHTML = `
             <section class="end-state end-state-victory">
-                <div class="end-state-emblem"><i class="fas fa-trophy"></i></div>
-                <span class="briefing-kicker">OPERACION COMPLETADA</span>
-                <h2>Victoria</h2>
-                <p>Completaste el mapa con ${formatNumber(this.ui.game.stars)} estrellas.</p>
-                ${this.renderMissionSummary(this.ui.game.progression?.state.lastMissionSummary)}
-                <div class="end-state-actions">
+                <div class="end-state-banner">
+                    <div class="end-state-emblem"><i class="fas fa-trophy"></i></div>
+                    <div class="end-state-copy">
+                        <span class="briefing-kicker">OPERACION COMPLETADA</span>
+                        <h2>Victoria</h2>
+                        <p>Completaste el mapa con ${formatNumber(this.ui.game.stars)} estrellas.</p>
+                    </div>
+                </div>
+                ${this.renderRunReadout([
+                    { label: 'Mapa', value: levelName, icon: 'fa-map' },
+                    { label: 'Estrellas', value: formatNumber(this.ui.game.stars), icon: 'fa-star' },
+                    { label: 'Vidas', value: formatNumber(summary?.lives ?? this.ui.game.resourceManager?.lives ?? 0), icon: 'fa-heart' },
+                    { label: 'Mejor unidad', value: summary?.bestHero || 'Equipo', icon: 'fa-shield-halved' }
+                ])}
+                ${this.renderMissionSummary(summary)}
+                <div class="end-state-actions end-state-actions--compact">
                     <button class="btn-primary" id="victory-close"><i class="fas fa-map"></i> Volver al mapa</button>
                 </div>
             </section>
@@ -72,6 +97,22 @@ export class EndStatePanel {
             document.getElementById('close-panel-btn')?.classList.remove('hidden');
             this.ui.closePanel();
         });
+    }
+
+    renderRunReadout(items = []) {
+        const visibleItems = items.filter((item) => item && item.value !== undefined && item.value !== null && item.value !== '');
+        if (!visibleItems.length) return '';
+        return `
+            <div class="end-state-readout">
+                ${visibleItems.map((item) => `
+                    <span>
+                        <i class="fas ${escapeHtml(item.icon || 'fa-circle-info')}"></i>
+                        <small>${escapeHtml(item.label)}</small>
+                        <b>${escapeHtml(item.value)}</b>
+                    </span>
+                `).join('')}
+            </div>
+        `;
     }
 
     renderMissionSummary(summary) {
@@ -90,13 +131,15 @@ export class EndStatePanel {
                     <strong>Informe de mision</strong>
                     <small>Destacado: ${escapeHtml(summary.bestHero || 'Equipo')} | ${formatNumber(summary.lives)} vidas restantes</small>
                 </div>
-                ${rows.map((row) => `
-                    <span>
-                        <i class="fas ${row.icon}"></i>
-                        <small>${row.label}</small>
-                        <b>${row.value}</b>
-                    </span>
-                `).join('')}
+                <div class="mission-summary-grid">
+                    ${rows.map((row) => `
+                        <span class="mission-summary-card">
+                            <i class="fas ${row.icon}"></i>
+                            <small>${row.label}</small>
+                            <b>${row.value}</b>
+                        </span>
+                    `).join('')}
+                </div>
             </div>
         `;
     }
@@ -106,11 +149,15 @@ export class EndStatePanel {
         this.ui.showPanelOverlay(false);
         this.ui.panelContent.innerHTML = `
             <section class="end-state error-state" role="alert">
-                <div class="end-state-emblem"><i class="fas fa-triangle-exclamation"></i></div>
-                <span class="briefing-kicker">ERROR DE INICIO</span>
-                <h2>No se pudo iniciar la misión</h2>
-                <p id="fatal-error-copy"></p>
-                <div class="end-state-actions">
+                <div class="end-state-banner">
+                    <div class="end-state-emblem"><i class="fas fa-triangle-exclamation"></i></div>
+                    <div class="end-state-copy">
+                        <span class="briefing-kicker">ERROR DE INICIO</span>
+                        <h2>No se pudo iniciar la misión</h2>
+                        <p id="fatal-error-copy"></p>
+                    </div>
+                </div>
+                <div class="end-state-actions end-state-actions--compact">
                     <button class="btn-primary" id="reload-game"><i class="fas fa-rotate-right"></i> Reintentar carga</button>
                 </div>
             </section>
