@@ -94,6 +94,10 @@ test('RadarPanel centraliza secciones tacticas y delega acciones interactivas', 
         assert.match(panelContent.innerHTML, /radar-section-state/);
         assert.match(panelContent.innerHTML, /Activo/);
         assert.match(panelContent.innerHTML, /Sin lectura/);
+        assert.match(panelContent.innerHTML, /radar-section-dormant/);
+        assert.match(panelContent.innerHTML, /Canales en espera/);
+        assert.match(panelContent.innerHTML, /Estado de mision/);
+        assert.match(panelContent.innerHTML, /Jefe activo/);
         assert.doesNotMatch(panelContent.innerHTML, /panel derecho/);
 
         deployButton.listeners.click();

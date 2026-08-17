@@ -71,10 +71,14 @@ export class RadarPanel {
         const map = this.ui.game.currentLevel?.theme?.label || this.ui.game.currentLevel?.name || 'Mapa';
         const sectionModels = RADAR_SECTION_DEFINITIONS.map((definition) => this.buildSectionModel(definition));
         const activeSections = sectionModels.filter((section) => section.hasContent);
+        const dormantSections = sectionModels.filter((section) => !section.hasContent);
         const priorityTitle = [...activeSections]
             .sort((a, b) => a.priority - b.priority)
             .at(0)?.title || 'Patrulla';
-        const sections = sectionModels.map((section) => this.renderSection(section)).join('');
+        const sections = [...activeSections]
+            .sort((a, b) => a.priority - b.priority)
+            .map((section) => this.renderSection(section))
+            .join('');
 
         this.ui.panelContent.innerHTML = `
             <section class="radar-panel">
@@ -96,6 +100,7 @@ export class RadarPanel {
                 </div>
                 <div class="radar-grid">
                     ${sections}
+                    ${this.renderDormantChannels(dormantSections)}
                 </div>
             </section>
         `;
@@ -131,6 +136,31 @@ export class RadarPanel {
                 </header>
                 <div class="radar-section-body">
                     ${section.hasContent ? section.content : `<p class="radar-empty">${escapeHtml(section.empty)}</p>`}
+                </div>
+            </article>
+        `;
+    }
+
+    renderDormantChannels(sections) {
+        if (!sections.length) return '';
+        return `
+            <article class="radar-section radar-section-dormant empty">
+                <header>
+                    <span>
+                        <i class="fas fa-broadcast-tower"></i>
+                        <strong>Canales en espera</strong>
+                    </span>
+                    <b class="radar-section-state">Sin lectura · ${sections.length}</b>
+                </header>
+                <div class="radar-dormant-grid">
+                    ${sections
+                        .sort((a, b) => a.priority - b.priority)
+                        .map((section) => `
+                            <span>
+                                <b><i class="fas ${escapeHtml(section.icon)}"></i>${escapeHtml(section.title)}</b>
+                                <small>${escapeHtml(section.empty)}</small>
+                            </span>
+                        `).join('')}
                 </div>
             </article>
         `;

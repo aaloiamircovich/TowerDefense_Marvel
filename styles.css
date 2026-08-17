@@ -9366,7 +9366,8 @@ canvas {
 
 .radar-section-wave-intel,
 .radar-section-wave-report,
-.radar-section-enemy-info-panel {
+.radar-section-enemy-info-panel,
+.radar-section-dormant {
     grid-column: 1 / -1;
 }
 
@@ -9422,6 +9423,50 @@ canvas {
     color: var(--muted);
     font-size: 12px;
     line-height: 1.45;
+}
+
+.radar-dormant-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 8px;
+    padding: 10px;
+}
+
+.radar-dormant-grid span {
+    display: grid;
+    gap: 4px;
+    min-width: 0;
+    padding: 8px;
+    border: 1px dashed rgba(255, 255, 255, 0.1);
+    border-radius: 7px;
+    background: rgba(3, 7, 12, 0.38);
+}
+
+.radar-dormant-grid b,
+.radar-dormant-grid small {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.radar-dormant-grid b {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: color-mix(in srgb, var(--muted), white 18%);
+    font-size: 10px;
+    text-transform: uppercase;
+}
+
+.radar-dormant-grid i {
+    color: var(--level-accent);
+    opacity: 0.72;
+}
+
+.radar-dormant-grid small {
+    color: var(--muted);
+    font-size: 10px;
 }
 
 .radar-section-body .wave-threat,
