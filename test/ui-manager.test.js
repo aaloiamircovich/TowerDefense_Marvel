@@ -316,6 +316,10 @@ test('renderHeroDetails muestra counter de oleada dentro de estadisticas', () =>
     try {
         ui.renderHeroDetails(hero);
 
+        assert.match(ui.panelContent.innerHTML, /hero-portrait-header/);
+        assert.match(ui.panelContent.innerHTML, /hero-level-readout/);
+        assert.match(ui.panelContent.innerHTML, /hero-upgrade-grid/);
+        assert.match(ui.panelContent.innerHTML, /hero-upgrade-card/);
         assert.match(ui.panelContent.innerHTML, /hero-detail-tabs/);
         assert.match(ui.panelContent.innerHTML, /data-view="summary" role="tab" aria-selected="true"/);
         assert.match(ui.panelContent.innerHTML, /Lectura de oleada/);

@@ -2021,17 +2021,28 @@ export class UIManager {
         this.panelContent.innerHTML = `
             <div class="hero-detail">
                 <section class="hero-portrait ${rarityClass}" data-rarity="${rarity}">
-                    <h2>${heroName}</h2>
-                    <b class="rarity-badge ${rarityClass}">${rarity}</b>
+                    <div class="hero-portrait-header">
+                        <div>
+                            <small>Ficha de heroe</small>
+                            <h2>${escapeHtml(heroName)}</h2>
+                        </div>
+                        <b class="rarity-badge ${rarityClass}">${rarity}</b>
+                    </div>
                     <div class="portrait-frame">${this.renderSprite(this.getHeroDisplaySprite(config), heroName)}</div>
-                    <div class="level-chip">Nivel ${level}/${HERO_MAX_LEVEL}</div>
-                    ${isUnlocked ? `<div class="upgrade-list">
+                    <div class="hero-level-readout">
+                        <span><small>Nivel</small><b>${level}/${HERO_MAX_LEVEL}</b></span>
+                        <span><small>Mejora</small><b>${isMaxLevel ? 'MAX' : `$${this.getHeroUpgradeCost(hero, 1)}`}</b></span>
+                    </div>
+                    ${isUnlocked ? `<div class="upgrade-list hero-upgrade-grid" aria-label="Mejoras de nivel">
                         ${[1, 5, 10].map((amount) => {
                             const cost = this.getHeroUpgradeCost(hero, amount);
                             const steps = getHeroLevelUpgradeSteps(level, amount);
-                            const label = isMaxLevel ? 'MAX' : `+${steps} $${cost}`;
                             const preview = isMaxLevel ? '' : this.renderHeroLevelPreview(hero, steps);
-                            return `<button class="modal-btn-upgrade btn-primary ghost" data-amt="${amount}" data-cost="${cost}" ${isMaxLevel ? 'disabled' : ''}><span>${label}</span>${preview}</button>`;
+                            return `<button class="modal-btn-upgrade hero-upgrade-card btn-primary ghost" data-amt="${amount}" data-cost="${cost}" ${isMaxLevel ? 'disabled' : ''}>
+                                <span class="hero-upgrade-step">${isMaxLevel ? 'MAX' : `+${steps}`}</span>
+                                <span class="hero-upgrade-cost">${isMaxLevel ? 'Nivel maximo' : `$${cost}`}</span>
+                                ${preview}
+                            </button>`;
                         }).join('')}
                     </div>` : '<div class="locked-hero-note"><i class="fas fa-lock"></i> Recluta al héroe para mejorarlo</div>'}
                     ${isDeployed ? `
