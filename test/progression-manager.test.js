@@ -434,6 +434,29 @@ test('contratos semanales se completan una vez y pagan creditos', () => {
     assert.equal(manager.state.credits, before + first.reduce((sum, contract) => sum + contract.reward, 0));
 });
 
+test('contratos semanales desbloquean emblemas por racha perfecta', () => {
+    const manager = new ProgressionManager(new MemoryStorage());
+    manager.initialize(createGame(), data);
+
+    completeWeeklyContracts(manager, new Date('2026-07-13T12:00:00Z'));
+    assert.equal(manager.getContractEmblemSnapshot().streak, 1);
+    assert.equal(manager.getContractEmblemSnapshot().bestStreak, 1);
+    assert.equal(manager.getContractEmblemSnapshot().emblems.find((emblem) => emblem.id === 'weekly_streak_1').unlocked, true);
+
+    completeWeeklyContracts(manager, new Date('2026-07-20T12:00:00Z'));
+    assert.equal(manager.getContractEmblemSnapshot().streak, 2);
+    assert.equal(manager.getContractEmblemSnapshot().bestStreak, 2);
+    assert.equal(manager.getContractEmblemSnapshot().emblems.find((emblem) => emblem.id === 'weekly_streak_2').unlocked, true);
+
+    const duplicatedWeek = manager.evaluateWeeklyContracts(buildWeeklySummary(manager, new Date('2026-07-20T12:00:00Z')), new Date('2026-07-20T12:00:00Z'));
+    assert.equal(duplicatedWeek.length, 0);
+    assert.equal(manager.getContractEmblemSnapshot().streak, 2);
+
+    completeWeeklyContracts(manager, new Date('2026-08-03T12:00:00Z'));
+    assert.equal(manager.getContractEmblemSnapshot().streak, 1);
+    assert.equal(manager.getContractEmblemSnapshot().bestStreak, 2);
+});
+
 test('retos de agrupacion detectan equipo activo y pagan una sola vez', () => {
     const manager = new ProgressionManager(new MemoryStorage());
     const game = createGame();
@@ -462,6 +485,22 @@ test('retos de agrupacion detectan equipo activo y pagan una sola vez', () => {
     assert.equal(manager.state.synergyChallenges.includes('pair:ciencia_y_escudo'), true);
     assert.equal(manager.state.credits, before + first.reduce((sum, challenge) => sum + challenge.reward, 0));
 });
+
+function buildWeeklySummary(manager, now) {
+    const factionContract = manager.getWeeklyContractSnapshot(now).contracts.find((contract) => contract.id.includes(':faction_'));
+    return {
+        result: 'victory',
+        lives: 20,
+        enemyFaction: factionContract.group,
+        totals: { kills: 35 },
+        tactical: { controlSeconds: 25 },
+        synergies: { activeFamilies: 1 }
+    };
+}
+
+function completeWeeklyContracts(manager, now) {
+    return manager.evaluateWeeklyContracts(buildWeeklySummary(manager, now), now);
+}
 
 test('codigo de build exporta e importa equipo, objetos y evoluciones validas', () => {
     const first = new ProgressionManager(new MemoryStorage());

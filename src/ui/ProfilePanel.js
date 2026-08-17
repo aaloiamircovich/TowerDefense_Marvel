@@ -21,6 +21,7 @@ export class ProfilePanel {
             + team.pairs.filter((pair) => pair.active).length;
         const codex = progression.getCodexSnapshot();
         const weekly = progression.getWeeklyContractSnapshot();
+        const contractEmblems = progression.getContractEmblemSnapshot();
         const synergyChallenges = progression.getSynergyChallengeSnapshot(team);
         const statistics = progression.state.statistics;
         const starTarget = Math.max(1, game.levelsData.length * (game.waveManager?.maxWaves || CAMPAIGN_MAX_WAVES));
@@ -54,7 +55,19 @@ export class ProfilePanel {
                 <div class="detail-card"><h3>Rendimiento</h3><p><span>Frame p95</span><strong>${(performance.p95Ms || 0).toFixed(1)} ms</strong></p><p><span>Memoria pico</span><strong>${(performance.peakMemoryMb || 0).toFixed(1)} MB</strong></p><p><span>Pico de entidades</span><strong>${performance.peakEntities || 0}</strong></p><p><span>Proyectiles reciclados</span><strong>${pool.reused || 0}</strong></p></div>
             </div>
             <section class="profile-meta-section"><h3>Maestria heroica</h3>${masteryRows || '<p>Recluta un heroe para iniciar desafios.</p>'}</section>
-            <section class="profile-meta-section"><h3>Contratos semanales <span>${weekly.completed}/${weekly.total}</span></h3><div class="weekly-contract-list">${weekly.contracts.map((contract) => this.renderContract(contract)).join('')}</div></section>
+            <section class="profile-meta-section">
+                <h3>Contratos semanales <span>${weekly.completed}/${weekly.total} · racha ${weekly.streak}</span></h3>
+                <div class="weekly-streak-strip">
+                    <span><b>${weekly.streak}</b>Actual</span>
+                    <span><b>${weekly.bestStreak}</b>Mejor racha</span>
+                    <span><b>${weekly.perfectWeeks}</b>Semanas perfectas</span>
+                </div>
+                <div class="weekly-contract-list">${weekly.contracts.map((contract) => this.renderContract(contract)).join('')}</div>
+            </section>
+            <section class="profile-meta-section">
+                <h3>Emblemas de contrato <span>${contractEmblems.unlocked}/${contractEmblems.total}</span></h3>
+                <div class="contract-emblem-list">${contractEmblems.emblems.map((emblem) => this.renderContractEmblem(emblem)).join('')}</div>
+            </section>
             <section class="profile-meta-section"><h3>Retos de agrupacion <span>${synergyChallenges.completed}/${synergyChallenges.total}</span></h3><div class="weekly-contract-list synergy-challenge-list">${synergyChallenges.challenges.slice(0, 8).map((challenge) => this.renderSynergyChallenge(challenge)).join('')}</div></section>
             <section class="profile-meta-section"><h3>Codice descubierto</h3><div class="codex-summary">${Object.entries(codex).map(([key, value]) => `<span><b>${value.found}/${value.total}</b>${({ heroes: 'Heroes', enemies: 'Enemigos', items: 'Objetos', factions: 'Facciones', mechanics: 'Mecanicas' })[key]}</span>`).join('')}</div></section>
             <section class="profile-meta-section"><h3>Historial</h3><div class="codex-summary"><span><b>${statistics.missions}</b>Misiones</span><span><b>${statistics.victories}</b>Victorias</span><span><b>${statistics.waves}</b>Oleadas</span><span><b>${statistics.enemiesDefeated}</b>Enemigos</span><span><b>${statistics.damageDealt}</b>Dano</span></div></section>
@@ -81,6 +94,19 @@ export class ProfilePanel {
                 <div><strong>${challenge.title}</strong><small>${challenge.type === 'family' ? 'Agrupacion' : 'Pareja'} | +$${challenge.reward}</small></div>
                 <p>${challenge.goal}</p>
                 <b>${challenge.completed ? 'Cobrado' : challenge.active ? 'Activo' : 'Pendiente'}</b>
+            </article>
+        `;
+    }
+
+    renderContractEmblem(emblem) {
+        return `
+            <article class="contract-emblem-card ${emblem.unlocked ? 'unlocked' : ''}">
+                <i class="fas ${emblem.icon}" aria-hidden="true"></i>
+                <div>
+                    <strong>${emblem.label}</strong>
+                    <p>${emblem.description}</p>
+                </div>
+                <b>${emblem.unlocked ? 'Desbloqueado' : `${emblem.progress}/${emblem.required}`}</b>
             </article>
         `;
     }

@@ -7407,6 +7407,93 @@ canvas {
         rgba(5, 9, 15, 0.76);
 }
 
+.weekly-streak-strip {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.weekly-streak-strip span {
+    min-width: 0;
+    padding: 10px;
+    border: 1px solid rgba(111, 217, 255, 0.22);
+    border-radius: 8px;
+    background: rgba(4, 11, 18, 0.7);
+    color: #aebbc9;
+    font-size: 11px;
+    text-transform: uppercase;
+}
+
+.weekly-streak-strip b {
+    display: block;
+    color: var(--bright-yellow);
+    font-size: 18px;
+    line-height: 1;
+}
+
+.contract-emblem-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 10px;
+}
+
+.contract-emblem-card {
+    display: grid;
+    grid-template-columns: 34px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    padding: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.045), transparent),
+        rgba(4, 8, 14, 0.72);
+    color: #8e9aa6;
+}
+
+.contract-emblem-card i {
+    width: 34px;
+    height: 34px;
+    display: grid;
+    place-items: center;
+    border-radius: 8px;
+    background: rgba(83, 96, 109, 0.18);
+    color: #8e9aa6;
+}
+
+.contract-emblem-card strong,
+.contract-emblem-card p {
+    min-width: 0;
+}
+
+.contract-emblem-card p {
+    margin: 2px 0 0;
+    color: #aebbc9;
+    font-size: 12px;
+    line-height: 1.35;
+}
+
+.contract-emblem-card b {
+    color: #8e9aa6;
+    font-size: 11px;
+    text-transform: uppercase;
+}
+
+.contract-emblem-card.unlocked {
+    border-color: rgba(255, 211, 77, 0.62);
+    background:
+        linear-gradient(135deg, rgba(255, 211, 77, 0.14), transparent),
+        rgba(5, 9, 15, 0.78);
+    color: #fff;
+}
+
+.contract-emblem-card.unlocked i,
+.contract-emblem-card.unlocked b {
+    color: var(--bright-yellow);
+}
+
 .codex-summary span,
 .mission-summary span {
     border: 1px solid rgba(255, 255, 255, 0.08);

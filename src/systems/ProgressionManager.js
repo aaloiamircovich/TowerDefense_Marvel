@@ -13,6 +13,35 @@ const ADMIN_PASSWORD = '0000';
 const ADMIN_CREDITS = 999999999;
 const ADMIN_STARS_PER_LEVEL = CAMPAIGN_MAX_WAVES;
 
+export const CONTRACT_EMBLEM_CATALOG = {
+    weekly_streak_1: {
+        label: 'Operador semanal',
+        description: 'Completa todos los contratos de una semana.',
+        threshold: 1,
+        icon: 'fa-medal'
+    },
+    weekly_streak_2: {
+        label: 'Agente consistente',
+        description: 'Completa todos los contratos durante dos semanas seguidas.',
+        threshold: 2,
+        icon: 'fa-shield-halved'
+    },
+    weekly_streak_4: {
+        label: 'Centinela de campania',
+        description: 'Completa todos los contratos durante cuatro semanas seguidas.',
+        threshold: 4,
+        icon: 'fa-award'
+    },
+    weekly_streak_8: {
+        label: 'Leyenda operativa',
+        description: 'Completa todos los contratos durante ocho semanas seguidas.',
+        threshold: 8,
+        icon: 'fa-crown'
+    }
+};
+
+const CONTRACT_EMBLEM_IDS = Object.keys(CONTRACT_EMBLEM_CATALOG);
+
 export const ACHIEVEMENT_CATALOG = {
     primera_defensa: achievement('Primera defensa', 'Completa tu primera mision registrada.'),
     intocable: achievement('Intocable', 'Gana una mision sin perder vidas.'),
@@ -53,6 +82,29 @@ function getWeekKey(now = new Date()) {
     const yearStart = new Date(Date.UTC(date.getUTCFullYear(), 0, 1));
     const week = Math.ceil((((date - yearStart) / 86400000) + 1) / 7);
     return `${date.getUTCFullYear()}-W${String(week).padStart(2, '0')}`;
+}
+
+function isWeekKey(value) {
+    return /^\d{4}-W\d{2}$/.test(String(value || ''));
+}
+
+function getIsoWeekStart(weekKey) {
+    const match = String(weekKey || '').match(/^(\d{4})-W(\d{2})$/);
+    if (!match) return null;
+    const year = Number(match[1]);
+    const week = Number(match[2]);
+    const januaryFourth = new Date(Date.UTC(year, 0, 4));
+    const day = januaryFourth.getUTCDay() || 7;
+    const monday = new Date(januaryFourth);
+    monday.setUTCDate(januaryFourth.getUTCDate() - day + 1 + (week - 1) * 7);
+    return monday;
+}
+
+function getWeekDistance(previousWeekKey, currentWeekKey) {
+    const previous = getIsoWeekStart(previousWeekKey);
+    const current = getIsoWeekStart(currentWeekKey);
+    if (!previous || !current) return 0;
+    return Math.round((current - previous) / WEEK_MS);
 }
 
 function getFactionForWeek(weekKey) {
@@ -101,9 +153,17 @@ function createWeeklyContracts(weekKey = getWeekKey()) {
 }
 
 function normalizeWeeklyContracts(value = {}) {
+    const perfectWeekKeys = normalizeStringList(value.perfectWeekKeys).filter(isWeekKey);
+    const emblemIds = normalizeStringList(value.emblemIds).filter((id) => CONTRACT_EMBLEM_IDS.includes(id));
+    const streak = Math.max(0, Math.floor(Number(value.streak) || 0));
     return {
         weekKey: typeof value.weekKey === 'string' ? value.weekKey : '',
-        completedIds: [...new Set(value.completedIds || [])].filter((id) => typeof id === 'string')
+        completedIds: normalizeStringList(value.completedIds),
+        perfectWeekKeys,
+        lastPerfectWeekKey: isWeekKey(value.lastPerfectWeekKey) ? value.lastPerfectWeekKey : (perfectWeekKeys.at(-1) || ''),
+        streak,
+        bestStreak: Math.max(streak, Math.floor(Number(value.bestStreak) || 0)),
+        emblemIds
     };
 }
 
@@ -174,7 +234,7 @@ function createDefaultState() {
         heroMastery: {},
         codexDiscovered: { heroes: [], enemies: [], items: [], factions: [], mechanics: [] },
         achievements: [],
-        weeklyContracts: { weekKey: '', completedIds: [] },
+        weeklyContracts: { weekKey: '', completedIds: [], perfectWeekKeys: [], lastPerfectWeekKey: '', streak: 0, bestStreak: 0, emblemIds: [] },
         synergyChallenges: [],
         statistics: { missions: 0, victories: 0, defeats: 0, waves: 0, enemiesDefeated: 0, damageDealt: 0, creditsEarned: 0 },
         lastMissionSummary: null,
@@ -819,9 +879,10 @@ export class ProgressionManager {
 
     getWeeklyContractSnapshot(now = new Date()) {
         const weekKey = getWeekKey(now);
-        const stored = this.state.weeklyContracts?.weekKey === weekKey
-            ? this.state.weeklyContracts
-            : { weekKey, completedIds: [] };
+        const storedBase = normalizeWeeklyContracts(this.state.weeklyContracts);
+        const stored = storedBase.weekKey === weekKey
+            ? storedBase
+            : { ...storedBase, weekKey, completedIds: [] };
         const completedIds = new Set(stored.completedIds || []);
         const contracts = createWeeklyContracts(weekKey).map((contract) => ({
             id: contract.id,
@@ -835,18 +896,25 @@ export class ProgressionManager {
             weekKey,
             completed: contracts.filter((contract) => contract.completed).length,
             total: contracts.length,
-            contracts
+            contracts,
+            streak: stored.streak,
+            bestStreak: stored.bestStreak,
+            perfectWeeks: stored.perfectWeekKeys.length,
+            emblems: this.getContractEmblemSnapshot(stored)
         };
     }
 
     evaluateWeeklyContracts(summary, now = new Date()) {
         const weekKey = getWeekKey(now);
-        if (this.state.weeklyContracts?.weekKey !== weekKey) {
-            this.state.weeklyContracts = { weekKey, completedIds: [] };
+        const weeklyState = normalizeWeeklyContracts(this.state.weeklyContracts);
+        if (weeklyState.weekKey !== weekKey) {
+            weeklyState.weekKey = weekKey;
+            weeklyState.completedIds = [];
         }
-        const completed = new Set(this.state.weeklyContracts.completedIds || []);
+        const completed = new Set(weeklyState.completedIds || []);
         const earned = [];
-        createWeeklyContracts(weekKey).forEach((contract) => {
+        const contracts = createWeeklyContracts(weekKey);
+        contracts.forEach((contract) => {
             if (completed.has(contract.id) || !contract.evaluate(summary)) return;
             completed.add(contract.id);
             this.addCredits(contract.reward);
@@ -857,8 +925,58 @@ export class ProgressionManager {
                 reward: contract.reward
             });
         });
-        this.state.weeklyContracts = { weekKey, completedIds: [...completed] };
+        weeklyState.completedIds = [...completed];
+        this.state.weeklyContracts = weeklyState;
+        if (completed.size >= contracts.length) this.recordWeeklyContractPerfectWeek(weekKey);
+        this.save();
         return earned;
+    }
+
+    recordWeeklyContractPerfectWeek(weekKey) {
+        const weeklyState = normalizeWeeklyContracts(this.state.weeklyContracts);
+        if (!isWeekKey(weekKey) || weeklyState.perfectWeekKeys.includes(weekKey)) {
+            this.state.weeklyContracts = weeklyState;
+            return [];
+        }
+
+        const distance = weeklyState.lastPerfectWeekKey
+            ? getWeekDistance(weeklyState.lastPerfectWeekKey, weekKey)
+            : 0;
+        weeklyState.streak = distance === 1 ? weeklyState.streak + 1 : 1;
+        weeklyState.bestStreak = Math.max(weeklyState.bestStreak, weeklyState.streak);
+        weeklyState.lastPerfectWeekKey = weekKey;
+        weeklyState.perfectWeekKeys = [...weeklyState.perfectWeekKeys, weekKey];
+
+        const previousEmblems = new Set(weeklyState.emblemIds);
+        const unlocked = [];
+        Object.entries(CONTRACT_EMBLEM_CATALOG).forEach(([id, emblem]) => {
+            if (weeklyState.bestStreak < emblem.threshold || previousEmblems.has(id)) return;
+            previousEmblems.add(id);
+            unlocked.push({ id, ...emblem });
+        });
+        weeklyState.emblemIds = [...previousEmblems];
+        this.state.weeklyContracts = weeklyState;
+        return unlocked;
+    }
+
+    getContractEmblemSnapshot(weeklyContracts = this.state.weeklyContracts) {
+        const weeklyState = normalizeWeeklyContracts(weeklyContracts);
+        const unlockedIds = new Set(weeklyState.emblemIds);
+        const emblems = Object.entries(CONTRACT_EMBLEM_CATALOG).map(([id, emblem]) => ({
+            id,
+            ...emblem,
+            required: emblem.threshold,
+            progress: Math.min(weeklyState.bestStreak, emblem.threshold),
+            unlocked: unlockedIds.has(id)
+        }));
+        return {
+            streak: weeklyState.streak,
+            bestStreak: weeklyState.bestStreak,
+            perfectWeeks: weeklyState.perfectWeekKeys.length,
+            unlocked: emblems.filter((emblem) => emblem.unlocked).length,
+            total: emblems.length,
+            emblems
+        };
     }
 
     equipItem(heroId, itemId) {
