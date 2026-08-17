@@ -7,7 +7,8 @@ import { UIManager } from '../src/systems/UIManager.js';
 
 const data = {
     heroes: JSON.parse(fs.readFileSync(new URL('../data/heroes.json', import.meta.url), 'utf8')),
-    items: JSON.parse(fs.readFileSync(new URL('../data/items.json', import.meta.url), 'utf8'))
+    items: JSON.parse(fs.readFileSync(new URL('../data/items.json', import.meta.url), 'utf8')),
+    enemies: JSON.parse(fs.readFileSync(new URL('../data/enemies.json', import.meta.url), 'utf8'))
 };
 
 function createUiStub() {
@@ -21,6 +22,8 @@ function createUiStub() {
         game: {
             heroDatabase: data.heroes,
             itemDatabase: data.items,
+            enemyDatabase: data.enemies,
+            evolutionVisualDatabase: {},
             activeTeam: [],
             progression: {
                 state,
@@ -107,9 +110,29 @@ test('coleccion expone diccionario de evoluciones completo', () => {
     const panel = new TeamBuilderPanel(ui);
 
     assert.match(panel.renderCollectionTabs(), /data-view="evolutions"/);
+    assert.match(panel.renderCollectionTabs(), /fa-skull"><\/i> Villanos/);
+    assert.match(panel.renderCollectionTabs(), /fa-dna"><\/i> Evoluciones/);
     assert.match(panel.renderEvolutionCodex(), /Diccionario de evoluciones/);
+    assert.match(panel.renderEvolutionCodex(), /codex-command-header/);
+    assert.match(panel.renderEvolutionCodex(), /codex-readout/);
+    assert.match(panel.renderEvolutionCodex(), /Signature/);
+    assert.match(panel.renderEvolutionCodex(), /Nivel 100/);
     assert.match(panel.renderEvolutionCodex(), /Nivel 50/);
     assert.match(panel.renderEvolutionCodex(), /Los objetos signature agregan mecanicas extra/);
+});
+
+test('coleccion compacta diccionario de villanos con metricas', () => {
+    const ui = createUiStub();
+    ui.game.progression.state.codexDiscovered = { enemies: ['hydra_soldier'] };
+    const panel = new TeamBuilderPanel(ui);
+    const html = panel.renderVillainCodex();
+
+    assert.match(html, /Diccionario de villanos/);
+    assert.match(html, /codex-command-header/);
+    assert.match(html, /codex-readout/);
+    assert.match(html, /Avistados/);
+    assert.match(html, /Jefes/);
+    assert.match(html, /villain-card--compact/);
 });
 
 test('coleccion filtra heroes obtenidos y faltantes', () => {

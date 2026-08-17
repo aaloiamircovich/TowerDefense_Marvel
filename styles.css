@@ -4295,9 +4295,63 @@ body.panel-open {
     background: rgba(7, 16, 24, 0.72);
 }
 
+.villain-codex-header.codex-command-header {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    background:
+        linear-gradient(135deg, color-mix(in srgb, var(--level-accent), transparent 88%), transparent 62%),
+        rgba(5, 9, 15, 0.84);
+}
+
 .villain-codex-header h3 {
     margin: 2px 0 4px;
     color: #ffffff;
+}
+
+.codex-command-header h3 {
+    font-size: 20px;
+}
+
+.codex-readout {
+    display: grid;
+    grid-template-columns: repeat(3, 78px);
+    gap: 6px;
+}
+
+.codex-readout span {
+    display: grid;
+    place-items: center;
+    min-height: 52px;
+    padding: 6px;
+    border: 1px solid color-mix(in srgb, var(--level-accent), transparent 58%);
+    border-radius: 8px;
+    background: rgba(3, 7, 12, 0.54);
+    text-align: center;
+}
+
+.codex-readout i {
+    color: var(--level-accent);
+    font-size: 12px;
+}
+
+.codex-readout small {
+    color: var(--muted);
+    font-size: 8px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.codex-readout b {
+    max-width: 100%;
+    overflow: hidden;
+    color: var(--bright-yellow);
+    font-size: 14px;
+    line-height: 1;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .evolution-codex-empty {
@@ -4348,8 +4402,8 @@ body.panel-open {
 
 .villain-codex-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
-    gap: 12px;
+    grid-template-columns: repeat(auto-fill, minmax(174px, 1fr));
+    gap: 10px;
 }
 
 .villain-card {
@@ -4364,6 +4418,13 @@ body.panel-open {
     background:
         linear-gradient(135deg, rgba(64, 201, 255, 0.1), rgba(252, 163, 17, 0.035)),
         rgba(4, 9, 15, 0.84);
+}
+
+.villain-card--compact {
+    grid-template-columns: 56px minmax(0, 1fr);
+    gap: 8px;
+    min-height: 104px;
+    padding: 8px;
 }
 
 .villain-card.boss {
@@ -4383,6 +4444,12 @@ body.panel-open {
     image-rendering: pixelated;
 }
 
+.villain-card--compact img,
+.villain-card--compact .sprite-img {
+    width: 54px;
+    height: 54px;
+}
+
 .villain-silhouette {
     display: grid;
     place-items: center;
@@ -4394,10 +4461,23 @@ body.panel-open {
     color: rgba(255, 255, 255, 0.45);
 }
 
+.villain-card--compact .villain-silhouette {
+    width: 54px;
+    height: 54px;
+}
+
 .villain-card h3 {
     margin: 0;
     color: #ffffff;
     font-size: 14px;
+}
+
+.villain-card--compact h3 {
+    overflow: hidden;
+    font-size: 13px;
+    line-height: 1.15;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .villain-card small,
@@ -4405,6 +4485,14 @@ body.panel-open {
     display: block;
     color: var(--muted);
     font-size: 11px;
+}
+
+.villain-card--compact small,
+.villain-card--compact span {
+    overflow: hidden;
+    font-size: 10px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .villain-card > b,
@@ -4416,6 +4504,15 @@ body.panel-open {
     color: var(--bright-yellow);
     font-size: 11px;
     letter-spacing: 1px;
+}
+
+.villain-card--compact .hero-tag-list {
+    gap: 4px;
+}
+
+.villain-card--compact .hero-tag-list span {
+    padding: 4px 6px;
+    font-size: 9px;
 }
 
 .collection-empty {
@@ -6786,6 +6883,8 @@ body.tactical-paused #gameCanvas {
 
     .campaign-ops-strip,
     .campaign-progress-readout,
+    .codex-command-header,
+    .codex-readout,
     .map-list {
         grid-template-columns: 1fr;
     }

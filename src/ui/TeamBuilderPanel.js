@@ -174,10 +174,10 @@ export class TeamBuilderPanel {
                     <i class="fas fa-users"></i> Heroes
                 </button>
                 <button class="collection-view-tab ${this.viewMode === 'villains' ? 'active' : ''}" data-view="villains" type="button" aria-selected="${this.viewMode === 'villains'}">
-                    <i class="fas fa-skull"></i> Diccionario de villanos
+                    <i class="fas fa-skull"></i> Villanos
                 </button>
                 <button class="collection-view-tab ${this.viewMode === 'evolutions' ? 'active' : ''}" data-view="evolutions" type="button" aria-selected="${this.viewMode === 'evolutions'}">
-                    <i class="fas fa-dna"></i> Diccionario de evoluciones
+                    <i class="fas fa-dna"></i> Evoluciones
                 </button>
             </div>
         `;
@@ -295,15 +295,18 @@ export class TeamBuilderPanel {
     renderVillainCodex() {
         const game = this.ui.game;
         const model = buildVillainCodexModel(game.enemyDatabase, game.progression.state.codexDiscovered.enemies);
+        const bossCount = model.entries.filter((entry) => entry.isBoss).length;
+        const lockedCount = model.total - model.discovered;
         return `
-            <section class="villain-codex-header">
-                <div>
-                    <span class="briefing-kicker">ARCHIVO HEROICO</span>
-                    <h3>Diccionario de villanos</h3>
-                    <p>Los registros se desbloquean cuando el enemigo aparece en una oleada.</p>
-                </div>
-                <strong>${model.discovered}/${model.total} avistados</strong>
-            </section>
+            ${this.renderCodexHeader({
+                title: 'Diccionario de villanos',
+                description: 'Los registros se desbloquean cuando el enemigo aparece en una oleada.',
+                stats: [
+                    { icon: 'fa-eye', label: 'Avistados', value: `${model.discovered}/${model.total}` },
+                    { icon: 'fa-lock', label: 'Bloqueados', value: lockedCount },
+                    { icon: 'fa-crown', label: 'Jefes', value: bossCount }
+                ]
+            })}
             <div class="villain-codex-grid">
                 ${model.entries.map((entry) => this.renderVillainCard(entry)).join('')}
             </div>
@@ -315,7 +318,7 @@ export class TeamBuilderPanel {
             ? this.ui.renderSprite(entry.sprite, entry.name)
             : '<div class="villain-silhouette"><i class="fas fa-question"></i></div>';
         return `
-            <article class="villain-card ${entry.unlocked ? 'unlocked' : 'locked'} ${entry.isBoss ? 'boss' : ''}">
+            <article class="villain-card villain-card--compact ${entry.unlocked ? 'unlocked' : 'locked'} ${entry.isBoss ? 'boss' : ''}">
                 ${sprite}
                 <div>
                     <h3>${entry.name}</h3>
@@ -333,15 +336,18 @@ export class TeamBuilderPanel {
         const entries = Object.values(EVOLUTION_CATALOG)
             .filter((evolution) => game.heroDatabase?.[evolution.baseHeroId])
             .sort((a, b) => game.heroDatabase[a.baseHeroId].name.localeCompare(game.heroDatabase[b.baseHeroId].name, 'es'));
+        const signatureCount = entries.filter((evolution) => (evolution.itemTransforms || []).length > 0).length;
+        const lateGameCount = entries.filter((evolution) => Number(evolution.requiredLevel) >= 100).length;
         return `
-            <section class="villain-codex-header">
-                <div>
-                    <span class="briefing-kicker">ARCHIVO HEROICO</span>
-                    <h3>Diccionario de evoluciones</h3>
-                    <p>Las evoluciones por nivel se activan automaticamente. Los objetos signature agregan mecanicas extra.</p>
-                </div>
-                <strong>${entries.length} registros</strong>
-            </section>
+            ${this.renderCodexHeader({
+                title: 'Diccionario de evoluciones',
+                description: 'Las evoluciones por nivel se activan automaticamente. Los objetos signature agregan mecanicas extra.',
+                stats: [
+                    { icon: 'fa-dna', label: 'Registros', value: entries.length },
+                    { icon: 'fa-gem', label: 'Signature', value: signatureCount },
+                    { icon: 'fa-arrow-trend-up', label: 'Nivel 100', value: lateGameCount }
+                ]
+            })}
             <div class="villain-codex-grid evolution-codex-grid">
                 ${entries.map((evolution) => {
                     const hero = game.heroDatabase[evolution.baseHeroId];
@@ -354,7 +360,7 @@ export class TeamBuilderPanel {
                         .map((entry) => game.itemDatabase?.[entry.itemId]?.name || entry.itemId)
                         .join(', ');
                     return `
-                        <article class="villain-card unlocked evolution-card">
+                        <article class="villain-card villain-card--compact unlocked evolution-card">
                             ${this.ui.renderSprite(sprite, evolution.name)}
                             <div>
                                 <h3>${hero.name}</h3>
@@ -371,6 +377,21 @@ export class TeamBuilderPanel {
                     `;
                 }).join('')}
             </div>
+        `;
+    }
+
+    renderCodexHeader({ title, description, stats }) {
+        return `
+            <section class="villain-codex-header codex-command-header">
+                <div>
+                    <span class="briefing-kicker">ARCHIVO HEROICO</span>
+                    <h3>${title}</h3>
+                    <p>${description}</p>
+                </div>
+                <div class="codex-readout">
+                    ${stats.map((stat) => `<span><i class="fas ${stat.icon}"></i><small>${stat.label}</small><b>${stat.value}</b></span>`).join('')}
+                </div>
+            </section>
         `;
     }
 
