@@ -149,6 +149,13 @@ function escapeHtml(value = '') {
         .replaceAll("'", '&#39;');
 }
 
+function formatCompactMetric(value = 0) {
+    const amount = Math.max(0, Number(value) || 0);
+    if (amount >= 1000000) return `${(amount / 1000000).toFixed(amount >= 10000000 ? 0 : 1).replace(/\.0$/, '')}M`;
+    if (amount >= 1000) return `${(amount / 1000).toFixed(amount >= 10000 ? 0 : 1).replace(/\.0$/, '')}k`;
+    return `${Math.round(amount)}`;
+}
+
 export function buildEnemyIntel(enemy = {}) {
     const threat = Math.max(1, Math.min(5, Math.round(Number(enemy.threat || 1))));
     const roleLabel = ENEMY_ROLE_COPY[enemy.archetype] || (enemy.isBoss ? 'Jefe' : 'Soldado');
@@ -1926,6 +1933,19 @@ export class UIManager {
         const currentTargeting = hero.targetingPriority || config.targetingPriority || TARGETING_PRIORITIES[0];
         const waveSummary = this.nextWaveSummary || (!this.game.waveManager?.isWaveActive ? this.game.waveManager?.buildPreparedSummary?.() : null);
         const waveFitView = buildRosterWaveFitView(evaluateHeroWaveFit(hero, waveSummary, this.getMissionCredits()));
+        const supportAura = config.special?.supportAura || config.supportAura || null;
+        const scaledAura = getScaledSupportAura(supportAura, level, rarity);
+        const supportAuraLabel = {
+            damage: 'Daño',
+            fireRate: 'Cad.',
+            range: 'Rango'
+        }[scaledAura?.type] || 'Aura';
+        const isAuraOnly = hero.isSupportAuraOnly?.() || Boolean(scaledAura?.type && config.formationRole === 'support');
+        const summaryBadge = isAuraOnly && scaledAura?.type
+            ? `${supportAuraLabel} +${Math.round(Number(scaledAura.power || 0) * 100)}%`
+            : `DPS ${formatCompactMetric(damage * Number(fireRate || 0))}`;
+        const equipmentBadge = equippedItem ? 'Equipado' : 'Libre';
+        const combatBadge = `${formatCompactMetric(combat.kills || 0)} bajas`;
         const compactStats = [
             ['Daño', `${damage}${this.formatStatDelta(damage, baseDamage)}`],
             ['Recarga', `${fireRate}/s${this.formatStatDelta(Number(fireRate), baseFireRate, '', 1)}`],
@@ -1933,9 +1953,9 @@ export class UIManager {
             ['Alcance', `${range}${this.formatStatDelta(range, baseRange)}`]
         ];
         const detailTabs = [
-            { id: 'summary', label: 'Resumen', icon: 'fa-id-card' },
-            { id: 'equipment', label: 'Objeto', icon: 'fa-shield-alt' },
-            { id: 'combat', label: 'Combate', icon: 'fa-chart-line' }
+            { id: 'summary', label: 'Resumen', icon: 'fa-id-card', badge: summaryBadge },
+            { id: 'equipment', label: 'Objeto', icon: 'fa-shield-alt', badge: equipmentBadge },
+            { id: 'combat', label: 'Combate', icon: 'fa-chart-line', badge: combatBadge }
         ];
         let detailBody = '';
 
@@ -2060,7 +2080,7 @@ export class UIManager {
                         </div>
 
                         <div class="hero-detail-tabs" role="tablist" aria-label="Detalle de heroe">
-                            ${detailTabs.map((tab) => `<button class="hero-detail-tab ${activeDetailView === tab.id ? 'active' : ''}" data-view="${tab.id}" role="tab" aria-selected="${activeDetailView === tab.id}" type="button"><i class="fas ${tab.icon}"></i><span>${tab.label}</span></button>`).join('')}
+                            ${detailTabs.map((tab) => `<button class="hero-detail-tab ${activeDetailView === tab.id ? 'active' : ''}" data-view="${tab.id}" role="tab" aria-selected="${activeDetailView === tab.id}" type="button"><i class="fas ${tab.icon}"></i><span>${tab.label}</span><b class="hero-detail-tab-badge">${escapeHtml(tab.badge)}</b></button>`).join('')}
                         </div>
 
                         <div class="hero-detail-tab-panel ${activeDetailView}" role="tabpanel">

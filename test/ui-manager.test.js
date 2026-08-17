@@ -321,6 +321,8 @@ test('renderHeroDetails muestra counter de oleada dentro de estadisticas', () =>
         assert.match(ui.panelContent.innerHTML, /hero-upgrade-grid/);
         assert.match(ui.panelContent.innerHTML, /hero-upgrade-card/);
         assert.match(ui.panelContent.innerHTML, /hero-detail-tabs/);
+        assert.match(ui.panelContent.innerHTML, /hero-detail-tab-badge/);
+        assert.match(ui.panelContent.innerHTML, /DPS 42/);
         assert.match(ui.panelContent.innerHTML, /data-view="summary" role="tab" aria-selected="true"/);
         assert.match(ui.panelContent.innerHTML, /Lectura de oleada/);
         assert.match(ui.panelContent.innerHTML, /Counter ideal/);
@@ -331,6 +333,7 @@ test('renderHeroDetails muestra counter de oleada dentro de estadisticas', () =>
         ui.renderHeroDetails(hero, 'equipment');
         assert.match(ui.panelContent.innerHTML, /hero-detail-tab-panel equipment/);
         assert.match(ui.panelContent.innerHTML, /aria-selected="true" type="button"><i class="fas fa-shield-alt"><\/i><span>Objeto<\/span>/);
+        assert.match(ui.panelContent.innerHTML, /hero-detail-tab-badge">Libre<\/b>/);
         assert.match(ui.panelContent.innerHTML, /Equipamiento/);
         assert.doesNotMatch(ui.panelContent.innerHTML, /hero-submenu|hero-detail-menu-btn/);
 
