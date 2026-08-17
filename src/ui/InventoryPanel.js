@@ -95,43 +95,53 @@ export class InventoryPanel {
         this.pendingEquipItemId = null;
         this.tierFilter = 0;
         this.slotFilter = 'all';
+        this.statusFilter = 'all';
     }
 
     render(title = 'Inventario') {
         const game = this.ui.game;
-        const entries = this.getInventoryEntries().filter(({ item, totalCount }) => {
-            return totalCount > 0
-                && (this.tierFilter === 0 || item.tier === this.tierFilter)
-                && (this.slotFilter === 'all' || item.slot === this.slotFilter);
-        });
-        const equippedCount = entries.reduce((total, entry) => total + entry.equippedHeroes.length, 0);
-        const freeCount = entries.reduce((total, entry) => total + entry.freeCount, 0);
+        const allEntries = this.getInventoryEntries();
+        const entries = allEntries.filter((entry) => this.passesInventoryFilters(entry));
+        const equippedCount = allEntries.reduce((total, entry) => total + entry.equippedHeroes.length, 0);
+        const freeCount = allEntries.reduce((total, entry) => total + entry.freeCount, 0);
+        const statusOptions = [
+            ['all', 'Todos'],
+            ['free', 'Libres'],
+            ['equipped', 'Equipados']
+        ];
 
         this.ui.panelContent.innerHTML = `
             <div class="panel-title-row">
                 <h2>${title}</h2>
                 <strong><i class="fas fa-gem"></i> 1 objeto por heroe</strong>
             </div>
-            <section class="inventory-command-header">
+            <section class="inventory-command-header inventory-command-header--compact">
                 <div>
                     <span class="briefing-kicker">ARSENAL HEROICO</span>
-                    <h3>Objetos disponibles</h3>
-                    <p>Elegí un objeto para abrir la colección y asignarlo a un héroe.</p>
+                    <h3>Objetos</h3>
+                    <p>Click en un objeto para elegir a qué héroe equiparlo.</p>
                 </div>
                 <div class="inventory-loadout-readout">
-                    <span><b>${entries.length}</b><small>tipos</small></span>
+                    <span><b>${allEntries.length}</b><small>tipos</small></span>
                     <span><b>${freeCount}</b><small>libres</small></span>
                     <span><b>${equippedCount}</b><small>equipados</small></span>
                 </div>
             </section>
 
-            <div class="inventory-filters">
+            <div class="inventory-filters inventory-filters--compact">
+                <div class="inventory-status-filters" aria-label="Filtrar por estado">
+                    ${statusOptions.map(([status, label]) => {
+                        const active = this.statusFilter === status;
+                        return `<button class="status-filter ${active ? 'active' : ''}" data-status="${status}" aria-pressed="${active}">${label}</button>`;
+                    }).join('')}
+                </div>
                 <div class="tier-filters" aria-label="Filtrar por tier">
                     ${[0, 1, 2, 3, 4].map((tier) => `<button class="tier-filter ${this.tierFilter === tier ? 'active' : ''}" data-tier="${tier}">${tier === 0 ? 'Todos' : `T${tier}`}</button>`).join('')}
                 </div>
                 <div class="slot-filters" aria-label="Filtrar por tipo">
                     ${['all', ...ITEM_SLOTS].map((slot) => `<button class="slot-filter ${this.slotFilter === slot ? 'active' : ''}" data-slot="${slot}">${slot === 'all' ? 'Todas' : SLOT_LABELS[slot]}</button>`).join('')}
                 </div>
+                <strong class="inventory-filter-count">${entries.length}/${allEntries.length}</strong>
             </div>
 
             <div class="inventory-grid inventory-grid-v2">
@@ -172,6 +182,15 @@ export class InventoryPanel {
             })
             .filter((entry) => entry.totalCount > 0)
             .sort((a, b) => a.item.tier - b.item.tier || a.item.name.localeCompare(b.item.name));
+    }
+
+    passesInventoryFilters({ item, totalCount, freeCount, equippedHeroes }) {
+        return totalCount > 0
+            && (this.statusFilter === 'all'
+                || (this.statusFilter === 'free' && freeCount > 0)
+                || (this.statusFilter === 'equipped' && equippedHeroes.length > 0))
+            && (this.tierFilter === 0 || item.tier === this.tierFilter)
+            && (this.slotFilter === 'all' || item.slot === this.slotFilter);
     }
 
     renderEquippedItem(item, slot) {
@@ -240,6 +259,10 @@ export class InventoryPanel {
         const game = this.ui.game;
         this.ui.panelContent.querySelectorAll('.tier-filter').forEach((button) => button.addEventListener('click', () => {
             this.tierFilter = Number(button.dataset.tier);
+            this.render();
+        }));
+        this.ui.panelContent.querySelectorAll('.status-filter').forEach((button) => button.addEventListener('click', () => {
+            this.statusFilter = button.dataset.status;
             this.render();
         }));
         this.ui.panelContent.querySelectorAll('.slot-filter').forEach((button) => button.addEventListener('click', () => {

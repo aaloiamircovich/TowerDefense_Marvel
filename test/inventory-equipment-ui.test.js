@@ -49,6 +49,24 @@ test('inventario muestra objetos equipados con el sprite del heroe dueño', () =
     assert.match(html, /Equipado por Iron Man/);
 });
 
+test('inventario filtra objetos libres y equipados desde la vista compacta', () => {
+    const ui = createUiStub();
+    ui.panelContent = { innerHTML: '', querySelectorAll: () => [] };
+    const panel = new InventoryPanel(ui);
+
+    panel.statusFilter = 'equipped';
+    panel.render();
+    assert.match(ui.panelContent.innerHTML, /data-status="equipped" aria-pressed="true"/);
+    assert.match(ui.panelContent.innerHTML, /data-item-id="reactor_arc"/);
+    assert.doesNotMatch(ui.panelContent.innerHTML, /data-item-id="lentes_edith"/);
+
+    panel.statusFilter = 'free';
+    panel.render();
+    assert.match(ui.panelContent.innerHTML, /data-status="free" aria-pressed="true"/);
+    assert.match(ui.panelContent.innerHTML, /data-item-id="lentes_edith"/);
+    assert.doesNotMatch(ui.panelContent.innerHTML, /data-item-id="reactor_arc"/);
+});
+
 test('coleccion muestra el objeto equipado y permite elegir heroe destino', () => {
     const ui = createUiStub();
     const panel = new TeamBuilderPanel(ui);

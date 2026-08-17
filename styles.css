@@ -5187,6 +5187,22 @@ select {
     margin-bottom: 12px;
 }
 
+.inventory-filters--compact {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) minmax(0, 1.4fr) auto;
+    align-items: center;
+    gap: 8px;
+    padding: 9px;
+}
+
+.inventory-status-filters {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.status-filter,
 .slot-filter {
     min-height: 36px;
     padding: 7px 11px;
@@ -5196,10 +5212,18 @@ select {
     color: var(--muted);
 }
 
+.status-filter.active,
 .slot-filter.active {
     border-color: var(--level-accent);
     color: var(--text);
     box-shadow: inset 0 -2px 0 var(--level-accent);
+}
+
+.inventory-filter-count {
+    min-width: 52px;
+    color: var(--bright-yellow);
+    font-size: 11px;
+    text-align: right;
 }
 
 .inventory-grid-v2 {
@@ -7308,6 +7332,23 @@ canvas {
     line-height: 1.45;
 }
 
+.inventory-command-header--compact {
+    gap: 12px;
+    margin-bottom: 10px;
+    padding: 12px 14px;
+}
+
+.inventory-command-header--compact h3 {
+    margin: 2px 0 3px;
+    font-size: clamp(20px, 2.4vw, 28px);
+}
+
+.inventory-command-header--compact p {
+    max-width: 440px;
+    margin: 0;
+    font-size: 12px;
+}
+
 .profile-command-meter {
     display: grid;
     place-items: center;
@@ -7447,14 +7488,14 @@ canvas {
 
 .inventory-loadout-readout {
     display: grid;
-    grid-template-columns: repeat(3, 82px);
-    gap: 8px;
+    grid-template-columns: repeat(3, 68px);
+    gap: 6px;
 }
 
 .inventory-loadout-readout span {
     display: grid;
     place-items: center;
-    min-height: 74px;
+    min-height: 54px;
     border: 1px solid color-mix(in srgb, var(--level-accent), transparent 58%);
     border-radius: 8px;
     background: rgba(3, 7, 12, 0.54);
@@ -7462,7 +7503,7 @@ canvas {
 
 .inventory-loadout-readout b {
     color: var(--bright-yellow);
-    font-size: 24px;
+    font-size: 20px;
     line-height: 1;
 }
 
@@ -7499,7 +7540,8 @@ canvas {
 }
 
 .tier-filter,
-.slot-filter {
+.slot-filter,
+.status-filter {
     border-color: rgba(255, 255, 255, 0.1);
     background:
         linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.015)),
@@ -7507,7 +7549,8 @@ canvas {
 }
 
 .tier-filter.active,
-.slot-filter.active {
+.slot-filter.active,
+.status-filter.active {
     border-color: color-mix(in srgb, var(--level-accent), white 8%);
     color: #ffffff;
     background: color-mix(in srgb, var(--level-accent), transparent 78%);
@@ -8558,6 +8601,14 @@ button:disabled,
     .inventory-command-header,
     .inventory-loadout-readout {
         grid-template-columns: 1fr;
+    }
+
+    .inventory-filters--compact {
+        grid-template-columns: 1fr;
+    }
+
+    .inventory-filter-count {
+        text-align: left;
     }
 
     .profile-command-meter {
