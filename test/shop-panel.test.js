@@ -25,6 +25,7 @@ test('ShopPanel renderiza tienda progresiva y delega compra de objetos', () => {
     assert.match(panelContent.innerHTML, /shop-recruit-strip/);
     assert.match(panelContent.innerHTML, /shop-grid--compact/);
     assert.match(panelContent.innerHTML, /RECLUTAR POR \$500/);
+    assert.match(panelContent.innerHTML, /data-affordability="ready"/);
     assert.match(panelContent.innerHTML, /Lentes E.D.I.T.H./);
     assert.match(panelContent.innerHTML, /Buena respuesta/);
 
@@ -32,6 +33,23 @@ test('ShopPanel renderiza tienda progresiva y delega compra de objetos', () => {
 
     assert.ok(calls.includes('purchase:lentes_edith'));
     assert.ok(calls.includes('toast:success:Lentes E.D.I.T.H. comprado'));
+});
+
+test('ShopPanel muestra creditos faltantes sin esperar al error de compra', () => {
+    const panelContent = createPanelContentStub({
+        '.btn-buy-item': []
+    });
+    const calls = [];
+    const ui = createShopUi(panelContent, calls);
+    ui.game.progression.getCredits = () => 100;
+
+    const panel = new ShopPanel(ui);
+    panel.render('Tienda');
+
+    assert.match(panelContent.innerHTML, /FALTAN \$400/);
+    assert.match(panelContent.innerHTML, /Faltan \$400/);
+    assert.match(panelContent.innerHTML, /data-affordability="locked"/);
+    assert.match(panelContent.innerHTML, /BLOQUEADO/);
 });
 
 test('ShopPanel recluta heroe, actualiza costo y permite tienda de skins vacia', () => {
@@ -108,7 +126,9 @@ function createShopUi(panelContent, calls) {
         nextWaveSummary: null,
         game: {
             activeTeam: [],
-            heroDatabase: {},
+            heroDatabase: {
+                iron_man: { id: 'iron_man', name: 'Iron Man', rarity: 'Rare', visual: { idle: 'iron_man.png' } }
+            },
             itemDatabase: { lentes_edith: item },
             inputManager: {
                 setPlacementMode(hero) {

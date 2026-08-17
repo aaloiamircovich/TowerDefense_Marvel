@@ -22,10 +22,21 @@ export class ShopPanel {
     render(title = 'Tienda') {
         const rotation = this.ui.game.shopSystem.getRotation();
         const credits = this.ui.game.progression.getCredits();
-        const fundsText = this.ui.game.progression.state.settings.adminMode ? '∞' : `$${credits}`;
+        const adminMode = Boolean(this.ui.game.progression.state.settings.adminMode);
+        const fundsText = adminMode ? '∞' : `$${credits}`;
         const recruitCost = getHeroBoxCost(this.ui.game.progression.state.shop);
         const pityValue = Math.min(4, this.ui.game.progression.state.shop.heroPity);
         const nextRecruitCost = Math.ceil(recruitCost * 1.12);
+        const recruitPool = Object.values(this.ui.game.heroDatabase || {})
+            .filter((hero) => hero.visual)
+            .filter((hero) => !this.ui.game.progression.state.unlockedHeroIds.includes(hero.id));
+        const canRecruit = recruitPool.length > 0 && (adminMode || credits >= recruitCost);
+        const recruitMissing = Math.max(0, recruitCost - credits);
+        const recruitButtonText = recruitPool.length === 0
+            ? 'PLANTILLA COMPLETA'
+            : canRecruit
+                ? `RECLUTAR POR $${recruitCost}`
+                : `FALTAN $${recruitMissing}`;
 
         this.ui.panelContent.innerHTML = `
             <section class="shop-command-header">
@@ -45,7 +56,7 @@ export class ShopPanel {
                     <small>La quinta apertura común garantiza Rare o superior.</small>
                 </div>
                 <div class="pity-track compact"><span>Garantía</span><b>${pityValue}/4</b></div>
-                <button class="btn-primary" id="gacha-btn">RECLUTAR POR $${recruitCost}</button>
+                <button class="btn-primary" id="gacha-btn" data-affordability="${canRecruit ? 'ready' : 'locked'}" ${canRecruit ? '' : 'disabled'}>${recruitButtonText}</button>
             </section>
             <div id="gacha-res" class="result-copy shop-reveal-dock"></div>
             <section class="shop-section-heading">
@@ -69,6 +80,11 @@ export class ShopPanel {
     renderItem(item, purchased = false) {
         if (!item) return '<div class="shop-card empty-copy">Agotado</div>';
         const owned = this.ui.game.progression.getOwnedQuantity(item.id);
+        const credits = this.ui.game.progression.getCredits();
+        const adminMode = Boolean(this.ui.game.progression.state.settings.adminMode);
+        const price = Number(item.price || 0);
+        const canBuy = !purchased && (adminMode || credits >= price);
+        const missing = Math.max(0, price - credits);
         const rarity = normalizeRarity(item.rarity);
         const rarityClass = getRarityClass(rarity);
         const summary = this.ui.nextWaveSummary || (!this.ui.game.waveManager?.isWaveActive ? this.ui.game.waveManager?.buildPreparedSummary?.() : null);
@@ -80,7 +96,7 @@ export class ShopPanel {
             this.ui.game.itemDatabase
         );
         return `
-            <div class="shop-card shop-card--compact ${rarityClass} ${purchased ? 'purchased' : ''}" data-rarity="${rarity}">
+            <div class="shop-card shop-card--compact ${rarityClass} ${purchased ? 'purchased' : ''} ${canBuy ? 'can-buy' : 'locked'}" data-rarity="${rarity}" data-affordability="${canBuy ? 'ready' : 'locked'}">
                 <div class="item-badge rarity-badge ${rarityClass}">${rarity}</div>
                 <div class="shop-item-heading">
                     ${this.ui.renderSprite(item.icon, item.name)}
@@ -96,8 +112,8 @@ export class ShopPanel {
                     <span>${escapeHtml(setProgress.detail)}</span>
                 </div>` : ''}
                 <div class="shop-card-footer">
-                    <small>Copias: ${owned}</small>
-                    <button class="btn-buy-item btn-primary ghost" data-id="${item.id}" ${purchased ? 'disabled' : ''}>${purchased ? 'ADQUIRIDO' : `$${item.price}`}</button>
+                    <small>${purchased ? 'Adquirido' : canBuy ? `Copias: ${owned}` : `Faltan $${missing}`}</small>
+                    <button class="btn-buy-item btn-primary ghost" data-id="${item.id}" ${purchased || !canBuy ? 'disabled' : ''}>${purchased ? 'ADQUIRIDO' : canBuy ? `$${price}` : 'BLOQUEADO'}</button>
                 </div>
             </div>
         `;
