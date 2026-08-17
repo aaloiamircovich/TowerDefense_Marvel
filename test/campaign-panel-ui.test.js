@@ -14,11 +14,17 @@ test('CampaignPanel compacta operaciones y resume desbloqueos por estrellas', ()
     assert.equal(summary.unlockedCount, 2);
     assert.equal(summary.totalMaps, 3);
     assert.equal(summary.nextUnlock, 'Siguiente mapa: 100 estrellas');
+    assert.equal(summary.nextMapName, 'Reino de Wakanda');
+    assert.equal(summary.starsRemaining, 50);
+    assert.equal(summary.nextProgress, 0);
 
     panel.render('Mapa y modos');
 
     assert.match(ui.panelContent.innerHTML, /campaign-ops-strip/);
+    assert.match(ui.panelContent.innerHTML, /campaign-unlock-track/);
     assert.match(ui.panelContent.innerHTML, /campaign-progress-readout/);
+    assert.match(ui.panelContent.innerHTML, /Reino de Wakanda/);
+    assert.match(ui.panelContent.innerHTML, /50 estrellas restantes/);
     assert.match(ui.panelContent.innerHTML, /<b>2\/3<\/b>/);
     assert.match(ui.panelContent.innerHTML, /map-card--compact/);
     assert.match(ui.panelContent.innerHTML, /Mapa 01/);

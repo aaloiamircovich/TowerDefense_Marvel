@@ -6108,7 +6108,7 @@ select {
 
 .campaign-ops-strip {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-columns: minmax(0, 1fr) minmax(240px, 0.8fr) auto;
     align-items: center;
     gap: 12px;
     margin-bottom: 16px;
@@ -6139,6 +6139,68 @@ select {
 .campaign-ops-copy small {
     color: var(--muted);
     font-size: 11px;
+}
+
+.campaign-unlock-track {
+    display: grid;
+    gap: 7px;
+    min-width: 0;
+    padding: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    background: rgba(3, 7, 12, 0.48);
+}
+
+.campaign-unlock-track div {
+    display: grid;
+    gap: 2px;
+    min-width: 0;
+}
+
+.campaign-unlock-track small,
+.campaign-unlock-track b,
+.campaign-unlock-track span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.campaign-unlock-track small {
+    color: var(--muted);
+    font-size: 9px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.campaign-unlock-track b {
+    color: #ffffff;
+    font-size: 12px;
+}
+
+.campaign-unlock-track span {
+    color: var(--bright-yellow);
+    font-size: 10px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.campaign-unlock-track i {
+    display: block;
+    width: 100%;
+    height: 5px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.campaign-unlock-track i::after {
+    content: "";
+    display: block;
+    width: var(--campaign-unlock-progress);
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--level-accent), var(--bright-yellow));
+    box-shadow: 0 0 12px color-mix(in srgb, var(--level-accent), transparent 45%);
 }
 
 .campaign-progress-readout {

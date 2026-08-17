@@ -17,6 +17,14 @@ export class CampaignPanel {
                     <strong>${summary.currentName}</strong>
                     <small>${summary.nextUnlock}</small>
                 </div>
+                <div class="campaign-unlock-track" style="--campaign-unlock-progress:${summary.nextProgress}%">
+                    <div>
+                        <small>Siguiente operacion</small>
+                        <b>${summary.nextMapName}</b>
+                        <span>${summary.starsRemaining ? `${summary.starsRemaining} estrellas restantes` : 'Ruta completa'}</span>
+                    </div>
+                    <i aria-hidden="true"></i>
+                </div>
                 <div class="campaign-progress-readout">
                     <span><b>${summary.totalStars}</b><small>estrellas</small></span>
                     <span><b>${summary.unlockedCount}/${summary.totalMaps}</b><small>mapas</small></span>
@@ -182,6 +190,10 @@ export class CampaignPanel {
         const totalStars = this.getTotalStars();
         const unlockedCount = levels.filter((_level, index) => isLevelUnlockedByStars(index, totalStars)).length;
         const nextLockedIndex = levels.findIndex((_level, index) => !isLevelUnlockedByStars(index, totalStars));
+        const nextRequirement = nextLockedIndex >= 0 ? getLevelUnlockRequirement(nextLockedIndex) : totalStars;
+        const previousRequirement = nextLockedIndex > 0 ? getLevelUnlockRequirement(nextLockedIndex - 1) : 0;
+        const unlockRange = Math.max(1, nextRequirement - previousRequirement);
+        const starsInRange = Math.min(unlockRange, Math.max(0, totalStars - previousRequirement));
         return {
             totalStars,
             unlockedCount,
@@ -189,7 +201,10 @@ export class CampaignPanel {
             currentName: game.currentLevel?.name || levels[0]?.name || 'Sin mapa',
             nextUnlock: nextLockedIndex >= 0
                 ? `Siguiente mapa: ${getLevelUnlockRequirement(nextLockedIndex)} estrellas`
-                : 'Todas las operaciones desbloqueadas'
+                : 'Todas las operaciones desbloqueadas',
+            nextMapName: nextLockedIndex >= 0 ? levels[nextLockedIndex]?.name || 'Operacion clasificada' : 'Todas las operaciones',
+            starsRemaining: nextLockedIndex >= 0 ? Math.max(0, nextRequirement - totalStars) : 0,
+            nextProgress: nextLockedIndex >= 0 ? Math.round((starsInRange / unlockRange) * 100) : 100
         };
     }
 
