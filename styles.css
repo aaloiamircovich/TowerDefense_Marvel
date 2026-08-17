@@ -7298,6 +7298,67 @@ body.reduce-motion :is(.collection-card, .starter-card, .hero-portrait):is(.rari
     min-width: 190px;
 }
 
+.end-state-coach {
+    display: grid;
+    gap: 9px;
+    padding: 11px;
+    border: 1px solid color-mix(in srgb, var(--level-accent), transparent 62%);
+    border-radius: 8px;
+    background:
+        linear-gradient(135deg, color-mix(in srgb, var(--level-accent), transparent 91%), transparent),
+        rgba(4, 10, 19, 0.62);
+}
+
+.end-state-coach.defeat {
+    border-color: color-mix(in srgb, var(--accent-red), transparent 62%);
+    background:
+        linear-gradient(135deg, color-mix(in srgb, var(--accent-red), transparent 91%), transparent),
+        rgba(4, 10, 19, 0.62);
+}
+
+.end-state-coach > strong {
+    color: var(--bright-yellow);
+    font-size: 12px;
+    text-transform: uppercase;
+}
+
+.end-state-coach > div {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.end-state-coach span {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 3px 7px;
+    min-width: 0;
+    padding: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 7px;
+    background: rgba(3, 7, 12, 0.48);
+}
+
+.end-state-coach i {
+    color: var(--level-accent);
+    font-size: 12px;
+}
+
+.end-state-coach small {
+    color: var(--muted);
+    font-size: 9px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.end-state-coach b {
+    grid-column: 1 / -1;
+    min-width: 0;
+    color: #ffffff;
+    font-size: 12px;
+    overflow-wrap: anywhere;
+}
+
 .mission-summary.mission-summary-upgraded {
     display: grid;
     grid-template-columns: 1fr;
@@ -7377,6 +7438,7 @@ body.reduce-motion :is(.collection-card, .starter-card, .hero-portrait):is(.rari
     }
 
     .end-state-readout,
+    .end-state-coach > div,
     .mission-summary-grid {
         grid-template-columns: repeat(2, minmax(100px, 1fr));
     }

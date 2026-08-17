@@ -45,6 +45,7 @@ export class EndStatePanel {
                     { label: 'Vidas', value: formatNumber(lives), icon: 'fa-heart' }
                 ])}
                 ${this.renderMissionSummary(summary)}
+                ${this.renderOutcomeCoach('defeat', { wave, summary, modeSnapshot })}
                 <div class="end-state-actions end-state-actions--compact">
                     <button class="btn-primary" id="retry-run"><i class="fas fa-rotate-right"></i> Reintentar</button>
                 </div>
@@ -87,6 +88,7 @@ export class EndStatePanel {
                     { label: 'Mejor unidad', value: summary?.bestHero || 'Equipo', icon: 'fa-shield-halved' }
                 ])}
                 ${this.renderMissionSummary(summary)}
+                ${this.renderOutcomeCoach('victory', { summary })}
                 <div class="end-state-actions end-state-actions--compact">
                     <button class="btn-primary" id="victory-close"><i class="fas fa-map"></i> Volver al mapa</button>
                 </div>
@@ -137,6 +139,36 @@ export class EndStatePanel {
                             <i class="fas ${row.icon}"></i>
                             <small>${row.label}</small>
                             <b>${row.value}</b>
+                        </span>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }
+
+    renderOutcomeCoach(type, context = {}) {
+        const isVictory = type === 'victory';
+        const summary = context.summary;
+        const cards = isVictory
+            ? [
+                { icon: 'fa-star', label: 'Objetivo', value: 'Buscar mas estrellas' },
+                { icon: 'fa-list-check', label: 'Desafios', value: 'Completar misiones pendientes' },
+                { icon: 'fa-box-open', label: 'Progreso', value: 'Invertir creditos en arsenal' }
+            ]
+            : [
+                { icon: 'fa-signal', label: 'Corte', value: `Oleada ${formatNumber(context.wave || 1)}` },
+                { icon: 'fa-arrow-up-right-dots', label: 'Prioridad', value: summary?.bestHero ? `Mejorar ${summary.bestHero}` : 'Reforzar el equipo' },
+                { icon: 'fa-satellite-dish', label: 'Lectura', value: context.modeSnapshot ? 'Revisar modo especial' : 'Abrir radar antes de salir' }
+            ];
+        return `
+            <div class="end-state-coach ${isVictory ? 'victory' : 'defeat'}">
+                <strong>${isVictory ? 'Siguiente objetivo' : 'Plan de recuperacion'}</strong>
+                <div>
+                    ${cards.map((card) => `
+                        <span>
+                            <i class="fas ${card.icon}"></i>
+                            <small>${escapeHtml(card.label)}</small>
+                            <b>${escapeHtml(card.value)}</b>
                         </span>
                     `).join('')}
                 </div>
