@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildBossHudState, buildCombatPressureState, buildEnemyIntel, buildLeakIntel, buildOnboardingCoachState, buildPressureActionState, buildRosterWaveFitView, buildShopItemInsight, buildShopSetProgress, buildSpawnQueueState, buildStatusLegendModel, buildStealthCoverageState, buildTacticalContributionModel, buildTargetingControlState, buildWaveLaunchState, buildWavePrepActionControl, buildWavePreparationPlan, buildWaveReportActionState, buildWaveReportGrade, buildWaveReportLesson, buildWaveReportState, evaluateHeroWaveFit, getNextTargetingPriority, UIManager } from '../src/systems/UIManager.js';
+import { buildBossHudState, buildCombatPressureState, buildCounterCoverageModel, buildEnemyIntel, buildLeakIntel, buildOnboardingCoachState, buildPressureActionState, buildRosterWaveFitView, buildShopItemInsight, buildShopSetProgress, buildSpawnQueueState, buildStatusLegendModel, buildStealthCoverageState, buildTacticalContributionModel, buildTargetingControlState, buildWaveLaunchState, buildWavePrepActionControl, buildWavePreparationPlan, buildWaveReportActionState, buildWaveReportGrade, buildWaveReportLesson, buildWaveReportState, evaluateHeroWaveFit, getNextTargetingPriority, UIManager } from '../src/systems/UIManager.js';
 import { calculateHeroLevelCost } from '../src/utils/HeroLevel.js';
 
 test('buildWaveLaunchState muestra riesgo critico en el CTA', () => {
@@ -104,9 +104,21 @@ test('buildEnemyIntel distingue soporte e invocador', () => {
     const summoner = buildEnemyIntel({ name: 'Doombot', archetype: 'summoner', summonId: 'ultron_drone', threat: 4 });
 
     assert.equal(support.counter, 'Foco al soporte');
+    assert.equal(support.counterId, 'focus');
+    assert.match(support.counterDetail, /Cura/);
     assert.ok(support.traits.includes('Cura'));
     assert.equal(summoner.counter, 'Corta invocador');
     assert.equal(summoner.danger, 'high');
+});
+
+test('buildEnemyIntel explica jefes y amenazas de control', () => {
+    const boss = buildEnemyIntel({ name: 'Loki', isBoss: true, threat: 5 });
+    const runner = buildEnemyIntel({ name: 'Raptor Salvaje', archetype: 'runner', speed: 102, threat: 3 });
+
+    assert.equal(boss.counterId, 'dps');
+    assert.match(boss.counterDetail, /pierdes/);
+    assert.equal(runner.counterId, 'control');
+    assert.match(runner.counterDetail, /slow|stun|web/);
 });
 
 test('buildStatusLegendModel prioriza counters de la oleada', () => {
@@ -121,6 +133,35 @@ test('buildStatusLegendModel prioriza counters de la oleada', () => {
 
     assert.deepEqual(model.entries.map((entry) => entry.id), ['detection', 'piercing', 'control']);
     assert.equal(model.label, 'Counters clave');
+});
+
+test('buildCounterCoverageModel distingue counters en campo, banco y faltantes', () => {
+    const model = buildCounterCoverageModel(
+        {
+            stealthCount: 1,
+            armoredCount: 1,
+            barrierCount: 0,
+            fastest: 96,
+            roles: ['stealth', 'tank', 'runner'],
+            maxThreat: 4
+        },
+        [
+            { id: 'spiderman', name: 'Spider-Man', canSeeStealth: true, damage: 16, fireRate: 2, range: 130, teamMetrics: { detection: 5, control: 4 } },
+            { id: 'hulk', name: 'Hulk', damage: 42, fireRate: 0.7, range: 95 }
+        ],
+        [
+            deployedHero({ id: 'iron_man', name: 'Iron Man', level: 2, damage: 58, fireRate: 1.4, range: 180 })
+        ]
+    );
+
+    assert.equal(model.label, 'Cobertura tactica');
+    assert.equal(model.covered, 1);
+    assert.deepEqual(model.entries.map((entry) => [entry.id, entry.tone]), [
+        ['detection', 'warning'],
+        ['piercing', 'ready'],
+        ['control', 'warning']
+    ]);
+    assert.match(model.entries[0].detail, /Spider-Man/);
 });
 
 test('buildStealthCoverageState distingue detector desplegado, banco y faltante', () => {

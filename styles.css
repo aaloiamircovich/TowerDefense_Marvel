@@ -60,6 +60,7 @@ body.simple-ui #wave-preview {
 
 body.simple-ui #wave-intel .wave-timeline,
 body.simple-ui #wave-intel .wave-status-legend,
+body.simple-ui #wave-intel .wave-counter-coverage,
 body.simple-ui .wave-report-rating,
 body.simple-ui .wave-report-mvp {
     display: none;
@@ -1623,6 +1624,81 @@ canvas {
     white-space: nowrap;
 }
 
+#wave-intel .wave-counter-coverage {
+    display: grid;
+    gap: 6px;
+    margin-top: 6px;
+    padding: 7px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 7px;
+    background: rgba(5, 7, 11, 0.46);
+}
+
+#wave-intel .wave-counter-coverage > strong {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    color: var(--text);
+    font-size: 10px;
+}
+
+#wave-intel .wave-counter-coverage > strong b {
+    color: var(--bright-yellow);
+    font-size: 10px;
+}
+
+#wave-intel .wave-counter-coverage > div {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 5px;
+}
+
+#wave-intel .wave-counter-coverage span {
+    --coverage-chip: #e63946;
+    display: grid;
+    grid-template-columns: 18px minmax(0, 1fr);
+    grid-template-areas:
+        "icon label"
+        "icon state";
+    align-items: center;
+    gap: 1px 5px;
+    min-width: 0;
+    padding: 6px;
+    border: 1px solid color-mix(in srgb, var(--coverage-chip), transparent 64%);
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--coverage-chip), transparent 91%);
+}
+
+#wave-intel .wave-counter-coverage span.ready { --coverage-chip: #46d369; }
+#wave-intel .wave-counter-coverage span.warning { --coverage-chip: #fca311; }
+#wave-intel .wave-counter-coverage span.danger { --coverage-chip: #e63946; }
+
+#wave-intel .wave-counter-coverage i {
+    grid-area: icon;
+    color: var(--coverage-chip);
+    font-size: 10px;
+    text-align: center;
+}
+
+#wave-intel .wave-counter-coverage b {
+    grid-area: label;
+    overflow: hidden;
+    color: var(--text);
+    font-size: 9px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#wave-intel .wave-counter-coverage small {
+    grid-area: state;
+    overflow: hidden;
+    color: var(--muted);
+    font-size: 8px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 #wave-intel .wave-timeline {
     display: grid;
     gap: 5px;
@@ -2493,6 +2569,44 @@ canvas {
     font-style: normal;
     font-weight: 800;
     line-height: 1.25;
+}
+
+.enemy-tactical-brief {
+    --enemy-brief: #fca311;
+    display: grid;
+    gap: 5px;
+    margin-top: 10px;
+    padding: 9px;
+    border: 1px solid color-mix(in srgb, var(--enemy-brief), transparent 58%);
+    border-left: 3px solid var(--enemy-brief);
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--enemy-brief), transparent 91%);
+}
+
+.enemy-tactical-brief.low { --enemy-brief: #46d369; }
+.enemy-tactical-brief.guarded { --enemy-brief: #fca311; }
+.enemy-tactical-brief.high { --enemy-brief: #ff7b3d; }
+.enemy-tactical-brief.critical { --enemy-brief: #e63946; }
+
+.enemy-tactical-brief strong {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--enemy-brief);
+    font-size: 11px;
+    text-transform: uppercase;
+}
+
+.enemy-tactical-brief span {
+    color: var(--text);
+    font-size: 11px;
+    line-height: 1.35;
+}
+
+.enemy-tactical-brief small {
+    overflow-wrap: anywhere;
+    color: var(--muted);
+    font-size: 9px;
 }
 
 #enemy-info-panel {
@@ -7377,6 +7491,7 @@ canvas {
 .radar-section-body .wave-readiness,
 .radar-section-body .wave-stealth-coverage,
 .radar-section-body .wave-status-legend,
+.radar-section-body .wave-counter-coverage,
 .radar-section-body .wave-timeline,
 .radar-section-body .wave-prep-plan,
 .radar-section-body .wave-report-rating,
@@ -7393,6 +7508,7 @@ canvas {
 .radar-section-body .wave-summary,
 .radar-section-body .wave-timeline > div,
 .radar-section-body .wave-status-legend > div,
+.radar-section-body .wave-counter-coverage > div,
 .radar-section-body .wave-report-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -7413,6 +7529,7 @@ canvas {
 .radar-section-body .wave-prep-plan,
 .radar-section-body .wave-timeline,
 .radar-section-body .wave-status-legend,
+.radar-section-body .wave-counter-coverage,
 .radar-section-body .wave-leak-intel,
 .radar-section-body .wave-tactical-contribution {
     padding: 10px;

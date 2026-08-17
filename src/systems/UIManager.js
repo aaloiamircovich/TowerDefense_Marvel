@@ -79,6 +79,57 @@ const ENEMY_ROLE_COPY = {
     soldier: 'Soldado'
 };
 
+const COUNTER_COPY = {
+    detection: {
+        label: 'Deteccion',
+        detail: 'revela sigilo y faseadores',
+        icon: 'fa-eye',
+        missing: 'Sin detector',
+        bench: 'Detector en banco',
+        ready: 'Detector en campo'
+    },
+    piercing: {
+        label: 'Perforacion',
+        detail: 'rompe blindaje y barreras',
+        icon: 'fa-bullseye',
+        missing: 'Sin perforacion',
+        bench: 'Perforacion en banco',
+        ready: 'Perforacion lista'
+    },
+    control: {
+        label: 'Control',
+        detail: 'corta corredores antes de meta',
+        icon: 'fa-hand-paper',
+        missing: 'Sin control',
+        bench: 'Control en banco',
+        ready: 'Control activo'
+    },
+    reach: {
+        label: 'Alcance',
+        detail: 'cubre voladores y rutas largas',
+        icon: 'fa-location-arrow',
+        missing: 'Sin alcance',
+        bench: 'Alcance en banco',
+        ready: 'Alcance listo'
+    },
+    focus: {
+        label: 'Foco',
+        detail: 'elimina soporte e invocadores',
+        icon: 'fa-crosshairs',
+        missing: 'Sin foco claro',
+        bench: 'Foco en banco',
+        ready: 'Foco listo'
+    },
+    dps: {
+        label: 'DPS',
+        detail: 'sostiene jefes y elites',
+        icon: 'fa-bolt',
+        missing: 'DPS bajo',
+        bench: 'DPS en banco',
+        ready: 'DPS en campo'
+    }
+};
+
 function escapeHtml(value = '') {
     return String(value)
         .replaceAll('&', '&amp;')
@@ -110,15 +161,43 @@ export function buildEnemyIntel(enemy = {}) {
     addTrait(enemy.archetype === 'flying' || enemy.flying, 'Aereo');
     addTrait(enemy.archetype === 'runner' || Number(enemy.speed || 0) >= 85, 'Rapido');
 
+    let counterId = 'dps';
     let counter = 'Dano estable';
-    if (enemy.isBoss) counter = 'DPS sostenido';
-    else if (enemy.stealth || enemy.archetype === 'stealth' || enemy.archetype === 'phaser') counter = 'Deteccion';
-    else if (enemy.archetype === 'support' || enemy.healPower > 0) counter = 'Foco al soporte';
-    else if (enemy.archetype === 'summoner' || enemy.summonId) counter = 'Corta invocador';
-    else if (enemy.archetype === 'commander' || enemy.auraPower) counter = 'Elimina aura';
-    else if ((enemy.armor || 0) >= 0.25 || enemy.barrierRatio > 0 || ['tank', 'shield'].includes(enemy.archetype)) counter = 'Perforacion';
-    else if (enemy.archetype === 'runner' || Number(enemy.speed || 0) >= 85) counter = 'Control';
-    else if (enemy.archetype === 'flying' || enemy.flying) counter = 'Alcance';
+    let counterDetail = 'Dano constante y buena posicion bastan contra esta amenaza.';
+    if (enemy.isBoss) {
+        counter = 'DPS sostenido';
+        counterDetail = enemy.isFinalBoss
+            ? 'Si el jefe final llega a la base pierdes; concentra dano, control y perforacion.'
+            : 'Si el jefe llega a la base pierdes; sube dano y mantenlo controlado en curvas.';
+    } else if (enemy.stealth || enemy.archetype === 'stealth' || enemy.archetype === 'phaser') {
+        counterId = 'detection';
+        counter = 'Deteccion';
+        counterDetail = 'Requiere heroes con vision de sigilo; sin deteccion puede cruzar sin recibir foco.';
+    } else if (enemy.archetype === 'support' || enemy.healPower > 0) {
+        counterId = 'focus';
+        counter = 'Foco al soporte';
+        counterDetail = 'Cura o protege a la oleada; priorizalo antes que tanques y soldados.';
+    } else if (enemy.archetype === 'summoner' || enemy.summonId) {
+        counterId = 'focus';
+        counter = 'Corta invocador';
+        counterDetail = 'Genera refuerzos; eliminarlo temprano reduce la saturacion del camino.';
+    } else if (enemy.archetype === 'commander' || enemy.auraPower) {
+        counterId = 'focus';
+        counter = 'Elimina aura';
+        counterDetail = 'Potencia enemigos cercanos; cae primero para bajar la presion general.';
+    } else if ((enemy.armor || 0) >= 0.25 || enemy.barrierRatio > 0 || ['tank', 'shield'].includes(enemy.archetype)) {
+        counterId = 'piercing';
+        counter = 'Perforacion';
+        counterDetail = 'Blindaje o barrera reducen dano plano; usa perforacion, armor break o criticos altos.';
+    } else if (enemy.archetype === 'runner' || Number(enemy.speed || 0) >= 85) {
+        counterId = 'control';
+        counter = 'Control';
+        counterDetail = 'Velocidad alta; slow, stun o web en curvas evita fugas tempranas.';
+    } else if (enemy.archetype === 'flying' || enemy.flying) {
+        counterId = 'reach';
+        counter = 'Alcance';
+        counterDetail = 'Amenaza de ruta larga; conviene rango alto, cadenas o cobertura cruzada.';
+    }
 
     const danger = enemy.isBoss || threat >= 5 ? 'critical' : threat >= 4 ? 'high' : threat >= 3 ? 'guarded' : 'low';
     return {
@@ -126,7 +205,9 @@ export function buildEnemyIntel(enemy = {}) {
         initial: (enemy.name || '?').charAt(0).toUpperCase(),
         roleLabel,
         traits: traits.slice(0, 4),
+        counterId,
         counter,
+        counterDetail,
         danger,
         threat,
         pips: '!'.repeat(threat)
@@ -268,22 +349,82 @@ function heroControlsCrowd(hero = {}) {
         || hasTextMatch(config, ['ralent', 'inmovil', 'aturd', 'control', 'red']);
 }
 
-export const TACTICAL_COUNTER_LEGEND = [
-    { id: 'detection', label: 'Deteccion', detail: 'revela sigilo y faseadores', icon: 'fa-eye' },
-    { id: 'piercing', label: 'Perforacion', detail: 'rompe blindaje y barreras', icon: 'fa-bullseye' },
-    { id: 'control', label: 'Control', detail: 'corta corredores antes de meta', icon: 'fa-hand-paper' },
-    { id: 'reach', label: 'Alcance', detail: 'cubre voladores y rutas largas', icon: 'fa-location-arrow' },
-    { id: 'focus', label: 'Foco', detail: 'elimina soporte e invocadores', icon: 'fa-crosshairs' },
-    { id: 'dps', label: 'DPS', detail: 'sostiene jefes y elites', icon: 'fa-bolt' }
-];
+function heroHasReach(hero = {}) {
+    const config = getHeroConfig(hero);
+    const stats = hero.getEffectiveStats?.() || hero;
+    return Number(stats.range || hero.range || config.range || 0) >= 150
+        || hasTextMatch(config, ['alcance', 'francotirador', 'larga distancia', 'rebote', 'cadena']);
+}
 
-export function buildStatusLegendModel(summary = null) {
-    if (!summary) return null;
+function heroHasFocusDamage(hero = {}) {
+    const config = getHeroConfig(hero);
+    const dps = getHeroDps(hero);
+    return dps >= 34
+        || Number(config.teamMetrics?.damage || hero.teamMetrics?.damage || 0) >= 4
+        || hasTextMatch(config, ['critico', 'boss', 'jefe', 'ejecucion', 'burst', 'marca']);
+}
+
+function heroCoversCounter(hero = {}, counterId = '') {
+    if (counterId === 'detection') return heroDetectsStealth(hero);
+    if (counterId === 'piercing') return heroPiercesArmor(hero);
+    if (counterId === 'control') return heroControlsCrowd(hero);
+    if (counterId === 'reach') return heroHasReach(hero);
+    if (counterId === 'focus' || counterId === 'dps') return heroHasFocusDamage(hero);
+    return false;
+}
+
+export function buildCounterCoverageModel(summary = null, activeTeam = [], deployedHeroes = []) {
+    const required = getRequiredCounterIds(summary);
+    if (!required.length) return null;
+
+    const deployed = (deployedHeroes || []).filter(Boolean);
+    const deployedIds = new Set(deployed.map((hero) => hero.id || hero.config?.id).filter(Boolean));
+    const bench = (activeTeam || [])
+        .filter((hero) => hero && !deployedIds.has(hero.id || hero.config?.id));
+
+    const entries = required.map((id) => {
+        const copy = COUNTER_COPY[id] || COUNTER_COPY.dps;
+        const deployedMatches = deployed.filter((hero) => heroCoversCounter(hero, id));
+        const benchMatches = bench.filter((hero) => heroCoversCounter(hero, id));
+        const tone = deployedMatches.length ? 'ready' : benchMatches.length ? 'warning' : 'danger';
+        const names = (deployedMatches.length ? deployedMatches : benchMatches)
+            .slice(0, 2)
+            .map(getHeroName)
+            .join(' + ');
+        const label = tone === 'ready' ? copy.ready : tone === 'warning' ? copy.bench : copy.missing;
+        const detail = names || `El equipo actual no cubre ${copy.label.toLowerCase()}.`;
+
+        return {
+            id,
+            icon: copy.icon,
+            counter: copy.label,
+            label,
+            detail,
+            tone,
+            covered: tone === 'ready',
+            available: tone !== 'danger'
+        };
+    });
+
+    const covered = entries.filter((entry) => entry.covered).length;
+    return {
+        label: 'Cobertura tactica',
+        covered,
+        total: entries.length,
+        ready: covered === entries.length,
+        entries
+    };
+}
+
+export const TACTICAL_COUNTER_LEGEND = Object.entries(COUNTER_COPY)
+    .map(([id, copy]) => ({ id, label: copy.label, detail: copy.detail, icon: copy.icon }));
+
+function getRequiredCounterIds(summary = null) {
+    if (!summary) return [];
     const roles = new Set(summary.roles || []);
-    const entries = [];
+    const ids = [];
     const add = (id) => {
-        const entry = TACTICAL_COUNTER_LEGEND.find((candidate) => candidate.id === id);
-        if (entry && !entries.some((candidate) => candidate.id === id)) entries.push(entry);
+        if (!ids.includes(id)) ids.push(id);
     };
 
     if (summary.stealthCount > 0 || roles.has('stealth') || roles.has('phaser')) add('detection');
@@ -292,8 +433,15 @@ export function buildStatusLegendModel(summary = null) {
     if (roles.has('flying')) add('reach');
     if (roles.has('support') || roles.has('summoner') || roles.has('commander')) add('focus');
     if (summary.hasBoss || Number(summary.maxThreat || 0) >= 5) add('dps');
+    if (!ids.length && summary.counter) add('dps');
+    return ids;
+}
 
-    if (!entries.length && summary.counter) add('dps');
+export function buildStatusLegendModel(summary = null) {
+    if (!summary) return null;
+    const entries = getRequiredCounterIds(summary)
+        .map((id) => TACTICAL_COUNTER_LEGEND.find((candidate) => candidate.id === id))
+        .filter(Boolean);
     if (!entries.length) return null;
 
     return {
@@ -1546,6 +1694,13 @@ export class UIManager {
             )
             : null;
         const statusLegend = buildStatusLegendModel(summary);
+        const counterCoverage = summary
+            ? buildCounterCoverageModel(
+                summary,
+                this.game.activeTeam || [],
+                this.game.heroes || []
+            )
+            : null;
 
         if (numberEl) numberEl.textContent = waveNumber;
         if (intelEl) {
@@ -1578,6 +1733,16 @@ export class UIManager {
                             ${statusLegend.entries.map((entry) => `<span title="${escapeHtml(entry.detail)}">
                                 <i class="fas ${escapeHtml(entry.icon)}"></i>
                                 <b>${escapeHtml(entry.label)}</b>
+                            </span>`).join('')}
+                        </div>
+                    </div>` : ''}
+                    ${counterCoverage ? `<div class="wave-counter-coverage ${counterCoverage.ready ? 'ready' : 'warning'}" aria-label="${escapeHtml(counterCoverage.label)}: ${counterCoverage.covered} de ${counterCoverage.total} counters cubiertos">
+                        <strong>${escapeHtml(counterCoverage.label)} <b>${counterCoverage.covered}/${counterCoverage.total}</b></strong>
+                        <div>
+                            ${counterCoverage.entries.map((entry) => `<span class="${entry.tone}" data-tooltip="${escapeHtml(`${entry.counter}: ${entry.detail}`)}">
+                                <i class="fas ${escapeHtml(entry.icon)}"></i>
+                                <b>${escapeHtml(entry.counter)}</b>
+                                <small>${escapeHtml(entry.label)}</small>
                             </span>`).join('')}
                         </div>
                     </div>` : ''}
@@ -1643,6 +1808,7 @@ export class UIManager {
             card.className = `wave-enemy-card ${intel.danger}`;
             card.dataset.testid = 'wave-enemy-card';
             card.style.setProperty('--enemy-color', categoryColors[enemy.category] || '#fca311');
+            card.dataset.tooltip = intel.counterDetail;
             card.title = `${intel.name} | ${intel.roleLabel} | ${intel.counter} | Amenaza ${intel.threat}/5`;
             card.setAttribute('aria-label', `${intel.name}. ${intel.roleLabel}. Respuesta: ${intel.counter}. Amenaza ${intel.threat} de 5.`);
             const traitsMarkup = intel.traits.map((trait) => `<b>${escapeHtml(trait)}</b>`).join('');
@@ -1681,6 +1847,16 @@ export class UIManager {
             document.getElementById('en-info-resists').textContent = this.getResistanceText(unit);
             document.getElementById('en-info-threat').textContent = `${unit.threat || 1} / 5`;
             document.getElementById('en-info-phase').textContent = unit.currentPhase || (unit.phases?.length ? `${unit.phases.length} fases` : '-');
+            const intel = buildEnemyIntel(unit);
+            const content = document.getElementById('enemy-info-content');
+            content?.querySelector('.enemy-tactical-brief')?.remove();
+            content?.insertAdjacentHTML('beforeend', `
+                <div class="enemy-tactical-brief ${escapeHtml(intel.danger)}">
+                    <strong><i class="fas fa-crosshairs"></i>${escapeHtml(intel.counter)}</strong>
+                    <span>${escapeHtml(intel.counterDetail)}</span>
+                    ${intel.traits.length ? `<small>${intel.traits.map((trait) => escapeHtml(trait)).join(' | ')}</small>` : ''}
+                </div>
+            `);
             return;
         }
 
