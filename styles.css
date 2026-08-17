@@ -1027,16 +1027,6 @@ body[data-level-theme="wakanda"] .panel-header {
     box-shadow: inset 3px 0 0 var(--level-accent);
 }
 
-.hero-card.wave-fit-prime {
-    border-color: rgba(70, 211, 105, 0.72);
-    box-shadow: inset 3px 0 0 #46d369, 0 0 0 1px rgba(70, 211, 105, 0.08);
-}
-
-.hero-card.wave-fit-good {
-    border-color: rgba(252, 163, 17, 0.62);
-    box-shadow: inset 3px 0 0 #fca311;
-}
-
 .hero-card img,
 .collection-card img,
 .starter-card img {
@@ -1067,56 +1057,6 @@ body[data-level-theme="wakanda"] .panel-header {
 #fps-display.performance-warning {
     color: var(--bright-yellow);
 }
-
-.roster-wave-fit {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    gap: 3px 7px;
-    max-width: 100%;
-    margin-top: 5px;
-    padding: 5px 6px;
-    border-radius: 6px;
-    color: var(--fit-color, var(--level-accent));
-    background: color-mix(in srgb, var(--fit-color, var(--level-accent)), transparent 86%);
-    font-size: 10px;
-    font-weight: 900;
-    line-height: 1.15;
-    overflow: hidden;
-    text-transform: uppercase;
-}
-
-.roster-wave-fit span {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    min-width: 0;
-    margin: 0;
-    overflow: hidden;
-    color: inherit;
-    font-size: 10px;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.roster-wave-fit b {
-    color: var(--text);
-    font-size: 9px;
-}
-
-.roster-wave-fit em {
-    grid-column: 1 / -1;
-    overflow: hidden;
-    color: var(--muted);
-    font-size: 9px;
-    font-style: normal;
-    font-weight: 700;
-    text-overflow: ellipsis;
-    text-transform: none;
-    white-space: nowrap;
-}
-
-.roster-wave-fit.prime { --fit-color: #46d369; }
-.roster-wave-fit.good { --fit-color: #fca311; }
 
 .hero-actions {
     display: flex;
@@ -3270,6 +3210,68 @@ body.panel-open {
     font-size: 11px;
     text-align: center;
     text-transform: uppercase;
+}
+
+.hero-wave-fit-compact {
+    --fit-color: var(--level-accent);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 5px 10px;
+    align-items: center;
+    padding: 9px 10px;
+    border: 1px solid color-mix(in srgb, var(--fit-color), transparent 62%);
+    border-radius: 7px;
+    background:
+        linear-gradient(90deg, color-mix(in srgb, var(--fit-color), transparent 84%), rgba(255, 255, 255, 0.025)),
+        rgba(5, 8, 13, 0.54);
+}
+
+.hero-wave-fit-compact.prime {
+    --fit-color: #46d369;
+}
+
+.hero-wave-fit-compact.good {
+    --fit-color: #fca311;
+}
+
+.hero-wave-fit-compact span {
+    display: grid;
+    gap: 3px;
+    min-width: 0;
+}
+
+.hero-wave-fit-compact small {
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.hero-wave-fit-compact strong {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+    color: var(--fit-color);
+    font-size: 12px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.hero-wave-fit-compact b {
+    color: var(--text);
+    font-size: 12px;
+    font-weight: 900;
+    white-space: nowrap;
+}
+
+.hero-wave-fit-compact em {
+    grid-column: 1 / -1;
+    color: var(--muted);
+    font-size: 11px;
+    font-style: normal;
+    font-weight: 800;
+    line-height: 1.25;
 }
 
 .hero-tactic-compact {
@@ -6393,6 +6395,7 @@ body.tactical-paused #gameCanvas {
     .hero-detail-actions,
     .hero-tactic-compact,
     .hero-ability-compact,
+    .hero-wave-fit-compact,
     .tree-branches,
     .collection-toolbar,
     .inventory-toolbar,
@@ -6802,38 +6805,10 @@ body::before {
     text-transform: uppercase;
 }
 
-.hero-card-field-state.active {
-    border-color: rgba(70, 211, 105, 0.28);
-    color: #6df58f;
-}
-
-.hero-card-field-state.bench {
-    color: #aeb9c7;
-}
-
 .hero-card > div:not(.hero-actions) > span {
     display: none;
     color: #bfccd9;
     font-size: 11px;
-}
-
-.roster-wave-fit {
-    display: none;
-    border: 1px solid color-mix(in srgb, var(--fit-color, var(--level-accent)), transparent 66%);
-    background:
-        linear-gradient(90deg, color-mix(in srgb, var(--fit-color, var(--level-accent)), transparent 82%), rgba(255, 255, 255, 0.025));
-}
-
-.hero-card .roster-wave-fit {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    width: 100%;
-    margin-top: 0;
-    text-align: left;
-}
-
-.hero-card .roster-wave-fit span:last-child {
-    grid-column: 1 / -1;
 }
 
 .hero-card .hero-actions {

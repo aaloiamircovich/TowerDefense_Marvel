@@ -12,20 +12,16 @@ function escapeHtml(value = '') {
 export class HeroRosterPanel {
     constructor(ui, builders = {}) {
         this.ui = ui;
-        this.evaluateHeroWaveFit = builders.evaluateHeroWaveFit || (() => ({ id: 'neutral', score: 0, reasons: [] }));
         this.buildTargetingControlState = builders.buildTargetingControlState || (() => null);
         this.getNextTargetingPriority = builders.getNextTargetingPriority || ((priority) => priority);
-        this.buildRosterWaveFitView = builders.buildRosterWaveFitView || (() => null);
     }
 
     render(activeTeam = [], onSelect = () => {}) {
         if (!this.ui.heroGrid) return;
         this.ui.heroGrid.innerHTML = '';
-        const waveSummary = this.ui.nextWaveSummary || (!this.ui.game.waveManager?.isWaveActive ? this.ui.game.waveManager?.buildPreparedSummary?.() : null);
-        const credits = this.ui.game.resourceManager?.credits || 0;
 
         activeTeam.forEach((hero) => {
-            const card = this.renderCard(hero, { waveSummary, credits, onSelect });
+            const card = this.renderCard(hero, { onSelect });
             this.ui.heroGrid.appendChild(card);
         });
         this.ui.renderOnboardingCoach();
@@ -35,8 +31,6 @@ export class HeroRosterPanel {
         const deployedHero = (this.ui.game.heroes || []).find((unit) => unit.id === hero.id);
         const deployed = Boolean(deployedHero);
         const liveHero = deployedHero || hero;
-        const fit = this.evaluateHeroWaveFit(liveHero, context.waveSummary, context.credits);
-        const fitView = this.buildRosterWaveFitView(fit);
         const quickUpgradeCost = deployedHero ? this.ui.getHeroUpgradeCost(deployedHero, 1) : 0;
         const canQuickUpgrade = this.ui.canAffordHeroUpgrade(deployedHero, 1);
         const quickUpgradeTooltip = Number.isFinite(quickUpgradeCost) ? `Mejora rapida $${quickUpgradeCost}` : 'Nivel maximo';
@@ -45,10 +39,9 @@ export class HeroRosterPanel {
         const rarityClass = getRarityClass(rarity);
         const level = this.getHeroLevel(liveHero);
         const card = document.createElement('article');
-        card.className = `hero-card ${rarityClass} ${deployed ? 'deployed' : ''} wave-fit-${fit.id}`;
+        card.className = `hero-card ${rarityClass} ${deployed ? 'deployed' : ''}`;
         card.dataset.testid = `hero-card-${hero.id}`;
         card.dataset.rarity = rarity;
-        card.dataset.waveFit = fit.id;
         card.innerHTML = `
             <div class="hero-card-sprite">${this.ui.renderSprite(this.ui.getHeroDisplaySprite(hero), hero.name)}</div>
             <div class="hero-card-main">
@@ -58,9 +51,7 @@ export class HeroRosterPanel {
                 </div>
                 <div class="hero-card-status">
                     <span class="hero-card-level">Nv. ${level}</span>
-                    <span class="hero-card-field-state ${deployed ? 'active' : 'bench'}">${deployed ? 'Campo' : 'Banco'}</span>
                 </div>
-                ${fitView ? this.renderFitView(fitView) : ''}
             </div>
             <div class="hero-actions">
                 <button class="btn-action place-btn" data-testid="hero-place-${escapeHtml(hero.id)}" title="${deployed ? 'Reposicionar' : 'Colocar'}" aria-label="${deployed ? 'Reposicionar' : 'Colocar'}" data-tooltip="${deployed ? 'Mover libremente' : 'Colocar héroe gratis'}"><i class="fas ${deployed ? 'fa-arrows-alt' : 'fa-map-marker-alt'}"></i></button>
@@ -71,16 +62,6 @@ export class HeroRosterPanel {
         `;
         this.bindCardActions(card, hero, deployedHero, context.onSelect);
         return card;
-    }
-
-    renderFitView(fitView) {
-        return `
-            <div class="roster-wave-fit" aria-label="${escapeHtml(fitView.ariaLabel)}">
-                <span><i class="fas fa-crosshairs"></i>${escapeHtml(fitView.label)}</span>
-                <b>${escapeHtml(fitView.scoreLabel)}</b>
-                <span>${escapeHtml(fitView.reasonText)}</span>
-            </div>
-        `;
     }
 
     bindCardActions(card, hero, deployedHero, onSelect) {

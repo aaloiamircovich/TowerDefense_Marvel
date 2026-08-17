@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { HeroRosterPanel } from '../src/ui/HeroRosterPanel.js';
 
-test('HeroRosterPanel renderiza estado compacto y conserva acciones del roster', () => {
+test('HeroRosterPanel renderiza tarjeta ligera y conserva acciones del roster', () => {
     const previousDocument = globalThis.document;
     globalThis.document = {
         createElement() {
@@ -67,16 +67,6 @@ test('HeroRosterPanel renderiza estado compacto y conserva acciones del roster',
         }
     };
     const panel = new HeroRosterPanel(ui, {
-        evaluateHeroWaveFit: (hero) => hero.id === 'spiderman'
-            ? { id: 'prime', label: 'Respuesta ideal', reasons: ['control'], score: 18 }
-            : { id: 'neutral', reasons: [], score: 0 },
-        buildRosterWaveFitView: (fit) => fit.id === 'neutral' ? null : {
-            id: fit.id,
-            label: fit.label,
-            reasonText: fit.reasons.join(' + '),
-            scoreLabel: `${fit.score} pts`,
-            ariaLabel: `${fit.label}: ${fit.reasons.join(', ')}`
-        },
         buildTargetingControlState: () => ({
             icon: 'fa-crosshairs',
             label: 'Pri',
@@ -91,9 +81,10 @@ test('HeroRosterPanel renderiza estado compacto y conserva acciones del roster',
 
         assert.equal(heroGrid.children.length, 2);
         assert.match(heroGrid.children[0].innerHTML, /Nv\. 4/);
-        assert.match(heroGrid.children[0].innerHTML, /Campo/);
-        assert.match(heroGrid.children[0].innerHTML, /Respuesta ideal/);
-        assert.match(heroGrid.children[1].innerHTML, /Banco/);
+        assert.doesNotMatch(heroGrid.children[0].innerHTML, /hero-card-field-state|>Campo<|>Banco<|Respuesta ideal|rompe armadura|detecta sigilo|frena corredores/i);
+        assert.doesNotMatch(heroGrid.children[1].innerHTML, /hero-card-field-state|>Campo<|>Banco<|Respuesta ideal|rompe armadura|detecta sigilo|frena corredores/i);
+        assert.doesNotMatch(heroGrid.children[0].className, /wave-fit-/);
+        assert.equal(heroGrid.children[0].dataset.waveFit, undefined);
         assert.ok(calls.includes('coach'));
 
         heroGrid.children[0].buttons.place.listeners.click(createClickEventStub());

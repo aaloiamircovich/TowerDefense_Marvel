@@ -1264,10 +1264,8 @@ export class UIManager {
         this.starterPanel = new StarterPanel(this);
         this.endStatePanel = new EndStatePanel(this);
         this.heroRosterPanel = new HeroRosterPanel(this, {
-            evaluateHeroWaveFit,
             buildTargetingControlState,
-            getNextTargetingPriority,
-            buildRosterWaveFitView
+            getNextTargetingPriority
         });
         this.tooltipController = new TooltipController();
 
@@ -1926,6 +1924,8 @@ export class UIManager {
         const activeDetailView = ['equipment', 'combat'].includes(detailView) ? detailView : 'summary';
         const isMaxLevel = level >= HERO_MAX_LEVEL;
         const currentTargeting = hero.targetingPriority || config.targetingPriority || TARGETING_PRIORITIES[0];
+        const waveSummary = this.nextWaveSummary || (!this.game.waveManager?.isWaveActive ? this.game.waveManager?.buildPreparedSummary?.() : null);
+        const waveFitView = buildRosterWaveFitView(evaluateHeroWaveFit(hero, waveSummary, this.getMissionCredits()));
         const compactStats = [
             ['Daño', `${damage}${this.formatStatDelta(damage, baseDamage)}`],
             ['Recarga', `${fireRate}/s${this.formatStatDelta(Number(fireRate), baseFireRate, '', 1)}`],
@@ -2008,6 +2008,14 @@ export class UIManager {
                             </div>
                             ${config.niche ? `<b>${config.niche}</b>` : ''}
                         </div>
+
+                        ${waveFitView ? `
+                            <div class="hero-wave-fit-compact ${escapeHtml(waveFitView.id)}" aria-label="${escapeHtml(waveFitView.ariaLabel)}">
+                                <span><small>Lectura de oleada</small><strong><i class="fas fa-crosshairs"></i>${escapeHtml(waveFitView.label)}</strong></span>
+                                <b>${escapeHtml(waveFitView.scoreLabel)}</b>
+                                <em>${escapeHtml(waveFitView.reasonText)}</em>
+                            </div>
+                        ` : ''}
 
                         <div class="hero-tactic-compact">
                             <div>
@@ -2374,10 +2382,8 @@ export class UIManager {
     getHeroRosterPanel() {
         if (!this.heroRosterPanel) {
             this.heroRosterPanel = new HeroRosterPanel(this, {
-                evaluateHeroWaveFit,
                 buildTargetingControlState,
-                getNextTargetingPriority,
-                buildRosterWaveFitView
+                getNextTargetingPriority
             });
         }
         return this.heroRosterPanel;

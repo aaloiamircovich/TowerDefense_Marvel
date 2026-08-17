@@ -266,6 +266,65 @@ test('buildRosterWaveFitView oculta perfiles neutros', () => {
     assert.equal(buildRosterWaveFitView({ id: 'neutral', score: 0 }), null);
 });
 
+test('renderHeroDetails muestra counter de oleada dentro de estadisticas', () => {
+    const previousDocument = globalThis.document;
+    globalThis.document = { getElementById: () => null };
+
+    const hero = {
+        id: 'iron_man',
+        name: 'Iron Man',
+        rarity: 'Rare',
+        category: 'Tecnologico',
+        level: 6,
+        damage: 30,
+        fireRate: 1.4,
+        range: 165,
+        ability: 'Repulsores',
+        abilityDesc: 'Dispara energia concentrada.',
+        allowedTerrains: [1]
+    };
+    const ui = Object.create(UIManager.prototype);
+    ui.panelContent = {
+        innerHTML: '',
+        querySelectorAll: () => [],
+        querySelector: () => null
+    };
+    ui.nextWaveSummary = {
+        roles: ['shield'],
+        barrierCount: 1,
+        armoredCount: 0,
+        pressureScore: 12
+    };
+    ui.game = {
+        heroes: [],
+        heroDatabase: { iron_man: hero },
+        itemDatabase: {},
+        resourceManager: { credits: 650 },
+        progression: {
+            state: {
+                equippedItems: {},
+                unlockedHeroIds: ['iron_man']
+            },
+            getHeroBonuses: () => ({})
+        }
+    };
+    ui.renderSprite = () => '<img alt="">';
+    ui.getHeroDisplaySprite = () => 'iron_man.png';
+    ui.formatStatDelta = () => '';
+    ui.renderHeroLevelPreview = () => '';
+
+    try {
+        ui.renderHeroDetails(hero);
+
+        assert.match(ui.panelContent.innerHTML, /Lectura de oleada/);
+        assert.match(ui.panelContent.innerHTML, /Counter ideal/);
+        assert.match(ui.panelContent.innerHTML, /6 pts/);
+        assert.match(ui.panelContent.innerHTML, /rompe armadura/);
+    } finally {
+        globalThis.document = previousDocument;
+    }
+});
+
 test('buildShopItemInsight conecta deteccion y blindaje con la oleada', () => {
     const stealth = buildShopItemInsight({ set: 'stark', tier: 1, effects: { detectStealth: true } }, { stealthCount: 2, roles: ['stealth'] });
     const armor = buildShopItemInsight({ set: 'shield', tier: 2, effects: { armorPenetration: 0.2 } }, { armoredCount: 3, barrierCount: 1, roles: ['tank'] });
