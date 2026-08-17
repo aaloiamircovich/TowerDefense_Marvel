@@ -5657,7 +5657,75 @@ select {
 
 .map-list {
     display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
     gap: 12px;
+}
+
+.campaign-ops-strip {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    padding: 12px 14px;
+    border: 1px solid color-mix(in srgb, var(--level-accent), transparent 50%);
+    border-radius: 8px;
+    background:
+        linear-gradient(135deg, color-mix(in srgb, var(--level-accent), transparent 88%), transparent 62%),
+        rgba(5, 9, 15, 0.86);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.campaign-ops-copy {
+    display: grid;
+    gap: 3px;
+    min-width: 0;
+}
+
+.campaign-ops-copy strong {
+    overflow: hidden;
+    color: #ffffff;
+    font-size: 18px;
+    line-height: 1.1;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.campaign-ops-copy small {
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.campaign-progress-readout {
+    display: grid;
+    grid-template-columns: repeat(2, 84px);
+    gap: 7px;
+}
+
+.campaign-progress-readout span {
+    display: grid;
+    place-items: center;
+    min-height: 54px;
+    border: 1px solid color-mix(in srgb, var(--level-accent), transparent 58%);
+    border-radius: 8px;
+    background: rgba(3, 7, 12, 0.54);
+}
+
+.campaign-progress-readout b {
+    color: var(--bright-yellow);
+    font-size: 20px;
+    line-height: 1;
+}
+
+.campaign-progress-readout small {
+    color: var(--muted);
+    font-size: 9px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.campaign-map-heading {
+    margin: 12px 0 8px;
 }
 
 .map-card {
@@ -5668,6 +5736,90 @@ select {
     padding: 16px;
     color: var(--text);
     text-align: left;
+}
+
+.map-card--compact {
+    grid-template-columns: 1fr;
+    gap: 9px;
+    min-height: 0;
+    padding: 12px;
+}
+
+.map-card-heading {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 10px;
+}
+
+.map-card-heading > div {
+    display: grid;
+    gap: 3px;
+    min-width: 0;
+}
+
+.map-card--compact .btn-load-map {
+    grid-column: auto;
+    justify-self: end;
+    min-width: 92px;
+    min-height: 34px;
+    padding: 7px 10px;
+}
+
+.map-index {
+    color: var(--level-accent);
+    font-size: 10px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.map-card-stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+}
+
+.map-card-stats span {
+    display: grid;
+    gap: 2px;
+    min-height: 44px;
+    padding: 6px 8px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 7px;
+    background: rgba(3, 7, 12, 0.45);
+}
+
+.map-card-stats small {
+    color: var(--muted);
+    font-size: 9px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.map-card-stats b {
+    overflow: hidden;
+    color: var(--bright-yellow);
+    font-size: 12px;
+    line-height: 1.1;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.map-brief {
+    display: -webkit-box;
+    min-height: 34px;
+    margin: 0;
+    overflow: hidden;
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.35;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.map-card-meta,
+.map-challenge-row {
+    gap: 6px;
 }
 
 .map-card small {
@@ -5706,6 +5858,11 @@ select {
 .map-card .challenge-row,
 .map-card .btn-load-map {
     grid-column: 1 / -1;
+}
+
+.map-card--compact .btn-load-map {
+    grid-column: auto;
+    justify-self: end;
 }
 
 .map-unlock-row {
@@ -6550,6 +6707,16 @@ body.tactical-paused #gameCanvas {
 
     .collection-toolbar > strong {
         justify-self: start;
+    }
+
+    .campaign-ops-strip,
+    .campaign-progress-readout,
+    .map-list {
+        grid-template-columns: 1fr;
+    }
+
+    .campaign-ops-copy strong {
+        white-space: normal;
     }
 
     .team-slot-strip {

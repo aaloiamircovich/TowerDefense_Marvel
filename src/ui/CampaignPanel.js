@@ -8,12 +8,25 @@ export class CampaignPanel {
 
     render(title = 'Mapa') {
         const { game, panelContent } = this.ui;
+        const summary = this.buildCampaignSummary();
         panelContent.innerHTML = `
             <h2>${title}</h2>
+            <section class="campaign-ops-strip">
+                <div class="campaign-ops-copy">
+                    <span class="briefing-kicker">CAMPAÑA</span>
+                    <strong>${summary.currentName}</strong>
+                    <small>${summary.nextUnlock}</small>
+                </div>
+                <div class="campaign-progress-readout">
+                    <span><b>${summary.totalStars}</b><small>estrellas</small></span>
+                    <span><b>${summary.unlockedCount}/${summary.totalMaps}</b><small>mapas</small></span>
+                </div>
+            </section>
             <section class="mode-section">
                 <div class="section-heading"><strong>Modos de juego</strong><span>Progreso y rankings separados de campaña</span></div>
                 <div class="mode-list">${Object.values(GAME_MODES).map((mode) => this.renderModeCard(mode)).join('')}</div>
             </section>
+            <div class="section-heading campaign-map-heading"><strong>Operaciones</strong><span>Desbloqueo por estrellas de campaña</span></div>
             <div class="map-list">
                 ${game.levelsData.map((level, index) => this.renderMapCard(level, index)).join('')}
             </div>
@@ -78,18 +91,27 @@ export class CampaignPanel {
         const requirement = getLevelUnlockRequirement(index);
         const unlocked = this.isLevelUnlocked(index);
         const fixedDifficulty = getFixedDifficultyKey(level);
-        return `<article class="map-card ${themeClass} ${this.ui.game.currentLevel?.id === level.id ? 'active' : ''} ${unlocked ? '' : 'locked'}">
-            <strong>${level.name}</strong>
-            <span>Mejor oleada ${progress.bestWave} · ${progress.stars || 0} estrellas</span>
-            <small>${level.description}</small>
-            <em>${level.theme?.brief || ''}</em>
-            <div class="map-mechanic"><b>${level.mission?.mechanic?.label || 'Defensa táctica'}</b><span>${level.mission?.mechanic?.description || ''}</span></div>
-            <div class="map-unlock-row">
-                <span class="map-difficulty ${fixedDifficulty}">Dificultad fija: ${level.difficulty}</span>
+        const mapNumber = String(index + 1).padStart(2, '0');
+        const mechanic = level.mission?.mechanic || {};
+        return `<article class="map-card map-card--compact ${themeClass} ${this.ui.game.currentLevel?.id === level.id ? 'active' : ''} ${unlocked ? '' : 'locked'}">
+            <div class="map-card-heading">
+                <div>
+                    <span class="map-index">Mapa ${mapNumber}</span>
+                    <strong>${level.name}</strong>
+                </div>
+                <button class="btn-load-map btn-primary ghost" data-index="${index}" ${unlocked ? '' : 'disabled'}>${unlocked ? 'Jugar' : 'Bloqueado'}</button>
+            </div>
+            <div class="map-card-stats">
+                <span><small>Mejor</small><b>${progress.bestWave || 0}</b></span>
+                <span><small>Estrellas</small><b>${progress.stars || 0}</b></span>
+                <span><small>Dificultad</small><b>${level.difficulty}</b></span>
+            </div>
+            <p class="map-brief">${level.theme?.brief || level.description}</p>
+            <div class="map-unlock-row map-card-meta">
+                <span class="map-difficulty ${fixedDifficulty}">${mechanic.label || 'Defensa táctica'}</span>
                 <span class="${unlocked ? 'map-unlocked' : 'map-locked'}">${unlocked ? 'Desbloqueado' : `Requiere ${requirement} estrellas`}</span>
             </div>
-            <div class="challenge-row"><span class="${progress.challenges.includes('sin_danos') ? 'done' : ''}">Sin daños</span><span class="${progress.challenges.includes('cazajefes') ? 'done' : ''}">Cazajefes</span>${(level.mission?.objectives || []).map((objective) => `<span class="${progress.missionObjectives.includes(objective.id) ? 'done' : ''}">${objective.label} · $${objective.reward}</span>`).join('')}</div>
-            <button class="btn-load-map btn-primary ghost" data-index="${index}" ${unlocked ? '' : 'disabled'}>${unlocked ? 'Jugar' : 'Bloqueado'}</button>
+            <div class="challenge-row map-challenge-row"><span class="${progress.challenges.includes('sin_danos') ? 'done' : ''}">Sin daños</span><span class="${progress.challenges.includes('cazajefes') ? 'done' : ''}">Cazajefes</span>${(level.mission?.objectives || []).map((objective) => `<span class="${progress.missionObjectives.includes(objective.id) ? 'done' : ''}">${objective.label} · $${objective.reward}</span>`).join('')}</div>
         </article>`;
     }
 
@@ -154,7 +176,29 @@ export class CampaignPanel {
         ];
     }
 
+    buildCampaignSummary() {
+        const game = this.ui.game;
+        const levels = game.levelsData || [];
+        const totalStars = this.getTotalStars();
+        const unlockedCount = levels.filter((_level, index) => isLevelUnlockedByStars(index, totalStars)).length;
+        const nextLockedIndex = levels.findIndex((_level, index) => !isLevelUnlockedByStars(index, totalStars));
+        return {
+            totalStars,
+            unlockedCount,
+            totalMaps: levels.length,
+            currentName: game.currentLevel?.name || levels[0]?.name || 'Sin mapa',
+            nextUnlock: nextLockedIndex >= 0
+                ? `Siguiente mapa: ${getLevelUnlockRequirement(nextLockedIndex)} estrellas`
+                : 'Todas las operaciones desbloqueadas'
+        };
+    }
+
+    getTotalStars() {
+        const progressionStars = this.ui.game.progression?.getTotalStars?.();
+        return Number.isFinite(progressionStars) ? progressionStars : (this.ui.game.stars || 0);
+    }
+
     isLevelUnlocked(index) {
-        return isLevelUnlockedByStars(index, this.ui.game.stars || this.ui.game.progression?.getTotalStars?.() || 0);
+        return isLevelUnlockedByStars(index, this.getTotalStars());
     }
 }
