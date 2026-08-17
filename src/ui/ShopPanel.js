@@ -27,21 +27,25 @@ export class ShopPanel {
 
         this.ui.panelContent.innerHTML = `
             <div class="panel-title-row"><h2>${title}</h2><strong>${fundsText} creditos</strong></div>
-            <div class="shop-layout">
-                <section class="shop-feature">
-                    <h3>Caja de reclutamiento</h3>
-                    <p>Recluta un héroe sin duplicados. Tras cuatro aperturas comunes, la siguiente garantiza Rare o superior.</p>
-                    <div class="pity-track">Garantía: ${Math.min(4, this.ui.game.progression.state.shop.heroPity)}/4</div>
-                    <button class="btn-primary" id="gacha-btn">RECLUTAR POR $${recruitCost}</button>
-                    <div id="gacha-res" class="result-copy"></div>
-                </section>
-                <section>
+            <section class="shop-recruit-strip">
+                <div class="shop-recruit-copy">
+                    <span class="briefing-kicker">CAJA DE RECLUTAMIENTO</span>
+                    <strong>Héroe aleatorio sin duplicados</strong>
+                    <small>La quinta apertura común garantiza Rare o superior.</small>
+                </div>
+                <div class="pity-track compact"><span>Garantía</span><b>${Math.min(4, this.ui.game.progression.state.shop.heroPity)}/4</b></div>
+                <button class="btn-primary" id="gacha-btn">RECLUTAR POR $${recruitCost}</button>
+            </section>
+            <div id="gacha-res" class="result-copy shop-reveal-dock"></div>
+            <section class="shop-section-heading">
+                <div>
                     <h3>Arsenal progresivo</h3>
-                    <p class="empty-copy">Se muestran los 3 objetos mas basicos disponibles. Al comprar uno, entra el siguiente del arsenal.</p>
-                    <div class="shop-grid">
-                        ${rotation.map((slot) => this.renderItem(slot.item, slot.purchased)).join('') || '<p class="empty-copy">Arsenal completado.</p>'}
-                    </div>
-                </section>
+                    <p class="empty-copy">Siempre ves los 3 objetos mas basicos disponibles; al comprar uno entra el siguiente.</p>
+                </div>
+                <strong>${rotation.length}/3 visibles</strong>
+            </section>
+            <div class="shop-grid shop-grid--compact">
+                ${rotation.map((slot) => this.renderItem(slot.item, slot.purchased)).join('') || '<p class="empty-copy">Arsenal completado.</p>'}
             </div>
         `;
 
@@ -65,7 +69,7 @@ export class ShopPanel {
             this.ui.game.itemDatabase
         );
         return `
-            <div class="shop-card ${rarityClass} ${purchased ? 'purchased' : ''}" data-rarity="${rarity}">
+            <div class="shop-card shop-card--compact ${rarityClass} ${purchased ? 'purchased' : ''}" data-rarity="${rarity}">
                 <div class="item-badge rarity-badge ${rarityClass}">${rarity}</div>
                 <div class="shop-item-heading">
                     ${this.ui.renderSprite(item.icon, item.name)}
@@ -80,8 +84,10 @@ export class ShopPanel {
                     <strong>${escapeHtml(setProgress.label)}</strong>
                     <span>${escapeHtml(setProgress.detail)}</span>
                 </div>` : ''}
-                <small>Copias disponibles: ${owned}</small>
-                <button class="btn-buy-item btn-primary ghost" data-id="${item.id}" ${purchased ? 'disabled' : ''}>${purchased ? 'ADQUIRIDO' : `$${item.price}`}</button>
+                <div class="shop-card-footer">
+                    <small>Copias: ${owned}</small>
+                    <button class="btn-buy-item btn-primary ghost" data-id="${item.id}" ${purchased ? 'disabled' : ''}>${purchased ? 'ADQUIRIDO' : `$${item.price}`}</button>
+                </div>
             </div>
         `;
     }
@@ -239,7 +245,7 @@ export class ShopPanel {
             fundsLabel.textContent = `${fundsText} creditos`;
         }
         const pityTrack = this.ui.panelContent.querySelector('.pity-track');
-        if (pityTrack) pityTrack.textContent = `Garantia: ${Math.min(4, this.ui.game.progression.state.shop.heroPity)}/4`;
+        if (pityTrack) pityTrack.innerHTML = `<span>Garantía</span><b>${Math.min(4, this.ui.game.progression.state.shop.heroPity)}/4</b>`;
 
         this.startGachaRevealAnimation(result, () => {
             const nextPool = Object.values(this.ui.game.heroDatabase || {})

@@ -19,6 +19,8 @@ test('ShopPanel renderiza tienda progresiva y delega compra de objetos', () => {
     panel.render('Tienda');
 
     assert.match(panelContent.innerHTML, /Tienda/);
+    assert.match(panelContent.innerHTML, /shop-recruit-strip/);
+    assert.match(panelContent.innerHTML, /shop-grid--compact/);
     assert.match(panelContent.innerHTML, /RECLUTAR POR \$500/);
     assert.match(panelContent.innerHTML, /Lentes E.D.I.T.H./);
     assert.match(panelContent.innerHTML, /Buena respuesta/);
@@ -65,7 +67,8 @@ test('ShopPanel recluta heroe, actualiza costo y permite tienda de skins vacia',
     assert.match(resultNode.innerHTML, /gacha-reveal/);
     assert.match(resultNode.innerHTML, /Spider-Man/);
     assert.equal(fundsLabel.textContent, '$1200 creditos');
-    assert.equal(pityTrack.textContent, 'Garantia: 1/4');
+    assert.match(pityTrack.innerHTML, /Garantía/);
+    assert.match(pityTrack.innerHTML, /1\/4/);
     assert.equal(gachaButton.disabled, true);
     assert.equal(gachaButton.textContent, 'PLANTILLA COMPLETA');
     assert.ok(calls.includes('roster:0'));
