@@ -1,0 +1,173 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { ShopPanel } from '../src/ui/ShopPanel.js';
+
+test('ShopPanel renderiza tienda progresiva y delega compra de objetos', () => {
+    const buyButton = createButtonStub({ id: 'lentes_edith' });
+    const gachaButton = createButtonStub({});
+    const panelContent = createPanelContentStub({
+        '#gacha-btn': gachaButton,
+        '.btn-buy-item': [buyButton]
+    });
+    const calls = [];
+    const ui = createShopUi(panelContent, calls);
+    const panel = new ShopPanel(ui, {
+        buildShopItemInsight: () => ({ tone: 'good', label: 'Buena respuesta', reasons: ['Detecta sigilo'] }),
+        buildShopSetProgress: () => ({ status: 'ready', ariaLabel: 'Listo', label: 'Set listo', detail: '1/1' })
+    });
+
+    panel.render('Tienda');
+
+    assert.match(panelContent.innerHTML, /Tienda/);
+    assert.match(panelContent.innerHTML, /RECLUTAR POR \$500/);
+    assert.match(panelContent.innerHTML, /Lentes E.D.I.T.H./);
+    assert.match(panelContent.innerHTML, /Buena respuesta/);
+
+    buyButton.listeners.click();
+
+    assert.ok(calls.includes('purchase:lentes_edith'));
+    assert.ok(calls.includes('toast:success:Lentes E.D.I.T.H. comprado'));
+});
+
+test('ShopPanel recluta heroe, actualiza costo y permite tienda de skins vacia', () => {
+    const gachaButton = createButtonStub({});
+    const resultNode = createNodeStub();
+    const fundsLabel = createNodeStub();
+    const pityTrack = createNodeStub();
+    const panelContent = createPanelContentStub({
+        '#gacha-btn': gachaButton,
+        '#gacha-res': resultNode,
+        '.panel-title-row strong': fundsLabel,
+        '.pity-track': pityTrack,
+        '.btn-buy-item': []
+    });
+    const calls = [];
+    const ui = createShopUi(panelContent, calls);
+    ui.game.progression.state.shop.heroPity = 1;
+    ui.game.progression.state.shop.heroBoxCost = 560;
+    ui.game.progression.getCredits = () => 1200;
+    ui.game.progression.state.unlockedHeroIds = ['spiderman'];
+    ui.game.shopSystem.recruitHero = () => ({
+        ok: true,
+        hero: { id: 'spiderman', name: 'Spider-Man', rarity: 'Common', visual: { idle: 'spiderman.png' } },
+        guaranteed: false
+    });
+    ui.game.heroDatabase = {
+        spiderman: { id: 'spiderman', name: 'Spider-Man', rarity: 'Common', visual: { idle: 'spiderman.png' } }
+    };
+
+    const panel = new ShopPanel(ui);
+    panel.startGachaRevealAnimation = (_result, onComplete) => onComplete();
+
+    panel.render('Tienda');
+    gachaButton.listeners.click();
+
+    assert.match(resultNode.innerHTML, /gacha-reveal/);
+    assert.match(resultNode.innerHTML, /Spider-Man/);
+    assert.equal(fundsLabel.textContent, '$1200 creditos');
+    assert.equal(pityTrack.textContent, 'Garantia: 1/4');
+    assert.equal(gachaButton.disabled, true);
+    assert.equal(gachaButton.textContent, 'PLANTILLA COMPLETA');
+    assert.ok(calls.includes('roster:0'));
+
+    panel.renderSkinShop('Skins');
+    assert.match(panelContent.innerHTML, /skins-shop-panel/);
+    assert.match(panelContent.innerHTML, /Próximamente/);
+});
+
+function createShopUi(panelContent, calls) {
+    const item = {
+        id: 'lentes_edith',
+        name: 'Lentes E.D.I.T.H.',
+        rarity: 'Rare',
+        slot: 'tech',
+        set: 'stark',
+        desc: 'Detecta amenazas ocultas.',
+        price: 500,
+        tier: 1,
+        effects: { detectStealth: true },
+        icon: 'edith.png'
+    };
+    return {
+        panelContent,
+        nextWaveSummary: null,
+        game: {
+            activeTeam: [],
+            heroDatabase: {},
+            itemDatabase: { lentes_edith: item },
+            inputManager: {
+                setPlacementMode(hero) {
+                    calls.push(`place:${hero.id}`);
+                }
+            },
+            waveManager: {
+                isWaveActive: false,
+                buildPreparedSummary: () => ({ stealthCount: 1, roles: ['stealth'] })
+            },
+            shopSystem: {
+                getRotation: () => [{ item, purchased: false }],
+                purchaseItem(id) {
+                    calls.push(`purchase:${id}`);
+                    return { ok: true, item };
+                },
+                recruitHero: () => ({ ok: false, reason: 'Sin cupos' })
+            },
+            progression: {
+                state: {
+                    settings: { adminMode: false },
+                    shop: { heroPity: 0, heroBoxCost: 500 },
+                    ownedItemIds: ['lentes_edith'],
+                    equippedItems: {},
+                    unlockedHeroIds: []
+                },
+                getCredits: () => 650,
+                getOwnedQuantity: (id) => (id === 'lentes_edith' ? 1 : 0)
+            }
+        },
+        renderSprite(source, name) {
+            return `<img src="${source}" alt="${name}">`;
+        },
+        getHeroDisplaySprite(hero) {
+            return hero.visual?.idle || `${hero.id}.png`;
+        },
+        showToast(message, type) {
+            calls.push(`toast:${type}:${message}`);
+        },
+        renderHeroRoster(team) {
+            calls.push(`roster:${team.length}`);
+        }
+    };
+}
+
+function createPanelContentStub(elementsBySelector) {
+    return {
+        innerHTML: '',
+        querySelector(selector) {
+            return elementsBySelector[selector] || null;
+        },
+        querySelectorAll(selector) {
+            const value = elementsBySelector[selector];
+            if (!value) return [];
+            return Array.isArray(value) ? value : [value];
+        }
+    };
+}
+
+function createButtonStub(dataset) {
+    return {
+        dataset,
+        disabled: false,
+        textContent: '',
+        listeners: {},
+        addEventListener(event, handler) {
+            this.listeners[event] = handler;
+        }
+    };
+}
+
+function createNodeStub() {
+    return {
+        innerHTML: '',
+        textContent: ''
+    };
+}

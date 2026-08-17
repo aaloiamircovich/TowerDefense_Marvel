@@ -7,8 +7,8 @@ import { TeamBuilderPanel } from '../ui/TeamBuilderPanel.js';
 import { ModePanel } from '../ui/ModePanel.js';
 import { WaveReportPanel } from '../ui/WaveReportPanel.js';
 import { RadarPanel } from '../ui/RadarPanel.js';
+import { ShopPanel } from '../ui/ShopPanel.js';
 import { SET_BONUSES, SLOT_LABELS } from './ItemEffectSystem.js';
-import { getHeroBoxCost } from './ShopSystem.js';
 import { getAllowedTerrainLabels } from '../utils/TerrainRules.js';
 import { getRarityClass, normalizeRarity } from '../utils/Rarity.js';
 import { HERO_MAX_LEVEL, calculateHeroLevelCost, getHeroDamageAtLevel, getHeroLevelUpgradeSteps, getScaledSupportAura, normalizeHeroLevel } from '../utils/HeroLevel.js';
@@ -1254,6 +1254,10 @@ export class UIManager {
             buildWaveReportState,
             buildWaveReportActionState
         });
+        this.shopPanel = new ShopPanel(this, {
+            buildShopItemInsight,
+            buildShopSetProgress
+        });
         this.tooltipController = new TooltipController();
 
         this.initListeners();
@@ -2298,36 +2302,18 @@ export class UIManager {
         return this.radarPanel.bindActions();
     }
 
+    getShopPanel() {
+        if (!this.shopPanel) {
+            this.shopPanel = new ShopPanel(this, {
+                buildShopItemInsight,
+                buildShopSetProgress
+            });
+        }
+        return this.shopPanel;
+    }
+
     renderShop(title) {
-        const rotation = this.game.shopSystem.getRotation();
-        const credits = this.game.progression.getCredits();
-        const fundsText = this.game.progression.state.settings.adminMode ? '∞' : `$${credits}`;
-        const recruitCost = getHeroBoxCost(this.game.progression.state.shop);
-
-        this.panelContent.innerHTML = `
-            <div class="panel-title-row"><h2>${title}</h2><strong>${fundsText} creditos</strong></div>
-            <div class="shop-layout">
-                <section class="shop-feature">
-                    <h3>Caja de reclutamiento</h3>
-                    <p>Recluta un héroe sin duplicados. Tras cuatro aperturas comunes, la siguiente garantiza Rare o superior.</p>
-                    <div class="pity-track">Garantía: ${Math.min(4, this.game.progression.state.shop.heroPity)}/4</div>
-                    <button class="btn-primary" id="gacha-btn">RECLUTAR POR $${recruitCost}</button>
-                    <div id="gacha-res" class="result-copy"></div>
-                </section>
-                <section>
-                    <h3>Arsenal progresivo</h3>
-                    <p class="empty-copy">Se muestran los 3 objetos mas basicos disponibles. Al comprar uno, entra el siguiente del arsenal.</p>
-                    <div class="shop-grid">
-                        ${rotation.map((slot) => this.renderShopItem(slot.item, slot.purchased)).join('') || '<p class="empty-copy">Arsenal completado.</p>'}
-                    </div>
-                </section>
-            </div>
-        `;
-
-        document.getElementById('gacha-btn')?.addEventListener('click', () => this.handleGacha());
-        this.panelContent.querySelectorAll('.btn-buy-item').forEach((button) => {
-            button.addEventListener('click', () => this.buyItem(button.dataset.id));
-        });
+        return this.getShopPanel().render(title);
     }
 
     formatStatDelta(current, base, suffix = '', decimals = 0) {
@@ -2338,65 +2324,15 @@ export class UIManager {
     }
 
     renderShopItem(item, purchased = false) {
-        if (!item) return '<div class="shop-card empty-copy">Agotado</div>';
-        const owned = this.game.progression.getOwnedQuantity(item.id);
-        const rarity = normalizeRarity(item.rarity);
-        const rarityClass = getRarityClass(rarity);
-        const summary = this.nextWaveSummary || (!this.game.waveManager?.isWaveActive ? this.game.waveManager?.buildPreparedSummary?.() : null);
-        const insight = buildShopItemInsight(item, summary);
-        const setProgress = buildShopSetProgress(
-            item,
-            this.game.progression.state.ownedItemIds,
-            this.game.progression.state.equippedItems,
-            this.game.itemDatabase
-        );
-        return `
-            <div class="shop-card ${rarityClass} ${purchased ? 'purchased' : ''}" data-rarity="${rarity}">
-                <div class="item-badge rarity-badge ${rarityClass}">${rarity}</div>
-                <div class="shop-item-heading">
-                    ${this.renderSprite(item.icon, item.name)}
-                    <div><small>${SLOT_LABELS[item.slot]} · ${SET_BONUSES[item.set]?.name || item.set}</small><h4>${item.name}</h4></div>
-                </div>
-                <p>${item.desc}</p>
-                <div class="shop-insight ${insight.tone}" aria-label="Recomendado por ${escapeHtml(insight.reasons.join(', '))}">
-                    <strong>${escapeHtml(insight.label)}</strong>
-                    <span>${insight.reasons.map(escapeHtml).join(' | ')}</span>
-                </div>
-                ${setProgress ? `<div class="shop-set-progress ${setProgress.status}" aria-label="${escapeHtml(setProgress.ariaLabel)}">
-                    <strong>${escapeHtml(setProgress.label)}</strong>
-                    <span>${escapeHtml(setProgress.detail)}</span>
-                </div>` : ''}
-                <small>Copias disponibles: ${owned}</small>
-                <button class="btn-buy-item btn-primary ghost" data-id="${item.id}" ${purchased ? 'disabled' : ''}>${purchased ? 'ADQUIRIDO' : `$${item.price}`}</button>
-            </div>
-        `;
+        return this.getShopPanel().renderItem(item, purchased);
     }
 
     buyItem(itemId) {
-        const result = this.game.shopSystem.purchaseItem(itemId);
-        if (!result.ok) {
-            this.showToast(result.reason, 'warning');
-            return;
-        }
-        this.showToast(`${result.item.name} comprado`, 'success');
-        this.renderShop('Tienda');
+        return this.getShopPanel().buyItem(itemId);
     }
 
     renderSkinShop(title = 'Skins') {
-        this.panelContent.innerHTML = `
-            <div class="panel-title-row">
-                <h2>${title}</h2>
-                <strong>Próximamente</strong>
-            </div>
-            <section class="skins-shop-panel">
-                <div>
-                    <span class="briefing-kicker">TIENDA COSMÉTICA</span>
-                    <h3>Skins de héroes</h3>
-                    <p>Este menú queda reservado para skins cuando estén listas.</p>
-                </div>
-                <i class="fas fa-shirt"></i>
-            </section>
-        `;
+        return this.getShopPanel().renderSkinShop(title);
     }
 
     renderProfile(title) {
@@ -2510,142 +2446,19 @@ export class UIManager {
     }
 
     buildGachaRevealSequence(finalHero, count = 12) {
-        const roster = Object.values(this.game.heroDatabase || {})
-            .filter((hero) => hero.visual && hero.id !== finalHero.id);
-        const seed = `${finalHero.id}:${Date.now()}`;
-        const score = (hero) => [...`${seed}:${hero.id}`]
-            .reduce((hash, char) => Math.imul(hash ^ char.charCodeAt(0), 16777619), 2166136261) >>> 0;
-        const ordered = [...roster].sort((a, b) => score(a) - score(b));
-        return [...ordered.slice(0, count - 1), finalHero];
+        return this.getShopPanel().buildGachaRevealSequence(finalHero, count);
     }
 
     renderGachaReveal(result) {
-        const hero = result.hero;
-        const rarity = normalizeRarity(hero.rarity);
-        const rarityClass = getRarityClass(rarity);
-        const sequence = this.buildGachaRevealSequence(hero);
-        const firstPreview = sequence[0] || hero;
-        const firstRarity = normalizeRarity(firstPreview.rarity);
-        const firstRarityClass = getRarityClass(firstRarity);
-        return `
-            <div class="gacha-reveal ${firstRarityClass}" data-final-rarity-class="${rarityClass}" data-rarity="${firstRarity}" data-final-rarity="${rarity}">
-                <div class="gacha-aura"></div>
-                <div class="gacha-case">
-                    <i class="fas fa-box-open"></i>
-                    <span>Caja de reclutamiento</span>
-                </div>
-                <button class="gacha-skip-btn btn-primary ghost" type="button"><i class="fas fa-forward"></i> Saltear</button>
-                <div class="gacha-roller" aria-hidden="true">
-                    <div class="gacha-roll-sprite">${this.renderSprite(this.getHeroDisplaySprite(firstPreview), firstPreview.name)}</div>
-                </div>
-                <div class="gacha-final">
-                    <span class="rarity-badge ${rarityClass}">${rarity}</span>
-                    <strong>${hero.name}</strong>
-                    <small>${result.guaranteed ? 'Garantia activada' : 'Nuevo recluta'}</small>
-                </div>
-            </div>
-        `;
+        return this.getShopPanel().renderGachaReveal(result);
     }
 
     startGachaRevealAnimation(result, onComplete = () => {}) {
-        const reveal = document.querySelector('#gacha-res .gacha-reveal');
-        const slot = reveal?.querySelector('.gacha-roll-sprite');
-        const finalCopy = reveal?.querySelector('.gacha-final');
-        const skipButton = reveal?.querySelector('.gacha-skip-btn');
-        if (!reveal || !slot || !finalCopy) {
-            onComplete();
-            return;
-        }
-
-        const sequence = this.buildGachaRevealSequence(result.hero);
-        const delays = [320, 360, 400, 440, 500, 560, 640, 720, 820, 940, 1080, 1220];
-        let index = 0;
-        let finished = false;
-
-        this.gachaRevealTimers.forEach((timer) => window.clearTimeout(timer));
-        this.gachaRevealTimers = [];
-
-        const applyEntry = (entry) => {
-            const rarity = normalizeRarity(entry.rarity);
-            const rarityClass = getRarityClass(rarity);
-            reveal.classList.remove('rarity-common', 'rarity-rare', 'rarity-epic', 'rarity-legendary', 'rarity-mythic', 'rarity-secret');
-            reveal.classList.add(rarityClass);
-            reveal.dataset.rarity = rarity;
-            slot.innerHTML = this.renderSprite(this.getHeroDisplaySprite(entry), entry.name);
-            slot.classList.remove('tick');
-            void slot.offsetWidth;
-            slot.classList.add('tick');
-        };
-
-        const finishReveal = () => {
-            if (finished) return;
-            finished = true;
-            this.gachaRevealTimers.forEach((timer) => window.clearTimeout(timer));
-            this.gachaRevealTimers = [];
-            applyEntry(result.hero);
-            reveal.classList.add('is-final');
-            finalCopy.classList.add('is-visible');
-            skipButton?.classList.add('hidden');
-            onComplete();
-        };
-
-        const showEntry = () => {
-            if (finished) return;
-            const entry = sequence[Math.min(index, sequence.length - 1)];
-            applyEntry(entry);
-
-            if (index >= sequence.length - 1) {
-                finishReveal();
-                return;
-            }
-
-            const delay = delays[Math.min(index, delays.length - 1)];
-            index += 1;
-            this.gachaRevealTimers.push(window.setTimeout(showEntry, delay));
-        };
-
-        skipButton?.addEventListener('click', finishReveal, { once: true });
-        Promise.resolve(this.game.assetPreloader?.preloadHeroes?.(sequence))
-            .catch(() => null)
-            .finally(() => {
-                if (finished) return;
-                this.gachaRevealTimers.push(window.setTimeout(showEntry, 220));
-            });
+        return this.getShopPanel().startGachaRevealAnimation(result, onComplete);
     }
 
     handleGacha() {
-        const result = this.game.shopSystem.recruitHero();
-        if (!result.ok) {
-            this.showToast(result.reason, 'warning');
-            return;
-        }
-
-        const button = document.getElementById('gacha-btn');
-        const resultNode = document.getElementById('gacha-res');
-        if (button) button.disabled = true;
-        if (resultNode) resultNode.innerHTML = this.renderGachaReveal(result);
-
-        this.showToast(`${result.hero.name} se unio a la plantilla`, 'success');
-        this.renderHeroRoster(this.game.activeTeam, (hero) => this.game.inputManager.setPlacementMode(hero));
-
-        const fundsLabel = this.panelContent.querySelector('.panel-title-row strong');
-        if (fundsLabel) {
-            const fundsText = this.game.progression.state.settings.adminMode ? '∞' : `$${this.game.progression.getCredits()}`;
-            fundsLabel.textContent = `${fundsText} creditos`;
-        }
-        const pityTrack = this.panelContent.querySelector('.pity-track');
-        if (pityTrack) pityTrack.textContent = `Garantia: ${Math.min(4, this.game.progression.state.shop.heroPity)}/4`;
-
-        this.startGachaRevealAnimation(result, () => {
-            const nextPool = Object.values(this.game.heroDatabase || {})
-                .filter((hero) => hero.visual)
-                .filter((hero) => !this.game.progression.state.unlockedHeroIds.includes(hero.id));
-            if (button) {
-                button.disabled = nextPool.length === 0;
-                const nextCost = getHeroBoxCost(this.game.progression.state.shop);
-                button.textContent = nextPool.length === 0 ? 'PLANTILLA COMPLETA' : `RECLUTAR POR $${nextCost}`;
-            }
-        });
+        return this.getShopPanel().handleGacha();
     }
     showGameOver() {
         this.game.audio?.play('warning');
