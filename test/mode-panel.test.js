@@ -33,6 +33,51 @@ test('buildModeStatusView escapa texto dinamico de modo', () => {
     assert.match(view.html, /&lt;b&gt;detalle&lt;\/b&gt;/);
 });
 
+test('ModePanel renderiza draft heroico con rareza, sprite y metricas', () => {
+    const draftButton = createButtonStub();
+    draftButton.dataset = { draft: 'storm' };
+    const calls = [];
+    const choices = [];
+    const ui = {
+        panelContent: {
+            innerHTML: '',
+            querySelectorAll(selector) {
+                calls.push(`query:${selector}`);
+                return [draftButton];
+            }
+        },
+        showPanelOverlay(value) {
+            calls.push(`overlay:${value}`);
+        },
+        renderSprite(src, name) {
+            return `<img src="${src}" alt="${name}">`;
+        },
+        getHeroDisplaySprite(hero) {
+            return `${hero.id}.png`;
+        }
+    };
+
+    new ModePanel(ui).showDraftChoice([{
+        id: 'storm',
+        name: 'Storm',
+        rarity: 'Epic',
+        category: 'Mutante',
+        niche: 'zonas climaticas',
+        teamMetrics: { damage: 3, control: 5, support: 1, detection: 0 }
+    }], (heroId) => choices.push(heroId));
+
+    assert.match(ui.panelContent.innerHTML, /draft-choice-grid/);
+    assert.match(ui.panelContent.innerHTML, /draft-card rarity-epic/);
+    assert.match(ui.panelContent.innerHTML, /rarity-badge rarity-epic/);
+    assert.match(ui.panelContent.innerHTML, /draft-stat-strip/);
+    assert.match(ui.panelContent.innerHTML, /Reclutar/);
+    assert.ok(calls.includes('overlay:false'));
+    assert.ok(calls.includes('query:[data-draft]'));
+
+    draftButton.listeners.click();
+    assert.deepEqual(choices, ['storm']);
+});
+
 test('ModePanel renderiza resultado especial con lectura tactica compacta', () => {
     const previousDocument = globalThis.document;
     const resultButton = createButtonStub();

@@ -1,3 +1,5 @@
+import { getRarityClass, normalizeRarity } from '../utils/Rarity.js';
+
 function escapeHtml(value = '') {
     return String(value)
         .replaceAll('&', '&amp;')
@@ -10,6 +12,13 @@ function escapeHtml(value = '') {
 function formatNumber(value = 0) {
     return Math.round(Number(value) || 0).toLocaleString('es-AR');
 }
+
+const DRAFT_METRIC_LABELS = {
+    damage: { label: 'Daño', icon: 'fa-bolt' },
+    control: { label: 'Control', icon: 'fa-hand' },
+    support: { label: 'Soporte', icon: 'fa-shield-halved' },
+    detection: { label: 'Radar', icon: 'fa-satellite-dish' }
+};
 
 export function buildModeStatusView(snapshot = null) {
     if (!snapshot) return null;
@@ -45,13 +54,64 @@ export class ModePanel {
     showDraftChoice(heroes, onChoose) {
         this.ui.showPanelOverlay(false);
         this.ui.panelContent.innerHTML = `
-            <div class="draft-choice">
-                <span class="briefing-kicker">DRAFT HEROICO</span>
-                <h2>Elige un refuerzo</h2>
-                <div>${heroes.map((hero) => `<button data-draft="${escapeHtml(hero.id)}">${this.ui.renderSprite(this.ui.getHeroDisplaySprite(hero), hero.name)}<strong>${escapeHtml(hero.name)}</strong><small>${escapeHtml(hero.niche || hero.ability)}</small></button>`).join('')}</div>
-            </div>
+            <section class="draft-choice draft-choice-upgraded">
+                <div class="draft-choice-header">
+                    <span class="briefing-kicker">DRAFT HEROICO</span>
+                    <h2>Elige un refuerzo</h2>
+                    <p>Sumá una pieza al escuadrón: priorizá cobertura, rareza o el counter que te falte.</p>
+                </div>
+                <div class="draft-choice-grid">
+                    ${heroes.map((hero, index) => this.renderDraftCard(hero, index)).join('')}
+                </div>
+            </section>
         `;
         this.ui.panelContent.querySelectorAll('[data-draft]').forEach((button) => button.addEventListener('click', () => onChoose(button.dataset.draft)));
+    }
+
+    renderDraftCard(hero, index = 0) {
+        const rarity = normalizeRarity(hero.rarity);
+        const rarityClass = getRarityClass(rarity);
+        const metrics = this.getDraftMetrics(hero);
+        return `
+            <button class="draft-card ${rarityClass}" data-draft="${escapeHtml(hero.id)}" data-rarity="${rarity}" aria-label="Elegir ${escapeHtml(hero.name)} como refuerzo ${index + 1}">
+                <div class="draft-card-top">
+                    <span class="draft-index">0${index + 1}</span>
+                    <b class="rarity-badge ${rarityClass}">${rarity}</b>
+                </div>
+                <div class="draft-sprite-frame">
+                    ${this.ui.renderSprite(this.ui.getHeroDisplaySprite(hero), hero.name)}
+                </div>
+                <div class="draft-card-copy">
+                    <strong>${escapeHtml(hero.name)}</strong>
+                    <small>${escapeHtml(hero.category || 'Héroe')} | ${escapeHtml(hero.niche || hero.ability || 'defensa equilibrada')}</small>
+                </div>
+                <div class="draft-stat-strip">
+                    ${metrics.map((metric) => `
+                        <span>
+                            <i class="fas ${metric.icon}"></i>
+                            <b>${metric.value}</b>
+                            <small>${metric.label}</small>
+                        </span>
+                    `).join('')}
+                </div>
+                <span class="draft-pick-cue">Reclutar</span>
+            </button>
+        `;
+    }
+
+    getDraftMetrics(hero) {
+        const metrics = hero.teamMetrics || {};
+        const ranked = Object.entries(DRAFT_METRIC_LABELS)
+            .map(([key, meta]) => ({ ...meta, value: Math.round(Number(metrics[key]) || 0) }))
+            .sort((a, b) => b.value - a.value)
+            .slice(0, 2);
+
+        if (ranked.some((metric) => metric.value > 0)) return ranked;
+
+        return [
+            { ...DRAFT_METRIC_LABELS.damage, value: Math.max(1, Math.round((Number(hero.damage) || 0) / 10)) },
+            { ...DRAFT_METRIC_LABELS.control, value: Math.max(1, Math.round((Number(hero.range) || 0) / 50)) }
+        ];
     }
 
     showResult(title, snapshot) {
