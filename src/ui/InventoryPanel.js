@@ -205,7 +205,7 @@ export class InventoryPanel {
                         return `<button class="slot-filter ${this.slotFilter === slot ? 'active' : ''}" type="button" data-slot="${slot}" aria-pressed="${this.slotFilter === slot}" aria-label="${filterLabel}" title="${filterLabel}" data-tooltip="${filterLabel}">${label}</button>`;
                     }).join('')}
                 </div>
-                <button id="inventory-clear-filters" class="inventory-clear-filters icon-command" type="button" ${hasActiveFilters ? '' : 'disabled'} title="Limpiar filtros" aria-label="Limpiar filtros">
+                <button id="inventory-clear-filters" class="inventory-clear-filters icon-command" type="button" ${hasActiveFilters ? '' : 'disabled'} title="Limpiar filtros" aria-label="Limpiar filtros" data-tooltip="Limpiar filtros">
                     <i class="fas fa-broom"></i>
                 </button>
                 <strong class="inventory-filter-count">${entries.length}/${allEntries.length}</strong>
@@ -280,7 +280,7 @@ export class InventoryPanel {
                 ${this.ui.renderSprite(item.icon, item.name)}
                 <div><span>${SLOT_LABELS[item.slot]} | ${SET_BONUSES[item.set]?.name || 'Sin familia'}</span><strong>${item.name}</strong><small>${item.desc}</small></div>
                 <div class="slot-actions">
-                    <button class="icon-command unequip-item" type="button" data-slot="${slot}" aria-label="Desequipar ${item.name}" title="Desequipar"><i class="fas fa-eject"></i></button>
+                    <button class="icon-command unequip-item" type="button" data-slot="${slot}" aria-label="Desequipar ${item.name}" title="Desequipar" data-tooltip="Desequipar"><i class="fas fa-eject"></i></button>
                 </div>
             </article>
         `;

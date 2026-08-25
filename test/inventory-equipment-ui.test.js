@@ -60,6 +60,7 @@ test('inventario muestra objetos equipados con el sprite del heroe dueño', () =
 
     const equippedHtml = panel.renderEquippedItem(reactorEntry.item, 'weapon');
     assert.match(equippedHtml, /class="icon-command unequip-item" type="button" data-slot="weapon" aria-label="Desequipar REACTOR ARC"/);
+    assert.match(equippedHtml, /title="Desequipar" data-tooltip="Desequipar"/);
 });
 
 test('inventario resume efectos principales de cada objeto', () => {
@@ -102,6 +103,7 @@ test('inventario permite limpiar filtros de objeto en un click', () => {
     assert.equal(panel.hasActiveInventoryFilters(), false);
     panel.render();
     assert.match(ui.panelContent.innerHTML, /inventory-clear-filters[\s\S]*disabled/);
+    assert.match(ui.panelContent.innerHTML, /inventory-clear-filters[\s\S]*data-tooltip="Limpiar filtros"/);
 
     panel.statusFilter = 'equipped';
     panel.tierFilter = 2;
@@ -145,6 +147,7 @@ test('coleccion anuncia estado y accion principal al armar equipo', () => {
     const activeHtml = panel.renderHeroCard(data.heroes.spiderman, true);
     assert.match(activeHtml, /role="listitem" aria-label="Spider-Man\. Rareza [^\.]+\. en equipo activo\."/);
     assert.match(activeHtml, /class="btn-equip btn-primary danger" type="button" data-id="spiderman" aria-label="Quitar Spider-Man del equipo" aria-pressed="true" aria-disabled="false"/);
+    assert.match(activeHtml, /data-tooltip="Ver ficha"/);
 
     const lockedHtml = panel.renderHeroCard(data.heroes.thor, false);
     assert.match(lockedHtml, /role="listitem" aria-label="Thor\. Rareza [^\.]+\. bloqueado\."/);
@@ -295,6 +298,7 @@ test('coleccion permite limpiar todos los filtros de heroes', () => {
 
     assert.equal(panel.hasActiveHeroFilters(), false);
     assert.match(panel.renderCollectionFilters(3, 3), /collection-clear-filters[\s\S]*disabled/);
+    assert.match(panel.renderCollectionFilters(3, 3), /collection-clear-filters[\s\S]*data-tooltip="Limpiar filtros"/);
 
     panel.searchQuery = 'iron';
     panel.rarityFilter = 'rare';

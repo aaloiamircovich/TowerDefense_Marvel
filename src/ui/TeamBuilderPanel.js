@@ -88,7 +88,7 @@ export class TeamBuilderPanel {
     renderTeamSlot(hero, index) {
         if (!hero) return `<div class="team-slot-empty" aria-label="Espacio ${index + 1} libre"><span>${index + 1}</span><i class="fas fa-plus"></i></div>`;
         return `
-            <button class="team-slot-filled remove-team-hero" type="button" data-id="${hero.id}" aria-label="Quitar a ${hero.name}" title="Quitar del equipo">
+            <button class="team-slot-filled remove-team-hero" type="button" data-id="${hero.id}" aria-label="Quitar a ${hero.name}" title="Quitar del equipo" data-tooltip="Quitar del equipo">
                 ${this.ui.renderSprite(this.getCollectionSprite(hero), hero.name)}
                 <span>${hero.name}</span>
                 <i class="fas fa-xmark"></i>
@@ -109,7 +109,7 @@ export class TeamBuilderPanel {
                         ${collapsed ? this.renderSynergySummaryPills(groups) : ''}
                     </div>
                     <strong>${activeCount}/${groups.length} activas</strong>
-                    <button class="icon-command toggle-synergies" type="button" aria-expanded="${this.synergyExpanded}" aria-label="${this.synergyExpanded ? 'Minimizar agrupaciones' : 'Expandir agrupaciones'}" title="${this.synergyExpanded ? 'Minimizar agrupaciones' : 'Expandir agrupaciones'}">
+                    <button class="icon-command toggle-synergies" type="button" aria-expanded="${this.synergyExpanded}" aria-label="${this.synergyExpanded ? 'Minimizar agrupaciones' : 'Expandir agrupaciones'}" title="${this.synergyExpanded ? 'Minimizar agrupaciones' : 'Expandir agrupaciones'}" data-tooltip="${this.synergyExpanded ? 'Minimizar agrupaciones' : 'Expandir agrupaciones'}">
                         <i class="fas fa-chevron-${this.synergyExpanded ? 'up' : 'down'}"></i>
                     </button>
                 </div>
@@ -350,7 +350,7 @@ export class TeamBuilderPanel {
                         return `<button class="rarity-filter ${rarityClass} ${active ? 'active' : ''}" type="button" data-rarity="${rarity}" aria-pressed="${active}" aria-label="Filtrar rareza ${label}" title="Filtrar rareza ${label}" data-tooltip="Filtrar rareza ${label}">${label}</button>`;
                     }).join('')}
                 </div>
-                <button id="collection-clear-filters" class="collection-clear-filters icon-command" type="button" ${hasActiveFilters ? '' : 'disabled'} title="Limpiar filtros" aria-label="Limpiar filtros">
+                <button id="collection-clear-filters" class="collection-clear-filters icon-command" type="button" ${hasActiveFilters ? '' : 'disabled'} title="Limpiar filtros" aria-label="Limpiar filtros" data-tooltip="Limpiar filtros">
                     <i class="fas fa-broom"></i>
                 </button>
                 <strong>${visibleCount}/${totalCount}</strong>
@@ -395,7 +395,7 @@ export class TeamBuilderPanel {
                 ${evolution ? `<strong class="evolution-badge" style="--evolution-color:${evolution.color}">${evolution.name}</strong>` : ''}
                 <small><b class="rarity-badge ${rarityClass}">${rarity}</b></small>
                 <div class="collection-actions">
-                    <button class="btn-preview-hero icon-command" type="button" data-id="${hero.id}" aria-label="${this.escapeAttribute(previewLabel)}" title="Ver ficha"><i class="fas fa-eye"></i></button>
+                    <button class="btn-preview-hero icon-command" type="button" data-id="${hero.id}" aria-label="${this.escapeAttribute(previewLabel)}" title="Ver ficha" data-tooltip="Ver ficha"><i class="fas fa-eye"></i></button>
                     ${pendingItem ? `
                         <button class="${unlocked && !alreadyHasPendingItem ? 'btn-assign-item' : ''} btn-primary ${alreadyHasPendingItem ? 'ghost' : ''}" type="button" data-id="${hero.id}" aria-label="${this.escapeAttribute(equipActionLabel)}" aria-disabled="${unlocked && !alreadyHasPendingItem ? 'false' : 'true'}" ${unlocked && !alreadyHasPendingItem ? '' : 'disabled'}>
                             ${unlocked ? (alreadyHasPendingItem ? 'Ya equipado' : (equippedItem ? 'Reemplazar' : 'Equipar')) : 'Por reclutar'}

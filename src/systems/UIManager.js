@@ -2113,7 +2113,7 @@ export class UIManager {
                         <div class="item-slot ${equippedItem ? 'filled' : ''}">
                             <span>${equippedItem ? `${SLOT_LABELS[equippedItem.slot]} | ${SET_BONUSES[equippedItem.set]?.name || 'Sin familia'}` : 'Objeto'}</span>
                             <strong>${equippedItem?.name || 'Ranura libre'}</strong>
-                            ${equippedItem ? `<small>${equippedItem.desc}</small><button class="btn-unequip-modal icon-command" type="button" data-slot="${equippedSlot}" aria-label="Desequipar ${equippedItem.name}" title="Desequipar"><i class="fas fa-eject"></i></button>` : '<small>Un solo objeto equipado por heroe.</small>'}
+                            ${equippedItem ? `<small>${equippedItem.desc}</small><button class="btn-unequip-modal icon-command" type="button" data-slot="${equippedSlot}" aria-label="Desequipar ${equippedItem.name}" title="Desequipar" data-tooltip="Desequipar"><i class="fas fa-eject"></i></button>` : '<small>Un solo objeto equipado por heroe.</small>'}
                         </div>
                     </div>
                     <button id="open-inventory-panel" class="btn-primary ghost" type="button" aria-label="${escapeHtml(isUnlocked ? `Abrir inventario para ${heroName}` : `${heroName} no reclutado: inventario bloqueado`)}" aria-disabled="${!isUnlocked}" ${isUnlocked ? '' : 'disabled'}><i class="fas fa-box-open"></i> ${isUnlocked ? 'Abrir inventario' : 'Recluta para equipar'}</button>
