@@ -38,6 +38,8 @@ export class WaveReportPanel {
         this.ui.lastWaveReport = report;
 
         container.className = `wave-report report-${state.tone}`;
+        container.setAttribute('role', 'status');
+        container.setAttribute('aria-live', 'polite');
         container.setAttribute('aria-label', `${state.label}. ${state.advice}`);
         container.innerHTML = this.renderMarkup(state, action);
         document.getElementById('wave-report-action')?.addEventListener('click', () => {
@@ -159,10 +161,13 @@ export class WaveReportPanel {
             : action.type === 'saving' && Number.isFinite(Number(action.missing))
                 ? `<small>Disponible $${escapeHtml(action.available || 0)} / coste $${escapeHtml(action.cost || 0)}</small>`
                 : '';
+        const actionLabel = action.type === 'upgrade'
+            ? `${action.label} por ${action.cost} creditos. ${action.reason}`
+            : action.label;
         return `<div class="wave-report-action report-action-${type}">
             <span>${escapeHtml(action.reason)}</span>
             ${action.type === 'upgrade'
-                ? `<button id="wave-report-action" class="btn-mode-action">${escapeHtml(action.label)} $${escapeHtml(action.cost)}</button>`
+                ? `<button id="wave-report-action" class="btn-mode-action" type="button" aria-label="${escapeHtml(actionLabel)}">${escapeHtml(action.label)} $${escapeHtml(action.cost)}</button>`
                 : `<small>${escapeHtml(action.label)}</small>`}
             ${economyNote}
         </div>`;
