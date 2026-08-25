@@ -46,8 +46,8 @@ function showGameConfirm({
                     <p id="game-confirm-message">${escapeModalText(message)}</p>
                 </div>
                 <div class="game-confirm-actions">
-                    <button class="game-confirm-cancel" type="button">${escapeModalText(cancelLabel)}</button>
-                    <button class="game-confirm-accept" type="button">${escapeModalText(confirmLabel)}</button>
+                    <button class="game-confirm-cancel" type="button" aria-label="${escapeModalText(cancelLabel)}" title="${escapeModalText(cancelLabel)}" data-tooltip="${escapeModalText(cancelLabel)}">${escapeModalText(cancelLabel)}</button>
+                    <button class="game-confirm-accept" type="button" aria-label="${escapeModalText(confirmLabel)}" title="${escapeModalText(confirmLabel)}" data-tooltip="${escapeModalText(confirmLabel)}">${escapeModalText(confirmLabel)}</button>
                 </div>
             </section>
         `;

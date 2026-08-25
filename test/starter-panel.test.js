@@ -79,7 +79,7 @@ test('StarterPanel renderiza cartas tacticas y selecciona heroe inicial', () => 
         assert.match(panelContent.innerHTML, /Opciones/);
         assert.match(panelContent.innerHTML, /Black Widow/);
         assert.match(panelContent.innerHTML, /starter-card-upgraded rarity-common" type="button"/);
-        assert.match(panelContent.innerHTML, /aria-label="Elegir Black Widow\. Rareza Common\. Urbano\. saboteo de soporte\. Radar 4, Control 3\. Mejor Control, Mejor Radar"/);
+        assert.match(panelContent.innerHTML, /aria-label="Elegir Black Widow\. Rareza Common\. Urbano\. saboteo de soporte\. Radar 4, Control 3\. Mejor Control, Mejor Radar" title="Elegir Black Widow\. Rareza Common\. Urbano\. saboteo de soporte\. Radar 4, Control 3\. Mejor Control, Mejor Radar" data-tooltip="Elegir Black Widow\. Rareza Common\. Urbano\. saboteo de soporte\. Radar 4, Control 3\. Mejor Control, Mejor Radar"/);
         assert.match(panelContent.innerHTML, /saboteo de soporte/);
         assert.match(panelContent.innerHTML, /Hawkeye/);
         assert.match(panelContent.innerHTML, /Daño 3/);

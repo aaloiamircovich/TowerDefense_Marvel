@@ -38,8 +38,11 @@ if (!/<button[^>]+data-start-back[^>]+data-tooltip=/i.test(html)) errors.push('E
 if (!/<button[^>]+id="close-panel-btn"[^>]+data-tooltip=/i.test(html)) errors.push('El boton cerrar panel debe declarar data-tooltip');
 
 assertButtonTypes(html, 'index.html');
+assertButtonTooltips(html, 'index.html');
 dynamicTemplateFiles.forEach((filePath) => {
-    assertButtonTypes(fs.readFileSync(filePath, 'utf8'), filePath);
+    const source = fs.readFileSync(filePath, 'utf8');
+    assertButtonTypes(source, filePath);
+    assertButtonTooltips(source, filePath);
 });
 
 for (const match of html.matchAll(/<button([^>]*)>([\s\S]*?)<\/button>/gi)) {
@@ -64,6 +67,13 @@ function assertButtonTypes(source, label) {
     for (const match of source.matchAll(/<button\b([^>]*)>/gi)) {
         if (/\btype\s*=/i.test(match[1])) continue;
         errors.push(`${label}:${lineNumber(source, match.index)} boton sin atributo type`);
+    }
+}
+
+function assertButtonTooltips(source, label) {
+    for (const match of source.matchAll(/<button\b([^>]*)>/gi)) {
+        if (/\bdata-tooltip\s*=/i.test(match[1])) continue;
+        errors.push(`${label}:${lineNumber(source, match.index)} boton sin data-tooltip`);
     }
 }
 
