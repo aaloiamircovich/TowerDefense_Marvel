@@ -323,11 +323,11 @@ export class TeamBuilderPanel {
             <section class="collection-toolbar" aria-label="Filtros de coleccion">
                 <label class="collection-search">
                     <i class="fas fa-search"></i>
-                    <input id="collection-search-input" type="search" value="${this.escapeAttribute(this.searchQuery)}" placeholder="Buscar heroe, rol o grupo" autocomplete="off">
+                    <input id="collection-search-input" type="search" value="${this.escapeAttribute(this.searchQuery)}" placeholder="Buscar heroe, rol o grupo" autocomplete="off" aria-label="Buscar heroe, rol o grupo">
                 </label>
                 <label class="collection-sort">
                     <span>Orden</span>
-                    <select id="collection-sort-select">
+                    <select id="collection-sort-select" aria-label="Ordenar coleccion">
                         <option value="az" ${this.sortMode === 'az' ? 'selected' : ''}>A-Z</option>
                         <option value="za" ${this.sortMode === 'za' ? 'selected' : ''}>Z-A</option>
                         <option value="rarity-desc" ${this.sortMode === 'rarity-desc' ? 'selected' : ''}>Rareza alta</option>
@@ -336,7 +336,7 @@ export class TeamBuilderPanel {
                 </label>
                 <label class="collection-sort">
                     <span>Estado</span>
-                    <select id="collection-ownership-select">
+                    <select id="collection-ownership-select" aria-label="Filtrar heroes por estado de obtencion">
                         <option value="all" ${this.ownershipFilter === 'all' ? 'selected' : ''}>Todos</option>
                         <option value="owned" ${this.ownershipFilter === 'owned' ? 'selected' : ''}>Obtenidos</option>
                         <option value="missing" ${this.ownershipFilter === 'missing' ? 'selected' : ''}>Faltantes</option>
@@ -347,7 +347,7 @@ export class TeamBuilderPanel {
                         const active = this.rarityFilter === rarity;
                         const label = rarity === 'all' ? 'Todas' : rarity;
                         const rarityClass = rarity === 'all' ? '' : getRarityClass(rarity);
-                        return `<button class="rarity-filter ${rarityClass} ${active ? 'active' : ''}" type="button" data-rarity="${rarity}" aria-pressed="${active}" aria-label="Filtrar rareza ${label}">${label}</button>`;
+                        return `<button class="rarity-filter ${rarityClass} ${active ? 'active' : ''}" type="button" data-rarity="${rarity}" aria-pressed="${active}" aria-label="Filtrar rareza ${label}" title="Filtrar rareza ${label}" data-tooltip="Filtrar rareza ${label}">${label}</button>`;
                     }).join('')}
                 </div>
                 <button id="collection-clear-filters" class="collection-clear-filters icon-command" type="button" ${hasActiveFilters ? '' : 'disabled'} title="Limpiar filtros" aria-label="Limpiar filtros">

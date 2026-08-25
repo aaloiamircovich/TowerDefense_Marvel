@@ -188,14 +188,22 @@ export class InventoryPanel {
                 <div class="inventory-status-filters" aria-label="Filtrar por estado">
                     ${statusOptions.map(([status, label]) => {
                         const active = this.statusFilter === status;
-                        return `<button class="status-filter ${active ? 'active' : ''}" type="button" data-status="${status}" aria-pressed="${active}">${label}</button>`;
+                        return `<button class="status-filter ${active ? 'active' : ''}" type="button" data-status="${status}" aria-pressed="${active}" aria-label="Filtrar objetos: ${label}" title="Filtrar objetos: ${label}" data-tooltip="Filtrar objetos: ${label}">${label}</button>`;
                     }).join('')}
                 </div>
                 <div class="tier-filters" aria-label="Filtrar por tier">
-                    ${[0, 1, 2, 3, 4].map((tier) => `<button class="tier-filter ${this.tierFilter === tier ? 'active' : ''}" type="button" data-tier="${tier}" aria-pressed="${this.tierFilter === tier}">${tier === 0 ? 'Todos' : `T${tier}`}</button>`).join('')}
+                    ${[0, 1, 2, 3, 4].map((tier) => {
+                        const label = tier === 0 ? 'Todos' : `T${tier}`;
+                        const filterLabel = tier === 0 ? 'Mostrar todos los tiers' : `Filtrar tier ${tier}`;
+                        return `<button class="tier-filter ${this.tierFilter === tier ? 'active' : ''}" type="button" data-tier="${tier}" aria-pressed="${this.tierFilter === tier}" aria-label="${filterLabel}" title="${filterLabel}" data-tooltip="${filterLabel}">${label}</button>`;
+                    }).join('')}
                 </div>
                 <div class="slot-filters" aria-label="Filtrar por tipo">
-                    ${['all', ...ITEM_SLOTS].map((slot) => `<button class="slot-filter ${this.slotFilter === slot ? 'active' : ''}" type="button" data-slot="${slot}" aria-pressed="${this.slotFilter === slot}">${slot === 'all' ? 'Todas' : SLOT_LABELS[slot]}</button>`).join('')}
+                    ${['all', ...ITEM_SLOTS].map((slot) => {
+                        const label = slot === 'all' ? 'Todas' : SLOT_LABELS[slot];
+                        const filterLabel = slot === 'all' ? 'Mostrar todos los tipos de objeto' : `Filtrar tipo ${label}`;
+                        return `<button class="slot-filter ${this.slotFilter === slot ? 'active' : ''}" type="button" data-slot="${slot}" aria-pressed="${this.slotFilter === slot}" aria-label="${filterLabel}" title="${filterLabel}" data-tooltip="${filterLabel}">${label}</button>`;
+                    }).join('')}
                 </div>
                 <button id="inventory-clear-filters" class="inventory-clear-filters icon-command" type="button" ${hasActiveFilters ? '' : 'disabled'} title="Limpiar filtros" aria-label="Limpiar filtros">
                     <i class="fas fa-broom"></i>

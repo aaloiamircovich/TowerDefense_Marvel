@@ -81,6 +81,7 @@ test('inventario filtra objetos libres y equipados desde la vista compacta', () 
     panel.render();
     assert.match(ui.panelContent.innerHTML, /inventory-rarity-strip[\s\S]*rarity-common[\s\S]*x1[\s\S]*rarity-rare[\s\S]*x1/);
     assert.match(ui.panelContent.innerHTML, /type="button" data-status="equipped" aria-pressed="true"/);
+    assert.match(ui.panelContent.innerHTML, /aria-label="Filtrar objetos: Equipados" title="Filtrar objetos: Equipados" data-tooltip="Filtrar objetos: Equipados"/);
     assert.match(ui.panelContent.innerHTML, /data-item-id="reactor_arc"/);
     assert.doesNotMatch(ui.panelContent.innerHTML, /data-item-id="lentes_edith"/);
 
@@ -281,7 +282,11 @@ test('coleccion filtra heroes obtenidos y faltantes', () => {
 
     const filtersHtml = panel.renderCollectionFilters(2, 3);
     assert.match(filtersHtml, /collection-ownership-select/);
+    assert.match(filtersHtml, /aria-label="Buscar heroe, rol o grupo"/);
+    assert.match(filtersHtml, /aria-label="Ordenar coleccion"/);
+    assert.match(filtersHtml, /aria-label="Filtrar heroes por estado de obtencion"/);
     assert.match(filtersHtml, /class="rarity-filter\s+active" type="button" data-rarity="all" aria-pressed="true" aria-label="Filtrar rareza Todas"/);
+    assert.match(filtersHtml, /title="Filtrar rareza Todas" data-tooltip="Filtrar rareza Todas"/);
 });
 
 test('coleccion permite limpiar todos los filtros de heroes', () => {
