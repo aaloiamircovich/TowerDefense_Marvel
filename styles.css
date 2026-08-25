@@ -934,6 +934,18 @@ input:focus-visible,
     outline: none;
 }
 
+.hub-btn.active,
+.hub-btn[aria-current="dialog"] {
+    border-color: color-mix(in srgb, var(--level-accent), white 12%);
+    color: var(--text);
+    background:
+        linear-gradient(180deg, color-mix(in srgb, var(--level-accent), transparent 72%), rgba(255, 255, 255, 0.035)),
+        var(--ui-steel-2);
+    box-shadow:
+        inset 0 -2px 0 var(--level-accent),
+        0 0 14px color-mix(in srgb, var(--level-accent), transparent 70%);
+}
+
 .btn-action.active {
     color: var(--bright-yellow);
     border-color: var(--bright-yellow);

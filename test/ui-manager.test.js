@@ -708,6 +708,34 @@ test('UIManager mantiene oculto el panel lateral de presion de ruta', () => {
     }
 });
 
+test('UIManager marca el boton activo del panel abierto', () => {
+    const previousDocument = globalThis.document;
+    const buttons = [createHubButton('collection'), createHubButton('shop')];
+    globalThis.document = {
+        querySelectorAll(selector) {
+            return selector === '.hub-btn' ? buttons : [];
+        }
+    };
+    const ui = Object.create(UIManager.prototype);
+
+    try {
+        ui.setActiveHubButton('shop');
+
+        assert.equal(ui.activePanelType, 'shop');
+        assert.equal(buttons[0].classes.has('active'), false);
+        assert.equal(buttons[0].attributes['aria-current'], 'false');
+        assert.equal(buttons[1].classes.has('active'), true);
+        assert.equal(buttons[1].attributes['aria-current'], 'dialog');
+
+        ui.setActiveHubButton(null);
+
+        assert.equal(buttons[1].classes.has('active'), false);
+        assert.equal(buttons[1].attributes['aria-current'], 'false');
+    } finally {
+        globalThis.document = previousDocument;
+    }
+});
+
 test('buildWaveReportState resume una oleada limpia con consejo de ahorro', () => {
     const report = buildWaveReportState({
         wave: 4,
@@ -978,4 +1006,22 @@ function createUpgradeUi(credits, visibleCredits = '') {
     ui.showToast = (message, type) => calls.push(['toast', message, type]);
     ui.renderHeroDetails = (unit) => calls.push(['details', unit?.id]);
     return ui;
+}
+
+function createHubButton(panel) {
+    const button = {
+        dataset: { panel },
+        classes: new Set(),
+        attributes: {},
+        classList: {
+            toggle(className, active) {
+                if (active) button.classes.add(className);
+                else button.classes.delete(className);
+            }
+        },
+        setAttribute(name, value) {
+            button.attributes[name] = value;
+        }
+    };
+    return button;
 }

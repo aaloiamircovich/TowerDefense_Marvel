@@ -1310,6 +1310,7 @@ export class UIManager {
         this.gachaRevealTimers = [];
         this.lastFocusedElement = null;
         this.nextWaveSummary = null;
+        this.activePanelType = null;
         this.combatPressureSignature = '';
         this.dismissedOnboardingSteps = new Set();
         this.profilePanel = new ProfilePanel(this);
@@ -1402,8 +1403,18 @@ export class UIManager {
 
     closePanel() {
         this.hidePanelOverlay();
+        this.setActiveHubButton(null);
         if (!document.body.classList.contains('title-screen-active') && !this.game.isManuallyPaused && !this.game.isGameOver) this.game.start();
         this.lastFocusedElement?.focus?.();
+    }
+
+    setActiveHubButton(type = null) {
+        this.activePanelType = type || null;
+        document.querySelectorAll?.('.hub-btn').forEach((button) => {
+            const active = Boolean(type && button.dataset.panel === type);
+            button.classList.toggle('active', active);
+            button.setAttribute('aria-current', active ? 'dialog' : 'false');
+        });
     }
 
     showPanelOverlay(showCloseButton = true) {
@@ -2393,7 +2404,7 @@ export class UIManager {
     }
 
     renderPanel(type) {
-        const title = {
+        const panelTitles = {
             profile: 'Perfil',
             radar: 'Radar tactico',
             collection: 'Colección',
@@ -2402,7 +2413,9 @@ export class UIManager {
             skins: 'Skins',
             map: 'Mapa',
             settings: 'Ajustes'
-        }[type] || type;
+        };
+        const title = panelTitles[type] || type;
+        this.setActiveHubButton(panelTitles[type] ? type : null);
 
         if (type === 'shop') return this.renderShop(title);
         if (type === 'skins') return this.renderSkinShop(title);
