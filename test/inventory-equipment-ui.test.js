@@ -57,6 +57,9 @@ test('inventario muestra objetos equipados con el sprite del heroe dueño', () =
     assert.match(html, /Equipado por Iron Man/);
     assert.match(html, /item-effect-pills/);
     assert.match(html, /Cadencia[\s\S]*\+18%/);
+
+    const equippedHtml = panel.renderEquippedItem(reactorEntry.item, 'weapon');
+    assert.match(equippedHtml, /class="icon-command unequip-item" type="button" data-slot="weapon" aria-label="Desequipar REACTOR ARC"/);
 });
 
 test('inventario resume efectos principales de cada objeto', () => {

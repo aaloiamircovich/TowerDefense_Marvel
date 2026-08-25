@@ -108,6 +108,10 @@ test('ProfilePanel muestra racha y emblemas de contrato', () => {
     assert.match(panelContent.innerHTML, /Emblemas de contrato/);
     assert.match(panelContent.innerHTML, /Operador semanal/);
     assert.match(panelContent.innerHTML, /Retos de agrupacion/);
+
+    panel.render('Perfil', 'history');
+    assert.match(panelContent.innerHTML, /id="copy-build-code" type="button" aria-label="Copiar codigo de build"/);
+    assert.match(panelContent.innerHTML, /id="copy-replay-code" type="button" aria-label="Copiar codigo de replay"/);
 });
 test('ProfilePanel navega tabs con teclado', () => {
     const calls = [];

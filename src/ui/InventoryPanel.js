@@ -272,7 +272,7 @@ export class InventoryPanel {
                 ${this.ui.renderSprite(item.icon, item.name)}
                 <div><span>${SLOT_LABELS[item.slot]} | ${SET_BONUSES[item.set]?.name || 'Sin familia'}</span><strong>${item.name}</strong><small>${item.desc}</small></div>
                 <div class="slot-actions">
-                    <button class="icon-command unequip-item" data-slot="${slot}" aria-label="Desequipar ${item.name}" title="Desequipar"><i class="fas fa-eject"></i></button>
+                    <button class="icon-command unequip-item" type="button" data-slot="${slot}" aria-label="Desequipar ${item.name}" title="Desequipar"><i class="fas fa-eject"></i></button>
                 </div>
             </article>
         `;
