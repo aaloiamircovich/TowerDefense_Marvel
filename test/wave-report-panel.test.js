@@ -38,6 +38,7 @@ test('WaveReportPanel renderiza informe y delega mejora recomendada', () => {
             heroId: 'iron_man',
             label: 'Mejorar Iron Man',
             cost: 240,
+            remaining: 260,
             reason: 'Aprovecha <MVP>'
         })
     });
@@ -55,6 +56,7 @@ test('WaveReportPanel renderiza informe y delega mejora recomendada', () => {
         assert.match(container.innerHTML, /Extras/);
         assert.match(container.innerHTML, /MVP/);
         assert.match(container.innerHTML, /Mejorar Iron Man/);
+        assert.match(container.innerHTML, /Saldo tras mejora: \$260/);
         assert.match(container.innerHTML, /Aprovecha &lt;MVP&gt;/);
 
         actionButton.listeners.click();
@@ -67,6 +69,21 @@ test('WaveReportPanel renderiza informe y delega mejora recomendada', () => {
     } finally {
         globalThis.document = previousDocument;
     }
+});
+
+test('WaveReportPanel desglosa ahorro cuando no alcanza para mejorar', () => {
+    const panel = new WaveReportPanel({});
+    const html = panel.renderAction({
+        type: 'saving',
+        label: 'Faltan $160',
+        missing: 160,
+        available: 80,
+        cost: 240,
+        reason: 'Guarda creditos'
+    });
+
+    assert.match(html, /Faltan \$160/);
+    assert.match(html, /Disponible \$80 \/ coste \$240/);
 });
 
 function createElementStub() {

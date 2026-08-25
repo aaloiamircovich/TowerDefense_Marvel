@@ -1135,6 +1135,9 @@ export function buildWaveReportActionState(report = {}, heroes = [], credits = 0
             type: 'saving',
             heroId,
             label: `Faltan $${Math.ceil(cost - available)}`,
+            missing: Math.ceil(cost - available),
+            available: Math.floor(available),
+            cost,
             reason: report.leaks > 0
                 ? 'Ahorra para reforzar al heroe que mas sostuvo la fuga.'
                 : 'Guarda creditos para convertir al MVP en carry.',
@@ -1147,6 +1150,8 @@ export function buildWaveReportActionState(report = {}, heroes = [], credits = 0
         heroId,
         label: `Mejorar ${name}`,
         cost,
+        available: Math.floor(available),
+        remaining: Math.max(0, Math.floor(available - cost)),
         reason: report.leaks > 0
             ? 'Recomendado tras fugas: potencia tu defensa mas efectiva.'
             : 'Aprovecha el rendimiento del MVP antes de escalar amenaza.',

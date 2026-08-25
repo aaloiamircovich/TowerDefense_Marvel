@@ -2589,6 +2589,12 @@ canvas {
     font-weight: 800;
 }
 
+.wave-report-action small + small {
+    color: var(--muted);
+    font-weight: 700;
+    opacity: 0.85;
+}
+
 @media (max-width: 760px) {
     .wave-report-scoreline {
         grid-template-columns: 1fr;

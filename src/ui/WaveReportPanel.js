@@ -154,11 +154,17 @@ export class WaveReportPanel {
     renderAction(action) {
         if (!action) return '';
         const type = escapeHtml(action.type);
+        const economyNote = action.type === 'upgrade' && Number.isFinite(Number(action.remaining))
+            ? `<small>Saldo tras mejora: $${escapeHtml(action.remaining)}</small>`
+            : action.type === 'saving' && Number.isFinite(Number(action.missing))
+                ? `<small>Disponible $${escapeHtml(action.available || 0)} / coste $${escapeHtml(action.cost || 0)}</small>`
+                : '';
         return `<div class="wave-report-action report-action-${type}">
             <span>${escapeHtml(action.reason)}</span>
             ${action.type === 'upgrade'
                 ? `<button id="wave-report-action" class="btn-mode-action">${escapeHtml(action.label)} $${escapeHtml(action.cost)}</button>`
                 : `<small>${escapeHtml(action.label)}</small>`}
+            ${economyNote}
         </div>`;
     }
 }

@@ -809,6 +809,8 @@ test('buildWaveReportActionState recomienda mejorar al MVP si hay creditos', () 
     assert.equal(action.type, 'upgrade');
     assert.equal(action.heroId, 'iron_man');
     assert.equal(action.cost, 240);
+    assert.equal(action.available, 260);
+    assert.equal(action.remaining, 20);
     assert.match(action.reason, /MVP/);
 });
 
@@ -822,6 +824,9 @@ test('buildWaveReportActionState indica ahorro si falta para reforzar tras fugas
 
     assert.equal(action.type, 'saving');
     assert.equal(action.label, 'Faltan $160');
+    assert.equal(action.missing, 160);
+    assert.equal(action.available, 80);
+    assert.equal(action.cost, 240);
     assert.match(action.reason, /fuga/);
 });
 
