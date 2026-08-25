@@ -49,8 +49,7 @@ export class HeroRosterPanel {
         const rarity = normalizeRarity(hero.rarity);
         const rarityClass = getRarityClass(rarity);
         const level = this.getHeroLevel(liveHero);
-        const fieldState = deployed ? 'en campo' : 'en banco';
-        const cardLabel = `${hero.name}. Rareza ${rarity}. Nivel ${level}. ${fieldState}.`;
+        const cardLabel = `${hero.name}. Rareza ${rarity}. Nivel ${level}.`;
         const placeLabel = deployed
             ? `Reposicionar ${hero.name}`
             : `Colocar ${hero.name}`;

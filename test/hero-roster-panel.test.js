@@ -81,7 +81,8 @@ test('HeroRosterPanel renderiza tarjeta ligera y conserva acciones del roster', 
 
         assert.equal(heroGrid.children.length, 2);
         assert.match(heroGrid.children[0].innerHTML, /Nv\. 4/);
-        assert.equal(heroGrid.children[0].attributes['aria-label'], 'Spider-Man. Rareza Epic. Nivel 4. en campo.');
+        assert.equal(heroGrid.children[0].attributes['aria-label'], 'Spider-Man. Rareza Epic. Nivel 4.');
+        assert.doesNotMatch(heroGrid.children[0].attributes['aria-label'], /campo|banco/i);
         assert.match(heroGrid.children[0].innerHTML, /class="btn-action place-btn" type="button"/);
         assert.match(heroGrid.children[0].innerHTML, /aria-label="Reposicionar Spider-Man"/);
         assert.match(heroGrid.children[0].innerHTML, /aria-label="Spider-Man: Mejora rapida \$220"/);
