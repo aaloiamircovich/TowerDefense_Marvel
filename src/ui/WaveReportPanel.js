@@ -167,7 +167,7 @@ export class WaveReportPanel {
         return `<div class="wave-report-action report-action-${type}">
             <span>${escapeHtml(action.reason)}</span>
             ${action.type === 'upgrade'
-                ? `<button id="wave-report-action" class="btn-mode-action" type="button" aria-label="${escapeHtml(actionLabel)}">${escapeHtml(action.label)} $${escapeHtml(action.cost)}</button>`
+                ? `<button id="wave-report-action" class="btn-mode-action" type="button" aria-label="${escapeHtml(actionLabel)}" title="${escapeHtml(actionLabel)}" data-tooltip="${escapeHtml(actionLabel)}">${escapeHtml(action.label)} $${escapeHtml(action.cost)}</button>`
                 : `<small>${escapeHtml(action.label)}</small>`}
             ${economyNote}
         </div>`;

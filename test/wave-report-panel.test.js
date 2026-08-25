@@ -59,7 +59,7 @@ test('WaveReportPanel renderiza informe y delega mejora recomendada', () => {
         assert.match(container.innerHTML, /Extras/);
         assert.match(container.innerHTML, /MVP/);
         assert.match(container.innerHTML, /Mejorar Iron Man/);
-        assert.match(container.innerHTML, /id="wave-report-action" class="btn-mode-action" type="button" aria-label="Mejorar Iron Man por 240 creditos\. Aprovecha &lt;MVP&gt;"/);
+        assert.match(container.innerHTML, /id="wave-report-action" class="btn-mode-action" type="button" aria-label="Mejorar Iron Man por 240 creditos\. Aprovecha &lt;MVP&gt;" title="Mejorar Iron Man por 240 creditos\. Aprovecha &lt;MVP&gt;" data-tooltip="Mejorar Iron Man por 240 creditos\. Aprovecha &lt;MVP&gt;"/);
         assert.match(container.innerHTML, /Saldo tras mejora: \$260/);
         assert.match(container.innerHTML, /Aprovecha &lt;MVP&gt;/);
 
