@@ -88,6 +88,15 @@ test('SettingsPanel usa el locale guardado para renderizar textos reales', () =>
         assert.match(panelContent.html, /Start wave/);
         assert.match(panelContent.html, /Cancel placement/);
         assert.match(panelContent.html, /Reset all/);
+        assert.match(panelContent.html, /id="toggle-grid" data-setting="grid" aria-label="Show tactical grid"/);
+        assert.match(panelContent.html, /data-key-binding="nextWave" maxlength="12" value="n" aria-label="Start wave"/);
+        assert.match(panelContent.html, /data-bus="master" aria-label="Master volume"/);
+        assert.match(panelContent.html, /id="music-track-select" aria-label="Song"/);
+        assert.match(panelContent.html, /data-locale="en" class="active" type="button" aria-pressed="true" aria-label="Language EN"/);
+        assert.match(panelContent.html, /data-scale="normal" class="active" type="button" aria-pressed="true" aria-label="Interface size Normal"/);
+        assert.match(panelContent.html, /id="export-save" type="button" aria-label="Export"/);
+        assert.match(panelContent.html, /id="enable-admin-mode" type="button" aria-label="Enable admin"/);
+        assert.match(panelContent.html, /id="clear-run" type="button" aria-label="Restart level"/);
     } finally {
         globalThis.document = previousDocument;
     }
@@ -332,5 +341,3 @@ test('SettingsPanel puede activar admin desde eventos sin perder traducciones', 
         globalThis.document = previousDocument;
     }
 });
-
-

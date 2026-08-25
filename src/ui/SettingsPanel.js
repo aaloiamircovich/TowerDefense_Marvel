@@ -101,22 +101,22 @@ export class SettingsPanel {
                 <section class="settings-section settings-section--toggles">
                     <h3>${t('gameplayAccessibility')}</h3>
                     <div class="settings-grid settings-grid--compact">
-                        ${BOOLEAN_SETTINGS.map(([key, id, labelKey]) => `<label class="setting-toggle"><input type="checkbox" id="${id}" data-setting="${key}" ${settings[key] ? 'checked' : ''}><span>${t(labelKey)}</span></label>`).join('')}
+                        ${BOOLEAN_SETTINGS.map(([key, id, labelKey]) => `<label class="setting-toggle"><input type="checkbox" id="${id}" data-setting="${key}" aria-label="${t(labelKey)}" ${settings[key] ? 'checked' : ''}><span>${t(labelKey)}</span></label>`).join('')}
                     </div>
                 </section>
                 <section class="settings-section">
                     <h3>${t('controls')}</h3>
-                    <div class="key-binding-grid">${KEY_BINDINGS.map(([key, labelKey]) => `<label><span>${t(labelKey)}</span><input data-key-binding="${key}" maxlength="12" value="${settings.keyBindings[key]}"></label>`).join('')}</div>
+                    <div class="key-binding-grid">${KEY_BINDINGS.map(([key, labelKey]) => `<label><span>${t(labelKey)}</span><input data-key-binding="${key}" maxlength="12" value="${settings.keyBindings[key]}" aria-label="${t(labelKey)}"></label>`).join('')}</div>
                     <small>${t('controllerHint')}</small>
                 </section>
                 <section class="settings-section">
                     <h3>${t('audioMix')}</h3>
                     <div class="audio-mixer">
-                        ${VOLUME_SETTINGS.map(([key, bus, labelKey]) => `<label class="volume-control"><span>${t(labelKey)}</span><input type="range" min="0" max="100" value="${Math.round(settings[key] * 100)}" data-setting="${key}" data-bus="${bus}"><output>${Math.round(settings[key] * 100)}%</output></label>`).join('')}
+                        ${VOLUME_SETTINGS.map(([key, bus, labelKey]) => `<label class="volume-control"><span>${t(labelKey)}</span><input type="range" min="0" max="100" value="${Math.round(settings[key] * 100)}" data-setting="${key}" data-bus="${bus}" aria-label="${t(labelKey)}"><output>${Math.round(settings[key] * 100)}%</output></label>`).join('')}
                     </div>
                     <div class="music-picker">
-                        <label><span>${t('musicTrack')}</span><select id="music-track-select">${MUSIC_TRACKS.map((track) => `<option value="${track.id}" ${settings.musicTrackId === track.id ? 'selected' : ''}>${track.title}</option>`).join('')}</select></label>
-                        <label class="setting-toggle"><input type="checkbox" id="toggle-music-loop" ${settings.musicLoop ? 'checked' : ''}><span>${t('musicLoop')}</span></label>
+                        <label><span>${t('musicTrack')}</span><select id="music-track-select" aria-label="${t('musicTrack')}">${MUSIC_TRACKS.map((track) => `<option value="${track.id}" ${settings.musicTrackId === track.id ? 'selected' : ''}>${track.title}</option>`).join('')}</select></label>
+                        <label class="setting-toggle"><input type="checkbox" id="toggle-music-loop" aria-label="${t('musicLoop')}" ${settings.musicLoop ? 'checked' : ''}><span>${t('musicLoop')}</span></label>
                     </div>
                 </section>
                 <section class="settings-section settings-section--interface">
@@ -125,35 +125,35 @@ export class SettingsPanel {
                         <div>
                             <span>${t('language')}</span>
                             <div class="ui-scale-switch" role="group" aria-label="${t('language')}">
-                                ${getSupportedLocales().map((supportedLocale) => `<button data-locale="${supportedLocale}" class="${settings.locale === supportedLocale ? 'active' : ''}">${supportedLocale.toUpperCase()}</button>`).join('')}
+                                ${getSupportedLocales().map((supportedLocale) => `<button data-locale="${supportedLocale}" class="${settings.locale === supportedLocale ? 'active' : ''}" type="button" aria-pressed="${settings.locale === supportedLocale}" aria-label="${t('language')} ${supportedLocale.toUpperCase()}">${supportedLocale.toUpperCase()}</button>`).join('')}
                             </div>
                         </div>
                         <div>
                             <span>${t('uiSize')}</span>
                             <div class="ui-scale-switch" role="group" aria-label="${t('uiSize')}">
-                                ${UI_SCALES.map(([value, labelKey]) => `<button data-scale="${value}" class="${settings.uiScale === value ? 'active' : ''}" aria-pressed="${settings.uiScale === value}">${t(labelKey)}</button>`).join('')}
+                                ${UI_SCALES.map(([value, labelKey]) => `<button data-scale="${value}" class="${settings.uiScale === value ? 'active' : ''}" type="button" aria-pressed="${settings.uiScale === value}" aria-label="${t('uiSize')} ${t(labelKey)}">${t(labelKey)}</button>`).join('')}
                             </div>
                         </div>
                     </div>
                 </section>
                 <section class="settings-section">
                     <h3>${t('saveData')}</h3>
-                    <div class="settings-actions"><button class="btn-primary ghost" id="export-save"><i class="fas fa-download"></i> ${t('export')}</button><button class="btn-primary ghost" id="import-save"><i class="fas fa-upload"></i> ${t('import')}</button><button class="btn-primary ghost" id="export-replay"><i class="fas fa-film"></i> ${t('replay')}</button><button class="btn-primary danger" id="reset-all-game"><i class="fas fa-trash"></i> ${t('resetAllGame')}</button><input id="import-save-file" type="file" accept="application/json,.json" hidden></div>
+                    <div class="settings-actions"><button class="btn-primary ghost" id="export-save" type="button" aria-label="${t('export')}"><i class="fas fa-download"></i> ${t('export')}</button><button class="btn-primary ghost" id="import-save" type="button" aria-label="${t('import')}"><i class="fas fa-upload"></i> ${t('import')}</button><button class="btn-primary ghost" id="export-replay" type="button" aria-label="${t('replay')}"><i class="fas fa-film"></i> ${t('replay')}</button><button class="btn-primary danger" id="reset-all-game" type="button" aria-label="${t('resetAllGame')}"><i class="fas fa-trash"></i> ${t('resetAllGame')}</button><input id="import-save-file" type="file" accept="application/json,.json" hidden></div>
                 </section>
                 <section class="settings-section admin-settings ${settings.adminMode ? 'admin-active' : ''}">
                     <h3>${t('adminMode')}</h3>
                     <p>${settings.adminMode ? t('adminModeActive') : t('adminModeHint')}</p>
                     <div class="settings-actions">
                         ${settings.adminMode
-                            ? `<button class="btn-primary danger" id="disable-admin-mode"><i class="fas fa-lock"></i> ${t('disableAdmin')}</button>`
-                            : `<input id="admin-password" type="password" inputmode="numeric" maxlength="8" placeholder="${t('adminPassword')}"><button class="btn-primary ghost" id="enable-admin-mode"><i class="fas fa-unlock"></i> ${t('enableAdmin')}</button>`}
+                            ? `<button class="btn-primary danger" id="disable-admin-mode" type="button" aria-label="${t('disableAdmin')}"><i class="fas fa-lock"></i> ${t('disableAdmin')}</button>`
+                            : `<input id="admin-password" type="password" inputmode="numeric" maxlength="8" placeholder="${t('adminPassword')}" aria-label="${t('adminPassword')}"><button class="btn-primary ghost" id="enable-admin-mode" type="button" aria-label="${t('enableAdmin')}"><i class="fas fa-unlock"></i> ${t('enableAdmin')}</button>`}
                     </div>
                 </section>
                 <section class="settings-section settings-section--quick">
                     <h3>${t('restartLevel')}</h3>
                     <div class="settings-actions settings-actions--inline">
-                    <button class="btn-primary ghost" id="reset-placement"><i class="fas fa-ban"></i> ${t('cancelPlacement')}</button>
-                    <button class="btn-primary danger" id="clear-run"><i class="fas fa-rotate-left"></i> ${t('restartLevel')}</button>
+                    <button class="btn-primary ghost" id="reset-placement" type="button" aria-label="${t('cancelPlacement')}"><i class="fas fa-ban"></i> ${t('cancelPlacement')}</button>
+                    <button class="btn-primary danger" id="clear-run" type="button" aria-label="${t('restartLevel')}"><i class="fas fa-rotate-left"></i> ${t('restartLevel')}</button>
                     </div>
                 </section>
             </div>
