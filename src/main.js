@@ -246,6 +246,7 @@ async function initGame() {
         });
     } catch (error) {
         hideBootScreen();
+        document.body.classList.remove('title-screen-active');
         document.body.dataset.appState = 'fatal';
         ui?.showFatalError(error);
         console.error('Detalle del fallo:', error);

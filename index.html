@@ -14,14 +14,28 @@
     <link rel="preload" href="assets/images/ui/mythic-pride-gradient-20260811.jpg" as="image">
     <link rel="preload" href="assets/fonts/avengeance-heroic-avenger-bd.ttf" as="font" type="font/ttf" crossorigin>
     <style>
+        @font-face {
+            font-family: "Avengeance";
+            src: url("assets/fonts/avengeance-heroic-avenger-bd.ttf") format("truetype");
+            font-weight: 700;
+            font-style: normal;
+            font-display: block;
+        }
+
         html,
         body {
             margin: 0;
             min-height: 100%;
-            background: #080b10;
+            background: #050914;
         }
 
         body[data-app-state="loading"] #game-ui {
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        body.title-screen-active #top-bar,
+        body.title-screen-active #main-content {
             visibility: hidden;
             pointer-events: none;
         }
@@ -31,20 +45,169 @@
             inset: 0;
             z-index: 95;
             display: grid;
+            place-items: stretch;
             min-height: 100vh;
             overflow: hidden;
-            background: #050914;
+            background:
+                linear-gradient(90deg, rgba(3, 4, 15, 0.92) 0%, rgba(3, 4, 15, 0.64) 27%, rgba(3, 4, 15, 0.08) 58%),
+                linear-gradient(0deg, rgba(3, 4, 15, 0.82), rgba(3, 4, 15, 0.04) 38%),
+                url("assets/images/ui/start-screen-cover-final-clean-20260809.png") center / cover no-repeat;
             color: #fff;
         }
 
         #start-screen.hidden {
             display: none !important;
         }
+
+        .start-screen__shade,
+        .start-screen__frame {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+
+        .start-screen__shade {
+            background:
+                radial-gradient(circle at 67% 42%, rgba(121, 59, 255, 0.08), transparent 34%),
+                radial-gradient(circle at 21% 78%, rgba(49, 216, 255, 0.12), transparent 24%);
+        }
+
+        .start-screen__frame {
+            inset: clamp(16px, 2.2vw, 42px);
+            border: 5px solid rgba(95, 67, 255, 0.86);
+            box-shadow:
+                inset 0 0 0 2px rgba(59, 216, 255, 0.72),
+                0 0 34px rgba(75, 34, 255, 0.34);
+        }
+
+        .start-screen__content {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            align-content: start;
+            width: min(560px, calc(100vw - 44px));
+            margin: clamp(64px, 8vh, 92px) 0 0 clamp(54px, 5.4vw, 104px);
+        }
+
+        .start-screen__logo {
+            display: block;
+            width: clamp(220px, 18vw, 365px);
+            height: auto;
+            margin-bottom: clamp(18px, 2vw, 28px);
+            image-rendering: auto;
+            filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.45));
+        }
+
+        .start-screen h1 {
+            display: grid;
+            gap: 0;
+            margin: 0;
+            color: #fff;
+            font-family: "Avengeance", Impact, fantasy;
+            font-size: clamp(72px, 6vw, 118px);
+            font-weight: 700;
+            line-height: 0.85;
+            letter-spacing: 0;
+            text-transform: uppercase;
+            text-shadow:
+                0 7px 0 #240018,
+                0 14px 20px rgba(0, 0, 0, 0.55);
+        }
+
+        .start-screen h1 span:first-child {
+            color: #ffd36b;
+        }
+
+        .start-screen__subtitle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: min(520px, 100%);
+            min-height: 58px;
+            margin: 22px 0 clamp(58px, 14vh, 170px);
+            padding: 10px 24px;
+            transform: skewX(-16deg);
+            transform-origin: left center;
+            border: 3px solid #36d7ff;
+            background: rgba(7, 18, 34, 0.72);
+            color: #dff9ff;
+            font-family: Consolas, "Segoe UI", system-ui, sans-serif;
+            font-size: clamp(18px, 1.8vw, 28px);
+            font-weight: 900;
+            letter-spacing: 0;
+            text-transform: uppercase;
+            text-shadow: 0 3px 0 rgba(0, 0, 0, 0.65);
+        }
+
+        .start-screen__loading {
+            display: grid;
+            gap: 10px;
+            width: min(430px, 100%);
+            margin-top: calc(clamp(58px, 14vh, 170px) * -0.55);
+            margin-bottom: clamp(34px, 8vh, 86px);
+            color: #dff9ff;
+        }
+
+        .start-screen__loading-meta {
+            display: flex;
+            align-items: end;
+            justify-content: space-between;
+            gap: 16px;
+            text-shadow: 0 3px 0 rgba(0, 0, 0, 0.58);
+        }
+
+        .start-screen__loading-meta span,
+        .start-screen__loading-meta strong {
+            font-family: "Avengeance", Impact, fantasy;
+            letter-spacing: 0;
+            text-transform: uppercase;
+        }
+
+        .start-screen__loading-meta span {
+            color: #ffd36b;
+            font-size: clamp(18px, 1.5vw, 24px);
+        }
+
+        .start-screen__loading-meta strong {
+            min-width: 0;
+            color: #bfefff;
+            font-size: clamp(12px, 1vw, 15px);
+            line-height: 1.15;
+            text-align: right;
+        }
+
+        .start-screen__loading-track {
+            height: 12px;
+            overflow: hidden;
+            clip-path: polygon(3% 0, 100% 0, 97% 100%, 0 100%);
+            border: 2px solid rgba(54, 215, 255, 0.78);
+            background: rgba(5, 14, 27, 0.82);
+            box-shadow:
+                inset 0 0 16px rgba(54, 215, 255, 0.12),
+                0 10px 22px rgba(0, 0, 0, 0.32);
+        }
+
+        .start-screen__loading-track span {
+            display: block;
+            width: 12%;
+            height: 100%;
+            background: linear-gradient(90deg, #35d6ff, #ffd36b 58%, #ff3dbd);
+            box-shadow: 0 0 18px rgba(54, 215, 255, 0.72);
+            transition: width 260ms ease;
+        }
+
+        body:not([data-app-state="loading"]) .start-screen__loading {
+            display: none;
+        }
+
+        body[data-app-state="loading"] .start-screen__panel {
+            display: none;
+        }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="styles.css?v=rarity-glass-buttons-v1-20260811">
 </head>
-<body data-app-state="loading">
+<body class="title-screen-active" data-app-state="loading">
     <section id="start-screen" class="start-screen" data-view="home" aria-label="Pantalla de inicio">
         <div class="start-screen__shade"></div>
         <div class="start-screen__frame" aria-hidden="true"></div>

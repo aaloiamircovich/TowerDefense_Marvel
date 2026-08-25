@@ -16,6 +16,14 @@ if (!/\.high-contrast\b/.test(css)) errors.push('Falta modo de alto contraste');
 if (!/\.reduce-motion\b/.test(css)) errors.push('Falta preferencia de movimiento reducido');
 if (!/body\[data-app-state="loading"\]\s*#game-ui/i.test(html)) errors.push('Falta estilo critico para ocultar UI durante la carga inicial');
 
+const criticalStyle = html.match(/<style>([\s\S]*?)<\/style>/i)?.[1] || '';
+const bodyTag = html.match(/<body\b[^>]*>/i)?.[0] || '';
+if (!/@font-face[\s\S]*Avengeance[\s\S]*avengeance-heroic-avenger-bd\.ttf/i.test(criticalStyle)) errors.push('La pantalla inicial debe declarar la fuente critica inline');
+if (!/start-screen-cover-final-clean-20260809\.png/i.test(criticalStyle)) errors.push('La pantalla inicial debe declarar el fondo critico inline');
+if (!/body\.title-screen-active\s*#top-bar[\s\S]*body\.title-screen-active\s*#main-content/i.test(criticalStyle)) errors.push('Falta estilo critico para ocultar el HUD durante la pantalla inicial');
+if (!/body\[data-app-state="loading"\]\s*\.start-screen__panel/i.test(criticalStyle)) errors.push('Falta estilo critico para ocultar botones de inicio durante carga');
+if (!/\bdata-app-state="loading"/i.test(bodyTag) || !/\bclass="[^"]*\btitle-screen-active\b/i.test(bodyTag)) errors.push('El body debe iniciar ocultando el HUD hasta que el jugador entre al juego');
+
 [
     'start-play-btn',
     'start-options-btn',
