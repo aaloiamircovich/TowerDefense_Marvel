@@ -275,7 +275,7 @@ export class TeamBuilderPanel {
             <div class="collection-tabs" role="tablist" aria-label="Secciones de coleccion">
                 ${tabs.map(([view, icon, label]) => {
                     const active = this.viewMode === view;
-                    return `<button id="collection-tab-${view}" class="collection-view-tab ${active ? 'active' : ''}" data-view="${view}" type="button" role="tab" aria-selected="${active}" aria-controls="collection-panel-${view}" tabindex="${active ? '0' : '-1'}">
+                    return `<button id="collection-tab-${view}" class="collection-view-tab ${active ? 'active' : ''}" data-view="${view}" type="button" role="tab" aria-selected="${active}" aria-controls="collection-panel-${view}" tabindex="${active ? '0' : '-1'}" aria-label="${label}" title="${label}" data-tooltip="${label}">
                         <i class="fas ${icon}"></i> ${label}
                     </button>`;
                 }).join('')}

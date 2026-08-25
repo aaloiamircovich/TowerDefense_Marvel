@@ -179,6 +179,7 @@ test('coleccion expone diccionario de evoluciones completo', () => {
     assert.match(panel.renderCollectionTabs(), /data-view="evolutions"/);
     assert.match(panel.renderCollectionTabs(), /role="tab"/);
     assert.match(panel.renderCollectionTabs(), /aria-controls="collection-panel-heroes"/);
+    assert.match(panel.renderCollectionTabs(), /aria-label="Heroes" title="Heroes" data-tooltip="Heroes"/);
     assert.match(panel.renderCollectionTabs(), /tabindex="0"/);
     assert.match(panel.renderCollectionTabs(), /fa-skull"><\/i> Villanos/);
     assert.match(panel.renderCollectionTabs(), /fa-dna"><\/i> Evoluciones/);

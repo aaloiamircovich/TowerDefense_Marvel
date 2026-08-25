@@ -2227,7 +2227,10 @@ export class UIManager {
                         </div>
 
                         <div class="hero-detail-tabs" role="tablist" aria-label="Detalle de heroe">
-                            ${detailTabs.map((tab) => `<button id="hero-detail-tab-${tab.id}" class="hero-detail-tab ${activeDetailView === tab.id ? 'active' : ''}" data-view="${tab.id}" role="tab" aria-selected="${activeDetailView === tab.id}" aria-controls="hero-detail-panel" tabindex="${activeDetailView === tab.id ? '0' : '-1'}" type="button"><i class="fas ${tab.icon}"></i><span>${tab.label}</span><b class="hero-detail-tab-badge">${escapeHtml(tab.badge)}</b></button>`).join('')}
+                            ${detailTabs.map((tab) => {
+                                const tabAriaLabel = escapeHtml(`${tab.label}: ${tab.badge}`);
+                                return `<button id="hero-detail-tab-${tab.id}" class="hero-detail-tab ${activeDetailView === tab.id ? 'active' : ''}" data-view="${tab.id}" role="tab" aria-selected="${activeDetailView === tab.id}" aria-controls="hero-detail-panel" tabindex="${activeDetailView === tab.id ? '0' : '-1'}" type="button" aria-label="${tabAriaLabel}" title="${tabAriaLabel}" data-tooltip="${tabAriaLabel}"><i class="fas ${tab.icon}"></i><span>${tab.label}</span><b class="hero-detail-tab-badge">${escapeHtml(tab.badge)}</b></button>`;
+                            }).join('')}
                         </div>
 
                         <div id="hero-detail-panel" class="hero-detail-tab-panel ${activeDetailView}" role="tabpanel" aria-labelledby="hero-detail-tab-${activeDetailView}">
