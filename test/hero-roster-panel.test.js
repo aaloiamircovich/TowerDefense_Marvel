@@ -81,6 +81,8 @@ test('HeroRosterPanel renderiza tarjeta ligera y conserva acciones del roster', 
 
         assert.equal(heroGrid.children.length, 2);
         assert.match(heroGrid.children[0].innerHTML, /Nv\. 4/);
+        assert.match(heroGrid.children[0].innerHTML, /data-upgrade-state="ready"/);
+        assert.match(heroGrid.children[0].innerHTML, /Mejora rapida \$220/);
         assert.doesNotMatch(heroGrid.children[0].innerHTML, /hero-card-field-state|>Campo<|>Banco<|Respuesta ideal|rompe armadura|detecta sigilo|frena corredores/i);
         assert.doesNotMatch(heroGrid.children[1].innerHTML, /hero-card-field-state|>Campo<|>Banco<|Respuesta ideal|rompe armadura|detecta sigilo|frena corredores/i);
         assert.doesNotMatch(heroGrid.children[0].className, /wave-fit-/);
@@ -98,6 +100,56 @@ test('HeroRosterPanel renderiza tarjeta ligera y conserva acciones del roster', 
         assert.ok(calls.includes('select:black_widow'));
         assert.equal(deployedSpider.targetingPriority, 'Último');
         assert.equal(activeTeam[0].targetingPriority, 'Último');
+    } finally {
+        globalThis.document = previousDocument;
+    }
+});
+
+test('HeroRosterPanel muestra cuanto falta para mejora rapida', () => {
+    const previousDocument = globalThis.document;
+    globalThis.document = {
+        createElement() {
+            return createCardStub();
+        }
+    };
+
+    const heroGrid = createHeroGridStub();
+    const hero = { id: 'hawkeye', name: 'Hawkeye', rarity: 'Common', level: 8, sprite: 'hawkeye.png' };
+    const deployedHero = { ...hero, level: 8, config: { id: hero.id } };
+    const ui = {
+        heroGrid,
+        game: {
+            activeTeam: [hero],
+            heroes: [deployedHero],
+            resourceManager: { credits: 100 },
+            inputManager: {
+                setRepositionMode() {},
+                setPlacementMode() {}
+            }
+        },
+        getHeroUpgradeCost: () => 220,
+        canAffordHeroUpgrade: () => false,
+        getMissionCredits: () => 100,
+        getHeroLevel: (unit) => unit.level || 1,
+        renderSprite(source, name) {
+            return `<img src="${source}" alt="${name}">`;
+        },
+        getHeroDisplaySprite(unit) {
+            return unit.sprite || `${unit.id}.png`;
+        },
+        findDeployedHeroById: () => deployedHero,
+        inspectUnit() {},
+        showToast() {},
+        renderOnboardingCoach() {}
+    };
+
+    try {
+        new HeroRosterPanel(ui).render([hero]);
+
+        assert.equal(heroGrid.children.length, 1);
+        assert.match(heroGrid.children[0].innerHTML, /data-affordable="false"/);
+        assert.match(heroGrid.children[0].innerHTML, /data-upgrade-state="short"/);
+        assert.match(heroGrid.children[0].innerHTML, /Faltan \$120 para mejorar/);
     } finally {
         globalThis.document = previousDocument;
     }

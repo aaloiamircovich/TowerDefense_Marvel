@@ -33,7 +33,18 @@ export class HeroRosterPanel {
         const liveHero = deployedHero || hero;
         const quickUpgradeCost = deployedHero ? this.ui.getHeroUpgradeCost(deployedHero, 1) : 0;
         const canQuickUpgrade = this.ui.canAffordHeroUpgrade(deployedHero, 1);
-        const quickUpgradeTooltip = Number.isFinite(quickUpgradeCost) ? `Mejora rapida $${quickUpgradeCost}` : 'Nivel maximo';
+        const missionCredits = this.ui.getMissionCredits?.() ?? this.ui.game.resourceManager?.credits ?? 0;
+        const missingCredits = Number.isFinite(quickUpgradeCost) && Number.isFinite(missionCredits)
+            ? Math.max(0, quickUpgradeCost - missionCredits)
+            : 0;
+        const quickUpgradeTooltip = Number.isFinite(quickUpgradeCost)
+            ? canQuickUpgrade
+                ? `Mejora rapida $${quickUpgradeCost}`
+                : `Faltan $${missingCredits} para mejorar`
+            : 'Nivel maximo';
+        const quickUpgradeState = Number.isFinite(quickUpgradeCost)
+            ? canQuickUpgrade ? 'ready' : 'short'
+            : 'maxed';
         const targetingState = deployedHero ? this.buildTargetingControlState(deployedHero.targetingPriority || hero.targetingPriority) : null;
         const rarity = normalizeRarity(hero.rarity);
         const rarityClass = getRarityClass(rarity);
@@ -55,7 +66,7 @@ export class HeroRosterPanel {
             </div>
             <div class="hero-actions">
                 <button class="btn-action place-btn" data-testid="hero-place-${escapeHtml(hero.id)}" title="${deployed ? 'Reposicionar' : 'Colocar'}" aria-label="${deployed ? 'Reposicionar' : 'Colocar'}" data-tooltip="${deployed ? 'Mover libremente' : 'Colocar héroe gratis'}"><i class="fas ${deployed ? 'fa-arrows-alt' : 'fa-map-marker-alt'}"></i></button>
-                ${deployedHero ? `<button class="btn-action upgrade-btn ${canQuickUpgrade ? '' : 'is-unaffordable'}" data-testid="hero-upgrade-${escapeHtml(hero.id)}" data-quick-upgrade-id="${escapeHtml(hero.id)}" data-affordable="${canQuickUpgrade ? 'true' : 'false'}" title="Mejorar en campo" aria-label="Mejorar ${escapeHtml(hero.name)}" data-tooltip="${quickUpgradeTooltip}"><i class="fas fa-arrow-up"></i></button>` : ''}
+                ${deployedHero ? `<button class="btn-action upgrade-btn ${canQuickUpgrade ? '' : 'is-unaffordable'}" data-testid="hero-upgrade-${escapeHtml(hero.id)}" data-quick-upgrade-id="${escapeHtml(hero.id)}" data-affordable="${canQuickUpgrade ? 'true' : 'false'}" data-upgrade-state="${quickUpgradeState}" title="${escapeHtml(quickUpgradeTooltip)}" aria-label="${escapeHtml(quickUpgradeTooltip)}" data-tooltip="${escapeHtml(quickUpgradeTooltip)}"><i class="fas fa-arrow-up"></i></button>` : ''}
                 ${targetingState ? `<button class="btn-action target-btn" data-testid="hero-target-${escapeHtml(hero.id)}" title="${escapeHtml(targetingState.tooltip)}" aria-label="${escapeHtml(targetingState.ariaLabel)}" data-tooltip="${escapeHtml(targetingState.tooltip)}"><i class="fas ${targetingState.icon}"></i><span>${escapeHtml(targetingState.label)}</span></button>` : ''}
                 <button class="btn-action stats-btn" title="Mejoras" aria-label="Mejoras" data-tooltip="Estadísticas y mejoras"><i class="fas fa-chart-bar"></i></button>
             </div>

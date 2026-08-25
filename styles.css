@@ -921,6 +921,12 @@ input:focus-visible,
     opacity: 0.68;
 }
 
+.btn-action.is-unaffordable[data-upgrade-state="short"] {
+    border-color: rgba(252, 163, 17, 0.32);
+    color: var(--bright-yellow);
+    background: rgba(252, 163, 17, 0.08);
+}
+
 .speed-btn {
     min-width: 70px;
     color: var(--bright-yellow);
