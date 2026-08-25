@@ -37,21 +37,49 @@ export class SettingsPanel {
         this.ui = ui;
     }
 
+    buildSummaryState(settings, locale, t) {
+        const enabledOptions = BOOLEAN_SETTINGS.filter(([key]) => settings[key]).length;
+        const masterVolume = Math.round((settings.masterVolume ?? 0) * 100);
+        const currentTrack = MUSIC_TRACKS.find((track) => track.id === settings.musicTrackId)?.title || MUSIC_TRACKS[0]?.title || '-';
+        const statusChips = [
+            { key: 'locale', icon: 'fa-language', label: t('language'), value: locale.toUpperCase(), tone: 'neutral' },
+            { key: 'uiScale', icon: 'fa-desktop', label: t('uiSize'), value: t(settings.uiScale || 'normal'), tone: 'neutral' },
+            { key: 'audio', icon: 'fa-volume-high', label: t('gameAudio'), value: settings.audio ? t('enabled') : t('disabled'), tone: settings.audio ? 'ready' : 'muted' },
+            { key: 'musicLoop', icon: 'fa-repeat', label: t('musicLoop'), value: settings.musicLoop ? t('enabled') : t('disabled'), tone: settings.musicLoop ? 'ready' : 'muted' },
+            { key: 'adminMode', icon: 'fa-user-shield', label: t('adminMode'), value: settings.adminMode ? t('enabled') : t('disabled'), tone: settings.adminMode ? 'danger' : 'muted' }
+        ];
+
+        return { enabledOptions, masterVolume, currentTrack, statusChips };
+    }
+
+    refreshSummary() {
+        const settings = this.ui.game.progression.state.settings;
+        const locale = settings.locale || 'es';
+        const t = (key) => translate(key, locale);
+        const summary = this.buildSummaryState(settings, locale, t);
+        const root = this.ui.panelContent;
+        const write = (selector, value) => {
+            const node = root.querySelector?.(selector);
+            if (node) node.textContent = value;
+        };
+
+        write('[data-settings-summary="activeOptions"]', `${summary.enabledOptions}/${BOOLEAN_SETTINGS.length}`);
+        write('[data-settings-summary="masterVolume"]', `${summary.masterVolume}%`);
+        write('[data-settings-summary="currentTrack"]', summary.currentTrack);
+        summary.statusChips.forEach((chip) => {
+            write(`[data-settings-status="${chip.key}"]`, chip.value);
+            const chipNode = root.querySelector?.(`[data-settings-status-chip="${chip.key}"]`);
+            chipNode?.classList?.remove('neutral', 'ready', 'muted', 'danger');
+            chipNode?.classList?.add(chip.tone);
+        });
+    }
+
     render(title = 'Ajustes') {
         const settings = this.ui.game.progression.state.settings;
         const locale = settings.locale || 'es';
         const t = (key) => translate(key, locale);
         const panelTitle = title === 'Ajustes' ? t('settings') : title;
-        const enabledOptions = BOOLEAN_SETTINGS.filter(([key]) => settings[key]).length;
-        const masterVolume = Math.round((settings.masterVolume ?? 0) * 100);
-        const currentTrack = MUSIC_TRACKS.find((track) => track.id === settings.musicTrackId)?.title || MUSIC_TRACKS[0]?.title || '-';
-        const statusChips = [
-            { icon: 'fa-language', label: t('language'), value: locale.toUpperCase(), tone: 'neutral' },
-            { icon: 'fa-desktop', label: t('uiSize'), value: t(settings.uiScale || 'normal'), tone: 'neutral' },
-            { icon: 'fa-volume-high', label: t('gameAudio'), value: settings.audio ? t('enabled') : t('disabled'), tone: settings.audio ? 'ready' : 'muted' },
-            { icon: 'fa-repeat', label: t('musicLoop'), value: settings.musicLoop ? t('enabled') : t('disabled'), tone: settings.musicLoop ? 'ready' : 'muted' },
-            { icon: 'fa-user-shield', label: t('adminMode'), value: settings.adminMode ? t('enabled') : t('disabled'), tone: settings.adminMode ? 'danger' : 'muted' }
-        ];
+        const summary = this.buildSummaryState(settings, locale, t);
 
         this.ui.panelContent.innerHTML = `
             <section class="settings-command-header">
@@ -61,12 +89,12 @@ export class SettingsPanel {
                     <p>${t('settingsBrief')}</p>
                 </div>
                 <div class="settings-readout">
-                    <span><small>${t('activeOptions')}</small><b>${enabledOptions}/${BOOLEAN_SETTINGS.length}</b></span>
-                    <span><small>${t('masterAudio')}</small><b>${masterVolume}%</b></span>
-                    <span><small>${t('currentTrack')}</small><b>${currentTrack}</b></span>
+                    <span><small>${t('activeOptions')}</small><b data-settings-summary="activeOptions">${summary.enabledOptions}/${BOOLEAN_SETTINGS.length}</b></span>
+                    <span><small>${t('masterAudio')}</small><b data-settings-summary="masterVolume">${summary.masterVolume}%</b></span>
+                    <span><small>${t('currentTrack')}</small><b data-settings-summary="currentTrack">${summary.currentTrack}</b></span>
                 </div>
                 <div class="settings-status-strip" aria-label="${t('settings')}">
-                    ${statusChips.map((chip) => `<span class="settings-status-chip ${chip.tone}"><i class="fas ${chip.icon}"></i><small>${chip.label}</small><b>${chip.value}</b></span>`).join('')}
+                    ${summary.statusChips.map((chip) => `<span class="settings-status-chip ${chip.tone}" data-settings-status-chip="${chip.key}"><i class="fas ${chip.icon}"></i><small>${chip.label}</small><b data-settings-status="${chip.key}">${chip.value}</b></span>`).join('')}
                 </div>
             </section>
             <div class="settings-layout settings-layout--compact">
@@ -150,6 +178,7 @@ export class SettingsPanel {
                 const value = Number(input.value) / 100;
                 game.progression.updateSetting(input.dataset.setting, value);
                 input.nextElementSibling.value = `${input.value}%`;
+                this.refreshSummary();
             });
             input.addEventListener('change', () => game.audio?.play('ui'));
         });
@@ -157,10 +186,12 @@ export class SettingsPanel {
             game.audio?.unlock?.();
             game.progression.updateSetting('musicTrackId', event.target.value);
             game.audio?.play('ui');
+            this.refreshSummary();
         });
         document.getElementById('toggle-music-loop')?.addEventListener('change', (event) => {
             game.progression.updateSetting('musicLoop', event.target.checked);
             game.audio?.play('ui');
+            this.refreshSummary();
         });
         this.ui.panelContent.querySelectorAll('[data-scale]').forEach((button) => {
             button.addEventListener('click', () => {

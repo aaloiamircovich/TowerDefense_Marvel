@@ -174,6 +174,82 @@ test('SettingsPanel refresca el resumen al cambiar toggles', () => {
         globalThis.document = previousDocument;
     }
 });
+
+test('SettingsPanel refresca resumen de audio y musica sin reabrir panel', () => {
+    const nodes = new Map();
+    const makeNode = () => ({
+        textContent: '',
+        classes: new Set(['settings-status-chip']),
+        classList: {
+            remove(...names) {
+                names.forEach((name) => this.owner.classes.delete(name));
+            },
+            add(name) {
+                this.owner.classes.add(name);
+            }
+        }
+    });
+    const wireClassList = (node) => {
+        node.classList.owner = node;
+        return node;
+    };
+    ['activeOptions', 'masterVolume', 'currentTrack'].forEach((key) => nodes.set(`[data-settings-summary="${key}"]`, { textContent: '' }));
+    ['locale', 'uiScale', 'audio', 'musicLoop', 'adminMode'].forEach((key) => {
+        nodes.set(`[data-settings-status="${key}"]`, { textContent: '' });
+        nodes.set(`[data-settings-status-chip="${key}"]`, wireClassList(makeNode()));
+    });
+    const settings = {
+        ranges: true,
+        grid: false,
+        combatText: true,
+        audio: true,
+        highContrast: false,
+        reduceMotion: false,
+        pixelArtCrisp: true,
+        reducedVfx: false,
+        tutorialHints: true,
+        simplifiedUi: false,
+        showFps: false,
+        masterVolume: 0.35,
+        musicVolume: 0.45,
+        sfxVolume: 0.75,
+        uiScale: 'compact',
+        locale: 'en',
+        musicTrackId: 'xmen-97-extended-theme',
+        musicLoop: true,
+        adminMode: false,
+        keyBindings: {
+            pause: 'p',
+            speed: 'f',
+            nextWave: 'n',
+            cancel: 'Escape',
+            targeting: 't',
+            upgrade: 'u'
+        }
+    };
+    const panel = new SettingsPanel({
+        panelContent: {
+            querySelector(selector) {
+                return nodes.get(selector) || null;
+            }
+        },
+        game: {
+            progression: {
+                state: { settings }
+            }
+        }
+    });
+
+    panel.refreshSummary();
+
+    assert.equal(nodes.get('[data-settings-summary="activeOptions"]').textContent, '5/11');
+    assert.equal(nodes.get('[data-settings-summary="masterVolume"]').textContent, '35%');
+    assert.equal(nodes.get('[data-settings-summary="currentTrack"]').textContent, 'X-Men 97 Extended Theme');
+    assert.equal(nodes.get('[data-settings-status="locale"]').textContent, 'EN');
+    assert.equal(nodes.get('[data-settings-status="uiScale"]').textContent, 'Compact');
+    assert.equal(nodes.get('[data-settings-status="musicLoop"]').textContent, 'Enabled');
+    assert.ok(nodes.get('[data-settings-status-chip="musicLoop"]').classes.has('ready'));
+});
 test('SettingsPanel puede activar admin desde eventos sin perder traducciones', () => {
     const previousDocument = globalThis.document;
     const listeners = {};
@@ -256,3 +332,5 @@ test('SettingsPanel puede activar admin desde eventos sin perder traducciones', 
         globalThis.document = previousDocument;
     }
 });
+
+
