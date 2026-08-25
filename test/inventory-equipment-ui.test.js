@@ -67,7 +67,7 @@ test('inventario resume efectos principales de cada objeto', () => {
 
 test('inventario filtra objetos libres y equipados desde la vista compacta', () => {
     const ui = createUiStub();
-    ui.panelContent = { innerHTML: '', querySelectorAll: () => [] };
+    ui.panelContent = { innerHTML: '', querySelectorAll: () => [], querySelector: () => null };
     const panel = new InventoryPanel(ui);
 
     panel.statusFilter = 'equipped';
@@ -82,6 +82,31 @@ test('inventario filtra objetos libres y equipados desde la vista compacta', () 
     assert.match(ui.panelContent.innerHTML, /data-status="free" aria-pressed="true"/);
     assert.match(ui.panelContent.innerHTML, /data-item-id="lentes_edith"/);
     assert.doesNotMatch(ui.panelContent.innerHTML, /data-item-id="reactor_arc"/);
+});
+
+test('inventario permite limpiar filtros de objeto en un click', () => {
+    const ui = createUiStub();
+    ui.panelContent = { innerHTML: '', querySelectorAll: () => [], querySelector: () => null };
+    const panel = new InventoryPanel(ui);
+
+    assert.equal(panel.hasActiveInventoryFilters(), false);
+    panel.render();
+    assert.match(ui.panelContent.innerHTML, /inventory-clear-filters[\s\S]*disabled/);
+
+    panel.statusFilter = 'equipped';
+    panel.tierFilter = 2;
+    panel.slotFilter = 'artifact';
+
+    assert.equal(panel.hasActiveInventoryFilters(), true);
+    panel.render();
+    assert.doesNotMatch(ui.panelContent.innerHTML, /inventory-clear-filters[\s\S]*disabled/);
+
+    panel.resetInventoryFilters();
+
+    assert.equal(panel.statusFilter, 'all');
+    assert.equal(panel.tierFilter, 0);
+    assert.equal(panel.slotFilter, 'all');
+    assert.equal(panel.hasActiveInventoryFilters(), false);
 });
 
 test('coleccion muestra el objeto equipado y permite elegir heroe destino', () => {

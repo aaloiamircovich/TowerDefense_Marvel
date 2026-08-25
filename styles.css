@@ -6147,7 +6147,7 @@ select {
 
 .inventory-filters--compact {
     display: grid;
-    grid-template-columns: auto minmax(0, 1fr) minmax(0, 1.4fr) auto;
+    grid-template-columns: auto minmax(0, 1fr) minmax(0, 1.4fr) 38px auto;
     align-items: center;
     gap: 8px;
     padding: 9px;
@@ -6182,6 +6182,10 @@ select {
     color: var(--bright-yellow);
     font-size: 11px;
     text-align: right;
+}
+
+.inventory-clear-filters {
+    justify-self: end;
 }
 
 .inventory-grid-v2 {

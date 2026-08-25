@@ -133,6 +133,18 @@ export class InventoryPanel {
         this.statusFilter = 'all';
     }
 
+    hasActiveInventoryFilters() {
+        return this.tierFilter !== 0
+            || this.slotFilter !== 'all'
+            || this.statusFilter !== 'all';
+    }
+
+    resetInventoryFilters() {
+        this.tierFilter = 0;
+        this.slotFilter = 'all';
+        this.statusFilter = 'all';
+    }
+
     render(title = 'Inventario') {
         const game = this.ui.game;
         const allEntries = this.getInventoryEntries();
@@ -145,6 +157,7 @@ export class InventoryPanel {
             ['free', 'Libres'],
             ['equipped', 'Equipados']
         ];
+        const hasActiveFilters = this.hasActiveInventoryFilters();
 
         this.ui.panelContent.innerHTML = `
             <div class="panel-title-row">
@@ -184,6 +197,9 @@ export class InventoryPanel {
                 <div class="slot-filters" aria-label="Filtrar por tipo">
                     ${['all', ...ITEM_SLOTS].map((slot) => `<button class="slot-filter ${this.slotFilter === slot ? 'active' : ''}" data-slot="${slot}">${slot === 'all' ? 'Todas' : SLOT_LABELS[slot]}</button>`).join('')}
                 </div>
+                <button id="inventory-clear-filters" class="inventory-clear-filters icon-command" type="button" ${hasActiveFilters ? '' : 'disabled'} title="Limpiar filtros" aria-label="Limpiar filtros">
+                    <i class="fas fa-broom"></i>
+                </button>
                 <strong class="inventory-filter-count">${entries.length}/${allEntries.length}</strong>
             </div>
 
@@ -327,6 +343,10 @@ export class InventoryPanel {
             this.slotFilter = button.dataset.slot;
             this.render();
         }));
+        this.ui.panelContent.querySelector('#inventory-clear-filters')?.addEventListener('click', () => {
+            this.resetInventoryFilters();
+            this.render();
+        });
         const chooseItem = (itemId) => {
             const item = game.itemDatabase[itemId];
             if (!item) return;
