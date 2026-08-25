@@ -2985,6 +2985,11 @@ canvas {
     line-height: 1.2;
 }
 
+.wave-enemy-card .enemy-traits b.trait-overflow {
+    border-style: dashed;
+    color: var(--bright-yellow);
+}
+
 .wave-enemy-card em {
     display: inline-flex;
     align-items: center;

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildBossCountdownState, buildBossHudState, buildBossMilestoneState, buildCombatPressureState, buildCounterCoverageModel, buildEnemyIntel, buildLeakIntel, buildOnboardingCoachState, buildPressureActionState, buildRosterWaveFitView, buildShopItemInsight, buildShopSetProgress, buildSpawnQueueState, buildStatusLegendModel, buildStealthCoverageState, buildTacticalContributionModel, buildTargetingControlState, buildWaveLaunchState, buildWavePrepActionControl, buildWavePreparationPlan, buildWaveReportActionState, buildWaveReportGrade, buildWaveReportLesson, buildWaveReportState, evaluateHeroWaveFit, formatHudResource, getNextTargetingPriority, UIManager } from '../src/systems/UIManager.js';
+import { buildBossCountdownState, buildBossHudState, buildBossMilestoneState, buildCombatPressureState, buildCounterCoverageModel, buildEnemyIntel, buildEnemyTraitPreview, buildLeakIntel, buildOnboardingCoachState, buildPressureActionState, buildRosterWaveFitView, buildShopItemInsight, buildShopSetProgress, buildSpawnQueueState, buildStatusLegendModel, buildStealthCoverageState, buildTacticalContributionModel, buildTargetingControlState, buildWaveLaunchState, buildWavePrepActionControl, buildWavePreparationPlan, buildWaveReportActionState, buildWaveReportGrade, buildWaveReportLesson, buildWaveReportState, evaluateHeroWaveFit, formatHudResource, getNextTargetingPriority, UIManager } from '../src/systems/UIManager.js';
 import { calculateHeroLevelCost } from '../src/utils/HeroLevel.js';
 
 test('buildWaveLaunchState muestra riesgo critico en el CTA', () => {
@@ -166,6 +166,14 @@ test('buildEnemyIntel explica jefes y amenazas de control', () => {
     assert.match(boss.counterDetail, /pierdes/);
     assert.equal(runner.counterId, 'control');
     assert.match(runner.counterDetail, /slow|stun|web/);
+});
+
+test('buildEnemyTraitPreview limita rasgos visibles y resume overflow', () => {
+    const preview = buildEnemyTraitPreview(['Jefe', 'Barrera', 'Blindaje', 'Resiste control', 'Barrera'], 3);
+
+    assert.deepEqual(preview.visible, ['Jefe', 'Barrera', 'Blindaje']);
+    assert.equal(preview.overflow, 1);
+    assert.match(preview.title, /Resiste control/);
 });
 
 test('buildStatusLegendModel prioriza counters de la oleada', () => {

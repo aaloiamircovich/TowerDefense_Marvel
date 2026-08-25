@@ -202,6 +202,16 @@ function setHudResourceElement(element, value = 0) {
     element.title = exact === 'Infinity' ? 'Recursos infinitos' : exact;
 }
 
+export function buildEnemyTraitPreview(traits = [], limit = 3) {
+    const uniqueTraits = [...new Set((traits || []).filter(Boolean))];
+    const visible = uniqueTraits.slice(0, Math.max(1, Number(limit) || 3));
+    return {
+        visible,
+        overflow: Math.max(0, uniqueTraits.length - visible.length),
+        title: uniqueTraits.join(', ')
+    };
+}
+
 export function buildEnemyIntel(enemy = {}) {
     const threat = Math.max(1, Math.min(5, Math.round(Number(enemy.threat || 1))));
     const roleLabel = ENEMY_ROLE_COPY[enemy.archetype] || (enemy.isBoss ? 'Jefe' : 'Soldado');
@@ -1909,7 +1919,11 @@ export class UIManager {
             card.dataset.tooltip = intel.counterDetail;
             card.title = `${intel.name} | ${intel.roleLabel} | ${intel.counter} | Amenaza ${intel.threat}/5`;
             card.setAttribute('aria-label', `${intel.name}. ${intel.roleLabel}. Respuesta: ${intel.counter}. Amenaza ${intel.threat} de 5.`);
-            const traitsMarkup = intel.traits.map((trait) => `<b>${escapeHtml(trait)}</b>`).join('');
+            const traitPreview = buildEnemyTraitPreview(intel.traits, 3);
+            const traitsMarkup = [
+                ...traitPreview.visible.map((trait) => `<b>${escapeHtml(trait)}</b>`),
+                traitPreview.overflow > 0 ? `<b class="trait-overflow">+${traitPreview.overflow}</b>` : ''
+            ].filter(Boolean).join('');
             const portrait = enemy.visual?.portrait || enemy.sprite;
             card.innerHTML = `
                 ${portrait
@@ -1918,7 +1932,7 @@ export class UIManager {
                 <span class="enemy-count">x${enemy.previewCount || 1}</span>
                 <strong>${escapeHtml(intel.name)}</strong>
                 <span class="enemy-role">${escapeHtml(intel.roleLabel)} | ${escapeHtml(intel.pips)}</span>
-                <small class="enemy-traits">${traitsMarkup}</small>
+                <small class="enemy-traits" title="${escapeHtml(traitPreview.title)}">${traitsMarkup}</small>
                 <em><i class="fas fa-crosshairs"></i>${escapeHtml(intel.counter)}</em>
                 <small>${enemy.affix?.label ? `${enemy.affix.label} · ` : ''}${enemy.stealth ? 'Sigilo · ' : ''}${'◆'.repeat(Math.max(1, enemy.threat || 1))}</small>
             `;
