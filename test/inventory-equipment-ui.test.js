@@ -174,7 +174,7 @@ test('previsualizacion de objeto compara mejoras y perdidas numericas', () => {
     });
 
     assert.match(html, /item-equip-preview/);
-    assert.match(html, /aria-label="Elegir LENTES E\.D\.I\.T\.H\. para equipar\. Rareza Common\. 1 copia libre\. Sin equipar"/);
+    assert.match(html, /aria-label="Elegir LENTES E\.D\.I\.T\.H\. para equipar\. Rareza Common\. 1 copia libre\. Sin equipar" title="Elegir LENTES E\.D\.I\.T\.H\. para equipar\. Rareza Common\. 1 copia libre\. Sin equipar" data-tooltip="Elegir LENTES E\.D\.I\.T\.H\. para equipar\. Rareza Common\. 1 copia libre\. Sin equipar"/);
     assert.match(html, /Alcance \+4%/);
     assert.match(html, /Cadencia -18%/);
 });

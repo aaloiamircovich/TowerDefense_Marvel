@@ -1,6 +1,16 @@
 import { aggregateItemEffects, ITEM_SLOTS, SET_BONUSES, SLOT_LABELS } from '../systems/ItemEffectSystem.js';
 import { HERO_RARITIES, getRarityClass, normalizeRarity } from '../utils/Rarity.js';
 
+function escapeAttribute(value = '') {
+    return String(value).replace(/[&<>"']/g, (char) => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+    }[char]));
+}
+
 const ITEM_EFFECT_LABELS = {
     damagePct: 'Dano',
     fireRatePct: 'Cadencia',
@@ -300,7 +310,7 @@ export class InventoryPanel {
         const equipPreview = this.heroId ? this.renderEquipPreview(item) : '';
         const effectPills = buildItemEffectPills(item);
         return `
-            <article class="inventory-card item-card-v2 inventory-object-card ${rarityClass}" data-item-id="${item.id}" data-rarity="${rarity}" role="button" tabindex="0" aria-label="${itemAriaLabel}">
+            <article class="inventory-card item-card-v2 inventory-object-card ${rarityClass}" data-item-id="${item.id}" data-rarity="${rarity}" role="button" tabindex="0" aria-label="${escapeAttribute(itemAriaLabel)}" title="${escapeAttribute(itemAriaLabel)}" data-tooltip="${escapeAttribute(itemAriaLabel)}">
                 <b class="item-quantity-badge">x${totalCount}</b>
                 ${primaryHero ? `<span class="item-owner-corner" title="Equipado por ${primaryHero.name}">${this.ui.renderSprite(this.ui.getHeroDisplaySprite(primaryHero), primaryHero.name)}</span>` : ''}
                 <div class="item-sprite-frame">${this.ui.renderSprite(item.icon, item.name)}</div>

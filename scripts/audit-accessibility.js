@@ -39,10 +39,12 @@ if (!/<button[^>]+id="close-panel-btn"[^>]+data-tooltip=/i.test(html)) errors.pu
 
 assertButtonTypes(html, 'index.html');
 assertButtonTooltips(html, 'index.html');
+assertRoleButtonTooltips(html, 'index.html');
 dynamicTemplateFiles.forEach((filePath) => {
     const source = fs.readFileSync(filePath, 'utf8');
     assertButtonTypes(source, filePath);
     assertButtonTooltips(source, filePath);
+    assertRoleButtonTooltips(source, filePath);
 });
 
 for (const match of html.matchAll(/<button([^>]*)>([\s\S]*?)<\/button>/gi)) {
@@ -74,6 +76,13 @@ function assertButtonTooltips(source, label) {
     for (const match of source.matchAll(/<button\b([^>]*)>/gi)) {
         if (/\bdata-tooltip\s*=/i.test(match[1])) continue;
         errors.push(`${label}:${lineNumber(source, match.index)} boton sin data-tooltip`);
+    }
+}
+
+function assertRoleButtonTooltips(source, label) {
+    for (const match of source.matchAll(/<[^>]+\brole=["']button["'][^>]*>/gi)) {
+        if (/\btitle\s*=/i.test(match[0]) && /\bdata-tooltip\s*=/i.test(match[0])) continue;
+        errors.push(`${label}:${lineNumber(source, match.index)} elemento role=button sin title/data-tooltip`);
     }
 }
 
