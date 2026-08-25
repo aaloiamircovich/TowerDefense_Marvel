@@ -16,6 +16,7 @@ import { getAllowedTerrainLabels } from '../utils/TerrainRules.js';
 import { getRarityClass, normalizeRarity } from '../utils/Rarity.js';
 import { HERO_MAX_LEVEL, calculateHeroLevelCost, getHeroDamageAtLevel, getHeroLevelUpgradeSteps, getScaledSupportAura, normalizeHeroLevel } from '../utils/HeroLevel.js';
 import { pickHeroDisplaySprite } from '../utils/HeroVisuals.js';
+import { CAMPAIGN_MAX_WAVES, MINI_BOSS_WAVE_INTERVAL } from '../utils/LevelProgression.js';
 
 const ASSET_VERSION = 'evolution-enemy-sprites-20260812';
 
@@ -154,6 +155,34 @@ function formatCompactMetric(value = 0) {
     if (amount >= 1000000) return `${(amount / 1000000).toFixed(amount >= 10000000 ? 0 : 1).replace(/\.0$/, '')}M`;
     if (amount >= 1000) return `${(amount / 1000).toFixed(amount >= 10000 ? 0 : 1).replace(/\.0$/, '')}k`;
     return `${Math.round(amount)}`;
+}
+
+export function buildBossCountdownState(wave = 1, maxWaves = CAMPAIGN_MAX_WAVES, interval = MINI_BOSS_WAVE_INTERVAL) {
+    const safeWave = Math.max(1, Math.floor(Number(wave) || 1));
+    const safeInterval = Math.max(1, Math.floor(Number(interval) || MINI_BOSS_WAVE_INTERVAL));
+    const safeMaxWaves = Math.max(safeInterval, Math.floor(Number(maxWaves) || CAMPAIGN_MAX_WAVES));
+    const milestones = [];
+    for (let milestone = safeInterval; milestone < safeMaxWaves; milestone += safeInterval) {
+        milestones.push({ wave: milestone, final: false });
+    }
+    milestones.push({ wave: safeMaxWaves, final: true });
+
+    const next = milestones.find((milestone) => milestone.wave >= safeWave) || milestones[milestones.length - 1];
+    const remaining = Math.max(0, next.wave - safeWave);
+    const bossType = next.final ? 'Jefe final' : 'Mini boss';
+    const label = next.final ? 'Final' : 'Boss';
+    const detail = remaining === 0 ? 'Ahora' : `${remaining} oleadas`;
+    const tone = next.final ? 'final' : remaining <= 5 ? 'soon' : 'normal';
+    return {
+        wave: next.wave,
+        remaining,
+        label,
+        detail,
+        tone,
+        ariaLabel: remaining === 0
+            ? `${bossType} en esta oleada.`
+            : `${bossType} en ${remaining} oleadas, oleada ${next.wave}.`
+    };
 }
 
 export function buildEnemyIntel(enemy = {}) {
@@ -1239,6 +1268,7 @@ export class UIManager {
         this.livesEl = document.getElementById('ui-lives');
         this.creditsEl = document.getElementById('ui-credits');
         this.waveEl = document.getElementById('ui-wave');
+        this.bossCountdownEl = document.getElementById('ui-boss-countdown');
         this.levelNameEl = document.getElementById('ui-level-name');
         this.fpsEl = document.getElementById('fps-display');
         this.starsEl = document.getElementById('ui-stars');
@@ -1494,8 +1524,22 @@ export class UIManager {
         if (this.livesEl) this.livesEl.textContent = lives;
         if (this.creditsEl) this.creditsEl.textContent = credits === Number.POSITIVE_INFINITY ? '∞' : Math.floor(credits);
         if (this.waveEl) this.waveEl.textContent = wave;
+        this.updateBossCountdown(wave);
         if (this.fpsEl) this.fpsEl.textContent = `${Math.round(fps || 0)} FPS`;
         if (this.starsEl && stars !== undefined) this.starsEl.textContent = stars;
+    }
+
+    updateBossCountdown(wave = 1) {
+        if (!this.bossCountdownEl) return null;
+        const state = buildBossCountdownState(
+            wave,
+            this.game.waveManager?.maxWaves || CAMPAIGN_MAX_WAVES,
+            MINI_BOSS_WAVE_INTERVAL
+        );
+        this.bossCountdownEl.className = `status-item boss-countdown boss-countdown-${state.tone}`;
+        this.bossCountdownEl.setAttribute('aria-label', state.ariaLabel);
+        this.bossCountdownEl.innerHTML = `<i class="fas fa-skull"></i><span>${escapeHtml(state.label)}</span><b>${escapeHtml(state.detail)}</b>`;
+        return state;
     }
 
     updateCombatPressure(enemies = [], path = [], waveActive = false) {

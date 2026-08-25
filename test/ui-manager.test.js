@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildBossHudState, buildBossMilestoneState, buildCombatPressureState, buildCounterCoverageModel, buildEnemyIntel, buildLeakIntel, buildOnboardingCoachState, buildPressureActionState, buildRosterWaveFitView, buildShopItemInsight, buildShopSetProgress, buildSpawnQueueState, buildStatusLegendModel, buildStealthCoverageState, buildTacticalContributionModel, buildTargetingControlState, buildWaveLaunchState, buildWavePrepActionControl, buildWavePreparationPlan, buildWaveReportActionState, buildWaveReportGrade, buildWaveReportLesson, buildWaveReportState, evaluateHeroWaveFit, getNextTargetingPriority, UIManager } from '../src/systems/UIManager.js';
+import { buildBossCountdownState, buildBossHudState, buildBossMilestoneState, buildCombatPressureState, buildCounterCoverageModel, buildEnemyIntel, buildLeakIntel, buildOnboardingCoachState, buildPressureActionState, buildRosterWaveFitView, buildShopItemInsight, buildShopSetProgress, buildSpawnQueueState, buildStatusLegendModel, buildStealthCoverageState, buildTacticalContributionModel, buildTargetingControlState, buildWaveLaunchState, buildWavePrepActionControl, buildWavePreparationPlan, buildWaveReportActionState, buildWaveReportGrade, buildWaveReportLesson, buildWaveReportState, evaluateHeroWaveFit, getNextTargetingPriority, UIManager } from '../src/systems/UIManager.js';
 import { calculateHeroLevelCost } from '../src/utils/HeroLevel.js';
 
 test('buildWaveLaunchState muestra riesgo critico en el CTA', () => {
@@ -67,6 +67,23 @@ test('buildWaveLaunchState bloquea lectura cuando la oleada esta activa', () => 
     assert.equal(state.tier, 'active');
     assert.equal(state.primary, 'OLEADA EN CURSO');
     assert.equal(state.secondary, 'Defensa activa');
+});
+
+test('buildBossCountdownState marca proximo mini boss y final boss', () => {
+    const opening = buildBossCountdownState(1, 100, 25);
+    const miniNow = buildBossCountdownState(25, 100, 25);
+    const finalSoon = buildBossCountdownState(96, 100, 25);
+    const finalNow = buildBossCountdownState(100, 100, 25);
+
+    assert.equal(opening.label, 'Boss');
+    assert.equal(opening.detail, '24 oleadas');
+    assert.equal(opening.tone, 'normal');
+    assert.equal(miniNow.detail, 'Ahora');
+    assert.equal(miniNow.tone, 'soon');
+    assert.equal(finalSoon.label, 'Final');
+    assert.equal(finalSoon.detail, '4 oleadas');
+    assert.equal(finalSoon.tone, 'final');
+    assert.match(finalNow.ariaLabel, /Jefe final en esta oleada/);
 });
 
 test('buildOnboardingCoachState guia segun el estado tactico actual', () => {

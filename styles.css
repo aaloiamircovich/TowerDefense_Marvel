@@ -869,6 +869,41 @@ input:focus-visible,
     text-transform: uppercase;
 }
 
+.boss-countdown {
+    gap: 5px;
+    padding-inline: 9px;
+    border-color: rgba(255, 255, 255, 0.1);
+    color: var(--text);
+}
+
+.boss-countdown i {
+    color: var(--ui-red);
+    font-size: 12px;
+}
+
+.boss-countdown span {
+    color: var(--muted);
+    font-size: 11px;
+    text-transform: uppercase;
+}
+
+.boss-countdown b {
+    color: var(--bright-yellow);
+    font-size: 12px;
+}
+
+.boss-countdown-soon {
+    border-color: rgba(255, 166, 48, 0.48);
+    background: rgba(80, 43, 7, 0.44);
+}
+
+.boss-countdown-final {
+    border-color: rgba(230, 57, 70, 0.58);
+    background:
+        linear-gradient(90deg, rgba(230, 57, 70, 0.18), rgba(252, 163, 17, 0.1)),
+        rgba(13, 8, 11, 0.78);
+}
+
 #hub-menu {
     display: flex;
     align-items: center;
@@ -7942,6 +7977,10 @@ body.reduce-motion :is(.collection-card, .starter-card, .hero-portrait):is(.rari
     }
 
     #fps-display {
+        display: none;
+    }
+
+    .boss-countdown span {
         display: none;
     }
 
