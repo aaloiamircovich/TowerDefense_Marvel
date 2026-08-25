@@ -20,6 +20,26 @@ import { CAMPAIGN_MAX_WAVES, MINI_BOSS_WAVE_INTERVAL } from '../utils/LevelProgr
 
 const ASSET_VERSION = 'evolution-enemy-sprites-20260812';
 
+const PANEL_NAV_ITEMS = [
+    { id: 'profile', label: 'Perfil', icon: 'fa-id-card' },
+    { id: 'radar', label: 'Radar', icon: 'fa-satellite-dish' },
+    { id: 'collection', label: 'Colección', icon: 'fa-grip' },
+    { id: 'inventory', label: 'Inventario', icon: 'fa-box-open' },
+    { id: 'shop', label: 'Tienda', icon: 'fa-shopping-cart' },
+    { id: 'skins', label: 'Skins', icon: 'fa-shirt' },
+    { id: 'map', label: 'Mapa', icon: 'fa-map-marked-alt' },
+    { id: 'settings', label: 'Ajustes', icon: 'fa-cog' }
+];
+
+export function buildPanelNavigationMarkup(activeType = '') {
+    const buttons = PANEL_NAV_ITEMS.map((item) => {
+        const active = item.id === activeType;
+        const label = 'Abrir ' + item.label;
+        return '<button class="panel-modal-nav-btn ' + (active ? 'active' : '') + '" type="button" data-panel-nav="' + escapeHtml(item.id) + '" aria-label="' + escapeHtml(label) + '" title="' + escapeHtml(item.label) + '" data-tooltip="' + escapeHtml(label) + '" aria-current="' + (active ? 'page' : 'false') + '"><i class="fas ' + escapeHtml(item.icon) + '"></i><span>' + escapeHtml(item.label) + '</span></button>';
+    }).join('');
+    return '<nav class="panel-modal-nav" aria-label="Navegación de paneles">' + buttons + '</nav>';
+}
+
 function versionAssetSource(source) {
     if (!source?.startsWith?.('assets/images/')) return source;
     return `${source}${source.includes('?') ? '&' : '?'}v=${ASSET_VERSION}`;
@@ -2529,14 +2549,33 @@ export class UIManager {
         this.setPanelDialogLabel(title);
         this.setActiveHubButton(panelTitles[type] ? type : null);
 
-        if (type === 'shop') return this.renderShop(title);
-        if (type === 'skins') return this.renderSkinShop(title);
-        if (type === 'radar') return this.renderRadarPanel(title);
-        if (type === 'collection') return this.teamBuilderPanel.render('Constructor de equipo');
-        if (type === 'inventory') return this.inventoryPanel.render(title);
-        if (type === 'map') return this.renderMap(title);
-        if (type === 'settings') return this.renderSettings(title);
-        return this.renderProfile(title);
+        let result;
+        if (type === 'shop') result = this.renderShop(title);
+        else if (type === 'skins') result = this.renderSkinShop(title);
+        else if (type === 'radar') result = this.renderRadarPanel(title);
+        else if (type === 'collection') result = this.teamBuilderPanel.render('Constructor de equipo');
+        else if (type === 'inventory') result = this.inventoryPanel.render(title);
+        else if (type === 'map') result = this.renderMap(title);
+        else if (type === 'settings') result = this.renderSettings(title);
+        else result = this.renderProfile(title);
+
+        this.renderPanelNavigation(type);
+        return result;
+    }
+
+    renderPanelNavigation(activeType = '') {
+        if (!this.panelContent || !PANEL_NAV_ITEMS.some((item) => item.id === activeType)) return;
+        this.panelContent.querySelector?.('.panel-modal-nav')?.remove?.();
+        this.panelContent.insertAdjacentHTML?.('afterbegin', buildPanelNavigationMarkup(activeType));
+        this.panelContent.querySelectorAll?.('[data-panel-nav]')?.forEach((button) => {
+            button.addEventListener('click', () => {
+                const nextType = button.dataset.panelNav;
+                if (!nextType || nextType === this.activePanelType) return;
+                this.game.audio?.play('ui');
+                this.renderPanel(nextType);
+                window.requestAnimationFrame(() => this.panelContent?.querySelector?.('.panel-modal-nav-btn.active')?.focus?.());
+            });
+        });
     }
 
     renderRadarPanel(title = 'Radar tactico') {

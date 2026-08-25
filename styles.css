@@ -3380,6 +3380,87 @@ body.panel-open {
     overflow-y: auto;
 }
 
+.panel-modal-nav {
+    position: sticky;
+    top: -24px;
+    z-index: 2;
+    display: flex;
+    gap: 8px;
+    margin: -8px 46px 18px -4px;
+    padding: 8px 4px 10px;
+    overflow-x: auto;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    background:
+        linear-gradient(180deg, rgba(11, 18, 29, 0.98), rgba(11, 18, 29, 0.78));
+    backdrop-filter: blur(10px);
+    scrollbar-width: thin;
+}
+
+.panel-modal-nav-btn {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 36px;
+    padding: 0 10px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 7px;
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.018)),
+        rgba(9, 16, 27, 0.88);
+    color: #dce8f5;
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 0;
+    text-transform: uppercase;
+    transition: transform 140ms var(--ease-ui), border-color 140ms var(--ease-ui), color 140ms var(--ease-ui), background 140ms var(--ease-ui);
+}
+
+.panel-modal-nav-btn i {
+    color: color-mix(in srgb, var(--level-accent), white 12%);
+    font-size: 13px;
+}
+
+.panel-modal-nav-btn:hover,
+.panel-modal-nav-btn:focus-visible {
+    transform: translateY(-1px);
+    border-color: color-mix(in srgb, var(--level-accent), white 8%);
+    color: #ffffff;
+}
+
+.panel-modal-nav-btn.active {
+    border-color: rgba(255, 208, 90, 0.72);
+    background:
+        linear-gradient(180deg, color-mix(in srgb, var(--level-accent), transparent 74%), rgba(255, 208, 90, 0.10)),
+        rgba(9, 16, 27, 0.94);
+    color: #ffffff;
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.06),
+        0 0 16px color-mix(in srgb, var(--level-accent), transparent 68%);
+}
+
+@media (max-width: 700px) {
+    .panel-modal-nav {
+        top: -18px;
+        margin: -2px 42px 14px -2px;
+    }
+
+    .panel-modal-nav-btn {
+        width: 38px;
+        padding: 0;
+    }
+
+    .panel-modal-nav-btn span {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+    }
+}
+
 #panel-content h2 {
     margin-bottom: 18px;
     color: var(--bright-yellow);

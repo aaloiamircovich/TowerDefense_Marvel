@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildBossCountdownState, buildBossHudState, buildBossMilestoneState, buildCombatPressureState, buildCounterCoverageModel, buildEnemyIntel, buildEnemyTraitPreview, buildLeakIntel, buildOnboardingCoachState, buildPressureActionState, buildRosterWaveFitView, buildShopItemInsight, buildShopSetProgress, buildSpawnQueueState, buildStatusLegendModel, buildStealthCoverageState, buildTacticalContributionModel, buildTargetingControlState, buildWaveLaunchState, buildWavePrepActionControl, buildWavePreparationPlan, buildWaveReportActionState, buildWaveReportGrade, buildWaveReportLesson, buildWaveReportState, evaluateHeroWaveFit, formatHudResource, getNextTargetingPriority, UIManager } from '../src/systems/UIManager.js';
+import { buildBossCountdownState, buildBossHudState, buildBossMilestoneState, buildCombatPressureState, buildCounterCoverageModel, buildEnemyIntel, buildEnemyTraitPreview, buildLeakIntel, buildOnboardingCoachState, buildPanelNavigationMarkup, buildPressureActionState, buildRosterWaveFitView, buildShopItemInsight, buildShopSetProgress, buildSpawnQueueState, buildStatusLegendModel, buildStealthCoverageState, buildTacticalContributionModel, buildTargetingControlState, buildWaveLaunchState, buildWavePrepActionControl, buildWavePreparationPlan, buildWaveReportActionState, buildWaveReportGrade, buildWaveReportLesson, buildWaveReportState, evaluateHeroWaveFit, formatHudResource, getNextTargetingPriority, UIManager } from '../src/systems/UIManager.js';
 import { calculateHeroLevelCost } from '../src/utils/HeroLevel.js';
 
 test('buildWaveLaunchState muestra riesgo critico en el CTA', () => {
@@ -992,6 +992,18 @@ test('UIManager mantiene oculto el panel lateral de presion de ruta', () => {
         globalThis.document = previousDocument;
     }
 });
+
+
+test('buildPanelNavigationMarkup crea navegacion compacta de paneles', () => {
+    const html = buildPanelNavigationMarkup('inventory');
+
+    assert.match(html, /class="panel-modal-nav"/);
+    assert.equal((html.match(/data-panel-nav=/g) || []).length, 8);
+    assert.match(html, /data-panel-nav="collection"/);
+    assert.match(html, /data-panel-nav="inventory"[^>]+aria-current="page"/);
+    assert.match(html, /type="button"[^>]+data-panel-nav="shop"[^>]+data-tooltip="Abrir Tienda"/);
+});
+
 
 test('UIManager etiqueta el dialogo con el panel abierto', () => {
     const previousDocument = globalThis.document;
