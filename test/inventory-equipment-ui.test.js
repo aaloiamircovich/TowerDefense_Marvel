@@ -16,7 +16,8 @@ function createUiStub() {
     const state = {
         unlockedHeroIds: ['iron_man', 'spiderman'],
         ownedItemIds: ['lentes_edith'],
-        equippedItems: { iron_man: { weapon: 'reactor_arc' } }
+        equippedItems: { iron_man: { weapon: 'reactor_arc' } },
+        codexDiscovered: { enemies: [] }
     };
     return {
         inventoryPanel: { pendingEquipItemId: 'reactor_arc' },
@@ -26,6 +27,7 @@ function createUiStub() {
             enemyDatabase: data.enemies,
             evolutionVisualDatabase: {},
             activeTeam: [],
+            teamSynergy: { getSnapshot: () => analyzeTeam([]) },
             progression: {
                 state,
                 getHeroEvolution: () => null,
@@ -149,6 +151,9 @@ test('coleccion expone diccionario de evoluciones completo', () => {
     const panel = new TeamBuilderPanel(ui);
 
     assert.match(panel.renderCollectionTabs(), /data-view="evolutions"/);
+    assert.match(panel.renderCollectionTabs(), /role="tab"/);
+    assert.match(panel.renderCollectionTabs(), /aria-controls="collection-panel-heroes"/);
+    assert.match(panel.renderCollectionTabs(), /tabindex="0"/);
     assert.match(panel.renderCollectionTabs(), /fa-skull"><\/i> Villanos/);
     assert.match(panel.renderCollectionTabs(), /fa-dna"><\/i> Evoluciones/);
     assert.match(panel.renderEvolutionCodex(), /Diccionario de evoluciones/);
@@ -174,6 +179,26 @@ test('coleccion compacta diccionario de villanos con metricas', () => {
     assert.match(html, /villain-card--compact/);
 });
 
+test('coleccion conecta tabs con panel activo', () => {
+    const ui = createUiStub();
+    ui.inventoryPanel.pendingEquipItemId = null;
+    ui.panelContent = { innerHTML: '', querySelectorAll: () => [], querySelector: () => null };
+    const panel = new TeamBuilderPanel(ui);
+
+    panel.viewMode = 'heroes';
+    panel.render('Constructor de equipo');
+    assert.match(ui.panelContent.innerHTML, /id="collection-tab-heroes"[\s\S]*aria-controls="collection-panel-heroes"/);
+    assert.match(ui.panelContent.innerHTML, /id="collection-panel-heroes" class="collection-tab-panel" role="tabpanel" aria-labelledby="collection-tab-heroes"/);
+    assert.match(ui.panelContent.innerHTML, /class="team-builder-summary"/);
+
+    panel.viewMode = 'villains';
+    panel.render('Constructor de equipo');
+    assert.match(ui.panelContent.innerHTML, /id="collection-panel-villains" class="collection-tab-panel" role="tabpanel" aria-labelledby="collection-tab-villains"/);
+
+    panel.viewMode = 'evolutions';
+    panel.render('Constructor de equipo');
+    assert.match(ui.panelContent.innerHTML, /id="collection-panel-evolutions" class="collection-tab-panel" role="tabpanel" aria-labelledby="collection-tab-evolutions"/);
+});
 test('coleccion filtra heroes obtenidos y faltantes', () => {
     const ui = createUiStub();
     const panel = new TeamBuilderPanel(ui);

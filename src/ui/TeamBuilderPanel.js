@@ -45,7 +45,8 @@ export class TeamBuilderPanel {
             ${this.renderCollectionCommandHeader({ readyHeroes, filteredHeroes, unlockedIds, snapshot })}
             ${this.renderCollectionTabs()}
 
-            ${this.viewMode === 'heroes' ? `<section class="team-builder-summary">
+            ${this.viewMode === 'heroes' ? `<section id="collection-panel-heroes" class="collection-tab-panel" role="tabpanel" aria-labelledby="collection-tab-heroes">
+                <section class="team-builder-summary">
                 ${pendingItem ? this.renderPendingItemBanner(pendingItem) : ''}
                 <div class="team-slot-strip">
                     ${Array.from({ length: 6 }, (_, index) => this.renderTeamSlot(game.activeTeam[index], index)).join('')}
@@ -68,14 +69,17 @@ export class TeamBuilderPanel {
                     ${snapshot.pairs.filter((pair) => pair.active).map((pair) => `<span class="synergy-chip pair active"><b>${pair.label}</b></span>`).join('')}
                 </div>
                 ${this.renderSynergyMenu(snapshot, readyHeroes, unlockedIds)}
-            </section>
+                </section>
 
-            ${this.renderCollectionFilters(filteredHeroes.length, readyHeroes.length)}
-            <div class="collection-grid team-collection-grid">
-                ${filteredHeroes.length
-                    ? filteredHeroes.map((hero) => this.renderHeroCard(hero, unlockedIds.has(hero.id))).join('')
-                    : '<p class="empty-copy collection-empty">No hay heroes con esos filtros.</p>'}
-            </div>` : this.viewMode === 'villains' ? this.renderVillainCodex() : this.renderEvolutionCodex()}
+                ${this.renderCollectionFilters(filteredHeroes.length, readyHeroes.length)}
+                <div class="collection-grid team-collection-grid">
+                    ${filteredHeroes.length
+                        ? filteredHeroes.map((hero) => this.renderHeroCard(hero, unlockedIds.has(hero.id))).join('')
+                        : '<p class="empty-copy collection-empty">No hay heroes con esos filtros.</p>'}
+                </div>
+            </section>` : this.viewMode === 'villains'
+                ? `<section id="collection-panel-villains" class="collection-tab-panel" role="tabpanel" aria-labelledby="collection-tab-villains">${this.renderVillainCodex()}</section>`
+                : `<section id="collection-panel-evolutions" class="collection-tab-panel" role="tabpanel" aria-labelledby="collection-tab-evolutions">${this.renderEvolutionCodex()}</section>`}
         `;
 
         this.bindListeners();
@@ -262,17 +266,19 @@ export class TeamBuilderPanel {
     }
 
     renderCollectionTabs() {
+        const tabs = [
+            ['heroes', 'fa-users', 'Heroes'],
+            ['villains', 'fa-skull', 'Villanos'],
+            ['evolutions', 'fa-dna', 'Evoluciones']
+        ];
         return `
             <div class="collection-tabs" role="tablist" aria-label="Secciones de coleccion">
-                <button class="collection-view-tab ${this.viewMode === 'heroes' ? 'active' : ''}" data-view="heroes" type="button" aria-selected="${this.viewMode === 'heroes'}">
-                    <i class="fas fa-users"></i> Heroes
-                </button>
-                <button class="collection-view-tab ${this.viewMode === 'villains' ? 'active' : ''}" data-view="villains" type="button" aria-selected="${this.viewMode === 'villains'}">
-                    <i class="fas fa-skull"></i> Villanos
-                </button>
-                <button class="collection-view-tab ${this.viewMode === 'evolutions' ? 'active' : ''}" data-view="evolutions" type="button" aria-selected="${this.viewMode === 'evolutions'}">
-                    <i class="fas fa-dna"></i> Evoluciones
-                </button>
+                ${tabs.map(([view, icon, label]) => {
+                    const active = this.viewMode === view;
+                    return `<button id="collection-tab-${view}" class="collection-view-tab ${active ? 'active' : ''}" data-view="${view}" type="button" role="tab" aria-selected="${active}" aria-controls="collection-panel-${view}" tabindex="${active ? '0' : '-1'}">
+                        <i class="fas ${icon}"></i> ${label}
+                    </button>`;
+                }).join('')}
             </div>
         `;
     }
