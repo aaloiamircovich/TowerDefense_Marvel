@@ -1365,6 +1365,7 @@ export class UIManager {
         const btnSpeed = document.getElementById('btn-speed');
 
         this.updateSpeedButton(btnSpeed);
+        this.updateAutoWaveButton(btnAuto);
 
         btnPause?.addEventListener('click', () => {
             this.setManualPause(!this.game.isManuallyPaused);
@@ -1373,9 +1374,7 @@ export class UIManager {
         btnAuto?.addEventListener('click', () => {
             if (!this.game.waveManager) return;
             this.game.waveManager.autoWave = !this.game.waveManager.autoWave;
-            btnAuto.classList.toggle('active', this.game.waveManager.autoWave);
-            btnAuto.classList.toggle('muted', !this.game.waveManager.autoWave);
-            btnAuto.setAttribute('aria-pressed', String(this.game.waveManager.autoWave));
+            this.updateAutoWaveButton(btnAuto);
             if (this.game.waveManager.autoWave && !this.game.waveManager.isWaveActive) this.game.waveManager.startNextWave();
         });
 
@@ -1495,6 +1494,19 @@ export class UIManager {
         button.dataset.tooltip = `Velocidad actual x${speed}`;
     }
 
+    updateAutoWaveButton(button = document.getElementById('btn-auto')) {
+        if (!button) return;
+        const enabled = Boolean(this.game?.waveManager?.autoWave);
+        const label = enabled ? 'Auto oleada activado' : 'Auto oleada desactivado';
+        const tooltip = enabled ? 'Desactivar inicio automatico' : 'Activar inicio automatico de oleadas';
+        button.classList.toggle('active', enabled);
+        button.classList.toggle('muted', !enabled);
+        button.setAttribute('aria-pressed', String(enabled));
+        button.setAttribute('aria-label', label);
+        button.title = tooltip;
+        button.dataset.tooltip = tooltip;
+    }
+
     setManualPause(paused, announce = true) {
         this.game.isManuallyPaused = Boolean(paused);
         if (this.game.isManuallyPaused) this.game.pause();
@@ -1504,9 +1516,11 @@ export class UIManager {
         if (button) {
             button.innerHTML = this.game.isManuallyPaused ? '<i class="fas fa-play"></i>' : '<i class="fas fa-pause"></i>';
             button.classList.toggle('active', this.game.isManuallyPaused);
+            const tooltip = this.game.isManuallyPaused ? 'Reanudar partida' : 'Entrar en pausa táctica';
             button.setAttribute('aria-pressed', String(this.game.isManuallyPaused));
             button.setAttribute('aria-label', this.game.isManuallyPaused ? 'Reanudar' : 'Pausar');
-            button.dataset.tooltip = this.game.isManuallyPaused ? 'Reanudar partida' : 'Entrar en pausa táctica';
+            button.title = tooltip;
+            button.dataset.tooltip = tooltip;
         }
         document.body.classList.toggle('tactical-paused', this.game.isManuallyPaused);
         if (announce) this.showToast(this.game.isManuallyPaused ? 'Pausa táctica: inspecciona y reorganiza' : 'Partida reanudada', 'info');
@@ -1536,16 +1550,23 @@ export class UIManager {
     updatePlacementSuggestion(state = null) {
         const button = document.getElementById('suggested-placement-action');
         if (!button) return;
+        const idleLabel = 'Usar celda sugerida';
         if (!state) {
             button.classList.add('hidden');
             button.innerHTML = '';
             button.onclick = null;
+            button.setAttribute('aria-label', idleLabel);
+            button.title = idleLabel;
+            button.dataset.tooltip = idleLabel;
             this.renderOnboardingCoach();
             return;
         }
 
+        const suggestionLabel = `${state.label}. ${state.detail}`;
         button.className = `suggested-placement-action ${state.qualityId || 'solid'}`;
-        button.setAttribute('aria-label', `${state.label}. ${state.detail}`);
+        button.setAttribute('aria-label', suggestionLabel);
+        button.title = suggestionLabel;
+        button.dataset.tooltip = suggestionLabel;
         button.innerHTML = `
             <i class="fas fa-location-crosshairs"></i>
             <span><strong>${escapeHtml(state.label)}</strong><small>${escapeHtml(state.detail)}</small></span>

@@ -814,6 +814,92 @@ test('UIManager actualiza nombre accesible del boton de velocidad', () => {
     assert.equal(button.title, 'Velocidad actual x3');
     assert.equal(button.dataset.tooltip, 'Velocidad actual x3');
 });
+test('UIManager actualiza nombre accesible del boton auto oleada', () => {
+    const button = createDomStub();
+    const ui = Object.create(UIManager.prototype);
+    ui.game = { waveManager: { autoWave: true } };
+
+    ui.updateAutoWaveButton(button);
+
+    assert.equal(button.attributes['aria-label'], 'Auto oleada activado');
+    assert.equal(button.attributes['aria-pressed'], 'true');
+    assert.equal(button.title, 'Desactivar inicio automatico');
+    assert.equal(button.dataset.tooltip, 'Desactivar inicio automatico');
+    assert.equal(button.classes.has('active'), true);
+    assert.equal(button.classes.has('muted'), false);
+
+    ui.game.waveManager.autoWave = false;
+    ui.updateAutoWaveButton(button);
+
+    assert.equal(button.attributes['aria-label'], 'Auto oleada desactivado');
+    assert.equal(button.attributes['aria-pressed'], 'false');
+    assert.equal(button.title, 'Activar inicio automatico de oleadas');
+    assert.equal(button.dataset.tooltip, 'Activar inicio automatico de oleadas');
+    assert.equal(button.classes.has('active'), false);
+    assert.equal(button.classes.has('muted'), true);
+});
+
+test('UIManager sincroniza title y tooltip del boton de pausa', () => {
+    const previousDocument = globalThis.document;
+    const button = createDomStub();
+    const body = createDomStub();
+    globalThis.document = {
+        body,
+        getElementById: (id) => (id === 'btn-pause' ? button : null)
+    };
+    const calls = [];
+    const ui = Object.create(UIManager.prototype);
+    ui.game = {
+        isManuallyPaused: false,
+        pause: () => calls.push('pause'),
+        start: () => calls.push('start')
+    };
+    ui.showToast = () => {};
+
+    try {
+        ui.setManualPause(true, false);
+        assert.equal(button.attributes['aria-label'], 'Reanudar');
+        assert.equal(button.title, 'Reanudar partida');
+        assert.equal(button.dataset.tooltip, 'Reanudar partida');
+        assert.equal(button.classes.has('active'), true);
+
+        ui.setManualPause(false, false);
+        assert.equal(button.attributes['aria-label'], 'Pausar');
+        assert.equal(button.title, 'Entrar en pausa táctica');
+        assert.equal(button.dataset.tooltip, 'Entrar en pausa táctica');
+        assert.deepEqual(calls, ['pause', 'start']);
+    } finally {
+        globalThis.document = previousDocument;
+    }
+});
+
+test('UIManager sincroniza tooltip de sugerencia de colocacion', () => {
+    const previousDocument = globalThis.document;
+    const button = createDomStub();
+    globalThis.document = { getElementById: (id) => (id === 'suggested-placement-action' ? button : null) };
+    const calls = [];
+    const ui = Object.create(UIManager.prototype);
+    ui.game = { inputManager: { confirmSuggestedPlacement: () => calls.push('confirm') } };
+    ui.renderOnboardingCoach = () => calls.push('coach');
+
+    try {
+        ui.updatePlacementSuggestion({ label: 'Celda ideal', detail: 'Pasto con cobertura excelente', qualityId: 'excellent', actionLabel: 'Colocar' });
+        assert.equal(button.className, 'suggested-placement-action excellent');
+        assert.equal(button.attributes['aria-label'], 'Celda ideal. Pasto con cobertura excelente');
+        assert.equal(button.title, 'Celda ideal. Pasto con cobertura excelente');
+        assert.equal(button.dataset.tooltip, 'Celda ideal. Pasto con cobertura excelente');
+        button.onclick();
+        assert.ok(calls.includes('confirm'));
+
+        ui.updatePlacementSuggestion(null);
+        assert.equal(button.classes.has('hidden'), true);
+        assert.equal(button.attributes['aria-label'], 'Usar celda sugerida');
+        assert.equal(button.title, 'Usar celda sugerida');
+        assert.equal(button.dataset.tooltip, 'Usar celda sugerida');
+    } finally {
+        globalThis.document = previousDocument;
+    }
+});
 test('renderCombatPressurePanel etiqueta acciones de emergencia con tooltips', () => {
     const previousDocument = globalThis.document;
     const container = createDomStub();
@@ -1357,9 +1443,14 @@ function createDomStub() {
         listeners: {},
         classes: new Set(),
         style: { setProperty() {} },
+        dataset: {},
         classList: {
             add(className) { element.classes.add(className); },
             remove(className) { element.classes.delete(className); },
+            toggle(className, active) {
+                if (active) element.classes.add(className);
+                else element.classes.delete(className);
+            },
             contains(className) { return element.classes.has(className); }
         },
         setAttribute(name, value) { element.attributes[name] = value; },

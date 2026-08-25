@@ -27,6 +27,14 @@ if (!/body\[data-app-state="loading"\]\s*#game-ui/i.test(html)) errors.push('Fal
     }
 });
 if (!/<button[^>]+data-start-back[^>]+data-tooltip=/i.test(html)) errors.push('El boton volver de inicio debe declarar data-tooltip');
+[
+    'suggested-placement-action',
+    'next-wave-btn'
+].forEach((id) => {
+    if (!new RegExp(`<button[^>]+id="${id}"[^>]+data-tooltip=`, 'i').test(html)) {
+        errors.push(`${id} debe declarar data-tooltip inicial`);
+    }
+});
 if (!/<button[^>]+id="close-panel-btn"[^>]+data-tooltip=/i.test(html)) errors.push('El boton cerrar panel debe declarar data-tooltip');
 
 assertButtonTypes(html, 'index.html');
