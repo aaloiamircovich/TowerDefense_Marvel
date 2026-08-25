@@ -86,6 +86,16 @@ test('buildBossCountdownState marca proximo mini boss y final boss', () => {
     assert.match(finalNow.ariaLabel, /Jefe final en esta oleada/);
 });
 
+test('UIManager renderSprite escapa atributos y fallback sin inyectar nombres en onerror', () => {
+    const ui = Object.create(UIManager.prototype);
+    const html = ui.renderSprite('assets/test"sprite.png', 'Kitty "Pryde" <X>');
+
+    assert.match(html, /alt="Kitty &quot;Pryde&quot; &lt;X&gt;"/);
+    assert.match(html, /data-fallback="K"/);
+    assert.doesNotMatch(html, /textContent: 'Kitty/);
+    assert.match(html, /this\.dataset\.fallback/);
+    assert.match(ui.renderSprite('', '<Hero>'), /<span class="sprite-fallback">&lt;<\/span>/);
+});
 test('formatHudResource compacta recursos sin romper creditos exactos', () => {
     const ui = createUpgradeUi(Number.NaN, '95.9k');
     ui.creditsEl.dataset = { value: '95913' };
