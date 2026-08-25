@@ -50,7 +50,7 @@ export class EndStatePanel {
                 ${this.renderMissionSummary(summary)}
                 ${this.renderOutcomeCoach('defeat', { wave, summary, modeSnapshot })}
                 <div class="end-state-actions end-state-actions--compact">
-                    <button class="btn-primary" id="retry-run" type="button" aria-label="Reintentar desde oleada 1"><i class="fas fa-rotate-right"></i> Reintentar</button>
+                    <button class="btn-primary" id="retry-run" type="button" aria-label="Reintentar desde oleada 1" title="Reintentar desde oleada 1" data-tooltip="Reintentar desde oleada 1"><i class="fas fa-rotate-right"></i> Reintentar</button>
                 </div>
             </section>
         `;
@@ -96,7 +96,7 @@ export class EndStatePanel {
                 ${this.renderMissionSummary(summary)}
                 ${this.renderOutcomeCoach('victory', { summary })}
                 <div class="end-state-actions end-state-actions--compact">
-                    <button class="btn-primary" id="victory-close" type="button" aria-label="Volver al mapa"><i class="fas fa-map"></i> Volver al mapa</button>
+                    <button class="btn-primary" id="victory-close" type="button" aria-label="Volver al mapa" title="Volver al mapa" data-tooltip="Volver al mapa"><i class="fas fa-map"></i> Volver al mapa</button>
                 </div>
             </section>
         `;
@@ -255,7 +255,7 @@ export class EndStatePanel {
                     </div>
                 </div>
                 <div class="end-state-actions end-state-actions--compact">
-                    <button class="btn-primary" id="reload-game" type="button" aria-label="Reintentar carga"><i class="fas fa-rotate-right"></i> Reintentar carga</button>
+                    <button class="btn-primary" id="reload-game" type="button" aria-label="Reintentar carga" title="Reintentar carga" data-tooltip="Reintentar carga"><i class="fas fa-rotate-right"></i> Reintentar carga</button>
                 </div>
             </section>
         `;
