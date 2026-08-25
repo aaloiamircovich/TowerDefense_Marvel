@@ -1,6 +1,7 @@
 import { SET_BONUSES, SLOT_LABELS } from '../systems/ItemEffectSystem.js';
 import { getHeroBoxCost } from '../systems/ShopSystem.js';
 import { getRarityClass, normalizeRarity } from '../utils/Rarity.js';
+import { buildItemEffectPills } from './InventoryPanel.js';
 
 function escapeHtml(value = '') {
     return String(value)
@@ -95,6 +96,7 @@ export class ShopPanel {
             this.ui.game.progression.state.equippedItems,
             this.ui.game.itemDatabase
         );
+        const effectPills = buildItemEffectPills(item);
         return `
             <div class="shop-card shop-card--compact ${rarityClass} ${purchased ? 'purchased' : ''} ${canBuy ? 'can-buy' : 'locked'}" data-rarity="${rarity}" data-affordability="${canBuy ? 'ready' : 'locked'}">
                 <div class="item-badge rarity-badge ${rarityClass}">${rarity}</div>
@@ -103,6 +105,9 @@ export class ShopPanel {
                     <div><small>${SLOT_LABELS[item.slot]} · ${SET_BONUSES[item.set]?.name || item.set}</small><h4>${item.name}</h4></div>
                 </div>
                 <p>${item.desc}</p>
+                <div class="shop-effect-pills item-effect-pills" aria-label="Efectos principales">
+                    ${effectPills.map((pill) => `<span class="${pill.tone}"><b>${pill.label}</b><small>${pill.value}</small></span>`).join('')}
+                </div>
                 <div class="shop-insight ${insight.tone}" aria-label="Recomendado por ${escapeHtml(insight.reasons.join(', '))}">
                     <strong>${escapeHtml(insight.label)}</strong>
                     <span>${insight.reasons.map(escapeHtml).join(' | ')}</span>

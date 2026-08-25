@@ -27,6 +27,8 @@ test('ShopPanel renderiza tienda progresiva y delega compra de objetos', () => {
     assert.match(panelContent.innerHTML, /RECLUTAR POR \$500/);
     assert.match(panelContent.innerHTML, /data-affordability="ready"/);
     assert.match(panelContent.innerHTML, /Lentes E.D.I.T.H./);
+    assert.match(panelContent.innerHTML, /shop-effect-pills/);
+    assert.match(panelContent.innerHTML, /Detecta sigilo[\s\S]*activo/);
     assert.match(panelContent.innerHTML, /Buena respuesta/);
 
     buyButton.listeners.click();
