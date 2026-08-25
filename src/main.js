@@ -288,9 +288,12 @@ function showStartScreen({ hasSave = false, onContinue, onNewGame, onOptions } =
     const backButtons = screen.querySelectorAll('[data-start-back]');
 
     if (continueButton) {
+        const continueTooltip = hasSave ? 'Continuar la partida guardada' : 'No hay una partida guardada para continuar';
         continueButton.disabled = !hasSave;
         continueButton.setAttribute('aria-disabled', String(!hasSave));
-        continueButton.title = hasSave ? 'Continuar la partida guardada' : 'No hay una partida guardada para continuar';
+        continueButton.setAttribute('aria-label', hasSave ? 'Continuar partida guardada' : 'Continuar no disponible: sin partida guardada');
+        continueButton.title = continueTooltip;
+        continueButton.dataset.tooltip = continueTooltip;
     }
 
     playButton?.addEventListener('click', () => setStartScreenView('play'));

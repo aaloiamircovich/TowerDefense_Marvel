@@ -15,6 +15,18 @@ if (!/role="dialog"[^>]+aria-modal="true"/i.test(html)) errors.push('El panel pr
 if (!/\.high-contrast\b/.test(css)) errors.push('Falta modo de alto contraste');
 if (!/\.reduce-motion\b/.test(css)) errors.push('Falta preferencia de movimiento reducido');
 
+[
+    'start-play-btn',
+    'start-options-btn',
+    'start-continue-btn',
+    'start-new-game-btn'
+].forEach((id) => {
+    if (!new RegExp(`<button[^>]+id="${id}"[^>]+data-tooltip=`, 'i').test(html)) {
+        errors.push(`${id} debe declarar data-tooltip en pantalla inicial`);
+    }
+});
+if (!/<button[^>]+data-start-back[^>]+data-tooltip=/i.test(html)) errors.push('El boton volver de inicio debe declarar data-tooltip');
+
 assertButtonTypes(html, 'index.html');
 dynamicTemplateFiles.forEach((filePath) => {
     assertButtonTypes(fs.readFileSync(filePath, 'utf8'), filePath);
