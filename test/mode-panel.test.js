@@ -10,13 +10,13 @@ test('buildModeStatusView prioriza detalle de racha y acciones disponibles', () 
     const view = buildModeStatusView({
         name: 'Supervivencia',
         detail: 'Extraccion disponible',
-        streakDetail: 'Racha limpia x3',
+        streakDetail: 'Oleadas superadas x3',
         score: 1240,
         canExtract: true,
         canRepair: true
     });
 
-    assert.equal(view.detail, 'Racha limpia x3');
+    assert.equal(view.detail, 'Oleadas superadas x3');
     assert.match(view.html, /1240 pts/);
     assert.match(view.html, /id="extract-mode" class="btn-mode-action" type="button" aria-label="Extraer recompensa del modo" title="Extraer recompensa del modo" data-tooltip="Extraer recompensa del modo"/);
     assert.match(view.html, /id="repair-mode" class="btn-mode-action" type="button" aria-label="Reparar convoy por 120 creditos" title="Reparar convoy por 120 creditos" data-tooltip="Reparar convoy por 120 creditos"/);

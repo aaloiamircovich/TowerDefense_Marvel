@@ -437,7 +437,7 @@ test('contratos semanales se completan una vez y pagan creditos', () => {
     assert.equal(manager.state.credits, before + first.reduce((sum, contract) => sum + contract.reward, 0));
 });
 
-test('contratos semanales desbloquean emblemas por racha perfecta', () => {
+test('contratos semanales desbloquean emblemas por semanas completas', () => {
     const manager = new ProgressionManager(new MemoryStorage());
     manager.initialize(createGame(), data);
 

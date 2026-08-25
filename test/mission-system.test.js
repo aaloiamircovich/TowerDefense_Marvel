@@ -16,7 +16,7 @@ test('Manhattan ya no activa evacuacion civil ni barricada', () => {
     assert.equal(levels[1].mission.mechanic.type, 'urban_assault');
     assert.equal('civiliansSaved' in mission.state.metrics, false);
     assert.equal('civilianActive' in mission.state, false);
-    assert.equal(mission.state.metrics.noLeakWaves, 1);
+    assert.equal(mission.state.metrics.wavesCleared, 1);
 });
 
 test('Manhattan no dibuja tokens CIV ni BARRICADA en el campo', () => {

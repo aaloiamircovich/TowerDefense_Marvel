@@ -4,7 +4,7 @@ const DEFAULT_METRICS = {
     kills: 0,
     bosses: 0,
     leaks: 0,
-    noLeakWaves: 0,
+    wavesCleared: 0,
     mechanicUses: 0
 };
 
@@ -188,8 +188,7 @@ export class MissionSystem {
 
     onWaveFinished() {
         if (!this.state) return;
-        const flawless = this.game.resourceManager.lives === this.state.waveStartLives;
-        if (flawless) this.state.metrics.noLeakWaves++;
+        this.state.metrics.wavesCleared++;
         this.evaluateObjectives();
         this.publish();
     }

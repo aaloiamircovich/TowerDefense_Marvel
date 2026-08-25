@@ -80,7 +80,7 @@ export class ProfilePanel {
                     <div class="weekly-streak-strip">
                         <span><b>${weekly.streak}</b>Actual</span>
                         <span><b>${weekly.bestStreak}</b>Mejor racha</span>
-                        <span><b>${weekly.perfectWeeks}</b>Semanas perfectas</span>
+                        <span><b>${weekly.perfectWeeks}</b>Semanas completas</span>
                     </div>
                     <div class="weekly-contract-list">${weekly.contracts.map((contract) => this.renderContract(contract)).join('')}</div>
                 </section>

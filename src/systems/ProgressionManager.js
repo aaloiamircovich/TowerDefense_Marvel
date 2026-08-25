@@ -44,12 +44,12 @@ const CONTRACT_EMBLEM_IDS = Object.keys(CONTRACT_EMBLEM_CATALOG);
 
 export const ACHIEVEMENT_CATALOG = {
     primera_defensa: achievement('Primera defensa', 'Completa tu primera mision registrada.'),
-    intocable: achievement('Intocable', 'Gana una mision sin perder vidas.'),
+    intocable: achievement('Victoria tactica', 'Gana una mision de campania.'),
     cazajefes: achievement('Cazajefes', 'Alcanza una oleada de jefe.'),
     maestro: achievement('Maestro heroico', 'Completa una maestria entera con un heroe.'),
     coleccionista: achievement('Coleccionista', 'Recluta al menos 10 heroes.'),
     tactico_superior: achievement('Tactico superior', 'Acumula 2500 de valor tactico en una mision.'),
-    protector: achievement('Protector', 'Evita 5 fugas con efectos defensivos en una mision.'),
+    protector: achievement('Protector', 'Acumula 5 vidas salvadas con efectos defensivos en una mision.'),
     controlador: achievement('Control de masas', 'Acumula 30 segundos de control en una mision.'),
     arsenal_vivo: achievement('Arsenal vivo', 'Activa 6 habilidades en una mision.'),
     sinergia_activa: achievement('Sinergia activa', 'Termina una mision con una agrupacion activa.'),
@@ -116,12 +116,12 @@ function createWeeklyContracts(weekKey = getWeekKey()) {
     const faction = getFactionForWeek(weekKey);
     return [
         {
-            id: `${weekKey}:clean_run`,
-            title: 'Defensa impecable',
+            id: `${weekKey}:mission_clear`,
+            title: 'Mision completada',
             group: 'Comando',
             reward: 180,
-            goal: 'Gana una mision con 18 o mas vidas restantes.',
-            evaluate: (summary) => summary.result === 'victory' && summary.lives >= 18
+            goal: 'Gana una mision y derrota 25 enemigos.',
+            evaluate: (summary) => summary.result === 'victory' && (summary.totals?.kills || 0) >= 25
         },
         {
             id: `${weekKey}:tactical_control`,
@@ -813,7 +813,7 @@ export class ProgressionManager {
         stats.creditsEarned += Math.round(totals.credits);
         const unlocked = new Set(this.state.achievements);
         unlocked.add('primera_defensa');
-        if (result === 'victory' && summary.lives === game.resourceManager?.maxLives) unlocked.add('intocable');
+        if (result === 'victory') unlocked.add('intocable');
         if (summary.wave >= 25) unlocked.add('cazajefes');
         if (Object.values(this.state.heroMastery).some((entry) => entry.completed?.length >= 3)) unlocked.add('maestro');
         if (this.state.unlockedHeroIds.length >= 10) unlocked.add('coleccionista');

@@ -151,7 +151,6 @@ function buildReportState() {
         damage: 1800,
         credits: 320,
         bounty: 260,
-        cleanBonus: 36,
         metaReward: 14,
         bestHero: 'Iron Man',
         bestHeroKills: 7,

@@ -1,4 +1,4 @@
-﻿import test from 'node:test';
+import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { WaveManager, getFinalBossHealthCurve, getLevelHealthFactor, getWaveHealthCurve } from '../src/systems/WaveManager.js';
@@ -225,12 +225,12 @@ test('WaveManager expone cadencia compacta de salida enemiga', () => {
     assert.equal(timeline.overflow, 0);
 });
 
-test('WaveManager anticipa bonus perfecto en el resumen preparado', () => {
+test('WaveManager ya no anticipa bonus perfecto en el resumen preparado', () => {
     const manager = new WaveManager(createGame(), enemies);
     const summary = manager.buildPreparedSummary();
 
-    assert.equal(summary.perfectBonus, 36);
-    assert.equal(manager.getPerfectWaveBonus(), summary.perfectBonus);
+    assert.equal('perfectBonus' in summary, false);
+    assert.equal(typeof manager.getPerfectWaveBonus, 'undefined');
 });
 
 test('WaveManager eleva la lectura de amenaza cuando hay barreras y sigilo', () => {
@@ -382,7 +382,7 @@ test('WaveManager registra fugas con counter y progreso de ruta', () => {
     assert.deepEqual(reports[0].leakEvents[0].traits, ['Sigilo', 'Rapido']);
 });
 
-test('WaveManager paga bonus moderado por oleada perfecta', () => {
+test('WaveManager paga solo recompensa base al cerrar una oleada sin danos', () => {
     const reports = [];
     const game = createGame('new-york', [], [
         deployedHero({ id: 'iron_man', name: 'Iron Man', damage: 58, fireRate: 1.4, range: 180, level: 2 })
@@ -405,11 +405,11 @@ test('WaveManager paga bonus moderado por oleada perfecta', () => {
     manager.enemiesQueue = [];
     manager.finishWave();
 
-    assert.equal(reports[0].cleanBonus, 36);
-    assert.equal(game.resourceManager.credits, 300 + 188 + 36);
+    assert.equal('cleanBonus' in reports[0], false);
+    assert.equal(game.resourceManager.credits, 300 + 188);
 });
 
-test('WaveManager cancela bonus perfecto cuando hay fugas', () => {
+test('WaveManager no altera la recompensa base cuando hubo fugas', () => {
     const reports = [];
     const game = createGame('new-york', [], [
         deployedHero({ id: 'iron_man', name: 'Iron Man', damage: 58, fireRate: 1.4, range: 180, level: 2 })
@@ -431,7 +431,7 @@ test('WaveManager cancela bonus perfecto cuando hay fugas', () => {
     manager.enemiesQueue = [];
     manager.finishWave();
 
-    assert.equal(reports[0].cleanBonus, 0);
+    assert.equal('cleanBonus' in reports[0], false);
     assert.equal(game.resourceManager.credits, 300 + 188);
 });
 

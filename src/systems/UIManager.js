@@ -39,8 +39,6 @@ export function buildWaveLaunchState(enabled, summary = null) {
     const tier = summary?.threatTier?.id || 'low';
     const tierLabel = summary?.threatTier?.label || 'Amenaza baja';
     const score = summary?.pressureScore ?? 0;
-    const perfectBonus = Math.max(0, Number(summary?.perfectBonus || 0));
-    const bonusCopy = perfectBonus > 0 ? ` | Perfecta +$${perfectBonus}` : '';
     const bossMilestone = summary?.bossMilestone || null;
     const primary = bossMilestone?.isFinalBoss
         ? 'ENFRENTAR FINAL BOSS'
@@ -57,12 +55,11 @@ export function buildWaveLaunchState(enabled, summary = null) {
     return {
         tier,
         primary,
-        secondary: perfectBonus > 0 ? `${bossCopy}${tierLabel} | ${score}${bonusCopy}` : `${bossCopy}${tierLabel} \u00B7 ${score}`,
-        ariaLabel: `${primary}. ${bossCopy}${tierLabel}. Puntaje ${score}.${perfectBonus > 0 ? ` Bonus perfecto ${perfectBonus}.` : ''}${bossWarning}`,
+        secondary: `${bossCopy}${tierLabel} · ${score}`,
+        ariaLabel: `${primary}. ${bossCopy}${tierLabel}. Puntaje ${score}.${bossWarning}`,
         tooltip: bossMilestone?.warning || summary?.threatTier?.advice || 'Iniciar siguiente oleada'
     };
 }
-
 const PIERCING_HERO_IDS = new Set(['iron_man', 'vision', 'hawkeye', 'winter_soldier', 'cyclops', 'silver_surfer']);
 export const TARGETING_PRIORITIES = ['Primero', 'Último', 'Fuerte', 'Débil', 'Rápido', 'Sigilo', 'Jefe'];
 
@@ -1075,15 +1072,12 @@ export function buildWaveReportGrade(report = {}) {
     const mastery = Math.max(0, Number(report.mastery || 0));
     const bestHeroDamage = Math.max(0, Number(report.bestHeroDamage || 0));
     const bestShare = damage > 0 ? bestHeroDamage / damage : 0;
-
-    const cleanBonus = leaks === 0 && (kills > 0 || damage > 0) ? 18 : 0;
     const teamBonus = bestShare > 0 && bestShare < 0.6 && kills >= 6 ? 6 : 0;
     const score = Math.max(0, Math.min(100, Math.round(
         55
         + Math.min(18, kills * 1.2)
         + Math.min(18, damage / 120)
         + Math.min(10, credits / 55)
-        + cleanBonus
         + teamBonus
         + Math.min(6, mastery * 3)
         - leaks * 24
@@ -1096,7 +1090,7 @@ export function buildWaveReportGrade(report = {}) {
     if (score >= 96) {
         medal = 'S';
         tone = 'elite';
-        label = 'Defensa perfecta';
+        label = 'Control absoluto';
     } else if (score >= 86) {
         medal = 'A';
         tone = 'strong';
@@ -1115,7 +1109,7 @@ export function buildWaveReportGrade(report = {}) {
     if (leaks >= 3) detail = 'La salida quedo expuesta; suma control final antes de acelerar.';
     else if (leaks > 0) detail = 'Hubo fugas aisladas; una mejora cerca de meta puede sellar la linea.';
     else if (kills === 0 && damage === 0) detail = 'No hubo lectura ofensiva; despliega dano antes de la siguiente oleada.';
-    else if (medal === 'S') detail = 'Oleada limpia con ejecucion dominante: buen momento para greed de economia.';
+    else if (medal === 'S') detail = 'Ejecucion dominante: buen momento para greed de economia.';
     else if (bestShare >= 0.65) detail = 'El MVP cargo demasiado peso; agrega soporte para evitar dependencia.';
     else if (teamBonus > 0) detail = 'Dano bien repartido: la composicion esta escalando como escuadron.';
     else if (credits >= 400) detail = 'Tienes margen economico para tienda, set o mejora clave.';
@@ -1134,7 +1128,7 @@ export function buildWaveReportState(report = {}) {
 
     let tone = 'clean';
     let label = 'Oleada asegurada';
-    let advice = 'Sin fugas: puedes ahorrar o acelerar la siguiente oleada.';
+    let advice = 'Defensa estable: puedes ahorrar o acelerar la siguiente oleada.';
 
     if (leaks > 0) {
         tone = leaks >= 3 ? 'breach' : 'leak';
@@ -1167,7 +1161,6 @@ export function buildWaveReportState(report = {}) {
         damage: Math.round(damage),
         credits: Math.round(credits),
         bounty: Math.max(0, Number(report.bounty || 0)),
-        cleanBonus: Math.max(0, Number(report.cleanBonus || 0)),
         metaReward: Math.max(0, Number(report.metaReward || 0)),
         mastery,
         bestHero,

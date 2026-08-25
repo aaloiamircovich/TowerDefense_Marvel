@@ -80,7 +80,7 @@ test('rankings de modo permanecen separados', () => {
     assert.deepEqual(game.recorded.map((entry) => entry.modeId), ['daily', 'survival']);
 });
 
-test('modos especiales bonifican racha de oleadas limpias', () => {
+test('modos especiales puntuan oleadas superadas sin bonus perfecto', () => {
     const game = createGame(); const modes = attachModes(game); modes.modeId = 'survival';
     game.waveManager = { currentWave: 3, isWaveActive: false, waveStartSnapshot: { lives: 20 } };
 
@@ -88,12 +88,12 @@ test('modos especiales bonifican racha de oleadas limpias', () => {
     modes.onWaveFinished(2);
 
     const snapshot = modes.getSnapshot();
-    assert.equal(snapshot.cleanStreak, 2);
-    assert.equal(snapshot.lastStreakBonus, 70);
-    assert.match(snapshot.streakDetail, /Racha limpia x2/);
+    assert.equal(snapshot.wavesCleared, 2);
+    assert.equal('lastStreakBonus' in snapshot, false);
+    assert.match(snapshot.streakDetail, /Oleadas superadas x2/);
 });
 
-test('modos especiales reinician racha cuando hay fugas', () => {
+test('modos especiales no reinician progreso por fugas comunes', () => {
     const game = createGame(); const modes = attachModes(game); modes.modeId = 'daily';
     game.waveManager = { currentWave: 2, isWaveActive: false, waveStartSnapshot: { lives: 20 } };
     modes.onWaveFinished(1);
@@ -102,9 +102,9 @@ test('modos especiales reinician racha cuando hay fugas', () => {
     game.waveManager.waveStartSnapshot = { lives: 20 };
     modes.onWaveFinished(2);
 
-    assert.equal(modes.cleanStreak, 0);
-    assert.equal(modes.lastStreakBonus, 0);
-    assert.equal(modes.getSnapshot().streakDetail, null);
+    assert.equal(modes.wavesCleared, 2);
+    assert.equal('lastStreakBonus' in modes.getSnapshot(), false);
+    assert.match(modes.getSnapshot().streakDetail, /Oleadas superadas x2/);
 });
 
 function attachModes(game) { const modes = new GameModeSystem(game, game.progression); game.modeSystem = modes; return modes; }

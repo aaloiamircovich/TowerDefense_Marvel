@@ -1,4 +1,4 @@
-﻿import { Enemy } from '../entities/Enemy.js';
+import { Enemy } from '../entities/Enemy.js';
 import { EncounterDirector } from './EncounterDirector.js';
 import {
     CAMPAIGN_MAX_WAVES,
@@ -247,7 +247,6 @@ export class WaveManager {
             ...this.getWaveSummary(),
             bossMilestone: this.getBossMilestone(),
             spawnTimeline: this.getSpawnTimeline(),
-            perfectBonus: this.getPerfectWaveBonus(),
             branchOptions: this.director.getBranchOptions(this.currentWave),
             selectedBranch: this.selectedBranch || 'safe'
         };
@@ -823,9 +822,7 @@ export class WaveManager {
         this.game.missionSystem?.onWaveFinished(this.currentWave);
         this.game.modeSystem?.onWaveFinished(this.currentWave);
         const waveBounty = this.getWaveBounty();
-        const cleanBonus = this.getCleanWaveBonus();
         this.game.resourceManager.addCredits(waveBounty);
-        if (cleanBonus > 0) this.game.resourceManager.addCredits(cleanBonus);
 
         let metaReward = 0;
         if (!this.game.completedWaves.includes(this.currentWave)) {
@@ -834,7 +831,7 @@ export class WaveManager {
             else this.game.stars += 1;
         }
         const masteryUnlocked = (this.game.heroes || []).flatMap((hero) => this.game.progression?.evaluateHeroMastery?.(hero) || []);
-        this.game.uiManager?.renderWaveReport?.(this.buildWaveReport(waveBounty, metaReward, masteryUnlocked, cleanBonus));
+        this.game.uiManager?.renderWaveReport?.(this.buildWaveReport(waveBounty, metaReward, masteryUnlocked));
 
         const metaCopy = metaReward > 0 ? ` · +$${metaReward}` : '';
         const masteryCopy = masteryUnlocked.length ? ` · ${masteryUnlocked.length} maestria` : '';
@@ -856,18 +853,6 @@ export class WaveManager {
                 if (this.autoWave && !this.isWaveActive && !this.game.isGameOver) this.startNextWave();
             }, 1600);
         }
-    }
-
-    getCleanWaveBonus() {
-        if (!this.waveStartSnapshot) return 0;
-        const startLives = Number(this.waveStartSnapshot.lives || 0);
-        const currentLives = Number(this.game.resourceManager?.lives || 0);
-        if (startLives <= 0 || currentLives < startLives) return 0;
-        return this.getPerfectWaveBonus();
-    }
-
-    getPerfectWaveBonus(wave = this.currentWave) {
-        return Math.min(260, 28 + Math.max(1, Number(wave || 1)) * 8);
     }
 
     getWaveBounty(wave = this.currentWave) {
@@ -904,7 +889,7 @@ export class WaveManager {
         };
     }
 
-    buildWaveReport(waveBounty = 0, metaReward = 0, masteryUnlocked = [], cleanBonus = 0) {
+    buildWaveReport(waveBounty = 0, metaReward = 0, masteryUnlocked = []) {
         const start = this.waveStartSnapshot || this.captureWaveSnapshot(this.currentWave);
         const currentLives = Number(this.game.resourceManager?.lives || 0);
         const currentCredits = Number(this.game.resourceManager?.credits || 0);
@@ -964,7 +949,6 @@ export class WaveManager {
             damage: totals.damage,
             credits,
             bounty: waveBounty,
-            cleanBonus: Math.max(0, Number(cleanBonus || 0)),
             metaReward,
             mastery: masteryUnlocked.length,
             bestHero: best?.score > 0 ? best.name : 'Sin MVP',

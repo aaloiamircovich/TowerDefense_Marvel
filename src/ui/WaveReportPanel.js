@@ -80,7 +80,6 @@ export class WaveReportPanel {
                 ${this.renderMetric({ icon: 'fa-skull', label: 'Bajas', value: state.kills })}
                 ${this.renderMetric({ icon: 'fa-bolt', label: 'Dano', value: state.damage })}
                 ${this.renderMetric({ icon: 'fa-coins', label: 'Creditos', value: `$${state.credits}` })}
-                ${state.cleanBonus > 0 ? this.renderMetric({ icon: 'fa-shield-heart', label: 'Perfecta', value: `+$${state.cleanBonus}`, tone: 'reward' }) : ''}
             </div>
             ${this.renderDetailDrawer(state)}
             <p class="wave-report-advice"><i class="fas fa-compass"></i><span>${escapeHtml(state.advice)}</span></p>
@@ -131,14 +130,12 @@ export class WaveReportPanel {
     renderRewardBreakdown(state) {
         const credits = Math.max(0, Number(state.credits || 0));
         const bounty = Math.max(0, Number(state.bounty || 0));
-        const cleanBonus = Math.max(0, Number(state.cleanBonus || 0));
         const metaReward = Math.max(0, Number(state.metaReward || 0));
-        const known = bounty + cleanBonus + metaReward;
+        const known = bounty + metaReward;
         const extra = Math.max(0, credits - known);
         const rows = [
             { icon: 'fa-sack-dollar', label: 'Total', value: `+$${credits}`, tone: 'total' },
             bounty > 0 ? { icon: 'fa-skull', label: 'Bajas', value: `+$${bounty}` } : null,
-            cleanBonus > 0 ? { icon: 'fa-shield-heart', label: 'Perfecta', value: `+$${cleanBonus}` } : null,
             metaReward > 0 ? { icon: 'fa-medal', label: 'Objetivos', value: `+$${metaReward}` } : null,
             extra > 0 ? { icon: 'fa-dice', label: 'Extras', value: `+$${extra}` } : null
         ].filter(Boolean);

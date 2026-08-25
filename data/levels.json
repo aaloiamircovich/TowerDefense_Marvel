@@ -32,10 +32,10 @@
           "reward": 240
         },
         {
-          "id": "avengers_base_clean",
-          "label": "Base intacta",
-          "description": "Supera 5 oleadas sin fugas.",
-          "metric": "noLeakWaves",
+          "id": "avengers_base_hold",
+          "label": "Defensa sostenida",
+          "description": "Supera 5 oleadas en la base.",
+          "metric": "wavesCleared",
           "target": 5,
           "reward": 220
         }
@@ -157,10 +157,10 @@
       },
       "objectives": [
         {
-          "id": "ny_flawless",
-          "label": "Avenida intacta",
-          "description": "Supera 5 oleadas sin perder vidas.",
-          "metric": "noLeakWaves",
+          "id": "ny_control",
+          "label": "Avenida controlada",
+          "description": "Supera 5 oleadas en Manhattan.",
+          "metric": "wavesCleared",
           "target": 5,
           "reward": 180
         },
@@ -508,10 +508,10 @@
       },
       "objectives": [
         {
-          "id": "xmansion_clean",
+          "id": "xmansion_hold",
           "label": "Escuela segura",
-          "description": "Supera 8 oleadas sin fugas.",
-          "metric": "noLeakWaves",
+          "description": "Supera 8 oleadas en la mansion.",
+          "metric": "wavesCleared",
           "target": 8,
           "reward": 340
         },
@@ -599,10 +599,10 @@
           "reward": 420
         },
         {
-          "id": "knowhere_clean",
-          "label": "Carga intacta",
-          "description": "Supera 8 oleadas sin fugas.",
-          "metric": "noLeakWaves",
+          "id": "knowhere_extract",
+          "label": "Carga despachada",
+          "description": "Supera 8 oleadas en el puerto.",
+          "metric": "wavesCleared",
           "target": 8,
           "reward": 400
         }
@@ -904,10 +904,10 @@
           "reward": 560
         },
         {
-          "id": "dark_clean",
-          "label": "Realidad intacta",
-          "description": "Supera 8 oleadas sin fugas.",
-          "metric": "noLeakWaves",
+          "id": "dark_stable",
+          "label": "Realidad contenida",
+          "description": "Supera 8 oleadas en la Dimension Oscura.",
+          "metric": "wavesCleared",
           "target": 8,
           "reward": 600
         }
@@ -1141,10 +1141,10 @@
       },
       "objectives": [
         {
-          "id": "raft_cells",
-          "label": "Control de daños",
-          "description": "Completa 8 oleadas con menos de 6 brechas.",
-          "metric": "noLeakWaves",
+          "id": "raft_control",
+          "label": "Control de celdas",
+          "description": "Completa 8 oleadas en The Raft.",
+          "metric": "wavesCleared",
           "target": 8,
           "reward": 640
         },

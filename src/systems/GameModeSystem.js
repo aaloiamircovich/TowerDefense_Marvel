@@ -18,9 +18,8 @@ export class GameModeSystem {
     reset() {
         this.modeId = 'campaign';
         this.score = 0;
-        this.cleanStreak = 0;
+        this.wavesCleared = 0;
         this.lastWaveScore = 0;
-        this.lastStreakBonus = 0;
         this.finished = false;
         this.seedKey = 'campaign';
         this.draftPool = [];
@@ -87,11 +86,8 @@ export class GameModeSystem {
     onWaveFinished(waveNumber) {
         if (this.modeId === 'campaign' || this.finished) return;
         const lives = this.game.resourceManager.lives;
-        const startLives = this.game.waveManager?.waveStartSnapshot?.lives ?? lives;
-        const leaks = Math.max(0, startLives - lives);
-        this.cleanStreak = leaks === 0 ? this.cleanStreak + 1 : 0;
-        this.lastStreakBonus = this.cleanStreak >= 2 ? Math.min(250, this.cleanStreak * 35) : 0;
-        this.lastWaveScore = Math.round(100 * waveNumber + lives * 12 + (this.modeId === 'boss_rush' ? 250 : 0) + this.lastStreakBonus);
+        this.wavesCleared++;
+        this.lastWaveScore = Math.round(100 * waveNumber + lives * 12 + (this.modeId === 'boss_rush' ? 250 : 0));
         this.score += this.lastWaveScore;
         if (this.modeId === 'boss_rush') this.game.resourceManager.addCredits(180 + waveNumber * 35);
         if (this.modeId === 'survival' && waveNumber % 5 === 0) {
@@ -189,7 +185,7 @@ export class GameModeSystem {
         const mode = GAME_MODES[this.modeId];
         if (!mode) return null;
         const best = this.progression?.getModeRecord(this.modeId)?.bestScore || 0;
-        const streakDetail = this.cleanStreak >= 2 ? `Racha limpia x${this.cleanStreak} (+${this.lastStreakBonus})` : null;
+        const streakDetail = this.wavesCleared >= 2 ? `Oleadas superadas x${this.wavesCleared}` : null;
         return {
             id: this.modeId, name: mode.name, score: this.score, best,
             wave: this.game.waveManager?.currentWave || 1,
@@ -197,9 +193,8 @@ export class GameModeSystem {
                 : this.modeId === 'draft' ? `Equipo ${this.game.activeTeam.length}/6`
                     : this.modeId === 'survival' ? 'Extracción disponible entre oleadas' : `Récord ${best}`,
             streakDetail,
-            cleanStreak: this.cleanStreak,
+            wavesCleared: this.wavesCleared,
             lastWaveScore: this.lastWaveScore,
-            lastStreakBonus: this.lastStreakBonus,
             canExtract: this.modeId === 'survival' && !this.game.waveManager?.isWaveActive && !this.finished,
             canRepair: this.modeId === 'boss_rush' && !this.game.waveManager?.isWaveActive && this.game.resourceManager.lives < this.game.resourceManager.maxLives && !this.finished
         };

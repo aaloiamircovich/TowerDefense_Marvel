@@ -28,15 +28,15 @@ test('buildWaveLaunchState diferencia amenaza alta de una oleada normal', () => 
     assert.equal(low.secondary, 'Amenaza baja · 0');
 });
 
-test('buildWaveLaunchState anticipa bonus por oleada perfecta', () => {
+test('buildWaveLaunchState ignora bonuses perfectos retirados', () => {
     const state = buildWaveLaunchState(true, {
         pressureScore: 14,
         perfectBonus: 30,
         threatTier: { id: 'guarded', label: 'Amenaza media', advice: 'Cubre salida.' }
     });
 
-    assert.equal(state.secondary, 'Amenaza media | 14 | Perfecta +$30');
-    assert.match(state.ariaLabel, /Bonus perfecto 30/);
+    assert.equal(state.secondary, 'Amenaza media · 14');
+    assert.doesNotMatch(state.ariaLabel, /Bonus perfecto|Perfecta/);
 });
 
 test('buildWaveLaunchState convierte bosses en CTA de enfrentamiento', () => {
@@ -1196,7 +1196,6 @@ test('buildWaveReportState resume una oleada limpia con consejo de ahorro', () =
         kills: 12,
         damage: 1840.7,
         credits: 332,
-        cleanBonus: 42,
         bestHero: 'Iron Man',
         bestHeroKills: 7,
         bestHeroDamage: 990
@@ -1205,7 +1204,6 @@ test('buildWaveReportState resume una oleada limpia con consejo de ahorro', () =
     assert.equal(report.tone, 'clean');
     assert.equal(report.label, 'Oleada asegurada');
     assert.equal(report.damage, 1841);
-    assert.equal(report.cleanBonus, 42);
     assert.match(report.advice, /ahorrar/);
     assert.equal(report.grade.medal, 'S');
 });
@@ -1286,7 +1284,7 @@ test('buildWaveReportLesson recomienda economia en oleadas estables repartidas',
     assert.match(lesson.detail, /set/);
 });
 
-test('buildWaveReportGrade premia ejecucion limpia dominante', () => {
+test('buildWaveReportGrade valora ejecucion dominante sin bonus perfecto', () => {
     const grade = buildWaveReportGrade({
         leaks: 0,
         kills: 18,
@@ -1297,7 +1295,7 @@ test('buildWaveReportGrade premia ejecucion limpia dominante', () => {
 
     assert.equal(grade.medal, 'S');
     assert.equal(grade.tone, 'elite');
-    assert.match(grade.detail, /Oleada limpia/);
+    assert.match(grade.detail, /Ejecucion dominante/);
 });
 
 test('buildWaveReportGrade degrada una brecha grave aunque haya bajas', () => {
