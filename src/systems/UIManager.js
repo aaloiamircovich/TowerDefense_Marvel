@@ -2116,7 +2116,7 @@ export class UIManager {
                             ${equippedItem ? `<small>${equippedItem.desc}</small><button class="btn-unequip-modal icon-command" type="button" data-slot="${equippedSlot}" aria-label="Desequipar ${equippedItem.name}" title="Desequipar" data-tooltip="Desequipar"><i class="fas fa-eject"></i></button>` : '<small>Un solo objeto equipado por heroe.</small>'}
                         </div>
                     </div>
-                    <button id="open-inventory-panel" class="btn-primary ghost" type="button" aria-label="${escapeHtml(isUnlocked ? `Abrir inventario para ${heroName}` : `${heroName} no reclutado: inventario bloqueado`)}" aria-disabled="${!isUnlocked}" ${isUnlocked ? '' : 'disabled'}><i class="fas fa-box-open"></i> ${isUnlocked ? 'Abrir inventario' : 'Recluta para equipar'}</button>
+                    <button id="open-inventory-panel" class="btn-primary ghost" type="button" aria-label="${escapeHtml(isUnlocked ? `Abrir inventario para ${heroName}` : `${heroName} no reclutado: inventario bloqueado`)}" title="${escapeHtml(isUnlocked ? `Abrir inventario para ${heroName}` : `${heroName} no reclutado: inventario bloqueado`)}" data-tooltip="${escapeHtml(isUnlocked ? `Abrir inventario para ${heroName}` : `${heroName} no reclutado: inventario bloqueado`)}" aria-disabled="${!isUnlocked}" ${isUnlocked ? '' : 'disabled'}><i class="fas fa-box-open"></i> ${isUnlocked ? 'Abrir inventario' : 'Recluta para equipar'}</button>
                 </div>
             `;
         } else if (activeDetailView === 'combat') {
@@ -2177,7 +2177,7 @@ export class UIManager {
                     <div class="kit-mode-control" role="group" aria-label="${kitControl.label}">
                         <span>${kitControl.label}</span>
                         <div>
-                            ${kitControl.options.map((option) => `<button class="kit-mode-btn ${option.id === kitControl.value ? 'active' : ''}" type="button" data-mode="${option.id}" aria-pressed="${option.id === kitControl.value}" aria-label="${escapeHtml(`${kitControl.label}: ${option.label}`)}">${option.label}</button>`).join('')}
+                            ${kitControl.options.map((option) => `<button class="kit-mode-btn ${option.id === kitControl.value ? 'active' : ''}" type="button" data-mode="${option.id}" aria-pressed="${option.id === kitControl.value}" aria-label="${escapeHtml(`${kitControl.label}: ${option.label}`)}" title="${escapeHtml(`${kitControl.label}: ${option.label}`)}" data-tooltip="${escapeHtml(`${kitControl.label}: ${option.label}`)}">${option.label}</button>`).join('')}
                         </div>
                     </div>
                 ` : ''}
@@ -2205,7 +2205,7 @@ export class UIManager {
                             const steps = getHeroLevelUpgradeSteps(level, amount);
                             const preview = isMaxLevel ? '' : this.renderHeroLevelPreview(hero, steps);
                             const upgradeLabel = isMaxLevel ? `${heroName} ya esta en nivel maximo` : `Mejorar ${heroName} ${steps} niveles por ${cost} creditos`;
-                            return `<button class="modal-btn-upgrade hero-upgrade-card btn-primary ghost" type="button" data-amt="${amount}" data-cost="${cost}" aria-label="${escapeHtml(upgradeLabel)}" aria-disabled="${isMaxLevel}" ${isMaxLevel ? 'disabled' : ''}>
+                            return `<button class="modal-btn-upgrade hero-upgrade-card btn-primary ghost" type="button" data-amt="${amount}" data-cost="${cost}" aria-label="${escapeHtml(upgradeLabel)}" title="${escapeHtml(upgradeLabel)}" data-tooltip="${escapeHtml(upgradeLabel)}" aria-disabled="${isMaxLevel}" ${isMaxLevel ? 'disabled' : ''}>
                                 <span class="hero-upgrade-step">${isMaxLevel ? 'MAX' : `+${steps}`}</span>
                                 <span class="hero-upgrade-cost">${isMaxLevel ? 'Nivel maximo' : `$${cost}`}</span>
                                 ${preview}
@@ -2214,8 +2214,8 @@ export class UIManager {
                     </div>` : '<div class="locked-hero-note"><i class="fas fa-lock"></i> Recluta al héroe para mejorarlo</div>'}
                     ${isDeployed ? `
                         <div class="tactical-actions">
-                            <button id="reposition-hero" class="btn-primary ghost" type="button" aria-label="${escapeHtml(`Reposicionar ${heroName}: ${repositionPermission?.reason || 'Mover libremente'}`)}" aria-disabled="${!repositionPermission?.ok}" ${repositionPermission?.ok ? '' : 'disabled'} title="${repositionPermission?.reason || 'Mover libremente'}"><i class="fas fa-arrows-alt"></i> Reposicionar</button>
-                            <button id="sell-hero" class="btn-primary danger" type="button" aria-label="${escapeHtml(`Retirar ${heroName}: ${sellPermission?.reason || 'Retirar heroe'}`)}" aria-disabled="${!sellPermission?.ok}" ${sellPermission?.ok ? '' : 'disabled'} title="${sellPermission?.reason || 'Retirar héroe'}"><i class="fas fa-eject"></i> Retirar</button>
+                            <button id="reposition-hero" class="btn-primary ghost" type="button" aria-label="${escapeHtml(`Reposicionar ${heroName}: ${repositionPermission?.reason || 'Mover libremente'}`)}" title="${escapeHtml(`Reposicionar ${heroName}: ${repositionPermission?.reason || 'Mover libremente'}`)}" data-tooltip="${escapeHtml(`Reposicionar ${heroName}: ${repositionPermission?.reason || 'Mover libremente'}`)}" aria-disabled="${!repositionPermission?.ok}" ${repositionPermission?.ok ? '' : 'disabled'}><i class="fas fa-arrows-alt"></i> Reposicionar</button>
+                            <button id="sell-hero" class="btn-primary danger" type="button" aria-label="${escapeHtml(`Retirar ${heroName}: ${sellPermission?.reason || 'Retirar heroe'}`)}" title="${escapeHtml(`Retirar ${heroName}: ${sellPermission?.reason || 'Retirar heroe'}`)}" data-tooltip="${escapeHtml(`Retirar ${heroName}: ${sellPermission?.reason || 'Retirar heroe'}`)}" aria-disabled="${!sellPermission?.ok}" ${sellPermission?.ok ? '' : 'disabled'}><i class="fas fa-eject"></i> Retirar</button>
                         </div>
                     ` : ''}
                 </section>
