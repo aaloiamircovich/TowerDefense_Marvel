@@ -18,8 +18,8 @@ test('buildModeStatusView prioriza detalle de racha y acciones disponibles', () 
 
     assert.equal(view.detail, 'Racha limpia x3');
     assert.match(view.html, /1240 pts/);
-    assert.match(view.html, /id="extract-mode" class="btn-mode-action" type="button" aria-label="Extraer recompensa del modo"/);
-    assert.match(view.html, /id="repair-mode" class="btn-mode-action" type="button" aria-label="Reparar convoy por 120 creditos"/);
+    assert.match(view.html, /id="extract-mode" class="btn-mode-action" type="button" aria-label="Extraer recompensa del modo" title="Extraer recompensa del modo" data-tooltip="Extraer recompensa del modo"/);
+    assert.match(view.html, /id="repair-mode" class="btn-mode-action" type="button" aria-label="Reparar convoy por 120 creditos" title="Reparar convoy por 120 creditos" data-tooltip="Reparar convoy por 120 creditos"/);
 });
 
 test('buildModeStatusView escapa texto dinamico de modo', () => {
@@ -72,7 +72,7 @@ test('ModePanel renderiza draft heroico con rareza, sprite y metricas', () => {
 
     assert.match(ui.panelContent.innerHTML, /draft-choice-grid/);
     assert.match(ui.panelContent.innerHTML, /draft-card rarity-epic/);
-    assert.match(ui.panelContent.innerHTML, /type="button" data-draft="storm" data-rarity="Epic" aria-label="Elegir Storm como refuerzo 1\. Rareza Epic\. Control 5, Daño 3"/);
+    assert.match(ui.panelContent.innerHTML, /type="button" data-draft="storm" data-rarity="Epic" aria-label="Elegir Storm como refuerzo 1\. Rareza Epic\. Control 5, Daño 3" title="Elegir Storm como refuerzo 1\. Rareza Epic\. Control 5, Daño 3" data-tooltip="Elegir Storm como refuerzo 1\. Rareza Epic\. Control 5, Daño 3"/);
     assert.match(ui.panelContent.innerHTML, /rarity-badge rarity-epic/);
     assert.match(ui.panelContent.innerHTML, /draft-stat-strip/);
     assert.match(ui.panelContent.innerHTML, /Reclutar/);
@@ -128,7 +128,7 @@ test('ModePanel renderiza resultado especial con lectura tactica compacta', () =
         assert.match(ui.panelContent.innerHTML, /Lectura de modo/);
         assert.match(ui.panelContent.innerHTML, /760 pts faltantes/);
         assert.match(ui.panelContent.innerHTML, /Preparar oleada 10/);
-        assert.match(ui.panelContent.innerHTML, /id="mode-result-map" type="button" aria-label="Volver a modos"/);
+        assert.match(ui.panelContent.innerHTML, /id="mode-result-map" type="button" aria-label="Volver a modos" title="Volver a modos" data-tooltip="Volver a modos"/);
         assert.ok(calls.includes('summary:Storm'));
 
         resultButton.listeners.click();

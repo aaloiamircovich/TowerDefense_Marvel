@@ -25,7 +25,7 @@ export function buildModeStatusView(snapshot = null) {
     const detail = snapshot.streakDetail || snapshot.detail || '';
     return {
         detail,
-        html: `<div><strong>${escapeHtml(snapshot.name)}</strong><span>${escapeHtml(detail)}</span></div><b>${Math.round(snapshot.score || 0)} pts</b>${snapshot.canExtract ? '<button id="extract-mode" class="btn-mode-action" type="button" aria-label="Extraer recompensa del modo">Extraer</button>' : ''}${snapshot.canRepair ? '<button id="repair-mode" class="btn-mode-action" type="button" aria-label="Reparar convoy por 120 creditos">Reparar +2 | $120</button>' : ''}`
+        html: `<div><strong>${escapeHtml(snapshot.name)}</strong><span>${escapeHtml(detail)}</span></div><b>${Math.round(snapshot.score || 0)} pts</b>${snapshot.canExtract ? '<button id="extract-mode" class="btn-mode-action" type="button" aria-label="Extraer recompensa del modo" title="Extraer recompensa del modo" data-tooltip="Extraer recompensa del modo">Extraer</button>' : ''}${snapshot.canRepair ? '<button id="repair-mode" class="btn-mode-action" type="button" aria-label="Reparar convoy por 120 creditos" title="Reparar convoy por 120 creditos" data-tooltip="Reparar convoy por 120 creditos">Reparar +2 | $120</button>' : ''}`
     };
 }
 
@@ -76,7 +76,7 @@ export class ModePanel {
         const metricSummary = metrics.map((metric) => `${metric.label} ${metric.value}`).join(', ');
         const draftLabel = `Elegir ${hero.name} como refuerzo ${index + 1}. Rareza ${rarity}. ${metricSummary}`;
         return `
-            <button class="draft-card ${rarityClass}" type="button" data-draft="${escapeHtml(hero.id)}" data-rarity="${rarity}" aria-label="${escapeHtml(draftLabel)}">
+            <button class="draft-card ${rarityClass}" type="button" data-draft="${escapeHtml(hero.id)}" data-rarity="${rarity}" aria-label="${escapeHtml(draftLabel)}" title="${escapeHtml(draftLabel)}" data-tooltip="${escapeHtml(draftLabel)}">
                 <div class="draft-card-top">
                     <span class="draft-index">0${index + 1}</span>
                     <b class="rarity-badge ${rarityClass}">${rarity}</b>
@@ -138,7 +138,7 @@ export class ModePanel {
                 ${this.ui.renderMissionSummary(this.ui.game.progression?.state.lastMissionSummary)}
                 ${this.renderModeResultCoach(snapshot)}
                 <div class="end-state-actions end-state-actions--compact">
-                    <button class="btn-primary" id="mode-result-map" type="button" aria-label="Volver a modos">Volver a modos</button>
+                    <button class="btn-primary" id="mode-result-map" type="button" aria-label="Volver a modos" title="Volver a modos" data-tooltip="Volver a modos">Volver a modos</button>
                 </div>
             </div>
         `;
