@@ -1,3 +1,5 @@
+import { getLevelUnlockRequirement, isLevelUnlockedByStars } from '../utils/LevelProgression.js';
+
 function escapeHtml(value = '') {
     return String(value)
         .replaceAll('&', '&amp;')
@@ -44,6 +46,7 @@ export class EndStatePanel {
                     { label: modeSnapshot ? 'Puntos' : 'Estrellas', value: formatNumber(modeSnapshot?.score ?? this.ui.game.stars), icon: modeSnapshot ? 'fa-chart-line' : 'fa-star' },
                     { label: 'Vidas', value: formatNumber(lives), icon: 'fa-heart' }
                 ])}
+                ${modeSnapshot ? '' : this.renderProgressCarryover('defeat')}
                 ${this.renderMissionSummary(summary)}
                 ${this.renderOutcomeCoach('defeat', { wave, summary, modeSnapshot })}
                 <div class="end-state-actions end-state-actions--compact">
@@ -87,6 +90,7 @@ export class EndStatePanel {
                     { label: 'Vidas', value: formatNumber(summary?.lives ?? this.ui.game.resourceManager?.lives ?? 0), icon: 'fa-heart' },
                     { label: 'Mejor unidad', value: summary?.bestHero || 'Equipo', icon: 'fa-shield-halved' }
                 ])}
+                ${this.renderProgressCarryover('victory')}
                 ${this.renderMissionSummary(summary)}
                 ${this.renderOutcomeCoach('victory', { summary })}
                 <div class="end-state-actions end-state-actions--compact">
@@ -115,6 +119,63 @@ export class EndStatePanel {
                 `).join('')}
             </div>
         `;
+    }
+
+    renderProgressCarryover(type = 'defeat') {
+        const stars = this.getTotalStars();
+        const credits = this.getCredits();
+        const nextMap = this.getNextMapStatus(stars);
+        const actionHint = type === 'victory' ? 'Puedes seguir con el siguiente mapa.' : 'Reintentar vuelve a oleada 1.';
+        const rows = [
+            { icon: 'fa-star', label: 'Estrellas guardadas', value: formatNumber(stars), hint: nextMap.detail },
+            { icon: 'fa-coins', label: 'Creditos disponibles', value: credits, hint: 'Se conservan entre intentos.' },
+            { icon: 'fa-user-shield', label: 'Equipo', value: 'Niveles y objetos guardados', hint: actionHint }
+        ];
+        return `
+            <div class="end-state-carryover">
+                <strong>${escapeHtml(nextMap.title)}</strong>
+                <div>
+                    ${rows.map((row) => `
+                        <span>
+                            <i class="fas ${row.icon}"></i>
+                            <small>${escapeHtml(row.label)}</small>
+                            <b>${escapeHtml(row.value)}</b>
+                            <em>${escapeHtml(row.hint)}</em>
+                        </span>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }
+
+    getTotalStars() {
+        const progressionStars = this.ui.game.progression?.getTotalStars?.();
+        return Number.isFinite(progressionStars) ? progressionStars : (Number(this.ui.game.stars) || 0);
+    }
+
+    getCredits() {
+        const progressionCredits = this.ui.game.progression?.getCredits?.();
+        const credits = Number.isFinite(progressionCredits)
+            ? progressionCredits
+            : this.ui.game.resourceManager?.credits;
+        return credits === Number.POSITIVE_INFINITY ? '∞' : `$${formatNumber(credits)}`;
+    }
+
+    getNextMapStatus(totalStars = 0) {
+        const levels = this.ui.game.levelsData || [];
+        const nextLockedIndex = levels.findIndex((_level, index) => !isLevelUnlockedByStars(index, totalStars));
+        if (nextLockedIndex < 0) {
+            return {
+                title: 'Progreso conservado',
+                detail: levels.length ? 'Todas las operaciones desbloqueadas.' : 'Campaña lista.'
+            };
+        }
+        const requirement = getLevelUnlockRequirement(nextLockedIndex);
+        const remaining = Math.max(0, requirement - totalStars);
+        return {
+            title: `Siguiente mapa: ${levels[nextLockedIndex]?.name || 'Operacion clasificada'}`,
+            detail: `${formatNumber(remaining)} estrellas restantes (${formatNumber(totalStars)}/${formatNumber(requirement)}).`
+        };
     }
 
     renderMissionSummary(summary) {

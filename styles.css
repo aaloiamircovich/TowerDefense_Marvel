@@ -7569,6 +7569,70 @@ body.reduce-motion :is(.collection-card, .starter-card, .hero-portrait):is(.rari
     overflow-wrap: anywhere;
 }
 
+.end-state-carryover {
+    display: grid;
+    gap: 8px;
+    padding: 10px 11px;
+    border: 1px solid color-mix(in srgb, var(--level-accent), transparent 66%);
+    border-radius: 7px;
+    background:
+        linear-gradient(90deg, color-mix(in srgb, var(--level-accent), transparent 92%), transparent 78%),
+        rgba(3, 9, 17, 0.62);
+}
+
+.end-state-carryover > strong {
+    color: var(--bright-yellow);
+    font-size: 12px;
+    line-height: 1.1;
+    text-transform: uppercase;
+}
+
+.end-state-carryover > div {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.end-state-carryover span {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 3px 7px;
+    min-width: 0;
+}
+
+.end-state-carryover i {
+    color: var(--level-accent);
+    font-size: 12px;
+}
+
+.end-state-carryover small {
+    color: var(--muted);
+    font-size: 9px;
+    font-weight: 900;
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+.end-state-carryover b,
+.end-state-carryover em {
+    grid-column: 1 / -1;
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.end-state-carryover b {
+    color: var(--text);
+    font-size: 13px;
+    line-height: 1.1;
+}
+
+.end-state-carryover em {
+    color: var(--muted);
+    font-size: 10px;
+    font-style: normal;
+    line-height: 1.25;
+}
+
 .end-state-actions {
     display: flex;
     flex-wrap: wrap;
@@ -7727,6 +7791,7 @@ body.reduce-motion :is(.collection-card, .starter-card, .hero-portrait):is(.rari
     }
 
     .end-state-readout,
+    .end-state-carryover > div,
     .end-state-coach > div,
     .mission-summary-grid {
         grid-template-columns: repeat(2, minmax(100px, 1fr));

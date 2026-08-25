@@ -25,6 +25,11 @@ test('EndStatePanel renderiza derrota y reintenta sin resetear progreso externo'
         assert.match(ui.panelContent.innerHTML, /Informe de mision/);
         assert.match(ui.panelContent.innerHTML, /mission-summary-grid/);
         assert.match(ui.panelContent.innerHTML, /Black Widow/);
+        assert.match(ui.panelContent.innerHTML, /Siguiente mapa: Wakanda/);
+        assert.match(ui.panelContent.innerHTML, /37 estrellas restantes/);
+        assert.match(ui.panelContent.innerHTML, /Creditos disponibles/);
+        assert.match(ui.panelContent.innerHTML, /Niveles y objetos guardados/);
+        assert.match(ui.panelContent.innerHTML, /Reintentar vuelve a oleada 1/);
         assert.match(ui.panelContent.innerHTML, /Plan de recuperacion/);
         assert.match(ui.panelContent.innerHTML, /Mejorar Black Widow/);
 
@@ -67,6 +72,7 @@ test('EndStatePanel renderiza victoria y error fatal con acciones principales', 
 
     const ui = createUiStub(calls);
     ui.game.stars = 47;
+    ui.game.progression.state.totalStars = 147;
     const panel = new EndStatePanel(ui);
 
     try {
@@ -75,6 +81,9 @@ test('EndStatePanel renderiza victoria y error fatal con acciones principales', 
         assert.match(ui.panelContent.innerHTML, /OPERACION COMPLETADA/);
         assert.match(ui.panelContent.innerHTML, /47 estrellas/);
         assert.match(ui.panelContent.innerHTML, /Mejor unidad/);
+        assert.match(ui.panelContent.innerHTML, /Progreso conservado/);
+        assert.match(ui.panelContent.innerHTML, /Todas las operaciones desbloqueadas/);
+        assert.match(ui.panelContent.innerHTML, /Puedes seguir con el siguiente mapa/);
         assert.match(ui.panelContent.innerHTML, /Siguiente objetivo/);
         assert.match(ui.panelContent.innerHTML, /Buscar mas estrellas/);
 
@@ -107,9 +116,22 @@ function createUiStub(calls) {
                         totals: { damage: 12345, kills: 67, abilities: 8, credits: 910 },
                         bestHero: 'Black Widow',
                         lives: 18
-                    }
+                    },
+                    totalStars: 63,
+                    credits: 1850
+                },
+                getTotalStars() {
+                    return this.state.totalStars;
+                },
+                getCredits() {
+                    return this.state.credits;
                 }
             },
+            levelsData: [
+                { id: 'level_1', name: 'Base de los Vengadores' },
+                { id: 'level_2', name: 'Calles de Nueva York' },
+                { id: 'level_3', name: 'Wakanda' }
+            ],
             waveManager: { currentWave: 1 },
             modeSystem: { getSnapshot: () => null },
             inputManager: {
