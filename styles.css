@@ -4628,7 +4628,7 @@ body.panel-open {
 
 .collection-toolbar {
     display: grid;
-    grid-template-columns: minmax(220px, 1fr) 150px 150px minmax(240px, auto) auto;
+    grid-template-columns: minmax(220px, 1fr) 150px 150px minmax(240px, auto) 38px auto;
     align-items: center;
     gap: 10px;
     margin: 14px 0;
@@ -4698,6 +4698,10 @@ body.panel-open {
     flex-wrap: wrap;
     gap: 6px;
     min-width: 0;
+}
+
+.collection-clear-filters {
+    align-self: end;
 }
 
 .rarity-filter {

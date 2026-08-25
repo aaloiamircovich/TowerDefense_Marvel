@@ -195,6 +195,20 @@ export class TeamBuilderPanel {
         return labels[this.viewMode] || labels.heroes;
     }
 
+    hasActiveHeroFilters() {
+        return Boolean(this.searchQuery.trim())
+            || this.rarityFilter !== 'all'
+            || this.ownershipFilter !== 'all'
+            || this.sortMode !== 'az';
+    }
+
+    resetHeroFilters() {
+        this.searchQuery = '';
+        this.sortMode = 'az';
+        this.rarityFilter = 'all';
+        this.ownershipFilter = 'all';
+    }
+
     getActiveFilterLabels() {
         const labels = [];
         const query = this.searchQuery.trim();
@@ -298,6 +312,7 @@ export class TeamBuilderPanel {
     }
 
     renderCollectionFilters(visibleCount, totalCount) {
+        const hasActiveFilters = this.hasActiveHeroFilters();
         return `
             <section class="collection-toolbar" aria-label="Filtros de coleccion">
                 <label class="collection-search">
@@ -329,6 +344,9 @@ export class TeamBuilderPanel {
                         return `<button class="rarity-filter ${rarityClass} ${active ? 'active' : ''}" data-rarity="${rarity}" aria-pressed="${active}">${label}</button>`;
                     }).join('')}
                 </div>
+                <button id="collection-clear-filters" class="collection-clear-filters icon-command" type="button" ${hasActiveFilters ? '' : 'disabled'} title="Limpiar filtros" aria-label="Limpiar filtros">
+                    <i class="fas fa-broom"></i>
+                </button>
                 <strong>${visibleCount}/${totalCount}</strong>
             </section>
         `;
@@ -501,6 +519,10 @@ export class TeamBuilderPanel {
             this.rarityFilter = button.dataset.rarity || 'all';
             this.render('Constructor de equipo');
         }));
+        this.ui.panelContent.querySelector('#collection-clear-filters')?.addEventListener('click', () => {
+            this.resetHeroFilters();
+            this.render('Constructor de equipo');
+        });
         this.ui.panelContent.querySelector('.toggle-synergies')?.addEventListener('click', () => {
             this.synergyExpanded = !this.synergyExpanded;
             this.render('Constructor de equipo');

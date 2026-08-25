@@ -164,6 +164,30 @@ test('coleccion filtra heroes obtenidos y faltantes', () => {
     assert.match(panel.renderCollectionFilters(2, 3), /collection-ownership-select/);
 });
 
+test('coleccion permite limpiar todos los filtros de heroes', () => {
+    const ui = createUiStub();
+    const panel = new TeamBuilderPanel(ui);
+
+    assert.equal(panel.hasActiveHeroFilters(), false);
+    assert.match(panel.renderCollectionFilters(3, 3), /collection-clear-filters[\s\S]*disabled/);
+
+    panel.searchQuery = 'iron';
+    panel.rarityFilter = 'rare';
+    panel.ownershipFilter = 'owned';
+    panel.sortMode = 'rarity-desc';
+
+    assert.equal(panel.hasActiveHeroFilters(), true);
+    assert.doesNotMatch(panel.renderCollectionFilters(1, 3), /collection-clear-filters[\s\S]*disabled/);
+
+    panel.resetHeroFilters();
+
+    assert.equal(panel.searchQuery, '');
+    assert.equal(panel.rarityFilter, 'all');
+    assert.equal(panel.ownershipFilter, 'all');
+    assert.equal(panel.sortMode, 'az');
+    assert.equal(panel.hasActiveHeroFilters(), false);
+});
+
 test('coleccion resume equipo filtros y agrupaciones en cabecera compacta', () => {
     const ui = createUiStub();
     ui.inventoryPanel.pendingEquipItemId = null;
