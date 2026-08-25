@@ -101,6 +101,8 @@ export class CampaignPanel {
         const fixedDifficulty = getFixedDifficultyKey(level);
         const mapNumber = String(index + 1).padStart(2, '0');
         const mechanic = level.mission?.mechanic || {};
+        const totalStars = this.getTotalStars();
+        const unlockProgress = this.buildMapUnlockProgress(index, totalStars);
         return `<article class="map-card map-card--compact ${themeClass} ${this.ui.game.currentLevel?.id === level.id ? 'active' : ''} ${unlocked ? '' : 'locked'}">
             <div class="map-card-heading">
                 <div>
@@ -119,8 +121,30 @@ export class CampaignPanel {
                 <span class="map-difficulty ${fixedDifficulty}">${mechanic.label || 'Defensa táctica'}</span>
                 <span class="${unlocked ? 'map-unlocked' : 'map-locked'}">${unlocked ? 'Desbloqueado' : `Requiere ${requirement} estrellas`}</span>
             </div>
+            ${unlocked ? '' : this.renderMapUnlockProgress(unlockProgress)}
             <div class="challenge-row map-challenge-row"><span class="${progress.challenges.includes('sin_danos') ? 'done' : ''}">Sin daños</span><span class="${progress.challenges.includes('cazajefes') ? 'done' : ''}">Cazajefes</span>${(level.mission?.objectives || []).map((objective) => `<span class="${progress.missionObjectives.includes(objective.id) ? 'done' : ''}">${objective.label} · $${objective.reward}</span>`).join('')}</div>
         </article>`;
+    }
+
+    renderMapUnlockProgress(progress) {
+        if (!progress) return '';
+        return `<div class="map-unlock-progress" style="--map-unlock-progress:${progress.percent}%">
+            <div><small>Progreso de desbloqueo</small><b>${progress.current}/${progress.required}</b></div>
+            <span>${progress.remaining} estrellas restantes</span>
+            <i aria-hidden="true"></i>
+        </div>`;
+    }
+
+    buildMapUnlockProgress(index, totalStars = this.getTotalStars()) {
+        const required = getLevelUnlockRequirement(index);
+        if (required <= 0) return { current: 0, required: 0, remaining: 0, percent: 100 };
+        const current = Math.max(0, Math.min(required, Math.floor(Number(totalStars) || 0)));
+        return {
+            current,
+            required,
+            remaining: Math.max(0, required - current),
+            percent: Math.round((current / required) * 100)
+        };
     }
 
     renderBriefing(level) {

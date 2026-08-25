@@ -27,8 +27,18 @@ test('CampaignPanel compacta operaciones y resume desbloqueos por estrellas', ()
     assert.match(ui.panelContent.innerHTML, /50 estrellas restantes/);
     assert.match(ui.panelContent.innerHTML, /<b>2\/3<\/b>/);
     assert.match(ui.panelContent.innerHTML, /map-card--compact/);
+    assert.match(ui.panelContent.innerHTML, /map-unlock-progress/);
+    assert.match(ui.panelContent.innerHTML, /--map-unlock-progress:50%/);
+    assert.match(ui.panelContent.innerHTML, /50\/100/);
     assert.match(ui.panelContent.innerHTML, /Mapa 01/);
     assert.match(ui.panelContent.innerHTML, /Acceso principal/);
+
+    assert.deepEqual(panel.buildMapUnlockProgress(2, 75), {
+        current: 75,
+        required: 100,
+        remaining: 25,
+        percent: 75
+    });
 });
 
 function createCampaignUi({ stars = 0 } = {}) {
