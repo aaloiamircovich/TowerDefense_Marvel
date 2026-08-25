@@ -188,14 +188,14 @@ export class InventoryPanel {
                 <div class="inventory-status-filters" aria-label="Filtrar por estado">
                     ${statusOptions.map(([status, label]) => {
                         const active = this.statusFilter === status;
-                        return `<button class="status-filter ${active ? 'active' : ''}" data-status="${status}" aria-pressed="${active}">${label}</button>`;
+                        return `<button class="status-filter ${active ? 'active' : ''}" type="button" data-status="${status}" aria-pressed="${active}">${label}</button>`;
                     }).join('')}
                 </div>
                 <div class="tier-filters" aria-label="Filtrar por tier">
-                    ${[0, 1, 2, 3, 4].map((tier) => `<button class="tier-filter ${this.tierFilter === tier ? 'active' : ''}" data-tier="${tier}">${tier === 0 ? 'Todos' : `T${tier}`}</button>`).join('')}
+                    ${[0, 1, 2, 3, 4].map((tier) => `<button class="tier-filter ${this.tierFilter === tier ? 'active' : ''}" type="button" data-tier="${tier}" aria-pressed="${this.tierFilter === tier}">${tier === 0 ? 'Todos' : `T${tier}`}</button>`).join('')}
                 </div>
                 <div class="slot-filters" aria-label="Filtrar por tipo">
-                    ${['all', ...ITEM_SLOTS].map((slot) => `<button class="slot-filter ${this.slotFilter === slot ? 'active' : ''}" data-slot="${slot}">${slot === 'all' ? 'Todas' : SLOT_LABELS[slot]}</button>`).join('')}
+                    ${['all', ...ITEM_SLOTS].map((slot) => `<button class="slot-filter ${this.slotFilter === slot ? 'active' : ''}" type="button" data-slot="${slot}" aria-pressed="${this.slotFilter === slot}">${slot === 'all' ? 'Todas' : SLOT_LABELS[slot]}</button>`).join('')}
                 </div>
                 <button id="inventory-clear-filters" class="inventory-clear-filters icon-command" type="button" ${hasActiveFilters ? '' : 'disabled'} title="Limpiar filtros" aria-label="Limpiar filtros">
                     <i class="fas fa-broom"></i>
@@ -286,10 +286,13 @@ export class InventoryPanel {
         const ownerLabel = equippedHeroes.length
             ? equippedHeroes.map(({ hero }) => hero?.name || 'Heroe').join(', ')
             : 'Sin equipar';
+        const freeLabel = `${freeCount} ${freeCount === 1 ? 'copia libre' : 'copias libres'}`;
+        const ownerStateLabel = equippedHeroes.length ? `Equipado por ${ownerLabel}` : 'Sin equipar';
+        const itemAriaLabel = `Elegir ${item.name} para equipar. Rareza ${rarity}. ${freeLabel}. ${ownerStateLabel}`;
         const equipPreview = this.heroId ? this.renderEquipPreview(item) : '';
         const effectPills = buildItemEffectPills(item);
         return `
-            <article class="inventory-card item-card-v2 inventory-object-card ${rarityClass}" data-item-id="${item.id}" data-rarity="${rarity}" role="button" tabindex="0" aria-label="Elegir ${item.name} para equipar">
+            <article class="inventory-card item-card-v2 inventory-object-card ${rarityClass}" data-item-id="${item.id}" data-rarity="${rarity}" role="button" tabindex="0" aria-label="${itemAriaLabel}">
                 <b class="item-quantity-badge">x${totalCount}</b>
                 ${primaryHero ? `<span class="item-owner-corner" title="Equipado por ${primaryHero.name}">${this.ui.renderSprite(this.ui.getHeroDisplaySprite(primaryHero), primaryHero.name)}</span>` : ''}
                 <div class="item-sprite-frame">${this.ui.renderSprite(item.icon, item.name)}</div>
@@ -304,7 +307,7 @@ export class InventoryPanel {
                     <b>${ownerLabel}</b>
                 </div>
                 <div class="item-card-actions">
-                    <button class="btn-primary equip-item" data-id="${item.id}"><i class="fas fa-users"></i> Elegir héroe</button>
+                    <button class="btn-primary equip-item" type="button" data-id="${item.id}" aria-label="Elegir heroe para ${item.name}"><i class="fas fa-users"></i> Elegir héroe</button>
                 </div>
                 ${equipPreview}
             </article>

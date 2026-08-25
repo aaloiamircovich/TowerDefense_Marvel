@@ -52,6 +52,8 @@ test('inventario muestra objetos equipados con el sprite del heroe dueño', () =
     assert.match(html, /rarity-rare/);
     assert.match(html, /Rare/);
     assert.match(html, /item-owner-corner/);
+    assert.match(html, /aria-label="Elegir REACTOR ARC para equipar\. Rareza Rare\. 0 copias libres\. Equipado por Iron Man"/);
+    assert.match(html, /aria-label="Elegir heroe para REACTOR ARC"/);
     assert.match(html, /Equipado por Iron Man/);
     assert.match(html, /item-effect-pills/);
     assert.match(html, /Cadencia[\s\S]*\+18%/);
@@ -75,13 +77,15 @@ test('inventario filtra objetos libres y equipados desde la vista compacta', () 
     panel.statusFilter = 'equipped';
     panel.render();
     assert.match(ui.panelContent.innerHTML, /inventory-rarity-strip[\s\S]*rarity-common[\s\S]*x1[\s\S]*rarity-rare[\s\S]*x1/);
-    assert.match(ui.panelContent.innerHTML, /data-status="equipped" aria-pressed="true"/);
+    assert.match(ui.panelContent.innerHTML, /type="button" data-status="equipped" aria-pressed="true"/);
     assert.match(ui.panelContent.innerHTML, /data-item-id="reactor_arc"/);
     assert.doesNotMatch(ui.panelContent.innerHTML, /data-item-id="lentes_edith"/);
 
     panel.statusFilter = 'free';
     panel.render();
-    assert.match(ui.panelContent.innerHTML, /data-status="free" aria-pressed="true"/);
+    assert.match(ui.panelContent.innerHTML, /type="button" data-status="free" aria-pressed="true"/);
+    assert.match(ui.panelContent.innerHTML, /tier-filter active" type="button" data-tier="0" aria-pressed="true"/);
+    assert.match(ui.panelContent.innerHTML, /slot-filter active" type="button" data-slot="all" aria-pressed="true"/);
     assert.match(ui.panelContent.innerHTML, /data-item-id="lentes_edith"/);
     assert.doesNotMatch(ui.panelContent.innerHTML, /data-item-id="reactor_arc"/);
 });
@@ -142,6 +146,7 @@ test('previsualizacion de objeto compara mejoras y perdidas numericas', () => {
     });
 
     assert.match(html, /item-equip-preview/);
+    assert.match(html, /aria-label="Elegir LENTES E\.D\.I\.T\.H\. para equipar\. Rareza Common\. 1 copia libre\. Sin equipar"/);
     assert.match(html, /Alcance \+4%/);
     assert.match(html, /Cadencia -18%/);
 });
