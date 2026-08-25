@@ -1666,10 +1666,10 @@ export class UIManager {
             ${action ? `<div class="pressure-action pressure-action-${action.type}">
                 <span>${action.reason}</span>
                 ${action.type === 'upgrade'
-                    ? `<button id="pressure-upgrade" class="btn-mode-action">${action.label} $${action.cost}</button>`
+                    ? `<button id="pressure-upgrade" class="btn-mode-action" type="button" aria-label="${escapeHtml(`${action.label} por ${action.cost} creditos. ${action.reason}`)}">${action.label} $${action.cost}</button>`
                     : `<small>${action.label}</small>`}
             </div>` : ''}
-            ${state.id === 'warning' || state.id === 'critical' ? '<button id="pressure-pause" class="btn-mode-action">Pausa táctica</button>' : ''}
+            ${state.id === 'warning' || state.id === 'critical' ? '<button id="pressure-pause" class="btn-mode-action" type="button" aria-label="Activar pausa tactica por presion de ruta">Pausa táctica</button>' : ''}
         `;
         document.getElementById('pressure-upgrade')?.addEventListener('click', () => {
             if (this.quickUpgradeHeroById(action.heroId)) {
@@ -1767,38 +1767,14 @@ export class UIManager {
 
     updateModeStatus(snapshot) {
         return this.modePanel.updateStatus(snapshot);
-        const container = document.getElementById('mode-status');
-        if (!container) return;
-        if (!snapshot) {
-            container.classList.add('hidden');
-            container.innerHTML = '';
-            return;
-        }
-        container.classList.remove('hidden');
-        const detail = snapshot.streakDetail || snapshot.detail;
-        container.innerHTML = `<div><strong>${snapshot.name}</strong><span>${snapshot.detail}</span></div><b>${snapshot.score} pts</b>${snapshot.canExtract ? '<button id="extract-mode" class="btn-mode-action">Extraer</button>' : ''}${snapshot.canRepair ? '<button id="repair-mode" class="btn-mode-action">Reparar +2 · $120</button>' : ''}`;
-        container.querySelector('span').textContent = detail;
-        document.getElementById('extract-mode')?.addEventListener('click', () => this.game.modeSystem.extract());
-        document.getElementById('repair-mode')?.addEventListener('click', () => this.game.modeSystem.repair());
     }
 
     showDraftChoice(heroes, onChoose) {
         return this.modePanel.showDraftChoice(heroes, onChoose);
-        this.overlay.classList.remove('hidden');
-        document.getElementById('close-panel-btn')?.classList.add('hidden');
-        this.panelContent.innerHTML = `<div class="draft-choice"><span class="briefing-kicker">DRAFT HEROICO</span><h2>Elige un refuerzo</h2><div>${heroes.map((hero) => `<button data-draft="${hero.id}">${this.renderSprite(this.getHeroDisplaySprite(hero), hero.name)}<strong>${hero.name}</strong><small>${hero.niche || hero.ability}</small></button>`).join('')}</div></div>`;
-        this.panelContent.querySelectorAll('[data-draft]').forEach((button) => button.addEventListener('click', () => onChoose(button.dataset.draft)));
     }
 
     showModeResult(title, snapshot) {
         return this.modePanel.showResult(title, snapshot);
-        this.overlay.classList.remove('hidden');
-        document.getElementById('close-panel-btn')?.classList.add('hidden');
-        this.panelContent.innerHTML = `<div class="end-state"><h2>${title}</h2><p>${snapshot.score} puntos · oleada ${snapshot.wave} · récord ${snapshot.best}</p>${this.renderMissionSummary(this.game.progression?.state.lastMissionSummary)}<button class="btn-primary" id="mode-result-map">Volver a modos</button></div>`;
-        document.getElementById('mode-result-map')?.addEventListener('click', () => {
-            document.getElementById('close-panel-btn')?.classList.remove('hidden');
-            this.renderMap('Mapa y modos');
-        });
     }
 
     showToast(message, type = 'info') {
