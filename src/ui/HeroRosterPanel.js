@@ -49,10 +49,17 @@ export class HeroRosterPanel {
         const rarity = normalizeRarity(hero.rarity);
         const rarityClass = getRarityClass(rarity);
         const level = this.getHeroLevel(liveHero);
+        const fieldState = deployed ? 'en campo' : 'en banco';
+        const cardLabel = `${hero.name}. Rareza ${rarity}. Nivel ${level}. ${fieldState}.`;
+        const placeLabel = deployed
+            ? `Reposicionar ${hero.name}`
+            : `Colocar ${hero.name}`;
+        const statsLabel = `Abrir estadisticas y mejoras de ${hero.name}`;
         const card = document.createElement('article');
         card.className = `hero-card ${rarityClass} ${deployed ? 'deployed' : ''}`;
         card.dataset.testid = `hero-card-${hero.id}`;
         card.dataset.rarity = rarity;
+        card.setAttribute('aria-label', cardLabel);
         card.innerHTML = `
             <div class="hero-card-sprite">${this.ui.renderSprite(this.ui.getHeroDisplaySprite(hero), hero.name)}</div>
             <div class="hero-card-main">
@@ -65,10 +72,10 @@ export class HeroRosterPanel {
                 </div>
             </div>
             <div class="hero-actions">
-                <button class="btn-action place-btn" data-testid="hero-place-${escapeHtml(hero.id)}" title="${deployed ? 'Reposicionar' : 'Colocar'}" aria-label="${deployed ? 'Reposicionar' : 'Colocar'}" data-tooltip="${deployed ? 'Mover libremente' : 'Colocar héroe gratis'}"><i class="fas ${deployed ? 'fa-arrows-alt' : 'fa-map-marker-alt'}"></i></button>
-                ${deployedHero ? `<button class="btn-action upgrade-btn ${canQuickUpgrade ? '' : 'is-unaffordable'}" data-testid="hero-upgrade-${escapeHtml(hero.id)}" data-quick-upgrade-id="${escapeHtml(hero.id)}" data-affordable="${canQuickUpgrade ? 'true' : 'false'}" data-upgrade-state="${quickUpgradeState}" title="${escapeHtml(quickUpgradeTooltip)}" aria-label="${escapeHtml(quickUpgradeTooltip)}" data-tooltip="${escapeHtml(quickUpgradeTooltip)}"><i class="fas fa-arrow-up"></i></button>` : ''}
-                ${targetingState ? `<button class="btn-action target-btn" data-testid="hero-target-${escapeHtml(hero.id)}" title="${escapeHtml(targetingState.tooltip)}" aria-label="${escapeHtml(targetingState.ariaLabel)}" data-tooltip="${escapeHtml(targetingState.tooltip)}"><i class="fas ${targetingState.icon}"></i><span>${escapeHtml(targetingState.label)}</span></button>` : ''}
-                <button class="btn-action stats-btn" title="Mejoras" aria-label="Mejoras" data-tooltip="Estadísticas y mejoras"><i class="fas fa-chart-bar"></i></button>
+                <button class="btn-action place-btn" type="button" data-testid="hero-place-${escapeHtml(hero.id)}" title="${deployed ? 'Reposicionar' : 'Colocar'}" aria-label="${escapeHtml(placeLabel)}" data-tooltip="${deployed ? 'Mover libremente' : 'Colocar héroe gratis'}"><i class="fas ${deployed ? 'fa-arrows-alt' : 'fa-map-marker-alt'}"></i></button>
+                ${deployedHero ? `<button class="btn-action upgrade-btn ${canQuickUpgrade ? '' : 'is-unaffordable'}" type="button" data-testid="hero-upgrade-${escapeHtml(hero.id)}" data-quick-upgrade-id="${escapeHtml(hero.id)}" data-affordable="${canQuickUpgrade ? 'true' : 'false'}" data-upgrade-state="${quickUpgradeState}" title="${escapeHtml(quickUpgradeTooltip)}" aria-label="${escapeHtml(`${hero.name}: ${quickUpgradeTooltip}`)}" data-tooltip="${escapeHtml(quickUpgradeTooltip)}"><i class="fas fa-arrow-up"></i></button>` : ''}
+                ${targetingState ? `<button class="btn-action target-btn" type="button" data-testid="hero-target-${escapeHtml(hero.id)}" title="${escapeHtml(targetingState.tooltip)}" aria-label="${escapeHtml(`${hero.name}: ${targetingState.ariaLabel}`)}" data-tooltip="${escapeHtml(targetingState.tooltip)}"><i class="fas ${targetingState.icon}"></i><span>${escapeHtml(targetingState.label)}</span></button>` : ''}
+                <button class="btn-action stats-btn" type="button" title="Mejoras" aria-label="${escapeHtml(statsLabel)}" data-tooltip="Estadísticas y mejoras"><i class="fas fa-chart-bar"></i></button>
             </div>
         `;
         this.bindCardActions(card, hero, deployedHero, context.onSelect);

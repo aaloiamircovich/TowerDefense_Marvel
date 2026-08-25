@@ -81,6 +81,13 @@ test('HeroRosterPanel renderiza tarjeta ligera y conserva acciones del roster', 
 
         assert.equal(heroGrid.children.length, 2);
         assert.match(heroGrid.children[0].innerHTML, /Nv\. 4/);
+        assert.equal(heroGrid.children[0].attributes['aria-label'], 'Spider-Man. Rareza Epic. Nivel 4. en campo.');
+        assert.match(heroGrid.children[0].innerHTML, /class="btn-action place-btn" type="button"/);
+        assert.match(heroGrid.children[0].innerHTML, /aria-label="Reposicionar Spider-Man"/);
+        assert.match(heroGrid.children[0].innerHTML, /aria-label="Spider-Man: Mejora rapida \$220"/);
+        assert.match(heroGrid.children[0].innerHTML, /aria-label="Spider-Man: Cambiar prioridad"/);
+        assert.match(heroGrid.children[0].innerHTML, /aria-label="Abrir estadisticas y mejoras de Spider-Man"/);
+        assert.match(heroGrid.children[1].innerHTML, /aria-label="Colocar Black Widow"/);
         assert.match(heroGrid.children[0].innerHTML, /data-upgrade-state="ready"/);
         assert.match(heroGrid.children[0].innerHTML, /Mejora rapida \$220/);
         assert.doesNotMatch(heroGrid.children[0].innerHTML, /hero-card-field-state|>Campo<|>Banco<|Respuesta ideal|rompe armadura|detecta sigilo|frena corredores/i);
@@ -149,6 +156,7 @@ test('HeroRosterPanel muestra cuanto falta para mejora rapida', () => {
         assert.equal(heroGrid.children.length, 1);
         assert.match(heroGrid.children[0].innerHTML, /data-affordable="false"/);
         assert.match(heroGrid.children[0].innerHTML, /data-upgrade-state="short"/);
+        assert.match(heroGrid.children[0].innerHTML, /aria-label="Hawkeye: Faltan \$120 para mejorar"/);
         assert.match(heroGrid.children[0].innerHTML, /Faltan \$120 para mejorar/);
     } finally {
         globalThis.document = previousDocument;
@@ -176,7 +184,11 @@ function createCardStub() {
     const card = {
         className: '',
         dataset: {},
+        attributes: {},
         innerHTML: '',
+        setAttribute(name, value) {
+            this.attributes[name] = value;
+        },
         buttons: {
             place: createButtonStub(),
             stats: createButtonStub(),
