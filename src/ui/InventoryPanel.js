@@ -31,7 +31,15 @@ const ITEM_EFFECT_LABELS = {
     statusDamageCap: 'Tope estados',
     bossDamagePct: 'Dano jefe',
     longRangeDamagePct: 'Dano lejano',
-    closeRangeDamagePenaltyPct: 'Penalizacion cerca'
+    closeRangeDamagePenaltyPct: 'Penalizacion cerca',
+    detectStealth: 'Detecta sigilo',
+    allowWater: 'Agua',
+    allowMountain: 'Montana',
+    allowGrass: 'Pasto',
+    burnDuration: 'Quemadura',
+    stunDuration: 'Aturdimiento',
+    poisonDuration: 'Veneno',
+    curseDuration: 'Maldicion'
 };
 
 const PERCENT_EFFECTS = new Set([
@@ -86,6 +94,33 @@ export function renderItemDeltaRows(rows) {
         const clean = row.precision > 0 ? fixed.replace(/\.0$/, '') : fixed;
         return `<em class="${value < 0 ? 'negative' : 'positive'}">${row.label} ${value >= 0 ? '+' : '-'}${clean}${row.suffix}</em>`;
     }).join('');
+}
+
+export function buildItemEffectPills(item, limit = 3) {
+    const effects = aggregateItemEffects(item ? [item] : []);
+    const pills = Object.entries(effects)
+        .map(([key, value]) => formatItemEffectPill(key, value))
+        .filter(Boolean);
+    const visible = pills.slice(0, limit);
+    const hidden = Math.max(0, pills.length - visible.length);
+    if (hidden) visible.push({ label: `+${hidden}`, value: 'extras', tone: 'neutral' });
+    return visible;
+}
+
+function formatItemEffectPill(key, value) {
+    const label = ITEM_EFFECT_LABELS[key] || key;
+    if (value === true) return { label, value: 'activo', tone: 'utility' };
+    if (!Number.isFinite(value) || Math.abs(value) <= 0.0001) return null;
+    const isPercent = PERCENT_EFFECTS.has(key);
+    const scaled = value * (isPercent ? 100 : 1);
+    const precision = Number.isInteger(scaled) ? 0 : 1;
+    const fixed = Math.abs(scaled).toFixed(precision).replace(/\.0$/, '');
+    const suffix = isPercent ? '%' : key.toLowerCase().includes('duration') ? 's' : '';
+    return {
+        label,
+        value: `${scaled >= 0 ? '+' : '-'}${fixed}${suffix}`,
+        tone: scaled < 0 ? 'negative' : 'positive'
+    };
 }
 
 export class InventoryPanel {
@@ -236,6 +271,7 @@ export class InventoryPanel {
             ? equippedHeroes.map(({ hero }) => hero?.name || 'Heroe').join(', ')
             : 'Sin equipar';
         const equipPreview = this.heroId ? this.renderEquipPreview(item) : '';
+        const effectPills = buildItemEffectPills(item);
         return `
             <article class="inventory-card item-card-v2 inventory-object-card ${rarityClass}" data-item-id="${item.id}" data-rarity="${rarity}" role="button" tabindex="0" aria-label="Elegir ${item.name} para equipar">
                 <b class="item-quantity-badge">x${totalCount}</b>
@@ -244,6 +280,9 @@ export class InventoryPanel {
                 <h3>${item.name}</h3>
                 <small>${SLOT_LABELS[item.slot]} | <b class="rarity-badge ${rarityClass}">${rarity}</b> | ${SET_BONUSES[item.set]?.name || 'Sin familia'}</small>
                 <p>${item.desc}</p>
+                <div class="item-effect-pills" aria-label="Efectos principales">
+                    ${effectPills.map((pill) => `<span class="${pill.tone}"><b>${pill.label}</b><small>${pill.value}</small></span>`).join('')}
+                </div>
                 <div class="item-card-status">
                     <span>${freeCount} libre${freeCount === 1 ? '' : 's'}</span>
                     <b>${ownerLabel}</b>

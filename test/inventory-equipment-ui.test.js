@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import { buildItemEquipDeltaRows, InventoryPanel } from '../src/ui/InventoryPanel.js';
+import { buildItemEffectPills, buildItemEquipDeltaRows, InventoryPanel } from '../src/ui/InventoryPanel.js';
 import { TeamBuilderPanel } from '../src/ui/TeamBuilderPanel.js';
 import { UIManager } from '../src/systems/UIManager.js';
 
@@ -50,6 +50,18 @@ test('inventario muestra objetos equipados con el sprite del heroe dueño', () =
     assert.match(html, /Rare/);
     assert.match(html, /item-owner-corner/);
     assert.match(html, /Equipado por Iron Man/);
+    assert.match(html, /item-effect-pills/);
+    assert.match(html, /Cadencia[\s\S]*\+18%/);
+});
+
+test('inventario resume efectos principales de cada objeto', () => {
+    const pills = buildItemEffectPills(data.items.lentes_edith);
+
+    assert.deepEqual(pills.slice(0, 3), [
+        { label: 'Detecta sigilo', value: 'activo', tone: 'utility' },
+        { label: 'Alcance', value: '+4%', tone: 'positive' },
+        { label: 'Critico', value: '+2', tone: 'positive' }
+    ]);
 });
 
 test('inventario filtra objetos libres y equipados desde la vista compacta', () => {
