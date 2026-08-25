@@ -332,7 +332,11 @@ test('renderHeroDetails muestra counter de oleada dentro de estadisticas', () =>
         pressureScore: 12
     };
     ui.game = {
-        heroes: [],
+        heroes: [hero],
+        tacticalActions: {
+            canReposition: () => ({ ok: true, reason: 'Mover libremente' }),
+            canSell: () => ({ ok: true, reason: 'Retirar heroe' })
+        },
         heroDatabase: { iron_man: hero },
         itemDatabase: {},
         resourceManager: { credits: 650 },
@@ -356,6 +360,9 @@ test('renderHeroDetails muestra counter de oleada dentro de estadisticas', () =>
         assert.match(ui.panelContent.innerHTML, /hero-level-readout/);
         assert.match(ui.panelContent.innerHTML, /hero-upgrade-grid/);
         assert.match(ui.panelContent.innerHTML, /hero-upgrade-card/);
+        assert.match(ui.panelContent.innerHTML, /class="modal-btn-upgrade hero-upgrade-card btn-primary ghost" type="button" data-amt="1" data-cost="\d+" aria-label="Mejorar Iron Man 1 niveles por \d+ creditos" aria-disabled="false"/);
+        assert.match(ui.panelContent.innerHTML, /id="reposition-hero" class="btn-primary ghost" type="button" aria-label="Reposicionar Iron Man: Mover libremente" aria-disabled="false"/);
+        assert.match(ui.panelContent.innerHTML, /id="sell-hero" class="btn-primary danger" type="button" aria-label="Retirar Iron Man: Retirar heroe" aria-disabled="false"/);
         assert.match(ui.panelContent.innerHTML, /hero-detail-tabs/);
         assert.match(ui.panelContent.innerHTML, /hero-detail-tab-badge/);
         assert.match(ui.panelContent.innerHTML, /DPS 42/);
@@ -374,6 +381,7 @@ test('renderHeroDetails muestra counter de oleada dentro de estadisticas', () =>
         assert.match(ui.panelContent.innerHTML, /id="hero-detail-tab-equipment" class="hero-detail-tab active" data-view="equipment" role="tab" aria-selected="true" aria-controls="hero-detail-panel" tabindex="0" type="button"><i class="fas fa-shield-alt"><\/i><span>Objeto<\/span>/);
         assert.match(ui.panelContent.innerHTML, /hero-detail-tab-badge">Libre<\/b>/);
         assert.match(ui.panelContent.innerHTML, /Equipamiento/);
+        assert.match(ui.panelContent.innerHTML, /id="open-inventory-panel" class="btn-primary ghost" type="button" aria-label="Abrir inventario para Iron Man" aria-disabled="false"/);
         assert.doesNotMatch(ui.panelContent.innerHTML, /hero-submenu|hero-detail-menu-btn/);
 
         ui.renderHeroDetails(hero, 'combat');
