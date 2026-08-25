@@ -76,14 +76,14 @@
 
             <div class="top-section right">
                 <nav id="hub-menu" aria-label="Paneles">
-                    <button class="hub-btn" data-panel="profile" title="Perfil" aria-label="Perfil" data-tooltip="Perfil y progreso"><i class="fas fa-id-card"></i></button>
-                    <button class="hub-btn" data-panel="radar" title="Radar" aria-label="Radar tactico" data-tooltip="Radar tactico e inteligencia"><i class="fas fa-satellite-dish"></i></button>
-                    <button class="hub-btn" data-panel="collection" title="Colección" aria-label="Colección" data-tooltip="Colección de héroes"><i class="fas fa-grip"></i></button>
-                    <button class="hub-btn" data-panel="inventory" title="Inventario" aria-label="Inventario" data-tooltip="Inventario y equipamiento"><i class="fas fa-box-open"></i></button>
-                    <button class="hub-btn" data-panel="shop" title="Tienda" aria-label="Tienda" data-tooltip="Tienda S.H.I.E.L.D."><i class="fas fa-shopping-cart"></i></button>
-                    <button class="hub-btn" data-panel="skins" title="Skins" aria-label="Tienda de skins" data-tooltip="Skins de héroes"><i class="fas fa-shirt"></i></button>
-                    <button class="hub-btn" data-panel="map" title="Mapa" aria-label="Mapa" data-tooltip="Campaña y mapas"><i class="fas fa-map-marked-alt"></i></button>
-                    <button class="hub-btn" data-panel="settings" title="Ajustes" aria-label="Ajustes" data-tooltip="Audio y accesibilidad"><i class="fas fa-cog"></i></button>
+                    <button class="hub-btn" type="button" data-panel="profile" title="Perfil" aria-label="Perfil" data-tooltip="Perfil y progreso"><i class="fas fa-id-card"></i></button>
+                    <button class="hub-btn" type="button" data-panel="radar" title="Radar" aria-label="Radar tactico" data-tooltip="Radar tactico e inteligencia"><i class="fas fa-satellite-dish"></i></button>
+                    <button class="hub-btn" type="button" data-panel="collection" title="Colección" aria-label="Colección" data-tooltip="Colección de héroes"><i class="fas fa-grip"></i></button>
+                    <button class="hub-btn" type="button" data-panel="inventory" title="Inventario" aria-label="Inventario" data-tooltip="Inventario y equipamiento"><i class="fas fa-box-open"></i></button>
+                    <button class="hub-btn" type="button" data-panel="shop" title="Tienda" aria-label="Tienda" data-tooltip="Tienda S.H.I.E.L.D."><i class="fas fa-shopping-cart"></i></button>
+                    <button class="hub-btn" type="button" data-panel="skins" title="Skins" aria-label="Tienda de skins" data-tooltip="Skins de héroes"><i class="fas fa-shirt"></i></button>
+                    <button class="hub-btn" type="button" data-panel="map" title="Mapa" aria-label="Mapa" data-tooltip="Campaña y mapas"><i class="fas fa-map-marked-alt"></i></button>
+                    <button class="hub-btn" type="button" data-panel="settings" title="Ajustes" aria-label="Ajustes" data-tooltip="Audio y accesibilidad"><i class="fas fa-cog"></i></button>
                 </nav>
                 <div id="fps-display">60 FPS</div>
             </div>
@@ -148,11 +148,11 @@
 
                 <div id="wave-controls">
                     <div class="control-row">
-                        <button id="btn-pause" class="btn-action" title="Pausar" aria-label="Pausar" aria-pressed="false" data-tooltip="Pausar o reanudar"><i class="fas fa-pause"></i></button>
-                        <button id="btn-auto" class="btn-action muted" title="Auto oleada" aria-label="Auto oleada" aria-pressed="false" data-tooltip="Iniciar oleadas automáticamente"><i class="fas fa-forward"></i></button>
-                        <button id="btn-speed" class="btn-action speed-btn" title="Velocidad" data-tooltip="Cambiar velocidad de juego">x1 <i class="fas fa-rocket"></i></button>
+                        <button id="btn-pause" type="button" class="btn-action" title="Pausar" aria-label="Pausar" aria-pressed="false" data-tooltip="Pausar o reanudar"><i class="fas fa-pause"></i></button>
+                        <button id="btn-auto" type="button" class="btn-action muted" title="Auto oleada" aria-label="Auto oleada" aria-pressed="false" data-tooltip="Iniciar oleadas automáticamente"><i class="fas fa-forward"></i></button>
+                        <button id="btn-speed" type="button" class="btn-action speed-btn" title="Velocidad" data-tooltip="Cambiar velocidad de juego">x1 <i class="fas fa-rocket"></i></button>
                     </div>
-                    <button id="next-wave-btn" class="btn-primary" data-testid="next-wave-btn">INICIAR OLEADA</button>
+                    <button id="next-wave-btn" type="button" class="btn-primary" data-testid="next-wave-btn">INICIAR OLEADA</button>
                 </div>
             </aside>
         </main>
@@ -160,7 +160,7 @@
 
     <div id="panel-overlay" class="hidden">
         <div id="panel-container" role="dialog" aria-modal="true" aria-label="Panel del juego" tabindex="-1">
-            <button id="close-panel-btn" aria-label="Cerrar"><i class="fas fa-times"></i></button>
+            <button id="close-panel-btn" type="button" aria-label="Cerrar"><i class="fas fa-times"></i></button>
             <div id="panel-content"></div>
         </div>
     </div>
