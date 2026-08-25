@@ -291,8 +291,49 @@ test('coleccion filtra heroes obtenidos y faltantes', () => {
     assert.match(filtersHtml, /aria-label="Buscar heroe, rol o grupo"/);
     assert.match(filtersHtml, /aria-label="Ordenar coleccion"/);
     assert.match(filtersHtml, /aria-label="Filtrar heroes por estado de obtencion"/);
+    assert.match(filtersHtml, /aria-label="Filtrar heroes por respuesta tactica"/);
     assert.match(filtersHtml, /class="rarity-filter\s+active" type="button" data-rarity="all" aria-pressed="true" aria-label="Filtrar rareza Todas"/);
     assert.match(filtersHtml, /title="Filtrar rareza Todas" data-tooltip="Filtrar rareza Todas"/);
+});
+
+test('coleccion filtra heroes por terreno y respuesta tactica', () => {
+    const ui = createUiStub();
+    const panel = new TeamBuilderPanel(ui);
+    const heroes = [
+        data.heroes.iron_man,
+        data.heroes.black_widow,
+        data.heroes.capitan_america,
+        data.heroes.invisible_woman,
+        data.heroes.war_machine,
+        data.heroes.domino
+    ];
+    const unlockedIds = new Set(heroes.map((hero) => hero.id));
+    const ids = () => panel.getFilteredHeroes(heroes, unlockedIds).map((hero) => hero.id).sort();
+
+    panel.tacticalFilter = 'water';
+    assert.deepEqual(ids(), ['invisible_woman', 'iron_man']);
+
+    panel.tacticalFilter = 'mountain';
+    assert.deepEqual(ids(), ['domino', 'invisible_woman', 'iron_man', 'war_machine']);
+
+    panel.tacticalFilter = 'antiarmor';
+    assert.deepEqual(ids(), ['black_widow', 'iron_man', 'war_machine']);
+
+    panel.tacticalFilter = 'aura';
+    assert.deepEqual(ids(), ['capitan_america', 'invisible_woman']);
+
+    panel.tacticalFilter = 'economy';
+    assert.deepEqual(ids(), ['domino']);
+
+    panel.tacticalFilter = 'detection';
+    assert.ok(ids().includes('black_widow'));
+    assert.match(panel.renderCollectionFilters(3, 6), /collection-tactical-select/);
+    assert.match(panel.renderCollectionFilters(3, 6), /aria-label="Filtrar heroes por respuesta tactica"/);
+    assert.match(panel.renderCollectionFilters(3, 6), /<option value="detection" selected>Detección<\/option>/);
+    assert.deepEqual(panel.getActiveFilterLabels(), ['Tactica: Detección']);
+
+    panel.resetHeroFilters();
+    assert.equal(panel.tacticalFilter, 'all');
 });
 
 test('coleccion permite limpiar todos los filtros de heroes', () => {
@@ -316,6 +357,7 @@ test('coleccion permite limpiar todos los filtros de heroes', () => {
     assert.equal(panel.searchQuery, '');
     assert.equal(panel.rarityFilter, 'all');
     assert.equal(panel.ownershipFilter, 'all');
+    assert.equal(panel.tacticalFilter, 'all');
     assert.equal(panel.sortMode, 'az');
     assert.equal(panel.hasActiveHeroFilters(), false);
 });

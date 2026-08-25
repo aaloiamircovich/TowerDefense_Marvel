@@ -4628,7 +4628,7 @@ body.panel-open {
 
 .collection-toolbar {
     display: grid;
-    grid-template-columns: minmax(220px, 1fr) 150px 150px minmax(240px, auto) 38px auto;
+    grid-template-columns: minmax(220px, 1fr) repeat(3, minmax(132px, 150px)) minmax(240px, auto) 38px auto;
     align-items: center;
     gap: 10px;
     margin: 14px 0;

@@ -4,6 +4,7 @@ import { buildVillainCodexModel } from '../systems/VillainCodexSystem.js';
 import { HERO_RARITIES, getRarityClass, normalizeRarity } from '../utils/Rarity.js';
 import { resolveEvolutionVisualContract } from '../utils/HeroVisuals.js';
 import { buildItemEquipDeltaRows, renderItemDeltaRows } from './InventoryPanel.js';
+import { TERRAIN } from '../utils/TerrainRules.js';
 
 const METRIC_LABELS = {
     coverage: 'Cobertura',
@@ -12,6 +13,28 @@ const METRIC_LABELS = {
     detection: 'Detección',
 };
 
+const HERO_TACTIC_FILTERS = [
+    { id: 'all', label: 'Todas', icon: 'fa-filter' },
+    { id: 'grass', label: 'Pasto', icon: 'fa-seedling' },
+    { id: 'water', label: 'Agua', icon: 'fa-water' },
+    { id: 'mountain', label: 'Montaña', icon: 'fa-mountain' },
+    { id: 'detection', label: 'Detección', icon: 'fa-eye' },
+    { id: 'antiarmor', label: 'Antiarmadura', icon: 'fa-bullseye' },
+    { id: 'control', label: 'Control', icon: 'fa-hand-paper' },
+    { id: 'area', label: 'Área/Rebote', icon: 'fa-project-diagram' },
+    { id: 'aura', label: 'Aura', icon: 'fa-broadcast-tower' },
+    { id: 'economy', label: 'Economía', icon: 'fa-coins' }
+];
+
+const CONTROL_EFFECT_TYPES = new Set(['slow', 'stun', 'freeze', 'web', 'knockback']);
+
+function normalizeSearchText(value = '') {
+    return String(value)
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase();
+}
+
 export class TeamBuilderPanel {
     constructor(ui) {
         this.ui = ui;
@@ -19,6 +42,7 @@ export class TeamBuilderPanel {
         this.sortMode = 'az';
         this.rarityFilter = 'all';
         this.ownershipFilter = 'all';
+        this.tacticalFilter = 'all';
         this.synergyExpanded = false;
         this.viewMode = 'heroes';
     }
@@ -203,6 +227,7 @@ export class TeamBuilderPanel {
         return Boolean(this.searchQuery.trim())
             || this.rarityFilter !== 'all'
             || this.ownershipFilter !== 'all'
+            || this.tacticalFilter !== 'all'
             || this.sortMode !== 'az';
     }
 
@@ -211,6 +236,7 @@ export class TeamBuilderPanel {
         this.sortMode = 'az';
         this.rarityFilter = 'all';
         this.ownershipFilter = 'all';
+        this.tacticalFilter = 'all';
     }
 
     getActiveFilterLabels() {
@@ -221,6 +247,7 @@ export class TeamBuilderPanel {
         if (this.ownershipFilter !== 'all') {
             labels.push(this.ownershipFilter === 'owned' ? 'Solo obtenidos' : 'Solo faltantes');
         }
+        if (this.tacticalFilter !== 'all') labels.push(`Tactica: ${this.getTacticalFilterLabel(this.tacticalFilter)}`);
         if (this.sortMode !== 'az') labels.push(`Orden: ${this.getSortLabel(this.sortMode)}`);
         return labels.length ? labels : ['Sin filtros'];
     }
@@ -232,6 +259,78 @@ export class TeamBuilderPanel {
             'rarity-asc': 'Rareza baja'
         };
         return labels[sortMode] || 'A-Z';
+    }
+
+    getTacticalFilterLabel(filterId = this.tacticalFilter) {
+        return HERO_TACTIC_FILTERS.find((filter) => filter.id === filterId)?.label || 'Todas';
+    }
+
+    getHeroTraitText(hero) {
+        return normalizeSearchText([
+            hero.name,
+            hero.category,
+            hero.ability,
+            hero.abilityDesc,
+            hero.niche,
+            ...(hero.tags || [])
+        ]
+            .filter(Boolean)
+            .join(' '));
+    }
+
+    heroMatchesTacticalFilter(hero) {
+        const filter = this.tacticalFilter || 'all';
+        if (filter === 'all') return true;
+
+        const allowedTerrains = hero.allowedTerrains || [TERRAIN.grass];
+        if (filter === 'grass') return allowedTerrains.includes(TERRAIN.grass);
+        if (filter === 'water') return allowedTerrains.includes(TERRAIN.water);
+        if (filter === 'mountain') return allowedTerrains.includes(TERRAIN.mountain);
+
+        const special = hero.special || {};
+        const effects = special.attackEffects || [];
+        const profile = special.projectileProfile || {};
+        const metrics = hero.teamMetrics || {};
+        const traitText = this.getHeroTraitText(hero);
+
+        if (filter === 'detection') {
+            return Boolean(hero.canSeeStealth || special.supportAura?.detectStealth || metrics.detection >= 4 || traitText.includes('sigilo') || traitText.includes('deteccion'));
+        }
+        if (filter === 'antiarmor') {
+            return Boolean(profile.armorPenetration > 0
+                || effects.some((effect) => effect.type === 'armorBreak')
+                || traitText.includes('antiarmadura')
+                || traitText.includes('armadura')
+                || traitText.includes('blindaje')
+                || traitText.includes('perforacion')
+                || traitText.includes('barrera'));
+        }
+        if (filter === 'control') {
+            return Boolean(metrics.control >= 4
+                || effects.some((effect) => CONTROL_EFFECT_TYPES.has(effect.type))
+                || traitText.includes('control')
+                || traitText.includes('ralentiza')
+                || traitText.includes('paraliza')
+                || traitText.includes('congela')
+                || traitText.includes('inmoviliza')
+                || traitText.includes('aturde'));
+        }
+        if (filter === 'area') {
+            return Boolean(profile.splashRadius > 0
+                || profile.chainCount > 0
+                || ['cross', 'x', 'ring'].includes(hero.rangePattern)
+                || traitText.includes('area')
+                || traitText.includes('grupo')
+                || traitText.includes('rebote')
+                || traitText.includes('encadena'));
+        }
+        if (filter === 'aura') {
+            return Boolean(special.supportAura?.type || traitText.includes('aura'));
+        }
+        if (filter === 'economy') {
+            return Boolean(special.economyOnHit || traitText.includes('economia') || traitText.includes('credito'));
+        }
+        return true;
     }
 
     getPendingInventoryItem() {
@@ -295,6 +394,7 @@ export class TeamBuilderPanel {
                 const unlocked = unlockedIds.has(hero.id);
                 if (this.ownershipFilter === 'owned' && !unlocked) return false;
                 if (this.ownershipFilter === 'missing' && unlocked) return false;
+                if (!this.heroMatchesTacticalFilter(hero)) return false;
                 if (!query) return true;
 
                 return [
@@ -340,6 +440,12 @@ export class TeamBuilderPanel {
                         <option value="all" ${this.ownershipFilter === 'all' ? 'selected' : ''}>Todos</option>
                         <option value="owned" ${this.ownershipFilter === 'owned' ? 'selected' : ''}>Obtenidos</option>
                         <option value="missing" ${this.ownershipFilter === 'missing' ? 'selected' : ''}>Faltantes</option>
+                    </select>
+                </label>
+                <label class="collection-sort">
+                    <span>Tactica</span>
+                    <select id="collection-tactical-select" aria-label="Filtrar heroes por respuesta tactica">
+                        ${HERO_TACTIC_FILTERS.map((filter) => `<option value="${filter.id}" ${this.tacticalFilter === filter.id ? 'selected' : ''}>${filter.label}</option>`).join('')}
                     </select>
                 </label>
                 <div class="collection-rarity-filters" aria-label="Filtrar por rareza">
@@ -554,6 +660,10 @@ export class TeamBuilderPanel {
         });
         this.ui.panelContent.querySelector('#collection-ownership-select')?.addEventListener('change', (event) => {
             this.ownershipFilter = event.target.value;
+            this.render('Constructor de equipo');
+        });
+        this.ui.panelContent.querySelector('#collection-tactical-select')?.addEventListener('change', (event) => {
+            this.tacticalFilter = event.target.value;
             this.render('Constructor de equipo');
         });
         this.ui.panelContent.querySelectorAll('.rarity-filter').forEach((button) => button.addEventListener('click', () => {
