@@ -730,6 +730,27 @@ test('buildPressureActionState pide despliegue si no hay heroes', () => {
     assert.equal(action.label, 'Sin heroes desplegados');
 });
 
+
+test('UIManager actualiza nombre accesible del boton de velocidad', () => {
+    const button = {
+        innerHTML: '',
+        title: '',
+        dataset: {},
+        attributes: {},
+        setAttribute(name, value) {
+            this.attributes[name] = value;
+        }
+    };
+    const ui = Object.create(UIManager.prototype);
+    ui.game = { gameSpeed: 3 };
+
+    ui.updateSpeedButton(button);
+
+    assert.equal(button.innerHTML, 'x3 <i class="fas fa-rocket"></i>');
+    assert.equal(button.attributes['aria-label'], 'Cambiar velocidad de juego. Velocidad actual x3');
+    assert.equal(button.title, 'Velocidad actual x3');
+    assert.equal(button.dataset.tooltip, 'Velocidad actual x3');
+});
 test('UIManager mantiene oculto el panel lateral de presion de ruta', () => {
     const container = {
         innerHTML: '<button>Mejorar Iron Man $360</button>',

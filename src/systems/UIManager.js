@@ -1358,6 +1358,8 @@ export class UIManager {
         const btnAuto = document.getElementById('btn-auto');
         const btnSpeed = document.getElementById('btn-speed');
 
+        this.updateSpeedButton(btnSpeed);
+
         btnPause?.addEventListener('click', () => {
             this.setManualPause(!this.game.isManuallyPaused);
         });
@@ -1375,7 +1377,7 @@ export class UIManager {
             const speeds = [1, 2, 3, 4];
             const nextIndex = (speeds.indexOf(this.game.gameSpeed) + 1) % speeds.length;
             this.game.gameSpeed = speeds[nextIndex];
-            btnSpeed.innerHTML = `x${this.game.gameSpeed} <i class="fas fa-rocket"></i>`;
+            this.updateSpeedButton(btnSpeed);
         });
 
         this.heroGrid?.addEventListener('click', (event) => {
@@ -1475,6 +1477,16 @@ export class UIManager {
 
     setSelectionStatus(text) {
         if (this.selectionStatus) this.selectionStatus.textContent = text;
+    }
+
+    updateSpeedButton(button = document.getElementById('btn-speed')) {
+        if (!button) return;
+        const speed = Number(this.game?.gameSpeed || 1);
+        const label = `Cambiar velocidad de juego. Velocidad actual x${speed}`;
+        button.innerHTML = `x${speed} <i class="fas fa-rocket"></i>`;
+        button.setAttribute('aria-label', label);
+        button.title = `Velocidad actual x${speed}`;
+        button.dataset.tooltip = `Velocidad actual x${speed}`;
     }
 
     setManualPause(paused, announce = true) {
