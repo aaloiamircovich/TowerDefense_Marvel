@@ -808,6 +808,44 @@ test('UIManager alterna el boton activo del hub para cerrar paneles', () => {
     }
 });
 
+test('UIManager restaura foco solo si el elemento sigue conectado', () => {
+    const previousDocument = globalThis.document;
+    globalThis.document = {
+        body: { classList: { contains: () => false } }
+    };
+    const calls = [];
+    const ui = Object.create(UIManager.prototype);
+    ui.shopPanel = { clearGachaRevealTimers: () => calls.push('clear') };
+    ui.hidePanelOverlay = () => calls.push('hide');
+    ui.setActiveHubButton = (type) => calls.push(`hub:${type}`);
+    ui.game = {
+        isManuallyPaused: false,
+        isGameOver: false,
+        start: () => calls.push('start')
+    };
+    ui.lastFocusedElement = {
+        isConnected: false,
+        focus: () => calls.push('focus:stale')
+    };
+
+    try {
+        ui.closePanel();
+
+        assert.equal(ui.lastFocusedElement, null);
+        assert.deepEqual(calls, ['clear', 'hide', 'hub:null', 'start']);
+
+        ui.lastFocusedElement = {
+            isConnected: true,
+            focus: () => calls.push('focus:connected')
+        };
+        ui.closePanel();
+
+        assert.equal(ui.lastFocusedElement, null);
+        assert.equal(calls.at(-1), 'focus:connected');
+    } finally {
+        globalThis.document = previousDocument;
+    }
+});
 test('UIManager oculta el contador FPS salvo que ajustes lo activen', () => {
     const fpsEl = createClassListElement();
     const ui = Object.create(UIManager.prototype);
@@ -1134,3 +1172,4 @@ function createHubButton(panel) {
     };
     return button;
 }
+

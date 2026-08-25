@@ -1417,7 +1417,9 @@ export class UIManager {
         this.hidePanelOverlay();
         this.setActiveHubButton(null);
         if (!document.body.classList.contains('title-screen-active') && !this.game.isManuallyPaused && !this.game.isGameOver) this.game.start();
-        this.lastFocusedElement?.focus?.();
+        const restoreFocus = this.lastFocusedElement;
+        this.lastFocusedElement = null;
+        if (restoreFocus?.isConnected !== false) restoreFocus?.focus?.();
     }
 
     setActiveHubButton(type = null) {
@@ -2614,3 +2616,4 @@ export class UIManager {
         return pickHeroDisplaySprite(hero, this.game);
     }
 }
+
