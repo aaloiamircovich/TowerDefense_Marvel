@@ -1349,6 +1349,7 @@ export class UIManager {
         });
 
         document.getElementById('close-panel-btn')?.addEventListener('click', () => this.closePanel());
+        this.overlay?.addEventListener('pointerdown', (event) => this.handlePanelBackdropPointerDown(event));
         document.getElementById('next-wave-btn')?.addEventListener('click', () => {
             if (this.game.waveManager && !this.game.waveManager.isWaveActive) this.game.waveManager.startNextWave();
         });
@@ -1426,6 +1427,13 @@ export class UIManager {
     hidePanelOverlay() {
         this.overlay.classList.add('hidden');
         document.body.classList.remove('panel-open');
+    }
+
+    handlePanelBackdropPointerDown(event) {
+        if (event.target !== this.overlay) return;
+        if (document.getElementById('close-panel-btn')?.classList.contains('hidden')) return;
+        event.preventDefault();
+        this.closePanel();
     }
 
     handleDialogKeydown(event) {
