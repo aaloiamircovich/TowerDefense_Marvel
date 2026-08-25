@@ -99,6 +99,8 @@ try {
     if (!summary.threatTextVisible) failures.push('no se observo texto flotante de amenaza elite');
     if (summary.enemyIntelCards <= 0) failures.push('no se observaron tarjetas de intel enemiga');
     if (!summary.enemyIntelCounterSeen) failures.push('no se observaron counters en tarjetas de intel enemiga');
+
+    const mobileSummary = await runMobileLayoutSmoke(page, failures);
     if (pageErrors.length) failures.push(`page errors: ${pageErrors.join(' | ')}`);
     if (consoleErrors.length) failures.push(`console errors: ${consoleErrors.join(' | ')}`);
 
@@ -107,13 +109,88 @@ try {
         failures.forEach((failure) => console.error(`- ${failure}`));
         process.exitCode = 1;
     } else {
-        console.log(`Smoke browser OK: wave ${summary.wave}, vidas ${summary.lives}, desvio maximo ${summary.maxEnemyPathDistance}px, textos flotantes ${summary.floatingTextSeen}, alerta elite OK, intel enemiga ${summary.enemyIntelCards}.`);
+        console.log(`Smoke browser OK: wave ${summary.wave}, vidas ${summary.lives}, desvio maximo ${summary.maxEnemyPathDistance}px, textos flotantes ${summary.floatingTextSeen}, alerta elite OK, intel enemiga ${summary.enemyIntelCards}, mobile ${mobileSummary.viewportWidth}x${mobileSummary.viewportHeight} sin overflow.`);
     }
 } finally {
     await browser?.close().catch(() => {});
     server.kill();
 }
 
+async function runMobileLayoutSmoke(page, failures) {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.waitForTimeout(120);
+
+    const collectionButton = page.locator('[data-panel="collection"]');
+    await collectionButton.waitFor({ state: 'visible', timeout: 5000 });
+    await collectionButton.click();
+    await page.locator('#panel-overlay:not(.hidden) #panel-container').waitFor({ state: 'visible', timeout: 5000 });
+    await page.waitForTimeout(120);
+
+    const mobile = await page.evaluate(() => {
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+        const viewportTolerance = 2;
+        const selectors = [
+            ['top bar', '#top-bar'],
+            ['hub menu', '#hub-menu'],
+            ['canvas', '#gameCanvas'],
+            ['left panel', '#left-panel'],
+            ['right panel', '#right-panel'],
+            ['modal', '#panel-container'],
+            ['modal content', '#panel-content']
+        ];
+        const outOfBounds = [];
+        for (const [label, selector] of selectors) {
+            const element = document.querySelector(selector);
+            if (!element) {
+                outOfBounds.push(`${label}: no encontrado`);
+                continue;
+            }
+            const rect = element.getBoundingClientRect();
+            if (rect.width <= 0 || rect.height <= 0) {
+                outOfBounds.push(`${label}: sin tamano visible`);
+                continue;
+            }
+            const horizontalOverflow = Math.max(0, -rect.left, rect.right - viewportWidth);
+            if (horizontalOverflow > viewportTolerance) {
+                outOfBounds.push(`${label}: desborde horizontal ${Math.round(horizontalOverflow)}px`);
+            }
+            if (label === 'modal' && rect.height - viewportHeight > viewportTolerance) {
+                outOfBounds.push(`${label}: alto ${Math.round(rect.height)}px mayor al viewport`);
+            }
+        }
+        const documentOverflow = Math.max(0, document.documentElement.scrollWidth - viewportWidth);
+        const modal = document.querySelector('#panel-container')?.getBoundingClientRect();
+        const cards = [...document.querySelectorAll('.collection-card')].slice(0, 6).map((card) => {
+            const rect = card.getBoundingClientRect();
+            return {
+                width: rect.width,
+                overflow: Math.max(0, -rect.left, rect.right - viewportWidth),
+                text: (card.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 80)
+            };
+        });
+        const badCards = cards.filter((card) => card.width <= 0 || card.overflow > viewportTolerance);
+        return {
+            viewportWidth,
+            viewportHeight,
+            documentOverflow,
+            modalWidth: modal ? Math.round(modal.width) : 0,
+            modalHeight: modal ? Math.round(modal.height) : 0,
+            cardCount: document.querySelectorAll('.collection-card').length,
+            outOfBounds,
+            badCards
+        };
+    });
+
+    if (mobile.documentOverflow > 6) failures.push(`mobile: documento desborda ${mobile.documentOverflow}px`);
+    if (mobile.outOfBounds.length) failures.push(`mobile: ${mobile.outOfBounds.join(' | ')}`);
+    if (mobile.cardCount <= 0) failures.push('mobile: coleccion sin tarjetas visibles');
+    if (mobile.badCards.length) failures.push(`mobile: tarjetas fuera de viewport ${mobile.badCards.map((card) => card.text).join(' | ')}`);
+
+    await page.locator('#close-panel-btn').click();
+    await page.waitForFunction(() => document.querySelector('#panel-overlay')?.classList.contains('hidden'), null, { timeout: 5000 });
+    return mobile;
+}
 async function getFreePort() {
     return new Promise((resolve, reject) => {
         const probe = net.createServer();
