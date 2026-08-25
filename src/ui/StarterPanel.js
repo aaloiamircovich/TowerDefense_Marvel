@@ -48,14 +48,18 @@ export class StarterPanel {
                 onSelect(selected);
             });
         });
+        this.ui.panelContent.querySelector?.('.starter-card')?.focus?.();
     }
 
     renderCard(hero, starters = []) {
         const rarity = normalizeRarity(hero.rarity);
         const rarityClass = getRarityClass(rarity);
         const highlights = this.getStarterHighlights(hero, starters);
+        const metricSummary = this.getMetrics(hero).map((metric) => `${metric.label} ${metric.value}`).join(', ');
+        const highlightSummary = highlights.length ? `. ${highlights.map((highlight) => highlight.label).join(', ')}` : '';
+        const cardLabel = `Elegir ${hero.name}. Rareza ${rarity}. ${hero.category || 'Heroe'}. ${this.getNicheText(hero)}. ${metricSummary}${highlightSummary}`;
         return `
-            <button class="starter-card starter-card-upgraded ${rarityClass}" data-id="${escapeHtml(hero.id)}" data-testid="starter-${escapeHtml(hero.id)}" data-rarity="${rarity}">
+            <button class="starter-card starter-card-upgraded ${rarityClass}" type="button" data-id="${escapeHtml(hero.id)}" data-testid="starter-${escapeHtml(hero.id)}" data-rarity="${rarity}" aria-label="${escapeHtml(cardLabel)}">
                 <div class="starter-sprite-frame">
                     ${this.ui.renderSprite(this.ui.getHeroDisplaySprite(hero), hero.name)}
                 </div>

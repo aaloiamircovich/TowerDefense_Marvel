@@ -18,6 +18,9 @@ test('StarterPanel renderiza cartas tacticas y selecciona heroe inicial', () => 
     const calls = [];
     const panelContent = {
         innerHTML: '',
+        querySelector(selector) {
+            return selector === '.starter-card' ? cards[0] : null;
+        },
         querySelectorAll(selector) {
             return selector === '.starter-card' ? cards : [];
         }
@@ -75,6 +78,8 @@ test('StarterPanel renderiza cartas tacticas y selecciona heroe inicial', () => 
         assert.match(panelContent.innerHTML, /starter-summary-strip/);
         assert.match(panelContent.innerHTML, /Opciones/);
         assert.match(panelContent.innerHTML, /Black Widow/);
+        assert.match(panelContent.innerHTML, /starter-card-upgraded rarity-common" type="button"/);
+        assert.match(panelContent.innerHTML, /aria-label="Elegir Black Widow\. Rareza Common\. Urbano\. saboteo de soporte\. Radar 4, Control 3\. Mejor Control, Mejor Radar"/);
         assert.match(panelContent.innerHTML, /saboteo de soporte/);
         assert.match(panelContent.innerHTML, /Hawkeye/);
         assert.match(panelContent.innerHTML, /Daño 3/);
@@ -85,6 +90,7 @@ test('StarterPanel renderiza cartas tacticas y selecciona heroe inicial', () => 
         assert.match(panelContent.innerHTML, /Mejor Control/);
         assert.match(panelContent.innerHTML, /Mejor Radar/);
         assert.doesNotMatch(panelContent.innerHTML, /Mejor Soporte/);
+        assert.equal(cards[0].focused, true);
 
         cards[1].listeners.click();
 
@@ -100,8 +106,12 @@ function createCardStub(id) {
     return {
         dataset: { id },
         listeners: {},
+        focused: false,
         addEventListener(event, handler) {
             this.listeners[event] = handler;
+        },
+        focus() {
+            this.focused = true;
         }
     };
 }
