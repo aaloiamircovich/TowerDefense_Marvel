@@ -7,6 +7,8 @@ test('I18n expone idiomas soportados y fallback seguro', () => {
     assert.deepEqual(getSupportedLocales().sort(), ['en', 'es']);
     assert.equal(translate('settings', 'en'), 'Settings');
     assert.equal(translate('settings', 'es'), 'Ajustes');
+    assert.equal(translate('showFps', 'en'), 'Show FPS');
+    assert.equal(translate('showFps', 'es'), 'Mostrar FPS');
     assert.equal(translate('unknown_key', 'en'), 'unknown_key');
 });
 
@@ -37,6 +39,7 @@ test('SettingsPanel usa el locale guardado para renderizar textos reales', () =>
                         reducedVfx: false,
                         tutorialHints: true,
                         simplifiedUi: false,
+                        showFps: false,
                         masterVolume: 0.8,
                         musicVolume: 0.45,
                         sfxVolume: 0.75,
@@ -81,6 +84,7 @@ test('SettingsPanel usa el locale guardado para renderizar textos reales', () =>
         assert.match(panelContent.html, /Reduced VFX/);
         assert.match(panelContent.html, /Contextual tactical guide/);
         assert.match(panelContent.html, /Simplified interface/);
+        assert.match(panelContent.html, /Show FPS/);
         assert.match(panelContent.html, /Start wave/);
         assert.match(panelContent.html, /Cancel placement/);
         assert.match(panelContent.html, /Reset all/);
@@ -130,6 +134,7 @@ test('SettingsPanel puede activar admin desde eventos sin perder traducciones', 
                         reducedVfx: false,
                         tutorialHints: true,
                         simplifiedUi: false,
+                        showFps: false,
                         masterVolume: 0.8,
                         musicVolume: 0.45,
                         sfxVolume: 0.75,

@@ -1576,12 +1576,30 @@ export class UIManager {
         return false;
     }
 
+    shouldShowFps() {
+        return this.game.progression?.state.settings?.showFps === true;
+    }
+
+    updateFpsDisplay(text, { warning = false, title = '' } = {}) {
+        if (!this.fpsEl) return;
+        const visible = this.shouldShowFps();
+        this.fpsEl.classList?.toggle('hidden', !visible);
+        this.fpsEl.classList?.toggle('performance-warning', visible && warning);
+        if (!visible) {
+            this.fpsEl.removeAttribute?.('title');
+            return;
+        }
+        this.fpsEl.textContent = text;
+        if (title) this.fpsEl.title = title;
+        else this.fpsEl.removeAttribute?.('title');
+    }
+
     updateUI(lives, credits, wave, fps, stars) {
         if (this.livesEl) this.livesEl.textContent = lives;
         if (this.creditsEl) setHudResourceElement(this.creditsEl, credits);
         if (this.waveEl) this.waveEl.textContent = wave;
         this.updateBossCountdown(wave);
-        if (this.fpsEl) this.fpsEl.textContent = `${Math.round(fps || 0)} FPS`;
+        this.updateFpsDisplay(`${Math.round(fps || 0)} FPS`);
         if (this.starsEl && stars !== undefined) setHudResourceElement(this.starsEl, stars);
     }
 
@@ -1713,10 +1731,10 @@ export class UIManager {
     }
 
     updatePerformance(snapshot, poolStats = {}) {
-        if (!this.fpsEl) return;
-        this.fpsEl.textContent = `${Math.round(snapshot.fps)} FPS`;
-        this.fpsEl.classList.toggle('performance-warning', snapshot.p95Ms > 16.67);
-        this.fpsEl.title = `Frame promedio ${snapshot.averageMs.toFixed(2)} ms · p95 ${snapshot.p95Ms.toFixed(2)} ms · pico ${snapshot.peakEntities} entidades · ${poolStats.reused || 0} proyectiles reutilizados`;
+        this.updateFpsDisplay(`${Math.round(snapshot.fps)} FPS`, {
+            warning: snapshot.p95Ms > 16.67,
+            title: `Frame promedio ${snapshot.averageMs.toFixed(2)} ms · p95 ${snapshot.p95Ms.toFixed(2)} ms · pico ${snapshot.peakEntities} entidades · ${poolStats.reused || 0} proyectiles reutilizados`
+        });
     }
 
     updateLevelTheme(levelConfig) {

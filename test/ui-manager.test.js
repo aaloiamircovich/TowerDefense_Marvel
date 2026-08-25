@@ -808,6 +808,27 @@ test('UIManager alterna el boton activo del hub para cerrar paneles', () => {
     }
 });
 
+test('UIManager oculta el contador FPS salvo que ajustes lo activen', () => {
+    const fpsEl = createClassListElement();
+    const ui = Object.create(UIManager.prototype);
+    ui.fpsEl = fpsEl;
+    ui.game = { progression: { state: { settings: { showFps: false } } } };
+
+    ui.updateFpsDisplay('60 FPS', { warning: true, title: 'perfil de rendimiento' });
+
+    assert.equal(fpsEl.classes.has('hidden'), true);
+    assert.equal(fpsEl.classes.has('performance-warning'), false);
+    assert.equal(fpsEl.textContent, '');
+    assert.equal(fpsEl.title, undefined);
+
+    ui.game.progression.state.settings.showFps = true;
+    ui.updateFpsDisplay('59 FPS', { warning: true, title: 'perfil de rendimiento' });
+
+    assert.equal(fpsEl.classes.has('hidden'), false);
+    assert.equal(fpsEl.classes.has('performance-warning'), true);
+    assert.equal(fpsEl.textContent, '59 FPS');
+    assert.equal(fpsEl.title, 'perfil de rendimiento');
+});
 test('buildWaveReportState resume una oleada limpia con consejo de ahorro', () => {
     const report = buildWaveReportState({
         wave: 4,
@@ -1080,6 +1101,22 @@ function createUpgradeUi(credits, visibleCredits = '') {
     return ui;
 }
 
+function createClassListElement() {
+    const element = {
+        textContent: '',
+        classes: new Set(),
+        classList: {
+            toggle(className, active) {
+                if (active) element.classes.add(className);
+                else element.classes.delete(className);
+            }
+        },
+        removeAttribute(name) {
+            if (name === 'title') delete element.title;
+        }
+    };
+    return element;
+}
 function createHubButton(panel) {
     const button = {
         dataset: { panel },

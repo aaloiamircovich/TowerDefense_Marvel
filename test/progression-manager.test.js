@@ -268,6 +268,7 @@ test('Ajustes accesibles conservan tipos y límites válidos', () => {
         manager.updateSetting('tutorialHints', false);
         manager.updateSetting('pixelArtCrisp', true);
         manager.updateSetting('reducedVfx', true);
+        manager.updateSetting('showFps', true);
 
         assert.equal(manager.state.settings.highContrast, true);
         assert.equal(manager.state.settings.combatText, false);
@@ -278,8 +279,10 @@ test('Ajustes accesibles conservan tipos y límites válidos', () => {
         assert.equal(manager.state.settings.tutorialHints, false);
         assert.equal(manager.state.settings.pixelArtCrisp, true);
         assert.equal(manager.state.settings.reducedVfx, true);
+        assert.equal(manager.state.settings.showFps, true);
         assert.equal(game.pixelArtCrisp, true);
         assert.equal(game.reducedVfx, true);
+        assert.equal(game.showFps, true);
         assert.ok(classes.has('simple-ui'));
         assert.ok(classes.has('pixel-art-crisp'));
         assert.ok(classes.has('reduced-vfx'));

@@ -252,6 +252,7 @@ function createDefaultState() {
             reducedVfx: false,
             tutorialHints: true,
             simplifiedUi: false,
+            showFps: false,
             uiScale: 'normal',
             masterVolume: 0.7,
             musicVolume: 0.25,
@@ -1157,7 +1158,7 @@ export class ProgressionManager {
 
     updateSetting(key, value) {
         if (!(key in this.state.settings)) return;
-        if (['ranges', 'grid', 'combatText', 'audio', 'highContrast', 'reduceMotion', 'pixelArtCrisp', 'reducedVfx', 'tutorialHints', 'simplifiedUi', 'musicLoop'].includes(key)) {
+        if (['ranges', 'grid', 'combatText', 'audio', 'highContrast', 'reduceMotion', 'pixelArtCrisp', 'reducedVfx', 'tutorialHints', 'simplifiedUi', 'showFps', 'musicLoop'].includes(key)) {
             this.state.settings[key] = Boolean(value);
         } else if (['masterVolume', 'musicVolume', 'sfxVolume'].includes(key)) {
             this.state.settings[key] = Math.max(0, Math.min(1, Number(value) || 0));
@@ -1270,6 +1271,7 @@ export class ProgressionManager {
         this.game.showCombatText = settings.combatText;
         this.game.pixelArtCrisp = settings.pixelArtCrisp;
         this.game.reducedVfx = settings.reducedVfx;
+        this.game.showFps = settings.showFps;
         this.game.vfx?.setReduced?.(settings.reducedVfx);
         this.game.audio?.setEnabled(settings.audio);
         this.game.audio?.setBusVolume?.('master', settings.masterVolume);
