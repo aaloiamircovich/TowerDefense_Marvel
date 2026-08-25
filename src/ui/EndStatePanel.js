@@ -50,18 +50,20 @@ export class EndStatePanel {
                 ${this.renderMissionSummary(summary)}
                 ${this.renderOutcomeCoach('defeat', { wave, summary, modeSnapshot })}
                 <div class="end-state-actions end-state-actions--compact">
-                    <button class="btn-primary" id="retry-run"><i class="fas fa-rotate-right"></i> Reintentar</button>
+                    <button class="btn-primary" id="retry-run" type="button" aria-label="Reintentar desde oleada 1"><i class="fas fa-rotate-right"></i> Reintentar</button>
                 </div>
             </section>
         `;
 
-        document.getElementById('retry-run')?.addEventListener('click', () => {
+        const retryButton = document.getElementById('retry-run');
+        retryButton?.addEventListener('click', () => {
             if (modeSnapshot) this.ui.game.modeSystem.start(modeSnapshot.id);
             else this.ui.game.retryCampaignFromFirstWave?.();
             this.ui.renderHeroRoster(this.ui.game.activeTeam, (hero) => this.ui.game.inputManager.setPlacementMode(hero));
             this.ui.closePanel();
             this.ui.game.start();
         });
+        retryButton?.focus?.();
     }
 
     showVictory() {
@@ -94,15 +96,17 @@ export class EndStatePanel {
                 ${this.renderMissionSummary(summary)}
                 ${this.renderOutcomeCoach('victory', { summary })}
                 <div class="end-state-actions end-state-actions--compact">
-                    <button class="btn-primary" id="victory-close"><i class="fas fa-map"></i> Volver al mapa</button>
+                    <button class="btn-primary" id="victory-close" type="button" aria-label="Volver al mapa"><i class="fas fa-map"></i> Volver al mapa</button>
                 </div>
             </section>
         `;
 
-        document.getElementById('victory-close')?.addEventListener('click', () => {
+        const victoryButton = document.getElementById('victory-close');
+        victoryButton?.addEventListener('click', () => {
             document.getElementById('close-panel-btn')?.classList.remove('hidden');
             this.ui.closePanel();
         });
+        victoryButton?.focus?.();
     }
 
     renderRunReadout(items = []) {
@@ -251,11 +255,13 @@ export class EndStatePanel {
                     </div>
                 </div>
                 <div class="end-state-actions end-state-actions--compact">
-                    <button class="btn-primary" id="reload-game"><i class="fas fa-rotate-right"></i> Reintentar carga</button>
+                    <button class="btn-primary" id="reload-game" type="button" aria-label="Reintentar carga"><i class="fas fa-rotate-right"></i> Reintentar carga</button>
                 </div>
             </section>
         `;
         document.getElementById('fatal-error-copy').textContent = error?.message || 'Revisa los datos del juego e inténtalo nuevamente.';
-        document.getElementById('reload-game')?.addEventListener('click', () => window.location.reload());
+        const reloadButton = document.getElementById('reload-game');
+        reloadButton?.addEventListener('click', () => window.location.reload());
+        reloadButton?.focus?.();
     }
 }

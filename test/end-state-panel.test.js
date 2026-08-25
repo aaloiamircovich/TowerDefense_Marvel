@@ -32,6 +32,8 @@ test('EndStatePanel renderiza derrota y reintenta sin resetear progreso externo'
         assert.match(ui.panelContent.innerHTML, /Reintentar vuelve a oleada 1/);
         assert.match(ui.panelContent.innerHTML, /Plan de recuperacion/);
         assert.match(ui.panelContent.innerHTML, /Mejorar Black Widow/);
+        assert.match(ui.panelContent.innerHTML, /id="retry-run" type="button" aria-label="Reintentar desde oleada 1"/);
+        assert.equal(retryButton.focused, true);
 
         retryButton.listeners.click();
 
@@ -86,6 +88,8 @@ test('EndStatePanel renderiza victoria y error fatal con acciones principales', 
         assert.match(ui.panelContent.innerHTML, /Puedes seguir con el siguiente mapa/);
         assert.match(ui.panelContent.innerHTML, /Siguiente objetivo/);
         assert.match(ui.panelContent.innerHTML, /Buscar mas estrellas/);
+        assert.match(ui.panelContent.innerHTML, /id="victory-close" type="button" aria-label="Volver al mapa"/);
+        assert.equal(victoryButton.focused, true);
 
         victoryButton.listeners.click();
         assert.equal(closeButton.removedClass, 'hidden');
@@ -94,7 +98,9 @@ test('EndStatePanel renderiza victoria y error fatal con acciones principales', 
         panel.showFatalError(new Error('Datos corruptos'));
 
         assert.match(ui.panelContent.innerHTML, /ERROR DE INICIO/);
+        assert.match(ui.panelContent.innerHTML, /id="reload-game" type="button" aria-label="Reintentar carga"/);
         assert.equal(errorCopy.textContent, 'Datos corruptos');
+        assert.equal(reloadButton.focused, true);
 
         reloadButton.listeners.click();
         assert.ok(calls.includes('reload'));
@@ -167,8 +173,12 @@ function createUiStub(calls) {
 function createButtonStub() {
     return {
         listeners: {},
+        focused: false,
         addEventListener(event, handler) {
             this.listeners[event] = handler;
+        },
+        focus() {
+            this.focused = true;
         }
     };
 }
