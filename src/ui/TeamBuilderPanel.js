@@ -88,7 +88,7 @@ export class TeamBuilderPanel {
     renderTeamSlot(hero, index) {
         if (!hero) return `<div class="team-slot-empty" aria-label="Espacio ${index + 1} libre"><span>${index + 1}</span><i class="fas fa-plus"></i></div>`;
         return `
-            <button class="team-slot-filled remove-team-hero" data-id="${hero.id}" aria-label="Quitar a ${hero.name}" title="Quitar del equipo">
+            <button class="team-slot-filled remove-team-hero" type="button" data-id="${hero.id}" aria-label="Quitar a ${hero.name}" title="Quitar del equipo">
                 ${this.ui.renderSprite(this.getCollectionSprite(hero), hero.name)}
                 <span>${hero.name}</span>
                 <i class="fas fa-xmark"></i>
@@ -347,7 +347,7 @@ export class TeamBuilderPanel {
                         const active = this.rarityFilter === rarity;
                         const label = rarity === 'all' ? 'Todas' : rarity;
                         const rarityClass = rarity === 'all' ? '' : getRarityClass(rarity);
-                        return `<button class="rarity-filter ${rarityClass} ${active ? 'active' : ''}" data-rarity="${rarity}" aria-pressed="${active}">${label}</button>`;
+                        return `<button class="rarity-filter ${rarityClass} ${active ? 'active' : ''}" type="button" data-rarity="${rarity}" aria-pressed="${active}" aria-label="Filtrar rareza ${label}">${label}</button>`;
                     }).join('')}
                 </div>
                 <button id="collection-clear-filters" class="collection-clear-filters icon-command" type="button" ${hasActiveFilters ? '' : 'disabled'} title="Limpiar filtros" aria-label="Limpiar filtros">
@@ -371,21 +371,37 @@ export class TeamBuilderPanel {
         const itemDeltaPreview = pendingItem && unlocked
             ? `<div class="hero-item-delta-preview">${renderItemDeltaRows(buildItemEquipDeltaRows(pendingItem, equippedItem))}</div>`
             : '';
+        const heroStateLabel = unlocked
+            ? equipped ? 'en equipo activo' : 'desbloqueado'
+            : 'bloqueado';
+        const cardAriaLabel = `${hero.name}. Rareza ${rarity}. ${heroStateLabel}.`;
+        const previewLabel = `Ver ficha de ${hero.name}`;
+        const equipActionLabel = pendingItem
+            ? alreadyHasPendingItem
+                ? `${pendingItem.name} ya esta equipado en ${hero.name}`
+                : unlocked
+                    ? `${equippedItem ? 'Reemplazar objeto de' : 'Equipar'} ${hero.name} con ${pendingItem.name}`
+                    : `${hero.name} requiere reclutamiento antes de equipar ${pendingItem.name}`
+            : unlocked
+                ? equipped
+                    ? `Quitar ${hero.name} del equipo`
+                    : `Anadir ${hero.name} al equipo`
+                : `${hero.name} bloqueado, pendiente de reclutar`;
         return `
-            <article class="collection-card team-hero-card ${rarityClass} ${unlocked ? '' : 'locked'} ${equipped ? 'equipped' : ''} ${pendingItem ? 'item-target-mode' : ''}" data-rarity="${rarity}">
+            <article class="collection-card team-hero-card ${rarityClass} ${unlocked ? '' : 'locked'} ${equipped ? 'equipped' : ''} ${pendingItem ? 'item-target-mode' : ''}" data-rarity="${rarity}" role="listitem" aria-label="${this.escapeAttribute(cardAriaLabel)}">
                 ${equippedItem ? `<span class="hero-item-corner" title="${equippedItem.name} equipado">${this.ui.renderSprite(equippedItem.icon, equippedItem.name)}</span>` : ''}
                 ${this.ui.renderSprite(this.getCollectionSprite(hero), hero.name)}
                 <h3>${hero.name}</h3>
                 ${evolution ? `<strong class="evolution-badge" style="--evolution-color:${evolution.color}">${evolution.name}</strong>` : ''}
                 <small><b class="rarity-badge ${rarityClass}">${rarity}</b></small>
                 <div class="collection-actions">
-                    <button class="btn-preview-hero icon-command" data-id="${hero.id}" aria-label="Ver ficha de ${hero.name}" title="Ver ficha"><i class="fas fa-eye"></i></button>
+                    <button class="btn-preview-hero icon-command" type="button" data-id="${hero.id}" aria-label="${this.escapeAttribute(previewLabel)}" title="Ver ficha"><i class="fas fa-eye"></i></button>
                     ${pendingItem ? `
-                        <button class="${unlocked && !alreadyHasPendingItem ? 'btn-assign-item' : ''} btn-primary ${alreadyHasPendingItem ? 'ghost' : ''}" data-id="${hero.id}" ${unlocked && !alreadyHasPendingItem ? '' : 'disabled'}>
+                        <button class="${unlocked && !alreadyHasPendingItem ? 'btn-assign-item' : ''} btn-primary ${alreadyHasPendingItem ? 'ghost' : ''}" type="button" data-id="${hero.id}" aria-label="${this.escapeAttribute(equipActionLabel)}" aria-disabled="${unlocked && !alreadyHasPendingItem ? 'false' : 'true'}" ${unlocked && !alreadyHasPendingItem ? '' : 'disabled'}>
                             ${unlocked ? (alreadyHasPendingItem ? 'Ya equipado' : (equippedItem ? 'Reemplazar' : 'Equipar')) : 'Por reclutar'}
                         </button>
                     ` : `
-                        <button class="${unlocked ? 'btn-equip' : ''} btn-primary ${equipped ? 'danger' : 'ghost'}" data-id="${hero.id}" ${unlocked ? '' : 'disabled'}>
+                        <button class="${unlocked ? 'btn-equip' : ''} btn-primary ${equipped ? 'danger' : 'ghost'}" type="button" data-id="${hero.id}" aria-label="${this.escapeAttribute(equipActionLabel)}" aria-pressed="${equipped}" aria-disabled="${!unlocked}" ${unlocked ? '' : 'disabled'}>
                             ${unlocked ? (equipped ? 'Quitar' : 'Añadir') : 'Por reclutar'}
                         </button>
                     `}

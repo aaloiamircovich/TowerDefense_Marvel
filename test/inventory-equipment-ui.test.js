@@ -120,14 +120,32 @@ test('coleccion muestra el objeto equipado y permite elegir heroe destino', () =
     const panel = new TeamBuilderPanel(ui);
 
     const ironManHtml = panel.renderHeroCard(data.heroes.iron_man, true);
+    assert.match(ironManHtml, /role="listitem" aria-label="Iron Man\. Rareza [^\.]+\. desbloqueado\."/);
     assert.match(ironManHtml, /hero-item-corner/);
+    assert.match(ironManHtml, /type="button" data-id="iron_man" aria-label="REACTOR ARC ya esta equipado en Iron Man" aria-disabled="true" disabled/);
     assert.match(ironManHtml, /Ya equipado/);
 
     const spiderManHtml = panel.renderHeroCard(data.heroes.spiderman, true);
     assert.match(spiderManHtml, /btn-assign-item/);
+    assert.match(spiderManHtml, /type="button" data-id="spiderman" aria-label="Equipar Spider-Man con REACTOR ARC" aria-disabled="false"/);
     assert.match(spiderManHtml, /Equipar/);
 });
 
+
+test('coleccion anuncia estado y accion principal al armar equipo', () => {
+    const ui = createUiStub();
+    ui.inventoryPanel.pendingEquipItemId = null;
+    ui.game.activeTeam = [data.heroes.spiderman];
+    const panel = new TeamBuilderPanel(ui);
+
+    const activeHtml = panel.renderHeroCard(data.heroes.spiderman, true);
+    assert.match(activeHtml, /role="listitem" aria-label="Spider-Man\. Rareza [^\.]+\. en equipo activo\."/);
+    assert.match(activeHtml, /class="btn-equip btn-primary danger" type="button" data-id="spiderman" aria-label="Quitar Spider-Man del equipo" aria-pressed="true" aria-disabled="false"/);
+
+    const lockedHtml = panel.renderHeroCard(data.heroes.thor, false);
+    assert.match(lockedHtml, /role="listitem" aria-label="Thor\. Rareza [^\.]+\. bloqueado\."/);
+    assert.match(lockedHtml, /aria-label="Thor bloqueado, pendiente de reclutar" aria-pressed="false" aria-disabled="true" disabled/);
+});
 test('previsualizacion de objeto compara mejoras y perdidas numericas', () => {
     const rows = buildItemEquipDeltaRows(data.items.lentes_edith, data.items.reactor_arc);
     const byKey = Object.fromEntries(rows.map((row) => [row.key, row]));
@@ -257,7 +275,9 @@ test('coleccion filtra heroes obtenidos y faltantes', () => {
     panel.ownershipFilter = 'missing';
     assert.deepEqual(panel.getFilteredHeroes(heroes, unlockedIds).map((hero) => hero.id), ['thor']);
 
-    assert.match(panel.renderCollectionFilters(2, 3), /collection-ownership-select/);
+    const filtersHtml = panel.renderCollectionFilters(2, 3);
+    assert.match(filtersHtml, /collection-ownership-select/);
+    assert.match(filtersHtml, /class="rarity-filter\s+active" type="button" data-rarity="all" aria-pressed="true" aria-label="Filtrar rareza Todas"/);
 });
 
 test('coleccion permite limpiar todos los filtros de heroes', () => {
