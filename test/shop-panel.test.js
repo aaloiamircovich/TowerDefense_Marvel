@@ -110,6 +110,17 @@ test('ShopPanel recluta heroe, actualiza costo y permite tienda de skins vacia',
     assert.match(panelContent.innerHTML, /Próximamente/);
 });
 
+test('ShopPanel limpia timers pendientes de apertura al cerrar tienda', () => {
+    const panel = new ShopPanel(createShopUi(createPanelContentStub({}), []));
+    const cleared = [];
+    panel.getTimerHost = () => ({ clearTimeout: (timer) => cleared.push(timer) });
+    panel.gachaRevealTimers = [11, 22, 33];
+
+    panel.clearGachaRevealTimers();
+
+    assert.deepEqual(cleared, [11, 22, 33]);
+    assert.deepEqual(panel.gachaRevealTimers, []);
+});
 function createShopUi(panelContent, calls) {
     const item = {
         id: 'lentes_edith',

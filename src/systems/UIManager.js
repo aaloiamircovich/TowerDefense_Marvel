@@ -1413,6 +1413,7 @@ export class UIManager {
     }
 
     closePanel() {
+        this.shopPanel?.clearGachaRevealTimers?.();
         this.hidePanelOverlay();
         this.setActiveHubButton(null);
         if (!document.body.classList.contains('title-screen-active') && !this.game.isManuallyPaused && !this.game.isGameOver) this.game.start();

@@ -203,10 +203,7 @@ export class ShopPanel {
         const delays = [320, 360, 400, 440, 500, 560, 640, 720, 820, 940, 1080, 1220];
         let index = 0;
         let finished = false;
-        const timers = this.getTimerHost();
-
-        this.gachaRevealTimers.forEach((timer) => timers.clearTimeout(timer));
-        this.gachaRevealTimers = [];
+        this.clearGachaRevealTimers();
 
         const applyEntry = (entry) => {
             const rarity = normalizeRarity(entry.rarity);
@@ -223,8 +220,7 @@ export class ShopPanel {
         const finishReveal = () => {
             if (finished) return;
             finished = true;
-            this.gachaRevealTimers.forEach((timer) => timers.clearTimeout(timer));
-            this.gachaRevealTimers = [];
+            this.clearGachaRevealTimers();
             applyEntry(result.hero);
             reveal.classList.add('is-final');
             finalCopy.classList.add('is-visible');
@@ -300,6 +296,12 @@ export class ShopPanel {
 
     queryPanel(selector) {
         return this.ui.panelContent?.querySelector?.(selector) || globalThis.document?.querySelector?.(selector) || null;
+    }
+
+    clearGachaRevealTimers() {
+        const timers = this.getTimerHost();
+        this.gachaRevealTimers.forEach((timer) => timers.clearTimeout(timer));
+        this.gachaRevealTimers = [];
     }
 
     getTimerHost() {
