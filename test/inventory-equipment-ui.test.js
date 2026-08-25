@@ -199,6 +199,47 @@ test('coleccion conecta tabs con panel activo', () => {
     panel.render('Constructor de equipo');
     assert.match(ui.panelContent.innerHTML, /id="collection-panel-evolutions" class="collection-tab-panel" role="tabpanel" aria-labelledby="collection-tab-evolutions"/);
 });
+test('coleccion navega tabs con teclado', () => {
+    const calls = [];
+    const makeTab = (view) => ({
+        dataset: { view },
+        listeners: {},
+        addEventListener(event, handler) {
+            this.listeners[event] = handler;
+        },
+        focus() {
+            calls.push(`focus:${view}`);
+        }
+    });
+    const tabs = [makeTab('heroes'), makeTab('villains'), makeTab('evolutions')];
+    const panel = Object.create(TeamBuilderPanel.prototype);
+    panel.viewMode = 'heroes';
+    panel.render = (title) => calls.push(`render:${title}:${panel.viewMode}`);
+    panel.ui = {
+        game: {},
+        panelContent: {
+            querySelectorAll(selector) {
+                return selector === '.collection-view-tab' ? tabs : [];
+            },
+            querySelector(selector) {
+                const match = selector.match(/data-view="([^\"]+)"/);
+                return tabs.find((tab) => tab.dataset.view === match?.[1]) || null;
+            }
+        }
+    };
+
+    panel.bindListeners();
+    let prevented = 0;
+    tabs[0].listeners.keydown({ key: 'ArrowRight', preventDefault: () => { prevented += 1; } });
+    tabs[1].listeners.keydown({ key: 'End', preventDefault: () => { prevented += 1; } });
+
+    assert.equal(prevented, 2);
+    assert.equal(panel.viewMode, 'evolutions');
+    assert.ok(calls.includes('render:Constructor de equipo:villains'));
+    assert.ok(calls.includes('focus:villains'));
+    assert.ok(calls.includes('render:Constructor de equipo:evolutions'));
+    assert.ok(calls.includes('focus:evolutions'));
+});
 test('coleccion filtra heroes obtenidos y faltantes', () => {
     const ui = createUiStub();
     const panel = new TeamBuilderPanel(ui);

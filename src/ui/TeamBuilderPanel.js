@@ -499,12 +499,31 @@ export class TeamBuilderPanel {
         `;
     }
 
+    switchCollectionView(view = 'heroes', focusTab = false) {
+        this.viewMode = view || 'heroes';
+        this.render('Constructor de equipo');
+        if (!focusTab) return;
+        this.ui.panelContent.querySelector?.(`[data-view="${this.viewMode}"]`)?.focus?.();
+    }
+
     bindListeners() {
         const game = this.ui.game;
-        this.ui.panelContent.querySelectorAll('.collection-view-tab').forEach((button) => button.addEventListener('click', () => {
-            this.viewMode = button.dataset.view || 'heroes';
-            this.render('Constructor de equipo');
-        }));
+        const tabs = [...this.ui.panelContent.querySelectorAll('.collection-view-tab')];
+        tabs.forEach((button, index) => {
+            button.addEventListener('click', () => this.switchCollectionView(button.dataset.view || 'heroes'));
+            button.addEventListener('keydown', (event) => {
+                const keyOffset = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[event.key];
+                const isEdgeKey = event.key === 'Home' || event.key === 'End';
+                if (!keyOffset && !isEdgeKey) return;
+                event.preventDefault();
+                const nextIndex = event.key === 'Home'
+                    ? 0
+                    : event.key === 'End'
+                        ? tabs.length - 1
+                        : (index + keyOffset + tabs.length) % tabs.length;
+                this.switchCollectionView(tabs[nextIndex]?.dataset.view || 'heroes', true);
+            });
+        });
         if (this.viewMode !== 'heroes') return;
         this.ui.panelContent.querySelector('#collection-search-input')?.addEventListener('input', (event) => {
             this.searchQuery = event.target.value;
