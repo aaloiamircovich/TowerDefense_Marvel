@@ -3882,7 +3882,7 @@ body.panel-open {
 
 .hero-detail-tabs {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 4px;
     padding: 4px;
     border: 1px solid rgba(64, 201, 255, 0.18);
@@ -3955,9 +3955,14 @@ body.panel-open {
     gap: 12px;
 }
 
+.hero-tab-upgrade,
 .hero-tab-equipment,
 .hero-tab-combat {
     margin: 0;
+}
+
+.hero-tab-upgrade .hero-upgrade-grid {
+    margin-top: 2px;
 }
 
 .stats-grid {

@@ -368,9 +368,9 @@ test('renderHeroDetails muestra counter de oleada dentro de estadisticas', () =>
 
         assert.match(ui.panelContent.innerHTML, /hero-portrait-header/);
         assert.match(ui.panelContent.innerHTML, /hero-level-readout/);
-        assert.match(ui.panelContent.innerHTML, /hero-upgrade-grid/);
-        assert.match(ui.panelContent.innerHTML, /hero-upgrade-card/);
-        assert.match(ui.panelContent.innerHTML, /class="modal-btn-upgrade hero-upgrade-card btn-primary ghost" type="button" data-amt="1" data-cost="\d+" aria-label="Mejorar Iron Man 1 niveles por \d+ creditos" title="Mejorar Iron Man 1 niveles por \d+ creditos" data-tooltip="Mejorar Iron Man 1 niveles por \d+ creditos" aria-disabled="false"/);
+        assert.match(ui.panelContent.innerHTML, /id="hero-detail-tab-upgrade"/);
+        assert.match(ui.panelContent.innerHTML, /aria-label="Mejora: \$\d+"/);
+        assert.doesNotMatch(ui.panelContent.innerHTML, /hero-upgrade-card/);
         assert.match(ui.panelContent.innerHTML, /id="reposition-hero" class="btn-primary ghost" type="button" aria-label="Reposicionar Iron Man: Mover libremente" title="Reposicionar Iron Man: Mover libremente" data-tooltip="Reposicionar Iron Man: Mover libremente" aria-disabled="false"/);
         assert.match(ui.panelContent.innerHTML, /id="sell-hero" class="btn-primary danger" type="button" aria-label="Retirar Iron Man: Retirar heroe" title="Retirar Iron Man: Retirar heroe" data-tooltip="Retirar Iron Man: Retirar heroe" aria-disabled="false"/);
         assert.match(ui.panelContent.innerHTML, /hero-detail-tabs/);
@@ -385,6 +385,13 @@ test('renderHeroDetails muestra counter de oleada dentro de estadisticas', () =>
         assert.match(ui.panelContent.innerHTML, /6 pts/);
         assert.match(ui.panelContent.innerHTML, /rompe armadura/);
         assert.doesNotMatch(ui.panelContent.innerHTML, /hero-submenu|hero-detail-menu-btn/);
+
+        ui.renderHeroDetails(hero, 'upgrade');
+        assert.match(ui.panelContent.innerHTML, /hero-detail-tab-panel upgrade/);
+        assert.match(ui.panelContent.innerHTML, /Mejora de nivel/);
+        assert.match(ui.panelContent.innerHTML, /hero-upgrade-grid/);
+        assert.match(ui.panelContent.innerHTML, /hero-upgrade-card/);
+        assert.match(ui.panelContent.innerHTML, /class="modal-btn-upgrade hero-upgrade-card btn-primary ghost" type="button" data-amt="1" data-cost="\d+" aria-label="Mejorar Iron Man 1 niveles por \d+ creditos" title="Mejorar Iron Man 1 niveles por \d+ creditos" data-tooltip="Mejorar Iron Man 1 niveles por \d+ creditos" aria-disabled="false"/);
 
         ui.renderHeroDetails(hero, 'equipment');
         assert.match(ui.panelContent.innerHTML, /hero-detail-tab-panel equipment/);
@@ -415,7 +422,7 @@ test('UIManager navega tabs de detalle de heroe con teclado', () => {
             calls.push(`focus:${view}`);
         }
     });
-    const tabs = [makeTab('summary'), makeTab('equipment'), makeTab('combat')];
+    const tabs = [makeTab('summary'), makeTab('upgrade'), makeTab('equipment'), makeTab('combat')];
     const ui = Object.create(UIManager.prototype);
     ui.panelContent = {
         querySelectorAll(selector) {
@@ -434,8 +441,8 @@ test('UIManager navega tabs de detalle de heroe con teclado', () => {
     tabs[1].listeners.keydown({ key: 'End', preventDefault: () => { prevented += 1; } });
 
     assert.equal(prevented, 2);
-    assert.ok(calls.includes('render:iron_man:equipment'));
-    assert.ok(calls.includes('focus:equipment'));
+    assert.ok(calls.includes('render:iron_man:upgrade'));
+    assert.ok(calls.includes('focus:upgrade'));
     assert.ok(calls.includes('render:iron_man:combat'));
     assert.ok(calls.includes('focus:combat'));
 });

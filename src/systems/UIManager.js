@@ -2112,7 +2112,7 @@ export class UIManager {
         const isDeployed = this.game.heroes.includes(hero);
         const repositionPermission = isDeployed ? this.game.tacticalActions?.canReposition(hero) : null;
         const sellPermission = isDeployed ? this.game.tacticalActions?.canSell(hero) : null;
-        const activeDetailView = ['equipment', 'combat'].includes(detailView) ? detailView : 'summary';
+        const activeDetailView = ['upgrade', 'equipment', 'combat'].includes(detailView) ? detailView : 'summary';
         const isMaxLevel = level >= HERO_MAX_LEVEL;
         const currentTargeting = hero.targetingPriority || config.targetingPriority || TARGETING_PRIORITIES[0];
         const waveSummary = this.nextWaveSummary || (!this.game.waveManager?.isWaveActive ? this.game.waveManager?.buildPreparedSummary?.() : null);
@@ -2128,6 +2128,7 @@ export class UIManager {
         const summaryBadge = isAuraOnly && scaledAura?.type
             ? `${supportAuraLabel} +${Math.round(Number(scaledAura.power || 0) * 100)}%`
             : `DPS ${formatCompactMetric(damage * Number(fireRate || 0))}`;
+        const upgradeBadge = isMaxLevel ? 'MAX' : `$${this.getHeroUpgradeCost(hero, 1)}`;
         const equipmentBadge = equippedItem ? 'Equipado' : 'Libre';
         const combatBadge = `${formatCompactMetric(combat.kills || 0)} bajas`;
         const compactStats = [
@@ -2136,14 +2137,37 @@ export class UIManager {
             ['Crítico', `${critChance}%${this.formatStatDelta(critChance, baseCritChance, '%')}`],
             ['Alcance', `${range}${this.formatStatDelta(range, baseRange)}`]
         ];
+        const upgradeControls = isUnlocked ? `<div class="upgrade-list hero-upgrade-grid" aria-label="Mejoras de nivel">
+            ${[1, 5, 10].map((amount) => {
+                const cost = this.getHeroUpgradeCost(hero, amount);
+                const steps = getHeroLevelUpgradeSteps(level, amount);
+                const preview = isMaxLevel ? '' : this.renderHeroLevelPreview(hero, steps);
+                const upgradeLabel = isMaxLevel ? `${heroName} ya esta en nivel maximo` : `Mejorar ${heroName} ${steps} niveles por ${cost} creditos`;
+                return `<button class="modal-btn-upgrade hero-upgrade-card btn-primary ghost" type="button" data-amt="${amount}" data-cost="${cost}" aria-label="${escapeHtml(upgradeLabel)}" title="${escapeHtml(upgradeLabel)}" data-tooltip="${escapeHtml(upgradeLabel)}" aria-disabled="${isMaxLevel}" ${isMaxLevel ? 'disabled' : ''}>
+                    <span class="hero-upgrade-step">${isMaxLevel ? 'MAX' : `+${steps}`}</span>
+                    <span class="hero-upgrade-cost">${isMaxLevel ? 'Nivel maximo' : `$${cost}`}</span>
+                    ${preview}
+                </button>`;
+            }).join('')}
+        </div>` : '<div class="locked-hero-note"><i class="fas fa-lock"></i> Recluta al héroe para mejorarlo</div>';
         const detailTabs = [
             { id: 'summary', label: 'Resumen', icon: 'fa-id-card', badge: summaryBadge },
+            { id: 'upgrade', label: 'Mejora', icon: 'fa-arrow-up', badge: upgradeBadge },
             { id: 'equipment', label: 'Objeto', icon: 'fa-shield-alt', badge: equipmentBadge },
             { id: 'combat', label: 'Combate', icon: 'fa-chart-line', badge: combatBadge }
         ];
         let detailBody = '';
 
-        if (activeDetailView === 'equipment') {
+        if (activeDetailView === 'upgrade') {
+            detailBody = `
+                <div class="hero-detail-subpanel detail-card hero-tab-upgrade">
+                    <h3>Mejora de nivel</h3>
+                    <p><span>Nivel actual</span><strong>${level}/${HERO_MAX_LEVEL}</strong></p>
+                    <p><span>Siguiente coste</span><strong>${upgradeBadge}</strong></p>
+                    ${upgradeControls}
+                </div>
+            `;
+        } else if (activeDetailView === 'equipment') {
             detailBody = `
                 <div class="equipment-card hero-tab-equipment">
                     <h3>Equipamiento</h3>
@@ -2237,19 +2261,6 @@ export class UIManager {
                         <span><small>Nivel</small><b>${level}/${HERO_MAX_LEVEL}</b></span>
                         <span><small>Mejora</small><b>${isMaxLevel ? 'MAX' : `$${this.getHeroUpgradeCost(hero, 1)}`}</b></span>
                     </div>
-                    ${isUnlocked ? `<div class="upgrade-list hero-upgrade-grid" aria-label="Mejoras de nivel">
-                        ${[1, 5, 10].map((amount) => {
-                            const cost = this.getHeroUpgradeCost(hero, amount);
-                            const steps = getHeroLevelUpgradeSteps(level, amount);
-                            const preview = isMaxLevel ? '' : this.renderHeroLevelPreview(hero, steps);
-                            const upgradeLabel = isMaxLevel ? `${heroName} ya esta en nivel maximo` : `Mejorar ${heroName} ${steps} niveles por ${cost} creditos`;
-                            return `<button class="modal-btn-upgrade hero-upgrade-card btn-primary ghost" type="button" data-amt="${amount}" data-cost="${cost}" aria-label="${escapeHtml(upgradeLabel)}" title="${escapeHtml(upgradeLabel)}" data-tooltip="${escapeHtml(upgradeLabel)}" aria-disabled="${isMaxLevel}" ${isMaxLevel ? 'disabled' : ''}>
-                                <span class="hero-upgrade-step">${isMaxLevel ? 'MAX' : `+${steps}`}</span>
-                                <span class="hero-upgrade-cost">${isMaxLevel ? 'Nivel maximo' : `$${cost}`}</span>
-                                ${preview}
-                            </button>`;
-                        }).join('')}
-                    </div>` : '<div class="locked-hero-note"><i class="fas fa-lock"></i> Recluta al héroe para mejorarlo</div>'}
                     ${isDeployed ? `
                         <div class="tactical-actions">
                             <button id="reposition-hero" class="btn-primary ghost" type="button" aria-label="${escapeHtml(`Reposicionar ${heroName}: ${repositionPermission?.reason || 'Mover libremente'}`)}" title="${escapeHtml(`Reposicionar ${heroName}: ${repositionPermission?.reason || 'Mover libremente'}`)}" data-tooltip="${escapeHtml(`Reposicionar ${heroName}: ${repositionPermission?.reason || 'Mover libremente'}`)}" aria-disabled="${!repositionPermission?.ok}" ${repositionPermission?.ok ? '' : 'disabled'}><i class="fas fa-arrows-alt"></i> Reposicionar</button>
