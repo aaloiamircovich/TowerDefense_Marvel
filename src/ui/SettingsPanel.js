@@ -139,8 +139,10 @@ export class SettingsPanel {
         const t = (key) => translate(key, locale);
         this.ui.panelContent.querySelectorAll('input[type="checkbox"][data-setting]').forEach((input) => {
             input.addEventListener('change', () => {
+                const label = input.nextElementSibling.textContent;
                 game.progression.updateSetting(input.dataset.setting, input.checked);
-                this.ui.showToast(`${input.nextElementSibling.textContent}: ${input.checked ? 'activado' : 'desactivado'}`, 'info');
+                this.ui.showToast(`${label}: ${input.checked ? 'activado' : 'desactivado'}`, 'info');
+                this.render();
             });
         });
         this.ui.panelContent.querySelectorAll('.volume-control input').forEach((input) => {

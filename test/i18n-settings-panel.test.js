@@ -93,6 +93,87 @@ test('SettingsPanel usa el locale guardado para renderizar textos reales', () =>
     }
 });
 
+test('SettingsPanel refresca el resumen al cambiar toggles', () => {
+    const previousDocument = globalThis.document;
+    globalThis.document = { getElementById: () => null };
+
+    const listeners = {};
+    const toggle = {
+        checked: true,
+        dataset: { setting: 'simplifiedUi' },
+        nextElementSibling: { textContent: 'Simplified interface' },
+        addEventListener(event, handler) {
+            listeners[event] = handler;
+        }
+    };
+    const calls = [];
+    const settings = {
+        ranges: true,
+        grid: false,
+        combatText: true,
+        audio: true,
+        highContrast: false,
+        reduceMotion: false,
+        pixelArtCrisp: true,
+        reducedVfx: false,
+        tutorialHints: true,
+        simplifiedUi: false,
+        showFps: false,
+        masterVolume: 0.8,
+        musicVolume: 0.45,
+        sfxVolume: 0.75,
+        uiScale: 'normal',
+        locale: 'en',
+        musicTrackId: 'the-avengers-theme-song',
+        musicLoop: false,
+        adminMode: false,
+        keyBindings: {
+            pause: 'p',
+            speed: 'f',
+            nextWave: 'n',
+            cancel: 'Escape',
+            targeting: 't',
+            upgrade: 'u'
+        }
+    };
+    const panelContent = {
+        html: '',
+        renders: 0,
+        set innerHTML(value) { this.html = value; this.renders += 1; },
+        get innerHTML() { return this.html; },
+        querySelectorAll(selector) {
+            return selector === 'input[type="checkbox"][data-setting]' ? [toggle] : [];
+        }
+    };
+    const panel = new SettingsPanel({
+        panelContent,
+        game: {
+            progression: {
+                state: { version: 1, settings },
+                updateSetting(key, value) {
+                    calls.push(`setting:${key}:${value}`);
+                    settings[key] = value;
+                }
+            }
+        },
+        showToast(message, type) {
+            calls.push(`toast:${type}:${message}`);
+        }
+    });
+
+    try {
+        panel.render();
+        listeners.change();
+
+        assert.ok(calls.includes('setting:simplifiedUi:true'));
+        assert.ok(calls.includes('toast:info:Simplified interface: activado'));
+        assert.equal(settings.simplifiedUi, true);
+        assert.equal(panelContent.renders, 2);
+        assert.match(panelContent.html, /Active options/);
+    } finally {
+        globalThis.document = previousDocument;
+    }
+});
 test('SettingsPanel puede activar admin desde eventos sin perder traducciones', () => {
     const previousDocument = globalThis.document;
     const listeners = {};
