@@ -62,7 +62,7 @@ export class ShopPanel {
                     <small>La quinta apertura común garantiza Rare o superior.</small>
                 </div>
                 <div class="pity-track compact"><span>Garantía</span><b>${pityValue}/4</b></div>
-                <button class="btn-primary" id="gacha-btn" data-affordability="${canRecruit ? 'ready' : 'locked'}" aria-label="${recruitAriaLabel}" aria-disabled="${!canRecruit}" ${canRecruit ? '' : 'disabled'}>${recruitButtonText}</button>
+                <button class="btn-primary" id="gacha-btn" type="button" data-affordability="${canRecruit ? 'ready' : 'locked'}" aria-label="${recruitAriaLabel}" aria-disabled="${!canRecruit}" ${canRecruit ? '' : 'disabled'}>${recruitButtonText}</button>
             </section>
             <div id="gacha-res" class="result-copy shop-reveal-dock" role="status" aria-live="polite"></div>
             <section class="shop-section-heading">
@@ -128,7 +128,7 @@ export class ShopPanel {
                 </div>` : ''}
                 <div class="shop-card-footer">
                     <small>${purchased ? 'Adquirido' : canBuy ? `Copias: ${owned}` : `Faltan $${missing}`}</small>
-                    <button class="btn-buy-item btn-primary ghost" data-id="${item.id}" aria-label="${escapeHtml(buyAriaLabel)}" aria-disabled="${purchased || !canBuy}" ${purchased || !canBuy ? 'disabled' : ''}>${purchased ? 'ADQUIRIDO' : canBuy ? `$${price}` : 'BLOQUEADO'}</button>
+                    <button class="btn-buy-item btn-primary ghost" type="button" data-id="${item.id}" aria-label="${escapeHtml(buyAriaLabel)}" aria-disabled="${purchased || !canBuy}" ${purchased || !canBuy ? 'disabled' : ''}>${purchased ? 'ADQUIRIDO' : canBuy ? `$${price}` : 'BLOQUEADO'}</button>
                 </div>
             </div>
         `;

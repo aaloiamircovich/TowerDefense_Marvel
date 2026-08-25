@@ -25,6 +25,7 @@ test('ShopPanel renderiza tienda progresiva y delega compra de objetos', () => {
     assert.match(panelContent.innerHTML, /shop-recruit-strip/);
     assert.match(panelContent.innerHTML, /shop-grid--compact/);
     assert.match(panelContent.innerHTML, /RECLUTAR POR \$500/);
+    assert.match(panelContent.innerHTML, /id="gacha-btn" type="button" data-affordability="ready"/);
     assert.match(panelContent.innerHTML, /aria-label="Reclutar heroe aleatorio por 500 creditos" aria-disabled="false"/);
     assert.match(panelContent.innerHTML, /shop-reveal-dock" role="status" aria-live="polite"/);
     assert.match(panelContent.innerHTML, /data-affordability="ready"/);
@@ -32,6 +33,7 @@ test('ShopPanel renderiza tienda progresiva y delega compra de objetos', () => {
     assert.match(panelContent.innerHTML, /shop-effect-pills/);
     assert.match(panelContent.innerHTML, /Detecta sigilo[\s\S]*activo/);
     assert.match(panelContent.innerHTML, /Buena respuesta/);
+    assert.match(panelContent.innerHTML, /class="btn-buy-item btn-primary ghost" type="button" data-id="lentes_edith"/);
     assert.match(panelContent.innerHTML, /aria-label="Comprar Lentes E\.D\.I\.T\.H\. por 500 creditos" aria-disabled="false"/);
 
     buyButton.listeners.click();
