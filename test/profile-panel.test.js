@@ -46,6 +46,7 @@ test('ProfilePanel muestra racha y emblemas de contrato', () => {
         }),
         getSynergyChallengeSnapshot: () => ({ completed: 0, total: 0, challenges: [] }),
         getCredits: () => 1200,
+        getTotalStars: () => 75,
         getHeroMastery: (heroId) => ({ completed: heroId === 'hero_1' ? ['waves', 'kills'] : [] }),
         exportBuildCode: () => 'BUILD'
     };
@@ -58,9 +59,13 @@ test('ProfilePanel muestra racha y emblemas de contrato', () => {
         showToast: () => {},
         game: {
             progression,
-            levelsData: [{ id: 'level_1' }],
+            levelsData: [
+                { id: 'level_1', name: 'Base de los Vengadores' },
+                { id: 'level_2', name: 'Calles de Nueva York' },
+                { id: 'level_3', name: 'Reino de Wakanda' }
+            ],
             waveManager: { maxWaves: 100 },
-            stars: 0,
+            stars: 75,
             unlockedHeroes,
             activeTeam: [],
             currentLevel: { theme: { label: 'Base Avengers', brief: 'Defensa tactica' } },
@@ -75,7 +80,12 @@ test('ProfilePanel muestra racha y emblemas de contrato', () => {
     assert.match(panelContent.innerHTML, /profile-tabs/);
     assert.match(panelContent.innerHTML, /data-profile-view="summary" role="tab" aria-selected="true"/);
     assert.match(panelContent.innerHTML, /profile-tab-badge/);
-    assert.match(panelContent.innerHTML, /Resumen: 0% completado/);
+    assert.match(panelContent.innerHTML, /Resumen: 25% completado/);
+    assert.match(panelContent.innerHTML, /profile-next-unlock/);
+    assert.match(panelContent.innerHTML, /--profile-next-progress:75%/);
+    assert.match(panelContent.innerHTML, /Proxima operacion/);
+    assert.match(panelContent.innerHTML, /Reino de Wakanda/);
+    assert.match(panelContent.innerHTML, /25 estrellas para desbloquear/);
     assert.match(panelContent.innerHTML, /Contratos: 4 de 4 contratos/);
     assert.match(panelContent.innerHTML, /Códice: 0 de 5 entradas/);
     assert.match(panelContent.innerHTML, /Maestria heroica/);

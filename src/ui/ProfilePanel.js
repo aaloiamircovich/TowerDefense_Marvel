@@ -1,7 +1,7 @@
 import { APP_VERSION, FAN_PROJECT_NOTICE } from '../config/AppConfig.js';
 import { MASTERY_CHALLENGES } from '../systems/MasteryCodexSystem.js';
 import { ACHIEVEMENT_CATALOG } from '../systems/ProgressionManager.js';
-import { CAMPAIGN_MAX_WAVES } from '../utils/LevelProgression.js';
+import { CAMPAIGN_MAX_WAVES, getLevelUnlockRequirement, isLevelUnlockedByStars } from '../utils/LevelProgression.js';
 
 export class ProfilePanel {
     constructor(ui) {
@@ -28,8 +28,10 @@ export class ProfilePanel {
         const contractEmblems = progression.getContractEmblemSnapshot();
         const synergyChallenges = progression.getSynergyChallengeSnapshot(team);
         const statistics = progression.state.statistics;
+        const totalStars = this.getTotalStars(game, progression);
         const starTarget = Math.max(1, game.levelsData.length * (game.waveManager?.maxWaves || CAMPAIGN_MAX_WAVES));
-        const completion = Math.min(100, Math.round((game.stars / starTarget) * 100));
+        const completion = Math.min(100, Math.round((totalStars / starTarget) * 100));
+        const nextUnlock = this.buildNextUnlockStatus(game.levelsData, totalStars);
         const masteryEntries = game.unlockedHeroes.map((hero) => {
             const completed = progression.getHeroMastery(hero.id).completed;
             return { hero, completed, total: MASTERY_CHALLENGES.length };
@@ -105,6 +107,12 @@ export class ProfilePanel {
                     <span class="briefing-kicker">ARCHIVO DE MANDO</span>
                     <h2>${title}</h2>
                     <p>Progreso global, contratos, códice y rendimiento operativo de la campaña.</p>
+                    <div class="profile-next-unlock" style="--profile-next-progress:${nextUnlock.progress}%">
+                        <span><i class="fas fa-route"></i> ${nextUnlock.complete ? 'Ruta completa' : 'Proxima operacion'}</span>
+                        <strong>${nextUnlock.name}</strong>
+                        <small>${nextUnlock.detail}</small>
+                        <em aria-hidden="true"></em>
+                    </div>
                 </div>
                 <div class="profile-command-meter" aria-label="Completitud ${completion}%">
                     <b>${completion}%</b>
@@ -112,7 +120,7 @@ export class ProfilePanel {
                 </div>
             </section>
             <div class="profile-grid">
-                <div class="detail-card profile-stat-card"><h3>Progreso</h3><p><span>Mejores oleadas</span><strong>${bestWaves}</strong></p><p><span>Estrellas</span><strong>${game.stars}</strong></p><p><span>Desafios</span><strong>${challenges}/${game.levelsData.length * 2}</strong></p></div>
+                <div class="detail-card profile-stat-card"><h3>Progreso</h3><p><span>Mejores oleadas</span><strong>${bestWaves}</strong></p><p><span>Estrellas</span><strong>${totalStars}</strong></p><p><span>Desafios</span><strong>${challenges}/${game.levelsData.length * 2}</strong></p></div>
                 <div class="detail-card profile-stat-card"><h3>Plantilla</h3><p><span>Heroes</span><strong>${game.unlockedHeroes.length}</strong></p><p><span>Equipo activo</span><strong>${game.activeTeam.length}/6</strong></p></div>
                 <div class="detail-card profile-stat-card"><h3>Composicion</h3><p><span>Sinergias</span><strong>${activeSynergies}</strong></p><p><span>Familias</span><strong>${team.distinctTags || 0}</strong></p><p><span>Despliegue</span><strong>Libre</strong></p></div>
                 <div class="detail-card profile-stat-card"><h3>Economia</h3><p><span>Creditos</span><strong>$${progression.getCredits()}</strong></p></div>
@@ -128,6 +136,32 @@ export class ProfilePanel {
             <div class="release-notice"><strong>Super Hero TD v${APP_VERSION}</strong><span>${FAN_PROJECT_NOTICE}</span></div>
         `;
         this.bindListeners();
+    }
+
+    getTotalStars(game, progression) {
+        const progressionStars = progression?.getTotalStars?.();
+        return Number.isFinite(progressionStars) ? progressionStars : (Number(game?.stars) || 0);
+    }
+
+    buildNextUnlockStatus(levels = [], totalStars = 0) {
+        const stars = Math.max(0, Math.floor(Number(totalStars) || 0));
+        const nextIndex = levels.findIndex((_level, index) => !isLevelUnlockedByStars(index, stars));
+        if (nextIndex < 0) {
+            return {
+                complete: true,
+                name: 'Campaña desbloqueada',
+                detail: levels.length ? `${levels.length} operaciones disponibles` : 'Sin operaciones cargadas',
+                progress: 100
+            };
+        }
+        const required = getLevelUnlockRequirement(nextIndex);
+        const current = Math.min(required, stars);
+        return {
+            complete: false,
+            name: levels[nextIndex]?.name || 'Operacion clasificada',
+            detail: `${Math.max(0, required - current)} estrellas para desbloquear`,
+            progress: required > 0 ? Math.round((current / required) * 100) : 100
+        };
     }
 
     renderMasteryRow(entry) {
