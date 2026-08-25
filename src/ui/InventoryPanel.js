@@ -315,7 +315,7 @@ export class InventoryPanel {
                     <b>${ownerLabel}</b>
                 </div>
                 <div class="item-card-actions">
-                    <button class="btn-primary equip-item" type="button" data-id="${item.id}" aria-label="Elegir heroe para ${item.name}"><i class="fas fa-users"></i> Elegir héroe</button>
+                    <button class="btn-primary equip-item" type="button" data-id="${item.id}" aria-label="Elegir heroe para ${item.name}" title="Elegir heroe para ${item.name}" data-tooltip="Elegir heroe para ${item.name}"><i class="fas fa-users"></i> Elegir héroe</button>
                 </div>
                 ${equipPreview}
             </article>

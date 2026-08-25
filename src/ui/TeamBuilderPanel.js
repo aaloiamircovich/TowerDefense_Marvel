@@ -258,8 +258,8 @@ export class TeamBuilderPanel {
                     </div>
                 </div>
                 <div class="pending-item-actions">
-                    <button id="cancel-pending-item" class="btn-primary ghost" type="button"><i class="fas fa-xmark"></i> Cancelar</button>
-                    <button id="back-to-inventory" class="btn-primary ghost" type="button"><i class="fas fa-box-open"></i> Inventario</button>
+                    <button id="cancel-pending-item" class="btn-primary ghost" type="button" aria-label="Cancelar equipamiento" title="Cancelar equipamiento" data-tooltip="Cancelar equipamiento"><i class="fas fa-xmark"></i> Cancelar</button>
+                    <button id="back-to-inventory" class="btn-primary ghost" type="button" aria-label="Volver al inventario" title="Volver al inventario" data-tooltip="Volver al inventario"><i class="fas fa-box-open"></i> Inventario</button>
                 </div>
             </div>
         `;
@@ -397,11 +397,11 @@ export class TeamBuilderPanel {
                 <div class="collection-actions">
                     <button class="btn-preview-hero icon-command" type="button" data-id="${hero.id}" aria-label="${this.escapeAttribute(previewLabel)}" title="Ver ficha" data-tooltip="Ver ficha"><i class="fas fa-eye"></i></button>
                     ${pendingItem ? `
-                        <button class="${unlocked && !alreadyHasPendingItem ? 'btn-assign-item' : ''} btn-primary ${alreadyHasPendingItem ? 'ghost' : ''}" type="button" data-id="${hero.id}" aria-label="${this.escapeAttribute(equipActionLabel)}" aria-disabled="${unlocked && !alreadyHasPendingItem ? 'false' : 'true'}" ${unlocked && !alreadyHasPendingItem ? '' : 'disabled'}>
+                        <button class="${unlocked && !alreadyHasPendingItem ? 'btn-assign-item' : ''} btn-primary ${alreadyHasPendingItem ? 'ghost' : ''}" type="button" data-id="${hero.id}" aria-label="${this.escapeAttribute(equipActionLabel)}" title="${this.escapeAttribute(equipActionLabel)}" data-tooltip="${this.escapeAttribute(equipActionLabel)}" aria-disabled="${unlocked && !alreadyHasPendingItem ? 'false' : 'true'}" ${unlocked && !alreadyHasPendingItem ? '' : 'disabled'}>
                             ${unlocked ? (alreadyHasPendingItem ? 'Ya equipado' : (equippedItem ? 'Reemplazar' : 'Equipar')) : 'Por reclutar'}
                         </button>
                     ` : `
-                        <button class="${unlocked ? 'btn-equip' : ''} btn-primary ${equipped ? 'danger' : 'ghost'}" type="button" data-id="${hero.id}" aria-label="${this.escapeAttribute(equipActionLabel)}" aria-pressed="${equipped}" aria-disabled="${!unlocked}" ${unlocked ? '' : 'disabled'}>
+                        <button class="${unlocked ? 'btn-equip' : ''} btn-primary ${equipped ? 'danger' : 'ghost'}" type="button" data-id="${hero.id}" aria-label="${this.escapeAttribute(equipActionLabel)}" title="${this.escapeAttribute(equipActionLabel)}" data-tooltip="${this.escapeAttribute(equipActionLabel)}" aria-pressed="${equipped}" aria-disabled="${!unlocked}" ${unlocked ? '' : 'disabled'}>
                             ${unlocked ? (equipped ? 'Quitar' : 'Añadir') : 'Por reclutar'}
                         </button>
                     `}

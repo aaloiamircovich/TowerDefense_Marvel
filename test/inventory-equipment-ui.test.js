@@ -53,7 +53,7 @@ test('inventario muestra objetos equipados con el sprite del heroe dueño', () =
     assert.match(html, /Rare/);
     assert.match(html, /item-owner-corner/);
     assert.match(html, /aria-label="Elegir REACTOR ARC para equipar\. Rareza Rare\. 0 copias libres\. Equipado por Iron Man"/);
-    assert.match(html, /aria-label="Elegir heroe para REACTOR ARC"/);
+    assert.match(html, /aria-label="Elegir heroe para REACTOR ARC" title="Elegir heroe para REACTOR ARC" data-tooltip="Elegir heroe para REACTOR ARC"/);
     assert.match(html, /Equipado por Iron Man/);
     assert.match(html, /item-effect-pills/);
     assert.match(html, /Cadencia[\s\S]*\+18%/);
@@ -124,16 +124,19 @@ test('inventario permite limpiar filtros de objeto en un click', () => {
 test('coleccion muestra el objeto equipado y permite elegir heroe destino', () => {
     const ui = createUiStub();
     const panel = new TeamBuilderPanel(ui);
+    const pendingBannerHtml = panel.renderPendingItemBanner(data.items.reactor_arc);
+    assert.match(pendingBannerHtml, /id="cancel-pending-item" class="btn-primary ghost" type="button" aria-label="Cancelar equipamiento" title="Cancelar equipamiento" data-tooltip="Cancelar equipamiento"/);
+    assert.match(pendingBannerHtml, /id="back-to-inventory" class="btn-primary ghost" type="button" aria-label="Volver al inventario" title="Volver al inventario" data-tooltip="Volver al inventario"/);
 
     const ironManHtml = panel.renderHeroCard(data.heroes.iron_man, true);
     assert.match(ironManHtml, /role="listitem" aria-label="Iron Man\. Rareza [^\.]+\. desbloqueado\."/);
     assert.match(ironManHtml, /hero-item-corner/);
-    assert.match(ironManHtml, /type="button" data-id="iron_man" aria-label="REACTOR ARC ya esta equipado en Iron Man" aria-disabled="true" disabled/);
+    assert.match(ironManHtml, /type="button" data-id="iron_man" aria-label="REACTOR ARC ya esta equipado en Iron Man" title="REACTOR ARC ya esta equipado en Iron Man" data-tooltip="REACTOR ARC ya esta equipado en Iron Man" aria-disabled="true" disabled/);
     assert.match(ironManHtml, /Ya equipado/);
 
     const spiderManHtml = panel.renderHeroCard(data.heroes.spiderman, true);
     assert.match(spiderManHtml, /btn-assign-item/);
-    assert.match(spiderManHtml, /type="button" data-id="spiderman" aria-label="Equipar Spider-Man con REACTOR ARC" aria-disabled="false"/);
+    assert.match(spiderManHtml, /type="button" data-id="spiderman" aria-label="Equipar Spider-Man con REACTOR ARC" title="Equipar Spider-Man con REACTOR ARC" data-tooltip="Equipar Spider-Man con REACTOR ARC" aria-disabled="false"/);
     assert.match(spiderManHtml, /Equipar/);
 });
 
@@ -146,12 +149,12 @@ test('coleccion anuncia estado y accion principal al armar equipo', () => {
 
     const activeHtml = panel.renderHeroCard(data.heroes.spiderman, true);
     assert.match(activeHtml, /role="listitem" aria-label="Spider-Man\. Rareza [^\.]+\. en equipo activo\."/);
-    assert.match(activeHtml, /class="btn-equip btn-primary danger" type="button" data-id="spiderman" aria-label="Quitar Spider-Man del equipo" aria-pressed="true" aria-disabled="false"/);
+    assert.match(activeHtml, /class="btn-equip btn-primary danger" type="button" data-id="spiderman" aria-label="Quitar Spider-Man del equipo" title="Quitar Spider-Man del equipo" data-tooltip="Quitar Spider-Man del equipo" aria-pressed="true" aria-disabled="false"/);
     assert.match(activeHtml, /data-tooltip="Ver ficha"/);
 
     const lockedHtml = panel.renderHeroCard(data.heroes.thor, false);
     assert.match(lockedHtml, /role="listitem" aria-label="Thor\. Rareza [^\.]+\. bloqueado\."/);
-    assert.match(lockedHtml, /aria-label="Thor bloqueado, pendiente de reclutar" aria-pressed="false" aria-disabled="true" disabled/);
+    assert.match(lockedHtml, /aria-label="Thor bloqueado, pendiente de reclutar" title="Thor bloqueado, pendiente de reclutar" data-tooltip="Thor bloqueado, pendiente de reclutar" aria-pressed="false" aria-disabled="true" disabled/);
 });
 test('previsualizacion de objeto compara mejoras y perdidas numericas', () => {
     const rows = buildItemEquipDeltaRows(data.items.lentes_edith, data.items.reactor_arc);
