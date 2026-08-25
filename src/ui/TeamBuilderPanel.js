@@ -1,4 +1,4 @@
-import { formatEffectSummary, getSynergyMenuModel } from '../systems/TeamSynergySystem.js';
+import { formatEffectSummary, getNextSynergyRecommendation, getSynergyMenuModel } from '../systems/TeamSynergySystem.js';
 import { EVOLUTION_CATALOG } from '../systems/EvolutionSystem.js';
 import { buildVillainCodexModel } from '../systems/VillainCodexSystem.js';
 import { HERO_RARITIES, getRarityClass, normalizeRarity } from '../utils/Rarity.js';
@@ -189,6 +189,7 @@ export class TeamBuilderPanel {
         const ownedCount = readyHeroes.filter((hero) => unlockedIds.has(hero.id)).length;
         const activeSynergyCount = snapshot.families.filter((family) => family.activeTier).length
             + snapshot.pairs.filter((pair) => pair.active).length;
+        const recommendation = getNextSynergyRecommendation(snapshot, readyHeroes, unlockedIds);
         const pendingItem = this.getPendingInventoryItem();
         const filterLabels = this.getActiveFilterLabels();
         const modeText = pendingItem
@@ -210,7 +211,31 @@ export class TeamBuilderPanel {
                     <span><i class="fas fa-people-group"></i><small>Agrup.</small><b>${activeSynergyCount} activas</b></span>
                     <span><i class="fas fa-filter"></i><small>Filtros</small><b>${Math.max(0, filterLabels.length - (filterLabels[0] === 'Sin filtros' ? 1 : 0))}</b></span>
                 </div>
+                ${recommendation ? this.renderSynergyRecommendation(recommendation) : ''}
             </section>
+        `;
+    }
+
+    renderSynergyRecommendation(recommendation) {
+        const actionLabel = recommendation.unlocked
+            ? `Añadir ${recommendation.heroName} para ${recommendation.groupLabel}`
+            : `${recommendation.heroName} falta por reclutar para ${recommendation.groupLabel}`;
+        const afterLabel = recommendation.neededAfter === 0
+            ? 'bonus listo'
+            : `${recommendation.neededAfter} faltan luego`;
+        return `
+            <div class="collection-synergy-recommendation ${recommendation.rarityClass}" style="--synergy-color:${recommendation.color || 'var(--level-accent)'}" aria-label="Recomendacion de agrupacion: ${this.escapeAttribute(actionLabel)}">
+                <i class="fas fa-people-arrows"></i>
+                <div>
+                    <span>${this.escapeHtml(recommendation.action)} · ${this.escapeHtml(recommendation.progressLabel)}</span>
+                    <strong>${this.escapeHtml(recommendation.heroName)} → ${this.escapeHtml(recommendation.groupLabel)}</strong>
+                    <small>${this.escapeHtml(recommendation.effectLabel || afterLabel)} · ${this.escapeHtml(afterLabel)}</small>
+                </div>
+                <b class="rarity-badge ${recommendation.rarityClass}">${this.escapeHtml(recommendation.rarity)}</b>
+                <button class="btn-primary ghost synergy-recommendation-action ${recommendation.unlocked ? 'btn-equip' : ''}" type="button" data-id="${this.escapeAttribute(recommendation.heroId)}" aria-label="${this.escapeAttribute(actionLabel)}" title="${this.escapeAttribute(actionLabel)}" data-tooltip="${this.escapeAttribute(actionLabel)}" aria-disabled="${!recommendation.unlocked}" ${recommendation.unlocked ? '' : 'disabled'}>
+                    ${recommendation.unlocked ? 'Añadir' : 'Por reclutar'}
+                </button>
+            </div>
         `;
     }
 

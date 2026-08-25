@@ -396,6 +396,27 @@ test('coleccion resume equipo filtros y agrupaciones en cabecera compacta', () =
     assert.match(html, /Orden: Rareza alta/);
 });
 
+test('coleccion recomienda el siguiente heroe para completar agrupacion', () => {
+    const ui = createUiStub();
+    ui.inventoryPanel.pendingEquipItemId = null;
+    ui.game.activeTeam = [data.heroes.iron_man];
+    const panel = new TeamBuilderPanel(ui);
+    const readyHeroes = [data.heroes.iron_man, data.heroes.capitan_america, data.heroes.thor];
+    const unlockedIds = new Set(['iron_man', 'capitan_america', 'thor']);
+    const html = panel.renderCollectionCommandHeader({
+        readyHeroes,
+        filteredHeroes: readyHeroes,
+        unlockedIds,
+        snapshot: analyzeTeam(ui.game.activeTeam)
+    });
+
+    assert.match(html, /collection-synergy-recommendation/);
+    assert.match(html, /Capitán América|Capitan America/);
+    assert.match(html, /Ciencia y escudo/);
+    assert.match(html, /class="btn-primary ghost synergy-recommendation-action btn-equip"/);
+    assert.match(html, /Añadir/);
+});
+
 test('agrupaciones minimizadas muestran resumen compacto de bonus cercanos', () => {
     const ui = createUiStub();
     const panel = new TeamBuilderPanel(ui);

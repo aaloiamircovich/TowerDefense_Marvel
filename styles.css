@@ -4993,6 +4993,70 @@ body.panel-open {
     font-size: 12px;
 }
 
+.collection-synergy-recommendation {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: 34px minmax(0, 1fr) auto auto;
+    align-items: center;
+    gap: 9px;
+    min-width: 0;
+    padding: 8px 9px;
+    border: 1px solid color-mix(in srgb, var(--synergy-color, var(--level-accent)), transparent 52%);
+    border-radius: 7px;
+    background:
+        linear-gradient(135deg, color-mix(in srgb, var(--synergy-color, var(--level-accent)), transparent 84%), transparent 66%),
+        rgba(3, 7, 12, 0.68);
+}
+
+.collection-synergy-recommendation > i {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border: 1px solid color-mix(in srgb, var(--synergy-color, var(--level-accent)), transparent 42%);
+    border-radius: 7px;
+    color: color-mix(in srgb, var(--synergy-color, var(--level-accent)), white 22%);
+    background: rgba(0, 0, 0, 0.24);
+}
+
+.collection-synergy-recommendation > div {
+    display: grid;
+    gap: 2px;
+    min-width: 0;
+}
+
+.collection-synergy-recommendation span,
+.collection-synergy-recommendation small,
+.collection-synergy-recommendation strong {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.collection-synergy-recommendation span {
+    color: color-mix(in srgb, var(--synergy-color, var(--level-accent)), white 20%);
+    font-size: 9px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.collection-synergy-recommendation strong {
+    color: #ffffff;
+    font-size: 13px;
+}
+
+.collection-synergy-recommendation small {
+    color: var(--muted);
+    font-size: 10px;
+}
+
+.collection-synergy-recommendation .synergy-recommendation-action {
+    min-height: 32px;
+    padding: 0 10px;
+    white-space: nowrap;
+}
+
 .collection-view-tab {
     display: inline-flex;
     align-items: center;

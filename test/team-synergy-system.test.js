@@ -5,6 +5,7 @@ import {
     TeamSynergySystem,
     analyzeTeam,
     getHeroTeamEffects,
+    getNextSynergyRecommendation,
     getSynergyMenuModel
 } from '../src/systems/TeamSynergySystem.js';
 import { HERO_RARITIES } from '../src/utils/Rarity.js';
@@ -106,6 +107,38 @@ test('menu de agrupaciones expone catalogo amplio con progreso', () => {
     assert.match(wakanda.effectLabel, /dano|poder|critico/);
     assert.deepEqual(wakanda.memberNames, ['black_panther', 'shuri', 'okoye'].map((id) => team.find((entry) => entry.id === id).name || id));
     assert.deepEqual(wakanda.missingNames, []);
+});
+
+test('recomendacion de agrupacion prioriza duo casi completo', () => {
+    const roster = [
+        { ...hero('iron_man', ['Avengers', 'Tecnología']), name: 'Iron Man', rarity: 'Rare' },
+        { ...hero('capitan_america', ['Avengers']), name: 'Capitán América', rarity: 'Rare' },
+        { ...hero('thor', ['Avengers', 'Asgardianos']), name: 'Thor', rarity: 'Legendary' }
+    ];
+    const snapshot = analyzeTeam([roster[0]]);
+    const recommendation = getNextSynergyRecommendation(snapshot, roster, new Set(roster.map((entry) => entry.id)));
+
+    assert.equal(recommendation.type, 'pair');
+    assert.equal(recommendation.heroId, 'capitan_america');
+    assert.equal(recommendation.groupLabel, 'Ciencia y escudo');
+    assert.equal(recommendation.neededAfter, 0);
+    assert.equal(recommendation.statusLabel, 'Disponible');
+});
+
+test('recomendacion de agrupacion acerca familias con espacio libre', () => {
+    const roster = [
+        { ...hero('iron_man', ['Avengers', 'Tecnología']), name: 'Iron Man', rarity: 'Rare' },
+        { ...hero('capitan_america', ['Avengers']), name: 'Capitán América', rarity: 'Rare' },
+        { ...hero('thor', ['Avengers', 'Asgardianos']), name: 'Thor', rarity: 'Legendary' }
+    ];
+    const snapshot = analyzeTeam([roster[0], roster[1]]);
+    const recommendation = getNextSynergyRecommendation(snapshot, roster, new Set(roster.map((entry) => entry.id)));
+
+    assert.equal(recommendation.type, 'family');
+    assert.equal(recommendation.heroId, 'thor');
+    assert.equal(recommendation.groupLabel, 'Avengers');
+    assert.equal(recommendation.neededAfter, 0);
+    assert.match(recommendation.effectLabel, /dano|cadencia/);
 });
 
 test('agrupaciones tienen rareza valida y requisitos variables', () => {

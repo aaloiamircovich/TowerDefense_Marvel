@@ -1,4 +1,4 @@
-import { getRarityClass, normalizeRarity } from '../utils/Rarity.js';
+import { HERO_RARITIES, getRarityClass, normalizeRarity } from '../utils/Rarity.js';
 
 const LEGACY_SYNERGY_DEFINITIONS = {
     Avengers: family('Avengers', 'Epic', '#e63946', 'Ataque coordinado para equipos de primera linea.',
@@ -212,7 +212,7 @@ export function getHeroTeamEffects(hero, team) {
 
 export function getSynergyMenuModel(snapshot, roster = [], unlockedIds = new Set()) {
     const activeIds = new Set(snapshot?.ids || []);
-    return (snapshot?.families || []).map((familySnapshot) => {
+    return (snapshot?.families || []).filter((familySnapshot) => familySnapshot?.definition?.tiers?.length).map((familySnapshot) => {
         const members = roster.filter((hero) => hero.tags?.includes(familySnapshot.tag));
         const selected = members.filter((hero) => activeIds.has(hero.id));
         const unlocked = members.filter((hero) => unlockedIds.has(hero.id));
@@ -244,6 +244,80 @@ export function getSynergyMenuModel(snapshot, roster = [], unlockedIds = new Set
         const stateScore = { active: 0, near: 1, locked: 2 };
         return stateScore[a.state] - stateScore[b.state] || b.count - a.count || a.label.localeCompare(b.label);
     });
+}
+
+export function getNextSynergyRecommendation(snapshot, roster = [], unlockedIds = new Set()) {
+    const activeIds = new Set(snapshot?.ids || []);
+    if ((snapshot?.size || activeIds.size) >= 6) return null;
+    const candidates = [];
+    const rankHero = (hero, unlocked = false) => {
+        const rarityRank = HERO_RARITIES.indexOf(normalizeRarity(hero?.rarity));
+        return (unlocked ? 24 : -12) + Math.max(0, rarityRank) * 4 + (hero?.teamMetrics?.damage || 0) + (hero?.teamMetrics?.support || 0);
+    };
+    const pushCandidate = (candidate) => {
+        if (!candidate?.hero || activeIds.has(candidate.hero.id)) return;
+        candidates.push(candidate);
+    };
+
+    (snapshot?.pairs || []).forEach((pairSnapshot) => {
+        const pairHeroIds = Array.isArray(pairSnapshot.heroIds) ? pairSnapshot.heroIds : [];
+        if (pairSnapshot.active || pairHeroIds.length !== 2) return;
+        const presentIds = pairHeroIds.filter((id) => activeIds.has(id));
+        const missingIds = pairHeroIds.filter((id) => !activeIds.has(id));
+        if (presentIds.length !== 1 || missingIds.length !== 1) return;
+        const hero = roster.find((entry) => entry.id === missingIds[0]);
+        if (!hero) return;
+        const unlocked = unlockedIds.has(hero.id);
+        pushCandidate({
+            type: 'pair',
+            hero,
+            groupLabel: pairSnapshot.label,
+            action: 'Completa duo',
+            progressLabel: '1/2',
+            neededAfter: 0,
+            effectLabel: formatEffectSummary(pairSnapshot.effects),
+            unlocked,
+            score: 1200 + rankHero(hero, unlocked)
+        });
+    });
+
+    getSynergyMenuModel(snapshot, roster, unlockedIds).forEach((group) => {
+        if (!group.nextTier || group.needed <= 0 || group.count <= 0) return;
+        const missingHeroes = roster
+            .filter((hero) => hero.tags?.includes(group.tag) && !activeIds.has(hero.id))
+            .sort((a, b) => Number(unlockedIds.has(b.id)) - Number(unlockedIds.has(a.id))
+                || HERO_RARITIES.indexOf(normalizeRarity(b.rarity)) - HERO_RARITIES.indexOf(normalizeRarity(a.rarity))
+                || a.name.localeCompare(b.name));
+        const hero = missingHeroes[0];
+        if (!hero) return;
+        const unlocked = unlockedIds.has(hero.id);
+        pushCandidate({
+            type: 'family',
+            hero,
+            groupLabel: group.label,
+            action: group.needed === 1 ? 'Completa agrupacion' : 'Acerca agrupacion',
+            progressLabel: group.progressLabel,
+            neededAfter: Math.max(0, group.needed - 1),
+            effectLabel: group.effectLabel,
+            rarity: group.rarity,
+            rarityClass: group.rarityClass,
+            unlocked,
+            score: (group.needed === 1 ? 1000 : 740) + group.count * 26 + rankHero(hero, unlocked)
+        });
+    });
+
+    const best = candidates.sort((a, b) => b.score - a.score || a.hero.name.localeCompare(b.hero.name))[0];
+    if (!best) return null;
+    const rarity = normalizeRarity(best.rarity || best.hero.rarity);
+    return {
+        ...best,
+        heroId: best.hero.id,
+        heroName: best.hero.name,
+        heroRarity: normalizeRarity(best.hero.rarity),
+        rarity,
+        rarityClass: best.rarityClass || getRarityClass(rarity),
+        statusLabel: best.unlocked ? 'Disponible' : 'Por reclutar'
+    };
 }
 
 export function formatEffectSummary(effects = {}) {
