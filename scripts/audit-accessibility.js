@@ -14,6 +14,7 @@ if (!/aria-live="polite"/i.test(html)) errors.push('Falta una region de anuncios
 if (!/role="dialog"[^>]+aria-modal="true"/i.test(html)) errors.push('El panel principal debe ser modal accesible');
 if (!/\.high-contrast\b/.test(css)) errors.push('Falta modo de alto contraste');
 if (!/\.reduce-motion\b/.test(css)) errors.push('Falta preferencia de movimiento reducido');
+if (!/body\[data-app-state="loading"\]\s*#game-ui/i.test(html)) errors.push('Falta estilo critico para ocultar UI durante la carga inicial');
 
 [
     'start-play-btn',
