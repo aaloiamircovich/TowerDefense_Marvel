@@ -5283,6 +5283,47 @@ body.panel-open {
     white-space: nowrap;
 }
 
+.allegiance-quick-summary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 6px;
+}
+
+.allegiance-quick-summary span {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 0;
+    padding: 4px 6px;
+    border: 1px solid color-mix(in srgb, var(--rarity-color, var(--synergy-color, var(--level-accent))), transparent 50%);
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--rarity-color, var(--synergy-color, var(--level-accent))), transparent 88%);
+    color: var(--text);
+    font-size: 10px;
+    line-height: 1;
+}
+
+.allegiance-quick-summary span.near {
+    opacity: 0.78;
+}
+
+.allegiance-quick-summary b {
+    color: var(--text);
+}
+
+.allegiance-quick-summary small {
+    color: var(--muted);
+    font-size: 9px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.allegiance-quick-summary.muted b {
+    color: var(--muted);
+    font-size: 10px;
+}
+
 .toggle-synergies {
     width: 32px;
     height: 32px;

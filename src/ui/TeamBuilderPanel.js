@@ -102,6 +102,7 @@ export class TeamBuilderPanel {
                     <div>
                         <h3>Agrupaciones</h3>
                         <span>${collapsed ? 'Minimizadas para ver heroes' : 'Vista completa de bonus'}</span>
+                        ${collapsed ? this.renderSynergySummaryPills(groups) : ''}
                     </div>
                     <strong>${activeCount}/${groups.length} activas</strong>
                     <button class="icon-command toggle-synergies" type="button" aria-expanded="${this.synergyExpanded}" aria-label="${this.synergyExpanded ? 'Minimizar agrupaciones' : 'Expandir agrupaciones'}" title="${this.synergyExpanded ? 'Minimizar agrupaciones' : 'Expandir agrupaciones'}">
@@ -112,6 +113,25 @@ export class TeamBuilderPanel {
                     ${groups.map((group) => this.renderSynergyGroup(group)).join('')}
                 </div>
             </section>
+        `;
+    }
+
+    renderSynergySummaryPills(groups = []) {
+        const highlights = groups
+            .filter((group) => group.state === 'active' || group.state === 'near')
+            .slice(0, 3);
+        if (!highlights.length) {
+            return '<div class="allegiance-quick-summary muted"><b>Sin bonus activo</b></div>';
+        }
+        return `
+            <div class="allegiance-quick-summary">
+                ${highlights.map((group) => `
+                    <span class="${group.rarityClass} ${group.state}" style="--synergy-color:${group.color}">
+                        <b>${this.escapeHtml(group.label)}</b>
+                        <small>${this.escapeHtml(group.progressLabel)} ${group.state === 'active' ? 'activo' : 'a 1'}</small>
+                    </span>
+                `).join('')}
+            </div>
         `;
     }
 

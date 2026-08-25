@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import { buildItemEffectPills, buildItemEquipDeltaRows, InventoryPanel } from '../src/ui/InventoryPanel.js';
 import { TeamBuilderPanel } from '../src/ui/TeamBuilderPanel.js';
 import { UIManager } from '../src/systems/UIManager.js';
+import { analyzeTeam } from '../src/systems/TeamSynergySystem.js';
 
 const data = {
     heroes: JSON.parse(fs.readFileSync(new URL('../data/heroes.json', import.meta.url), 'utf8')),
@@ -195,6 +196,23 @@ test('coleccion resume equipo filtros y agrupaciones en cabecera compacta', () =
     assert.match(html, /Rareza: Rare/);
     assert.match(html, /Solo obtenidos/);
     assert.match(html, /Orden: Rareza alta/);
+});
+
+test('agrupaciones minimizadas muestran resumen compacto de bonus cercanos', () => {
+    const ui = createUiStub();
+    const panel = new TeamBuilderPanel(ui);
+    const team = [data.heroes.iron_man, data.heroes.capitan_america, data.heroes.thor];
+    const html = panel.renderSynergyMenu(
+        analyzeTeam(team),
+        team,
+        new Set(team.map((hero) => hero.id))
+    );
+
+    assert.match(html, /allegiance-menu collapsed/);
+    assert.match(html, /allegiance-quick-summary/);
+    assert.match(html, /Avengers/);
+    assert.match(html, /activo/);
+    assert.match(html, /allegiance-grid" hidden/);
 });
 
 test('tienda de skins queda como panel independiente vacio', () => {
