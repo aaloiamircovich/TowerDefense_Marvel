@@ -762,13 +762,18 @@ test('UIManager marca el boton activo del panel abierto', () => {
         assert.equal(ui.activePanelType, 'shop');
         assert.equal(buttons[0].classes.has('active'), false);
         assert.equal(buttons[0].attributes['aria-current'], 'false');
+        assert.equal(buttons[0].attributes['aria-expanded'], 'false');
+        assert.equal(buttons[0].attributes['aria-controls'], 'panel-container');
         assert.equal(buttons[1].classes.has('active'), true);
         assert.equal(buttons[1].attributes['aria-current'], 'dialog');
+        assert.equal(buttons[1].attributes['aria-expanded'], 'true');
+        assert.equal(buttons[1].attributes['aria-controls'], 'panel-container');
 
         ui.setActiveHubButton(null);
 
         assert.equal(buttons[1].classes.has('active'), false);
         assert.equal(buttons[1].attributes['aria-current'], 'false');
+        assert.equal(buttons[1].attributes['aria-expanded'], 'false');
     } finally {
         globalThis.document = previousDocument;
     }

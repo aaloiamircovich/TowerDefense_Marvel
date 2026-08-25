@@ -1428,6 +1428,8 @@ export class UIManager {
             const active = Boolean(type && button.dataset.panel === type);
             button.classList.toggle('active', active);
             button.setAttribute('aria-current', active ? 'dialog' : 'false');
+            button.setAttribute('aria-expanded', String(active));
+            button.setAttribute('aria-controls', 'panel-container');
         });
     }
 
