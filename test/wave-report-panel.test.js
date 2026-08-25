@@ -51,6 +51,9 @@ test('WaveReportPanel renderiza informe y delega mejora recomendada', () => {
         assert.equal(container.attributes['aria-label'], 'Oleada asegurada. Sin fugas');
         assert.match(container.innerHTML, /Informe oleada 3/);
         assert.match(container.innerHTML, /wave-report-scoreline/);
+        assert.match(container.innerHTML, /<details class="wave-report-details">/);
+        assert.match(container.innerHTML, /Ver desglose/);
+        assert.match(container.innerHTML, /2 lecturas/);
         assert.match(container.innerHTML, /wave-reward-strip/);
         assert.match(container.innerHTML, /wave-report-advice/);
         assert.match(container.innerHTML, /metric-safe/);
@@ -88,6 +91,34 @@ test('WaveReportPanel desglosa ahorro cuando no alcanza para mejorar', () => {
 
     assert.match(html, /Faltan \$160/);
     assert.match(html, /Disponible \$80 \/ coste \$240/);
+});
+
+
+test('WaveReportPanel abre desglose cuando hubo fugas o aporte tactico', () => {
+    const panel = new WaveReportPanel({});
+    const leakHtml = panel.renderDetailDrawer({
+        ...buildReportState(),
+        leaks: 2,
+        leakIntel: {
+            label: 'Fugas detectadas',
+            items: [{ tone: 'boss', name: 'Ultron', detail: 'Cruzo la salida' }],
+            overflow: 0
+        }
+    });
+    const tacticalHtml = panel.renderDetailDrawer({
+        ...buildReportState(),
+        tacticalContribution: {
+            active: true,
+            score: 80,
+            metrics: [{ id: 'control', icon: 'fa-hand-paper', value: 5, suffix: 's', label: 'Control' }],
+            heroes: [{ name: 'Storm', detail: '5s control' }]
+        }
+    });
+
+    assert.match(leakHtml, /<details class="wave-report-details" open>/);
+    assert.match(leakHtml, /Ver fugas y recompensas/);
+    assert.match(tacticalHtml, /<details class="wave-report-details" open>/);
+    assert.match(tacticalHtml, /Ver aporte tactico/);
 });
 
 function createElementStub() {

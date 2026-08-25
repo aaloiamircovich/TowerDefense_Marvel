@@ -2372,6 +2372,77 @@ canvas {
     color: var(--bright-yellow);
 }
 
+.wave-report-details {
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--report-color), transparent 76%);
+    border-radius: 7px;
+    background: rgba(5, 7, 11, 0.28);
+}
+
+.wave-report-details[open] {
+    background:
+        linear-gradient(135deg, color-mix(in srgb, var(--report-color), transparent 92%), transparent 58%),
+        rgba(5, 7, 11, 0.38);
+}
+
+.wave-report-details summary {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    align-items: center;
+    gap: 8px;
+    min-height: 34px;
+    padding: 7px;
+    cursor: pointer;
+    list-style: none;
+    color: var(--text);
+    user-select: none;
+}
+
+.wave-report-details summary::-webkit-details-marker {
+    display: none;
+}
+
+.wave-report-details summary span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+    overflow: hidden;
+    color: var(--report-color);
+    font-size: 10px;
+    font-weight: 900;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.wave-report-details summary b {
+    color: var(--muted);
+    font-size: 9px;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.wave-report-details summary::after {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-right: 2px solid var(--report-color);
+    border-bottom: 2px solid var(--report-color);
+    transform: rotate(45deg);
+    transition: transform var(--transition-fast);
+}
+
+.wave-report-details[open] summary::after {
+    transform: translateY(2px) rotate(225deg);
+}
+
+.wave-report-detail-body {
+    display: grid;
+    gap: 7px;
+    padding: 0 7px 7px;
+}
+
 .wave-reward-strip {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(92px, 1fr));
@@ -10113,6 +10184,7 @@ canvas {
 .radar-section-body .wave-prep-plan,
 .radar-section-body .wave-report-rating,
 .radar-section-body .wave-report-mvp,
+.radar-section-body .wave-report-details,
 .radar-section-body .wave-report-lesson,
 .radar-section-body .wave-report-action,
 .radar-section-body .wave-report-advice,

@@ -82,13 +82,7 @@ export class WaveReportPanel {
                 ${this.renderMetric({ icon: 'fa-coins', label: 'Creditos', value: `$${state.credits}` })}
                 ${state.cleanBonus > 0 ? this.renderMetric({ icon: 'fa-shield-heart', label: 'Perfecta', value: `+$${state.cleanBonus}`, tone: 'reward' }) : ''}
             </div>
-            ${this.renderRewardBreakdown(state)}
-            ${this.renderTacticalContribution(state.tacticalContribution)}
-            <div class="wave-report-lesson lesson-${escapeHtml(state.lesson.tone)}" aria-label="${escapeHtml(state.lesson.label)}: ${escapeHtml(state.lesson.detail)}">
-                <strong>${escapeHtml(state.lesson.label)}</strong>
-                <span>${escapeHtml(state.lesson.detail)}</span>
-            </div>
-            ${this.renderLeakIntel(state.leakIntel)}
+            ${this.renderDetailDrawer(state)}
             <p class="wave-report-advice"><i class="fas fa-compass"></i><span>${escapeHtml(state.advice)}</span></p>
             ${this.renderAction(action)}
         `;
@@ -102,6 +96,38 @@ export class WaveReportPanel {
         </span>`;
     }
 
+    renderDetailDrawer(state) {
+        const sections = [
+            this.renderRewardBreakdown(state),
+            this.renderTacticalContribution(state.tacticalContribution),
+            this.renderLesson(state.lesson),
+            this.renderLeakIntel(state.leakIntel)
+        ].filter(Boolean);
+        if (!sections.length) return '';
+        const shouldOpen = state.leaks > 0 || state.tacticalContribution?.active;
+        const label = state.leaks > 0
+            ? 'Ver fugas y recompensas'
+            : state.tacticalContribution?.active
+                ? 'Ver aporte tactico'
+                : 'Ver desglose';
+        return `<details class="wave-report-details"${shouldOpen ? ' open' : ''}>
+            <summary>
+                <span><i class="fas fa-layer-group"></i>${escapeHtml(label)}</span>
+                <b>${sections.length} lecturas</b>
+            </summary>
+            <div class="wave-report-detail-body">
+                ${sections.join('')}
+            </div>
+        </details>`;
+    }
+
+    renderLesson(lesson) {
+        if (!lesson) return '';
+        return `<div class="wave-report-lesson lesson-${escapeHtml(lesson.tone)}" aria-label="${escapeHtml(lesson.label)}: ${escapeHtml(lesson.detail)}">
+            <strong>${escapeHtml(lesson.label)}</strong>
+            <span>${escapeHtml(lesson.detail)}</span>
+        </div>`;
+    }
     renderRewardBreakdown(state) {
         const credits = Math.max(0, Number(state.credits || 0));
         const bounty = Math.max(0, Number(state.bounty || 0));
