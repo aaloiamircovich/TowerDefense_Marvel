@@ -26,7 +26,7 @@ test('ShopPanel renderiza tienda progresiva y delega compra de objetos', () => {
     assert.match(panelContent.innerHTML, /shop-grid--compact/);
     assert.match(panelContent.innerHTML, /RECLUTAR POR \$500/);
     assert.match(panelContent.innerHTML, /id="gacha-btn" type="button" data-affordability="ready"/);
-    assert.match(panelContent.innerHTML, /aria-label="Reclutar heroe aleatorio por 500 creditos" aria-disabled="false"/);
+    assert.match(panelContent.innerHTML, /aria-label="Reclutar heroe aleatorio por 500 creditos" title="Reclutar heroe aleatorio por 500 creditos" data-tooltip="Reclutar heroe aleatorio por 500 creditos" aria-disabled="false"/);
     assert.match(panelContent.innerHTML, /shop-reveal-dock" role="status" aria-live="polite"/);
     assert.match(panelContent.innerHTML, /data-affordability="ready"/);
     assert.match(panelContent.innerHTML, /Lentes E.D.I.T.H./);
@@ -34,7 +34,7 @@ test('ShopPanel renderiza tienda progresiva y delega compra de objetos', () => {
     assert.match(panelContent.innerHTML, /Detecta sigilo[\s\S]*activo/);
     assert.match(panelContent.innerHTML, /Buena respuesta/);
     assert.match(panelContent.innerHTML, /class="btn-buy-item btn-primary ghost" type="button" data-id="lentes_edith"/);
-    assert.match(panelContent.innerHTML, /aria-label="Comprar Lentes E\.D\.I\.T\.H\. por 500 creditos" aria-disabled="false"/);
+    assert.match(panelContent.innerHTML, /aria-label="Comprar Lentes E\.D\.I\.T\.H\. por 500 creditos" title="Comprar Lentes E\.D\.I\.T\.H\. por 500 creditos" data-tooltip="Comprar Lentes E\.D\.I\.T\.H\. por 500 creditos" aria-disabled="false"/);
 
     buyButton.listeners.click();
 
@@ -54,11 +54,11 @@ test('ShopPanel muestra creditos faltantes sin esperar al error de compra', () =
     panel.render('Tienda');
 
     assert.match(panelContent.innerHTML, /FALTAN \$400/);
-    assert.match(panelContent.innerHTML, /aria-label="No alcanza para reclutar\. Faltan 400 creditos" aria-disabled="true" disabled/);
+    assert.match(panelContent.innerHTML, /aria-label="No alcanza para reclutar\. Faltan 400 creditos" title="No alcanza para reclutar\. Faltan 400 creditos" data-tooltip="No alcanza para reclutar\. Faltan 400 creditos" aria-disabled="true" disabled/);
     assert.match(panelContent.innerHTML, /Faltan \$400/);
     assert.match(panelContent.innerHTML, /data-affordability="locked"/);
     assert.match(panelContent.innerHTML, /BLOQUEADO/);
-    assert.match(panelContent.innerHTML, /aria-label="No alcanza para comprar Lentes E\.D\.I\.T\.H\.\. Faltan 400 creditos" aria-disabled="true" disabled/);
+    assert.match(panelContent.innerHTML, /aria-label="No alcanza para comprar Lentes E\.D\.I\.T\.H\.\. Faltan 400 creditos" title="No alcanza para comprar Lentes E\.D\.I\.T\.H\.\. Faltan 400 creditos" data-tooltip="No alcanza para comprar Lentes E\.D\.I\.T\.H\.\. Faltan 400 creditos" aria-disabled="true" disabled/);
 });
 
 test('ShopPanel recluta heroe, actualiza costo y permite tienda de skins vacia', () => {
@@ -102,7 +102,7 @@ test('ShopPanel recluta heroe, actualiza costo y permite tienda de skins vacia',
 
     assert.match(resultNode.innerHTML, /gacha-reveal/);
     assert.match(resultNode.innerHTML, /Spider-Man/);
-    assert.match(resultNode.innerHTML, /aria-label="Saltear animacion de reclutamiento"/);
+    assert.match(resultNode.innerHTML, /aria-label="Saltear animacion de reclutamiento" title="Saltear animacion de reclutamiento" data-tooltip="Saltear animacion de reclutamiento"/);
     assert.equal(fundsLabel.textContent, '$1200 creditos');
     assert.equal(creditsReadout.textContent, '$1200');
     assert.equal(boxReadout.textContent, 'Completa');
@@ -111,6 +111,10 @@ test('ShopPanel recluta heroe, actualiza costo y permite tienda de skins vacia',
     assert.match(pityTrack.innerHTML, /1\/4/);
     assert.equal(gachaButton.disabled, true);
     assert.equal(gachaButton.textContent, 'PLANTILLA COMPLETA');
+    assert.equal(gachaButton.dataset.affordability, 'locked');
+    assert.equal(gachaButton.attributes['aria-label'], 'Plantilla completa');
+    assert.equal(gachaButton.attributes.title, 'Plantilla completa');
+    assert.equal(gachaButton.attributes['data-tooltip'], 'Plantilla completa');
     assert.ok(calls.includes('roster:0'));
 
     panel.renderSkinShop('Skins');
@@ -215,8 +219,12 @@ function createButtonStub(dataset) {
         disabled: false,
         textContent: '',
         listeners: {},
+        attributes: {},
         addEventListener(event, handler) {
             this.listeners[event] = handler;
+        },
+        setAttribute(name, value) {
+            this.attributes[name] = value;
         }
     };
 }

@@ -62,7 +62,7 @@ export class ShopPanel {
                     <small>La quinta apertura común garantiza Rare o superior.</small>
                 </div>
                 <div class="pity-track compact"><span>Garantía</span><b>${pityValue}/4</b></div>
-                <button class="btn-primary" id="gacha-btn" type="button" data-affordability="${canRecruit ? 'ready' : 'locked'}" aria-label="${recruitAriaLabel}" aria-disabled="${!canRecruit}" ${canRecruit ? '' : 'disabled'}>${recruitButtonText}</button>
+                <button class="btn-primary" id="gacha-btn" type="button" data-affordability="${canRecruit ? 'ready' : 'locked'}" aria-label="${escapeHtml(recruitAriaLabel)}" title="${escapeHtml(recruitAriaLabel)}" data-tooltip="${escapeHtml(recruitAriaLabel)}" aria-disabled="${!canRecruit}" ${canRecruit ? '' : 'disabled'}>${recruitButtonText}</button>
             </section>
             <div id="gacha-res" class="result-copy shop-reveal-dock" role="status" aria-live="polite"></div>
             <section class="shop-section-heading">
@@ -128,7 +128,7 @@ export class ShopPanel {
                 </div>` : ''}
                 <div class="shop-card-footer">
                     <small>${purchased ? 'Adquirido' : canBuy ? `Copias: ${owned}` : `Faltan $${missing}`}</small>
-                    <button class="btn-buy-item btn-primary ghost" type="button" data-id="${item.id}" aria-label="${escapeHtml(buyAriaLabel)}" aria-disabled="${purchased || !canBuy}" ${purchased || !canBuy ? 'disabled' : ''}>${purchased ? 'ADQUIRIDO' : canBuy ? `$${price}` : 'BLOQUEADO'}</button>
+                    <button class="btn-buy-item btn-primary ghost" type="button" data-id="${item.id}" aria-label="${escapeHtml(buyAriaLabel)}" title="${escapeHtml(buyAriaLabel)}" data-tooltip="${escapeHtml(buyAriaLabel)}" aria-disabled="${purchased || !canBuy}" ${purchased || !canBuy ? 'disabled' : ''}>${purchased ? 'ADQUIRIDO' : canBuy ? `$${price}` : 'BLOQUEADO'}</button>
                 </div>
             </div>
         `;
@@ -186,7 +186,7 @@ export class ShopPanel {
                     <i class="fas fa-box-open"></i>
                     <span>Caja de reclutamiento</span>
                 </div>
-                <button class="gacha-skip-btn btn-primary ghost" type="button" aria-label="Saltear animacion de reclutamiento"><i class="fas fa-forward"></i> Saltear</button>
+                <button class="gacha-skip-btn btn-primary ghost" type="button" aria-label="Saltear animacion de reclutamiento" title="Saltear animacion de reclutamiento" data-tooltip="Saltear animacion de reclutamiento"><i class="fas fa-forward"></i> Saltear</button>
                 <div class="gacha-roller" aria-hidden="true">
                     <div class="gacha-roll-sprite">${this.ui.renderSprite(this.ui.getHeroDisplaySprite(firstPreview), firstPreview.name)}</div>
                 </div>
@@ -295,9 +295,27 @@ export class ShopPanel {
                 .filter((hero) => hero.visual)
                 .filter((hero) => !this.ui.game.progression.state.unlockedHeroIds.includes(hero.id));
             if (button) {
-                button.disabled = nextPool.length === 0;
                 const nextCost = getHeroBoxCost(this.ui.game.progression.state.shop);
-                button.textContent = nextPool.length === 0 ? 'PLANTILLA COMPLETA' : `RECLUTAR POR $${nextCost}`;
+                const adminMode = Boolean(this.ui.game.progression.state.settings.adminMode);
+                const credits = this.ui.game.progression.getCredits();
+                const canRecruit = nextPool.length > 0 && (adminMode || credits >= nextCost);
+                const missing = Math.max(0, nextCost - credits);
+                const buttonLabel = nextPool.length === 0
+                    ? 'Plantilla completa'
+                    : canRecruit
+                        ? `Reclutar heroe aleatorio por ${nextCost} creditos`
+                        : `No alcanza para reclutar. Faltan ${missing} creditos`;
+                button.disabled = !canRecruit;
+                button.textContent = nextPool.length === 0
+                    ? 'PLANTILLA COMPLETA'
+                    : canRecruit
+                        ? `RECLUTAR POR $${nextCost}`
+                        : `FALTAN $${missing}`;
+                button.dataset.affordability = canRecruit ? 'ready' : 'locked';
+                button.setAttribute?.('aria-label', buttonLabel);
+                button.setAttribute?.('title', buttonLabel);
+                button.setAttribute?.('data-tooltip', buttonLabel);
+                button.setAttribute?.('aria-disabled', String(!canRecruit));
                 const boxReadout = this.ui.panelContent.querySelector('[data-shop-readout="box-cost"]');
                 if (boxReadout) boxReadout.textContent = nextPool.length === 0 ? 'Completa' : `$${nextCost}`;
             }
