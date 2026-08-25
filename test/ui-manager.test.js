@@ -780,6 +780,34 @@ test('UIManager cierra panel clickeando solo el fondo modal', () => {
     }
 });
 
+test('UIManager alterna el boton activo del hub para cerrar paneles', () => {
+    const previousDocument = globalThis.document;
+    const closeButton = { classList: { contains: () => false } };
+    globalThis.document = {
+        getElementById(id) {
+            return id === 'close-panel-btn' ? closeButton : null;
+        }
+    };
+    const calls = [];
+    const ui = Object.create(UIManager.prototype);
+    ui.activePanelType = 'shop';
+    ui.overlay = { classList: { contains: () => false } };
+    ui.closePanel = () => calls.push('close');
+    ui.openPanel = (type) => calls.push(`open:${type}`);
+
+    try {
+        ui.handleHubButtonClick('shop');
+        ui.handleHubButtonClick('collection');
+
+        closeButton.classList.contains = () => true;
+        ui.handleHubButtonClick('shop');
+
+        assert.deepEqual(calls, ['close', 'open:collection', 'open:shop']);
+    } finally {
+        globalThis.document = previousDocument;
+    }
+});
+
 test('buildWaveReportState resume una oleada limpia con consejo de ahorro', () => {
     const report = buildWaveReportState({
         wave: 4,

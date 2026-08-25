@@ -1345,7 +1345,7 @@ export class UIManager {
 
     initListeners() {
         document.querySelectorAll('.hub-btn').forEach((button) => {
-            button.addEventListener('click', () => this.openPanel(button.dataset.panel));
+            button.addEventListener('click', () => this.handleHubButtonClick(button.dataset.panel));
         });
 
         document.getElementById('close-panel-btn')?.addEventListener('click', () => this.closePanel());
@@ -1390,6 +1390,16 @@ export class UIManager {
         window.addEventListener('pointerdown', () => this.game.audio?.unlock(), { once: true });
         window.addEventListener('keydown', () => this.game.audio?.unlock(), { once: true });
         window.addEventListener('keydown', (event) => this.handleDialogKeydown(event));
+    }
+
+    handleHubButtonClick(type) {
+        const closeButtonHidden = document.getElementById('close-panel-btn')?.classList.contains('hidden');
+        const panelOpen = !this.overlay?.classList.contains('hidden');
+        if (type && this.activePanelType === type && panelOpen && !closeButtonHidden) {
+            this.closePanel();
+            return;
+        }
+        this.openPanel(type);
     }
 
     openPanel(type) {
