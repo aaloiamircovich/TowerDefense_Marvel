@@ -25,11 +25,14 @@ test('ShopPanel renderiza tienda progresiva y delega compra de objetos', () => {
     assert.match(panelContent.innerHTML, /shop-recruit-strip/);
     assert.match(panelContent.innerHTML, /shop-grid--compact/);
     assert.match(panelContent.innerHTML, /RECLUTAR POR \$500/);
+    assert.match(panelContent.innerHTML, /aria-label="Reclutar heroe aleatorio por 500 creditos" aria-disabled="false"/);
+    assert.match(panelContent.innerHTML, /shop-reveal-dock" role="status" aria-live="polite"/);
     assert.match(panelContent.innerHTML, /data-affordability="ready"/);
     assert.match(panelContent.innerHTML, /Lentes E.D.I.T.H./);
     assert.match(panelContent.innerHTML, /shop-effect-pills/);
     assert.match(panelContent.innerHTML, /Detecta sigilo[\s\S]*activo/);
     assert.match(panelContent.innerHTML, /Buena respuesta/);
+    assert.match(panelContent.innerHTML, /aria-label="Comprar Lentes E\.D\.I\.T\.H\. por 500 creditos" aria-disabled="false"/);
 
     buyButton.listeners.click();
 
@@ -49,9 +52,11 @@ test('ShopPanel muestra creditos faltantes sin esperar al error de compra', () =
     panel.render('Tienda');
 
     assert.match(panelContent.innerHTML, /FALTAN \$400/);
+    assert.match(panelContent.innerHTML, /aria-label="No alcanza para reclutar\. Faltan 400 creditos" aria-disabled="true" disabled/);
     assert.match(panelContent.innerHTML, /Faltan \$400/);
     assert.match(panelContent.innerHTML, /data-affordability="locked"/);
     assert.match(panelContent.innerHTML, /BLOQUEADO/);
+    assert.match(panelContent.innerHTML, /aria-label="No alcanza para comprar Lentes E\.D\.I\.T\.H\.\. Faltan 400 creditos" aria-disabled="true" disabled/);
 });
 
 test('ShopPanel recluta heroe, actualiza costo y permite tienda de skins vacia', () => {
@@ -95,6 +100,7 @@ test('ShopPanel recluta heroe, actualiza costo y permite tienda de skins vacia',
 
     assert.match(resultNode.innerHTML, /gacha-reveal/);
     assert.match(resultNode.innerHTML, /Spider-Man/);
+    assert.match(resultNode.innerHTML, /aria-label="Saltear animacion de reclutamiento"/);
     assert.equal(fundsLabel.textContent, '$1200 creditos');
     assert.equal(creditsReadout.textContent, '$1200');
     assert.equal(boxReadout.textContent, 'Completa');

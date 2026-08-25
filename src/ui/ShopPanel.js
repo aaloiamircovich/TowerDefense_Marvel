@@ -38,6 +38,11 @@ export class ShopPanel {
             : canRecruit
                 ? `RECLUTAR POR $${recruitCost}`
                 : `FALTAN $${recruitMissing}`;
+        const recruitAriaLabel = recruitPool.length === 0
+            ? 'Plantilla completa'
+            : canRecruit
+                ? `Reclutar heroe aleatorio por ${recruitCost} creditos`
+                : `No alcanza para reclutar. Faltan ${recruitMissing} creditos`;
 
         this.ui.panelContent.innerHTML = `
             <section class="shop-command-header">
@@ -57,9 +62,9 @@ export class ShopPanel {
                     <small>La quinta apertura común garantiza Rare o superior.</small>
                 </div>
                 <div class="pity-track compact"><span>Garantía</span><b>${pityValue}/4</b></div>
-                <button class="btn-primary" id="gacha-btn" data-affordability="${canRecruit ? 'ready' : 'locked'}" ${canRecruit ? '' : 'disabled'}>${recruitButtonText}</button>
+                <button class="btn-primary" id="gacha-btn" data-affordability="${canRecruit ? 'ready' : 'locked'}" aria-label="${recruitAriaLabel}" aria-disabled="${!canRecruit}" ${canRecruit ? '' : 'disabled'}>${recruitButtonText}</button>
             </section>
-            <div id="gacha-res" class="result-copy shop-reveal-dock"></div>
+            <div id="gacha-res" class="result-copy shop-reveal-dock" role="status" aria-live="polite"></div>
             <section class="shop-section-heading">
                 <div>
                     <h3>Arsenal progresivo</h3>
@@ -97,8 +102,13 @@ export class ShopPanel {
             this.ui.game.itemDatabase
         );
         const effectPills = buildItemEffectPills(item);
+        const buyAriaLabel = purchased
+            ? `${item.name} ya adquirido`
+            : canBuy
+                ? `Comprar ${item.name} por ${price} creditos`
+                : `No alcanza para comprar ${item.name}. Faltan ${missing} creditos`;
         return `
-            <div class="shop-card shop-card--compact ${rarityClass} ${purchased ? 'purchased' : ''} ${canBuy ? 'can-buy' : 'locked'}" data-rarity="${rarity}" data-affordability="${canBuy ? 'ready' : 'locked'}">
+            <div class="shop-card shop-card--compact ${rarityClass} ${purchased ? 'purchased' : ''} ${canBuy ? 'can-buy' : 'locked'}" data-rarity="${rarity}" data-affordability="${canBuy ? 'ready' : 'locked'}" aria-label="${escapeHtml(buyAriaLabel)}">
                 <div class="item-badge rarity-badge ${rarityClass}">${rarity}</div>
                 <div class="shop-item-heading">
                     ${this.ui.renderSprite(item.icon, item.name)}
@@ -118,7 +128,7 @@ export class ShopPanel {
                 </div>` : ''}
                 <div class="shop-card-footer">
                     <small>${purchased ? 'Adquirido' : canBuy ? `Copias: ${owned}` : `Faltan $${missing}`}</small>
-                    <button class="btn-buy-item btn-primary ghost" data-id="${item.id}" ${purchased || !canBuy ? 'disabled' : ''}>${purchased ? 'ADQUIRIDO' : canBuy ? `$${price}` : 'BLOQUEADO'}</button>
+                    <button class="btn-buy-item btn-primary ghost" data-id="${item.id}" aria-label="${escapeHtml(buyAriaLabel)}" aria-disabled="${purchased || !canBuy}" ${purchased || !canBuy ? 'disabled' : ''}>${purchased ? 'ADQUIRIDO' : canBuy ? `$${price}` : 'BLOQUEADO'}</button>
                 </div>
             </div>
         `;
@@ -176,7 +186,7 @@ export class ShopPanel {
                     <i class="fas fa-box-open"></i>
                     <span>Caja de reclutamiento</span>
                 </div>
-                <button class="gacha-skip-btn btn-primary ghost" type="button"><i class="fas fa-forward"></i> Saltear</button>
+                <button class="gacha-skip-btn btn-primary ghost" type="button" aria-label="Saltear animacion de reclutamiento"><i class="fas fa-forward"></i> Saltear</button>
                 <div class="gacha-roller" aria-hidden="true">
                     <div class="gacha-roll-sprite">${this.ui.renderSprite(this.ui.getHeroDisplaySprite(firstPreview), firstPreview.name)}</div>
                 </div>
