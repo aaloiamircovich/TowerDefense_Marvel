@@ -808,11 +808,17 @@ export function buildWavePreparationPlan(summary = null, activeTeam = [], deploy
 export function buildWavePrepActionControl(item = {}) {
     const actionable = Boolean(item.heroId && ['deploy', 'upgrade'].includes(item.type));
     const verb = item.type === 'upgrade' ? 'Mejorar ahora' : 'Preparar colocacion';
+    const ariaLabel = actionable ? `${verb}: ${item.label}` : item.label || 'Preparacion recomendada';
+    const detail = actionable
+        ? `${item.reason || ''}${item.cost ? ` | $${item.cost}` : ''}`.trim()
+        : '';
+    const tooltip = detail || ariaLabel;
     return {
         actionable,
         tag: actionable ? 'button' : 'div',
-        ariaLabel: actionable ? `${verb}: ${item.label}` : item.label || 'Preparacion recomendada',
-        title: actionable ? `${item.reason || ''}${item.cost ? ` | $${item.cost}` : ''}`.trim() : ''
+        ariaLabel,
+        title: actionable ? tooltip : '',
+        tooltip
     };
 }
 
@@ -1664,6 +1670,10 @@ export class UIManager {
 
         container.className = `combat-pressure pressure-${state.id}`;
         container.setAttribute('aria-label', `${state.label}. ${state.advice}`);
+        const pressureActionLabel = action?.type === 'upgrade'
+            ? `${action.label} por ${action.cost} creditos. ${action.reason}`
+            : '';
+        const pressurePauseLabel = 'Activar pausa tactica por presion de ruta';
         container.innerHTML = `
             <div class="pressure-copy">
                 <strong>${state.label}</strong>
@@ -1678,10 +1688,10 @@ export class UIManager {
             ${action ? `<div class="pressure-action pressure-action-${action.type}">
                 <span>${action.reason}</span>
                 ${action.type === 'upgrade'
-                    ? `<button id="pressure-upgrade" class="btn-mode-action" type="button" aria-label="${escapeHtml(`${action.label} por ${action.cost} creditos. ${action.reason}`)}">${action.label} $${action.cost}</button>`
+                    ? `<button id="pressure-upgrade" class="btn-mode-action" type="button" aria-label="${escapeHtml(pressureActionLabel)}" title="${escapeHtml(pressureActionLabel)}" data-tooltip="${escapeHtml(pressureActionLabel)}">${escapeHtml(action.label)} $${escapeHtml(action.cost)}</button>`
                     : `<small>${action.label}</small>`}
             </div>` : ''}
-            ${state.id === 'warning' || state.id === 'critical' ? '<button id="pressure-pause" class="btn-mode-action" type="button" aria-label="Activar pausa tactica por presion de ruta">Pausa táctica</button>' : ''}
+            ${state.id === 'warning' || state.id === 'critical' ? `<button id="pressure-pause" class="btn-mode-action" type="button" aria-label="${escapeHtml(pressurePauseLabel)}" title="${escapeHtml(pressurePauseLabel)}" data-tooltip="${escapeHtml(pressurePauseLabel)}">Pausa táctica</button>` : ''}
         `;
         document.getElementById('pressure-upgrade')?.addEventListener('click', () => {
             if (this.quickUpgradeHeroById(action.heroId)) {
@@ -1909,8 +1919,8 @@ export class UIManager {
                         ${prepPlan.map((item) => {
                             const control = buildWavePrepActionControl(item);
                             const attrs = control.actionable
-                                ? `type="button" data-prep-action="${item.type}" data-hero-id="${item.heroId}" aria-label="${control.ariaLabel}" title="${control.title}"`
-                                : `role="note" aria-label="${control.ariaLabel}"`;
+                                ? `type="button" data-prep-action="${escapeHtml(item.type)}" data-hero-id="${escapeHtml(item.heroId)}" aria-label="${escapeHtml(control.ariaLabel)}" title="${escapeHtml(control.title)}" data-tooltip="${escapeHtml(control.tooltip)}"`
+                                : `role="note" aria-label="${escapeHtml(control.ariaLabel)}"`;
                             return `<${control.tag} class="wave-prep-item ${item.type}" ${attrs}>
                             <span>${item.label}</span>
                             <small>${item.reason}${item.cost ? ` | $${item.cost}` : ''}</small>
@@ -1918,7 +1928,10 @@ export class UIManager {
                         }).join('')}
                     </div>` : ''}
                     ${summary.branchOptions?.length ? `<div class="wave-branches" aria-label="Ruta de encuentro">
-                        ${summary.branchOptions.map((option) => `<button type="button" data-branch="${option.id}" class="${summary.selectedBranch === option.id ? 'active' : ''}" title="${option.description}">${option.label}</button>`).join('')}
+                        ${summary.branchOptions.map((option) => {
+                            const branchLabel = `${option.label}: ${option.description}`;
+                            return `<button type="button" data-branch="${escapeHtml(option.id)}" class="${summary.selectedBranch === option.id ? 'active' : ''}" aria-label="${escapeHtml(branchLabel)}" title="${escapeHtml(branchLabel)}" data-tooltip="${escapeHtml(branchLabel)}">${escapeHtml(option.label)}</button>`;
+                        }).join('')}
                     </div>` : ''}
                 ` : ''}
             `;

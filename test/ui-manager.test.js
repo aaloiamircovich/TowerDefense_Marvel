@@ -605,8 +605,11 @@ test('buildWavePrepActionControl vuelve clickeables despliegue y mejora', () => 
     assert.equal(deploy.tag, 'button');
     assert.match(deploy.ariaLabel, /Preparar colocacion/);
     assert.doesNotMatch(deploy.title, /\$250/);
+    assert.equal(deploy.tooltip, 'DPS');
     assert.equal(upgrade.actionable, true);
     assert.match(upgrade.ariaLabel, /Mejorar ahora/);
+    assert.equal(upgrade.title, 'Mejorar ahora: Mejorar Spider-Man');
+    assert.equal(upgrade.tooltip, 'Mejorar ahora: Mejorar Spider-Man');
 });
 
 test('buildWavePrepActionControl deja ahorro como nota informativa', () => {
@@ -615,6 +618,66 @@ test('buildWavePrepActionControl deja ahorro como nota informativa', () => {
     assert.equal(control.actionable, false);
     assert.equal(control.tag, 'div');
     assert.equal(control.ariaLabel, 'Faltan $80');
+});
+
+test('renderWavePreview etiqueta preparacion y rutas tacticas con tooltips', () => {
+    const previousDocument = globalThis.document;
+    const wavePreview = createDomStub();
+    const waveIntel = createDomStub();
+    const nextWaveNumber = createDomStub();
+    const enemyInfoEmpty = createDomStub();
+    const enemyInfoContent = createDomStub();
+    const elements = {
+        'wave-preview': wavePreview,
+        'wave-intel': waveIntel,
+        'next-wave-number': nextWaveNumber,
+        'enemy-info-empty': enemyInfoEmpty,
+        'enemy-info-content': enemyInfoContent
+    };
+    globalThis.document = { getElementById: (id) => elements[id] || null };
+
+    const ui = Object.create(UIManager.prototype);
+    ui.game = {
+        activeTeam: [],
+        heroes: [deployedHero({ id: 'iron_man', name: 'Iron Man', level: 1, damage: 48, fireRate: 1.4, range: 170 })],
+        resourceManager: { credits: 180 },
+        inputManager: { setPlacementMode() {} },
+        waveManager: { chooseBranch() { return false; } },
+        audio: { play() {} }
+    };
+    ui.calculateLevelCost = () => 120;
+    ui.quickUpgradeHeroById = () => true;
+    ui.showToast = () => {};
+    ui.renderHeroRoster = () => {};
+
+    try {
+        ui.renderWavePreview([], { label: 'Oleada estandar', description: 'Sin modificador' }, { label: 'Hydra' }, 9, {
+            total: 8,
+            reward: 220,
+            fastest: 78,
+            maxThreat: 4,
+            counter: 'Perforacion',
+            armoredCount: 1,
+            barrierCount: 0,
+            stealthCount: 0,
+            roles: ['tank'],
+            pressureScore: 24,
+            threatTier: { id: 'critical', label: 'Amenaza critica', advice: 'Refuerza antes de iniciar.' },
+            readiness: { id: 'thin', label: 'Cobertura fina', advice: 'Mejora tu defensa central.' },
+            spawnTimeline: { entries: [], overflow: 0 },
+            branchOptions: [
+                { id: 'secure', label: 'Seguro', description: 'Ruta estable' },
+                { id: 'ambush', label: 'Emboscada', description: 'Mas recompensa' }
+            ],
+            selectedBranch: 'ambush'
+        });
+
+        assert.equal(nextWaveNumber.textContent, 9);
+        assert.match(waveIntel.innerHTML, /data-prep-action="upgrade" data-hero-id="iron_man" aria-label="Mejorar ahora: Mejorar Iron Man" title="Sube tu mejor defensa antes de iniciar con riesgo\. \| \$120" data-tooltip="Sube tu mejor defensa antes de iniciar con riesgo\. \| \$120"/);
+        assert.match(waveIntel.innerHTML, /data-branch="ambush" class="active" aria-label="Emboscada: Mas recompensa" title="Emboscada: Mas recompensa" data-tooltip="Emboscada: Mas recompensa"/);
+    } finally {
+        globalThis.document = previousDocument;
+    }
 });
 
 test('buildCombatPressureState oculta presion cuando no hay oleada activa', () => {
@@ -750,6 +813,40 @@ test('UIManager actualiza nombre accesible del boton de velocidad', () => {
     assert.equal(button.attributes['aria-label'], 'Cambiar velocidad de juego. Velocidad actual x3');
     assert.equal(button.title, 'Velocidad actual x3');
     assert.equal(button.dataset.tooltip, 'Velocidad actual x3');
+});
+test('renderCombatPressurePanel etiqueta acciones de emergencia con tooltips', () => {
+    const previousDocument = globalThis.document;
+    const container = createDomStub();
+    const upgradeButton = createDomStub();
+    const pauseButton = createDomStub();
+    globalThis.document = {
+        getElementById(id) {
+            if (id === 'combat-pressure') return container;
+            if (id === 'pressure-upgrade' && container.innerHTML.includes('pressure-upgrade')) return upgradeButton;
+            if (id === 'pressure-pause' && container.innerHTML.includes('pressure-pause')) return pauseButton;
+            return null;
+        }
+    };
+    const ui = Object.create(UIManager.prototype);
+    ui.combatPressureSignature = '';
+    ui.game = {
+        heroes: [deployedHero({ id: 'iron_man', name: 'Iron Man', level: 1, damage: 30, fireRate: 1.5, range: 165 })],
+        resourceManager: { credits: 140 }
+    };
+    ui.calculateLevelCost = () => 120;
+    ui.quickUpgradeHeroById = () => false;
+    ui.setManualPause = () => {};
+
+    try {
+        ui.renderCombatPressurePanel([
+            enemy({ name: 'Runner', distanceTravelled: 372, uid: 'lead' })
+        ], path(), true);
+
+        assert.match(container.innerHTML, /id="pressure-upgrade" class="btn-mode-action" type="button" aria-label="Mejorar Iron Man por 120 creditos\. Respuesta recomendada para cortar la fuga\." title="Mejorar Iron Man por 120 creditos\. Respuesta recomendada para cortar la fuga\." data-tooltip="Mejorar Iron Man por 120 creditos\. Respuesta recomendada para cortar la fuga\."/);
+        assert.match(container.innerHTML, /id="pressure-pause" class="btn-mode-action" type="button" aria-label="Activar pausa tactica por presion de ruta" title="Activar pausa tactica por presion de ruta" data-tooltip="Activar pausa tactica por presion de ruta"/);
+    } finally {
+        globalThis.document = previousDocument;
+    }
 });
 test('UIManager mantiene oculto el panel lateral de presion de ruta', () => {
     const container = {
@@ -1249,6 +1346,28 @@ function createUpgradeUi(credits, visibleCredits = '') {
     ui.showToast = (message, type) => calls.push(['toast', message, type]);
     ui.renderHeroDetails = (unit) => calls.push(['details', unit?.id]);
     return ui;
+}
+
+function createDomStub() {
+    const element = {
+        innerHTML: '',
+        textContent: '',
+        className: '',
+        attributes: {},
+        listeners: {},
+        classes: new Set(),
+        style: { setProperty() {} },
+        classList: {
+            add(className) { element.classes.add(className); },
+            remove(className) { element.classes.delete(className); },
+            contains(className) { return element.classes.has(className); }
+        },
+        setAttribute(name, value) { element.attributes[name] = value; },
+        addEventListener(event, handler) { element.listeners[event] = handler; },
+        querySelectorAll() { return []; },
+        querySelector() { return null; }
+    };
+    return element;
 }
 
 function createClassListElement() {
