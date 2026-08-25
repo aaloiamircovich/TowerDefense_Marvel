@@ -22,13 +22,23 @@ test('CampaignPanel compacta operaciones y resume desbloqueos por estrellas', ()
 
     assert.match(ui.panelContent.innerHTML, /campaign-ops-strip/);
     assert.match(ui.panelContent.innerHTML, /campaign-unlock-track/);
+    assert.match(ui.panelContent.innerHTML, /campaign-unlock-track" role="meter"/);
+    assert.match(ui.panelContent.innerHTML, /aria-label="Progreso hacia Reino de Wakanda: 0%"/);
+    assert.match(ui.panelContent.innerHTML, /aria-valuenow="0"/);
     assert.match(ui.panelContent.innerHTML, /campaign-progress-readout/);
     assert.match(ui.panelContent.innerHTML, /Reino de Wakanda/);
     assert.match(ui.panelContent.innerHTML, /50 estrellas restantes/);
     assert.match(ui.panelContent.innerHTML, /<b>2\/3<\/b>/);
     assert.match(ui.panelContent.innerHTML, /map-card--compact/);
+    assert.match(ui.panelContent.innerHTML, /data-unlock-state="unlocked" aria-label="Base de los Vengadores. Desbloqueado"/);
+    assert.match(ui.panelContent.innerHTML, /aria-label="Jugar Base de los Vengadores" aria-disabled="false"/);
+    assert.match(ui.panelContent.innerHTML, /data-unlock-state="locked" aria-label="Reino de Wakanda. Bloqueado, requiere 100 estrellas"/);
+    assert.match(ui.panelContent.innerHTML, /aria-label="Bloqueado. Requiere 100 estrellas" aria-disabled="true" disabled/);
     assert.match(ui.panelContent.innerHTML, /map-unlock-progress/);
     assert.match(ui.panelContent.innerHTML, /--map-unlock-progress:50%/);
+    assert.match(ui.panelContent.innerHTML, /map-unlock-progress" role="meter"/);
+    assert.match(ui.panelContent.innerHTML, /aria-label="Progreso de desbloqueo 50 de 100 estrellas"/);
+    assert.match(ui.panelContent.innerHTML, /aria-valuemax="100" aria-valuenow="50"/);
     assert.match(ui.panelContent.innerHTML, /50\/100/);
     assert.match(ui.panelContent.innerHTML, /Mapa 01/);
     assert.match(ui.panelContent.innerHTML, /Acceso principal/);

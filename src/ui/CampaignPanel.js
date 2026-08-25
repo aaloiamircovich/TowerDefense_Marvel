@@ -17,7 +17,7 @@ export class CampaignPanel {
                     <strong>${summary.currentName}</strong>
                     <small>${summary.nextUnlock}</small>
                 </div>
-                <div class="campaign-unlock-track" style="--campaign-unlock-progress:${summary.nextProgress}%">
+                <div class="campaign-unlock-track" role="meter" aria-label="Progreso hacia ${summary.nextMapName}: ${summary.nextProgress}%" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${summary.nextProgress}" style="--campaign-unlock-progress:${summary.nextProgress}%">
                     <div>
                         <small>Siguiente operacion</small>
                         <b>${summary.nextMapName}</b>
@@ -103,13 +103,13 @@ export class CampaignPanel {
         const mechanic = level.mission?.mechanic || {};
         const totalStars = this.getTotalStars();
         const unlockProgress = this.buildMapUnlockProgress(index, totalStars);
-        return `<article class="map-card map-card--compact ${themeClass} ${this.ui.game.currentLevel?.id === level.id ? 'active' : ''} ${unlocked ? '' : 'locked'}">
+        return `<article class="map-card map-card--compact ${themeClass} ${this.ui.game.currentLevel?.id === level.id ? 'active' : ''} ${unlocked ? '' : 'locked'}" data-unlock-state="${unlocked ? 'unlocked' : 'locked'}" aria-label="${level.name}. ${unlocked ? 'Desbloqueado' : `Bloqueado, requiere ${requirement} estrellas`}">
             <div class="map-card-heading">
                 <div>
                     <span class="map-index">Mapa ${mapNumber}</span>
                     <strong>${level.name}</strong>
                 </div>
-                <button class="btn-load-map btn-primary ghost" data-index="${index}" ${unlocked ? '' : 'disabled'}>${unlocked ? 'Jugar' : 'Bloqueado'}</button>
+                <button class="btn-load-map btn-primary ghost" data-index="${index}" aria-label="${unlocked ? `Jugar ${level.name}` : `Bloqueado. Requiere ${requirement} estrellas`}" aria-disabled="${!unlocked}" ${unlocked ? '' : 'disabled'}>${unlocked ? 'Jugar' : 'Bloqueado'}</button>
             </div>
             <div class="map-card-stats">
                 <span><small>Mejor</small><b>${progress.bestWave || 0}</b></span>
@@ -128,7 +128,7 @@ export class CampaignPanel {
 
     renderMapUnlockProgress(progress) {
         if (!progress) return '';
-        return `<div class="map-unlock-progress" style="--map-unlock-progress:${progress.percent}%">
+        return `<div class="map-unlock-progress" role="meter" aria-label="Progreso de desbloqueo ${progress.current} de ${progress.required} estrellas" aria-valuemin="0" aria-valuemax="${progress.required}" aria-valuenow="${progress.current}" style="--map-unlock-progress:${progress.percent}%">
             <div><small>Progreso de desbloqueo</small><b>${progress.current}/${progress.required}</b></div>
             <span>${progress.remaining} estrellas restantes</span>
             <i aria-hidden="true"></i>
