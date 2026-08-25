@@ -66,7 +66,7 @@ export class CampaignPanel {
         return `<article class="mode-card">
             <i class="fas ${mode.icon}"></i>
             <div><strong>${mode.name}</strong><span>${mode.description}</span><small>Récord ${record.bestScore} · oleada ${record.bestWave}</small></div>
-            <button class="btn-start-mode btn-primary ghost" data-mode="${mode.id}">Jugar</button>
+            <button class="btn-start-mode btn-primary ghost" type="button" data-mode="${mode.id}" aria-label="Jugar modo ${mode.name}">Jugar</button>
         </article>`;
     }
 
@@ -88,7 +88,7 @@ export class CampaignPanel {
             </div>
             <div class="briefing-mechanic"><b>Reglas independientes</b><span>La puntuación, oleada y resultado se guardan fuera de la campaña.</span></div>
             <div class="briefing-objectives"><div><span>Objetivo</span><small>${snapshot.detail}</small><b>Récord ${snapshot.best}</b></div></div>
-            <button class="btn-primary" id="deploy-mode">DESPLEGAR EQUIPO</button>
+            <button class="btn-primary" id="deploy-mode" type="button" aria-label="Desplegar equipo en modo ${mode.name}">DESPLEGAR EQUIPO</button>
         </section>`;
         document.getElementById('deploy-mode')?.addEventListener('click', () => this.ui.closePanel());
     }
@@ -109,7 +109,7 @@ export class CampaignPanel {
                     <span class="map-index">Mapa ${mapNumber}</span>
                     <strong>${level.name}</strong>
                 </div>
-                <button class="btn-load-map btn-primary ghost" data-index="${index}" aria-label="${unlocked ? `Jugar ${level.name}` : `Bloqueado. Requiere ${requirement} estrellas`}" aria-disabled="${!unlocked}" ${unlocked ? '' : 'disabled'}>${unlocked ? 'Jugar' : 'Bloqueado'}</button>
+                <button class="btn-load-map btn-primary ghost" type="button" data-index="${index}" aria-label="${unlocked ? `Jugar ${level.name}` : `Bloqueado. Requiere ${requirement} estrellas`}" aria-disabled="${!unlocked}" ${unlocked ? '' : 'disabled'}>${unlocked ? 'Jugar' : 'Bloqueado'}</button>
             </div>
             <div class="map-card-stats">
                 <span><small>Mejor</small><b>${progress.bestWave || 0}</b></span>
@@ -172,7 +172,7 @@ export class CampaignPanel {
                 <div class="briefing-objectives">
                     ${(mission.objectives || []).map((objective) => `<div><span>${objective.label}</span><small>${objective.description}</small><b>+$${objective.reward}</b></div>`).join('')}
                 </div>
-                <button class="btn-primary" id="deploy-mission">DESPLEGAR EQUIPO</button>
+                <button class="btn-primary" id="deploy-mission" type="button" aria-label="Desplegar equipo en ${level.name}">DESPLEGAR EQUIPO</button>
             </section>
         `;
         document.getElementById('deploy-mission')?.addEventListener('click', () => this.ui.closePanel());
