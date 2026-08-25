@@ -185,6 +185,23 @@ export function buildBossCountdownState(wave = 1, maxWaves = CAMPAIGN_MAX_WAVES,
     };
 }
 
+export function formatHudResource(value = 0) {
+    if (value === Number.POSITIVE_INFINITY) return '∞';
+    const amount = Math.max(0, Number(value) || 0);
+    if (amount >= 1000000) return `${(amount / 1000000).toFixed(amount >= 10000000 ? 0 : 1).replace(/\.0$/, '')}M`;
+    if (amount >= 10000) return `${(amount / 1000).toFixed(amount >= 100000 ? 0 : 1).replace(/\.0$/, '')}k`;
+    return `${Math.floor(amount)}`;
+}
+
+function setHudResourceElement(element, value = 0) {
+    if (!element) return;
+    const exact = value === Number.POSITIVE_INFINITY ? 'Infinity' : `${Math.floor(Math.max(0, Number(value) || 0))}`;
+    element.textContent = formatHudResource(value);
+    if (!element.dataset) element.dataset = {};
+    element.dataset.value = exact;
+    element.title = exact === 'Infinity' ? 'Recursos infinitos' : exact;
+}
+
 export function buildEnemyIntel(enemy = {}) {
     const threat = Math.max(1, Math.min(5, Math.round(Number(enemy.threat || 1))));
     const roleLabel = ENEMY_ROLE_COPY[enemy.archetype] || (enemy.isBoss ? 'Jefe' : 'Soldado');
@@ -1522,11 +1539,11 @@ export class UIManager {
 
     updateUI(lives, credits, wave, fps, stars) {
         if (this.livesEl) this.livesEl.textContent = lives;
-        if (this.creditsEl) this.creditsEl.textContent = credits === Number.POSITIVE_INFINITY ? '∞' : Math.floor(credits);
+        if (this.creditsEl) setHudResourceElement(this.creditsEl, credits);
         if (this.waveEl) this.waveEl.textContent = wave;
         this.updateBossCountdown(wave);
         if (this.fpsEl) this.fpsEl.textContent = `${Math.round(fps || 0)} FPS`;
-        if (this.starsEl && stars !== undefined) this.starsEl.textContent = stars;
+        if (this.starsEl && stars !== undefined) setHudResourceElement(this.starsEl, stars);
     }
 
     updateBossCountdown(wave = 1) {
@@ -2243,7 +2260,9 @@ export class UIManager {
         if (rawCredits === Number.POSITIVE_INFINITY) return Number.POSITIVE_INFINITY;
         if (Number.isFinite(rawCredits)) return rawCredits;
 
-        const hudCredits = Number(String(this.creditsEl?.textContent || '').replace(/[^\d.-]/g, ''));
+        const hudValue = this.creditsEl?.dataset?.value;
+        if (hudValue === 'Infinity' || this.creditsEl?.textContent === '∞') return Number.POSITIVE_INFINITY;
+        const hudCredits = Number(String(hudValue ?? (this.creditsEl?.textContent || '')).replace(/[^\d.-]/g, ''));
         return Number.isFinite(hudCredits) ? hudCredits : 0;
     }
 
