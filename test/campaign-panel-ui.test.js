@@ -31,10 +31,10 @@ test('CampaignPanel compacta operaciones y resume desbloqueos por estrellas', ()
     assert.match(ui.panelContent.innerHTML, /<b>2\/3<\/b>/);
     assert.match(ui.panelContent.innerHTML, /map-card--compact/);
     assert.match(ui.panelContent.innerHTML, /data-unlock-state="unlocked" aria-label="Base de los Vengadores. Desbloqueado"/);
-    assert.match(ui.panelContent.innerHTML, /class="btn-start-mode btn-primary ghost" type="button" data-mode="survival" aria-label="Jugar modo Supervivencia"/);
-    assert.match(ui.panelContent.innerHTML, /class="btn-load-map btn-primary ghost" type="button" data-index="0" aria-label="Jugar Base de los Vengadores" aria-disabled="false"/);
+    assert.match(ui.panelContent.innerHTML, /class="btn-start-mode btn-primary ghost" type="button" data-mode="survival" aria-label="Jugar modo Supervivencia" title="Jugar modo Supervivencia" data-tooltip="Jugar modo Supervivencia"/);
+    assert.match(ui.panelContent.innerHTML, /class="btn-load-map btn-primary ghost" type="button" data-index="0" aria-label="Jugar Base de los Vengadores" title="Jugar Base de los Vengadores" data-tooltip="Jugar Base de los Vengadores" aria-disabled="false"/);
     assert.match(ui.panelContent.innerHTML, /data-unlock-state="locked" aria-label="Reino de Wakanda. Bloqueado, requiere 100 estrellas"/);
-    assert.match(ui.panelContent.innerHTML, /type="button" data-index="2" aria-label="Bloqueado. Requiere 100 estrellas" aria-disabled="true" disabled/);
+    assert.match(ui.panelContent.innerHTML, /type="button" data-index="2" aria-label="Bloqueado. Requiere 100 estrellas" title="Bloqueado. Requiere 100 estrellas" data-tooltip="Bloqueado. Requiere 100 estrellas" aria-disabled="true" disabled/);
     assert.match(ui.panelContent.innerHTML, /map-unlock-progress/);
     assert.match(ui.panelContent.innerHTML, /--map-unlock-progress:50%/);
     assert.match(ui.panelContent.innerHTML, /map-unlock-progress" role="meter"/);

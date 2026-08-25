@@ -63,15 +63,17 @@ export class CampaignPanel {
 
     renderModeCard(mode) {
         const record = this.ui.game.progression.getModeRecord(mode.id);
+        const actionLabel = `Jugar modo ${mode.name}`;
         return `<article class="mode-card">
             <i class="fas ${mode.icon}"></i>
             <div><strong>${mode.name}</strong><span>${mode.description}</span><small>Récord ${record.bestScore} · oleada ${record.bestWave}</small></div>
-            <button class="btn-start-mode btn-primary ghost" type="button" data-mode="${mode.id}" aria-label="Jugar modo ${mode.name}">Jugar</button>
+            <button class="btn-start-mode btn-primary ghost" type="button" data-mode="${mode.id}" aria-label="${actionLabel}" title="${actionLabel}" data-tooltip="${actionLabel}">Jugar</button>
         </article>`;
     }
 
     renderModeBriefing(mode) {
         const snapshot = this.ui.game.modeSystem.getSnapshot();
+        const actionLabel = `Desplegar equipo en modo ${mode.name}`;
         this.ui.panelContent.innerHTML = `<section class="mission-briefing mode-briefing">
             <div class="briefing-hero">
                 <div>
@@ -88,7 +90,7 @@ export class CampaignPanel {
             </div>
             <div class="briefing-mechanic"><b>Reglas independientes</b><span>La puntuación, oleada y resultado se guardan fuera de la campaña.</span></div>
             <div class="briefing-objectives"><div><span>Objetivo</span><small>${snapshot.detail}</small><b>Récord ${snapshot.best}</b></div></div>
-            <button class="btn-primary" id="deploy-mode" type="button" aria-label="Desplegar equipo en modo ${mode.name}">DESPLEGAR EQUIPO</button>
+            <button class="btn-primary" id="deploy-mode" type="button" aria-label="${actionLabel}" title="${actionLabel}" data-tooltip="${actionLabel}">DESPLEGAR EQUIPO</button>
         </section>`;
         document.getElementById('deploy-mode')?.addEventListener('click', () => this.ui.closePanel());
     }
@@ -103,13 +105,14 @@ export class CampaignPanel {
         const mechanic = level.mission?.mechanic || {};
         const totalStars = this.getTotalStars();
         const unlockProgress = this.buildMapUnlockProgress(index, totalStars);
+        const actionLabel = unlocked ? `Jugar ${level.name}` : `Bloqueado. Requiere ${requirement} estrellas`;
         return `<article class="map-card map-card--compact ${themeClass} ${this.ui.game.currentLevel?.id === level.id ? 'active' : ''} ${unlocked ? '' : 'locked'}" data-unlock-state="${unlocked ? 'unlocked' : 'locked'}" aria-label="${level.name}. ${unlocked ? 'Desbloqueado' : `Bloqueado, requiere ${requirement} estrellas`}">
             <div class="map-card-heading">
                 <div>
                     <span class="map-index">Mapa ${mapNumber}</span>
                     <strong>${level.name}</strong>
                 </div>
-                <button class="btn-load-map btn-primary ghost" type="button" data-index="${index}" aria-label="${unlocked ? `Jugar ${level.name}` : `Bloqueado. Requiere ${requirement} estrellas`}" aria-disabled="${!unlocked}" ${unlocked ? '' : 'disabled'}>${unlocked ? 'Jugar' : 'Bloqueado'}</button>
+                <button class="btn-load-map btn-primary ghost" type="button" data-index="${index}" aria-label="${actionLabel}" title="${actionLabel}" data-tooltip="${actionLabel}" aria-disabled="${!unlocked}" ${unlocked ? '' : 'disabled'}>${unlocked ? 'Jugar' : 'Bloqueado'}</button>
             </div>
             <div class="map-card-stats">
                 <span><small>Mejor</small><b>${progress.bestWave || 0}</b></span>
@@ -152,6 +155,7 @@ export class CampaignPanel {
         const themeClass = this.getThemeClass(level);
         const progress = this.ui.game.progression.getMapProgress(level.id);
         const signal = this.buildBriefingSignal(level, mission, progress);
+        const actionLabel = `Desplegar equipo en ${level.name}`;
         this.ui.panelContent.innerHTML = `
             <section class="mission-briefing ${themeClass}">
                 <div class="briefing-hero">
@@ -172,7 +176,7 @@ export class CampaignPanel {
                 <div class="briefing-objectives">
                     ${(mission.objectives || []).map((objective) => `<div><span>${objective.label}</span><small>${objective.description}</small><b>+$${objective.reward}</b></div>`).join('')}
                 </div>
-                <button class="btn-primary" id="deploy-mission" type="button" aria-label="Desplegar equipo en ${level.name}">DESPLEGAR EQUIPO</button>
+                <button class="btn-primary" id="deploy-mission" type="button" aria-label="${actionLabel}" title="${actionLabel}" data-tooltip="${actionLabel}">DESPLEGAR EQUIPO</button>
             </section>
         `;
         document.getElementById('deploy-mission')?.addEventListener('click', () => this.ui.closePanel());
