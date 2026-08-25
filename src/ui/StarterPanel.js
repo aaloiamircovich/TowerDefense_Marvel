@@ -34,7 +34,7 @@ export class StarterPanel {
                 </div>
                 ${this.renderStarterSummary(starters)}
                 <div class="starter-grid">
-                    ${starters.map((hero) => this.renderCard(hero)).join('')}
+                    ${starters.map((hero) => this.renderCard(hero, starters)).join('')}
                 </div>
             </section>
         `;
@@ -50,9 +50,10 @@ export class StarterPanel {
         });
     }
 
-    renderCard(hero) {
+    renderCard(hero, starters = []) {
         const rarity = normalizeRarity(hero.rarity);
         const rarityClass = getRarityClass(rarity);
+        const highlights = this.getStarterHighlights(hero, starters);
         return `
             <button class="starter-card starter-card-upgraded ${rarityClass}" data-id="${escapeHtml(hero.id)}" data-testid="starter-${escapeHtml(hero.id)}" data-rarity="${rarity}">
                 <div class="starter-sprite-frame">
@@ -64,6 +65,7 @@ export class StarterPanel {
                         <b class="rarity-badge ${rarityClass}">${rarity}</b>
                         <small>${escapeHtml(hero.category || 'Héroe')}</small>
                     </span>
+                    ${highlights.length ? `<div class="starter-highlight-row">${highlights.map((highlight) => `<span><i class="fas ${highlight.icon}"></i>${escapeHtml(highlight.label)}</span>`).join('')}</div>` : ''}
                     <em>${escapeHtml(this.getNicheText(hero))}</em>
                 </div>
                 <div class="starter-stat-strip" aria-label="${escapeHtml(hero.name)}: ${escapeHtml(this.getMetrics(hero).map((metric) => `${metric.label} ${metric.value}`).join(', '))}">
@@ -101,6 +103,19 @@ export class StarterPanel {
         `;
     }
 
+    getStarterHighlights(hero, starters = []) {
+        if (!hero || !starters.length) return [];
+        return Object.entries(METRIC_LABELS)
+            .map(([key, meta]) => {
+                const value = this.getMetricValue(hero, key);
+                const values = starters.map((candidate) => this.getMetricValue(candidate, key));
+                const best = Math.max(...values);
+                const leaders = values.filter((candidateValue) => candidateValue === best).length;
+                return value > 0 && value === best && leaders === 1 ? { label: `Mejor ${meta.label}`, icon: meta.icon } : null;
+            })
+            .filter(Boolean)
+            .slice(0, 2);
+    }
     getNicheText(hero) {
         return hero.niche || hero.ability || hero.category || 'defensa equilibrada';
     }

@@ -10261,6 +10261,34 @@ button.team-slot-filled:not(:disabled):active img {
     gap: 6px;
 }
 
+.starter-highlight-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 5px;
+    width: 100%;
+}
+
+.starter-highlight-row span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    max-width: 100%;
+    padding: 4px 6px;
+    border: 1px solid color-mix(in srgb, var(--rarity-color, var(--level-accent)), transparent 58%);
+    border-radius: 7px;
+    background: color-mix(in srgb, var(--rarity-color, var(--level-accent)), transparent 88%);
+    color: var(--text);
+    font-size: 10px;
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+.starter-highlight-row i {
+    color: var(--rarity-color, var(--level-accent));
+    font-size: 10px;
+}
+
 .starter-stat-strip {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));

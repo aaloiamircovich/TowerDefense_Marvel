@@ -80,6 +80,11 @@ test('StarterPanel renderiza cartas tacticas y selecciona heroe inicial', () => 
         assert.match(panelContent.innerHTML, /Daño 3/);
         assert.match(panelContent.innerHTML, /Radar/);
         assert.match(panelContent.innerHTML, /Control/);
+        assert.match(panelContent.innerHTML, /starter-highlight-row/);
+        assert.match(panelContent.innerHTML, /Mejor Daño/);
+        assert.match(panelContent.innerHTML, /Mejor Control/);
+        assert.match(panelContent.innerHTML, /Mejor Radar/);
+        assert.doesNotMatch(panelContent.innerHTML, /Mejor Soporte/);
 
         cards[1].listeners.click();
 
