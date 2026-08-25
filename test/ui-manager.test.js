@@ -673,7 +673,19 @@ test('renderWavePreview etiqueta preparacion y rutas tacticas con tooltips', () 
             roles: ['tank'],
             pressureScore: 24,
             threatTier: { id: 'critical', label: 'Amenaza critica', advice: 'Refuerza antes de iniciar.' },
-            readiness: { id: 'thin', label: 'Cobertura fina', advice: 'Mejora tu defensa central.' },
+            readiness: {
+                id: 'thin',
+                label: 'Cobertura fina',
+                advice: 'Mejora tu defensa central.',
+                damageCheck: {
+                    tone: 'thin',
+                    label: 'Potencia justa',
+                    detail: 'Cubre 75% del HP estimado',
+                    expectedDamage: 1800,
+                    requiredDamage: 2400,
+                    dps: 80
+                }
+            },
             spawnTimeline: { entries: [], overflow: 0 },
             branchOptions: [
                 { id: 'secure', label: 'Seguro', description: 'Ruta estable' },
@@ -684,6 +696,10 @@ test('renderWavePreview etiqueta preparacion y rutas tacticas con tooltips', () 
 
         assert.equal(nextWaveNumber.textContent, 9);
         assert.match(waveIntel.innerHTML, /data-prep-action="upgrade" data-hero-id="iron_man" aria-label="Mejorar ahora: Mejorar Iron Man" title="Sube tu mejor defensa antes de iniciar con riesgo\. \| \$120" data-tooltip="Sube tu mejor defensa antes de iniciar con riesgo\. \| \$120"/);
+        assert.match(waveIntel.innerHTML, /wave-damage-check thin/);
+        assert.match(waveIntel.innerHTML, /Potencia justa/);
+        assert.match(waveIntel.innerHTML, /1\.8k\/2\.4k/);
+        assert.match(waveIntel.innerHTML, /DPS 80/);
         assert.match(waveIntel.innerHTML, /data-branch="ambush" class="active" aria-label="Emboscada: Mas recompensa" title="Emboscada: Mas recompensa" data-tooltip="Emboscada: Mas recompensa"/);
     } finally {
         globalThis.document = previousDocument;

@@ -1877,6 +1877,7 @@ export class UIManager {
                         <div><strong>${summary.readiness?.label || 'Sin defensa'}</strong><span>${summary.readiness?.advice || 'Despliega al menos un heroe antes de iniciar.'}</span></div>
                         <b>${summary.readiness?.score || 0}</b>
                     </div>
+                    ${this.renderWaveDamageCheck(summary.readiness?.damageCheck)}
                     ${bossMilestone ? `<div class="wave-boss-telegraph ${bossMilestone.tone}" data-testid="wave-boss-telegraph" aria-label="${escapeHtml(`${bossMilestone.title}: ${bossMilestone.name}. ${bossMilestone.warning}`)}">
                         <div class="wave-boss-portrait">
                             ${bossMilestone.portrait
@@ -2013,6 +2014,16 @@ export class UIManager {
             card.addEventListener('click', () => this.inspectUnit(enemy, true));
             container.appendChild(card);
         });
+    }
+
+    renderWaveDamageCheck(check) {
+        if (!check) return '';
+        return `<div class="wave-damage-check ${escapeHtml(check.tone)}" aria-label="${escapeHtml(`${check.label}: ${check.detail}. DPS ${check.dps}.`)}">
+            <i class="fas fa-chart-line"></i>
+            <div><strong>${escapeHtml(check.label)}</strong><span>${escapeHtml(check.detail)}</span></div>
+            <b>${formatCompactMetric(check.expectedDamage)}/${formatCompactMetric(check.requiredDamage)}</b>
+            <small>DPS ${formatCompactMetric(check.dps)}</small>
+        </div>`;
     }
 
     inspectUnit(unit, isEnemyFlag = false) {

@@ -207,6 +207,9 @@ test('WaveManager resume cantidad, botin y counter de la cola preparada', () => 
     assert.equal(summary.pressureScore, 14);
     assert.equal(summary.threatTier.id, 'guarded');
     assert.equal(summary.readiness.id, 'empty');
+    assert.equal(summary.totalHp > 0, true);
+    assert.equal(summary.effectiveHp >= summary.totalHp, true);
+    assert.equal(summary.readiness.damageCheck.tone, 'danger');
 });
 
 test('WaveManager expone cadencia compacta de salida enemiga', () => {
@@ -254,6 +257,8 @@ test('WaveManager evalua preparacion con heroes desplegados y creditos', () => {
     assert.ok(summary.readiness.score > summary.pressureScore);
     assert.equal(summary.readiness.id, 'ready');
     assert.ok(summary.readiness.margin > 0);
+    assert.ok(summary.readiness.damageCheck.expectedDamage > summary.readiness.damageCheck.requiredDamage);
+    assert.match(summary.readiness.damageCheck.detail, /HP estimado/);
 });
 
 test('WaveManager refresca el radar tactico al cambiar heroes desplegados', () => {

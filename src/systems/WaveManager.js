@@ -527,6 +527,8 @@ export class WaveManager {
         let barrierCount = 0;
         let armoredCount = 0;
         let hasBoss = false;
+        let totalHp = 0;
+        let effectiveHp = 0;
         const bossIds = new Set();
 
         this.preparedQueue.forEach(({ config }) => {
@@ -537,6 +539,11 @@ export class WaveManager {
             if (config.stealth) stealthCount++;
             if ((config.barrierRatio || 0) > 0) barrierCount++;
             if ((config.armor || 0) >= 0.15) armoredCount++;
+            const hp = Math.max(0, Number(config.hp || 0));
+            const armor = Math.max(0, Math.min(0.8, Number(config.armor || 0)));
+            const barrier = hp * Math.max(0, Number(config.barrierRatio || 0));
+            totalHp += hp;
+            effectiveHp += (hp + barrier) / Math.max(0.25, 1 - armor * 0.82);
             if (config.isBoss) {
                 hasBoss = true;
                 bossIds.add(config.id);
@@ -574,8 +581,10 @@ export class WaveManager {
             roles: [...roles],
             counter,
             pressureScore,
+            totalHp: Math.round(totalHp),
+            effectiveHp: Math.round(effectiveHp),
             threatTier: this.getThreatTier(pressureScore),
-            readiness: this.getReadinessForSummary(pressureScore)
+            readiness: this.getReadinessForSummary(pressureScore, { totalHp, effectiveHp, hasBoss })
         };
     }
 
@@ -586,15 +595,17 @@ export class WaveManager {
         return { id: 'low', label: 'Amenaza baja', advice: 'Buen momento para ahorrar.' };
     }
 
-    getReadinessForSummary(pressureScore) {
+    getReadinessForSummary(pressureScore, waveModel = {}) {
         const heroes = this.game.heroes || [];
+        const damageCheck = this.getDamageCheckForSummary(heroes, waveModel);
         if (!heroes.length) {
             return {
                 id: 'empty',
                 label: 'Sin defensa',
                 score: 0,
                 margin: -pressureScore,
-                advice: 'Despliega al menos un heroe antes de iniciar.'
+                advice: 'Despliega al menos un heroe antes de iniciar.',
+                damageCheck
             };
         }
 
@@ -612,10 +623,55 @@ export class WaveManager {
         const score = Math.round(teamScore + creditReserve);
         const margin = score - pressureScore;
 
-        if (margin >= 7) return { id: 'ready', label: 'Preparado', score, margin, advice: 'Puedes iniciar o ahorrar para escalar.' };
-        if (margin >= 0) return { id: 'stable', label: 'Defensa estable', score, margin, advice: 'Listo, pero vigila counters y fugas.' };
-        if (margin >= -7) return { id: 'thin', label: 'Defensa justa', score, margin, advice: 'Mejora o coloca apoyo si tienes creditos.' };
-        return { id: 'underbuilt', label: 'Defensa debil', score, margin, advice: 'Coloca otro heroe antes de iniciar.' };
+        if (margin >= 7) return { id: 'ready', label: 'Preparado', score, margin, advice: 'Puedes iniciar o ahorrar para escalar.', damageCheck };
+        if (margin >= 0) return { id: 'stable', label: 'Defensa estable', score, margin, advice: 'Listo, pero vigila counters y fugas.', damageCheck };
+        if (margin >= -7) return { id: 'thin', label: 'Defensa justa', score, margin, advice: 'Mejora o coloca apoyo si tienes creditos.', damageCheck };
+        return { id: 'underbuilt', label: 'Defensa debil', score, margin, advice: 'Coloca otro heroe antes de iniciar.', damageCheck };
+    }
+
+    getDamageCheckForSummary(heroes = [], waveModel = {}) {
+        const requiredDamage = Math.max(0, Math.round(Number(waveModel.effectiveHp || waveModel.totalHp || 0)));
+        const waveSeconds = Math.max(8, Math.min(46, this.getPreparedWaveDuration() + 7 + (waveModel.hasBoss ? 12 : 0)));
+        const dps = heroes.reduce((total, hero) => {
+            const stats = hero.getEffectiveStats?.() || hero;
+            const damage = Math.max(0, Number(stats.damage || hero.damage || 0));
+            const fireRate = Math.max(0, Number(stats.fireRate || hero.fireRate || 0));
+            const range = Math.max(0, Number(stats.range || hero.range || 100));
+            const config = hero.config || hero;
+            const isPureAura = Boolean(config.special?.supportAura || hero.special?.supportAura) && damage <= 2;
+            const control = Number(config.teamMetrics?.control || hero.teamMetrics?.control || 0);
+            const coverageFactor = Math.max(0.55, Math.min(1.12, range / 170));
+            const controlFactor = 1 + Math.min(0.1, control * 0.015);
+            return total + (isPureAura ? 0 : damage * fireRate * coverageFactor * controlFactor);
+        }, 0);
+        const expectedDamage = Math.round(dps * waveSeconds);
+        const ratio = requiredDamage > 0 ? expectedDamage / requiredDamage : 0;
+        const pct = Math.round(ratio * 100);
+        let tone = 'danger';
+        let label = 'Falta daño';
+        if (ratio >= 1.25) {
+            tone = 'dominant';
+            label = 'Potencia amplia';
+        } else if (ratio >= 1) {
+            tone = 'ready';
+            label = 'Potencia suficiente';
+        } else if (ratio >= 0.76) {
+            tone = 'thin';
+            label = 'Potencia justa';
+        }
+        return {
+            tone,
+            label,
+            dps: Math.round(dps),
+            expectedDamage,
+            requiredDamage,
+            ratio: Number(ratio.toFixed(2)),
+            detail: requiredDamage > 0 ? `Cubre ${pct}% del HP estimado` : 'Sin HP preparado para comparar'
+        };
+    }
+
+    getPreparedWaveDuration() {
+        return this.preparedQueue.reduce((total, entry) => total + Math.max(0, Number(entry.delay || 0)), 0);
     }
 
     startNextWave() {

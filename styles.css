@@ -1507,6 +1507,60 @@ canvas {
 .wave-readiness.stable { --readiness-color: #fca311; }
 .wave-readiness.ready { --readiness-color: #46d369; }
 
+.wave-damage-check {
+    --damage-check-color: #9daabc;
+    display: grid;
+    grid-template-columns: 28px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 7px;
+    margin-top: 5px;
+    padding: 7px 8px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-left: 3px solid var(--damage-check-color);
+    border-radius: 7px;
+    background: rgba(5, 7, 11, 0.5);
+}
+
+.wave-damage-check > i {
+    display: inline-grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 7px;
+    background: color-mix(in srgb, var(--damage-check-color), transparent 82%);
+    color: var(--damage-check-color);
+}
+
+.wave-damage-check strong {
+    display: block;
+    color: var(--damage-check-color) !important;
+    font-size: 11px !important;
+}
+
+.wave-damage-check span {
+    display: block;
+    margin-top: 2px;
+}
+
+.wave-damage-check > b {
+    color: var(--text);
+    font-size: 11px;
+    white-space: nowrap;
+}
+
+.wave-damage-check > small {
+    grid-column: 2 / -1;
+    color: var(--muted);
+    font-size: 9px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.wave-damage-check.danger { --damage-check-color: #e63946; }
+.wave-damage-check.thin { --damage-check-color: #ff8f3d; }
+.wave-damage-check.ready { --damage-check-color: #46d369; }
+.wave-damage-check.dominant { --damage-check-color: #40c9ff; }
+
 .wave-boss-telegraph {
     --boss-brief: #e63946;
     display: grid;
