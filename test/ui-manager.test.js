@@ -708,6 +708,44 @@ test('UIManager mantiene oculto el panel lateral de presion de ruta', () => {
     }
 });
 
+test('UIManager etiqueta el dialogo con el panel abierto', () => {
+    const previousDocument = globalThis.document;
+    const dialog = {
+        attributes: {},
+        setAttribute(name, value) {
+            this.attributes[name] = value;
+        }
+    };
+    globalThis.document = {
+        getElementById(id) {
+            return id === 'panel-container' ? dialog : null;
+        }
+    };
+    const calls = [];
+    const ui = Object.create(UIManager.prototype);
+    ui.setActiveHubButton = (type) => calls.push(`hub:${type}`);
+    ui.renderShop = (title) => calls.push(`shop:${title}`);
+    ui.renderProfile = (title) => calls.push(`profile:${title}`);
+    ui.teamBuilderPanel = { render: (title) => calls.push(`collection:${title}`) };
+
+    try {
+        ui.renderPanel('shop');
+        assert.equal(dialog.attributes['aria-label'], 'Tienda');
+        assert.ok(calls.includes('hub:shop'));
+        assert.ok(calls.includes('shop:Tienda'));
+
+        ui.renderPanel('collection');
+        assert.equal(dialog.attributes['aria-label'], 'Colección');
+        assert.ok(calls.includes('collection:Constructor de equipo'));
+
+        ui.renderPanel('legacy-panel');
+        assert.equal(dialog.attributes['aria-label'], 'legacy-panel');
+        assert.ok(calls.includes('hub:null'));
+        assert.ok(calls.includes('profile:legacy-panel'));
+    } finally {
+        globalThis.document = previousDocument;
+    }
+});
 test('UIManager marca el boton activo del panel abierto', () => {
     const previousDocument = globalThis.document;
     const buttons = [createHubButton('collection'), createHubButton('shop')];

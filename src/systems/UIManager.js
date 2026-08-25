@@ -2442,6 +2442,11 @@ export class UIManager {
         }
     }
 
+    setPanelDialogLabel(title = 'Panel del juego') {
+        const dialog = document.getElementById('panel-container');
+        dialog?.setAttribute('aria-label', title || 'Panel del juego');
+    }
+
     renderPanel(type) {
         const panelTitles = {
             profile: 'Perfil',
@@ -2454,6 +2459,7 @@ export class UIManager {
             settings: 'Ajustes'
         };
         const title = panelTitles[type] || type;
+        this.setPanelDialogLabel(title);
         this.setActiveHubButton(panelTitles[type] ? type : null);
 
         if (type === 'shop') return this.renderShop(title);
