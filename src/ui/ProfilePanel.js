@@ -65,12 +65,12 @@ export class ProfilePanel {
                         <div class="profile-mini-masteries">
                             ${masteryPreview || '<p>Recluta un heroe para iniciar desafios.</p>'}
                         </div>
-                        <button class="btn-primary ghost profile-open-tab" data-profile-view="codex" type="button"><i class="fas fa-book-open"></i> Ver detalle completo</button>
+                        <button class="btn-primary ghost profile-open-tab" data-profile-view="codex" type="button" aria-label="Ver detalle completo del codice" title="Ver detalle completo" data-tooltip="Ver detalle completo del codice"><i class="fas fa-book-open"></i> Ver detalle completo</button>
                     </article>
                     <article class="profile-meta-section profile-summary-panel">
                         <h3>Codice descubierto</h3>
                         <div class="codex-summary profile-codex-strip">${codexSummary}</div>
-                        <button class="btn-primary ghost profile-open-tab" data-profile-view="codex" type="button"><i class="fas fa-layer-group"></i> Abrir codice</button>
+                        <button class="btn-primary ghost profile-open-tab" data-profile-view="codex" type="button" aria-label="Abrir codice descubierto" title="Abrir codice" data-tooltip="Abrir codice descubierto"><i class="fas fa-layer-group"></i> Abrir codice</button>
                     </article>
                 </section>
             `,
@@ -97,7 +97,7 @@ export class ProfilePanel {
             `,
             history: `
                 <section class="profile-meta-section"><h3>Historial</h3><div class="codex-summary"><span><b>${statistics.missions}</b>Misiones</span><span><b>${statistics.victories}</b>Victorias</span><span><b>${statistics.waves}</b>Oleadas</span><span><b>${statistics.enemiesDefeated}</b>Enemigos</span><span><b>${statistics.damageDealt}</b>Dano</span></div></section>
-                <section class="profile-meta-section"><h3>Codigos compartibles</h3><div class="build-code-panel"><div><button class="btn-primary ghost" id="copy-build-code" type="button" aria-label="Copiar codigo de build"><i class="fas fa-share-nodes"></i> Copiar build</button><button class="btn-primary ghost" id="copy-replay-code" type="button" aria-label="Copiar codigo de replay"><i class="fas fa-film"></i> Copiar replay</button></div><textarea id="build-code-output" readonly rows="2" aria-label="Codigo compartible"></textarea></div></section>
+                <section class="profile-meta-section"><h3>Codigos compartibles</h3><div class="build-code-panel"><div><button class="btn-primary ghost" id="copy-build-code" type="button" aria-label="Copiar codigo de build" title="Copiar codigo de build" data-tooltip="Copiar build al portapapeles"><i class="fas fa-share-nodes"></i> Copiar build</button><button class="btn-primary ghost" id="copy-replay-code" type="button" aria-label="Copiar codigo de replay" title="Copiar codigo de replay" data-tooltip="Copiar replay al portapapeles"><i class="fas fa-film"></i> Copiar replay</button></div><textarea id="build-code-output" readonly rows="2" aria-label="Codigo compartible"></textarea></div></section>
             `
         };
 
@@ -128,7 +128,7 @@ export class ProfilePanel {
                 <div class="detail-card"><h3>Rendimiento</h3><p><span>Frame p95</span><strong>${(performance.p95Ms || 0).toFixed(1)} ms</strong></p><p><span>Memoria pico</span><strong>${(performance.peakMemoryMb || 0).toFixed(1)} MB</strong></p><p><span>Pico de entidades</span><strong>${performance.peakEntities || 0}</strong></p><p><span>Proyectiles reciclados</span><strong>${pool.reused || 0}</strong></p></div>
             </div>
             <nav class="profile-tabs" role="tablist" aria-label="Secciones de perfil">
-                ${tabs.map((tab) => `<button id="profile-tab-${tab.id}" class="profile-tab ${this.activeView === tab.id ? 'active' : ''}" data-profile-view="${tab.id}" role="tab" aria-selected="${this.activeView === tab.id}" aria-controls="profile-tab-panel" tabindex="${this.activeView === tab.id ? '0' : '-1'}" aria-label="${tab.label}: ${tab.badgeLabel}" type="button"><i class="fas ${tab.icon}"></i><span>${tab.label}</span><b class="profile-tab-badge">${tab.badge}</b></button>`).join('')}
+                ${tabs.map((tab) => `<button id="profile-tab-${tab.id}" class="profile-tab ${this.activeView === tab.id ? 'active' : ''}" data-profile-view="${tab.id}" role="tab" aria-selected="${this.activeView === tab.id}" aria-controls="profile-tab-panel" tabindex="${this.activeView === tab.id ? '0' : '-1'}" aria-label="${tab.label}: ${tab.badgeLabel}" title="${tab.label}: ${tab.badgeLabel}" data-tooltip="${tab.label}: ${tab.badgeLabel}" type="button"><i class="fas ${tab.icon}"></i><span>${tab.label}</span><b class="profile-tab-badge">${tab.badge}</b></button>`).join('')}
             </nav>
             <div id="profile-tab-panel" class="profile-tab-panel profile-view-${this.activeView}" role="tabpanel" aria-labelledby="profile-tab-${this.activeView}">
                 ${sections[this.activeView]}

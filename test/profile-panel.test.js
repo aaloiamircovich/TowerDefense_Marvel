@@ -84,6 +84,7 @@ test('ProfilePanel muestra racha y emblemas de contrato', () => {
     assert.match(panelContent.innerHTML, /data-profile-view="summary" role="tab" aria-selected="true"/);
     assert.match(panelContent.innerHTML, /profile-tab-badge/);
     assert.match(panelContent.innerHTML, /Resumen: 25% completado/);
+    assert.match(panelContent.innerHTML, /title="Resumen: 25% completado" data-tooltip="Resumen: 25% completado"/);
     assert.match(panelContent.innerHTML, /profile-next-unlock/);
     assert.match(panelContent.innerHTML, /--profile-next-progress:75%/);
     assert.match(panelContent.innerHTML, /Proxima operacion/);
@@ -96,6 +97,8 @@ test('ProfilePanel muestra racha y emblemas de contrato', () => {
     assert.match(panelContent.innerHTML, /profile-summary-grid/);
     assert.match(panelContent.innerHTML, /profile-mini-masteries/);
     assert.match(panelContent.innerHTML, /Ver detalle completo/);
+    assert.match(panelContent.innerHTML, /data-tooltip="Ver detalle completo del codice"/);
+    assert.match(panelContent.innerHTML, /data-tooltip="Abrir codice descubierto"/);
     assert.doesNotMatch(panelContent.innerHTML, /Hero 8/);
     assert.doesNotMatch(panelContent.innerHTML, /Contratos semanales/);
 
@@ -110,8 +113,8 @@ test('ProfilePanel muestra racha y emblemas de contrato', () => {
     assert.match(panelContent.innerHTML, /Retos de agrupacion/);
 
     panel.render('Perfil', 'history');
-    assert.match(panelContent.innerHTML, /id="copy-build-code" type="button" aria-label="Copiar codigo de build"/);
-    assert.match(panelContent.innerHTML, /id="copy-replay-code" type="button" aria-label="Copiar codigo de replay"/);
+    assert.match(panelContent.innerHTML, /id="copy-build-code" type="button" aria-label="Copiar codigo de build" title="Copiar codigo de build" data-tooltip="Copiar build al portapapeles"/);
+    assert.match(panelContent.innerHTML, /id="copy-replay-code" type="button" aria-label="Copiar codigo de replay" title="Copiar codigo de replay" data-tooltip="Copiar replay al portapapeles"/);
 });
 test('ProfilePanel navega tabs con teclado', () => {
     const calls = [];
