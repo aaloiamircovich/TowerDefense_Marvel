@@ -128,9 +128,9 @@ export class ProfilePanel {
                 <div class="detail-card"><h3>Rendimiento</h3><p><span>Frame p95</span><strong>${(performance.p95Ms || 0).toFixed(1)} ms</strong></p><p><span>Memoria pico</span><strong>${(performance.peakMemoryMb || 0).toFixed(1)} MB</strong></p><p><span>Pico de entidades</span><strong>${performance.peakEntities || 0}</strong></p><p><span>Proyectiles reciclados</span><strong>${pool.reused || 0}</strong></p></div>
             </div>
             <nav class="profile-tabs" role="tablist" aria-label="Secciones de perfil">
-                ${tabs.map((tab) => `<button class="profile-tab ${this.activeView === tab.id ? 'active' : ''}" data-profile-view="${tab.id}" role="tab" aria-selected="${this.activeView === tab.id}" aria-label="${tab.label}: ${tab.badgeLabel}" type="button"><i class="fas ${tab.icon}"></i><span>${tab.label}</span><b class="profile-tab-badge">${tab.badge}</b></button>`).join('')}
+                ${tabs.map((tab) => `<button id="profile-tab-${tab.id}" class="profile-tab ${this.activeView === tab.id ? 'active' : ''}" data-profile-view="${tab.id}" role="tab" aria-selected="${this.activeView === tab.id}" aria-controls="profile-tab-panel" tabindex="${this.activeView === tab.id ? '0' : '-1'}" aria-label="${tab.label}: ${tab.badgeLabel}" type="button"><i class="fas ${tab.icon}"></i><span>${tab.label}</span><b class="profile-tab-badge">${tab.badge}</b></button>`).join('')}
             </nav>
-            <div class="profile-tab-panel profile-view-${this.activeView}" role="tabpanel">
+            <div id="profile-tab-panel" class="profile-tab-panel profile-view-${this.activeView}" role="tabpanel" aria-labelledby="profile-tab-${this.activeView}">
                 ${sections[this.activeView]}
             </div>
             <div class="release-notice"><strong>Super Hero TD v${APP_VERSION}</strong><span>${FAN_PROJECT_NOTICE}</span></div>
@@ -219,9 +219,36 @@ export class ProfilePanel {
         return `<span class="${unlocked ? 'unlocked' : ''}" title="${achievement.description}" data-achievement="${id}">${unlocked ? 'OK' : '--'} ${achievement.label}</span>`;
     }
 
+    switchProfileView(view = 'summary', focusTab = false) {
+        const nextView = ['summary', 'contracts', 'codex', 'history'].includes(view) ? view : 'summary';
+        this.render(this.title, nextView);
+        if (!focusTab) return;
+        this.ui.panelContent.querySelector?.(`.profile-tab[data-profile-view="${nextView}"]`)?.focus?.();
+    }
+
+    bindProfileTabs() {
+        const tabs = [...this.ui.panelContent.querySelectorAll('.profile-tab')];
+        tabs.forEach((button, index) => {
+            button.addEventListener('click', () => this.switchProfileView(button.dataset.profileView || 'summary'));
+            button.addEventListener('keydown', (event) => {
+                const keyOffset = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[event.key];
+                const isEdgeKey = event.key === 'Home' || event.key === 'End';
+                if (!keyOffset && !isEdgeKey) return;
+                event.preventDefault();
+                const nextIndex = event.key === 'Home'
+                    ? 0
+                    : event.key === 'End'
+                        ? tabs.length - 1
+                        : (index + keyOffset + tabs.length) % tabs.length;
+                this.switchProfileView(tabs[nextIndex]?.dataset.profileView || 'summary', true);
+            });
+        });
+    }
+
     bindListeners() {
-        this.ui.panelContent.querySelectorAll('[data-profile-view]').forEach((button) => {
-            button.addEventListener('click', () => this.render(this.title, button.dataset.profileView));
+        this.bindProfileTabs();
+        this.ui.panelContent.querySelectorAll('.profile-open-tab').forEach((button) => {
+            button.addEventListener('click', () => this.switchProfileView(button.dataset.profileView || 'summary'));
         });
         const button = this.ui.panelContent.querySelector('#copy-build-code');
         const replayButton = this.ui.panelContent.querySelector('#copy-replay-code');

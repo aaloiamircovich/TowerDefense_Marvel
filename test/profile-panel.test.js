@@ -78,6 +78,9 @@ test('ProfilePanel muestra racha y emblemas de contrato', () => {
     panel.render();
 
     assert.match(panelContent.innerHTML, /profile-tabs/);
+    assert.match(panelContent.innerHTML, /id="profile-tab-summary"/);
+    assert.match(panelContent.innerHTML, /aria-controls="profile-tab-panel"/);
+    assert.match(panelContent.innerHTML, /id="profile-tab-panel" class="profile-tab-panel profile-view-summary" role="tabpanel" aria-labelledby="profile-tab-summary"/);
     assert.match(panelContent.innerHTML, /data-profile-view="summary" role="tab" aria-selected="true"/);
     assert.match(panelContent.innerHTML, /profile-tab-badge/);
     assert.match(panelContent.innerHTML, /Resumen: 25% completado/);
@@ -105,4 +108,45 @@ test('ProfilePanel muestra racha y emblemas de contrato', () => {
     assert.match(panelContent.innerHTML, /Emblemas de contrato/);
     assert.match(panelContent.innerHTML, /Operador semanal/);
     assert.match(panelContent.innerHTML, /Retos de agrupacion/);
+});
+test('ProfilePanel navega tabs con teclado', () => {
+    const calls = [];
+    const makeTab = (view) => ({
+        dataset: { profileView: view },
+        listeners: {},
+        addEventListener(event, handler) {
+            this.listeners[event] = handler;
+        },
+        focus() {
+            calls.push(`focus:${view}`);
+        }
+    });
+    const tabs = [makeTab('summary'), makeTab('contracts'), makeTab('codex'), makeTab('history')];
+    const panel = Object.create(ProfilePanel.prototype);
+    panel.title = 'Perfil';
+    panel.ui = {
+        panelContent: {
+            querySelectorAll(selector) {
+                if (selector === '.profile-tab') return tabs;
+                if (selector === '.profile-open-tab') return [];
+                return [];
+            },
+            querySelector(selector) {
+                const match = selector.match(/data-profile-view="([^"]+)"/);
+                return tabs.find((tab) => tab.dataset.profileView === match?.[1]) || null;
+            }
+        }
+    };
+    panel.render = (title, view) => calls.push(`render:${title}:${view}`);
+
+    panel.bindProfileTabs();
+    let prevented = 0;
+    tabs[0].listeners.keydown({ key: 'ArrowRight', preventDefault: () => { prevented += 1; } });
+    tabs[1].listeners.keydown({ key: 'End', preventDefault: () => { prevented += 1; } });
+
+    assert.equal(prevented, 2);
+    assert.ok(calls.includes('render:Perfil:contracts'));
+    assert.ok(calls.includes('focus:contracts'));
+    assert.ok(calls.includes('render:Perfil:history'));
+    assert.ok(calls.includes('focus:history'));
 });
