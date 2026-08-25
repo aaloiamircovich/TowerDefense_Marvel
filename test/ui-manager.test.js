@@ -359,6 +359,9 @@ test('renderHeroDetails muestra counter de oleada dentro de estadisticas', () =>
         assert.match(ui.panelContent.innerHTML, /hero-detail-tabs/);
         assert.match(ui.panelContent.innerHTML, /hero-detail-tab-badge/);
         assert.match(ui.panelContent.innerHTML, /DPS 42/);
+        assert.match(ui.panelContent.innerHTML, /id="hero-detail-tab-summary"/);
+        assert.match(ui.panelContent.innerHTML, /aria-controls="hero-detail-panel"/);
+        assert.match(ui.panelContent.innerHTML, /id="hero-detail-panel" class="hero-detail-tab-panel summary" role="tabpanel" aria-labelledby="hero-detail-tab-summary"/);
         assert.match(ui.panelContent.innerHTML, /data-view="summary" role="tab" aria-selected="true"/);
         assert.match(ui.panelContent.innerHTML, /Lectura de oleada/);
         assert.match(ui.panelContent.innerHTML, /Counter ideal/);
@@ -368,7 +371,7 @@ test('renderHeroDetails muestra counter de oleada dentro de estadisticas', () =>
 
         ui.renderHeroDetails(hero, 'equipment');
         assert.match(ui.panelContent.innerHTML, /hero-detail-tab-panel equipment/);
-        assert.match(ui.panelContent.innerHTML, /aria-selected="true" type="button"><i class="fas fa-shield-alt"><\/i><span>Objeto<\/span>/);
+        assert.match(ui.panelContent.innerHTML, /id="hero-detail-tab-equipment" class="hero-detail-tab active" data-view="equipment" role="tab" aria-selected="true" aria-controls="hero-detail-panel" tabindex="0" type="button"><i class="fas fa-shield-alt"><\/i><span>Objeto<\/span>/);
         assert.match(ui.panelContent.innerHTML, /hero-detail-tab-badge">Libre<\/b>/);
         assert.match(ui.panelContent.innerHTML, /Equipamiento/);
         assert.doesNotMatch(ui.panelContent.innerHTML, /hero-submenu|hero-detail-menu-btn/);
@@ -381,6 +384,43 @@ test('renderHeroDetails muestra counter de oleada dentro de estadisticas', () =>
     }
 });
 
+test('UIManager navega tabs de detalle de heroe con teclado', () => {
+    const calls = [];
+    const hero = { id: 'iron_man', name: 'Iron Man' };
+    const makeTab = (view) => ({
+        dataset: { view },
+        listeners: {},
+        addEventListener(event, handler) {
+            this.listeners[event] = handler;
+        },
+        focus() {
+            calls.push(`focus:${view}`);
+        }
+    });
+    const tabs = [makeTab('summary'), makeTab('equipment'), makeTab('combat')];
+    const ui = Object.create(UIManager.prototype);
+    ui.panelContent = {
+        querySelectorAll(selector) {
+            return selector === '.hero-detail-tab' ? tabs : [];
+        },
+        querySelector(selector) {
+            const match = selector.match(/data-view="([^"]+)"/);
+            return tabs.find((tab) => tab.dataset.view === match?.[1]) || null;
+        }
+    };
+    ui.renderHeroDetails = (unit, view) => calls.push(`render:${unit.id}:${view}`);
+
+    ui.bindHeroDetailTabs(hero);
+    let prevented = 0;
+    tabs[0].listeners.keydown({ key: 'ArrowRight', preventDefault: () => { prevented += 1; } });
+    tabs[1].listeners.keydown({ key: 'End', preventDefault: () => { prevented += 1; } });
+
+    assert.equal(prevented, 2);
+    assert.ok(calls.includes('render:iron_man:equipment'));
+    assert.ok(calls.includes('focus:equipment'));
+    assert.ok(calls.includes('render:iron_man:combat'));
+    assert.ok(calls.includes('focus:combat'));
+});
 test('buildShopItemInsight conecta deteccion y blindaje con la oleada', () => {
     const stealth = buildShopItemInsight({ set: 'stark', tier: 1, effects: { detectStealth: true } }, { stealthCount: 2, roles: ['stealth'] });
     const armor = buildShopItemInsight({ set: 'shield', tier: 2, effects: { armorPenetration: 0.2 } }, { armoredCount: 3, barrierCount: 1, roles: ['tank'] });
@@ -1215,4 +1255,3 @@ function createHubButton(panel) {
     };
     return button;
 }
-

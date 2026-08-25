@@ -2029,6 +2029,32 @@ export class UIManager {
         this.renderHeroDetails(unit);
     }
 
+    switchHeroDetailView(hero, view = 'summary', focusTab = false) {
+        const nextView = view || 'summary';
+        this.renderHeroDetails(hero, nextView);
+        if (!focusTab) return;
+        this.panelContent.querySelector?.(`[data-view="${nextView}"]`)?.focus?.();
+    }
+
+    bindHeroDetailTabs(hero) {
+        const tabs = [...this.panelContent.querySelectorAll('.hero-detail-tab')];
+        tabs.forEach((button, index) => {
+            button.addEventListener('click', () => this.switchHeroDetailView(hero, button.dataset.view || 'summary'));
+            button.addEventListener('keydown', (event) => {
+                const keyOffset = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[event.key];
+                const isEdgeKey = event.key === 'Home' || event.key === 'End';
+                if (!keyOffset && !isEdgeKey) return;
+                event.preventDefault();
+                const nextIndex = event.key === 'Home'
+                    ? 0
+                    : event.key === 'End'
+                        ? tabs.length - 1
+                        : (index + keyOffset + tabs.length) % tabs.length;
+                this.switchHeroDetailView(hero, tabs[nextIndex]?.dataset.view || 'summary', true);
+            });
+        });
+    }
+
     renderHeroDetails(hero, detailView = 'summary') {
         const config = hero.config || hero;
         const heroName = hero.name || config.name;
@@ -2212,10 +2238,10 @@ export class UIManager {
                         </div>
 
                         <div class="hero-detail-tabs" role="tablist" aria-label="Detalle de heroe">
-                            ${detailTabs.map((tab) => `<button class="hero-detail-tab ${activeDetailView === tab.id ? 'active' : ''}" data-view="${tab.id}" role="tab" aria-selected="${activeDetailView === tab.id}" type="button"><i class="fas ${tab.icon}"></i><span>${tab.label}</span><b class="hero-detail-tab-badge">${escapeHtml(tab.badge)}</b></button>`).join('')}
+                            ${detailTabs.map((tab) => `<button id="hero-detail-tab-${tab.id}" class="hero-detail-tab ${activeDetailView === tab.id ? 'active' : ''}" data-view="${tab.id}" role="tab" aria-selected="${activeDetailView === tab.id}" aria-controls="hero-detail-panel" tabindex="${activeDetailView === tab.id ? '0' : '-1'}" type="button"><i class="fas ${tab.icon}"></i><span>${tab.label}</span><b class="hero-detail-tab-badge">${escapeHtml(tab.badge)}</b></button>`).join('')}
                         </div>
 
-                        <div class="hero-detail-tab-panel ${activeDetailView}" role="tabpanel">
+                        <div id="hero-detail-panel" class="hero-detail-tab-panel ${activeDetailView}" role="tabpanel" aria-labelledby="hero-detail-tab-${activeDetailView}">
                             ${detailBody}
                         </div>
                     </div>
@@ -2241,9 +2267,7 @@ export class UIManager {
             this.renderHeroDetails(hero, activeDetailView);
         }));
 
-        this.panelContent.querySelectorAll('.hero-detail-tab').forEach((button) => {
-            button.addEventListener('click', () => this.renderHeroDetails(hero, button.dataset.view || 'summary'));
-        });
+        this.bindHeroDetailTabs(hero);
 
         document.getElementById('reposition-hero')?.addEventListener('click', () => {
             if (this.game.inputManager.setRepositionMode(hero)) this.closePanel();
@@ -2624,4 +2648,3 @@ export class UIManager {
         return pickHeroDisplaySprite(hero, this.game);
     }
 }
-
