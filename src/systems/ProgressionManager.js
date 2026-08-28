@@ -227,6 +227,7 @@ function createDefaultState() {
         itemLevels: {},
         forgeMaterials: 0,
         loadouts: {},
+        mapTeamLoadouts: {},
         heroUpgrades: {},
         mapProgress: {},
         modeRecords: {},
@@ -316,6 +317,7 @@ export class ProgressionManager {
         migrated.itemLevels = {};
         migrated.forgeMaterials = 0;
         migrated.loadouts = raw.loadouts || {};
+        migrated.mapTeamLoadouts = raw.mapTeamLoadouts || {};
         migrated.heroUpgrades = raw.heroUpgrades || raw.upgrades || {};
         migrated.mapProgress = raw.mapProgress || raw.maps || {};
         migrated.modeRecords = raw.modeRecords || {};
@@ -364,6 +366,12 @@ export class ProgressionManager {
                 slots: Object.fromEntries(Object.entries(loadout?.slots || {})
                     .filter(([, itemId], index) => index === 0 && itemIds.has(itemId)))
             }]));
+        this.state.mapTeamLoadouts = Object.fromEntries(Object.entries(this.state.mapTeamLoadouts || {})
+            .filter(([levelId]) => levelIds.has(levelId))
+            .map(([levelId, teamIds]) => [levelId, [...new Set(Array.isArray(teamIds) ? teamIds : teamIds?.teamIds || [])]
+                .filter((id) => heroIds.has(id) && this.state.unlockedHeroIds.includes(id))
+                .slice(0, 6)])
+            .filter(([, teamIds]) => teamIds.length > 0));
         this.state.heroUpgrades = Object.fromEntries(Object.entries(this.state.heroUpgrades || {})
             .filter(([heroId]) => heroIds.has(heroId))
             .map(([heroId, value]) => [heroId, normalizeHeroUpgrade(value)])
@@ -621,6 +629,42 @@ export class ProgressionManager {
         return true;
     }
 
+    getMapTeamLoadout(levelId = null) {
+        const resolvedLevelId = levelId || this.game?.currentLevel?.id || this.state.lastLevelId || 'level_1';
+        const levelExists = (this.data?.levels || []).some((level) => level.id === resolvedLevelId);
+        if (!levelExists) return { levelId: resolvedLevelId, teamIds: [], heroes: [], count: 0, label: 'Sin mapa valido' };
+        const teamIds = [...new Set(this.state.mapTeamLoadouts?.[resolvedLevelId] || [])]
+            .filter((id) => this.data?.heroes?.[id] && this.state.unlockedHeroIds.includes(id))
+            .slice(0, 6);
+        const heroes = teamIds.map((id) => this.applyHeroLevelStats(this.data.heroes[id])).filter(Boolean);
+        return {
+            levelId: resolvedLevelId,
+            teamIds,
+            heroes,
+            count: teamIds.length,
+            label: heroes.length ? heroes.map((hero) => hero.name).join(' + ') : 'Sin equipo guardado'
+        };
+    }
+
+    saveMapTeamLoadout(levelId = null) {
+        const resolvedLevelId = levelId || this.game?.currentLevel?.id || this.state.lastLevelId || 'level_1';
+        const levelExists = (this.data?.levels || []).some((level) => level.id === resolvedLevelId);
+        if (!levelExists) return { ok: false, reason: 'Mapa no valido' };
+        const teamIds = [...new Set(this.state.activeTeamIds || [])]
+            .filter((id) => this.state.unlockedHeroIds.includes(id) && this.data?.heroes?.[id])
+            .slice(0, 6);
+        if (!teamIds.length) return { ok: false, reason: 'No hay equipo activo para guardar' };
+        this.state.mapTeamLoadouts[resolvedLevelId] = teamIds;
+        this.save();
+        return { ok: true, ...this.getMapTeamLoadout(resolvedLevelId) };
+    }
+
+    applyMapTeamLoadout(levelId = null) {
+        const snapshot = this.getMapTeamLoadout(levelId);
+        if (!snapshot.count) return { ok: false, reason: 'No hay equipo guardado para este mapa' };
+        this.setActiveTeam(snapshot.teamIds);
+        return { ok: true, ...snapshot };
+    }
     setActiveTeam(heroIds) {
         this.state.activeTeamIds = [...new Set(heroIds)]
             .filter((id) => this.state.unlockedHeroIds.includes(id)).slice(0, 6);

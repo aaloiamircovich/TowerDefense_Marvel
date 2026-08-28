@@ -17,7 +17,8 @@ function createUiStub() {
         unlockedHeroIds: ['iron_man', 'spiderman'],
         ownedItemIds: ['lentes_edith'],
         equippedItems: { iron_man: { weapon: 'reactor_arc' } },
-        codexDiscovered: { enemies: [] }
+        codexDiscovered: { enemies: [] },
+        mapTeamLoadouts: { level_1: ['iron_man'] }
     };
     return {
         inventoryPanel: { pendingEquipItemId: 'reactor_arc' },
@@ -27,11 +28,15 @@ function createUiStub() {
             enemyDatabase: data.enemies,
             evolutionVisualDatabase: {},
             activeTeam: [],
+            currentLevel: { id: 'level_1', name: 'Base de los Vengadores' },
             teamSynergy: { getSnapshot: () => analyzeTeam([]) },
             progression: {
                 state,
                 getHeroEvolution: () => null,
-                getOwnedQuantity: (itemId) => state.ownedItemIds.filter((id) => id === itemId).length
+                getOwnedQuantity: (itemId) => state.ownedItemIds.filter((id) => id === itemId).length,
+                getMapTeamLoadout: () => ({ levelId: 'level_1', teamIds: ['iron_man'], heroes: [data.heroes.iron_man], count: 1, label: 'Iron Man' }),
+                saveMapTeamLoadout: () => ({ ok: true, count: 2 }),
+                applyMapTeamLoadout: () => ({ ok: true, count: 1 })
             }
         },
         renderSprite: (source, name) => `<img src="${source || ''}" alt="${name}">`,
@@ -175,6 +180,21 @@ test('coleccion anuncia estado y accion principal al armar equipo', () => {
     const lockedHtml = panel.renderHeroCard(data.heroes.thor, false);
     assert.match(lockedHtml, /role="listitem" aria-label="Thor\. Rareza [^\.]+\. bloqueado\."/);
     assert.match(lockedHtml, /aria-label="Thor bloqueado, pendiente de reclutar" title="Thor bloqueado, pendiente de reclutar" data-tooltip="Thor bloqueado, pendiente de reclutar" aria-pressed="false" aria-disabled="true" disabled/);
+});
+test('coleccion muestra preset de equipo por mapa', () => {
+    const ui = createUiStub();
+    ui.inventoryPanel.pendingEquipItemId = null;
+    ui.game.activeTeam = [data.heroes.iron_man, data.heroes.spiderman];
+    const panel = new TeamBuilderPanel(ui);
+    const html = panel.renderMapTeamLoadoutControls();
+
+    assert.match(html, /map-team-loadout/);
+    assert.match(html, /Base de los Vengadores/);
+    assert.match(html, /Iron Man/);
+    assert.match(html, /id="save-map-team-loadout"/);
+    assert.match(html, /id="apply-map-team-loadout"/);
+    assert.match(html, /Guardar equipo actual/);
+    assert.match(html, /Aplicar equipo guardado/);
 });
 test('previsualizacion de objeto compara mejoras y perdidas numericas', () => {
     const rows = buildItemEquipDeltaRows(data.items.lentes_edith, data.items.reactor_arc);

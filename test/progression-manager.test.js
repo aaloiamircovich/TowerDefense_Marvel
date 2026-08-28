@@ -203,6 +203,44 @@ test('Loadout restaura un solo objeto de forma atomica', () => {
     assert.deepEqual(manager.state.equippedItems.iron_man, { weapon: 'reactor_arc' });
 });
 
+test('Loadout de mapa guarda y restaura el equipo activo', () => {
+    const game = createGame();
+    game.currentLevel = data.levels[0];
+    const manager = new ProgressionManager(new MemoryStorage());
+    manager.initialize(game, data);
+    manager.startProfile('iron_man');
+    manager.unlockHero('spiderman');
+    manager.unlockHero('hulk');
+    manager.setActiveTeam(['iron_man', 'spiderman']);
+
+    const saved = manager.saveMapTeamLoadout('level_1');
+
+    assert.equal(saved.ok, true);
+    assert.deepEqual(manager.state.mapTeamLoadouts.level_1, ['iron_man', 'spiderman']);
+    assert.match(saved.label, /Iron Man/);
+
+    manager.setActiveTeam(['hulk']);
+    const applied = manager.applyMapTeamLoadout('level_1');
+
+    assert.equal(applied.ok, true);
+    assert.deepEqual(manager.state.activeTeamIds, ['iron_man', 'spiderman']);
+    assert.deepEqual(game.activeTeam.map((hero) => hero.id), ['iron_man', 'spiderman']);
+});
+
+test('Loadout de mapa descarta mapas y heroes invalidos', () => {
+    const manager = new ProgressionManager(new MemoryStorage());
+    manager.initialize(createGame(), data);
+    manager.startProfile('iron_man');
+    manager.unlockHero('spiderman');
+    manager.state.mapTeamLoadouts = {
+        level_1: ['iron_man', 'missing', 'spiderman', 'iron_man'],
+        mapa_roto: ['iron_man']
+    };
+
+    manager.sanitize();
+
+    assert.deepEqual(manager.state.mapTeamLoadouts, { level_1: ['iron_man', 'spiderman'] });
+});
 test('Progreso de mapa guarda estrellas y desafios', () => {
     const manager = new ProgressionManager(new MemoryStorage());
     const game = createGame();

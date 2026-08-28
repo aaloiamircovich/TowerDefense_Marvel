@@ -113,6 +113,7 @@ export class TeamBuilderPanel {
                 <div class="team-slot-strip">
                     ${Array.from({ length: 6 }, (_, index) => this.renderTeamSlot(game.activeTeam[index], index)).join('')}
                 </div>
+                ${this.renderMapTeamLoadoutControls()}
                 <div class="team-metrics">
                     ${Object.entries(METRIC_LABELS).map(([key, label]) => `
                         <div class="team-metric"><span>${label}</span><div><i style="width:${snapshot.metrics[key]}%"></i></div><b>${snapshot.metrics[key]}</b></div>
@@ -162,6 +163,31 @@ export class TeamBuilderPanel {
                 <span>${hero.name}</span>
                 <i class="fas fa-xmark"></i>
             </button>
+        `;
+    }
+
+    renderMapTeamLoadoutControls() {
+        const game = this.ui.game;
+        const level = game.currentLevel || game.levelsData?.[0] || { id: 'level_1', name: 'Mapa actual' };
+        const saved = game.progression.getMapTeamLoadout?.(level.id) || { count: 0, label: 'Sin equipo guardado' };
+        const hasTeam = (game.activeTeam || []).length > 0;
+        const hasSaved = saved.count > 0;
+        const currentLabel = (game.activeTeam || []).map((hero) => hero.name).join(' + ') || 'Equipo vacio';
+        const savedLabel = hasSaved ? saved.label : 'Sin preset guardado';
+        return `
+            <div class="map-team-loadout" aria-label="Preset de equipo para ${this.escapeAttribute(level.name)}">
+                <div>
+                    <span><i class="fas fa-map-location-dot"></i> Equipo de mapa</span>
+                    <strong>${this.escapeHtml(level.name)}</strong>
+                    <small title="${this.escapeAttribute(savedLabel)}">${this.escapeHtml(savedLabel)}</small>
+                </div>
+                <button id="save-map-team-loadout" class="btn-primary ghost" type="button" aria-label="Guardar equipo actual para ${this.escapeAttribute(level.name)}: ${this.escapeAttribute(currentLabel)}" title="Guardar equipo actual" data-tooltip="Guardar equipo actual" ${hasTeam ? '' : 'disabled'}>
+                    <i class="fas fa-floppy-disk"></i> Guardar
+                </button>
+                <button id="apply-map-team-loadout" class="btn-primary ghost" type="button" aria-label="Aplicar equipo guardado para ${this.escapeAttribute(level.name)}: ${this.escapeAttribute(savedLabel)}" title="Aplicar equipo guardado" data-tooltip="Aplicar equipo guardado" ${hasSaved ? '' : 'disabled'}>
+                    <i class="fas fa-rotate-left"></i> Aplicar
+                </button>
+            </div>
         `;
     }
 
@@ -746,6 +772,17 @@ export class TeamBuilderPanel {
         });
         this.ui.panelContent.querySelector('.toggle-synergies')?.addEventListener('click', () => {
             this.synergyExpanded = !this.synergyExpanded;
+            this.render('Constructor de equipo');
+        });
+        this.ui.panelContent.querySelector('#save-map-team-loadout')?.addEventListener('click', () => {
+            const result = game.progression.saveMapTeamLoadout?.(game.currentLevel?.id) || { ok: false, reason: 'Preset no disponible' };
+            this.ui.showToast(result.ok ? `Equipo guardado para ${game.currentLevel?.name || 'este mapa'}` : result.reason, result.ok ? 'success' : 'warning');
+            this.render('Constructor de equipo');
+        });
+        this.ui.panelContent.querySelector('#apply-map-team-loadout')?.addEventListener('click', () => {
+            const result = game.progression.applyMapTeamLoadout?.(game.currentLevel?.id) || { ok: false, reason: 'Preset no disponible' };
+            this.ui.showToast(result.ok ? `Equipo de ${game.currentLevel?.name || 'mapa'} aplicado` : result.reason, result.ok ? 'success' : 'warning');
+            if (result.ok) this.ui.renderHeroRoster(game.activeTeam, (entry) => game.inputManager.setPlacementMode(entry));
             this.render('Constructor de equipo');
         });
         this.ui.panelContent.querySelector('#cancel-pending-item')?.addEventListener('click', () => {
