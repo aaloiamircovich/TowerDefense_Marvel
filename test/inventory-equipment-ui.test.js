@@ -18,7 +18,8 @@ function createUiStub() {
         ownedItemIds: ['lentes_edith'],
         equippedItems: { iron_man: { weapon: 'reactor_arc' } },
         codexDiscovered: { enemies: [] },
-        mapTeamLoadouts: { level_1: ['iron_man'] }
+        mapTeamLoadouts: { level_1: ['iron_man'] },
+        favoriteHeroIds: ['spiderman']
     };
     return {
         inventoryPanel: { pendingEquipItemId: 'reactor_arc' },
@@ -36,7 +37,15 @@ function createUiStub() {
                 getOwnedQuantity: (itemId) => state.ownedItemIds.filter((id) => id === itemId).length,
                 getMapTeamLoadout: () => ({ levelId: 'level_1', teamIds: ['iron_man'], heroes: [data.heroes.iron_man], count: 1, label: 'Iron Man' }),
                 saveMapTeamLoadout: () => ({ ok: true, count: 2 }),
-                applyMapTeamLoadout: () => ({ ok: true, count: 1 })
+                applyMapTeamLoadout: () => ({ ok: true, count: 1 }),
+                isHeroFavorite: (heroId) => state.favoriteHeroIds.includes(heroId),
+                toggleHeroFavorite: (heroId) => {
+                    const favorite = !state.favoriteHeroIds.includes(heroId);
+                    state.favoriteHeroIds = favorite
+                        ? [...state.favoriteHeroIds, heroId]
+                        : state.favoriteHeroIds.filter((id) => id !== heroId);
+                    return { ok: true, favorite };
+                }
             }
         },
         renderSprite: (source, name) => `<img src="${source || ''}" alt="${name}">`,
@@ -175,6 +184,8 @@ test('coleccion anuncia estado y accion principal al armar equipo', () => {
     const activeHtml = panel.renderHeroCard(data.heroes.spiderman, true);
     assert.match(activeHtml, /role="listitem" aria-label="Spider-Man\. Rareza [^\.]+\. en equipo activo\."/);
     assert.match(activeHtml, /class="btn-equip btn-primary danger" type="button" data-id="spiderman" aria-label="Quitar Spider-Man del equipo" title="Quitar Spider-Man del equipo" data-tooltip="Quitar Spider-Man del equipo" aria-pressed="true" aria-disabled="false"/);
+    assert.match(activeHtml, /class="btn-favorite-hero icon-command active" type="button" data-id="spiderman"/);
+    assert.match(activeHtml, /aria-label="Quitar Spider-Man de favoritos"/);
     assert.match(activeHtml, /data-tooltip="Ver ficha"/);
 
     const lockedHtml = panel.renderHeroCard(data.heroes.thor, false);
@@ -314,7 +325,7 @@ test('coleccion navega tabs con teclado', () => {
     assert.ok(calls.includes('render:Constructor de equipo:evolutions'));
     assert.ok(calls.includes('focus:evolutions'));
 });
-test('coleccion filtra heroes obtenidos y faltantes', () => {
+test('coleccion filtra heroes obtenidos, faltantes y favoritos', () => {
     const ui = createUiStub();
     const panel = new TeamBuilderPanel(ui);
     const heroes = [data.heroes.iron_man, data.heroes.spiderman, data.heroes.thor];
@@ -326,11 +337,15 @@ test('coleccion filtra heroes obtenidos y faltantes', () => {
     panel.ownershipFilter = 'missing';
     assert.deepEqual(panel.getFilteredHeroes(heroes, unlockedIds).map((hero) => hero.id), ['thor']);
 
+    panel.ownershipFilter = 'favorites';
+    assert.deepEqual(panel.getFilteredHeroes(heroes, unlockedIds).map((hero) => hero.id), ['spiderman']);
+
     const filtersHtml = panel.renderCollectionFilters(2, 3);
     assert.match(filtersHtml, /collection-ownership-select/);
     assert.match(filtersHtml, /aria-label="Buscar heroe, rol o grupo"/);
     assert.match(filtersHtml, /aria-label="Ordenar coleccion"/);
     assert.match(filtersHtml, /aria-label="Filtrar heroes por estado de obtencion"/);
+    assert.match(filtersHtml, /<option value="favorites" selected>Favoritos<\/option>/);
     assert.match(filtersHtml, /aria-label="Filtrar heroes por respuesta tactica"/);
     assert.match(filtersHtml, /class="rarity-filter\s+active" type="button" data-rarity="all" aria-pressed="true" aria-label="Filtrar rareza Todas"/);
     assert.match(filtersHtml, /title="Filtrar rareza Todas" data-tooltip="Filtrar rareza Todas"/);

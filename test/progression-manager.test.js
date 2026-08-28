@@ -241,6 +241,23 @@ test('Loadout de mapa descarta mapas y heroes invalidos', () => {
 
     assert.deepEqual(manager.state.mapTeamLoadouts, { level_1: ['iron_man', 'spiderman'] });
 });
+test('favoritos de heroes persisten y se sanean contra el roster', () => {
+    const manager = new ProgressionManager(new MemoryStorage());
+    manager.initialize(createGame(), data);
+    manager.startProfile('iron_man');
+
+    assert.equal(manager.isHeroFavorite('spiderman'), false);
+    assert.deepEqual(manager.toggleHeroFavorite('spiderman'), { ok: true, favorite: true });
+    assert.equal(manager.isHeroFavorite('spiderman'), true);
+    assert.deepEqual(manager.toggleHeroFavorite('spiderman'), { ok: true, favorite: false });
+    assert.deepEqual(manager.setHeroFavorite('spiderman', true), { ok: true, favorite: true });
+    assert.equal(manager.setHeroFavorite('missing', true).ok, false);
+
+    manager.state.favoriteHeroIds = ['spiderman', 'missing', 'spiderman', 'iron_man'];
+    manager.sanitize();
+
+    assert.deepEqual(manager.state.favoriteHeroIds, ['spiderman', 'iron_man']);
+});
 test('Progreso de mapa guarda estrellas y desafios', () => {
     const manager = new ProgressionManager(new MemoryStorage());
     const game = createGame();

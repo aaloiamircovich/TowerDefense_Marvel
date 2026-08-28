@@ -341,7 +341,12 @@ export class TeamBuilderPanel {
         if (query) labels.push(`Busqueda: ${query}`);
         if (this.rarityFilter !== 'all') labels.push(`Rareza: ${normalizeRarity(this.rarityFilter)}`);
         if (this.ownershipFilter !== 'all') {
-            labels.push(this.ownershipFilter === 'owned' ? 'Solo obtenidos' : 'Solo faltantes');
+            const ownershipLabels = {
+                owned: 'Solo obtenidos',
+                missing: 'Solo faltantes',
+                favorites: 'Solo favoritos'
+            };
+            labels.push(ownershipLabels[this.ownershipFilter] || 'Solo estado');
         }
         if (this.tacticalFilter !== 'all') labels.push(`Tactica: ${this.getTacticalFilterLabel(this.tacticalFilter)}`);
         if (this.sortMode !== 'az') labels.push(`Orden: ${this.getSortLabel(this.sortMode)}`);
@@ -483,6 +488,7 @@ export class TeamBuilderPanel {
 
     getFilteredHeroes(heroes, unlockedIds = new Set()) {
         const query = this.searchQuery.trim().toLowerCase();
+        const favoriteIds = new Set(this.ui.game.progression.state.favoriteHeroIds || []);
         return [...heroes]
             .filter((hero) => {
                 const rarity = normalizeRarity(hero.rarity);
@@ -490,6 +496,7 @@ export class TeamBuilderPanel {
                 const unlocked = unlockedIds.has(hero.id);
                 if (this.ownershipFilter === 'owned' && !unlocked) return false;
                 if (this.ownershipFilter === 'missing' && unlocked) return false;
+                if (this.ownershipFilter === 'favorites' && !favoriteIds.has(hero.id)) return false;
                 if (!this.heroMatchesTacticalFilter(hero)) return false;
                 if (!query) return true;
 
@@ -536,6 +543,7 @@ export class TeamBuilderPanel {
                         <option value="all" ${this.ownershipFilter === 'all' ? 'selected' : ''}>Todos</option>
                         <option value="owned" ${this.ownershipFilter === 'owned' ? 'selected' : ''}>Obtenidos</option>
                         <option value="missing" ${this.ownershipFilter === 'missing' ? 'selected' : ''}>Faltantes</option>
+                        <option value="favorites" ${this.ownershipFilter === 'favorites' ? 'selected' : ''}>Favoritos</option>
                     </select>
                 </label>
                 <label class="collection-sort">
@@ -569,6 +577,9 @@ export class TeamBuilderPanel {
         const availableEvolution = hero.evolutionId ? EVOLUTION_CATALOG[hero.evolutionId] : null;
         const rarity = normalizeRarity(hero.rarity);
         const rarityClass = getRarityClass(rarity);
+        const favorite = game.progression.isHeroFavorite?.(hero.id)
+            || game.progression.state.favoriteHeroIds?.includes(hero.id)
+            || false;
         const alreadyHasPendingItem = equippedItem?.id === pendingItem?.id;
         const itemDeltaPreview = pendingItem && unlocked
             ? `<div class="hero-item-delta-preview">${renderItemDeltaRows(buildItemEquipDeltaRows(pendingItem, equippedItem))}</div>`
@@ -589,14 +600,18 @@ export class TeamBuilderPanel {
                     ? `Quitar ${hero.name} del equipo`
                     : `Anadir ${hero.name} al equipo`
                 : `${hero.name} bloqueado, pendiente de reclutar`;
+        const favoriteLabel = favorite ? `Quitar ${hero.name} de favoritos` : `Marcar ${hero.name} como favorito`;
         return `
-            <article class="collection-card team-hero-card ${rarityClass} ${unlocked ? '' : 'locked'} ${equipped ? 'equipped' : ''} ${pendingItem ? 'item-target-mode' : ''}" data-rarity="${rarity}" role="listitem" aria-label="${this.escapeAttribute(cardAriaLabel)}">
+            <article class="collection-card team-hero-card ${rarityClass} ${unlocked ? '' : 'locked'} ${equipped ? 'equipped' : ''} ${favorite ? 'favorite' : ''} ${pendingItem ? 'item-target-mode' : ''}" data-rarity="${rarity}" role="listitem" aria-label="${this.escapeAttribute(cardAriaLabel)}">
                 ${equippedItem ? `<span class="hero-item-corner" title="${equippedItem.name} equipado">${this.ui.renderSprite(equippedItem.icon, equippedItem.name)}</span>` : ''}
                 ${this.ui.renderSprite(this.getCollectionSprite(hero), hero.name)}
                 <h3>${hero.name}</h3>
                 ${evolution ? `<strong class="evolution-badge" style="--evolution-color:${evolution.color}">${evolution.name}</strong>` : ''}
                 <small><b class="rarity-badge ${rarityClass}">${rarity}</b></small>
                 <div class="collection-actions">
+                    <button class="btn-favorite-hero icon-command ${favorite ? 'active' : ''}" type="button" data-id="${hero.id}" aria-label="${this.escapeAttribute(favoriteLabel)}" title="${this.escapeAttribute(favoriteLabel)}" data-tooltip="${this.escapeAttribute(favoriteLabel)}" aria-pressed="${favorite}">
+                        <i class="fas fa-star"></i>
+                    </button>
                     <button class="btn-preview-hero icon-command" type="button" data-id="${hero.id}" aria-label="${this.escapeAttribute(previewLabel)}" title="Ver ficha" data-tooltip="Ver ficha"><i class="fas fa-eye"></i></button>
                     ${pendingItem ? `
                         <button class="${unlocked && !alreadyHasPendingItem ? 'btn-assign-item' : ''} btn-primary ${alreadyHasPendingItem ? 'ghost' : ''}" type="button" data-id="${hero.id}" aria-label="${this.escapeAttribute(equipActionLabel)}" title="${this.escapeAttribute(equipActionLabel)}" data-tooltip="${this.escapeAttribute(equipActionLabel)}" aria-disabled="${unlocked && !alreadyHasPendingItem ? 'false' : 'true'}" ${unlocked && !alreadyHasPendingItem ? '' : 'disabled'}>
@@ -793,6 +808,15 @@ export class TeamBuilderPanel {
             this.ui.inventoryPanel.pendingEquipItemId = null;
             this.ui.renderPanel('inventory');
         });
+        this.ui.panelContent.querySelectorAll('.btn-favorite-hero').forEach((button) => button.addEventListener('click', () => {
+            const hero = game.heroDatabase[button.dataset.id];
+            const result = game.progression.toggleHeroFavorite?.(button.dataset.id) || { ok: false, reason: 'Favoritos no disponibles' };
+            this.ui.showToast(
+                result.ok ? `${hero?.name || 'Heroe'} ${result.favorite ? 'marcado como favorito' : 'quitado de favoritos'}` : result.reason,
+                result.ok ? 'success' : 'warning'
+            );
+            this.render('Constructor de equipo');
+        }));
         this.ui.panelContent.querySelectorAll('.btn-assign-item').forEach((button) => button.addEventListener('click', () => {
             const pendingItem = this.getPendingInventoryItem();
             if (!pendingItem) return;

@@ -228,6 +228,7 @@ function createDefaultState() {
         forgeMaterials: 0,
         loadouts: {},
         mapTeamLoadouts: {},
+        favoriteHeroIds: [],
         heroUpgrades: {},
         mapProgress: {},
         modeRecords: {},
@@ -318,6 +319,7 @@ export class ProgressionManager {
         migrated.forgeMaterials = 0;
         migrated.loadouts = raw.loadouts || {};
         migrated.mapTeamLoadouts = raw.mapTeamLoadouts || {};
+        migrated.favoriteHeroIds = raw.favoriteHeroIds || [];
         migrated.heroUpgrades = raw.heroUpgrades || raw.upgrades || {};
         migrated.mapProgress = raw.mapProgress || raw.maps || {};
         migrated.modeRecords = raw.modeRecords || {};
@@ -372,6 +374,8 @@ export class ProgressionManager {
                 .filter((id) => heroIds.has(id) && this.state.unlockedHeroIds.includes(id))
                 .slice(0, 6)])
             .filter(([, teamIds]) => teamIds.length > 0));
+        this.state.favoriteHeroIds = [...new Set(this.state.favoriteHeroIds || [])]
+            .filter((id) => heroIds.has(id));
         this.state.heroUpgrades = Object.fromEntries(Object.entries(this.state.heroUpgrades || {})
             .filter(([heroId]) => heroIds.has(heroId))
             .map(([heroId, value]) => [heroId, normalizeHeroUpgrade(value)])
@@ -627,6 +631,24 @@ export class ProgressionManager {
         };
         if (save) this.save();
         return true;
+    }
+
+    isHeroFavorite(heroId) {
+        return this.state.favoriteHeroIds?.includes(heroId) || false;
+    }
+
+    setHeroFavorite(heroId, favorite = true) {
+        if (!this.data?.heroes?.[heroId]) return { ok: false, favorite: false, reason: 'Heroe no valido' };
+        const favorites = new Set(this.state.favoriteHeroIds || []);
+        if (favorite) favorites.add(heroId);
+        else favorites.delete(heroId);
+        this.state.favoriteHeroIds = [...favorites].filter((id) => this.data.heroes[id]);
+        this.save();
+        return { ok: true, favorite: favorites.has(heroId) };
+    }
+
+    toggleHeroFavorite(heroId) {
+        return this.setHeroFavorite(heroId, !this.isHeroFavorite(heroId));
     }
 
     getMapTeamLoadout(levelId = null) {

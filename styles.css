@@ -11117,10 +11117,10 @@ button.team-slot-filled:not(:disabled):active img {
 }
 
 .team-hero-card .collection-actions {
-    grid-template-columns: 28px minmax(78px, 112px);
+    grid-template-columns: 28px 28px minmax(78px, 112px);
     justify-content: center;
     justify-self: center;
-    width: min(148px, 100%);
+    width: min(184px, 100%);
     gap: 5px;
     margin-top: auto;
 }
@@ -11140,6 +11140,14 @@ button.team-slot-filled:not(:disabled):active img {
     font-size: 10px;
     line-height: 1;
     white-space: nowrap;
+}
+
+.team-hero-card .btn-favorite-hero.active {
+    border-color: rgba(255, 208, 90, 0.74);
+    color: var(--bright-yellow);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.16),
+        0 0 14px rgba(255, 184, 40, 0.30);
 }
 
 button:disabled,
