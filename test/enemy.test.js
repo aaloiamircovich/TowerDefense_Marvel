@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildBossTelegraphTheme, buildEnemyStatusPips, Enemy } from '../src/entities/Enemy.js';
+import { buildBossTelegraphTheme, buildEnemyStatusPips, Enemy, shouldRenderEnemyStatusDetails } from '../src/entities/Enemy.js';
 
 test('Enemy permanece fijado a un tramo horizontal', () => {
     const enemy = new Enemy({ id: 'test', hp: 10, speed: 50 }, [
@@ -228,6 +228,33 @@ test('buildEnemyStatusPips prioriza control y limita overflow visual', () => {
     assert.equal(state.overflow, 2);
 });
 
+test('Enemy compacta pips de estado hasta hover, seleccion o boss', () => {
+    const game = { selectedUnit: null, hoveredEnemy: null, hoveredEnemyUid: null };
+    const enemy = new Enemy({ id: 'status', hp: 100, speed: 0 }, [
+        { x: 0, y: 0 },
+        { x: 100, y: 0 }
+    ], game);
+    enemy.x = 50;
+    enemy.y = 0;
+    enemy.applyStatus({ type: 'slow', duration: 2, power: 0.3 });
+    enemy.applyStatus({ type: 'burn', duration: 2, power: 4 });
+
+    const compactCtx = createStatusContextSpy();
+    enemy.renderDebuffPips(compactCtx);
+
+    assert.equal(shouldRenderEnemyStatusDetails(enemy), false);
+    assert.equal(compactCtx.calls.filter((call) => call[0] === 'fillText').length, 0);
+    assert.ok(compactCtx.calls.some((call) => call[0] === 'arc'));
+
+    game.hoveredEnemy = enemy;
+    const detailedCtx = createStatusContextSpy();
+    enemy.renderDebuffPips(detailedCtx);
+
+    assert.equal(shouldRenderEnemyStatusDetails(enemy), true);
+    assert.ok(detailedCtx.calls.some((call) => call[0] === 'fillText' && call[1] === '~'));
+    assert.ok(detailedCtx.calls.some((call) => call[0] === 'fillText' && call[1] === 'F'));
+});
+
 test('Enemy combina marca, ruptura y penetracion de armadura', () => {
     const enemy = new Enemy({ id: 'test', hp: 100, speed: 50, armor: 0.5 }, [{ x: 0, y: 0 }]);
     enemy.applyStatus({ type: 'armorBreak', duration: 2, power: 0.2 });
@@ -375,6 +402,25 @@ test('Refuerzo aparece detras del invocador y permanece sobre un giro', () => {
     assert.equal(reinforcement.distanceTravelled, 120);
 });
 
+function createStatusContextSpy() {
+    const calls = [];
+    return {
+        calls,
+        save: () => calls.push(['save']),
+        restore: () => calls.push(['restore']),
+        beginPath: () => calls.push(['beginPath']),
+        arc: (...args) => calls.push(['arc', ...args]),
+        fill: () => calls.push(['fill']),
+        stroke: () => calls.push(['stroke']),
+        fillText: (...args) => calls.push(['fillText', ...args]),
+        set fillStyle(value) { calls.push(['fillStyle', value]); },
+        set strokeStyle(value) { calls.push(['strokeStyle', value]); },
+        set lineWidth(value) { calls.push(['lineWidth', value]); },
+        set font(value) { calls.push(['font', value]); },
+        set textAlign(value) { calls.push(['textAlign', value]); },
+        set textBaseline(value) { calls.push(['textBaseline', value]); }
+    };
+}
 function createEnemyGame() {
     return {
         path: [{ x: 0, y: 0 }, { x: 500, y: 0 }],

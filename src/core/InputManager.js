@@ -199,6 +199,7 @@ export class InputManager {
         this.placingHero = null;
         this.movingHero = null;
         this.suggestedPlacement = null;
+        this.hoveredEnemy = null;
         this.mousePos = { x: 0, y: 0 };
         this.gamepadButtons = [];
         this.gamepadHeroIndex = 0;
@@ -206,7 +207,10 @@ export class InputManager {
 
         this.canvas.addEventListener('click', (event) => this.handleCanvasClick(event));
         this.canvas.addEventListener('mousemove', (event) => this.updateMousePos(event));
-        this.canvas.addEventListener('mouseleave', () => this.uiManager.setSelectionStatus('Elige un héroe y colócalo junto al camino.'));
+        this.canvas.addEventListener('mouseleave', () => {
+            this.setHoveredEnemy(null);
+            this.uiManager.setSelectionStatus('Elige un héroe y colócalo junto al camino.');
+        });
         window.addEventListener('keydown', (event) => {
             const bindings = this.game.progression?.state.settings.keyBindings || {};
             if (event.key === (bindings.cancel || 'Escape')) this.clearPlacement();
@@ -244,9 +248,40 @@ export class InputManager {
         this.mousePos.y = (event.clientY - rect.top) * (this.canvas.height / rect.height);
 
         if (this.placingHero) {
+            this.setHoveredEnemy(null);
             const validation = this.getPlacementValidation();
             this.uiManager.setSelectionStatus(validation.message);
+        } else {
+            this.updateHoveredEnemy();
         }
+    }
+
+    updateHoveredEnemy() {
+        const enemy = this.findEnemyAtPoint(this.mousePos.x, this.mousePos.y);
+        this.setHoveredEnemy(enemy || null);
+        return this.hoveredEnemy;
+    }
+
+    setHoveredEnemy(enemy = null) {
+        const next = enemy?.isAlive === false || enemy?.hasReachedEnd ? null : enemy;
+        if (this.hoveredEnemy === next) return;
+        this.hoveredEnemy = next;
+        this.game.hoveredEnemy = next;
+        this.game.hoveredEnemyUid = next?.uid || null;
+        if (this.canvas?.style) this.canvas.style.cursor = next ? 'pointer' : '';
+    }
+
+    findEnemyAtPoint(x, y) {
+        const enemies = (this.game.enemies || []).filter((enemy) => enemy?.isAlive !== false && !enemy.hasReachedEnd);
+        return enemies.find((enemy) => {
+            const bounds = enemy.getVisualBounds?.();
+            if (bounds) {
+                const padding = Math.max(4, Math.min(12, Number(enemy.size || 30) * 0.2));
+                if (x >= bounds.left - padding && x <= bounds.right + padding && y >= bounds.top - padding && y <= bounds.bottom + padding) return true;
+            }
+            const radius = Math.max(18, Number(enemy.size || 30) * 0.6);
+            return Math.hypot(x - enemy.x, y - enemy.y) <= radius;
+        }) || null;
     }
 
     setPlacementMode(heroConfig) {
@@ -453,11 +488,13 @@ export class InputManager {
     }
 
     checkUnitSelection(x, y) {
-        const entities = [...this.game.enemies, ...this.game.heroes];
-        const selectedUnit = entities.find((unit) => Math.hypot(x - unit.x, y - unit.y) <= 26);
+        const selectedEnemy = this.findEnemyAtPoint(x, y);
+        const selectedHero = (this.game.heroes || []).find((unit) => Math.hypot(x - unit.x, y - unit.y) <= 26);
+        const selectedUnit = selectedEnemy || selectedHero;
 
         if (selectedUnit) {
             this.game.selectedUnit = selectedUnit;
+            if (selectedEnemy) this.setHoveredEnemy(selectedEnemy);
             this.uiManager.inspectUnit(selectedUnit, selectedUnit.takeDamage !== undefined);
         } else {
             this.game.selectedUnit = null;

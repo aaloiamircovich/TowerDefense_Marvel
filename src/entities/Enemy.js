@@ -70,6 +70,16 @@ export function buildBossTelegraphTheme(enemy = {}, phase = {}) {
     };
 }
 
+export function shouldRenderEnemyStatusDetails(enemy = {}) {
+    return Boolean(
+        enemy.isBoss
+        || enemy.isFinalBoss
+        || enemy.game?.selectedUnit === enemy
+        || enemy.game?.hoveredEnemy === enemy
+        || (enemy.uid && enemy.game?.hoveredEnemyUid === enemy.uid)
+    );
+}
+
 export function buildEnemyStatusPips(debuffs = [], limit = 4) {
     const active = (debuffs || [])
         .filter((debuff) => debuff?.duration > 0)
@@ -115,6 +125,7 @@ export class Enemy {
     constructor(config, path, game = null) {
         this.uid = `enemy-${enemyUid++}`;
         this.config = config;
+        this.game = game;
         this.name = config.name || 'Enemigo';
         this.hp = config.hp || 50;
         this.maxHp = this.hp;
@@ -578,8 +589,13 @@ export class Enemy {
     }
 
     renderDebuffPips(ctx) {
-        const state = buildEnemyStatusPips(this.debuffs);
+        const detailed = shouldRenderEnemyStatusDetails(this);
+        const state = buildEnemyStatusPips(this.debuffs, detailed ? 4 : 1);
         if (!state.total) return;
+        if (!detailed) {
+            this.renderCompactStatusBadge(ctx, state);
+            return;
+        }
 
         ctx.save();
         ctx.font = '800 7px Segoe UI';
@@ -602,6 +618,24 @@ export class Enemy {
             ctx.fillStyle = '#ffffff';
             ctx.fillText(`+${state.overflow}`, this.x + 24, this.y + this.size / 2 + 8);
         }
+        ctx.restore();
+    }
+
+    renderCompactStatusBadge(ctx, state) {
+        const status = state.visible[0];
+        if (!status) return;
+        const bounds = this.getVisualBounds();
+        const x = Math.min(bounds.right - 6, this.x + this.size / 2 + 6);
+        const y = bounds.top + 7;
+
+        ctx.save();
+        ctx.fillStyle = 'rgba(5, 7, 11, 0.78)';
+        ctx.beginPath();
+        ctx.arc(x, y, 4, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = status.color;
+        ctx.lineWidth = state.total > 1 ? 2 : 1.4;
+        ctx.stroke();
         ctx.restore();
     }
 }

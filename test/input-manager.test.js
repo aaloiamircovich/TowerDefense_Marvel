@@ -137,6 +137,64 @@ test('InputManager limpia seleccion al hacer click en mapa vacio', () => {
     assert.equal(input.game.selectedUnit, null);
 });
 
+test('InputManager enfoca enemigos con hover y limpia al salir del canvas', () => {
+    const previousWindow = globalThis.window;
+    const listeners = {};
+    globalThis.window = { addEventListener: () => {} };
+    const enemy = {
+        uid: 'enemy-hover',
+        name: 'Cientifico A.I.M.',
+        x: 100,
+        y: 120,
+        size: 30,
+        isAlive: true,
+        hasReachedEnd: false,
+        takeDamage: () => {},
+        getVisualBounds: () => ({ left: 84, top: 104, right: 116, bottom: 136 })
+    };
+    const game = {
+        selectedUnit: null,
+        hoveredEnemy: null,
+        hoveredEnemyUid: null,
+        heroes: [],
+        enemies: [enemy],
+        progression: { state: { settings: { keyBindings: {} } } },
+        tacticalActions: null
+    };
+    const statuses = [];
+    const canvas = {
+        width: 400,
+        height: 300,
+        style: {},
+        addEventListener(type, handler) { listeners[type] = handler; },
+        getBoundingClientRect: () => ({ left: 0, top: 0, width: 400, height: 300 })
+    };
+    const ui = {
+        setSelectionStatus: (message) => statuses.push(message),
+        inspectUnit: () => {}
+    };
+
+    try {
+        const input = new InputManager(canvas, game, ui, {});
+        listeners.mousemove({ clientX: 100, clientY: 120 });
+
+        assert.equal(input.hoveredEnemy, enemy);
+        assert.equal(game.hoveredEnemy, enemy);
+        assert.equal(game.hoveredEnemyUid, 'enemy-hover');
+        assert.equal(canvas.style.cursor, 'pointer');
+
+        listeners.mouseleave();
+
+        assert.equal(input.hoveredEnemy, null);
+        assert.equal(game.hoveredEnemy, null);
+        assert.equal(game.hoveredEnemyUid, null);
+        assert.equal(canvas.style.cursor, '');
+        assert.match(statuses.at(-1), /Elige un héroe/);
+    } finally {
+        globalThis.window = previousWindow;
+    }
+});
+
 test('InputManager cicla prioridad del heroe seleccionado con atajo configurable', () => {
     const previousWindow = globalThis.window;
     let keydownHandler = null;
