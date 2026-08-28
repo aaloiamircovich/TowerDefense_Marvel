@@ -6216,6 +6216,128 @@ select {
     padding: 7px 10px;
 }
 
+.shop-buy-stack {
+    display: grid;
+    gap: 6px;
+    min-width: 0;
+}
+
+.shop-buy-stack .btn-primary {
+    width: 100%;
+    min-height: 38px;
+}
+
+.shop-afford-meter {
+    position: relative;
+    display: grid;
+    align-items: center;
+    min-height: 18px;
+    overflow: hidden;
+    padding: 2px 7px;
+    border: 1px solid rgba(64, 201, 255, 0.2);
+    border-radius: 6px;
+    background: rgba(3, 7, 12, 0.76);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.shop-afford-meter span {
+    position: absolute;
+    inset: 0 auto 0 0;
+    min-width: 4px;
+    border-radius: inherit;
+    background: linear-gradient(90deg, rgba(64, 201, 255, 0.52), rgba(102, 255, 176, 0.54));
+    opacity: 0.9;
+}
+
+.shop-afford-meter small {
+    position: relative;
+    z-index: 1;
+    justify-self: center;
+    overflow: hidden;
+    max-width: 100%;
+    color: #ffffff;
+    font-size: 9px;
+    font-weight: 900;
+    line-height: 1.15;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+    white-space: nowrap;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.75);
+}
+
+.shop-afford-meter.ready {
+    border-color: rgba(102, 255, 176, 0.46);
+}
+
+.shop-afford-meter.locked {
+    border-color: rgba(252, 163, 17, 0.32);
+}
+
+.shop-afford-meter.locked span {
+    background: linear-gradient(90deg, rgba(252, 163, 17, 0.52), rgba(240, 62, 83, 0.58));
+}
+
+.shop-card-footer .shop-afford-meter {
+    grid-column: 1 / -1;
+}
+
+.shop-heading-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    min-width: 180px;
+}
+
+.shop-next-preview {
+    display: inline-grid;
+    grid-template-columns: auto minmax(0, auto) auto;
+    align-items: center;
+    gap: 5px;
+    max-width: 260px;
+    min-height: 30px;
+    padding: 5px 7px;
+    border: 1px solid rgba(64, 201, 255, 0.28);
+    border-radius: 6px;
+    background: rgba(3, 7, 12, 0.72);
+    color: #ffffff;
+}
+
+.shop-next-preview i {
+    color: color-mix(in srgb, var(--level-accent), white 12%);
+    font-size: 10px;
+}
+
+.shop-next-preview small {
+    color: var(--muted);
+    font-size: 8px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.shop-next-preview b {
+    overflow: hidden;
+    min-width: 0;
+    max-width: 125px;
+    color: #ffffff;
+    font-size: 10px;
+    line-height: 1;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.shop-next-preview em {
+    color: var(--bright-yellow);
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 900;
+}
+
+.shop-next-preview.complete {
+    grid-template-columns: auto auto;
+    color: rgba(227, 233, 243, 0.72);
+}
 .item-badge {
     position: absolute;
     top: 10px;

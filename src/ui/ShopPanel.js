@@ -12,6 +12,44 @@ function escapeHtml(value = '') {
         .replaceAll("'", '&#039;');
 }
 
+export function buildShopAffordabilityState(credits = 0, cost = 0, adminMode = false) {
+    const normalizedCost = Math.max(0, Math.ceil(Number(cost) || 0));
+    const normalizedCredits = Math.max(0, Math.floor(Number(credits) || 0));
+
+    if (adminMode) {
+        return {
+            canAfford: true,
+            progress: 100,
+            missing: 0,
+            current: normalizedCost,
+            max: normalizedCost || 1,
+            label: 'Fondos ilimitados'
+        };
+    }
+
+    if (normalizedCost <= 0) {
+        return {
+            canAfford: true,
+            progress: 100,
+            missing: 0,
+            current: 0,
+            max: 1,
+            label: 'Sin coste'
+        };
+    }
+
+    const current = Math.min(normalizedCredits, normalizedCost);
+    const missing = Math.max(0, normalizedCost - normalizedCredits);
+    return {
+        canAfford: missing <= 0,
+        progress: Math.max(0, Math.min(100, Math.round((current / normalizedCost) * 100))),
+        missing,
+        current,
+        max: normalizedCost,
+        label: missing <= 0 ? 'Listo para comprar' : '$' + missing + ' faltan'
+    };
+}
+
 export class ShopPanel {
     constructor(ui, builders = {}) {
         this.ui = ui;
@@ -22,6 +60,8 @@ export class ShopPanel {
 
     render(title = 'Tienda') {
         const rotation = this.ui.game.shopSystem.getRotation();
+        const shopQueue = this.ui.game.shopSystem.getProgressiveQueue?.() || [];
+        const nextQueueItem = shopQueue[rotation.length] || null;
         const credits = this.ui.game.progression.getCredits();
         const adminMode = Boolean(this.ui.game.progression.state.settings.adminMode);
         const fundsText = adminMode ? '∞' : `$${credits}`;
@@ -31,8 +71,9 @@ export class ShopPanel {
         const recruitPool = Object.values(this.ui.game.heroDatabase || {})
             .filter((hero) => hero.visual)
             .filter((hero) => !this.ui.game.progression.state.unlockedHeroIds.includes(hero.id));
-        const canRecruit = recruitPool.length > 0 && (adminMode || credits >= recruitCost);
-        const recruitMissing = Math.max(0, recruitCost - credits);
+        const recruitAffordability = buildShopAffordabilityState(credits, recruitCost, adminMode);
+        const canRecruit = recruitPool.length > 0 && recruitAffordability.canAfford;
+        const recruitMissing = recruitAffordability.missing;
         const recruitButtonText = recruitPool.length === 0
             ? 'PLANTILLA COMPLETA'
             : canRecruit
@@ -62,7 +103,10 @@ export class ShopPanel {
                     <small>La quinta apertura común garantiza Rare o superior.</small>
                 </div>
                 <div class="pity-track compact"><span>Garantía</span><b>${pityValue}/4</b></div>
-                <button class="btn-primary" id="gacha-btn" type="button" data-affordability="${canRecruit ? 'ready' : 'locked'}" aria-label="${escapeHtml(recruitAriaLabel)}" title="${escapeHtml(recruitAriaLabel)}" data-tooltip="${escapeHtml(recruitAriaLabel)}" aria-disabled="${!canRecruit}" ${canRecruit ? '' : 'disabled'}>${recruitButtonText}</button>
+                <div class="shop-buy-stack">
+                    <button class="btn-primary" id="gacha-btn" type="button" data-affordability="${canRecruit ? 'ready' : 'locked'}" aria-label="${escapeHtml(recruitAriaLabel)}" title="${escapeHtml(recruitAriaLabel)}" data-tooltip="${escapeHtml(recruitAriaLabel)}" aria-disabled="${!canRecruit}" ${canRecruit ? '' : 'disabled'}>${recruitButtonText}</button>
+                    ${this.renderAffordabilityMeter(recruitAffordability, 'Progreso para caja')}
+                </div>
             </section>
             <div id="gacha-res" class="result-copy shop-reveal-dock" role="status" aria-live="polite"></div>
             <section class="shop-section-heading">
@@ -70,7 +114,10 @@ export class ShopPanel {
                     <h3>Arsenal progresivo</h3>
                     <p class="empty-copy">Siempre ves los 3 objetos mas basicos disponibles; al comprar uno entra el siguiente.</p>
                 </div>
-                <strong>${rotation.length}/3 visibles</strong>
+                <div class="shop-heading-meta">
+                    ${this.renderNextQueuePreview(nextQueueItem)}
+                    <strong>${rotation.length}/3 visibles</strong>
+                </div>
             </section>
             <div class="shop-grid shop-grid--compact">
                 ${rotation.map((slot) => this.renderItem(slot.item, slot.purchased)).join('') || '<p class="empty-copy">Arsenal completado.</p>'}
@@ -83,14 +130,35 @@ export class ShopPanel {
         });
     }
 
+    renderAffordabilityMeter(state, label = 'Progreso de compra') {
+        const progress = Math.max(0, Math.min(100, Math.round(Number(state?.progress) || 0)));
+        const max = Math.max(1, Math.ceil(Number(state?.max) || 1));
+        const current = Math.max(0, Math.min(max, Math.ceil(Number(state?.current) || 0)));
+        const tone = state?.canAfford ? 'ready' : 'locked';
+        const text = state?.label || 'Sin datos';
+        return `<div class="shop-afford-meter ${tone}" role="meter" aria-label="${escapeHtml(label)}: ${escapeHtml(text)}" aria-valuemin="0" aria-valuemax="${max}" aria-valuenow="${current}"><span style="width:${progress}%"></span><small>${escapeHtml(text)}</small></div>`;
+    }
+
+    renderNextQueuePreview(item) {
+        if (!item) {
+            return '<span class="shop-next-preview complete"><i class="fas fa-check"></i><b>Arsenal completo</b></span>';
+        }
+
+        const rarity = normalizeRarity(item.rarity);
+        const rarityClass = getRarityClass(rarity);
+        const price = Number(item.price || 0);
+        const label = `Proximo al comprar: ${item.name} por ${price} creditos`;
+        return `<span class="shop-next-preview ${rarityClass}" aria-label="${escapeHtml(label)}"><i class="fas fa-arrow-right"></i><small>En cola</small><b>${escapeHtml(item.name)}</b><em>$${price}</em></span>`;
+    }
     renderItem(item, purchased = false) {
         if (!item) return '<div class="shop-card empty-copy">Agotado</div>';
         const owned = this.ui.game.progression.getOwnedQuantity(item.id);
         const credits = this.ui.game.progression.getCredits();
         const adminMode = Boolean(this.ui.game.progression.state.settings.adminMode);
         const price = Number(item.price || 0);
-        const canBuy = !purchased && (adminMode || credits >= price);
-        const missing = Math.max(0, price - credits);
+        const affordability = buildShopAffordabilityState(credits, price, adminMode);
+        const canBuy = !purchased && affordability.canAfford;
+        const missing = affordability.missing;
         const rarity = normalizeRarity(item.rarity);
         const rarityClass = getRarityClass(rarity);
         const summary = this.ui.nextWaveSummary || (!this.ui.game.waveManager?.isWaveActive ? this.ui.game.waveManager?.buildPreparedSummary?.() : null);
@@ -127,6 +195,7 @@ export class ShopPanel {
                     <span>${escapeHtml(setProgress.detail)}</span>
                 </div>` : ''}
                 <div class="shop-card-footer">
+                    ${this.renderAffordabilityMeter(affordability, `Progreso para comprar ${item.name}`)}
                     <small>${purchased ? 'Adquirido' : canBuy ? `Copias: ${owned}` : `Faltan $${missing}`}</small>
                     <button class="btn-buy-item btn-primary ghost" type="button" data-id="${item.id}" aria-label="${escapeHtml(buyAriaLabel)}" title="${escapeHtml(buyAriaLabel)}" data-tooltip="${escapeHtml(buyAriaLabel)}" aria-disabled="${purchased || !canBuy}" ${purchased || !canBuy ? 'disabled' : ''}>${purchased ? 'ADQUIRIDO' : canBuy ? `$${price}` : 'BLOQUEADO'}</button>
                 </div>
@@ -298,8 +367,9 @@ export class ShopPanel {
                 const nextCost = getHeroBoxCost(this.ui.game.progression.state.shop);
                 const adminMode = Boolean(this.ui.game.progression.state.settings.adminMode);
                 const credits = this.ui.game.progression.getCredits();
-                const canRecruit = nextPool.length > 0 && (adminMode || credits >= nextCost);
-                const missing = Math.max(0, nextCost - credits);
+                const nextAffordability = buildShopAffordabilityState(credits, nextCost, adminMode);
+                const canRecruit = nextPool.length > 0 && nextAffordability.canAfford;
+                const missing = nextAffordability.missing;
                 const buttonLabel = nextPool.length === 0
                     ? 'Plantilla completa'
                     : canRecruit
@@ -318,6 +388,13 @@ export class ShopPanel {
                 button.setAttribute?.('aria-disabled', String(!canRecruit));
                 const boxReadout = this.ui.panelContent.querySelector('[data-shop-readout="box-cost"]');
                 if (boxReadout) boxReadout.textContent = nextPool.length === 0 ? 'Completa' : `$${nextCost}`;
+                const recruitMeter = this.ui.panelContent.querySelector('.shop-buy-stack .shop-afford-meter');
+                if (recruitMeter) {
+                    const meterState = nextPool.length === 0
+                        ? { canAfford: false, progress: 100, missing: 0, current: 1, max: 1, label: 'Plantilla completa' }
+                        : nextAffordability;
+                    recruitMeter.outerHTML = this.renderAffordabilityMeter(meterState, 'Progreso para caja');
+                }
             }
         });
     }

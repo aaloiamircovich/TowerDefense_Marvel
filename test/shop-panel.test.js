@@ -1,6 +1,35 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { ShopPanel } from '../src/ui/ShopPanel.js';
+import { buildShopAffordabilityState, ShopPanel } from '../src/ui/ShopPanel.js';
+
+test('buildShopAffordabilityState normaliza progreso de compra', () => {
+    assert.deepEqual(buildShopAffordabilityState(100, 500), {
+        canAfford: false,
+        progress: 20,
+        missing: 400,
+        current: 100,
+        max: 500,
+        label: '$400 faltan'
+    });
+
+    assert.deepEqual(buildShopAffordabilityState(650, 500), {
+        canAfford: true,
+        progress: 100,
+        missing: 0,
+        current: 500,
+        max: 500,
+        label: 'Listo para comprar'
+    });
+
+    assert.deepEqual(buildShopAffordabilityState(0, 500, true), {
+        canAfford: true,
+        progress: 100,
+        missing: 0,
+        current: 500,
+        max: 500,
+        label: 'Fondos ilimitados'
+    });
+});
 
 test('ShopPanel renderiza tienda progresiva y delega compra de objetos', () => {
     const buyButton = createButtonStub({ id: 'lentes_edith' });
@@ -23,6 +52,11 @@ test('ShopPanel renderiza tienda progresiva y delega compra de objetos', () => {
     assert.match(panelContent.innerHTML, /shop-economy-readout/);
     assert.match(panelContent.innerHTML, /\+\$60/);
     assert.match(panelContent.innerHTML, /shop-recruit-strip/);
+    assert.match(panelContent.innerHTML, /shop-afford-meter ready/);
+    assert.match(panelContent.innerHTML, /role="meter" aria-label="Progreso para caja: Listo para comprar" aria-valuemin="0" aria-valuemax="500" aria-valuenow="500"/);
+    assert.match(panelContent.innerHTML, /shop-heading-meta/);
+    assert.match(panelContent.innerHTML, /shop-next-preview rarity-common/);
+    assert.match(panelContent.innerHTML, /Brazalete Web/);
     assert.match(panelContent.innerHTML, /shop-grid--compact/);
     assert.match(panelContent.innerHTML, /RECLUTAR POR \$500/);
     assert.match(panelContent.innerHTML, /id="gacha-btn" type="button" data-affordability="ready"/);
@@ -57,6 +91,8 @@ test('ShopPanel muestra creditos faltantes sin esperar al error de compra', () =
     assert.match(panelContent.innerHTML, /aria-label="No alcanza para reclutar\. Faltan 400 creditos" title="No alcanza para reclutar\. Faltan 400 creditos" data-tooltip="No alcanza para reclutar\. Faltan 400 creditos" aria-disabled="true" disabled/);
     assert.match(panelContent.innerHTML, /Faltan \$400/);
     assert.match(panelContent.innerHTML, /data-affordability="locked"/);
+    assert.match(panelContent.innerHTML, /shop-afford-meter locked/);
+    assert.match(panelContent.innerHTML, /role="meter" aria-label="Progreso para caja: \$400 faltan" aria-valuemin="0" aria-valuemax="500" aria-valuenow="100"/);
     assert.match(panelContent.innerHTML, /BLOQUEADO/);
     assert.match(panelContent.innerHTML, /aria-label="No alcanza para comprar Lentes E\.D\.I\.T\.H\.\. Faltan 400 creditos" title="No alcanza para comprar Lentes E\.D\.I\.T\.H\.\. Faltan 400 creditos" data-tooltip="No alcanza para comprar Lentes E\.D\.I\.T\.H\.\. Faltan 400 creditos" aria-disabled="true" disabled/);
 });
@@ -146,6 +182,18 @@ function createShopUi(panelContent, calls) {
         effects: { detectStealth: true },
         icon: 'edith.png'
     };
+    const nextItem = {
+        id: 'brazalete_web',
+        name: 'Brazalete Web',
+        rarity: 'Common',
+        slot: 'tech',
+        set: 'spider',
+        desc: 'Aumenta el control de ruta.',
+        price: 620,
+        tier: 1,
+        effects: { rangePct: 0.04 },
+        icon: 'web.png'
+    };
     return {
         panelContent,
         nextWaveSummary: null,
@@ -166,6 +214,7 @@ function createShopUi(panelContent, calls) {
             },
             shopSystem: {
                 getRotation: () => [{ item, purchased: false }],
+                getProgressiveQueue: () => [item, nextItem],
                 purchaseItem(id) {
                     calls.push(`purchase:${id}`);
                     return { ok: true, item };
