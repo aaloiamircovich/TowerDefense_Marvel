@@ -1,4 +1,6 @@
 import { SET_BONUSES, SLOT_LABELS } from '../systems/ItemEffectSystem.js';
+import { EVOLUTION_CATALOG } from '../systems/EvolutionSystem.js';
+import { ITEM_SIGNATURES } from '../systems/ItemSignatureSystem.js';
 import { getHeroBoxCost } from '../systems/ShopSystem.js';
 import { getRarityClass, normalizeRarity } from '../utils/Rarity.js';
 import { buildItemEffectPills } from './InventoryPanel.js';
@@ -48,6 +50,36 @@ export function buildShopAffordabilityState(credits = 0, cost = 0, adminMode = f
         max: normalizedCost,
         label: missing <= 0 ? 'Listo para comprar' : '$' + missing + ' faltan'
     };
+}
+
+export function buildItemSignatureHint(item = {}, heroDatabase = {}) {
+    const heroIds = new Set(Object.keys(ITEM_SIGNATURES[item.id] || {}));
+    Object.values(EVOLUTION_CATALOG).forEach((evolution) => {
+        (evolution.itemTransforms || []).forEach((transform) => {
+            if (transform.itemId === item.id && evolution.baseHeroId) heroIds.add(evolution.baseHeroId);
+        });
+    });
+
+    const heroes = [...heroIds]
+        .map((heroId) => heroDatabase[heroId] || { id: heroId, name: formatSignatureHeroName(heroId) })
+        .filter((hero) => hero?.id);
+    if (!heroes.length) return null;
+
+    const visible = heroes.slice(0, 3).map((hero) => hero.name);
+    const extra = Math.max(0, heroes.length - visible.length);
+    return {
+        heroIds: heroes.map((hero) => hero.id),
+        detail: `${visible.join(', ')}${extra ? ` +${extra}` : ''}`,
+        fullDetail: heroes.map((hero) => hero.name).join(', ')
+    };
+}
+
+function formatSignatureHeroName(heroId = '') {
+    return String(heroId)
+        .split('_')
+        .filter(Boolean)
+        .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+        .join(' ');
 }
 
 export class ShopPanel {
@@ -163,6 +195,7 @@ export class ShopPanel {
         const rarityClass = getRarityClass(rarity);
         const summary = this.ui.nextWaveSummary || (!this.ui.game.waveManager?.isWaveActive ? this.ui.game.waveManager?.buildPreparedSummary?.() : null);
         const insight = this.buildShopItemInsight(item, summary);
+        const signatureHint = buildItemSignatureHint(item, this.ui.game.heroDatabase || {});
         const setProgress = this.buildShopSetProgress(
             item,
             this.ui.game.progression.state.ownedItemIds,
@@ -182,6 +215,11 @@ export class ShopPanel {
                     ${this.ui.renderSprite(item.icon, item.name)}
                     <div><small>${SLOT_LABELS[item.slot]} · ${SET_BONUSES[item.set]?.name || item.set}</small><h4>${item.name}</h4></div>
                 </div>
+                ${signatureHint ? `<div class="shop-signature-hint" aria-label="Objeto firma para ${escapeHtml(signatureHint.fullDetail)}" title="Objeto firma para ${escapeHtml(signatureHint.fullDetail)}" data-tooltip="Objeto firma para ${escapeHtml(signatureHint.fullDetail)}">
+                    <i class="fas fa-file-signature"></i>
+                    <strong>Firma</strong>
+                    <span>${escapeHtml(signatureHint.detail)}</span>
+                </div>` : ''}
                 <p>${item.desc}</p>
                 <div class="shop-effect-pills item-effect-pills" aria-label="Efectos principales">
                     ${effectPills.map((pill) => `<span class="${pill.tone}"><b>${pill.label}</b><small>${pill.value}</small></span>`).join('')}
@@ -413,3 +451,4 @@ export class ShopPanel {
         return globalThis.window || globalThis;
     }
 }
+

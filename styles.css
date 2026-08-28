@@ -6558,6 +6558,45 @@ select {
     font-size: 10px;
 }
 
+.shop-signature-hint {
+    display: inline-grid;
+    grid-template-columns: auto auto minmax(0, 1fr);
+    align-items: center;
+    gap: 5px;
+    width: fit-content;
+    max-width: 100%;
+    min-height: 24px;
+    padding: 4px 7px;
+    border: 1px solid rgba(252, 211, 77, 0.42);
+    border-radius: 7px;
+    background: linear-gradient(135deg, rgba(252, 211, 77, 0.16), rgba(64, 201, 255, 0.08));
+    color: #ffe38a;
+    box-shadow: 0 0 14px rgba(252, 211, 77, 0.08);
+}
+
+.shop-signature-hint i {
+    color: var(--bright-yellow);
+    font-size: 10px;
+}
+
+.shop-signature-hint strong {
+    color: #ffffff;
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: 0;
+    text-transform: uppercase;
+}
+
+.shop-signature-hint span {
+    overflow: hidden;
+    min-width: 0;
+    color: rgba(255, 235, 166, 0.92);
+    font-size: 9px;
+    font-weight: 800;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 .shop-insight {
     display: grid;
     gap: 3px;
@@ -11526,3 +11565,4 @@ button:disabled,
         max-width: min(180px, calc(100% - 24px));
     }
 }
+

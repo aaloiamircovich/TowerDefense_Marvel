@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildShopAffordabilityState, ShopPanel } from '../src/ui/ShopPanel.js';
+import { buildItemSignatureHint, buildShopAffordabilityState, ShopPanel } from '../src/ui/ShopPanel.js';
 
 test('buildShopAffordabilityState normaliza progreso de compra', () => {
     assert.deepEqual(buildShopAffordabilityState(100, 500), {
@@ -29,6 +29,54 @@ test('buildShopAffordabilityState normaliza progreso de compra', () => {
         max: 500,
         label: 'Fondos ilimitados'
     });
+});
+
+test('buildItemSignatureHint cruza firmas de combate y evolucion', () => {
+    assert.deepEqual(buildItemSignatureHint({ id: 'baliza_fury' }), null);
+
+    const hint = buildItemSignatureHint({ id: 'carga_viuda' }, {
+        black_widow: { id: 'black_widow', name: 'Black Widow' },
+        yelena_belova: { id: 'yelena_belova', name: 'Yelena Belova' }
+    });
+
+    assert.deepEqual(hint.heroIds, ['black_widow', 'yelena_belova']);
+    assert.equal(hint.detail, 'Black Widow, Yelena Belova');
+    assert.equal(hint.fullDetail, 'Black Widow, Yelena Belova');
+});
+
+test('ShopPanel destaca objetos signature antes de compra', () => {
+    const panelContent = createPanelContentStub({ '.btn-buy-item': [] });
+    const calls = [];
+    const ui = createShopUi(panelContent, calls);
+    const signatureItem = {
+        id: 'carga_viuda',
+        name: 'CARGA WIDOW',
+        rarity: 'Common',
+        slot: 'weapon',
+        set: 'street',
+        desc: '12% de aturdir brevemente y +4% cadencia.',
+        price: 820,
+        tier: 1,
+        effects: { stunChance: 0.12, stunDuration: 0.18, fireRatePct: 0.04 },
+        icon: 'widow.png'
+    };
+    ui.game.heroDatabase = {
+        black_widow: { id: 'black_widow', name: 'Black Widow', rarity: 'Rare', visual: { idle: 'black_widow.png' } },
+        yelena_belova: { id: 'yelena_belova', name: 'Yelena Belova', rarity: 'Common', visual: { idle: 'yelena.png' } }
+    };
+    ui.game.itemDatabase = { carga_viuda: signatureItem };
+    ui.game.shopSystem.getRotation = () => [{ item: signatureItem, purchased: false }];
+    ui.game.shopSystem.getProgressiveQueue = () => [signatureItem];
+    ui.game.progression.getCredits = () => 1200;
+
+    const panel = new ShopPanel(ui);
+    panel.render('Tienda');
+
+    assert.match(panelContent.innerHTML, /shop-signature-hint/);
+    assert.match(panelContent.innerHTML, /Objeto firma para Black Widow, Yelena Belova/);
+    assert.match(panelContent.innerHTML, /fa-file-signature/);
+    assert.match(panelContent.innerHTML, /<strong>Firma<\/strong>/);
+    assert.match(panelContent.innerHTML, /Black Widow, Yelena Belova/);
 });
 
 test('ShopPanel renderiza tienda progresiva y delega compra de objetos', () => {
@@ -284,3 +332,4 @@ function createNodeStub() {
         textContent: ''
     };
 }
+
