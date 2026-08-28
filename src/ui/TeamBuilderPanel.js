@@ -35,6 +35,44 @@ function normalizeSearchText(value = '') {
         .toLowerCase();
 }
 
+export function buildTeamReadinessAlerts(snapshot = {}, team = []) {
+    const metrics = snapshot.metrics || {};
+    const tags = snapshot.tagCounts || {};
+    const hasHero = (predicate) => team.some((hero) => predicate(hero || {}));
+    const searchableText = (hero) => normalizeSearchText([hero.ability, hero.abilityDesc, hero.niche, ...(hero.tags || [])].join(' '));
+    const hasDetection = hasHero((hero) => hero.canSeeStealth || hero.special?.supportAura?.detectStealth || (hero.teamMetrics?.detection || 0) >= 4);
+    const hasAntiArmor = hasHero((hero) => {
+        const text = searchableText(hero);
+        return (hero.special?.projectileProfile?.armorPenetration || 0) > 0
+            || (hero.special?.attackEffects || []).some((effect) => effect.type === 'armorBreak')
+            || text.includes('armadura')
+            || text.includes('blindaje')
+            || text.includes('perforacion');
+    });
+    const hasControl = hasHero((hero) => (hero.teamMetrics?.control || 0) >= 4
+        || (hero.special?.attackEffects || []).some((effect) => CONTROL_EFFECT_TYPES.has(effect.type)));
+    const hasWater = hasHero((hero) => (hero.allowedTerrains || [TERRAIN.grass]).includes(TERRAIN.water));
+    const hasMountain = hasHero((hero) => (hero.allowedTerrains || [TERRAIN.grass]).includes(TERRAIN.mountain));
+    const alerts = [];
+
+    const add = (id, label, detail, icon, tone = 'warning') => alerts.push({ id, label, detail, icon, tone });
+    if (!team.length) add('empty', 'Sin equipo', 'elige hasta 6 heroes para empezar', 'fa-user-plus', 'danger');
+    if (team.length > 0 && team.length < 6) add('slots', String(6 - team.length) + ' huecos', 'completa el escuadron activo', 'fa-users', 'info');
+    if (!hasDetection) add('detection', 'Sin deteccion', 'sigilo y faseadores te pueden pasar', 'fa-eye', 'danger');
+    if (!hasAntiArmor) add('antiarmor', 'Sin antiarmadura', 'blindaje y barreras van a resistir', 'fa-bullseye', 'warning');
+    if (!hasControl && (metrics.control || 0) < 58) add('control', 'Control bajo', 'faltan slows, stuns o redes', 'fa-hand-paper', 'warning');
+    if ((metrics.damage || 0) < 54 && team.length >= 3) add('damage', 'Dano bajo', 'sube niveles o suma DPS', 'fa-bolt', 'warning');
+    if ((metrics.coverage || 0) < 60 && team.length >= 3) add('coverage', 'Cobertura corta', 'faltan rangos o mejores posiciones', 'fa-location-crosshairs', 'info');
+    if (!hasWater) add('water', 'Sin agua', 'mapas anfibios limitaran opciones', 'fa-water', 'info');
+    if (!hasMountain) add('mountain', 'Sin montana', 'techos y altura quedan desaprovechados', 'fa-mountain', 'info');
+    if (Object.values(tags).some((count) => count >= 2)) add('synergy', 'Bonus cercano', 'revisa agrupaciones antes de cerrar', 'fa-people-group', 'good');
+
+    const priority = { danger: 0, warning: 1, info: 2, good: 3 };
+    const sorted = alerts.sort((a, b) => priority[a.tone] - priority[b.tone] || a.label.localeCompare(b.label));
+    if (!sorted.length) return [{ id: 'ready', label: 'Equipo estable', detail: 'cubre counters y terrenos principales', icon: 'fa-shield-halved', tone: 'good' }];
+    return sorted.slice(0, 5);
+}
+
 export class TeamBuilderPanel {
     constructor(ui) {
         this.ui = ui;
@@ -80,6 +118,7 @@ export class TeamBuilderPanel {
                         <div class="team-metric"><span>${label}</span><div><i style="width:${snapshot.metrics[key]}%"></i></div><b>${snapshot.metrics[key]}</b></div>
                     `).join('')}
                 </div>
+                ${this.renderTeamReadinessAlerts(snapshot, game.activeTeam)}
                 <div class="synergy-overview">
                     ${snapshot.families.filter((family) => family.count > 0).map((family) => {
                         const rarity = normalizeRarity(family.definition.rarity);
@@ -107,6 +146,12 @@ export class TeamBuilderPanel {
         `;
 
         this.bindListeners();
+    }
+
+    renderTeamReadinessAlerts(snapshot, team = []) {
+        const alerts = buildTeamReadinessAlerts(snapshot, team);
+        const chips = alerts.map((alert) => '<span class="team-readiness-chip ' + this.escapeAttribute(alert.tone) + '" title="' + this.escapeAttribute(alert.detail) + '"><i class="fas ' + this.escapeAttribute(alert.icon) + '"></i><b>' + this.escapeHtml(alert.label) + '</b><small>' + this.escapeHtml(alert.detail) + '</small></span>').join('');
+        return '<div class="team-readiness-strip" aria-label="Lectura tactica del equipo">' + chips + '</div>';
     }
 
     renderTeamSlot(hero, index) {

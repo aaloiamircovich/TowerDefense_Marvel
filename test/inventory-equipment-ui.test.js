@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { buildItemEffectPills, buildItemEquipDeltaRows, InventoryPanel } from '../src/ui/InventoryPanel.js';
-import { TeamBuilderPanel } from '../src/ui/TeamBuilderPanel.js';
+import { buildTeamReadinessAlerts, TeamBuilderPanel } from '../src/ui/TeamBuilderPanel.js';
 import { UIManager } from '../src/systems/UIManager.js';
 import { analyzeTeam } from '../src/systems/TeamSynergySystem.js';
 
@@ -361,6 +361,27 @@ test('coleccion permite limpiar todos los filtros de heroes', () => {
     assert.equal(panel.sortMode, 'az');
     assert.equal(panel.hasActiveHeroFilters(), false);
 });
+
+test('coleccion muestra alertas compactas de composicion tactica', () => {
+    const alerts = buildTeamReadinessAlerts(
+        analyzeTeam([data.heroes.spiderman, data.heroes.hulk, data.heroes.groot]),
+        [data.heroes.spiderman, data.heroes.hulk, data.heroes.groot]
+    );
+
+    assert.ok(alerts.some((alert) => alert.id === 'slots'));
+    assert.ok(alerts.some((alert) => alert.id === 'antiarmor'));
+    assert.ok(alerts.every((alert) => ['danger', 'warning', 'info', 'good'].includes(alert.tone)));
+
+    const ui = createUiStub();
+    ui.game.activeTeam = [data.heroes.spiderman, data.heroes.hulk, data.heroes.groot];
+    const panel = new TeamBuilderPanel(ui);
+    const html = panel.renderTeamReadinessAlerts(analyzeTeam(ui.game.activeTeam), ui.game.activeTeam);
+
+    assert.match(html, /team-readiness-strip/);
+    assert.match(html, /Lectura tactica del equipo/);
+    assert.match(html, /team-readiness-chip/);
+});
+
 
 test('coleccion resume equipo filtros y agrupaciones en cabecera compacta', () => {
     const ui = createUiStub();
