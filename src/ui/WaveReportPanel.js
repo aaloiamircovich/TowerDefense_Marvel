@@ -61,6 +61,7 @@ export class WaveReportPanel {
                     <small>${escapeHtml(state.grade.score)}</small>
                 </b>
             </div>
+            ${this.renderQuickline(state, action)}
             <div class="wave-report-scoreline">
                 <div class="wave-report-rating grade-${escapeHtml(state.grade.tone)}" aria-label="${escapeHtml(state.grade.label)}: ${escapeHtml(state.grade.detail)}">
                     <strong>${escapeHtml(state.grade.label)}</strong>
@@ -87,6 +88,30 @@ export class WaveReportPanel {
         `;
     }
 
+    renderQuickline(state, action) {
+        const leaks = Number(state.leaks || 0);
+        const credits = Math.max(0, Number(state.credits || 0));
+        const actionText = action?.type === 'upgrade'
+            ? `${action.label} $${action.cost}`
+            : action?.label || 'Sin accion urgente';
+        const actionIcon = action?.type === 'upgrade'
+            ? 'fa-arrow-up'
+            : action?.type === 'saving'
+                ? 'fa-piggy-bank'
+                : 'fa-compass';
+        const chips = [
+            { icon: 'fa-shield-halved', label: 'Linea', value: leaks > 0 ? `${leaks} fuga${leaks === 1 ? '' : 's'}` : 'Cerrada', tone: leaks > 0 ? 'danger' : 'safe' },
+            { icon: 'fa-coins', label: 'Recompensa', value: `+$${credits}`, tone: 'reward' },
+            { icon: actionIcon, label: 'Siguiente', value: actionText, tone: action?.type || 'stable' }
+        ];
+        return `<div class="wave-report-quickline" aria-label="Resumen rapido de oleada">
+            ${chips.map((chip) => `<span class="quickline-${escapeHtml(chip.tone)}">
+                <i class="fas ${escapeHtml(chip.icon)}"></i>
+                <small>${escapeHtml(chip.label)}</small>
+                <b>${escapeHtml(chip.value)}</b>
+            </span>`).join('')}
+        </div>`;
+    }
     renderMetric(metric) {
         return `<span class="wave-report-metric metric-${escapeHtml(metric.tone || 'neutral')}">
             <i class="fas ${escapeHtml(metric.icon)}"></i>

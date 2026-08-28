@@ -51,6 +51,11 @@ test('WaveReportPanel renderiza informe y delega mejora recomendada', () => {
         assert.equal(container.attributes['aria-label'], 'Oleada asegurada. Sin fugas');
         assert.match(container.innerHTML, /Informe oleada 3/);
         assert.match(container.innerHTML, /wave-report-scoreline/);
+        assert.match(container.innerHTML, /wave-report-quickline/);
+        assert.match(container.innerHTML, /Resumen rapido de oleada/);
+        assert.match(container.innerHTML, /Linea[\s\S]*Cerrada/);
+        assert.match(container.innerHTML, /Recompensa[\s\S]*\+\$320/);
+        assert.match(container.innerHTML, /Siguiente[\s\S]*Mejorar Iron Man \$240/);
         assert.match(container.innerHTML, /<details class="wave-report-details">/);
         assert.match(container.innerHTML, /Ver desglose/);
         assert.match(container.innerHTML, /2 lecturas/);
@@ -78,6 +83,21 @@ test('WaveReportPanel renderiza informe y delega mejora recomendada', () => {
     }
 });
 
+test('WaveReportPanel resume fuga recompensa y accion en lectura rapida', () => {
+    const panel = new WaveReportPanel({});
+    const html = panel.renderQuickline(
+        { leaks: 2, credits: 75 },
+        { type: 'saving', label: 'Faltan <160>' }
+    );
+
+    assert.match(html, /wave-report-quickline/);
+    assert.match(html, /quickline-danger/);
+    assert.match(html, /2 fugas/);
+    assert.match(html, /quickline-reward/);
+    assert.match(html, /\+\$75/);
+    assert.match(html, /quickline-saving/);
+    assert.match(html, /Faltan &lt;160&gt;/);
+});
 test('WaveReportPanel desglosa ahorro cuando no alcanza para mejorar', () => {
     const panel = new WaveReportPanel({});
     const html = panel.renderAction({

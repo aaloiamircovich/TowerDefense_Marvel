@@ -2311,6 +2311,58 @@ canvas {
     line-height: 1;
 }
 
+.wave-report-quickline {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+}
+
+.wave-report-quickline span {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 2px 6px;
+    align-items: center;
+    min-width: 0;
+    padding: 7px;
+    border: 1px solid color-mix(in srgb, var(--quickline-color, var(--report-color)), transparent 64%);
+    border-radius: 7px;
+    background:
+        linear-gradient(135deg, color-mix(in srgb, var(--quickline-color, var(--report-color)), transparent 88%), transparent 62%),
+        rgba(3, 7, 12, 0.46);
+}
+
+.wave-report-quickline i {
+    grid-row: span 2;
+    color: var(--quickline-color, var(--report-color));
+    font-size: 12px;
+}
+
+.wave-report-quickline small,
+.wave-report-quickline b {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.wave-report-quickline small {
+    color: var(--muted);
+    font-size: 8px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.wave-report-quickline b {
+    color: color-mix(in srgb, var(--quickline-color, var(--text)), white 10%);
+    font-size: 10px;
+}
+
+.quickline-safe { --quickline-color: #46d369; }
+.quickline-danger { --quickline-color: #ff8f3d; }
+.quickline-reward { --quickline-color: var(--bright-yellow); }
+.quickline-upgrade { --quickline-color: #40c9ff; }
+.quickline-saving { --quickline-color: #b88cff; }
+.quickline-stable { --quickline-color: var(--muted); }
 .wave-report-scoreline {
     display: grid;
     grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
@@ -2768,6 +2820,7 @@ canvas {
 }
 
 @media (max-width: 760px) {
+    .wave-report-quickline,
     .wave-report-scoreline {
         grid-template-columns: 1fr;
     }
@@ -10539,6 +10592,7 @@ canvas {
 .radar-section-body .wave-counter-coverage,
 .radar-section-body .wave-timeline,
 .radar-section-body .wave-prep-plan,
+.radar-section-body .wave-report-quickline,
 .radar-section-body .wave-report-rating,
 .radar-section-body .wave-report-mvp,
 .radar-section-body .wave-report-details,
@@ -10552,7 +10606,8 @@ canvas {
     max-width: 100%;
 }
 
-.radar-section-body .wave-report-scoreline {
+.radar-section-body .wave-report-scoreline,
+.radar-section-body .wave-report-quickline {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     gap: 8px;
