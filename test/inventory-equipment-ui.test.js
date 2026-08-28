@@ -95,6 +95,24 @@ test('inventario filtra objetos libres y equipados desde la vista compacta', () 
     assert.doesNotMatch(ui.panelContent.innerHTML, /data-item-id="reactor_arc"/);
 });
 
+test('inventario filtra objetos por rareza desde la vista compacta', () => {
+    const ui = createUiStub();
+    ui.panelContent = { innerHTML: '', querySelectorAll: () => [], querySelector: () => null };
+    const panel = new InventoryPanel(ui);
+
+    panel.rarityFilter = 'Rare';
+    panel.render();
+    assert.match(ui.panelContent.innerHTML, /class="rarity-filter inventory-rarity-filter rarity-rare active" type="button" data-rarity="Rare" aria-pressed="true"/);
+    assert.match(ui.panelContent.innerHTML, /data-item-id="reactor_arc"/);
+    assert.doesNotMatch(ui.panelContent.innerHTML, /data-item-id="lentes_edith"/);
+    assert.match(ui.panelContent.innerHTML, /inventory-filter-count">1\/2/);
+
+    panel.rarityFilter = 'Common';
+    panel.render();
+    assert.match(ui.panelContent.innerHTML, /class="rarity-filter inventory-rarity-filter rarity-common active" type="button" data-rarity="Common" aria-pressed="true"/);
+    assert.match(ui.panelContent.innerHTML, /data-item-id="lentes_edith"/);
+    assert.doesNotMatch(ui.panelContent.innerHTML, /data-item-id="reactor_arc"/);
+});
 test('inventario permite limpiar filtros de objeto en un click', () => {
     const ui = createUiStub();
     ui.panelContent = { innerHTML: '', querySelectorAll: () => [], querySelector: () => null };
@@ -108,6 +126,7 @@ test('inventario permite limpiar filtros de objeto en un click', () => {
     panel.statusFilter = 'equipped';
     panel.tierFilter = 2;
     panel.slotFilter = 'artifact';
+    panel.rarityFilter = 'Rare';
 
     assert.equal(panel.hasActiveInventoryFilters(), true);
     panel.render();
@@ -118,6 +137,7 @@ test('inventario permite limpiar filtros de objeto en un click', () => {
     assert.equal(panel.statusFilter, 'all');
     assert.equal(panel.tierFilter, 0);
     assert.equal(panel.slotFilter, 'all');
+    assert.equal(panel.rarityFilter, 'all');
     assert.equal(panel.hasActiveInventoryFilters(), false);
 });
 

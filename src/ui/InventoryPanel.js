@@ -1,6 +1,8 @@
 import { aggregateItemEffects, ITEM_SLOTS, SET_BONUSES, SLOT_LABELS } from '../systems/ItemEffectSystem.js';
 import { HERO_RARITIES, getRarityClass, normalizeRarity } from '../utils/Rarity.js';
 
+const ITEM_RARITY_FILTERS = ['all', ...HERO_RARITIES];
+
 function escapeAttribute(value = '') {
     return String(value).replace(/[&<>"']/g, (char) => ({
         '&': '&amp;',
@@ -141,18 +143,21 @@ export class InventoryPanel {
         this.tierFilter = 0;
         this.slotFilter = 'all';
         this.statusFilter = 'all';
+        this.rarityFilter = 'all';
     }
 
     hasActiveInventoryFilters() {
         return this.tierFilter !== 0
             || this.slotFilter !== 'all'
-            || this.statusFilter !== 'all';
+            || this.statusFilter !== 'all'
+            || this.rarityFilter !== 'all';
     }
 
     resetInventoryFilters() {
         this.tierFilter = 0;
         this.slotFilter = 'all';
         this.statusFilter = 'all';
+        this.rarityFilter = 'all';
     }
 
     render(title = 'Inventario') {
@@ -199,6 +204,16 @@ export class InventoryPanel {
                     ${statusOptions.map(([status, label]) => {
                         const active = this.statusFilter === status;
                         return `<button class="status-filter ${active ? 'active' : ''}" type="button" data-status="${status}" aria-pressed="${active}" aria-label="Filtrar objetos: ${label}" title="Filtrar objetos: ${label}" data-tooltip="Filtrar objetos: ${label}">${label}</button>`;
+                    }).join('')}
+                </div>
+                <div class="inventory-rarity-filters" aria-label="Filtrar por rareza">
+                    ${ITEM_RARITY_FILTERS.map((rarity) => {
+                        const label = rarity === 'all' ? 'Todas' : rarity;
+                        const filterLabel = `Filtrar rareza ${label}`;
+                        const active = this.rarityFilter === rarity;
+                        const rarityClass = rarity === 'all' ? '' : getRarityClass(rarity);
+                        const classes = ['rarity-filter', 'inventory-rarity-filter', rarityClass, active ? 'active' : ''].filter(Boolean).join(' ');
+                        return `<button class="${classes}" type="button" data-rarity="${rarity}" aria-pressed="${active}" aria-label="${filterLabel}" title="${filterLabel}" data-tooltip="${filterLabel}">${label}</button>`;
                     }).join('')}
                 </div>
                 <div class="tier-filters" aria-label="Filtrar por tier">
@@ -277,6 +292,7 @@ export class InventoryPanel {
             && (this.statusFilter === 'all'
                 || (this.statusFilter === 'free' && freeCount > 0)
                 || (this.statusFilter === 'equipped' && equippedHeroes.length > 0))
+            && (this.rarityFilter === 'all' || normalizeRarity(item.rarity) === this.rarityFilter)
             && (this.tierFilter === 0 || item.tier === this.tierFilter)
             && (this.slotFilter === 'all' || item.slot === this.slotFilter);
     }
@@ -358,6 +374,10 @@ export class InventoryPanel {
         }));
         this.ui.panelContent.querySelectorAll('.status-filter').forEach((button) => button.addEventListener('click', () => {
             this.statusFilter = button.dataset.status;
+            this.render();
+        }));
+        this.ui.panelContent.querySelectorAll('.inventory-rarity-filter').forEach((button) => button.addEventListener('click', () => {
+            this.rarityFilter = button.dataset.rarity || 'all';
             this.render();
         }));
         this.ui.panelContent.querySelectorAll('.slot-filter').forEach((button) => button.addEventListener('click', () => {

@@ -4904,7 +4904,8 @@ body.panel-open {
     color: #ffffff;
 }
 
-.collection-rarity-filters {
+.collection-rarity-filters,
+.inventory-rarity-filters {
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
@@ -9982,7 +9983,8 @@ canvas {
 
 .tier-filter,
 .slot-filter,
-.status-filter {
+.status-filter,
+.inventory-rarity-filter {
     border-color: rgba(255, 255, 255, 0.1);
     background:
         linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.015)),
@@ -9991,7 +9993,8 @@ canvas {
 
 .tier-filter.active,
 .slot-filter.active,
-.status-filter.active {
+.status-filter.active,
+.inventory-rarity-filter.active {
     border-color: color-mix(in srgb, var(--level-accent), white 8%);
     color: #ffffff;
     background: color-mix(in srgb, var(--level-accent), transparent 78%);
