@@ -822,6 +822,20 @@ export function buildWavePreparationPlan(summary = null, activeTeam = [], deploy
     return plan.slice(0, 3);
 }
 
+export function buildWaveDamageCheckMeter(check = {}) {
+    const expected = Math.max(0, Number(check.expectedDamage || 0));
+    const required = Math.max(0, Number(check.requiredDamage || 0));
+    const ratio = required > 0 ? expected / required : expected > 0 ? 1 : 0;
+    const ratioPct = Math.max(0, Math.round(ratio * 100));
+    const fillPct = Math.max(0, Math.min(100, ratioPct));
+    return {
+        ratio,
+        ratioPct,
+        fillPct,
+        label: `${ratioPct}% cubierto`,
+        ariaLabel: `Daño estimado ${ratioPct}% del total requerido`
+    };
+}
 export function buildWavePrepActionControl(item = {}) {
     const actionable = Boolean(item.heroId && ['deploy', 'upgrade'].includes(item.type));
     const verb = item.type === 'upgrade' ? 'Mejorar ahora' : 'Preparar colocacion';
@@ -2031,14 +2045,15 @@ export class UIManager {
 
     renderWaveDamageCheck(check) {
         if (!check) return '';
-        return `<div class="wave-damage-check ${escapeHtml(check.tone)}" aria-label="${escapeHtml(`${check.label}: ${check.detail}. DPS ${check.dps}.`)}">
+        const meter = buildWaveDamageCheckMeter(check);
+        return `<div class="wave-damage-check ${escapeHtml(check.tone)}" aria-label="${escapeHtml(`${check.label}: ${check.detail}. ${meter.ariaLabel}. DPS ${check.dps}.`)}" style="--damage-fill: ${meter.fillPct}%">
             <i class="fas fa-chart-line"></i>
             <div><strong>${escapeHtml(check.label)}</strong><span>${escapeHtml(check.detail)}</span></div>
             <b>${formatCompactMetric(check.expectedDamage)}/${formatCompactMetric(check.requiredDamage)}</b>
             <small>DPS ${formatCompactMetric(check.dps)}</small>
+            <div class="wave-damage-meter" aria-hidden="true"><span></span><em>${escapeHtml(meter.label)}</em></div>
         </div>`;
     }
-
     inspectUnit(unit, isEnemyFlag = false) {
         if (!unit) return;
         this.tooltipController.hide();

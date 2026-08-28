@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildBossCountdownState, buildBossHudState, buildBossMilestoneState, buildCombatPressureState, buildCounterCoverageModel, buildEnemyIntel, buildEnemyTraitPreview, buildLeakIntel, buildOnboardingCoachState, buildPanelNavigationMarkup, buildPressureActionState, buildRosterWaveFitView, buildShopItemInsight, buildShopSetProgress, buildSpawnQueueState, buildStatusLegendModel, buildStealthCoverageState, buildTacticalContributionModel, buildTargetingControlState, buildWaveLaunchState, buildWavePrepActionControl, buildWavePreparationPlan, buildWaveReportActionState, buildWaveReportGrade, buildWaveReportLesson, buildWaveReportState, evaluateHeroWaveFit, formatHudResource, getNextTargetingPriority, UIManager } from '../src/systems/UIManager.js';
+import { buildBossCountdownState, buildBossHudState, buildBossMilestoneState, buildCombatPressureState, buildCounterCoverageModel, buildEnemyIntel, buildEnemyTraitPreview, buildLeakIntel, buildOnboardingCoachState, buildPanelNavigationMarkup, buildPressureActionState, buildRosterWaveFitView, buildShopItemInsight, buildShopSetProgress, buildSpawnQueueState, buildStatusLegendModel, buildStealthCoverageState, buildTacticalContributionModel, buildTargetingControlState, buildWaveDamageCheckMeter, buildWaveLaunchState, buildWavePrepActionControl, buildWavePreparationPlan, buildWaveReportActionState, buildWaveReportGrade, buildWaveReportLesson, buildWaveReportState, evaluateHeroWaveFit, formatHudResource, getNextTargetingPriority, UIManager } from '../src/systems/UIManager.js';
 import { calculateHeroLevelCost } from '../src/utils/HeroLevel.js';
 
 test('buildWaveLaunchState muestra riesgo critico en el CTA', () => {
@@ -637,6 +637,17 @@ test('buildWavePrepActionControl deja ahorro como nota informativa', () => {
     assert.equal(control.ariaLabel, 'Faltan $80');
 });
 
+test('buildWaveDamageCheckMeter traduce potencia esperada a porcentaje visible', () => {
+    const thin = buildWaveDamageCheckMeter({ expectedDamage: 1800, requiredDamage: 2400 });
+    assert.equal(thin.ratioPct, 75);
+    assert.equal(thin.fillPct, 75);
+    assert.equal(thin.label, '75% cubierto');
+
+    const dominant = buildWaveDamageCheckMeter({ expectedDamage: 3600, requiredDamage: 2400 });
+    assert.equal(dominant.ratioPct, 150);
+    assert.equal(dominant.fillPct, 100);
+    assert.match(dominant.ariaLabel, /150%/);
+});
 test('renderWavePreview etiqueta preparacion y rutas tacticas con tooltips', () => {
     const previousDocument = globalThis.document;
     const wavePreview = createDomStub();
@@ -704,6 +715,9 @@ test('renderWavePreview etiqueta preparacion y rutas tacticas con tooltips', () 
         assert.equal(nextWaveNumber.textContent, 9);
         assert.match(waveIntel.innerHTML, /data-prep-action="upgrade" data-hero-id="iron_man" aria-label="Mejorar ahora: Mejorar Iron Man" title="Sube tu mejor defensa antes de iniciar con riesgo\. \| \$120" data-tooltip="Sube tu mejor defensa antes de iniciar con riesgo\. \| \$120"/);
         assert.match(waveIntel.innerHTML, /wave-damage-check thin/);
+        assert.match(waveIntel.innerHTML, /wave-damage-meter/);
+        assert.match(waveIntel.innerHTML, /75% cubierto/);
+        assert.match(waveIntel.innerHTML, /--damage-fill: 75%/);
         assert.match(waveIntel.innerHTML, /Potencia justa/);
         assert.match(waveIntel.innerHTML, /1\.8k\/2\.4k/);
         assert.match(waveIntel.innerHTML, /DPS 80/);
