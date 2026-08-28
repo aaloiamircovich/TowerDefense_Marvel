@@ -12,6 +12,13 @@ const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
 const ADMIN_PASSWORD = '0000';
 const ADMIN_CREDITS = 999999999;
 const ADMIN_STARS_PER_LEVEL = CAMPAIGN_MAX_WAVES;
+const TARGETING_PRIORITY_VALUES = ['Primero', 'Último', 'Fuerte', 'Débil', 'Rápido', 'Sigilo', 'Jefe'];
+
+function normalizeTargetingPriority(value, fallback = 'Primero') {
+    if (TARGETING_PRIORITY_VALUES.includes(value)) return value;
+    if (TARGETING_PRIORITY_VALUES.includes(fallback)) return fallback;
+    return TARGETING_PRIORITY_VALUES[0];
+}
 
 export const CONTRACT_EMBLEM_CATALOG = {
     weekly_streak_1: {
@@ -229,6 +236,7 @@ function createDefaultState() {
         loadouts: {},
         mapTeamLoadouts: {},
         favoriteHeroIds: [],
+        heroTargetPriorities: {},
         heroUpgrades: {},
         mapProgress: {},
         modeRecords: {},
@@ -320,6 +328,7 @@ export class ProgressionManager {
         migrated.loadouts = raw.loadouts || {};
         migrated.mapTeamLoadouts = raw.mapTeamLoadouts || {};
         migrated.favoriteHeroIds = raw.favoriteHeroIds || [];
+        migrated.heroTargetPriorities = raw.heroTargetPriorities || {};
         migrated.heroUpgrades = raw.heroUpgrades || raw.upgrades || {};
         migrated.mapProgress = raw.mapProgress || raw.maps || {};
         migrated.modeRecords = raw.modeRecords || {};
@@ -376,6 +385,8 @@ export class ProgressionManager {
             .filter(([, teamIds]) => teamIds.length > 0));
         this.state.favoriteHeroIds = [...new Set(this.state.favoriteHeroIds || [])]
             .filter((id) => heroIds.has(id));
+        this.state.heroTargetPriorities = Object.fromEntries(Object.entries(this.state.heroTargetPriorities || {})
+            .filter(([heroId, priority]) => heroIds.has(heroId) && TARGETING_PRIORITY_VALUES.includes(priority)));
         this.state.heroUpgrades = Object.fromEntries(Object.entries(this.state.heroUpgrades || {})
             .filter(([heroId]) => heroIds.has(heroId))
             .map(([heroId, value]) => [heroId, normalizeHeroUpgrade(value)])
@@ -433,10 +444,10 @@ export class ProgressionManager {
     syncGame() {
         if (!this.game) return;
         this.game.unlockedHeroes = this.state.unlockedHeroIds
-            .map((id) => this.applyHeroLevelStats(this.data.heroes[id]))
+            .map((id) => this.applyHeroTargetingPriority(this.applyHeroLevelStats(this.data.heroes[id])))
             .filter(Boolean);
         this.game.activeTeam = this.state.activeTeamIds
-            .map((id) => this.applyHeroLevelStats(this.data.heroes[id]))
+            .map((id) => this.applyHeroTargetingPriority(this.applyHeroLevelStats(this.data.heroes[id])))
             .filter(Boolean);
         this.game.assetPreloader?.preloadHeroes(this.game.activeTeam);
         this.reconcileDeployedHeroesWithActiveTeam();
@@ -451,6 +462,7 @@ export class ProgressionManager {
         this.game.stars = this.getTotalStars();
         this.game.heroes?.forEach((hero) => {
             this.applyHeroLevelStats(hero);
+            this.applyHeroTargetingPriority(hero);
             this.applyEquippedItem(hero);
         });
     }
@@ -649,6 +661,30 @@ export class ProgressionManager {
 
     toggleHeroFavorite(heroId) {
         return this.setHeroFavorite(heroId, !this.isHeroFavorite(heroId));
+    }
+
+    getHeroTargetingPriority(heroId, fallback = 'Primero') {
+        if (!heroId) return normalizeTargetingPriority(fallback);
+        return normalizeTargetingPriority(this.state.heroTargetPriorities?.[heroId], fallback);
+    }
+
+    setHeroTargetingPriority(heroId, priority) {
+        if (!this.data?.heroes?.[heroId]) return { ok: false, priority: normalizeTargetingPriority(priority), reason: 'Heroe no valido' };
+        const normalized = normalizeTargetingPriority(priority);
+        this.state.heroTargetPriorities = this.state.heroTargetPriorities || {};
+        this.state.heroTargetPriorities[heroId] = normalized;
+        this.applyHeroTargetingPriority(this.data.heroes[heroId]);
+        this.game?.heroes?.filter((hero) => hero.id === heroId).forEach((hero) => this.applyHeroTargetingPriority(hero));
+        this.save();
+        return { ok: true, priority: normalized };
+    }
+
+    applyHeroTargetingPriority(hero) {
+        if (!hero?.id) return hero;
+        const priority = this.getHeroTargetingPriority(hero.id, hero.targetingPriority || hero.config?.targetingPriority || 'Primero');
+        hero.targetingPriority = priority;
+        if (hero.config) hero.config.targetingPriority = priority;
+        return hero;
     }
 
     getMapTeamLoadout(levelId = null) {

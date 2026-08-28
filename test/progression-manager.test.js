@@ -258,6 +258,26 @@ test('favoritos de heroes persisten y se sanean contra el roster', () => {
 
     assert.deepEqual(manager.state.favoriteHeroIds, ['spiderman', 'iron_man']);
 });
+test('prioridad de objetivo por heroe persiste al sincronizar equipo y campo', () => {
+    const game = createGame();
+    const manager = new ProgressionManager(new MemoryStorage());
+    manager.initialize(game, data);
+    manager.startProfile('iron_man');
+    game.heroes = [{ id: 'iron_man', name: 'Iron Man', targetingPriority: 'Primero', config: { id: 'iron_man', targetingPriority: 'Primero' } }];
+
+    assert.deepEqual(manager.setHeroTargetingPriority('iron_man', 'Jefe'), { ok: true, priority: 'Jefe' });
+    manager.syncGame();
+
+    assert.equal(manager.getHeroTargetingPriority('iron_man'), 'Jefe');
+    assert.equal(game.activeTeam[0].targetingPriority, 'Jefe');
+    assert.equal(game.heroes[0].targetingPriority, 'Jefe');
+    assert.equal(game.heroes[0].config.targetingPriority, 'Jefe');
+
+    manager.state.heroTargetPriorities = { iron_man: 'Rápido', spiderman: 'Roto', missing: 'Jefe' };
+    manager.sanitize();
+
+    assert.deepEqual(manager.state.heroTargetPriorities, { iron_man: 'Rápido' });
+});
 test('Progreso de mapa guarda estrellas y desafios', () => {
     const manager = new ProgressionManager(new MemoryStorage());
     const game = createGame();

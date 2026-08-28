@@ -341,6 +341,7 @@ export class InputManager {
         const nextPriority = getNextTargetingPriority(hero.targetingPriority || hero.config?.targetingPriority);
         hero.targetingPriority = nextPriority;
         if (hero.config) hero.config.targetingPriority = nextPriority;
+        this.game.progression?.setHeroTargetingPriority?.(hero.id, nextPriority);
         this.uiManager.showToast?.(`${hero.name}: objetivo ${nextPriority}`, 'info');
         this.uiManager.setSelectionStatus?.(`${hero.name}: prioridad ${nextPriority}.`);
         this.uiManager.renderHeroRoster?.(this.game.activeTeam, (config) => this.setPlacementMode(config));

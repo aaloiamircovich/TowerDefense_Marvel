@@ -35,6 +35,11 @@ test('HeroRosterPanel renderiza tarjeta ligera y conserva acciones del roster', 
                 isWaveActive: false,
                 buildPreparedSummary: () => ({ stealthCount: 1 })
             },
+            progression: {
+                setHeroTargetingPriority(heroId, priority) {
+                    calls.push(`priority:${heroId}:${priority}`);
+                }
+            },
             inputManager: {
                 setRepositionMode(hero) {
                     calls.push(`reposition:${hero.id}`);
@@ -105,6 +110,7 @@ test('HeroRosterPanel renderiza tarjeta ligera y conserva acciones del roster', 
         assert.ok(calls.includes('reposition:spiderman'));
         assert.ok(calls.includes('inspect:spiderman'));
         assert.ok(calls.some((call) => call.includes('objetivo Último')));
+        assert.ok(calls.includes('priority:spiderman:Último'));
         assert.ok(calls.includes('select:black_widow'));
         assert.equal(deployedSpider.targetingPriority, 'Último');
         assert.equal(activeTeam[0].targetingPriority, 'Último');
@@ -130,6 +136,7 @@ test('HeroRosterPanel muestra cuanto falta para mejora rapida', () => {
             activeTeam: [hero],
             heroes: [deployedHero],
             resourceManager: { credits: 100 },
+
             inputManager: {
                 setRepositionMode() {},
                 setPlacementMode() {}

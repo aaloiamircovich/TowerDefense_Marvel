@@ -2328,6 +2328,7 @@ export class UIManager {
         document.getElementById('targeting-select')?.addEventListener('change', (event) => {
             hero.targetingPriority = event.target.value;
             if (hero.config) hero.config.targetingPriority = event.target.value;
+            this.game.progression?.setHeroTargetingPriority?.(config.id, event.target.value);
         });
 
         this.panelContent.querySelectorAll('.modal-btn-upgrade').forEach((button) => {

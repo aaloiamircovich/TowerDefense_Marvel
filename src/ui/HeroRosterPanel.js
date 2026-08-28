@@ -98,6 +98,7 @@ export class HeroRosterPanel {
             deployedHero.targetingPriority = nextPriority;
             if (deployedHero.config) deployedHero.config.targetingPriority = nextPriority;
             hero.targetingPriority = nextPriority;
+            this.ui.game.progression?.setHeroTargetingPriority?.(hero.id, nextPriority);
             this.ui.showToast(`${deployedHero.name || hero.name}: objetivo ${nextPriority}`, 'info');
             this.render(this.ui.game.activeTeam, (config) => this.ui.game.inputManager.setPlacementMode(config));
         });

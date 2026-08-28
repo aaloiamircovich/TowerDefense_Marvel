@@ -314,7 +314,12 @@ test('buildRosterWaveFitView oculta perfiles neutros', () => {
 
 test('renderHeroDetails muestra counter de oleada dentro de estadisticas', () => {
     const previousDocument = globalThis.document;
-    globalThis.document = { getElementById: () => null };
+    const documentListeners = {};
+    globalThis.document = {
+        getElementById: (id) => id === 'targeting-select'
+            ? { addEventListener: (event, handler) => { documentListeners[event] = handler; } }
+            : null
+    };
 
     const hero = {
         id: 'iron_man',
@@ -329,6 +334,7 @@ test('renderHeroDetails muestra counter de oleada dentro de estadisticas', () =>
         abilityDesc: 'Dispara energia concentrada.',
         allowedTerrains: [1]
     };
+    const priorityCalls = [];
     const ui = Object.create(UIManager.prototype);
     ui.panelContent = {
         innerHTML: '',
@@ -355,7 +361,8 @@ test('renderHeroDetails muestra counter de oleada dentro de estadisticas', () =>
                 equippedItems: {},
                 unlockedHeroIds: ['iron_man']
             },
-            getHeroBonuses: () => ({})
+            getHeroBonuses: () => ({}),
+            setHeroTargetingPriority: (heroId, priority) => priorityCalls.push([heroId, priority])
         }
     };
     ui.renderSprite = () => '<img alt="">';
@@ -385,6 +392,10 @@ test('renderHeroDetails muestra counter de oleada dentro de estadisticas', () =>
         assert.match(ui.panelContent.innerHTML, /6 pts/);
         assert.match(ui.panelContent.innerHTML, /rompe armadura/);
         assert.doesNotMatch(ui.panelContent.innerHTML, /hero-submenu|hero-detail-menu-btn/);
+
+        documentListeners.change({ target: { value: 'Jefe' } });
+        assert.equal(hero.targetingPriority, 'Jefe');
+        assert.deepEqual(priorityCalls, [['iron_man', 'Jefe']]);
 
         ui.renderHeroDetails(hero, 'upgrade');
         assert.match(ui.panelContent.innerHTML, /hero-detail-tab-panel upgrade/);

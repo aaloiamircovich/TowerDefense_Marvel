@@ -216,7 +216,12 @@ test('InputManager cicla prioridad del heroe seleccionado con atajo configurable
         selectedUnit: hero,
         heroes: [hero],
         activeTeam: [hero.config],
-        progression: { state: { settings: { keyBindings: { targeting: 't' } } } },
+        progression: {
+            state: { settings: { keyBindings: { targeting: 't' } } },
+            setHeroTargetingPriority(heroId, priority) {
+                calls.push(['priority', heroId, priority]);
+            }
+        },
         tacticalActions: null
     };
     const ui = {
@@ -235,7 +240,8 @@ test('InputManager cicla prioridad del heroe seleccionado con atajo configurable
         assert.equal(prevented, true);
         assert.equal(hero.targetingPriority, 'Último');
         assert.equal(hero.config.targetingPriority, 'Último');
-        assert.deepEqual(calls[0], ['toast', 'Iron Man: objetivo Último', 'info']);
+        assert.deepEqual(calls[0], ['priority', 'iron_man', 'Último']);
+        assert.deepEqual(calls[1], ['toast', 'Iron Man: objetivo Último', 'info']);
         assert.deepEqual(calls.at(-1), ['roster']);
     } finally {
         globalThis.window = previousWindow;
