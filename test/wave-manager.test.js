@@ -259,6 +259,8 @@ test('WaveManager evalua preparacion con heroes desplegados y creditos', () => {
     assert.ok(summary.readiness.margin > 0);
     assert.ok(summary.readiness.damageCheck.expectedDamage > summary.readiness.damageCheck.requiredDamage);
     assert.match(summary.readiness.damageCheck.detail, /HP estimado/);
+    assert.deepEqual(summary.readiness.damageCheck.contributors.map((entry) => entry.name), ['iron_man', 'spiderman']);
+    assert.equal(summary.readiness.damageCheck.contributors.reduce((total, entry) => total + entry.share, 0), 100);
 });
 
 test('WaveManager refresca el radar tactico al cambiar heroes desplegados', () => {

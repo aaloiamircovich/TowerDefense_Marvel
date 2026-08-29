@@ -2145,11 +2145,20 @@ export class UIManager {
     renderWaveDamageCheck(check) {
         if (!check) return '';
         const meter = buildWaveDamageCheckMeter(check);
-        return `<div class="wave-damage-check ${escapeHtml(check.tone)}" aria-label="${escapeHtml(`${check.label}: ${check.detail}. ${meter.ariaLabel}. DPS ${check.dps}.`)}" style="--damage-fill: ${meter.fillPct}%">
+        const contributors = (check.contributors || [])
+            .filter(Boolean)
+            .slice(0, 3)
+            .map((entry) => `${entry.name} ${entry.share}%`);
+        const contributorCopy = contributors.length ? ` Aportes: ${contributors.join(', ')}.` : '';
+        const contributorMarkup = contributors.length
+            ? `<small class="wave-damage-contributors"><i class="fas fa-users-rays"></i>${contributors.map((entry) => `<span>${escapeHtml(entry)}</span>`).join('')}</small>`
+            : '';
+        return `<div class="wave-damage-check ${escapeHtml(check.tone)}" aria-label="${escapeHtml(`${check.label}: ${check.detail}. ${meter.ariaLabel}. DPS ${check.dps}.${contributorCopy}`)}" style="--damage-fill: ${meter.fillPct}%">
             <i class="fas fa-chart-line"></i>
             <div><strong>${escapeHtml(check.label)}</strong><span>${escapeHtml(check.detail)}</span></div>
             <b>${formatCompactMetric(check.expectedDamage)}/${formatCompactMetric(check.requiredDamage)}</b>
             <small>DPS ${formatCompactMetric(check.dps)}</small>
+            ${contributorMarkup}
             <div class="wave-damage-meter" aria-hidden="true"><span></span><em>${escapeHtml(meter.label)}</em></div>
         </div>`;
     }

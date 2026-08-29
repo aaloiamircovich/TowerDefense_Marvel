@@ -1556,6 +1556,32 @@ canvas {
     text-transform: uppercase;
 }
 
+.wave-damage-contributors {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px;
+    text-transform: none !important;
+}
+
+.wave-damage-contributors i {
+    color: var(--damage-check-color);
+    font-size: 9px;
+}
+
+.wave-damage-contributors span {
+    display: inline-flex;
+    align-items: center;
+    min-height: 16px;
+    padding: 2px 5px;
+    border: 1px solid color-mix(in srgb, var(--damage-check-color), transparent 70%);
+    border-radius: 5px;
+    background: color-mix(in srgb, var(--damage-check-color), transparent 88%);
+    color: var(--text);
+    font-size: 9px;
+    line-height: 1;
+}
+
 .wave-damage-meter {
     grid-column: 2 / -1;
     position: relative;

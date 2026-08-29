@@ -753,7 +753,11 @@ test('renderWavePreview etiqueta preparacion y rutas tacticas con tooltips', () 
                     detail: 'Cubre 75% del HP estimado',
                     expectedDamage: 1800,
                     requiredDamage: 2400,
-                    dps: 80
+                    dps: 80,
+                    contributors: [
+                        { name: 'Iron Man', share: 62 },
+                        { name: 'Spider-Man', share: 38 }
+                    ]
                 }
             },
             spawnTimeline: { entries: [], overflow: 0 },
@@ -769,6 +773,9 @@ test('renderWavePreview etiqueta preparacion y rutas tacticas con tooltips', () 
         assert.match(waveIntel.innerHTML, /wave-damage-check thin/);
         assert.match(waveIntel.innerHTML, /wave-damage-meter/);
         assert.match(waveIntel.innerHTML, /75% cubierto/);
+        assert.match(waveIntel.innerHTML, /wave-damage-contributors/);
+        assert.match(waveIntel.innerHTML, /Iron Man 62%/);
+        assert.match(waveIntel.innerHTML, /Spider-Man 38%/);
         assert.match(waveIntel.innerHTML, /--damage-fill: 75%/);
         assert.match(waveIntel.innerHTML, /Potencia justa/);
         assert.match(waveIntel.innerHTML, /1\.8k\/2\.4k/);

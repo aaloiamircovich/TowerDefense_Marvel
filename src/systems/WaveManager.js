@@ -631,7 +631,7 @@ export class WaveManager {
     getDamageCheckForSummary(heroes = [], waveModel = {}) {
         const requiredDamage = Math.max(0, Math.round(Number(waveModel.effectiveHp || waveModel.totalHp || 0)));
         const waveSeconds = Math.max(8, Math.min(46, this.getPreparedWaveDuration() + 7 + (waveModel.hasBoss ? 12 : 0)));
-        const dps = heroes.reduce((total, hero) => {
+        const contributors = heroes.map((hero) => {
             const stats = hero.getEffectiveStats?.() || hero;
             const damage = Math.max(0, Number(stats.damage || hero.damage || 0));
             const fireRate = Math.max(0, Number(stats.fireRate || hero.fireRate || 0));
@@ -641,9 +641,24 @@ export class WaveManager {
             const control = Number(config.teamMetrics?.control || hero.teamMetrics?.control || 0);
             const coverageFactor = Math.max(0.55, Math.min(1.12, range / 170));
             const controlFactor = 1 + Math.min(0.1, control * 0.015);
-            return total + (isPureAura ? 0 : damage * fireRate * coverageFactor * controlFactor);
-        }, 0);
+            const contribution = isPureAura ? 0 : damage * fireRate * coverageFactor * controlFactor;
+            return {
+                id: hero.id || config.id || '',
+                name: hero.name || config.name || hero.id || 'Heroe',
+                dps: contribution
+            };
+        }).filter((entry) => entry.dps > 0);
+        const dps = contributors.reduce((total, entry) => total + entry.dps, 0);
         const expectedDamage = Math.round(dps * waveSeconds);
+        const topContributors = contributors
+            .sort((a, b) => b.dps - a.dps)
+            .slice(0, 3)
+            .map((entry) => ({
+                id: entry.id,
+                name: entry.name,
+                dps: Math.round(entry.dps),
+                share: dps > 0 ? Math.round((entry.dps / dps) * 100) : 0
+            }));
         const ratio = requiredDamage > 0 ? expectedDamage / requiredDamage : 0;
         const pct = Math.round(ratio * 100);
         let tone = 'danger';
@@ -665,6 +680,7 @@ export class WaveManager {
             expectedDamage,
             requiredDamage,
             ratio: Number(ratio.toFixed(2)),
+            contributors: topContributors,
             detail: requiredDamage > 0 ? `Cubre ${pct}% del HP estimado` : 'Sin HP preparado para comparar'
         };
     }
