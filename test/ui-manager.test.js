@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildBossCountdownState, buildBossHudState, buildBossMilestoneState, buildCombatPressureState, buildCounterCoverageModel, buildEnemyIntel, buildEnemyTraitPreview, buildLeakIntel, buildOnboardingCoachState, buildPanelNavigationMarkup, buildPressureActionState, buildRosterWaveFitView, buildShopItemInsight, buildShopSetProgress, buildSpawnQueueState, buildStatusLegendModel, buildStealthCoverageState, buildTacticalContributionModel, buildTargetingControlState, buildWaveDamageCheckMeter, buildWaveLaunchState, buildWavePrepActionControl, buildWavePreparationPlan, buildWaveReportActionState, buildWaveReportGrade, buildWaveReportLesson, buildWaveReportState, evaluateHeroWaveFit, formatHudResource, getNextTargetingPriority, UIManager } from '../src/systems/UIManager.js';
+import { buildBossCountdownState, buildBossHudState, buildBossMilestoneState, buildCombatPressureState, buildCounterCoverageModel, buildEnemyIntel, buildEnemyTraitPreview, buildHeroCombatIdentity, buildLeakIntel, buildOnboardingCoachState, buildPanelNavigationMarkup, buildPressureActionState, buildRosterWaveFitView, buildShopItemInsight, buildShopSetProgress, buildSpawnQueueState, buildStatusLegendModel, buildStealthCoverageState, buildTacticalContributionModel, buildTargetingControlState, buildWaveDamageCheckMeter, buildWaveLaunchState, buildWavePrepActionControl, buildWavePreparationPlan, buildWaveReportActionState, buildWaveReportGrade, buildWaveReportLesson, buildWaveReportState, evaluateHeroWaveFit, formatHudResource, getNextTargetingPriority, UIManager } from '../src/systems/UIManager.js';
 import { calculateHeroLevelCost } from '../src/utils/HeroLevel.js';
 
 test('buildWaveLaunchState muestra riesgo critico en el CTA', () => {
@@ -312,6 +312,37 @@ test('buildRosterWaveFitView oculta perfiles neutros', () => {
     assert.equal(buildRosterWaveFitView({ id: 'neutral', score: 0 }), null);
 });
 
+test('buildHeroCombatIdentity resume rango impacto counters y rol', () => {
+    const aura = buildHeroCombatIdentity({
+        id: 'capitan_america',
+        special: { supportAura: { type: 'damage', power: 0.12, range: 250 } }
+    });
+    assert.equal(aura.find((chip) => chip.label === 'Rango').value, 'Aura');
+    assert.equal(aura.find((chip) => chip.label === 'Impacto').value, 'Aura daño');
+    assert.equal(aura.find((chip) => chip.label === 'Rol').value, 'daño +12%');
+
+    const storm = buildHeroCombatIdentity({
+        id: 'storm',
+        range: 180,
+        teamMetrics: { control: 5 },
+        special: {
+            projectileProfile: { chainCount: 2, propagationCount: 1 },
+            attackEffects: [{ type: 'slow' }, { type: 'stun' }]
+        }
+    });
+    assert.equal(storm.find((chip) => chip.label === 'Impacto').value, 'Rebote + Propagación + Slow');
+    assert.equal(storm.find((chip) => chip.label === 'Counters').value, 'Control · Alcance');
+    assert.equal(storm.find((chip) => chip.label === 'Rol').value, 'Grupos');
+
+    const domino = buildHeroCombatIdentity({
+        id: 'domino',
+        canSeeStealth: true,
+        special: { economyOnHit: { rewardPct: 0.15 } }
+    });
+    assert.equal(domino.find((chip) => chip.label === 'Impacto').value, 'Créditos');
+    assert.equal(domino.find((chip) => chip.label === 'Rol').value, 'Créditos 15%');
+});
+
 test('renderHeroDetails muestra counter de oleada dentro de estadisticas', () => {
     const previousDocument = globalThis.document;
     const documentListeners = {};
@@ -391,6 +422,12 @@ test('renderHeroDetails muestra counter de oleada dentro de estadisticas', () =>
         assert.match(ui.panelContent.innerHTML, /Counter ideal/);
         assert.match(ui.panelContent.innerHTML, /6 pts/);
         assert.match(ui.panelContent.innerHTML, /rompe armadura/);
+        assert.match(ui.panelContent.innerHTML, /hero-combat-identity/);
+        assert.match(ui.panelContent.innerHTML, /Identidad tactica de combate/);
+        assert.match(ui.panelContent.innerHTML, /Rango[\s\S]*Círculo/);
+        assert.match(ui.panelContent.innerHTML, /Impacto[\s\S]*Directo/);
+        assert.match(ui.panelContent.innerHTML, /Counters[\s\S]*Perforación · Alcance · DPS/);
+        assert.match(ui.panelContent.innerHTML, /Rol[\s\S]*Daño/);
         assert.doesNotMatch(ui.panelContent.innerHTML, /hero-submenu|hero-detail-menu-btn/);
 
         documentListeners.change({ target: { value: 'Jefe' } });

@@ -158,6 +158,26 @@ const COUNTER_COPY = {
     }
 };
 
+const ATTACK_EFFECT_COPY = {
+    slow: 'Slow',
+    stun: 'Stun',
+    freeze: 'Freeze',
+    web: 'Red',
+    knockback: 'Empuje',
+    poison: 'Veneno',
+    burn: 'Quemadura',
+    curse: 'Maldición',
+    mark: 'Marca',
+    armorBreak: 'Armor break',
+    bleed: 'Sangrado'
+};
+
+const SUPPORT_AURA_TYPE_COPY = {
+    damage: 'daño',
+    fireRate: 'cadencia',
+    range: 'rango'
+};
+
 function escapeHtml(value = '') {
     return String(value)
         .replaceAll('&', '&amp;')
@@ -461,6 +481,87 @@ function heroCoversCounter(hero = {}, counterId = '') {
     if (counterId === 'reach') return heroHasReach(hero);
     if (counterId === 'focus' || counterId === 'dps') return heroHasFocusDamage(hero);
     return false;
+}
+
+export function buildHeroCombatIdentity(hero = {}) {
+    const config = getHeroConfig(hero);
+    const special = config.special || {};
+    const profile = special.projectileProfile || {};
+    const effects = special.attackEffects || [];
+    const aura = special.supportAura || config.supportAura || null;
+    const economy = special.economyOnHit || config.economyOnHit || null;
+    const counters = [
+        heroDetectsStealth(hero) ? 'Detección' : '',
+        heroPiercesArmor(hero) ? 'Perforación' : '',
+        heroControlsCrowd(hero) ? 'Control' : '',
+        heroHasReach(hero) ? 'Alcance' : '',
+        heroHasFocusDamage(hero) ? 'DPS' : ''
+    ].filter(Boolean);
+
+    return [
+        {
+            label: 'Rango',
+            value: getHeroRangePatternLabel(config, profile, aura),
+            icon: 'fa-draw-polygon',
+            tone: 'range'
+        },
+        {
+            label: 'Impacto',
+            value: getHeroImpactLabel(config, profile, effects, aura, economy),
+            icon: 'fa-bolt',
+            tone: 'impact'
+        },
+        {
+            label: 'Counters',
+            value: counters.slice(0, 3).join(' · ') || 'DPS',
+            icon: 'fa-crosshairs',
+            tone: counters.length >= 3 ? 'prime' : counters.length ? 'ready' : 'neutral'
+        },
+        {
+            label: 'Rol',
+            value: getHeroCombatRoleLabel(config, profile, effects, aura, economy),
+            icon: 'fa-id-badge',
+            tone: aura || economy ? 'support' : 'neutral'
+        }
+    ];
+}
+
+function getHeroRangePatternLabel(config = {}, profile = {}, aura = null) {
+    const pattern = String(config.rangeShape || config.rangePattern || config.special?.rangeShape || config.special?.rangePattern || '').toLowerCase();
+    if (aura) return 'Aura';
+    if (pattern.includes('ring') || pattern.includes('anillo')) return 'Anillo';
+    if (pattern.includes('cross') || pattern.includes('cruz') || pattern.includes('x')) return 'Cruz/X';
+    if (profile.lineWidth || profile.lineRange) return 'Línea';
+    return 'Círculo';
+}
+
+function getHeroImpactLabel(config = {}, profile = {}, effects = [], aura = null, economy = null) {
+    if (aura) return `Aura ${SUPPORT_AURA_TYPE_COPY[aura.type] || 'táctica'}`;
+    const labels = [];
+    if (profile.splashRadius > 0) labels.push('AoE');
+    if (profile.chainCount > 0) labels.push('Rebote');
+    if (profile.propagationCount > 0) labels.push('Propagación');
+    if (profile.armorPenetration > 0) labels.push('Perfora');
+    if (economy?.rewardPct) labels.push('Créditos');
+    effects.forEach((effect) => {
+        const label = ATTACK_EFFECT_COPY[effect.type];
+        if (label && !labels.includes(label)) labels.push(label);
+    });
+    if (!labels.length && config.canSeeStealth) labels.push('Detección');
+    return labels.slice(0, 3).join(' + ') || 'Directo';
+}
+
+function getHeroCombatRoleLabel(config = {}, profile = {}, effects = [], aura = null, economy = null) {
+    if (aura) {
+        const power = Math.round(Number(aura.power || 0) * 100);
+        return `${SUPPORT_AURA_TYPE_COPY[aura.type] || 'aura'} +${power}%`;
+    }
+    if (economy?.rewardPct) return `Créditos ${Math.round(Number(economy.rewardPct || 0) * 100)}%`;
+    if (profile.splashRadius > 0 || profile.chainCount > 0 || profile.propagationCount > 0) return 'Grupos';
+    if ((profile.armorPenetration || 0) >= 0.2) return 'Blindaje';
+    if ((effects || []).some((effect) => ['slow', 'stun', 'freeze', 'web', 'knockback'].includes(effect.type))) return 'Control';
+    if (config.canSeeStealth) return 'Detección';
+    return 'Daño';
 }
 
 export function buildCounterCoverageModel(summary = null, activeTeam = [], deployedHeroes = []) {
@@ -2116,6 +2217,21 @@ export class UIManager {
         });
     }
 
+    renderHeroCombatIdentity(hero) {
+        const chips = buildHeroCombatIdentity(hero);
+        return `
+            <div class="hero-combat-identity" aria-label="Identidad tactica de combate">
+                ${chips.map((chip) => `
+                    <span class="${escapeHtml(chip.tone)}">
+                        <i class="fas ${escapeHtml(chip.icon)}"></i>
+                        <small>${escapeHtml(chip.label)}</small>
+                        <b>${escapeHtml(chip.value)}</b>
+                    </span>
+                `).join('')}
+            </div>
+        `;
+    }
+
     renderHeroDetails(hero, detailView = 'summary') {
         const config = hero.config || hero;
         const heroName = hero.name || config.name;
@@ -2242,6 +2358,8 @@ export class UIManager {
                     </div>
                     ${config.niche ? `<b>${config.niche}</b>` : ''}
                 </div>
+
+                ${this.renderHeroCombatIdentity(hero)}
 
                 ${waveFitView ? `
                     <div class="hero-wave-fit-compact ${escapeHtml(waveFitView.id)}" aria-label="${escapeHtml(waveFitView.ariaLabel)}">
