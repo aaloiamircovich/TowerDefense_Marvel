@@ -10765,6 +10765,7 @@ canvas {
 .radar-section-wave-intel,
 .radar-section-wave-report,
 .radar-section-enemy-info-panel,
+.radar-section-glossary,
 .radar-section-dormant {
     grid-column: 1 / -1;
 }
@@ -10865,6 +10866,62 @@ canvas {
 .radar-dormant-grid small {
     color: var(--muted);
     font-size: 10px;
+}
+
+.radar-glossary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(176px, 1fr));
+    gap: 8px;
+    padding: 10px;
+}
+
+.radar-glossary-chip {
+    display: grid;
+    grid-template-columns: 28px minmax(0, 1fr);
+    grid-template-areas:
+        "icon label"
+        "icon detail";
+    align-items: center;
+    gap: 2px 8px;
+    min-width: 0;
+    min-height: 52px;
+    padding: 9px;
+    border: 1px solid color-mix(in srgb, var(--level-accent), transparent 72%);
+    border-radius: 8px;
+    background:
+        linear-gradient(135deg, color-mix(in srgb, var(--level-accent), transparent 91%), transparent),
+        rgba(3, 7, 12, 0.48);
+}
+
+.radar-glossary-chip i {
+    grid-area: icon;
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border: 1px solid color-mix(in srgb, var(--level-accent), transparent 58%);
+    border-radius: 8px;
+    color: var(--level-accent);
+    background: rgba(3, 7, 12, 0.62);
+}
+
+.radar-glossary-chip b {
+    grid-area: label;
+    min-width: 0;
+    overflow: hidden;
+    color: #ffffff;
+    font-size: 10px;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.radar-glossary-chip small {
+    grid-area: detail;
+    min-width: 0;
+    color: var(--muted);
+    font-size: 10px;
+    line-height: 1.25;
 }
 
 .radar-section-body .wave-threat,

@@ -59,6 +59,34 @@ const RADAR_SECTION_DEFINITIONS = [
     }
 ];
 
+const RADAR_TACTICAL_GLOSSARY = [
+    {
+        icon: 'fa-eye',
+        label: 'Sigilo',
+        detail: 'Necesita deteccion o cobertura de vision para recibir foco.'
+    },
+    {
+        icon: 'fa-shield-halved',
+        label: 'Blindaje',
+        detail: 'Se responde con perforacion, armor break o dano muy alto.'
+    },
+    {
+        icon: 'fa-hand-paper',
+        label: 'Control',
+        detail: 'Slow, stun y freeze compran tiempo contra grupos y jefes.'
+    },
+    {
+        icon: 'fa-fire',
+        label: 'Dano persistente',
+        detail: 'Burn, poison y curse escalan mejor contra vida alta.'
+    },
+    {
+        icon: 'fa-crown',
+        label: 'Jefes',
+        detail: 'Si un jefe cruza la base, pierdes la partida.'
+    }
+];
+
 export class RadarPanel {
     constructor(ui, builders = {}) {
         this.ui = ui;
@@ -100,6 +128,7 @@ export class RadarPanel {
                 </div>
                 <div class="radar-grid">
                     ${sections}
+                    ${this.renderTacticalGlossary()}
                     ${this.renderDormantChannels(dormantSections)}
                 </div>
             </section>
@@ -136,6 +165,29 @@ export class RadarPanel {
                 </header>
                 <div class="radar-section-body">
                     ${section.hasContent ? section.content : `<p class="radar-empty">${escapeHtml(section.empty)}</p>`}
+                </div>
+            </article>
+        `;
+    }
+
+    renderTacticalGlossary() {
+        return `
+            <article class="radar-section radar-section-glossary active">
+                <header>
+                    <span>
+                        <i class="fas fa-book-open"></i>
+                        <strong>Glosario tactico</strong>
+                    </span>
+                    <b class="radar-section-state">Referencia</b>
+                </header>
+                <div class="radar-glossary-grid">
+                    ${RADAR_TACTICAL_GLOSSARY.map((entry) => `
+                        <span class="radar-glossary-chip">
+                            <i class="fas ${escapeHtml(entry.icon)}"></i>
+                            <b>${escapeHtml(entry.label)}</b>
+                            <small>${escapeHtml(entry.detail)}</small>
+                        </span>
+                    `).join('')}
                 </div>
             </article>
         `;
