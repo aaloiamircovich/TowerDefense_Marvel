@@ -20,6 +20,9 @@ const HERO_TACTIC_FILTERS = [
     { id: 'mountain', label: 'Montaña', icon: 'fa-mountain' },
     { id: 'detection', label: 'Detección', icon: 'fa-eye' },
     { id: 'antiarmor', label: 'Antiarmadura', icon: 'fa-bullseye' },
+    { id: 'dps', label: 'DPS', icon: 'fa-bolt' },
+    { id: 'frontline', label: 'Cercano', icon: 'fa-street-view' },
+    { id: 'support', label: 'Soporte', icon: 'fa-user-shield' },
     { id: 'control', label: 'Control', icon: 'fa-hand-paper' },
     { id: 'area', label: 'Área/Rebote', icon: 'fa-project-diagram' },
     { id: 'dot', label: 'Persistente', icon: 'fa-fire' },
@@ -409,6 +412,31 @@ export class TeamBuilderPanel {
                 || traitText.includes('perforacion')
                 || traitText.includes('barrera'));
         }
+        if (filter === 'dps') {
+            return Boolean(metrics.damage >= 4
+                || hero.formationRole === 'artillery'
+                || hero.damage >= 35
+                || traitText.includes('laser')
+                || traitText.includes('explosivo'));
+        }
+        if (filter === 'frontline') {
+            return Boolean(hero.formationRole === 'vanguard'
+                || hero.rangePattern === 'ring'
+                || hero.range <= 95
+                || traitText.includes('cuerpo a cuerpo')
+                || traitText.includes('frente')
+                || traitText.includes('tanque'));
+        }
+        if (filter === 'support') {
+            return Boolean(hero.formationRole === 'support'
+                || metrics.support >= 4
+                || special.supportAura?.type
+                || special.economyOnHit
+                || traitText.includes('soporte')
+                || traitText.includes('aura')
+                || traitText.includes('detector')
+                || traitText.includes('economia'));
+        }
         if (filter === 'control') {
             return Boolean(metrics.control >= 4
                 || effects.some((effect) => CONTROL_EFFECT_TYPES.has(effect.type))
@@ -580,6 +608,7 @@ export class TeamBuilderPanel {
                         ${HERO_TACTIC_FILTERS.map((filter) => `<option value="${filter.id}" ${this.tacticalFilter === filter.id ? 'selected' : ''}>${filter.label}</option>`).join('')}
                     </select>
                 </label>
+                ${this.renderTacticQuickFilters()}
                 <div class="collection-rarity-filters" aria-label="Filtrar por rareza">
                     ${['all', ...HERO_RARITIES].map((rarity) => {
                         const active = this.rarityFilter === rarity;
@@ -593,6 +622,21 @@ export class TeamBuilderPanel {
                 </button>
                 <strong>${visibleCount}/${totalCount}</strong>
             </section>
+        `;
+    }
+
+    renderTacticQuickFilters() {
+        return `
+            <div class="team-tactic-chipbar" aria-label="Filtros tacticos rapidos">
+                ${HERO_TACTIC_FILTERS.map((filter) => {
+                    const active = this.tacticalFilter === filter.id;
+                    const label = filter.id === 'all' ? 'Ver todos los heroes' : `Filtrar ${filter.label}`;
+                    return `<button class="team-tactic-chip ${active ? 'active' : ''}" type="button" data-tactic="${this.escapeAttribute(filter.id)}" aria-pressed="${active}" aria-label="${this.escapeAttribute(label)}" title="${this.escapeAttribute(label)}" data-tooltip="${this.escapeAttribute(label)}">
+                        <i class="fas ${this.escapeAttribute(filter.icon)}"></i>
+                        <span>${this.escapeHtml(filter.label)}</span>
+                    </button>`;
+                }).join('')}
+            </div>
         `;
     }
 
@@ -805,6 +849,10 @@ export class TeamBuilderPanel {
             this.tacticalFilter = event.target.value;
             this.render('Constructor de equipo');
         });
+        this.ui.panelContent.querySelectorAll('.team-tactic-chip').forEach((button) => button.addEventListener('click', () => {
+            this.tacticalFilter = button.dataset.tactic || 'all';
+            this.render('Constructor de equipo');
+        }));
         this.ui.panelContent.querySelectorAll('.rarity-filter').forEach((button) => button.addEventListener('click', () => {
             this.rarityFilter = button.dataset.rarity || 'all';
             this.render('Constructor de equipo');

@@ -386,6 +386,10 @@ test('coleccion filtra heroes obtenidos, faltantes y favoritos', () => {
     assert.match(filtersHtml, /aria-label="Filtrar heroes por estado de obtencion"/);
     assert.match(filtersHtml, /<option value="favorites" selected>Favoritos<\/option>/);
     assert.match(filtersHtml, /aria-label="Filtrar heroes por respuesta tactica"/);
+    assert.match(filtersHtml, /team-tactic-chipbar/);
+    assert.match(filtersHtml, /data-tactic="all" aria-pressed="true"/);
+    assert.match(filtersHtml, /data-tactic="dps"/);
+    assert.match(filtersHtml, /data-tactic="support"/);
     assert.match(filtersHtml, /class="rarity-filter\s+active" type="button" data-rarity="all" aria-pressed="true" aria-label="Filtrar rareza Todas"/);
     assert.match(filtersHtml, /title="Filtrar rareza Todas" data-tooltip="Filtrar rareza Todas"/);
 });
@@ -413,6 +417,12 @@ test('coleccion filtra heroes por terreno y respuesta tactica', () => {
     panel.tacticalFilter = 'antiarmor';
     assert.deepEqual(ids(), ['black_widow', 'iron_man', 'war_machine']);
 
+    panel.tacticalFilter = 'dps';
+    assert.deepEqual(ids(), ['iron_man', 'war_machine']);
+
+    panel.tacticalFilter = 'support';
+    assert.deepEqual(ids(), ['black_widow', 'capitan_america', 'domino', 'invisible_woman']);
+
     panel.tacticalFilter = 'aura';
     assert.deepEqual(ids(), ['capitan_america', 'invisible_woman']);
 
@@ -424,6 +434,7 @@ test('coleccion filtra heroes por terreno y respuesta tactica', () => {
     assert.match(panel.renderCollectionFilters(3, 6), /collection-tactical-select/);
     assert.match(panel.renderCollectionFilters(3, 6), /aria-label="Filtrar heroes por respuesta tactica"/);
     assert.match(panel.renderCollectionFilters(3, 6), /<option value="detection" selected>Detección<\/option>/);
+    assert.match(panel.renderCollectionFilters(3, 6), /team-tactic-chip active" type="button" data-tactic="detection" aria-pressed="true"/);
     assert.deepEqual(panel.getActiveFilterLabels(), ['Tactica: Detección']);
 
     panel.resetHeroFilters();
@@ -453,12 +464,16 @@ test('coleccion filtra counters avanzados y busqueda sin acentos', () => {
     panel.tacticalFilter = 'crit';
     assert.deepEqual(ids(), ['elektra']);
 
+    panel.tacticalFilter = 'frontline';
+    assert.deepEqual(ids(), ['elektra', 'gamora', 'ghost_rider']);
+
     panel.tacticalFilter = 'all';
     panel.searchQuery = 'capitan';
     assert.deepEqual(ids(), ['capitan_america']);
     assert.match(panel.renderCollectionFilters(1, 6), /<option value="dot"[^>]*>Persistente<\/option>/);
     assert.match(panel.renderCollectionFilters(1, 6), /<option value="boss"[^>]*>Jefes<\/option>/);
     assert.match(panel.renderCollectionFilters(1, 6), /<option value="crit"[^>]*>Crítico<\/option>/);
+    assert.match(panel.renderCollectionFilters(1, 6), /<option value="frontline"[^>]*>Cercano<\/option>/);
 });
 
 test('coleccion permite limpiar todos los filtros de heroes', () => {
