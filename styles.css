@@ -8647,6 +8647,63 @@ body.reduce-motion :is(.collection-card, .starter-card, .hero-portrait):is(.rari
     overflow-wrap: anywhere;
 }
 
+.end-state-persistence {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.end-state-persistence span {
+    display: grid;
+    grid-template-columns: 32px minmax(0, 1fr);
+    grid-template-areas:
+        "icon label"
+        "icon detail";
+    align-items: center;
+    gap: 2px 9px;
+    min-width: 0;
+    min-height: 56px;
+    padding: 9px 10px;
+    border: 1px solid color-mix(in srgb, var(--state-color, var(--level-accent)), transparent 64%);
+    border-radius: 8px;
+    background:
+        linear-gradient(135deg, color-mix(in srgb, var(--state-color, var(--level-accent)), transparent 88%), transparent 72%),
+        rgba(4, 10, 18, 0.68);
+}
+
+.end-state-persistence .keep { --state-color: #46d369; }
+.end-state-persistence .reset { --state-color: #fca311; }
+.end-state-persistence.persistence-defeat .reset { --state-color: var(--accent-red); }
+
+.end-state-persistence i {
+    grid-area: icon;
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border: 1px solid color-mix(in srgb, var(--state-color), transparent 52%);
+    border-radius: 8px;
+    color: var(--state-color);
+    background: rgba(0, 0, 0, 0.26);
+}
+
+.end-state-persistence strong {
+    grid-area: label;
+    min-width: 0;
+    color: #ffffff;
+    font-size: 11px;
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+.end-state-persistence small {
+    grid-area: detail;
+    min-width: 0;
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.25;
+}
+
 .end-state-carryover {
     display: grid;
     gap: 8px;
@@ -8869,6 +8926,7 @@ body.reduce-motion :is(.collection-card, .starter-card, .hero-portrait):is(.rari
     }
 
     .end-state-readout,
+    .end-state-persistence,
     .end-state-carryover > div,
     .end-state-coach > div,
     .mission-summary-grid {

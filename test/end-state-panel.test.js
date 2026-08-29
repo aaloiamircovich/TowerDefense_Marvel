@@ -21,6 +21,10 @@ test('EndStatePanel renderiza derrota y reintenta sin resetear progreso externo'
         assert.match(ui.panelContent.innerHTML, /OPERACION FALLIDA/);
         assert.match(ui.panelContent.innerHTML, /Base destruida/);
         assert.match(ui.panelContent.innerHTML, /end-state-readout/);
+        assert.match(ui.panelContent.innerHTML, /end-state-persistence/);
+        assert.match(ui.panelContent.innerHTML, /Se conserva/);
+        assert.match(ui.panelContent.innerHTML, /Creditos, estrellas, niveles, equipo y objetos/);
+        assert.match(ui.panelContent.innerHTML, /La operacion vuelve a oleada 1/);
         assert.match(ui.panelContent.innerHTML, /Mapa actual/);
         assert.match(ui.panelContent.innerHTML, /Informe de mision/);
         assert.match(ui.panelContent.innerHTML, /mission-summary-grid/);
@@ -83,6 +87,8 @@ test('EndStatePanel renderiza victoria y error fatal con acciones principales', 
         assert.match(ui.panelContent.innerHTML, /OPERACION COMPLETADA/);
         assert.match(ui.panelContent.innerHTML, /47 estrellas/);
         assert.match(ui.panelContent.innerHTML, /Mejor unidad/);
+        assert.match(ui.panelContent.innerHTML, /end-state-persistence/);
+        assert.match(ui.panelContent.innerHTML, /Solo cambia la operacion que elijas jugar/);
         assert.match(ui.panelContent.innerHTML, /Progreso conservado/);
         assert.match(ui.panelContent.innerHTML, /Todas las operaciones desbloqueadas/);
         assert.match(ui.panelContent.innerHTML, /Puedes seguir con el siguiente mapa/);

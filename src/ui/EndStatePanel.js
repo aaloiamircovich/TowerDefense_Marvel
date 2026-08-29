@@ -46,6 +46,7 @@ export class EndStatePanel {
                     { label: modeSnapshot ? 'Puntos' : 'Estrellas', value: formatNumber(modeSnapshot?.score ?? this.ui.game.stars), icon: modeSnapshot ? 'fa-chart-line' : 'fa-star' },
                     { label: 'Vidas', value: formatNumber(lives), icon: 'fa-heart' }
                 ])}
+                ${this.renderPersistenceRules('defeat', modeSnapshot)}
                 ${modeSnapshot ? '' : this.renderProgressCarryover('defeat')}
                 ${this.renderMissionSummary(summary)}
                 ${this.renderOutcomeCoach('defeat', { wave, summary, modeSnapshot })}
@@ -92,6 +93,7 @@ export class EndStatePanel {
                     { label: 'Vidas', value: formatNumber(summary?.lives ?? this.ui.game.resourceManager?.lives ?? 0), icon: 'fa-heart' },
                     { label: 'Mejor unidad', value: summary?.bestHero || 'Equipo', icon: 'fa-shield-halved' }
                 ])}
+                ${this.renderPersistenceRules('victory')}
                 ${this.renderProgressCarryover('victory')}
                 ${this.renderMissionSummary(summary)}
                 ${this.renderOutcomeCoach('victory', { summary })}
@@ -121,6 +123,33 @@ export class EndStatePanel {
                         <b>${escapeHtml(item.value)}</b>
                     </span>
                 `).join('')}
+            </div>
+        `;
+    }
+
+    renderPersistenceRules(type = 'defeat', modeSnapshot = null) {
+        const isMode = Boolean(modeSnapshot);
+        const isVictory = type === 'victory';
+        const kept = isMode
+            ? 'Coleccion, ajustes y records permanentes.'
+            : 'Creditos, estrellas, niveles, equipo y objetos.';
+        const reset = isMode
+            ? 'La run especial vuelve a empezar desde cero.'
+            : isVictory
+                ? 'Solo cambia la operacion que elijas jugar.'
+                : 'La operacion vuelve a oleada 1.';
+        return `
+            <div class="end-state-persistence persistence-${isVictory ? 'victory' : isMode ? 'mode' : 'defeat'}" aria-label="Reglas de progreso al terminar">
+                <span class="keep">
+                    <i class="fas fa-lock"></i>
+                    <strong>Se conserva</strong>
+                    <small>${escapeHtml(kept)}</small>
+                </span>
+                <span class="reset">
+                    <i class="fas fa-rotate-right"></i>
+                    <strong>Reinicia</strong>
+                    <small>${escapeHtml(reset)}</small>
+                </span>
             </div>
         `;
     }
