@@ -52,6 +52,11 @@ test('StarterPanel renderiza cartas tacticas y selecciona heroe inicial', () => 
             category: 'Urbano',
             rarity: 'Common',
             sprite: 'black_widow.png',
+            cost: 195,
+            damage: 18,
+            range: 130,
+            fireRate: 1.8,
+            allowedTerrains: [1],
             niche: 'saboteo de soporte',
             teamMetrics: { damage: 2, control: 3, support: 1, detection: 4 }
         },
@@ -61,6 +66,11 @@ test('StarterPanel renderiza cartas tacticas y selecciona heroe inicial', () => 
             category: 'Táctico',
             rarity: 'Common',
             sprite: 'hawkeye.png',
+            cost: 235,
+            damage: 27,
+            range: 220,
+            fireRate: 1.1,
+            allowedTerrains: [3],
             niche: 'municiones flexibles',
             teamMetrics: { damage: 3, control: 2, support: 1, detection: 2 }
         }
@@ -79,7 +89,15 @@ test('StarterPanel renderiza cartas tacticas y selecciona heroe inicial', () => 
         assert.match(panelContent.innerHTML, /Opciones/);
         assert.match(panelContent.innerHTML, /Black Widow/);
         assert.match(panelContent.innerHTML, /starter-card-upgraded rarity-common" type="button"/);
-        assert.match(panelContent.innerHTML, /aria-label="Elegir Black Widow\. Rareza Common\. Urbano\. saboteo de soporte\. Radar 4, Control 3\. Mejor Control, Mejor Radar" title="Elegir Black Widow\. Rareza Common\. Urbano\. saboteo de soporte\. Radar 4, Control 3\. Mejor Control, Mejor Radar" data-tooltip="Elegir Black Widow\. Rareza Common\. Urbano\. saboteo de soporte\. Radar 4, Control 3\. Mejor Control, Mejor Radar"/);
+        assert.match(panelContent.innerHTML, /aria-label="Elegir Black Widow\. Rareza Common\. Urbano\. saboteo de soporte\. Radar 4, Control 3\. Coste \$195, Daño 18, Alcance 130, Cadencia 1\.8\/s, Terreno Pasto\. Mejor Control, Mejor Radar" title="Elegir Black Widow\. Rareza Common\. Urbano\. saboteo de soporte\. Radar 4, Control 3\. Coste \$195, Daño 18, Alcance 130, Cadencia 1\.8\/s, Terreno Pasto\. Mejor Control, Mejor Radar" data-tooltip="Elegir Black Widow\. Rareza Common\. Urbano\. saboteo de soporte\. Radar 4, Control 3\. Coste \$195, Daño 18, Alcance 130, Cadencia 1\.8\/s, Terreno Pasto\. Mejor Control, Mejor Radar"/);
+        assert.match(panelContent.innerHTML, /starter-spec-strip/);
+        assert.match(panelContent.innerHTML, /Coste/);
+        assert.match(panelContent.innerHTML, /\$195/);
+        assert.match(panelContent.innerHTML, /Alcance/);
+        assert.match(panelContent.innerHTML, /Cadencia/);
+        assert.match(panelContent.innerHTML, /Terreno/);
+        assert.match(panelContent.innerHTML, /Pasto/);
+        assert.match(panelContent.innerHTML, /Montaña/);
         assert.match(panelContent.innerHTML, /saboteo de soporte/);
         assert.match(panelContent.innerHTML, /Hawkeye/);
         assert.match(panelContent.innerHTML, /Daño 3/);

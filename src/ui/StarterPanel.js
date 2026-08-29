@@ -1,4 +1,5 @@
 import { getRarityClass, normalizeRarity } from '../utils/Rarity.js';
+import { getAllowedTerrainLabels } from '../utils/TerrainRules.js';
 
 function escapeHtml(value = '') {
     return String(value)
@@ -55,9 +56,12 @@ export class StarterPanel {
         const rarity = normalizeRarity(hero.rarity);
         const rarityClass = getRarityClass(rarity);
         const highlights = this.getStarterHighlights(hero, starters);
-        const metricSummary = this.getMetrics(hero).map((metric) => `${metric.label} ${metric.value}`).join(', ');
+        const metrics = this.getMetrics(hero);
+        const specs = this.getStarterSpecs(hero);
+        const metricSummary = metrics.map((metric) => `${metric.label} ${metric.value}`).join(', ');
+        const specSummary = specs.map((spec) => `${spec.label} ${spec.value}`).join(', ');
         const highlightSummary = highlights.length ? `. ${highlights.map((highlight) => highlight.label).join(', ')}` : '';
-        const cardLabel = `Elegir ${hero.name}. Rareza ${rarity}. ${hero.category || 'Heroe'}. ${this.getNicheText(hero)}. ${metricSummary}${highlightSummary}`;
+        const cardLabel = `Elegir ${hero.name}. Rareza ${rarity}. ${hero.category || 'Heroe'}. ${this.getNicheText(hero)}. ${metricSummary}. ${specSummary}${highlightSummary}`;
         return `
             <button class="starter-card starter-card-upgraded ${rarityClass}" type="button" data-id="${escapeHtml(hero.id)}" data-testid="starter-${escapeHtml(hero.id)}" data-rarity="${rarity}" aria-label="${escapeHtml(cardLabel)}" title="${escapeHtml(cardLabel)}" data-tooltip="${escapeHtml(cardLabel)}">
                 <div class="starter-sprite-frame">
@@ -72,8 +76,17 @@ export class StarterPanel {
                     ${highlights.length ? `<div class="starter-highlight-row">${highlights.map((highlight) => `<span><i class="fas ${highlight.icon}"></i>${escapeHtml(highlight.label)}</span>`).join('')}</div>` : ''}
                     <em>${escapeHtml(this.getNicheText(hero))}</em>
                 </div>
-                <div class="starter-stat-strip" aria-label="${escapeHtml(hero.name)}: ${escapeHtml(this.getMetrics(hero).map((metric) => `${metric.label} ${metric.value}`).join(', '))}">
-                    ${this.getMetrics(hero).map((metric) => `
+                <div class="starter-spec-strip" aria-label="${escapeHtml(hero.name)} datos base: ${escapeHtml(specSummary)}">
+                    ${specs.map((spec) => `
+                        <span>
+                            <i class="fas ${spec.icon}"></i>
+                            <b>${escapeHtml(spec.value)}</b>
+                            <small>${escapeHtml(spec.label)}</small>
+                        </span>
+                    `).join('')}
+                </div>
+                <div class="starter-stat-strip" aria-label="${escapeHtml(hero.name)}: ${escapeHtml(metricSummary)}">
+                    ${metrics.map((metric) => `
                         <span>
                             <i class="fas ${metric.icon}"></i>
                             <b>${metric.value}</b>
@@ -122,6 +135,16 @@ export class StarterPanel {
     }
     getNicheText(hero) {
         return hero.niche || hero.ability || hero.category || 'defensa equilibrada';
+    }
+
+    getStarterSpecs(hero) {
+        return [
+            { label: 'Coste', value: `$${Math.round(Number(hero.cost) || 0)}`, icon: 'fa-coins' },
+            { label: 'Daño', value: String(Math.round(Number(hero.damage) || 0)), icon: 'fa-bolt' },
+            { label: 'Alcance', value: String(Math.round(Number(hero.range) || 0)), icon: 'fa-bullseye' },
+            { label: 'Cadencia', value: `${(Number(hero.fireRate) || 0).toFixed(1)}/s`, icon: 'fa-gauge-high' },
+            { label: 'Terreno', value: getAllowedTerrainLabels(hero.allowedTerrains), icon: 'fa-location-dot' }
+        ];
     }
 
     getMetricValue(hero, key) {

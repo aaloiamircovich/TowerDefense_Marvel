@@ -11001,7 +11001,7 @@ button.team-slot-filled:not(:disabled):active img {
 .starter-card-upgraded {
     grid-template-rows: auto auto minmax(48px, auto);
     align-content: start;
-    min-height: 286px;
+    min-height: 332px;
 }
 
 .starter-sprite-frame {
@@ -11077,6 +11077,49 @@ button.team-slot-filled:not(:disabled):active img {
 .starter-highlight-row i {
     color: var(--rarity-color, var(--level-accent));
     font-size: 10px;
+}
+
+.starter-spec-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(54px, 1fr));
+    gap: 5px;
+    width: 100%;
+}
+
+.starter-spec-strip span {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: 2px 5px;
+    min-height: 38px;
+    padding: 6px;
+    border: 1px solid color-mix(in srgb, var(--rarity-color, var(--level-accent)), transparent 74%);
+    border-radius: 7px;
+    background: rgba(3, 7, 12, 0.5);
+}
+
+.starter-spec-strip i {
+    color: var(--bright-yellow);
+    font-size: 10px;
+}
+
+.starter-spec-strip b {
+    min-width: 0;
+    overflow: hidden;
+    color: #ffffff;
+    font-size: 11px;
+    line-height: 1;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.starter-spec-strip small {
+    grid-column: 1 / -1;
+    color: var(--muted);
+    font-size: 8px;
+    font-weight: 900;
+    line-height: 1;
+    text-transform: uppercase;
 }
 
 .starter-stat-strip {
@@ -11565,4 +11608,3 @@ button:disabled,
         max-width: min(180px, calc(100% - 24px));
     }
 }
-
