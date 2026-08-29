@@ -1083,7 +1083,7 @@
   {
     "id": "level_11",
     "name": "The Raft",
-    "description": "Una fuga masiva amenaza la prisión oceánica. El daño cerca de las celdas puede liberar prisioneros de élite.",
+    "description": "Un motin masivo amenaza la prisión oceánica. El daño cerca de las celdas puede liberar prisioneros de élite.",
     "thumbnail": "the_raft",
     "difficulty": "Extrema",
     "theme": {

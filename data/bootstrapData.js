@@ -302,7 +302,7 @@ window.__MARVEL_TD_DATA__ = {
         1,
         3
       ],
-      "niche": "tanque cercano, respuesta a fugas y control de grupos",
+      "niche": "tanque cercano, defensa de salida y control de grupos",
       "visual": {
         "portrait": "assets/images/heroes/hulk/portrait.png",
         "size": 96,
@@ -2095,7 +2095,7 @@ window.__MARVEL_TD_DATA__ = {
         "support": 5,
         "detection": 1
       },
-      "niche": "intercepcion de fugas y proteccion local",
+      "niche": "intercepcion de brechas y proteccion local",
       "visual": {
         "portrait": "assets/images/heroes/luke_cage/portrait.png",
         "size": 96,
@@ -3012,7 +3012,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.05,
       "canSeeStealth": false,
       "ability": "GOLPE PRIVADO",
-      "abilityDesc": "Baja cadencia, mucho impacto y chance de aturdir al primer enemigo en fuga.",
+      "abilityDesc": "Baja cadencia, mucho impacto y chance de aturdir al primer enemigo cerca de la salida.",
       "niche": "tanque urbano economico",
       "allowedTerrains": [
         1,
@@ -5370,7 +5370,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.75,
       "canSeeStealth": true,
       "ability": "MAREA AMABLE",
-      "abilityDesc": "Control anfibio que opera en agua, detecta sigilo y ralentiza fugas.",
+      "abilityDesc": "Control anfibio que opera en agua, detecta sigilo y ralentiza amenazas cerca de la salida.",
       "niche": "soporte anfibio de control",
       "allowedTerrains": [
         0,
@@ -12471,7 +12471,7 @@ window.__MARVEL_TD_DATA__ = {
     {
       "id": "level_11",
       "name": "The Raft",
-      "description": "Una fuga masiva amenaza la prisión oceánica. El daño cerca de las celdas puede liberar prisioneros de élite.",
+      "description": "Un motin masivo amenaza la prisión oceánica. El daño cerca de las celdas puede liberar prisioneros de élite.",
       "thumbnail": "the_raft",
       "difficulty": "Extrema",
       "theme": {

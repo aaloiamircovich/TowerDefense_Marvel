@@ -48,7 +48,7 @@ test('WaveReportPanel renderiza informe y delega mejora recomendada', () => {
         assert.equal(state.label, 'Oleada asegurada');
         assert.equal(container.attributes.role, 'status');
         assert.equal(container.attributes['aria-live'], 'polite');
-        assert.equal(container.attributes['aria-label'], 'Oleada asegurada. Sin fugas');
+        assert.equal(container.attributes['aria-label'], 'Oleada asegurada. Base intacta');
         assert.match(container.innerHTML, /Informe oleada 3/);
         assert.match(container.innerHTML, /wave-report-scoreline/);
         assert.match(container.innerHTML, /wave-report-quickline/);
@@ -83,7 +83,7 @@ test('WaveReportPanel renderiza informe y delega mejora recomendada', () => {
     }
 });
 
-test('WaveReportPanel resume fuga recompensa y accion en lectura rapida', () => {
+test('WaveReportPanel resume brecha recompensa y accion en lectura rapida', () => {
     const panel = new WaveReportPanel({});
     const html = panel.renderQuickline(
         { leaks: 2, credits: 75 },
@@ -92,7 +92,7 @@ test('WaveReportPanel resume fuga recompensa y accion en lectura rapida', () => 
 
     assert.match(html, /wave-report-quickline/);
     assert.match(html, /quickline-danger/);
-    assert.match(html, /2 fugas/);
+    assert.match(html, /2 brechas/);
     assert.match(html, /quickline-reward/);
     assert.match(html, /\+\$75/);
     assert.match(html, /quickline-saving/);
@@ -114,13 +114,13 @@ test('WaveReportPanel desglosa ahorro cuando no alcanza para mejorar', () => {
 });
 
 
-test('WaveReportPanel abre desglose cuando hubo fugas o aporte tactico', () => {
+test('WaveReportPanel abre desglose cuando hubo brechas o aporte tactico', () => {
     const panel = new WaveReportPanel({});
     const leakHtml = panel.renderDetailDrawer({
         ...buildReportState(),
         leaks: 2,
         leakIntel: {
-            label: 'Fugas detectadas',
+            label: 'Brechas detectadas',
             items: [{ tone: 'boss', name: 'Ultron', detail: 'Cruzo la salida' }],
             overflow: 0
         }
@@ -136,7 +136,7 @@ test('WaveReportPanel abre desglose cuando hubo fugas o aporte tactico', () => {
     });
 
     assert.match(leakHtml, /<details class="wave-report-details" open>/);
-    assert.match(leakHtml, /Ver fugas y recompensas/);
+    assert.match(leakHtml, /Ver base y recompensas/);
     assert.match(tacticalHtml, /<details class="wave-report-details" open>/);
     assert.match(tacticalHtml, /Ver aporte tactico/);
 });
@@ -165,7 +165,7 @@ function buildReportState() {
         wave: 3,
         tone: 'clean',
         label: 'Oleada asegurada',
-        advice: 'Sin fugas',
+        advice: 'Base intacta',
         leaks: 0,
         kills: 12,
         damage: 1800,
@@ -177,7 +177,7 @@ function buildReportState() {
         bestHeroDamage: 1200,
         grade: { tone: 'strong', detail: 'Buen control', medal: 'A', score: 90, label: 'Control superior' },
         lesson: { tone: 'economy', label: 'Economia estable', detail: 'Ahorra' },
-        leakIntel: { label: 'Sin fugas', items: [], overflow: 0 },
+        leakIntel: { label: 'Base intacta', items: [], overflow: 0 },
         tacticalContribution: { active: false, score: 0, metrics: [], heroes: [] }
     };
 }

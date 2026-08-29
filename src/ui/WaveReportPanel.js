@@ -77,7 +77,7 @@ export class WaveReportPanel {
                 </div>
             </div>
             <div class="wave-report-grid wave-report-grid--upgraded">
-                ${this.renderMetric({ icon: 'fa-route', label: 'Fugas', value: state.leaks, tone: state.leaks > 0 ? 'danger' : 'safe' })}
+                ${this.renderMetric({ icon: 'fa-route', label: 'Brechas', value: state.leaks, tone: state.leaks > 0 ? 'danger' : 'safe' })}
                 ${this.renderMetric({ icon: 'fa-skull', label: 'Bajas', value: state.kills })}
                 ${this.renderMetric({ icon: 'fa-bolt', label: 'Dano', value: state.damage })}
                 ${this.renderMetric({ icon: 'fa-coins', label: 'Creditos', value: `$${state.credits}` })}
@@ -100,7 +100,7 @@ export class WaveReportPanel {
                 ? 'fa-piggy-bank'
                 : 'fa-compass';
         const chips = [
-            { icon: 'fa-shield-halved', label: 'Linea', value: leaks > 0 ? `${leaks} fuga${leaks === 1 ? '' : 's'}` : 'Cerrada', tone: leaks > 0 ? 'danger' : 'safe' },
+            { icon: 'fa-shield-halved', label: 'Linea', value: leaks > 0 ? `${leaks} brecha${leaks === 1 ? '' : 's'}` : 'Cerrada', tone: leaks > 0 ? 'danger' : 'safe' },
             { icon: 'fa-coins', label: 'Recompensa', value: `+$${credits}`, tone: 'reward' },
             { icon: actionIcon, label: 'Siguiente', value: actionText, tone: action?.type || 'stable' }
         ];
@@ -130,7 +130,7 @@ export class WaveReportPanel {
         if (!sections.length) return '';
         const shouldOpen = state.leaks > 0 || state.tacticalContribution?.active;
         const label = state.leaks > 0
-            ? 'Ver fugas y recompensas'
+            ? 'Ver base y recompensas'
             : state.tacticalContribution?.active
                 ? 'Ver aporte tactico'
                 : 'Ver desglose';

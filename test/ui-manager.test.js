@@ -288,7 +288,7 @@ test('buildLeakIntel resume enemigo filtrado y counter recomendado', () => {
         { name: 'Ninja de La Mano', counter: 'Deteccion', lifeLoss: 1, segmentPct: 98, traits: ['Sigilo'] }
     ]);
 
-    assert.equal(intel.label, 'Lectura de fugas');
+    assert.equal(intel.label, 'Lectura de base');
     assert.equal(intel.items[0].name, 'Ninja de La Mano');
     assert.equal(intel.items[0].counter, 'Deteccion');
     assert.match(intel.items[0].detail, /98% ruta/);
@@ -1023,7 +1023,7 @@ test('renderCombatPressurePanel etiqueta acciones de emergencia con tooltips', (
             enemy({ name: 'Runner', distanceTravelled: 372, uid: 'lead' })
         ], path(), true);
 
-        assert.match(container.innerHTML, /id="pressure-upgrade" class="btn-mode-action" type="button" aria-label="Mejorar Iron Man por 120 creditos\. Respuesta recomendada para cortar la fuga\." title="Mejorar Iron Man por 120 creditos\. Respuesta recomendada para cortar la fuga\." data-tooltip="Mejorar Iron Man por 120 creditos\. Respuesta recomendada para cortar la fuga\."/);
+        assert.match(container.innerHTML, /id="pressure-upgrade" class="btn-mode-action" type="button" aria-label="Mejorar Iron Man por 120 creditos\. Respuesta recomendada para cortar la brecha\." title="Mejorar Iron Man por 120 creditos\. Respuesta recomendada para cortar la brecha\." data-tooltip="Mejorar Iron Man por 120 creditos\. Respuesta recomendada para cortar la brecha\."/);
         assert.match(container.innerHTML, /id="pressure-pause" class="btn-mode-action" type="button" aria-label="Activar pausa tactica por presion de ruta" title="Activar pausa tactica por presion de ruta" data-tooltip="Activar pausa tactica por presion de ruta"/);
     } finally {
         globalThis.document = previousDocument;
@@ -1422,7 +1422,7 @@ test('buildWaveReportActionState indica ahorro si falta para reforzar tras fugas
     assert.equal(action.missing, 160);
     assert.equal(action.available, 80);
     assert.equal(action.cost, 240);
-    assert.match(action.reason, /fuga/);
+    assert.match(action.reason, /salida/);
 });
 
 test('UIManager recalcula coste del panel con el nivel vivo tras mejora rapida', () => {

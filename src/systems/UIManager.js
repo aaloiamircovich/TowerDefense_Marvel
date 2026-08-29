@@ -302,7 +302,7 @@ export function buildEnemyIntel(enemy = {}) {
     } else if (enemy.archetype === 'runner' || Number(enemy.speed || 0) >= 85) {
         counterId = 'control';
         counter = 'Control';
-        counterDetail = 'Velocidad alta; slow, stun o web en curvas evita fugas tempranas.';
+        counterDetail = 'Velocidad alta; slow, stun o web en curvas evita brechas tempranas.';
     } else if (enemy.archetype === 'flying' || enemy.flying) {
         counterId = 'reach';
         counter = 'Alcance';
@@ -759,7 +759,7 @@ export function buildLeakIntel(events = [], fallbackLeaks = 0) {
 
     if (!cleanEvents.length && fallbackLeaks > 0) {
         cleanEvents.push({
-            name: 'Fugas registradas',
+            name: 'Brechas registradas',
             counter: 'Cubre salida',
             tone: fallbackLeaks >= 3 ? 'boss' : 'leak',
             detail: `${fallbackLeaks} vida perdida; falta detalle de enemigo.`,
@@ -768,7 +768,7 @@ export function buildLeakIntel(events = [], fallbackLeaks = 0) {
     }
 
     return {
-        label: cleanEvents.length ? 'Lectura de fugas' : 'Sin fugas',
+        label: cleanEvents.length ? 'Lectura de base' : 'Base intacta',
         items: cleanEvents.slice(0, 3),
         overflow: Math.max(0, cleanEvents.length - 3)
     };
@@ -984,7 +984,7 @@ export function buildShopItemInsight(item = {}, summary = null) {
     add(effects.allowWater || effects.allowGrass || effects.allowMountain, 'abre posiciones');
     add(effects.onHitCredit || effects.onHitCreditPct, 'economia por impacto');
     add(effects.burnChance || effects.poisonChance || effects.curseChance || effects.statusDamagePct, 'escala con estados');
-    add(effects.lowLifeDamagePct || effects.lowLifeFireRatePct, 'seguro de fuga');
+    add(effects.lowLifeDamagePct || effects.lowLifeFireRatePct, 'seguro de base');
 
     const setName = SET_BONUSES[item.set]?.name || item.set || 'sin set';
     if (reasons.length < 3 && item.set) reasons.push(`set ${setName}`);
@@ -1135,7 +1135,7 @@ export function buildPressureActionState(pressureState, heroes = [], credits = 0
             heroName: name,
             cost: affordable.cost,
             label: `Mejorar ${name}`,
-            reason: pressureState.id === 'critical' ? 'Respuesta recomendada para cortar la fuga.' : 'Refuerzo rapido antes de que escale.',
+            reason: pressureState.id === 'critical' ? 'Respuesta recomendada para cortar la brecha.' : 'Refuerzo rapido antes de que escale.',
             signature: `upgrade:${affordable.hero.id || name}:${affordable.level}:${affordable.cost}:${Math.floor(credits)}`
         };
     }
@@ -1168,7 +1168,7 @@ export function buildWaveReportLesson(report = {}) {
         return {
             tone: 'leak',
             label: 'Refuerzo final',
-            detail: 'Una mejora cerca de la meta puede convertir fugas en bajas.'
+            detail: 'Una mejora cerca de la meta puede convertir brechas en bajas.'
         };
     }
     if (kills === 0 && damage === 0) {
@@ -1242,7 +1242,7 @@ export function buildWaveReportGrade(report = {}) {
 
     let detail = 'Sostuviste la ruta; prepara el proximo salto de amenaza.';
     if (leaks >= 3) detail = 'La salida quedo expuesta; suma control final antes de acelerar.';
-    else if (leaks > 0) detail = 'Hubo fugas aisladas; una mejora cerca de meta puede sellar la linea.';
+    else if (leaks > 0) detail = 'Hubo brechas aisladas; una mejora cerca de meta puede sellar la linea.';
     else if (kills === 0 && damage === 0) detail = 'No hubo lectura ofensiva; despliega dano antes de la siguiente oleada.';
     else if (medal === 'S') detail = 'Ejecucion dominante: buen momento para greed de economia.';
     else if (bestShare >= 0.65) detail = 'El MVP cargo demasiado peso; agrega soporte para evitar dependencia.';
@@ -1267,7 +1267,7 @@ export function buildWaveReportState(report = {}) {
 
     if (leaks > 0) {
         tone = leaks >= 3 ? 'breach' : 'leak';
-        label = leaks >= 3 ? 'Brecha seria' : 'Fuga contenida';
+        label = leaks >= 3 ? 'Brecha seria' : 'Brecha contenida';
         advice = leaks >= 3
             ? 'Refuerza la salida y prioriza control antes de iniciar.'
             : 'Sube una defensa cercana al final del camino.';
@@ -1329,7 +1329,7 @@ export function buildWaveReportActionState(report = {}, heroes = [], credits = 0
             available: Math.floor(available),
             cost,
             reason: report.leaks > 0
-                ? 'Ahorra para reforzar al heroe que mas sostuvo la fuga.'
+                ? 'Ahorra para reforzar al heroe que mas sostuvo la salida.'
                 : 'Guarda creditos para convertir al MVP en carry.',
             signature: `saving:${heroId}:${cost}:${Math.floor(available)}`
         };
@@ -1343,7 +1343,7 @@ export function buildWaveReportActionState(report = {}, heroes = [], credits = 0
         available: Math.floor(available),
         remaining: Math.max(0, Math.floor(available - cost)),
         reason: report.leaks > 0
-            ? 'Recomendado tras fugas: potencia tu defensa mas efectiva.'
+            ? 'Recomendado tras brechas: potencia tu defensa mas efectiva.'
             : 'Aprovecha el rendimiento del MVP antes de escalar amenaza.',
         signature: `upgrade:${heroId}:${level}:${cost}:${Math.floor(available)}`
     };
@@ -1381,7 +1381,7 @@ export const ONBOARDING_STEPS = [
     {
         id: 'report',
         label: 'Ajuste post-oleada',
-        detail: 'Tras cada oleada, refuerza lo que fallo: fugas, DPS, control o deteccion.',
+        detail: 'Tras cada oleada, refuerza lo que fallo: base, DPS, control o deteccion.',
         actionLabel: 'Revisar informe',
         icon: 'fa-clipboard-list'
     }
