@@ -11,6 +11,7 @@ import { ShopPanel } from '../ui/ShopPanel.js';
 import { StarterPanel } from '../ui/StarterPanel.js';
 import { EndStatePanel } from '../ui/EndStatePanel.js';
 import { HeroRosterPanel } from '../ui/HeroRosterPanel.js';
+import { buildHeroDetailViewModel, formatHeroDetailMetric } from '../ui/HeroDetailViewModel.js';
 import { SET_BONUSES, SLOT_LABELS } from './ItemEffectSystem.js';
 import { getAllowedTerrainLabels } from '../utils/TerrainRules.js';
 import { getRarityClass, normalizeRarity } from '../utils/Rarity.js';
@@ -188,10 +189,7 @@ function escapeHtml(value = '') {
 }
 
 function formatCompactMetric(value = 0) {
-    const amount = Math.max(0, Number(value) || 0);
-    if (amount >= 1000000) return `${(amount / 1000000).toFixed(amount >= 10000000 ? 0 : 1).replace(/\.0$/, '')}M`;
-    if (amount >= 1000) return `${(amount / 1000).toFixed(amount >= 10000 ? 0 : 1).replace(/\.0$/, '')}k`;
-    return `${Math.round(amount)}`;
+    return formatHeroDetailMetric(value);
 }
 
 export function buildBossCountdownState(wave = 1, maxWaves = CAMPAIGN_MAX_WAVES, interval = MINI_BOSS_WAVE_INTERVAL) {
@@ -2280,7 +2278,6 @@ export class UIManager {
         const isDeployed = this.game.heroes.includes(hero);
         const repositionPermission = isDeployed ? this.game.tacticalActions?.canReposition(hero) : null;
         const sellPermission = isDeployed ? this.game.tacticalActions?.canSell(hero) : null;
-        const activeDetailView = ['upgrade', 'equipment', 'combat'].includes(detailView) ? detailView : 'summary';
         const isMaxLevel = level >= HERO_MAX_LEVEL;
         const currentTargeting = hero.targetingPriority || config.targetingPriority || TARGETING_PRIORITIES[0];
         const waveSummary = this.nextWaveSummary || (!this.game.waveManager?.isWaveActive ? this.game.waveManager?.buildPreparedSummary?.() : null);
@@ -2293,18 +2290,27 @@ export class UIManager {
             range: 'Rango'
         }[scaledAura?.type] || 'Aura';
         const isAuraOnly = hero.isSupportAuraOnly?.() || Boolean(scaledAura?.type && config.formationRole === 'support');
-        const summaryBadge = isAuraOnly && scaledAura?.type
-            ? `${supportAuraLabel} +${Math.round(Number(scaledAura.power || 0) * 100)}%`
-            : `DPS ${formatCompactMetric(damage * Number(fireRate || 0))}`;
-        const upgradeBadge = isMaxLevel ? 'MAX' : `$${this.getHeroUpgradeCost(hero, 1)}`;
-        const equipmentBadge = equippedItem ? 'Equipado' : 'Libre';
-        const combatBadge = `${formatCompactMetric(combat.kills || 0)} bajas`;
-        const compactStats = [
-            ['Daño', `${damage}${this.formatStatDelta(damage, baseDamage)}`],
-            ['Recarga', `${fireRate}/s${this.formatStatDelta(Number(fireRate), baseFireRate, '', 1)}`],
-            ['Crítico', `${critChance}%${this.formatStatDelta(critChance, baseCritChance, '%')}`],
-            ['Alcance', `${range}${this.formatStatDelta(range, baseRange)}`]
-        ];
+        const detailViewModel = buildHeroDetailViewModel({
+            detailView,
+            level,
+            maxLevel: HERO_MAX_LEVEL,
+            damage,
+            fireRate,
+            critChance,
+            range,
+            baseDamage,
+            baseFireRate,
+            baseCritChance,
+            baseRange,
+            combat,
+            equippedItem,
+            isAuraOnly,
+            scaledAura,
+            supportAuraLabel,
+            upgradeCost: this.getHeroUpgradeCost(hero, 1),
+            formatStatDelta: (...args) => this.formatStatDelta(...args)
+        });
+        const { activeDetailView, compactStats, detailTabs, upgradeBadge } = detailViewModel;
         const upgradeControls = isUnlocked ? `<div class="upgrade-list hero-upgrade-grid" aria-label="Mejoras de nivel">
             ${[1, 5, 10].map((amount) => {
                 const cost = this.getHeroUpgradeCost(hero, amount);
@@ -2318,12 +2324,6 @@ export class UIManager {
                 </button>`;
             }).join('')}
         </div>` : '<div class="locked-hero-note"><i class="fas fa-lock"></i> Recluta al héroe para mejorarlo</div>';
-        const detailTabs = [
-            { id: 'summary', label: 'Resumen', icon: 'fa-id-card', badge: summaryBadge },
-            { id: 'upgrade', label: 'Mejora', icon: 'fa-arrow-up', badge: upgradeBadge },
-            { id: 'equipment', label: 'Objeto', icon: 'fa-shield-alt', badge: equipmentBadge },
-            { id: 'combat', label: 'Combate', icon: 'fa-chart-line', badge: combatBadge }
-        ];
         let detailBody = '';
 
         if (activeDetailView === 'upgrade') {
