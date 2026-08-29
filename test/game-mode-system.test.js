@@ -65,12 +65,15 @@ test('Draft registra la eleccion en el replay sin romper el reinicio', () => {
     assert.doesNotThrow(() => modes.reset());
 });
 
-test('Defensa de convoy mueve el objetivo sobre la ruta y pierde integridad por fugas', () => {
-    const game = createGame(); const modes = attachModes(game); modes.modeId = 'convoy'; game.waveManager = { currentWave: 2, isWaveActive: true };
-    modes.update(9.5); assert.ok(modes.convoy.progress > 0);
-    assert.equal(modes.handleLeak({ isBoss: false }), true); assert.equal(modes.convoy.integrity, 92);
-    const calls = []; modes.render(createContext(calls));
-    assert.ok(calls.some((call) => call === 'strokeRect'));
+test('Convoy queda retirado de los modos especiales', () => {
+    const game = createGame();
+    const modes = attachModes(game);
+
+    assert.equal('convoy' in GAME_MODES, false);
+    assert.equal(modes.start('convoy'), false);
+    assert.equal(modes.handleLeak({ isBoss: false }), false);
+    assert.doesNotThrow(() => modes.update(9.5));
+    assert.doesNotThrow(() => modes.render(createContext([])));
 });
 
 test('rankings de modo permanecen separados', () => {

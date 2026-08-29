@@ -19,7 +19,7 @@ test('buildModeStatusView prioriza detalle de racha y acciones disponibles', () 
     assert.equal(view.detail, 'Oleadas superadas x3');
     assert.match(view.html, /1240 pts/);
     assert.match(view.html, /id="extract-mode" class="btn-mode-action" type="button" aria-label="Extraer recompensa del modo" title="Extraer recompensa del modo" data-tooltip="Extraer recompensa del modo"/);
-    assert.match(view.html, /id="repair-mode" class="btn-mode-action" type="button" aria-label="Reparar convoy por 120 creditos" title="Reparar convoy por 120 creditos" data-tooltip="Reparar convoy por 120 creditos"/);
+    assert.match(view.html, /id="repair-mode" class="btn-mode-action" type="button" aria-label="Recuperar 2 vidas por 120 creditos" title="Recuperar 2 vidas por 120 creditos" data-tooltip="Recuperar 2 vidas por 120 creditos"/);
 });
 
 test('buildModeStatusView escapa texto dinamico de modo', () => {

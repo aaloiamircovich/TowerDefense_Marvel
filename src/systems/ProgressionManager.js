@@ -395,7 +395,7 @@ export class ProgressionManager {
         this.state.mapProgress = Object.fromEntries(Object.entries(this.state.mapProgress || {})
             .filter(([levelId]) => levelIds.has(levelId))
             .map(([levelId, progress]) => [levelId, createMapProgress(progress)]));
-        const validModes = new Set(['daily', 'boss_rush', 'survival', 'draft', 'convoy']);
+        const validModes = new Set(['daily', 'boss_rush', 'survival', 'draft']);
         this.state.modeRecords = Object.fromEntries(Object.entries(this.state.modeRecords || {})
             .filter(([modeId]) => validModes.has(modeId))
             .map(([modeId, record]) => [modeId, {

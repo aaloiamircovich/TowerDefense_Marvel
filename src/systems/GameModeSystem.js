@@ -4,8 +4,7 @@ export const GAME_MODES = {
     daily: { id: 'daily', name: 'Operación diaria', icon: 'fa-calendar-day', description: 'Mapa, equipo y semilla compartidos durante el día.', maxWaves: 20 },
     boss_rush: { id: 'boss_rush', name: 'Boss Rush', icon: 'fa-skull-crossbones', description: 'Diez jefes consecutivos con recompensa entre combates.', maxWaves: 10 },
     survival: { id: 'survival', name: 'Supervivencia', icon: 'fa-infinity', description: 'Oleadas sin límite, hitos y extracción voluntaria.', maxWaves: Number.MAX_SAFE_INTEGER },
-    draft: { id: 'draft', name: 'Draft heroico', icon: 'fa-layer-group', description: 'Empieza con tres héroes y elige refuerzos cada tres rondas.', maxWaves: 15 },
-    convoy: { id: 'convoy', name: 'Defensa de convoy', icon: 'fa-truck-medical', description: 'Protege un objetivo móvil que avanza por el camino.', maxWaves: 20 }
+    draft: { id: 'draft', name: 'Draft heroico', icon: 'fa-layer-group', description: 'Empieza con tres héroes y elige refuerzos cada tres rondas.', maxWaves: 15 }
 };
 
 export class GameModeSystem {
@@ -24,7 +23,6 @@ export class GameModeSystem {
         this.seedKey = 'campaign';
         this.draftPool = [];
         this.pendingDraft = [];
-        this.convoy = { progress: 0.04, integrity: 100 };
     }
 
     setCampaign() {
@@ -55,10 +53,6 @@ export class GameModeSystem {
         this.game.waveManager.maxWaves = mode.maxWaves;
         if (this.modeId === 'boss_rush') this.game.resourceManager.reset(30, 900);
         if (this.modeId === 'survival') this.game.resourceManager.reset(20, 750);
-        if (this.modeId === 'convoy') {
-            this.game.resourceManager.reset(20, 700);
-            this.convoy = { progress: 0.04, integrity: 100 };
-        }
         this.publish();
     }
 
@@ -120,36 +114,13 @@ export class GameModeSystem {
         return true;
     }
 
-    update(dt) {
-        if (this.modeId !== 'convoy' || !this.game.waveManager?.isWaveActive || this.finished) return;
-        this.convoy.progress = Math.min(0.96, this.convoy.progress + dt / 95);
-        this.publish(false);
+    update() {}
+
+    handleLeak() {
+        return false;
     }
 
-    handleLeak(enemy) {
-        if (this.modeId !== 'convoy') return false;
-        this.convoy.integrity = Math.max(0, this.convoy.integrity - (enemy.isBoss ? 25 : 8));
-        if (this.convoy.integrity <= 0) this.game.gameOver();
-        this.publish();
-        return true;
-    }
-
-    render(ctx) {
-        if (this.modeId !== 'convoy') return;
-        const point = pointAlongPath(this.game.path, this.convoy.progress);
-        if (!point) return;
-        ctx.save();
-        ctx.fillStyle = '#071018';
-        ctx.strokeStyle = this.convoy.integrity > 40 ? '#69e58c' : '#ff6b6b';
-        ctx.lineWidth = 4;
-        ctx.fillRect(point.x - 20, point.y - 13, 40, 26);
-        ctx.strokeRect(point.x - 20, point.y - 13, 40, 26);
-        ctx.fillStyle = '#ffffff';
-        ctx.font = 'bold 9px Segoe UI';
-        ctx.textAlign = 'center';
-        ctx.fillText(`CONVOY ${this.convoy.integrity}%`, point.x, point.y + 2);
-        ctx.restore();
-    }
+    render() {}
 
     extract() {
         if (this.modeId !== 'survival' || this.finished || this.game.waveManager?.isWaveActive) return false;
@@ -189,9 +160,8 @@ export class GameModeSystem {
         return {
             id: this.modeId, name: mode.name, score: this.score, best,
             wave: this.game.waveManager?.currentWave || 1,
-            detail: this.modeId === 'convoy' ? `Integridad ${this.convoy.integrity}%`
-                : this.modeId === 'draft' ? `Equipo ${this.game.activeTeam.length}/6`
-                    : this.modeId === 'survival' ? 'Extracción disponible entre oleadas' : `Récord ${best}`,
+            detail: this.modeId === 'draft' ? `Equipo ${this.game.activeTeam.length}/6`
+                : this.modeId === 'survival' ? 'Extracción disponible entre oleadas' : `Récord ${best}`,
             streakDetail,
             wavesCleared: this.wavesCleared,
             lastWaveScore: this.lastWaveScore,
@@ -201,7 +171,6 @@ export class GameModeSystem {
     }
 
     publish(force = true) {
-        if (!force && Math.floor(this.convoy.progress * 100) % 2) return;
         this.game.uiManager?.updateModeStatus(this.getSnapshot());
     }
 }
@@ -211,17 +180,4 @@ function sampleUnique(values, count, random) {
     const result = [];
     while (pool.length && result.length < count) result.push(pool.splice(Math.floor(random.next() * pool.length), 1)[0]);
     return result;
-}
-
-function pointAlongPath(path, progress) {
-    if (!path?.length) return null;
-    const lengths = [];
-    let total = 0;
-    for (let index = 1; index < path.length; index++) { const length = Math.hypot(path[index].x - path[index - 1].x, path[index].y - path[index - 1].y); lengths.push(length); total += length; }
-    let target = total * progress;
-    for (let index = 0; index < lengths.length; index++) {
-        if (target <= lengths[index]) { const ratio = target / lengths[index]; return { x: path[index].x + (path[index + 1].x - path[index].x) * ratio, y: path[index].y + (path[index + 1].y - path[index].y) * ratio }; }
-        target -= lengths[index];
-    }
-    return path.at(-1);
 }

@@ -25,7 +25,7 @@ export function buildModeStatusView(snapshot = null) {
     const detail = snapshot.streakDetail || snapshot.detail || '';
     return {
         detail,
-        html: `<div><strong>${escapeHtml(snapshot.name)}</strong><span>${escapeHtml(detail)}</span></div><b>${Math.round(snapshot.score || 0)} pts</b>${snapshot.canExtract ? '<button id="extract-mode" class="btn-mode-action" type="button" aria-label="Extraer recompensa del modo" title="Extraer recompensa del modo" data-tooltip="Extraer recompensa del modo">Extraer</button>' : ''}${snapshot.canRepair ? '<button id="repair-mode" class="btn-mode-action" type="button" aria-label="Reparar convoy por 120 creditos" title="Reparar convoy por 120 creditos" data-tooltip="Reparar convoy por 120 creditos">Reparar +2 | $120</button>' : ''}`
+        html: `<div><strong>${escapeHtml(snapshot.name)}</strong><span>${escapeHtml(detail)}</span></div><b>${Math.round(snapshot.score || 0)} pts</b>${snapshot.canExtract ? '<button id="extract-mode" class="btn-mode-action" type="button" aria-label="Extraer recompensa del modo" title="Extraer recompensa del modo" data-tooltip="Extraer recompensa del modo">Extraer</button>' : ''}${snapshot.canRepair ? '<button id="repair-mode" class="btn-mode-action" type="button" aria-label="Recuperar 2 vidas por 120 creditos" title="Recuperar 2 vidas por 120 creditos" data-tooltip="Recuperar 2 vidas por 120 creditos">Recuperar +2 | $120</button>' : ''}`
     };
 }
 
