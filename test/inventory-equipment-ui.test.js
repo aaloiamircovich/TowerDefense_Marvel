@@ -391,6 +391,37 @@ test('coleccion filtra heroes por terreno y respuesta tactica', () => {
     assert.equal(panel.tacticalFilter, 'all');
 });
 
+test('coleccion filtra counters avanzados y busqueda sin acentos', () => {
+    const ui = createUiStub();
+    const panel = new TeamBuilderPanel(ui);
+    const heroes = [
+        data.heroes.black_widow,
+        data.heroes.ghost_rider,
+        data.heroes.scarlet_witch,
+        data.heroes.elektra,
+        data.heroes.gamora,
+        data.heroes.capitan_america
+    ];
+    const unlockedIds = new Set(heroes.map((hero) => hero.id));
+    const ids = () => panel.getFilteredHeroes(heroes, unlockedIds).map((hero) => hero.id).sort();
+
+    panel.tacticalFilter = 'dot';
+    assert.deepEqual(ids(), ['black_widow', 'elektra', 'ghost_rider', 'scarlet_witch']);
+
+    panel.tacticalFilter = 'boss';
+    assert.deepEqual(ids(), ['black_widow', 'gamora', 'ghost_rider']);
+
+    panel.tacticalFilter = 'crit';
+    assert.deepEqual(ids(), ['elektra']);
+
+    panel.tacticalFilter = 'all';
+    panel.searchQuery = 'capitan';
+    assert.deepEqual(ids(), ['capitan_america']);
+    assert.match(panel.renderCollectionFilters(1, 6), /<option value="dot"[^>]*>Persistente<\/option>/);
+    assert.match(panel.renderCollectionFilters(1, 6), /<option value="boss"[^>]*>Jefes<\/option>/);
+    assert.match(panel.renderCollectionFilters(1, 6), /<option value="crit"[^>]*>Crítico<\/option>/);
+});
+
 test('coleccion permite limpiar todos los filtros de heroes', () => {
     const ui = createUiStub();
     const panel = new TeamBuilderPanel(ui);

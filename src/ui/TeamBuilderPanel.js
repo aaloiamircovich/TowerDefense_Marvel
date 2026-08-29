@@ -22,6 +22,9 @@ const HERO_TACTIC_FILTERS = [
     { id: 'antiarmor', label: 'Antiarmadura', icon: 'fa-bullseye' },
     { id: 'control', label: 'Control', icon: 'fa-hand-paper' },
     { id: 'area', label: 'Área/Rebote', icon: 'fa-project-diagram' },
+    { id: 'dot', label: 'Persistente', icon: 'fa-fire' },
+    { id: 'boss', label: 'Jefes', icon: 'fa-crown' },
+    { id: 'crit', label: 'Crítico', icon: 'fa-crosshairs' },
     { id: 'aura', label: 'Aura', icon: 'fa-broadcast-tower' },
     { id: 'economy', label: 'Economía', icon: 'fa-coins' }
 ];
@@ -419,11 +422,37 @@ export class TeamBuilderPanel {
         if (filter === 'area') {
             return Boolean(profile.splashRadius > 0
                 || profile.chainCount > 0
+                || profile.propagationCount > 0
                 || ['cross', 'x', 'ring'].includes(hero.rangePattern)
                 || traitText.includes('area')
                 || traitText.includes('grupo')
                 || traitText.includes('rebote')
                 || traitText.includes('encadena'));
+        }
+        if (filter === 'dot') {
+            return Boolean(effects.some((effect) => ['burn', 'poison', 'curse', 'bleed'].includes(effect.type))
+                || traitText.includes('quemadura')
+                || traitText.includes('veneno')
+                || traitText.includes('toxina')
+                || traitText.includes('maldicion')
+                || traitText.includes('sangrado')
+                || traitText.includes('persistente'));
+        }
+        if (filter === 'boss') {
+            return Boolean(traitText.includes('jefe')
+                || traitText.includes('boss')
+                || traitText.includes('elite')
+                || traitText.includes('elites')
+                || profile.armorPenetration >= 0.25);
+        }
+        if (filter === 'crit') {
+            return Boolean((special.statModifiers?.critChance || 0) > 0
+                || (hero.critChance || 0) >= 8
+                || traitText.includes('critico')
+                || traitText.includes('criticos')
+                || traitText.includes('critica')
+                || traitText.includes('remate')
+                || traitText.includes('suerte'));
         }
         if (filter === 'aura') {
             return Boolean(special.supportAura?.type || traitText.includes('aura'));
@@ -487,7 +516,7 @@ export class TeamBuilderPanel {
     }
 
     getFilteredHeroes(heroes, unlockedIds = new Set()) {
-        const query = this.searchQuery.trim().toLowerCase();
+        const query = normalizeSearchText(this.searchQuery.trim());
         const favoriteIds = new Set(this.ui.game.progression.state.favoriteHeroIds || []);
         return [...heroes]
             .filter((hero) => {
@@ -500,7 +529,7 @@ export class TeamBuilderPanel {
                 if (!this.heroMatchesTacticalFilter(hero)) return false;
                 if (!query) return true;
 
-                return [
+                return normalizeSearchText([
                     hero.name,
                     hero.category,
                     hero.ability,
@@ -508,8 +537,7 @@ export class TeamBuilderPanel {
                     ...(hero.tags || [])
                 ]
                     .filter(Boolean)
-                    .join(' ')
-                    .toLowerCase()
+                    .join(' '))
                     .includes(query);
             })
             .sort((a, b) => {
