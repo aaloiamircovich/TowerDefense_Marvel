@@ -1,8 +1,8 @@
 import { SET_BONUSES, SLOT_LABELS } from '../systems/ItemEffectSystem.js';
 import { EVOLUTION_CATALOG } from '../systems/EvolutionSystem.js';
 import { ITEM_SIGNATURES } from '../systems/ItemSignatureSystem.js';
-import { getHeroBoxCost } from '../systems/ShopSystem.js';
-import { getRarityClass, normalizeRarity } from '../utils/Rarity.js';
+import { HERO_BOX_COST_GROWTH, HERO_RARITY_WEIGHTS, getHeroBoxCost } from '../systems/ShopSystem.js';
+import { HERO_RARITIES, getRarityClass, normalizeRarity } from '../utils/Rarity.js';
 import { buildItemEffectPills } from './InventoryPanel.js';
 
 function escapeHtml(value = '') {
@@ -74,6 +74,45 @@ export function buildItemSignatureHint(item = {}, heroDatabase = {}) {
     };
 }
 
+export function buildHeroBoxOdds(recruitPool = [], pity = 0) {
+    const guaranteed = Number(pity || 0) >= 4;
+    const visiblePool = (recruitPool || []).filter((hero) => hero?.id);
+    const guaranteedPool = guaranteed
+        ? visiblePool.filter((hero) => normalizeRarity(hero.rarity) !== 'Common')
+        : visiblePool;
+    const candidatePool = guaranteedPool.length ? guaranteedPool : visiblePool;
+    const weightByRarity = new Map();
+    const countByRarity = new Map();
+
+    candidatePool.forEach((hero) => {
+        const rarity = normalizeRarity(hero.rarity);
+        const weight = HERO_RARITY_WEIGHTS[rarity] || HERO_RARITY_WEIGHTS.Rare;
+        weightByRarity.set(rarity, (weightByRarity.get(rarity) || 0) + weight);
+        countByRarity.set(rarity, (countByRarity.get(rarity) || 0) + 1);
+    });
+
+    const totalWeight = [...weightByRarity.values()].reduce((total, weight) => total + weight, 0);
+    const entries = HERO_RARITIES
+        .map((rarity) => {
+            const weight = weightByRarity.get(rarity) || 0;
+            if (!weight || !totalWeight) return null;
+            const percent = (weight / totalWeight) * 100;
+            return {
+                rarity,
+                count: countByRarity.get(rarity) || 0,
+                percent,
+                label: `${percent.toFixed(percent >= 10 ? 0 : 1).replace(/\.0$/, '')}%`
+            };
+        })
+        .filter(Boolean);
+
+    return {
+        entries,
+        guaranteedActive: guaranteed && guaranteedPool.length > 0,
+        empty: visiblePool.length === 0
+    };
+}
+
 function formatSignatureHeroName(heroId = '') {
     return String(heroId)
         .split('_')
@@ -99,10 +138,11 @@ export class ShopPanel {
         const fundsText = adminMode ? '∞' : `$${credits}`;
         const recruitCost = getHeroBoxCost(this.ui.game.progression.state.shop);
         const pityValue = Math.min(4, this.ui.game.progression.state.shop.heroPity);
-        const nextRecruitCost = Math.ceil(recruitCost * 1.12);
+        const nextRecruitCost = Math.ceil(recruitCost * HERO_BOX_COST_GROWTH);
         const recruitPool = Object.values(this.ui.game.heroDatabase || {})
             .filter((hero) => hero.visual)
             .filter((hero) => !this.ui.game.progression.state.unlockedHeroIds.includes(hero.id));
+        const odds = buildHeroBoxOdds(recruitPool, pityValue);
         const recruitAffordability = buildShopAffordabilityState(credits, recruitCost, adminMode);
         const canRecruit = recruitPool.length > 0 && recruitAffordability.canAfford;
         const recruitMissing = recruitAffordability.missing;
@@ -132,9 +172,10 @@ export class ShopPanel {
                 <div class="shop-recruit-copy">
                     <span class="briefing-kicker">CAJA DE RECLUTAMIENTO</span>
                     <strong>Héroe aleatorio sin duplicados</strong>
-                    <small>La quinta apertura común garantiza Rare o superior.</small>
+                    <small>La quinta apertura común garantiza Rare o superior. Costo +${Math.round((HERO_BOX_COST_GROWTH - 1) * 100)}% por apertura.</small>
                 </div>
                 <div class="pity-track compact"><span>Garantía</span><b>${pityValue}/4</b></div>
+                ${this.renderHeroBoxOdds(odds)}
                 <div class="shop-buy-stack">
                     <button class="btn-primary" id="gacha-btn" type="button" data-affordability="${canRecruit ? 'ready' : 'locked'}" aria-label="${escapeHtml(recruitAriaLabel)}" title="${escapeHtml(recruitAriaLabel)}" data-tooltip="${escapeHtml(recruitAriaLabel)}" aria-disabled="${!canRecruit}" ${canRecruit ? '' : 'disabled'}>${recruitButtonText}</button>
                     ${this.renderAffordabilityMeter(recruitAffordability, 'Progreso para caja')}
@@ -169,6 +210,25 @@ export class ShopPanel {
         const tone = state?.canAfford ? 'ready' : 'locked';
         const text = state?.label || 'Sin datos';
         return `<div class="shop-afford-meter ${tone}" role="meter" aria-label="${escapeHtml(label)}: ${escapeHtml(text)}" aria-valuemin="0" aria-valuemax="${max}" aria-valuenow="${current}"><span style="width:${progress}%"></span><small>${escapeHtml(text)}</small></div>`;
+    }
+
+    renderHeroBoxOdds(model) {
+        if (!model || model.empty) {
+            return '<div class="shop-odds-strip complete" aria-label="Caja sin heroes pendientes"><strong>Plantilla completa</strong></div>';
+        }
+        const label = model.guaranteedActive ? 'Garantía activa' : 'Probabilidades actuales';
+        return `
+            <div class="shop-odds-strip" aria-label="${escapeHtml(label)} por rareza">
+                <strong>${escapeHtml(label)}</strong>
+                <div>
+                    ${model.entries.map((entry) => {
+                        const rarityClass = getRarityClass(entry.rarity);
+                        const tooltip = `${entry.rarity}: ${entry.label}, ${entry.count} heroes posibles`;
+                        return `<span class="${rarityClass}" title="${escapeHtml(tooltip)}" data-tooltip="${escapeHtml(tooltip)}"><b>${escapeHtml(entry.rarity)}</b><small>${escapeHtml(entry.label)}</small></span>`;
+                    }).join('')}
+                </div>
+            </div>
+        `;
     }
 
     renderNextQueuePreview(item) {

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildItemSignatureHint, buildShopAffordabilityState, ShopPanel } from '../src/ui/ShopPanel.js';
+import { buildHeroBoxOdds, buildItemSignatureHint, buildShopAffordabilityState, ShopPanel } from '../src/ui/ShopPanel.js';
 
 test('buildShopAffordabilityState normaliza progreso de compra', () => {
     assert.deepEqual(buildShopAffordabilityState(100, 500), {
@@ -42,6 +42,28 @@ test('buildItemSignatureHint cruza firmas de combate y evolucion', () => {
     assert.deepEqual(hint.heroIds, ['black_widow', 'yelena_belova']);
     assert.equal(hint.detail, 'Black Widow, Yelena Belova');
     assert.equal(hint.fullDetail, 'Black Widow, Yelena Belova');
+});
+
+test('buildHeroBoxOdds calcula probabilidades segun heroes pendientes', () => {
+    const pool = [
+        { id: 'spiderman', rarity: 'Common' },
+        { id: 'iron_man', rarity: 'Rare' },
+        { id: 'scarlet_witch', rarity: 'Secret' }
+    ];
+    const normal = buildHeroBoxOdds(pool, 1);
+    const guaranteed = buildHeroBoxOdds(pool, 4);
+
+    assert.equal(normal.guaranteedActive, false);
+    assert.deepEqual(normal.entries.map((entry) => [entry.rarity, entry.count, entry.label]), [
+        ['Common', 1, '61%'],
+        ['Rare', 1, '38%'],
+        ['Secret', 1, '1.3%']
+    ]);
+    assert.equal(guaranteed.guaranteedActive, true);
+    assert.deepEqual(guaranteed.entries.map((entry) => [entry.rarity, entry.count, entry.label]), [
+        ['Rare', 1, '97%'],
+        ['Secret', 1, '3.2%']
+    ]);
 });
 
 test('ShopPanel destaca objetos signature antes de compra', () => {
@@ -100,6 +122,10 @@ test('ShopPanel renderiza tienda progresiva y delega compra de objetos', () => {
     assert.match(panelContent.innerHTML, /shop-economy-readout/);
     assert.match(panelContent.innerHTML, /\+\$60/);
     assert.match(panelContent.innerHTML, /shop-recruit-strip/);
+    assert.match(panelContent.innerHTML, /Costo \+12% por apertura/);
+    assert.match(panelContent.innerHTML, /shop-odds-strip/);
+    assert.match(panelContent.innerHTML, /Probabilidades actuales/);
+    assert.match(panelContent.innerHTML, /Rare[\s\S]*100%/);
     assert.match(panelContent.innerHTML, /shop-afford-meter ready/);
     assert.match(panelContent.innerHTML, /role="meter" aria-label="Progreso para caja: Listo para comprar" aria-valuemin="0" aria-valuemax="500" aria-valuenow="500"/);
     assert.match(panelContent.innerHTML, /shop-heading-meta/);
