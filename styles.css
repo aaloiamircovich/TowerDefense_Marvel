@@ -4104,6 +4104,60 @@ body.panel-open {
     margin-top: 4px;
 }
 
+.targeting-priority-legend {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(116px, 1fr));
+    gap: 6px;
+    min-width: 0;
+}
+
+.targeting-priority-legend span {
+    display: grid;
+    grid-template-columns: 22px minmax(0, 1fr);
+    grid-template-areas:
+        "icon label"
+        "icon detail";
+    align-items: center;
+    gap: 1px 6px;
+    min-width: 0;
+    min-height: 42px;
+    padding: 6px 7px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 7px;
+    background: rgba(3, 7, 12, 0.42);
+}
+
+.targeting-priority-legend span.active {
+    border-color: color-mix(in srgb, var(--level-accent), transparent 42%);
+    background: color-mix(in srgb, var(--level-accent), transparent 84%);
+}
+
+.targeting-priority-legend i {
+    grid-area: icon;
+    color: var(--level-accent);
+    font-size: 11px;
+}
+
+.targeting-priority-legend b {
+    grid-area: label;
+    color: #ffffff;
+    font-size: 9px;
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+.targeting-priority-legend small {
+    grid-area: detail;
+    min-width: 0;
+    overflow: hidden;
+    color: var(--muted);
+    font-size: 9px;
+    line-height: 1.1;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 .hero-detail-tabs {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));

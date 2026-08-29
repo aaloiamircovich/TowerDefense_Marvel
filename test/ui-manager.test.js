@@ -428,6 +428,10 @@ test('renderHeroDetails muestra counter de oleada dentro de estadisticas', () =>
         assert.match(ui.panelContent.innerHTML, /Impacto[\s\S]*Directo/);
         assert.match(ui.panelContent.innerHTML, /Counters[\s\S]*Perforación · Alcance · DPS/);
         assert.match(ui.panelContent.innerHTML, /Rol[\s\S]*Daño/);
+        assert.match(ui.panelContent.innerHTML, /targeting-priority-legend/);
+        assert.match(ui.panelContent.innerHTML, /class="active" title="Primero: prioriza al enemigo mas avanzado"/);
+        assert.match(ui.panelContent.innerHTML, /Sigilo: busca infiltrados detectables/);
+        assert.match(ui.panelContent.innerHTML, /Jefe: prioriza jefes y amenaza alta/);
         assert.doesNotMatch(ui.panelContent.innerHTML, /hero-submenu|hero-detail-menu-btn/);
 
         documentListeners.change({ target: { value: 'Jefe' } });

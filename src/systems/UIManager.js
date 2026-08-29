@@ -2232,6 +2232,23 @@ export class UIManager {
         `;
     }
 
+    renderTargetingPriorityLegend(currentTargeting = TARGETING_PRIORITIES[0]) {
+        return `
+            <div class="targeting-priority-legend" aria-label="Leyenda de prioridad de objetivo">
+                ${TARGETING_PRIORITIES.map((priority) => {
+                    const copy = TARGETING_PRIORITY_COPY[priority];
+                    const active = priority === currentTargeting;
+                    const label = `${priority}: ${copy.description}`;
+                    return `<span class="${active ? 'active' : ''}" title="${escapeHtml(label)}" data-tooltip="${escapeHtml(label)}">
+                        <i class="fas ${escapeHtml(copy.icon)}"></i>
+                        <b>${escapeHtml(copy.label)}</b>
+                        <small>${escapeHtml(copy.description)}</small>
+                    </span>`;
+                }).join('')}
+            </div>
+        `;
+    }
+
     renderHeroDetails(hero, detailView = 'summary') {
         const config = hero.config || hero;
         const heroName = hero.name || config.name;
@@ -2380,6 +2397,7 @@ export class UIManager {
                             ${TARGETING_PRIORITIES.map((priority) => `<option value="${priority}" ${currentTargeting === priority ? 'selected' : ''}>${priority}</option>`).join('')}
                         </select>
                     </label>
+                    ${this.renderTargetingPriorityLegend(currentTargeting)}
                 </div>
 
                 ${abilityState ? `
