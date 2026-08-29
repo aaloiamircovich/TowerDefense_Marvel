@@ -3,6 +3,33 @@ import { HERO_RARITIES, getRarityClass, normalizeRarity } from '../utils/Rarity.
 
 const ITEM_RARITY_FILTERS = ['all', ...HERO_RARITIES];
 
+const ITEM_EFFECT_FILTERS = [
+    { id: 'all', label: 'Todas' },
+    { id: 'damage', label: 'Daño' },
+    { id: 'cadence', label: 'Cadencia' },
+    { id: 'range', label: 'Alcance' },
+    { id: 'control', label: 'Control' },
+    { id: 'area', label: 'Área/Rebote' },
+    { id: 'detection', label: 'Detección' },
+    { id: 'antiarmor', label: 'Antiarmadura' },
+    { id: 'boss', label: 'Jefes' },
+    { id: 'economy', label: 'Economía' },
+    { id: 'terrain', label: 'Terreno' }
+];
+
+const ITEM_EFFECT_GROUPS = {
+    damage: ['damagePct', 'critChance', 'critDamageBonus', 'consecutiveDamagePct', 'statusDamagePct', 'damageToControlledPct', 'damageToCursedPct', 'longRangeDamagePct'],
+    cadence: ['fireRatePct'],
+    range: ['rangePct'],
+    control: ['slowPower', 'slowChance', 'stunChance', 'stunDuration', 'freezeChance', 'freezeDuration'],
+    area: ['splashRadius', 'splashFactor', 'chainCount', 'chainRange', 'chainFactor'],
+    detection: ['detectStealth'],
+    antiarmor: ['armorPenetration', 'armorDamagePct', 'armorBreakChance', 'armorBreakPower'],
+    boss: ['bossDamagePct'],
+    economy: ['onHitCreditPct'],
+    terrain: ['allowWater', 'allowMountain', 'allowGrass']
+};
+
 function escapeAttribute(value = '') {
     return String(value).replace(/[&<>"']/g, (char) => ({
         '&': '&amp;',
@@ -119,6 +146,19 @@ export function buildItemEffectPills(item, limit = 3) {
     return visible;
 }
 
+export function getItemEffectTags(item) {
+    const effects = aggregateItemEffects(item ? [item] : []);
+    return ITEM_EFFECT_FILTERS
+        .filter((filter) => filter.id !== 'all')
+        .filter((filter) => (ITEM_EFFECT_GROUPS[filter.id] || []).some((key) => hasMeaningfulEffect(effects[key])))
+        .map((filter) => filter.id);
+}
+
+function hasMeaningfulEffect(value) {
+    if (typeof value === 'boolean') return value;
+    return Number.isFinite(value) && Math.abs(value) > 0.0001;
+}
+
 function formatItemEffectPill(key, value) {
     const label = ITEM_EFFECT_LABELS[key] || key;
     if (value === true) return { label, value: 'activo', tone: 'utility' };
@@ -144,13 +184,15 @@ export class InventoryPanel {
         this.slotFilter = 'all';
         this.statusFilter = 'all';
         this.rarityFilter = 'all';
+        this.effectFilter = 'all';
     }
 
     hasActiveInventoryFilters() {
         return this.tierFilter !== 0
             || this.slotFilter !== 'all'
             || this.statusFilter !== 'all'
-            || this.rarityFilter !== 'all';
+            || this.rarityFilter !== 'all'
+            || this.effectFilter !== 'all';
     }
 
     resetInventoryFilters() {
@@ -158,6 +200,7 @@ export class InventoryPanel {
         this.slotFilter = 'all';
         this.statusFilter = 'all';
         this.rarityFilter = 'all';
+        this.effectFilter = 'all';
     }
 
     render(title = 'Inventario') {
@@ -230,6 +273,12 @@ export class InventoryPanel {
                         return `<button class="slot-filter ${this.slotFilter === slot ? 'active' : ''}" type="button" data-slot="${slot}" aria-pressed="${this.slotFilter === slot}" aria-label="${filterLabel}" title="${filterLabel}" data-tooltip="${filterLabel}">${label}</button>`;
                     }).join('')}
                 </div>
+                <label class="inventory-effect-filter">
+                    <span>Táctica</span>
+                    <select id="inventory-effect-filter" aria-label="Filtrar objetos por efecto tactico">
+                        ${ITEM_EFFECT_FILTERS.map((filter) => `<option value="${filter.id}" ${this.effectFilter === filter.id ? 'selected' : ''}>${filter.label}</option>`).join('')}
+                    </select>
+                </label>
                 <button id="inventory-clear-filters" class="inventory-clear-filters icon-command" type="button" ${hasActiveFilters ? '' : 'disabled'} title="Limpiar filtros" aria-label="Limpiar filtros" data-tooltip="Limpiar filtros">
                     <i class="fas fa-broom"></i>
                 </button>
@@ -294,7 +343,8 @@ export class InventoryPanel {
                 || (this.statusFilter === 'equipped' && equippedHeroes.length > 0))
             && (this.rarityFilter === 'all' || normalizeRarity(item.rarity) === this.rarityFilter)
             && (this.tierFilter === 0 || item.tier === this.tierFilter)
-            && (this.slotFilter === 'all' || item.slot === this.slotFilter);
+            && (this.slotFilter === 'all' || item.slot === this.slotFilter)
+            && (this.effectFilter === 'all' || getItemEffectTags(item).includes(this.effectFilter));
     }
 
     renderEquippedItem(item, slot) {
@@ -384,6 +434,10 @@ export class InventoryPanel {
             this.slotFilter = button.dataset.slot;
             this.render();
         }));
+        this.ui.panelContent.querySelector('#inventory-effect-filter')?.addEventListener('change', (event) => {
+            this.effectFilter = event.target.value || 'all';
+            this.render();
+        });
         this.ui.panelContent.querySelector('#inventory-clear-filters')?.addEventListener('click', () => {
             this.resetInventoryFilters();
             this.render();

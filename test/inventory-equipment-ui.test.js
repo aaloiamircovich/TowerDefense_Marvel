@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import { buildItemEffectPills, buildItemEquipDeltaRows, InventoryPanel } from '../src/ui/InventoryPanel.js';
+import { buildItemEffectPills, buildItemEquipDeltaRows, getItemEffectTags, InventoryPanel } from '../src/ui/InventoryPanel.js';
 import { buildTeamReadinessAlerts, TeamBuilderPanel } from '../src/ui/TeamBuilderPanel.js';
 import { UIManager } from '../src/systems/UIManager.js';
 import { analyzeTeam } from '../src/systems/TeamSynergySystem.js';
@@ -87,6 +87,12 @@ test('inventario resume efectos principales de cada objeto', () => {
     ]);
 });
 
+test('inventario clasifica objetos por funcion tactica', () => {
+    assert.deepEqual(getItemEffectTags(data.items.lentes_edith), ['damage', 'range', 'detection']);
+    assert.deepEqual(getItemEffectTags(data.items.telarana_sintetica), ['control']);
+    assert.deepEqual(getItemEffectTags(data.items.tridente_atlante), ['antiarmor', 'boss', 'terrain']);
+});
+
 test('inventario filtra objetos libres y equipados desde la vista compacta', () => {
     const ui = createUiStub();
     ui.panelContent = { innerHTML: '', querySelectorAll: () => [], querySelector: () => null };
@@ -127,6 +133,37 @@ test('inventario filtra objetos por rareza desde la vista compacta', () => {
     assert.match(ui.panelContent.innerHTML, /data-item-id="lentes_edith"/);
     assert.doesNotMatch(ui.panelContent.innerHTML, /data-item-id="reactor_arc"/);
 });
+
+test('inventario filtra objetos por efecto tactico', () => {
+    const ui = createUiStub();
+    ui.game.progression.state.ownedItemIds = [
+        'lentes_edith',
+        'telarana_sintetica',
+        'aerodeslizador',
+        'tridente_atlante',
+        'contrato_stark'
+    ];
+    ui.panelContent = { innerHTML: '', querySelectorAll: () => [], querySelector: () => null };
+    const panel = new InventoryPanel(ui);
+
+    panel.effectFilter = 'control';
+    panel.render();
+    assert.match(ui.panelContent.innerHTML, /id="inventory-effect-filter" aria-label="Filtrar objetos por efecto tactico"/);
+    assert.match(ui.panelContent.innerHTML, /<option value="control" selected>Control<\/option>/);
+    assert.match(ui.panelContent.innerHTML, /data-item-id="telarana_sintetica"/);
+    assert.doesNotMatch(ui.panelContent.innerHTML, /data-item-id="lentes_edith"/);
+
+    panel.effectFilter = 'detection';
+    panel.render();
+    assert.match(ui.panelContent.innerHTML, /data-item-id="lentes_edith"/);
+    assert.doesNotMatch(ui.panelContent.innerHTML, /data-item-id="telarana_sintetica"/);
+
+    panel.effectFilter = 'boss';
+    panel.render();
+    assert.match(ui.panelContent.innerHTML, /data-item-id="tridente_atlante"/);
+    assert.doesNotMatch(ui.panelContent.innerHTML, /data-item-id="contrato_stark"/);
+});
+
 test('inventario permite limpiar filtros de objeto en un click', () => {
     const ui = createUiStub();
     ui.panelContent = { innerHTML: '', querySelectorAll: () => [], querySelector: () => null };
@@ -141,6 +178,7 @@ test('inventario permite limpiar filtros de objeto en un click', () => {
     panel.tierFilter = 2;
     panel.slotFilter = 'artifact';
     panel.rarityFilter = 'Rare';
+    panel.effectFilter = 'control';
 
     assert.equal(panel.hasActiveInventoryFilters(), true);
     panel.render();
@@ -152,6 +190,7 @@ test('inventario permite limpiar filtros de objeto en un click', () => {
     assert.equal(panel.tierFilter, 0);
     assert.equal(panel.slotFilter, 'all');
     assert.equal(panel.rarityFilter, 'all');
+    assert.equal(panel.effectFilter, 'all');
     assert.equal(panel.hasActiveInventoryFilters(), false);
 });
 
