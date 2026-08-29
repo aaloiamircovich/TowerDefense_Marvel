@@ -25,7 +25,7 @@ export function buildShopAffordabilityState(credits = 0, cost = 0, adminMode = f
             missing: 0,
             current: normalizedCost,
             max: normalizedCost || 1,
-            label: 'Fondos ilimitados'
+            label: 'Creditos ilimitados'
         };
     }
 

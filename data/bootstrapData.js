@@ -11540,7 +11540,7 @@ window.__MARVEL_TD_DATA__ = {
         "mechanic": {
           "type": "urban_assault",
           "label": "Frente de Manhattan",
-          "description": "Oleadas de Hydra, A.I.M. y Chitauri presionan una ruta fija. El objetivo es sostener la línea sin mecánicas de evacuación ni barricadas.",
+          "description": "Oleadas de Hydra, A.I.M. y Chitauri presionan una ruta fija. El objetivo es sostener la línea hasta completar la operación.",
           "status": "Manhattan resiste; todas las defensas cubren la avenida principal."
         },
         "objectives": [

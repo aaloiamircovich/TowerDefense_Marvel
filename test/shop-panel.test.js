@@ -27,7 +27,7 @@ test('buildShopAffordabilityState normaliza progreso de compra', () => {
         missing: 0,
         current: 500,
         max: 500,
-        label: 'Fondos ilimitados'
+        label: 'Creditos ilimitados'
     });
 });
 
