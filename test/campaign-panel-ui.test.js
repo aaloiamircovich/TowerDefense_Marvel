@@ -17,6 +17,11 @@ test('CampaignPanel compacta operaciones y resume desbloqueos por estrellas', ()
     assert.equal(summary.nextMapName, 'Reino de Wakanda');
     assert.equal(summary.starsRemaining, 50);
     assert.equal(summary.nextProgress, 0);
+    assert.deepEqual(summary.milestones.map((milestone) => [milestone.index, milestone.requirement, milestone.state]), [
+        [1, 0, 'active'],
+        [2, 50, 'unlocked'],
+        [3, 100, 'locked']
+    ]);
 
     panel.render('Mapa y modos');
 
@@ -26,6 +31,11 @@ test('CampaignPanel compacta operaciones y resume desbloqueos por estrellas', ()
     assert.match(ui.panelContent.innerHTML, /aria-label="Progreso hacia Reino de Wakanda: 0%"/);
     assert.match(ui.panelContent.innerHTML, /aria-valuenow="0"/);
     assert.match(ui.panelContent.innerHTML, /campaign-progress-readout/);
+    assert.match(ui.panelContent.innerHTML, /campaign-milestone-strip/);
+    assert.match(ui.panelContent.innerHTML, /Ruta de desbloqueo de mapas/);
+    assert.match(ui.panelContent.innerHTML, /Base de los Vengadores\. Activo\. Requiere 0 estrellas/);
+    assert.match(ui.panelContent.innerHTML, /Calles de Nueva York\. Desbloqueado\. Requiere 50 estrellas/);
+    assert.match(ui.panelContent.innerHTML, /Reino de Wakanda\. Bloqueado\. Requiere 100 estrellas/);
     assert.match(ui.panelContent.innerHTML, /Reino de Wakanda/);
     assert.match(ui.panelContent.innerHTML, /50 estrellas restantes/);
     assert.match(ui.panelContent.innerHTML, /<b>2\/3<\/b>/);

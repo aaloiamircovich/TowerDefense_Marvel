@@ -7606,6 +7606,70 @@ select {
     text-transform: uppercase;
 }
 
+.campaign-milestone-strip {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(112px, 1fr));
+    gap: 6px;
+    padding-top: 4px;
+}
+
+.campaign-milestone-strip span {
+    display: grid;
+    grid-template-columns: 24px auto minmax(0, 1fr);
+    align-items: center;
+    gap: 5px;
+    min-width: 0;
+    padding: 6px 7px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 7px;
+    background: rgba(3, 7, 12, 0.48);
+    color: var(--muted);
+}
+
+.campaign-milestone-strip span.unlocked,
+.campaign-milestone-strip span.active {
+    border-color: color-mix(in srgb, var(--level-accent), transparent 50%);
+    color: var(--text);
+}
+
+.campaign-milestone-strip span.active {
+    background: linear-gradient(135deg, color-mix(in srgb, var(--level-accent), transparent 80%), rgba(3, 7, 12, 0.58));
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--level-accent), transparent 54%);
+}
+
+.campaign-milestone-strip b {
+    display: inline-grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+    font-size: 11px;
+}
+
+.campaign-milestone-strip span.active b {
+    background: var(--level-accent);
+    color: #031018;
+}
+
+.campaign-milestone-strip small {
+    color: var(--bright-yellow);
+    font-size: 9px;
+    font-weight: 900;
+    white-space: nowrap;
+}
+
+.campaign-milestone-strip em {
+    overflow: hidden;
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 800;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 .campaign-map-heading {
     margin: 12px 0 8px;
 }

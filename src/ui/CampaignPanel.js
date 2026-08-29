@@ -29,6 +29,7 @@ export class CampaignPanel {
                     <span><b>${summary.totalStars}</b><small>estrellas</small></span>
                     <span><b>${summary.unlockedCount}/${summary.totalMaps}</b><small>mapas</small></span>
                 </div>
+                ${this.renderCampaignMilestones(summary.milestones)}
             </section>
             <section class="mode-section">
                 <div class="section-heading"><strong>Modos de juego</strong><span>Progreso y rankings separados de campaña</span></div>
@@ -138,6 +139,17 @@ export class CampaignPanel {
         </div>`;
     }
 
+    renderCampaignMilestones(milestones = []) {
+        if (!milestones.length) return '';
+        return `<div class="campaign-milestone-strip" role="list" aria-label="Ruta de desbloqueo de mapas">
+            ${milestones.map((milestone) => `<span class="${milestone.state}" role="listitem" aria-label="${milestone.name}. ${milestone.stateLabel}. Requiere ${milestone.requirement} estrellas">
+                <b>${milestone.index}</b>
+                <small>${milestone.requirement}★</small>
+                <em>${milestone.name}</em>
+            </span>`).join('')}
+        </div>`;
+    }
+
     buildMapUnlockProgress(index, totalStars = this.getTotalStars()) {
         const required = getLevelUnlockRequirement(index);
         if (required <= 0) return { current: 0, required: 0, remaining: 0, percent: 100 };
@@ -232,7 +244,18 @@ export class CampaignPanel {
                 : 'Todas las operaciones desbloqueadas',
             nextMapName: nextLockedIndex >= 0 ? levels[nextLockedIndex]?.name || 'Operacion clasificada' : 'Todas las operaciones',
             starsRemaining: nextLockedIndex >= 0 ? Math.max(0, nextRequirement - totalStars) : 0,
-            nextProgress: nextLockedIndex >= 0 ? Math.round((starsInRange / unlockRange) * 100) : 100
+            nextProgress: nextLockedIndex >= 0 ? Math.round((starsInRange / unlockRange) * 100) : 100,
+            milestones: levels.map((level, index) => {
+                const unlocked = isLevelUnlockedByStars(index, totalStars);
+                const active = game.currentLevel?.id === level.id;
+                return {
+                    index: index + 1,
+                    name: level.name || `Mapa ${index + 1}`,
+                    requirement: getLevelUnlockRequirement(index),
+                    state: active ? 'active' : unlocked ? 'unlocked' : 'locked',
+                    stateLabel: active ? 'Activo' : unlocked ? 'Desbloqueado' : 'Bloqueado'
+                };
+            })
         };
     }
 
