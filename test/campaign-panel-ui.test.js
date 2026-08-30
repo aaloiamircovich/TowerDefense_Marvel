@@ -33,6 +33,9 @@ test('CampaignPanel compacta operaciones y resume desbloqueos por estrellas', ()
     assert.match(ui.panelContent.innerHTML, /campaign-progress-readout/);
     assert.match(ui.panelContent.innerHTML, /campaign-milestone-strip/);
     assert.match(ui.panelContent.innerHTML, /Ruta de desbloqueo de mapas/);
+    assert.match(ui.panelContent.innerHTML, /<details class="mode-section mode-section--collapsible">/);
+    assert.match(ui.panelContent.innerHTML, /<b>\d+ modos<\/b>/);
+    assert.doesNotMatch(ui.panelContent.innerHTML, /mode-section mode-section--collapsible" open/);
     assert.match(ui.panelContent.innerHTML, /Base de los Vengadores\. Activo\. Requiere 0 estrellas/);
     assert.match(ui.panelContent.innerHTML, /Calles de Nueva York\. Desbloqueado\. Requiere 50 estrellas/);
     assert.match(ui.panelContent.innerHTML, /Reino de Wakanda\. Bloqueado\. Requiere 100 estrellas/);

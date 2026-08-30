@@ -2952,6 +2952,75 @@ canvas {
 .report-mastery { --report-color: #b88cff; }
 
 .mode-section { display: grid; gap: 10px; margin-bottom: 22px; }
+.mode-section--collapsible {
+    padding: 9px;
+    border: 1px solid rgba(64, 201, 255, 0.16);
+    border-radius: 8px;
+    background: rgba(3, 7, 12, 0.36);
+}
+
+.mode-section--collapsible summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-width: 0;
+    cursor: pointer;
+    list-style: none;
+}
+
+.mode-section--collapsible summary::-webkit-details-marker {
+    display: none;
+}
+
+.mode-section--collapsible summary span {
+    display: grid;
+    gap: 2px;
+    min-width: 0;
+}
+
+.mode-section--collapsible summary strong {
+    color: var(--bright-yellow);
+    font-size: 15px;
+}
+
+.mode-section--collapsible summary small {
+    overflow: hidden;
+    color: var(--muted);
+    font-size: 11px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.mode-section--collapsible summary b {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--level-accent);
+    font-size: 10px;
+    font-weight: 900;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.mode-section--collapsible summary b::after {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: rotate(45deg) translateY(-1px);
+    transition: transform var(--transition-fast);
+}
+
+.mode-section--collapsible[open] summary {
+    margin-bottom: 10px;
+}
+
+.mode-section--collapsible[open] summary b::after {
+    transform: rotate(225deg) translate(-1px, -1px);
+}
+
 .section-heading { display: flex; justify-content: space-between; gap: 12px; align-items: end; }
 .section-heading strong { color: var(--bright-yellow); font-size: 15px; }
 .section-heading span { color: var(--muted); font-size: 11px; }

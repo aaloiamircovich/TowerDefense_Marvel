@@ -31,10 +31,13 @@ export class CampaignPanel {
                 </div>
                 ${this.renderCampaignMilestones(summary.milestones)}
             </section>
-            <section class="mode-section">
-                <div class="section-heading"><strong>Modos de juego</strong><span>Progreso y rankings separados de campaña</span></div>
+            <details class="mode-section mode-section--collapsible">
+                <summary>
+                    <span><strong>Modos de juego</strong><small>Progreso y rankings separados de campaña</small></span>
+                    <b>${Object.keys(GAME_MODES).length} modos</b>
+                </summary>
                 <div class="mode-list">${Object.values(GAME_MODES).map((mode) => this.renderModeCard(mode)).join('')}</div>
-            </section>
+            </details>
             <div class="section-heading campaign-map-heading"><strong>Operaciones</strong><span>Desbloqueo por estrellas de campaña</span></div>
             <div class="map-list">
                 ${game.levelsData.map((level, index) => this.renderMapCard(level, index)).join('')}
