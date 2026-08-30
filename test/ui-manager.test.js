@@ -422,8 +422,9 @@ test('renderHeroDetails muestra counter de oleada dentro de estadisticas', () =>
         assert.match(ui.panelContent.innerHTML, /Counter ideal/);
         assert.match(ui.panelContent.innerHTML, /6 pts/);
         assert.match(ui.panelContent.innerHTML, /rompe armadura/);
-        assert.match(ui.panelContent.innerHTML, /hero-combat-identity/);
-        assert.match(ui.panelContent.innerHTML, /Identidad tactica de combate/);
+        assert.match(ui.panelContent.innerHTML, /hero-detail-quick-strip/);
+        assert.match(ui.panelContent.innerHTML, /Resumen tactico del heroe/);
+        assert.doesNotMatch(ui.panelContent.innerHTML, /hero-combat-identity/);
         assert.match(ui.panelContent.innerHTML, /Rango[\s\S]*Círculo/);
         assert.match(ui.panelContent.innerHTML, /Impacto[\s\S]*Directo/);
         assert.match(ui.panelContent.innerHTML, /Counters[\s\S]*Perforación · Alcance · DPS/);
@@ -440,6 +441,7 @@ test('renderHeroDetails muestra counter de oleada dentro de estadisticas', () =>
 
         ui.renderHeroDetails(hero, 'upgrade');
         assert.match(ui.panelContent.innerHTML, /hero-detail-tab-panel upgrade/);
+        assert.match(ui.panelContent.innerHTML, /hero-detail-quick-strip/);
         assert.match(ui.panelContent.innerHTML, /Mejora de nivel/);
         assert.match(ui.panelContent.innerHTML, /hero-upgrade-grid/);
         assert.match(ui.panelContent.innerHTML, /hero-upgrade-card/);
@@ -447,6 +449,7 @@ test('renderHeroDetails muestra counter de oleada dentro de estadisticas', () =>
 
         ui.renderHeroDetails(hero, 'equipment');
         assert.match(ui.panelContent.innerHTML, /hero-detail-tab-panel equipment/);
+        assert.match(ui.panelContent.innerHTML, /hero-detail-quick-strip/);
         assert.match(ui.panelContent.innerHTML, /id="hero-detail-tab-equipment" class="hero-detail-tab active" data-view="equipment" role="tab" aria-selected="true" aria-controls="hero-detail-panel" tabindex="0" type="button" aria-label="Objeto: Libre" title="Objeto: Libre" data-tooltip="Objeto: Libre"><i class="fas fa-shield-alt"><\/i><span>Objeto<\/span>/);
         assert.match(ui.panelContent.innerHTML, /hero-detail-tab-badge">Libre<\/b>/);
         assert.match(ui.panelContent.innerHTML, /Equipamiento/);

@@ -2239,6 +2239,24 @@ export class UIManager {
         `;
     }
 
+    renderHeroQuickIdentityStrip(hero) {
+        const chips = buildHeroCombatIdentity(hero);
+        return `
+            <div class="hero-detail-quick-strip" aria-label="Resumen tactico del heroe">
+                ${chips.map((chip) => {
+                    const label = `${chip.label}: ${chip.value}`;
+                    return `
+                        <span class="${escapeHtml(chip.tone)}" title="${escapeHtml(label)}" data-tooltip="${escapeHtml(label)}">
+                            <i class="fas ${escapeHtml(chip.icon)}"></i>
+                            <small>${escapeHtml(chip.label)}</small>
+                            <b>${escapeHtml(chip.value)}</b>
+                        </span>
+                    `;
+                }).join('')}
+            </div>
+        `;
+    }
+
     renderTargetingPriorityLegend(currentTargeting = TARGETING_PRIORITIES[0]) {
         return `
             <div class="targeting-priority-legend" aria-label="Leyenda de prioridad de objetivo">
@@ -2385,8 +2403,6 @@ export class UIManager {
                     ${config.niche ? `<b>${config.niche}</b>` : ''}
                 </div>
 
-                ${this.renderHeroCombatIdentity(hero)}
-
                 ${waveFitView ? `
                     <div class="hero-wave-fit-compact ${escapeHtml(waveFitView.id)}" aria-label="${escapeHtml(waveFitView.ariaLabel)}">
                         <span><small>Lectura de oleada</small><strong><i class="fas fa-crosshairs"></i>${escapeHtml(waveFitView.label)}</strong></span>
@@ -2454,6 +2470,8 @@ export class UIManager {
                         <div class="hero-stat-strip">
                             ${compactStats.map(([label, value]) => `<span><small>${label}</small><strong>${value}</strong></span>`).join('')}
                         </div>
+
+                        ${this.renderHeroQuickIdentityStrip(hero)}
 
                         <div class="hero-detail-tabs" role="tablist" aria-label="Detalle de heroe">
                             ${detailTabs.map((tab) => {
