@@ -105,11 +105,6 @@ export class SettingsPanel {
                     </div>
                 </section>
                 <section class="settings-section">
-                    <h3>${t('controls')}</h3>
-                    <div class="key-binding-grid">${KEY_BINDINGS.map(([key, labelKey]) => `<label><span>${t(labelKey)}</span><input data-key-binding="${key}" maxlength="12" value="${settings.keyBindings[key]}" aria-label="${t(labelKey)}"></label>`).join('')}</div>
-                    <small>${t('controllerHint')}</small>
-                </section>
-                <section class="settings-section">
                     <h3>${t('audioMix')}</h3>
                     <div class="audio-mixer">
                         ${VOLUME_SETTINGS.map(([key, bus, labelKey]) => `<label class="volume-control"><span>${t(labelKey)}</span><input type="range" min="0" max="100" value="${Math.round(settings[key] * 100)}" data-setting="${key}" data-bus="${bus}" aria-label="${t(labelKey)}"><output>${Math.round(settings[key] * 100)}%</output></label>`).join('')}
@@ -119,9 +114,16 @@ export class SettingsPanel {
                         <label class="setting-toggle"><input type="checkbox" id="toggle-music-loop" aria-label="${t('musicLoop')}" ${settings.musicLoop ? 'checked' : ''}><span>${t('musicLoop')}</span></label>
                     </div>
                 </section>
-                <section class="settings-section settings-section--interface">
-                    <h3>${t('language')} / ${t('uiSize')}</h3>
-                    <div class="settings-split-controls">
+                <details class="settings-details" data-settings-group="controls">
+                    <summary><span><i class="fas fa-keyboard"></i><b>${t('controls')}</b></span><small>${KEY_BINDINGS.length}</small></summary>
+                    <div class="settings-details-body">
+                        <div class="key-binding-grid">${KEY_BINDINGS.map(([key, labelKey]) => `<label><span>${t(labelKey)}</span><input data-key-binding="${key}" maxlength="12" value="${settings.keyBindings[key]}" aria-label="${t(labelKey)}"></label>`).join('')}</div>
+                        <small>${t('controllerHint')}</small>
+                    </div>
+                </details>
+                <details class="settings-details" data-settings-group="interface">
+                    <summary><span><i class="fas fa-language"></i><b>${t('language')} / ${t('uiSize')}</b></span><small>${locale.toUpperCase()} | ${t(settings.uiScale || 'normal')}</small></summary>
+                    <div class="settings-details-body settings-split-controls">
                         <div>
                             <span>${t('language')}</span>
                             <div class="ui-scale-switch" role="group" aria-label="${t('language')}">
@@ -135,27 +137,29 @@ export class SettingsPanel {
                             </div>
                         </div>
                     </div>
-                </section>
-                <section class="settings-section">
-                    <h3>${t('saveData')}</h3>
-                    <div class="settings-actions"><button class="btn-primary ghost" id="export-save" type="button" aria-label="${t('export')}" title="${t('export')}" data-tooltip="${t('export')}"><i class="fas fa-download"></i> ${t('export')}</button><button class="btn-primary ghost" id="import-save" type="button" aria-label="${t('import')}" title="${t('import')}" data-tooltip="${t('import')}"><i class="fas fa-upload"></i> ${t('import')}</button><button class="btn-primary ghost" id="export-replay" type="button" aria-label="${t('replay')}" title="${t('replay')}" data-tooltip="${t('replay')}"><i class="fas fa-film"></i> ${t('replay')}</button><button class="btn-primary danger" id="reset-all-game" type="button" aria-label="${t('resetAllGame')}" title="${t('resetAllGame')}" data-tooltip="${t('resetAllGame')}"><i class="fas fa-trash"></i> ${t('resetAllGame')}</button><input id="import-save-file" type="file" accept="application/json,.json" hidden></div>
-                </section>
-                <section class="settings-section admin-settings ${settings.adminMode ? 'admin-active' : ''}">
-                    <h3>${t('adminMode')}</h3>
-                    <p>${settings.adminMode ? t('adminModeActive') : t('adminModeHint')}</p>
-                    <div class="settings-actions">
+                </details>
+                <details class="settings-details" data-settings-group="save">
+                    <summary><span><i class="fas fa-save"></i><b>${t('saveData')}</b></span><small>4</small></summary>
+                    <div class="settings-details-body settings-actions"><button class="btn-primary ghost" id="export-save" type="button" aria-label="${t('export')}" title="${t('export')}" data-tooltip="${t('export')}"><i class="fas fa-download"></i> ${t('export')}</button><button class="btn-primary ghost" id="import-save" type="button" aria-label="${t('import')}" title="${t('import')}" data-tooltip="${t('import')}"><i class="fas fa-upload"></i> ${t('import')}</button><button class="btn-primary ghost" id="export-replay" type="button" aria-label="${t('replay')}" title="${t('replay')}" data-tooltip="${t('replay')}"><i class="fas fa-film"></i> ${t('replay')}</button><button class="btn-primary danger" id="reset-all-game" type="button" aria-label="${t('resetAllGame')}" title="${t('resetAllGame')}" data-tooltip="${t('resetAllGame')}"><i class="fas fa-trash"></i> ${t('resetAllGame')}</button><input id="import-save-file" type="file" accept="application/json,.json" hidden></div>
+                </details>
+                <details class="settings-details admin-settings ${settings.adminMode ? 'admin-active' : ''}" data-settings-group="admin" ${settings.adminMode ? 'open' : ''}>
+                    <summary><span><i class="fas fa-user-shield"></i><b>${t('adminMode')}</b></span><small>${settings.adminMode ? t('enabled') : t('disabled')}</small></summary>
+                    <div class="settings-details-body">
+                        <p>${settings.adminMode ? t('adminModeActive') : t('adminModeHint')}</p>
+                        <div class="settings-actions">
                         ${settings.adminMode
                             ? `<button class="btn-primary danger" id="disable-admin-mode" type="button" aria-label="${t('disableAdmin')}" title="${t('disableAdmin')}" data-tooltip="${t('disableAdmin')}"><i class="fas fa-lock"></i> ${t('disableAdmin')}</button>`
                             : `<input id="admin-password" type="password" inputmode="numeric" maxlength="8" placeholder="${t('adminPassword')}" aria-label="${t('adminPassword')}"><button class="btn-primary ghost" id="enable-admin-mode" type="button" aria-label="${t('enableAdmin')}" title="${t('enableAdmin')}" data-tooltip="${t('enableAdmin')}"><i class="fas fa-unlock"></i> ${t('enableAdmin')}</button>`}
+                        </div>
                     </div>
-                </section>
-                <section class="settings-section settings-section--quick">
-                    <h3>${t('restartLevel')}</h3>
-                    <div class="settings-actions settings-actions--inline">
+                </details>
+                <details class="settings-details" data-settings-group="run">
+                    <summary><span><i class="fas fa-rotate-left"></i><b>${t('restartLevel')}</b></span><small>2</small></summary>
+                    <div class="settings-details-body settings-actions settings-actions--inline">
                     <button class="btn-primary ghost" id="reset-placement" type="button" aria-label="${t('cancelPlacement')}" title="${t('cancelPlacement')}" data-tooltip="${t('cancelPlacement')}"><i class="fas fa-ban"></i> ${t('cancelPlacement')}</button>
                     <button class="btn-primary danger" id="clear-run" type="button" aria-label="${t('restartLevel')}" title="${t('restartLevel')}" data-tooltip="${t('restartLevel')}"><i class="fas fa-rotate-left"></i> ${t('restartLevel')}</button>
                     </div>
-                </section>
+                </details>
             </div>
         `;
         this.bind();

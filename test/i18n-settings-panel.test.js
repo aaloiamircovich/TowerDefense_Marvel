@@ -76,6 +76,11 @@ test('SettingsPanel usa el locale guardado para renderizar textos reales', () =>
         assert.match(panelContent.html, /80%/);
         assert.match(panelContent.html, /settings-layout--compact/);
         assert.match(panelContent.html, /settings-grid--compact/);
+        assert.match(panelContent.html, /<details class="settings-details" data-settings-group="controls">/);
+        assert.match(panelContent.html, /<details class="settings-details" data-settings-group="interface">/);
+        assert.match(panelContent.html, /<details class="settings-details" data-settings-group="save">/);
+        assert.match(panelContent.html, /<details class="settings-details admin-settings " data-settings-group="admin" >/);
+        assert.match(panelContent.html, /<details class="settings-details" data-settings-group="run">/);
         assert.match(panelContent.html, /settings-split-controls/);
         assert.match(panelContent.html, /settings-actions--inline/);
         assert.match(panelContent.html, /Game and accessibility/);
