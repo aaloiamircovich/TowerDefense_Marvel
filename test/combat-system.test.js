@@ -256,7 +256,7 @@ test('CombatSystem respeta ajuste para ocultar texto flotante de combate', () =>
     assert.equal(floating.length, 0);
 });
 
-test('Hero acumula control, ruptura, marcas, deteccion y vidas salvadas', () => {
+test('Hero acumula control, ruptura, marcas, deteccion e intercepciones', () => {
     const hero = new Hero({
         id: 'black_widow',
         name: 'Black Widow',

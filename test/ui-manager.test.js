@@ -1316,8 +1316,9 @@ test('buildTacticalContributionModel resume aportes no basados en dano', () => {
     assert.equal(model.active, true);
     assert.equal(model.score, 430);
     assert.deepEqual(model.metrics.map((metric) => metric.id), ['control', 'armor', 'marks', 'detect', 'saved']);
+    assert.equal(model.metrics.find((metric) => metric.id === 'saved').label, 'Intercepciones');
     assert.equal(model.heroes[0].name, 'Luke Cage');
-    assert.match(model.heroes[0].detail, /vida/);
+    assert.match(model.heroes[0].detail, /1 intercepcion/);
 });
 
 test('buildWaveReportState convierte fugas en recomendacion tactica', () => {

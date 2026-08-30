@@ -56,7 +56,7 @@ export const ACHIEVEMENT_CATALOG = {
     maestro: achievement('Maestro heroico', 'Completa una maestria entera con un heroe.'),
     coleccionista: achievement('Coleccionista', 'Recluta al menos 10 heroes.'),
     tactico_superior: achievement('Tactico superior', 'Acumula 2500 de valor tactico en una mision.'),
-    protector: achievement('Protector', 'Acumula 5 vidas salvadas con efectos defensivos en una mision.'),
+    protector: achievement('Protector', 'Acumula 5 intercepciones con efectos defensivos en una mision.'),
     controlador: achievement('Control de masas', 'Acumula 30 segundos de control en una mision.'),
     arsenal_vivo: achievement('Arsenal vivo', 'Activa 6 habilidades en una mision.'),
     sinergia_activa: achievement('Sinergia activa', 'Termina una mision con una agrupacion activa.'),

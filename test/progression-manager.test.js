@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import { ProgressionManager, SAVE_KEY, SAVE_VERSION } from '../src/systems/ProgressionManager.js';
+import { ACHIEVEMENT_CATALOG, ProgressionManager, SAVE_KEY, SAVE_VERSION } from '../src/systems/ProgressionManager.js';
 import { getHeroDamageAtLevel } from '../src/utils/HeroLevel.js';
 
 const data = {
@@ -482,6 +482,7 @@ test('resumen de mision desbloquea logros tacticos y sinergia activa', () => {
 
     assert.ok(manager.state.achievements.includes('tactico_superior'));
     assert.ok(manager.state.achievements.includes('protector'));
+    assert.match(ACHIEVEMENT_CATALOG.protector.description, /intercepciones/);
     assert.ok(manager.state.achievements.includes('controlador'));
     assert.ok(manager.state.achievements.includes('arsenal_vivo'));
     assert.ok(manager.state.achievements.includes('sinergia_activa'));

@@ -778,7 +778,7 @@ export function buildTacticalContributionModel(tactical = {}) {
         { id: 'armor', label: 'Rupturas', value: Math.round(Number(tactical.armorBreaks || 0)), suffix: '', icon: 'fa-shield-halved' },
         { id: 'marks', label: 'Marcas', value: Math.round(Number(tactical.marks || 0)), suffix: '', icon: 'fa-crosshairs' },
         { id: 'detect', label: 'Deteccion', value: Math.round(Number(tactical.detectionReveals || 0)), suffix: '', icon: 'fa-eye' },
-        { id: 'saved', label: 'Vidas salvadas', value: Math.round(Number(tactical.livesSaved || 0)), suffix: '', icon: 'fa-heart-pulse' }
+        { id: 'saved', label: 'Intercepciones', value: Math.round(Number(tactical.livesSaved || 0)), suffix: '', icon: 'fa-shield-halved' }
     ].filter((metric) => metric.value > 0);
 
     const heroes = (tactical.heroes || [])
@@ -792,7 +792,7 @@ export function buildTacticalContributionModel(tactical = {}) {
                 hero.armorBreaks > 0 ? `${Math.round(hero.armorBreaks)} ruptura` : '',
                 hero.marks > 0 ? `${Math.round(hero.marks)} marca` : '',
                 hero.detectionReveals > 0 ? `${Math.round(hero.detectionReveals)} deteccion` : '',
-                hero.livesSaved > 0 ? `${Math.round(hero.livesSaved)} vida` : ''
+                hero.livesSaved > 0 ? `${Math.round(hero.livesSaved)} intercepcion${Math.round(hero.livesSaved) === 1 ? '' : 'es'}` : ''
             ].filter(Boolean).join(' | ')
         }));
 
