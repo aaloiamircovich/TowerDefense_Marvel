@@ -80,6 +80,58 @@ function showGameConfirm({
 
 window.showGameConfirm = showGameConfirm;
 
+const START_SCREEN_CRITICAL_IMAGES = [
+    './assets/images/ui/start-screen-cover-final-clean-20260809.png',
+    './assets/images/ui/marvel-logo.png'
+];
+
+function delay(ms) {
+    return new Promise((resolve) => window.setTimeout(resolve, ms));
+}
+
+function preloadImageAsset(src) {
+    return new Promise((resolve) => {
+        const image = new Image();
+        let settled = false;
+        const finish = () => {
+            if (settled) return;
+            settled = true;
+            resolve();
+        };
+        const decode = () => image.decode ? image.decode().catch(() => {}) : Promise.resolve();
+
+        image.onload = () => decode().finally(finish);
+        image.onerror = finish;
+        image.src = src;
+        if (image.complete) decode().finally(finish);
+    });
+}
+
+function preloadStartScreenFonts() {
+    if (!document.fonts?.load) return Promise.resolve();
+    return Promise.allSettled([
+        document.fonts.load('700 96px "Avengeance"'),
+        document.fonts.load('700 24px "Avengeance"'),
+        document.fonts.ready
+    ]);
+}
+
+async function prepareStartScreenAssets(timeoutMs = 2200) {
+    try {
+        await Promise.race([
+            Promise.allSettled([
+                ...START_SCREEN_CRITICAL_IMAGES.map((src) => preloadImageAsset(src)),
+                preloadStartScreenFonts()
+            ]),
+            delay(timeoutMs)
+        ]);
+    } finally {
+        document.body.classList.add('start-assets-ready');
+    }
+}
+
+const startScreenAssetsReady = prepareStartScreenAssets();
+
 async function initGame() {
     let ui = null;
     setBootStatus('Preparando nucleo tactico...', 8);
@@ -236,6 +288,8 @@ async function initGame() {
             startStarterSelection();
         };
 
+        setBootStatus('Preparando pantalla inicial...', 96);
+        await startScreenAssetsReady;
         setBootStatus('Operacion lista', 100);
         hideBootScreen();
         showStartScreen({

@@ -145,16 +145,31 @@ body {
     display: grid;
     place-items: stretch;
     overflow: hidden;
+    background: #050914;
+    color: #fff;
+}
+
+.start-screen::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    opacity: 0;
     background:
         linear-gradient(90deg, rgba(3, 4, 15, 0.92) 0%, rgba(3, 4, 15, 0.64) 27%, rgba(3, 4, 15, 0.08) 58%),
         linear-gradient(0deg, rgba(3, 4, 15, 0.82), rgba(3, 4, 15, 0.04) 38%),
         url("assets/images/ui/start-screen-cover-final-clean-20260809.png") center / cover no-repeat;
-    color: #fff;
+    transition: opacity 180ms ease;
+}
+
+body.start-assets-ready .start-screen::before {
+    opacity: 1;
 }
 
 .start-screen__shade {
     position: absolute;
     inset: 0;
+    z-index: 1;
     pointer-events: none;
     background:
         radial-gradient(circle at 67% 42%, rgba(121, 59, 255, 0.08), transparent 34%),
@@ -164,6 +179,7 @@ body {
 .start-screen__frame {
     position: absolute;
     inset: clamp(16px, 2.2vw, 42px);
+    z-index: 1;
     pointer-events: none;
     border: 5px solid rgba(95, 67, 255, 0.86);
     box-shadow:
@@ -173,11 +189,24 @@ body {
 
 .start-screen__content {
     position: relative;
-    z-index: 1;
+    z-index: 2;
     display: grid;
     align-content: start;
     width: min(560px, calc(100vw - 44px));
     margin: clamp(64px, 8vh, 92px) 0 0 clamp(54px, 5.4vw, 104px);
+}
+
+body:not(.start-assets-ready) .start-screen__logo,
+body:not(.start-assets-ready) .start-screen h1,
+body:not(.start-assets-ready) .start-screen__subtitle {
+    opacity: 0;
+}
+
+body.start-assets-ready .start-screen__logo,
+body.start-assets-ready .start-screen h1,
+body.start-assets-ready .start-screen__subtitle {
+    opacity: 1;
+    transition: opacity 180ms ease;
 }
 
 .start-screen__logo {

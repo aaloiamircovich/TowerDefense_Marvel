@@ -71,6 +71,7 @@ try {
         const enemyIntelCards = [...document.querySelectorAll('[data-testid="wave-enemy-card"]')].map((card) => card.textContent || '');
         return {
             appState: document.body.dataset.appState,
+            startAssetsReady: document.body.classList.contains('start-assets-ready'),
             fatalVisible: Boolean(document.querySelector('.error-state')),
             heroes: game?.heroes?.length || 0,
             lives: game?.resourceManager?.lives || 0,
@@ -88,6 +89,7 @@ try {
 
     const failures = [];
     if (summary.appState !== 'ready') failures.push(`estado de app inesperado: ${summary.appState}`);
+    if (!summary.startAssetsReady) failures.push('pantalla inicial sin assets criticos listos');
     if (summary.fatalVisible) failures.push('modal fatal visible');
     if (summary.heroes !== 1) failures.push(`heroes desplegados esperados 1, recibidos ${summary.heroes}`);
     if (summary.wave < 2) failures.push(`la primera oleada no finalizo, oleada actual ${summary.wave}`);
