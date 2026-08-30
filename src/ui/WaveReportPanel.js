@@ -204,11 +204,22 @@ export class WaveReportPanel {
     renderAction(action) {
         if (!action) return '';
         const type = escapeHtml(action.type);
+        const available = Math.max(0, Number(action.available || 0));
+        const cost = Math.max(0, Number(action.cost || 0));
+        const savingProgress = action.type === 'saving' && cost > 0
+            ? Math.min(100, Math.max(0, Math.round((available / cost) * 100)))
+            : null;
         const economyNote = action.type === 'upgrade' && Number.isFinite(Number(action.remaining))
             ? `<small>Saldo tras mejora: $${escapeHtml(action.remaining)}</small>`
             : action.type === 'saving' && Number.isFinite(Number(action.missing))
-                ? `<small>Disponible $${escapeHtml(action.available || 0)} / coste $${escapeHtml(action.cost || 0)}</small>`
+                ? `<small>Disponible $${escapeHtml(available)} / coste $${escapeHtml(cost)}</small>`
                 : '';
+        const economyMeter = savingProgress === null
+            ? ''
+            : `<div class="wave-report-saving-meter" aria-label="Ahorro para mejora ${savingProgress}%">
+                <i style="width:${savingProgress}%"></i>
+                <b>${savingProgress}%</b>
+            </div>`;
         const actionLabel = action.type === 'upgrade'
             ? `${action.label} por ${action.cost} creditos. ${action.reason}`
             : action.label;
@@ -218,6 +229,7 @@ export class WaveReportPanel {
                 ? `<button id="wave-report-action" class="btn-mode-action" type="button" aria-label="${escapeHtml(actionLabel)}" title="${escapeHtml(actionLabel)}" data-tooltip="${escapeHtml(actionLabel)}">${escapeHtml(action.label)} $${escapeHtml(action.cost)}</button>`
                 : `<small>${escapeHtml(action.label)}</small>`}
             ${economyNote}
+            ${economyMeter}
         </div>`;
     }
 }

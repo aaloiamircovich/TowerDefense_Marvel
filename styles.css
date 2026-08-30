@@ -2872,6 +2872,37 @@ canvas {
     font-weight: 800;
 }
 
+.wave-report-saving-meter {
+    position: relative;
+    display: grid;
+    align-items: center;
+    min-height: 12px;
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--report-color), transparent 64%);
+    border-radius: 999px;
+    background: rgba(2, 5, 9, 0.64);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.035);
+}
+
+.wave-report-saving-meter i {
+    grid-area: 1 / 1;
+    width: 0;
+    height: 100%;
+    min-height: 12px;
+    background: linear-gradient(90deg, var(--report-color), color-mix(in srgb, var(--report-color), white 24%));
+    box-shadow: 0 0 10px color-mix(in srgb, var(--report-color), transparent 50%);
+}
+
+.wave-report-saving-meter b {
+    grid-area: 1 / 1;
+    justify-self: center;
+    color: #ffffff;
+    font-size: 8px;
+    font-weight: 900;
+    line-height: 1;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
+}
+
 .wave-report-action small + small {
     color: var(--muted);
     font-weight: 700;

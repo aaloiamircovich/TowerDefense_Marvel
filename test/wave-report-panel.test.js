@@ -111,6 +111,20 @@ test('WaveReportPanel desglosa ahorro cuando no alcanza para mejorar', () => {
 
     assert.match(html, /Faltan \$160/);
     assert.match(html, /Disponible \$80 \/ coste \$240/);
+    assert.match(html, /wave-report-saving-meter/);
+    assert.match(html, /Ahorro para mejora 33%/);
+    assert.match(html, /style="width:33%"/);
+
+    const cappedHtml = panel.renderAction({
+        type: 'saving',
+        label: 'Listo',
+        missing: 0,
+        available: 500,
+        cost: 240,
+        reason: 'Ya alcanza'
+    });
+    assert.match(cappedHtml, /Ahorro para mejora 100%/);
+    assert.match(cappedHtml, /style="width:100%"/);
 });
 
 
