@@ -96,6 +96,12 @@ test('ProfilePanel muestra racha y emblemas de contrato', () => {
     assert.match(panelContent.innerHTML, /Codice descubierto/);
     assert.match(panelContent.innerHTML, /profile-summary-grid/);
     assert.match(panelContent.innerHTML, /profile-mini-masteries/);
+    assert.match(panelContent.innerHTML, /profile-grid profile-grid--primary/);
+    assert.match(panelContent.innerHTML, /<details class="profile-ops-details">/);
+    assert.match(panelContent.innerHTML, /Lectura operativa/);
+    assert.match(panelContent.innerHTML, /2 paneles/);
+    assert.match(panelContent.innerHTML, /Zona Marvel/);
+    assert.doesNotMatch(panelContent.innerHTML, /profile-ops-details" open/);
     assert.match(panelContent.innerHTML, /Ver detalle completo/);
     assert.match(panelContent.innerHTML, /data-tooltip="Ver detalle completo del codice"/);
     assert.match(panelContent.innerHTML, /data-tooltip="Abrir codice descubierto"/);
