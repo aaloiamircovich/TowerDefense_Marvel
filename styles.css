@@ -6539,10 +6539,18 @@ select {
 .pity-track.compact {
     display: grid;
     place-items: center;
-    min-width: 72px;
-    min-height: 48px;
+    min-width: 88px;
+    min-height: 54px;
     padding: 6px 9px;
     text-align: center;
+}
+
+.pity-track.compact.ready {
+    border: 1px solid rgba(252, 163, 17, 0.5);
+    background:
+        linear-gradient(135deg, rgba(252, 163, 17, 0.16), rgba(64, 201, 255, 0.07)),
+        rgba(64, 201, 255, 0.08);
+    color: var(--bright-yellow);
 }
 
 .pity-track.compact span {
@@ -6556,6 +6564,32 @@ select {
     color: #40c9ff;
     font-size: 17px;
     line-height: 1;
+}
+
+.pity-track.compact.ready b {
+    color: var(--bright-yellow);
+}
+
+.pity-pips {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 3px;
+    width: 100%;
+    margin-top: 3px;
+}
+
+.pity-pips i {
+    display: block;
+    height: 5px;
+    border: 1px solid rgba(64, 201, 255, 0.28);
+    border-radius: 999px;
+    background: rgba(3, 7, 12, 0.68);
+}
+
+.pity-pips i.filled {
+    border-color: rgba(252, 163, 17, 0.6);
+    background: linear-gradient(90deg, #40c9ff, #fca311);
+    box-shadow: 0 0 7px rgba(252, 163, 17, 0.34);
 }
 
 .shop-odds-strip {

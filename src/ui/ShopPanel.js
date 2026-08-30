@@ -174,7 +174,7 @@ export class ShopPanel {
                     <strong>Héroe aleatorio sin duplicados</strong>
                     <small>La quinta apertura común garantiza Rare o superior. Costo +${Math.round((HERO_BOX_COST_GROWTH - 1) * 100)}% por apertura.</small>
                 </div>
-                <div class="pity-track compact"><span>Garantía</span><b>${pityValue}/4</b></div>
+                ${this.renderPityTrack(pityValue, odds.guaranteedActive)}
                 ${this.renderHeroBoxOdds(odds)}
                 <div class="shop-buy-stack">
                     <button class="btn-primary" id="gacha-btn" type="button" data-affordability="${canRecruit ? 'ready' : 'locked'}" aria-label="${escapeHtml(recruitAriaLabel)}" title="${escapeHtml(recruitAriaLabel)}" data-tooltip="${escapeHtml(recruitAriaLabel)}" aria-disabled="${!canRecruit}" ${canRecruit ? '' : 'disabled'}>${recruitButtonText}</button>
@@ -201,6 +201,20 @@ export class ShopPanel {
         this.ui.panelContent.querySelectorAll('.btn-buy-item').forEach((button) => {
             button.addEventListener('click', () => this.buyItem(button.dataset.id));
         });
+    }
+
+    renderPityTrack(pityValue = 0, guaranteedActive = false) {
+        const value = Math.max(0, Math.min(4, Math.floor(Number(pityValue) || 0)));
+        return `<div class="pity-track compact ${guaranteedActive ? 'ready' : ''}" aria-label="Garantía de rareza ${value} de 4">
+            ${this.renderPityTrackBody(value)}
+        </div>`;
+    }
+
+    renderPityTrackBody(pityValue = 0) {
+        const value = Math.max(0, Math.min(4, Math.floor(Number(pityValue) || 0)));
+        return `<span>Garantía</span><b>${value}/4</b><div class="pity-pips" aria-hidden="true">
+            ${Array.from({ length: 4 }, (_, index) => `<i class="${index < value ? 'filled' : ''}"></i>`).join('')}
+        </div>`;
     }
 
     renderAffordabilityMeter(state, label = 'Progreso de compra') {
@@ -453,7 +467,11 @@ export class ShopPanel {
         }
         const pityTrack = this.ui.panelContent.querySelector('.pity-track');
         const pityValue = Math.min(4, this.ui.game.progression.state.shop.heroPity);
-        if (pityTrack) pityTrack.innerHTML = `<span>Garantía</span><b>${pityValue}/4</b>`;
+        if (pityTrack) {
+            pityTrack.innerHTML = this.renderPityTrackBody(pityValue);
+            pityTrack.classList?.toggle('ready', pityValue >= 4);
+            pityTrack.setAttribute?.('aria-label', `Garantía de rareza ${pityValue} de 4`);
+        }
         const pityReadout = this.ui.panelContent.querySelector('[data-shop-readout="pity"]');
         if (pityReadout) pityReadout.textContent = `${pityValue}/4`;
 

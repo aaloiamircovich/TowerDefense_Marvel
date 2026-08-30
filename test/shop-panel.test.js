@@ -66,6 +66,20 @@ test('buildHeroBoxOdds calcula probabilidades segun heroes pendientes', () => {
     ]);
 });
 
+test('ShopPanel muestra garantia de caja con pips compactos', () => {
+    const panel = new ShopPanel(createShopUi(createPanelContentStub({}), []));
+    const html = panel.renderPityTrack(3, false);
+    const readyHtml = panel.renderPityTrack(9, true);
+
+    assert.match(html, /pity-track compact/);
+    assert.match(html, /Garantía de rareza 3 de 4/);
+    assert.match(html, /3\/4/);
+    assert.equal((html.match(/class="filled"/g) || []).length, 3);
+    assert.match(readyHtml, /pity-track compact ready/);
+    assert.match(readyHtml, /Garantía de rareza 4 de 4/);
+    assert.equal((readyHtml.match(/class="filled"/g) || []).length, 4);
+});
+
 test('ShopPanel destaca objetos signature antes de compra', () => {
     const panelContent = createPanelContentStub({ '.btn-buy-item': [] });
     const calls = [];
@@ -123,6 +137,8 @@ test('ShopPanel renderiza tienda progresiva y delega compra de objetos', () => {
     assert.match(panelContent.innerHTML, /\+\$60/);
     assert.match(panelContent.innerHTML, /shop-recruit-strip/);
     assert.match(panelContent.innerHTML, /Costo \+12% por apertura/);
+    assert.match(panelContent.innerHTML, /Garantía de rareza 0 de 4/);
+    assert.match(panelContent.innerHTML, /pity-pips/);
     assert.match(panelContent.innerHTML, /shop-odds-strip/);
     assert.match(panelContent.innerHTML, /Probabilidades actuales/);
     assert.match(panelContent.innerHTML, /Rare[\s\S]*100%/);
@@ -219,6 +235,8 @@ test('ShopPanel recluta heroe, actualiza costo y permite tienda de skins vacia',
     assert.equal(pityReadout.textContent, '1/4');
     assert.match(pityTrack.innerHTML, /Garantía/);
     assert.match(pityTrack.innerHTML, /1\/4/);
+    assert.match(pityTrack.innerHTML, /pity-pips/);
+    assert.equal((pityTrack.innerHTML.match(/class="filled"/g) || []).length, 1);
     assert.equal(gachaButton.disabled, true);
     assert.equal(gachaButton.textContent, 'PLANTILLA COMPLETA');
     assert.equal(gachaButton.dataset.affordability, 'locked');
