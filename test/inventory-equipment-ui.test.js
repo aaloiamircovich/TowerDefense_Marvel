@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { buildItemEffectPills, buildItemEquipDeltaRows, getItemEffectTags, InventoryPanel } from '../src/ui/InventoryPanel.js';
-import { buildTeamReadinessAlerts, TeamBuilderPanel } from '../src/ui/TeamBuilderPanel.js';
+import { buildTeamReadinessAlerts, getHeroTacticBadges, heroMatchesTacticId, TeamBuilderPanel } from '../src/ui/TeamBuilderPanel.js';
 import { UIManager } from '../src/systems/UIManager.js';
 import { analyzeTeam } from '../src/systems/TeamSynergySystem.js';
 
@@ -222,6 +222,7 @@ test('coleccion anuncia estado y accion principal al armar equipo', () => {
 
     const activeHtml = panel.renderHeroCard(data.heroes.spiderman, true);
     assert.match(activeHtml, /role="listitem" aria-label="Spider-Man\. Rareza [^\.]+\. en equipo activo\."/);
+    assert.match(activeHtml, /hero-tactic-badges/);
     assert.match(activeHtml, /class="btn-equip btn-primary danger" type="button" data-id="spiderman" aria-label="Quitar Spider-Man del equipo" title="Quitar Spider-Man del equipo" data-tooltip="Quitar Spider-Man del equipo" aria-pressed="true" aria-disabled="false"/);
     assert.match(activeHtml, /class="btn-favorite-hero icon-command active" type="button" data-id="spiderman"/);
     assert.match(activeHtml, /aria-label="Quitar Spider-Man de favoritos"/);
@@ -245,6 +246,24 @@ test('coleccion muestra preset de equipo por mapa', () => {
     assert.match(html, /id="apply-map-team-loadout"/);
     assert.match(html, /Guardar equipo actual/);
     assert.match(html, /Aplicar equipo guardado/);
+});
+
+test('coleccion muestra badges tacticos compactos coherentes con los filtros', () => {
+    const ui = createUiStub();
+    ui.inventoryPanel.pendingEquipItemId = null;
+    const panel = new TeamBuilderPanel(ui);
+    const badges = getHeroTacticBadges(data.heroes.black_widow);
+
+    assert.ok(badges.length <= 3);
+    assert.ok(badges.some((badge) => badge.id === 'detection'));
+    assert.equal(heroMatchesTacticId(data.heroes.black_widow, 'detection'), true);
+    assert.equal(panel.heroMatchesTacticalFilter(data.heroes.black_widow), true);
+
+    panel.tacticalFilter = 'detection';
+    const html = panel.renderHeroCard(data.heroes.black_widow, true);
+    assert.match(html, /aria-label="Respuestas tacticas: /);
+    assert.match(html, /data-tactic="detection"/);
+    assert.match(html, /fa-eye/);
 });
 test('previsualizacion de objeto compara mejoras y perdidas numericas', () => {
     const rows = buildItemEquipDeltaRows(data.items.lentes_edith, data.items.reactor_arc);

@@ -11656,6 +11656,44 @@ button.team-slot-filled:not(:disabled):active img {
     min-height: 18px;
 }
 
+.hero-tactic-badges {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 4px;
+    min-height: 22px;
+}
+
+.hero-tactic-badges span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    min-width: 0;
+    max-width: 88px;
+    padding: 3px 5px;
+    border: 1px solid color-mix(in srgb, var(--rarity-color, var(--level-accent)), transparent 66%);
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--rarity-color, var(--level-accent)), transparent 88%);
+    color: var(--text);
+    font-size: 9px;
+    font-weight: 900;
+    line-height: 1;
+}
+
+.hero-tactic-badges i {
+    flex: 0 0 auto;
+    color: color-mix(in srgb, var(--rarity-color, var(--level-accent)), white 26%);
+    font-size: 9px;
+}
+
+.hero-tactic-badges em {
+    overflow: hidden;
+    font-style: normal;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 .team-hero-card .collection-actions {
     grid-template-columns: 28px 28px minmax(78px, 112px);
     justify-content: center;

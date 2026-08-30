@@ -33,12 +33,150 @@ const HERO_TACTIC_FILTERS = [
 ];
 
 const CONTROL_EFFECT_TYPES = new Set(['slow', 'stun', 'freeze', 'web', 'knockback']);
+const HERO_TACTIC_BADGE_IDS = ['aura', 'economy', 'detection', 'antiarmor', 'control', 'dot', 'area', 'boss', 'crit', 'support', 'dps', 'frontline', 'water', 'mountain'];
+const HERO_TACTIC_BADGE_LIMIT = 3;
 
 function normalizeSearchText(value = '') {
     return String(value)
         .normalize('NFD')
         .replace(/[\u0300-\u036f]/g, '')
         .toLowerCase();
+}
+
+function getTacticFilterConfig(filterId) {
+    return HERO_TACTIC_FILTERS.find((filter) => filter.id === filterId) || null;
+}
+
+function getHeroTraitText(hero = {}) {
+    return normalizeSearchText([
+        hero.name,
+        hero.category,
+        hero.ability,
+        hero.abilityDesc,
+        hero.niche,
+        ...(hero.tags || [])
+    ]
+        .filter(Boolean)
+        .join(' '));
+}
+
+export function heroMatchesTacticId(hero = {}, filter = 'all') {
+    if (filter === 'all') return true;
+
+    const allowedTerrains = hero.allowedTerrains || [TERRAIN.grass];
+    if (filter === 'grass') return allowedTerrains.includes(TERRAIN.grass);
+    if (filter === 'water') return allowedTerrains.includes(TERRAIN.water);
+    if (filter === 'mountain') return allowedTerrains.includes(TERRAIN.mountain);
+
+    const special = hero.special || {};
+    const effects = special.attackEffects || [];
+    const profile = special.projectileProfile || {};
+    const metrics = hero.teamMetrics || {};
+    const traitText = getHeroTraitText(hero);
+
+    if (filter === 'detection') {
+        return Boolean(hero.canSeeStealth || special.supportAura?.detectStealth || metrics.detection >= 4 || traitText.includes('sigilo') || traitText.includes('deteccion'));
+    }
+    if (filter === 'antiarmor') {
+        return Boolean(profile.armorPenetration > 0
+            || effects.some((effect) => effect.type === 'armorBreak')
+            || traitText.includes('antiarmadura')
+            || traitText.includes('armadura')
+            || traitText.includes('blindaje')
+            || traitText.includes('perforacion')
+            || traitText.includes('barrera'));
+    }
+    if (filter === 'dps') {
+        return Boolean(metrics.damage >= 4
+            || hero.formationRole === 'artillery'
+            || hero.damage >= 35
+            || traitText.includes('laser')
+            || traitText.includes('explosivo'));
+    }
+    if (filter === 'frontline') {
+        return Boolean(hero.formationRole === 'vanguard'
+            || hero.rangePattern === 'ring'
+            || hero.range <= 95
+            || traitText.includes('cuerpo a cuerpo')
+            || traitText.includes('frente')
+            || traitText.includes('tanque'));
+    }
+    if (filter === 'support') {
+        return Boolean(hero.formationRole === 'support'
+            || metrics.support >= 4
+            || special.supportAura?.type
+            || special.economyOnHit
+            || traitText.includes('soporte')
+            || traitText.includes('aura')
+            || traitText.includes('detector')
+            || traitText.includes('economia'));
+    }
+    if (filter === 'control') {
+        return Boolean(metrics.control >= 4
+            || effects.some((effect) => CONTROL_EFFECT_TYPES.has(effect.type))
+            || traitText.includes('control')
+            || traitText.includes('ralentiza')
+            || traitText.includes('paraliza')
+            || traitText.includes('congela')
+            || traitText.includes('inmoviliza')
+            || traitText.includes('aturde'));
+    }
+    if (filter === 'area') {
+        return Boolean(profile.splashRadius > 0
+            || profile.chainCount > 0
+            || profile.propagationCount > 0
+            || ['cross', 'x', 'ring'].includes(hero.rangePattern)
+            || traitText.includes('area')
+            || traitText.includes('grupo')
+            || traitText.includes('rebote')
+            || traitText.includes('encadena'));
+    }
+    if (filter === 'dot') {
+        return Boolean(effects.some((effect) => ['burn', 'poison', 'curse', 'bleed'].includes(effect.type))
+            || traitText.includes('quemadura')
+            || traitText.includes('veneno')
+            || traitText.includes('toxina')
+            || traitText.includes('maldicion')
+            || traitText.includes('sangrado')
+            || traitText.includes('persistente'));
+    }
+    if (filter === 'boss') {
+        return Boolean(traitText.includes('jefe')
+            || traitText.includes('boss')
+            || traitText.includes('elite')
+            || traitText.includes('elites')
+            || profile.armorPenetration >= 0.25);
+    }
+    if (filter === 'crit') {
+        return Boolean((special.statModifiers?.critChance || 0) > 0
+            || (hero.critChance || 0) >= 8
+            || traitText.includes('critico')
+            || traitText.includes('criticos')
+            || traitText.includes('critica')
+            || traitText.includes('remate')
+            || traitText.includes('suerte'));
+    }
+    if (filter === 'aura') {
+        return Boolean(special.supportAura?.type || traitText.includes('aura'));
+    }
+    if (filter === 'economy') {
+        return Boolean(special.economyOnHit || traitText.includes('economia') || traitText.includes('credito'));
+    }
+    return true;
+}
+
+export function getHeroTacticBadges(hero = {}, limit = HERO_TACTIC_BADGE_LIMIT) {
+    return HERO_TACTIC_BADGE_IDS
+        .filter((filterId) => heroMatchesTacticId(hero, filterId))
+        .slice(0, Math.max(0, Math.floor(Number(limit) || HERO_TACTIC_BADGE_LIMIT)))
+        .map((filterId) => {
+            const config = getTacticFilterConfig(filterId);
+            return {
+                id: filterId,
+                label: config?.label || filterId,
+                icon: config?.icon || 'fa-tag'
+            };
+        });
 }
 
 export function buildTeamReadinessAlerts(snapshot = {}, team = []) {
@@ -373,122 +511,11 @@ export class TeamBuilderPanel {
     }
 
     getHeroTraitText(hero) {
-        return normalizeSearchText([
-            hero.name,
-            hero.category,
-            hero.ability,
-            hero.abilityDesc,
-            hero.niche,
-            ...(hero.tags || [])
-        ]
-            .filter(Boolean)
-            .join(' '));
+        return getHeroTraitText(hero);
     }
 
     heroMatchesTacticalFilter(hero) {
-        const filter = this.tacticalFilter || 'all';
-        if (filter === 'all') return true;
-
-        const allowedTerrains = hero.allowedTerrains || [TERRAIN.grass];
-        if (filter === 'grass') return allowedTerrains.includes(TERRAIN.grass);
-        if (filter === 'water') return allowedTerrains.includes(TERRAIN.water);
-        if (filter === 'mountain') return allowedTerrains.includes(TERRAIN.mountain);
-
-        const special = hero.special || {};
-        const effects = special.attackEffects || [];
-        const profile = special.projectileProfile || {};
-        const metrics = hero.teamMetrics || {};
-        const traitText = this.getHeroTraitText(hero);
-
-        if (filter === 'detection') {
-            return Boolean(hero.canSeeStealth || special.supportAura?.detectStealth || metrics.detection >= 4 || traitText.includes('sigilo') || traitText.includes('deteccion'));
-        }
-        if (filter === 'antiarmor') {
-            return Boolean(profile.armorPenetration > 0
-                || effects.some((effect) => effect.type === 'armorBreak')
-                || traitText.includes('antiarmadura')
-                || traitText.includes('armadura')
-                || traitText.includes('blindaje')
-                || traitText.includes('perforacion')
-                || traitText.includes('barrera'));
-        }
-        if (filter === 'dps') {
-            return Boolean(metrics.damage >= 4
-                || hero.formationRole === 'artillery'
-                || hero.damage >= 35
-                || traitText.includes('laser')
-                || traitText.includes('explosivo'));
-        }
-        if (filter === 'frontline') {
-            return Boolean(hero.formationRole === 'vanguard'
-                || hero.rangePattern === 'ring'
-                || hero.range <= 95
-                || traitText.includes('cuerpo a cuerpo')
-                || traitText.includes('frente')
-                || traitText.includes('tanque'));
-        }
-        if (filter === 'support') {
-            return Boolean(hero.formationRole === 'support'
-                || metrics.support >= 4
-                || special.supportAura?.type
-                || special.economyOnHit
-                || traitText.includes('soporte')
-                || traitText.includes('aura')
-                || traitText.includes('detector')
-                || traitText.includes('economia'));
-        }
-        if (filter === 'control') {
-            return Boolean(metrics.control >= 4
-                || effects.some((effect) => CONTROL_EFFECT_TYPES.has(effect.type))
-                || traitText.includes('control')
-                || traitText.includes('ralentiza')
-                || traitText.includes('paraliza')
-                || traitText.includes('congela')
-                || traitText.includes('inmoviliza')
-                || traitText.includes('aturde'));
-        }
-        if (filter === 'area') {
-            return Boolean(profile.splashRadius > 0
-                || profile.chainCount > 0
-                || profile.propagationCount > 0
-                || ['cross', 'x', 'ring'].includes(hero.rangePattern)
-                || traitText.includes('area')
-                || traitText.includes('grupo')
-                || traitText.includes('rebote')
-                || traitText.includes('encadena'));
-        }
-        if (filter === 'dot') {
-            return Boolean(effects.some((effect) => ['burn', 'poison', 'curse', 'bleed'].includes(effect.type))
-                || traitText.includes('quemadura')
-                || traitText.includes('veneno')
-                || traitText.includes('toxina')
-                || traitText.includes('maldicion')
-                || traitText.includes('sangrado')
-                || traitText.includes('persistente'));
-        }
-        if (filter === 'boss') {
-            return Boolean(traitText.includes('jefe')
-                || traitText.includes('boss')
-                || traitText.includes('elite')
-                || traitText.includes('elites')
-                || profile.armorPenetration >= 0.25);
-        }
-        if (filter === 'crit') {
-            return Boolean((special.statModifiers?.critChance || 0) > 0
-                || (hero.critChance || 0) >= 8
-                || traitText.includes('critico')
-                || traitText.includes('criticos')
-                || traitText.includes('critica')
-                || traitText.includes('remate')
-                || traitText.includes('suerte'));
-        }
-        if (filter === 'aura') {
-            return Boolean(special.supportAura?.type || traitText.includes('aura'));
-        }
-        if (filter === 'economy') {
-            return Boolean(special.economyOnHit || traitText.includes('economia') || traitText.includes('credito'));
-        }
-        return true;
+        return heroMatchesTacticId(hero, this.tacticalFilter || 'all');
     }
 
     getPendingInventoryItem() {
@@ -673,6 +700,8 @@ export class TeamBuilderPanel {
                     : `Anadir ${hero.name} al equipo`
                 : `${hero.name} bloqueado, pendiente de reclutar`;
         const favoriteLabel = favorite ? `Quitar ${hero.name} de favoritos` : `Marcar ${hero.name} como favorito`;
+        const tacticBadges = getHeroTacticBadges(hero);
+        const tacticBadgeLabels = tacticBadges.map((badge) => badge.label).join(', ');
         return `
             <article class="collection-card team-hero-card ${rarityClass} ${unlocked ? '' : 'locked'} ${equipped ? 'equipped' : ''} ${favorite ? 'favorite' : ''} ${pendingItem ? 'item-target-mode' : ''}" data-rarity="${rarity}" role="listitem" aria-label="${this.escapeAttribute(cardAriaLabel)}">
                 ${equippedItem ? `<span class="hero-item-corner" title="${equippedItem.name} equipado">${this.ui.renderSprite(equippedItem.icon, equippedItem.name)}</span>` : ''}
@@ -680,6 +709,9 @@ export class TeamBuilderPanel {
                 <h3>${hero.name}</h3>
                 ${evolution ? `<strong class="evolution-badge" style="--evolution-color:${evolution.color}">${evolution.name}</strong>` : ''}
                 <small><b class="rarity-badge ${rarityClass}">${rarity}</b></small>
+                ${tacticBadges.length ? `<div class="hero-tactic-badges" aria-label="Respuestas tacticas: ${this.escapeAttribute(tacticBadgeLabels)}">
+                    ${tacticBadges.map((badge) => `<span data-tactic="${this.escapeAttribute(badge.id)}" title="${this.escapeAttribute(badge.label)}" data-tooltip="${this.escapeAttribute(badge.label)}"><i class="fas ${this.escapeAttribute(badge.icon)}"></i><em>${this.escapeHtml(badge.label)}</em></span>`).join('')}
+                </div>` : ''}
                 <div class="collection-actions">
                     <button class="btn-favorite-hero icon-command ${favorite ? 'active' : ''}" type="button" data-id="${hero.id}" aria-label="${this.escapeAttribute(favoriteLabel)}" title="${this.escapeAttribute(favoriteLabel)}" data-tooltip="${this.escapeAttribute(favoriteLabel)}" aria-pressed="${favorite}">
                         <i class="fas fa-star"></i>
