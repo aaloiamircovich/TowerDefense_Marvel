@@ -141,7 +141,7 @@ const rivalsHeroes = {
         visualStyle: 'energy',
         projectileColor: '#a7f3ff'
     }),
-    jeff_the_land_shark: contract('Jeff The Land Shark', 'Mutante', 'Rare', 260, 26, 135, 1.75, true, 'MAREA AMABLE', 'Control anfibio que opera en agua, detecta sigilo y ralentiza fugas.', 'soporte anfibio de control', ['Rivales'], 'support', [2, 5, 5, 5], {
+    jeff_the_land_shark: contract('Jeff The Land Shark', 'Mutante', 'Rare', 260, 26, 135, 1.75, true, 'MAREA AMABLE', 'Control anfibio que opera en agua, detecta sigilo y ralentiza avances hacia la salida.', 'soporte anfibio de control', ['Rivales'], 'support', [2, 5, 5, 5], {
         attackEffects: [{ type: 'slow', duration: 2.0, power: 0.42, chance: 0.48 }],
         statModifiers: { allowWater: true, detectStealth: true },
         visualStyle: 'water',

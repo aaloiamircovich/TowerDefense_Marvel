@@ -1036,7 +1036,7 @@ export function buildCombatPressureState(enemies = [], path = [], waveActive = f
     const score = lead.progress + dangerCount * 0.08 + Math.min(0.16, active.length * 0.012);
 
     let state = { id: 'holding', label: 'Controlada', advice: 'Sostén daño y ahorra si puedes.' };
-    if (score >= 0.92 || lead.progress >= 0.9) state = { id: 'critical', label: 'Fuga inminente', advice: 'Pausa, mejora o reposiciona ya.' };
+    if (score >= 0.92 || lead.progress >= 0.9) state = { id: 'critical', label: 'Salida critica', advice: 'Pausa, mejora o reposiciona ya.' };
     else if (score >= 0.72 || dangerCount > 0) state = { id: 'warning', label: 'Presión alta', advice: 'Refuerza la salida o activa control.' };
     else if (score >= 0.48) state = { id: 'watch', label: 'Vigilar ruta', advice: 'El frente avanza; prepara mejora.' };
 
