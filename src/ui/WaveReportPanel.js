@@ -128,7 +128,7 @@ export class WaveReportPanel {
             this.renderLeakIntel(state.leakIntel)
         ].filter(Boolean);
         if (!sections.length) return '';
-        const shouldOpen = state.leaks > 0 || state.tacticalContribution?.active;
+        const shouldOpen = Number(state.leaks || 0) >= 3;
         const label = state.leaks > 0
             ? 'Ver base y recompensas'
             : state.tacticalContribution?.active

@@ -128,11 +128,20 @@ test('WaveReportPanel desglosa ahorro cuando no alcanza para mejorar', () => {
 });
 
 
-test('WaveReportPanel abre desglose cuando hubo brechas o aporte tactico', () => {
+test('WaveReportPanel mantiene compacto el desglose salvo brecha seria', () => {
     const panel = new WaveReportPanel({});
-    const leakHtml = panel.renderDetailDrawer({
+    const minorLeakHtml = panel.renderDetailDrawer({
         ...buildReportState(),
         leaks: 2,
+        leakIntel: {
+            label: 'Brechas detectadas',
+            items: [{ tone: 'boss', name: 'Ultron', detail: 'Cruzo la salida' }],
+            overflow: 0
+        }
+    });
+    const seriousLeakHtml = panel.renderDetailDrawer({
+        ...buildReportState(),
+        leaks: 3,
         leakIntel: {
             label: 'Brechas detectadas',
             items: [{ tone: 'boss', name: 'Ultron', detail: 'Cruzo la salida' }],
@@ -149,9 +158,11 @@ test('WaveReportPanel abre desglose cuando hubo brechas o aporte tactico', () =>
         }
     });
 
-    assert.match(leakHtml, /<details class="wave-report-details" open>/);
-    assert.match(leakHtml, /Ver base y recompensas/);
-    assert.match(tacticalHtml, /<details class="wave-report-details" open>/);
+    assert.match(minorLeakHtml, /<details class="wave-report-details">/);
+    assert.match(minorLeakHtml, /Ver base y recompensas/);
+    assert.match(seriousLeakHtml, /<details class="wave-report-details" open>/);
+    assert.match(seriousLeakHtml, /Ver base y recompensas/);
+    assert.match(tacticalHtml, /<details class="wave-report-details">/);
     assert.match(tacticalHtml, /Ver aporte tactico/);
 });
 
