@@ -100,6 +100,8 @@ test('inventario filtra objetos libres y equipados desde la vista compacta', () 
 
     panel.statusFilter = 'equipped';
     panel.render();
+    assert.match(ui.panelContent.innerHTML, /inventory-advanced-filters" data-advanced-count="0"/);
+    assert.match(ui.panelContent.innerHTML, /Filtros avanzados[\s\S]*Sin filtros avanzados/);
     assert.match(ui.panelContent.innerHTML, /inventory-rarity-strip[\s\S]*rarity-common[\s\S]*x1[\s\S]*rarity-rare[\s\S]*x1/);
     assert.match(ui.panelContent.innerHTML, /type="button" data-status="equipped" aria-pressed="true"/);
     assert.match(ui.panelContent.innerHTML, /aria-label="Filtrar objetos: Equipados" title="Filtrar objetos: Equipados" data-tooltip="Filtrar objetos: Equipados"/);
@@ -122,6 +124,9 @@ test('inventario filtra objetos por rareza desde la vista compacta', () => {
 
     panel.rarityFilter = 'Rare';
     panel.render();
+    assert.deepEqual(panel.getActiveInventoryFilterLabels({ includeStatus: false }), ['Rareza: Rare']);
+    assert.match(ui.panelContent.innerHTML, /inventory-advanced-filters" data-advanced-count="1"/);
+    assert.match(ui.panelContent.innerHTML, /Filtros avanzados[\s\S]*Rareza: Rare/);
     assert.match(ui.panelContent.innerHTML, /class="rarity-filter inventory-rarity-filter rarity-rare active" type="button" data-rarity="Rare" aria-pressed="true"/);
     assert.match(ui.panelContent.innerHTML, /data-item-id="reactor_arc"/);
     assert.doesNotMatch(ui.panelContent.innerHTML, /data-item-id="lentes_edith"/);
@@ -148,6 +153,7 @@ test('inventario filtra objetos por efecto tactico', () => {
 
     panel.effectFilter = 'control';
     panel.render();
+    assert.deepEqual(panel.getActiveInventoryFilterLabels({ includeStatus: false }), ['Tactica: Control']);
     assert.match(ui.panelContent.innerHTML, /id="inventory-effect-filter" aria-label="Filtrar objetos por efecto tactico"/);
     assert.match(ui.panelContent.innerHTML, /<option value="control" selected>Control<\/option>/);
     assert.match(ui.panelContent.innerHTML, /data-item-id="telarana_sintetica"/);

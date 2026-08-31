@@ -195,12 +195,35 @@ export class InventoryPanel {
             || this.effectFilter !== 'all';
     }
 
+    hasActiveAdvancedInventoryFilters() {
+        return this.tierFilter !== 0
+            || this.slotFilter !== 'all'
+            || this.rarityFilter !== 'all'
+            || this.effectFilter !== 'all';
+    }
+
     resetInventoryFilters() {
         this.tierFilter = 0;
         this.slotFilter = 'all';
         this.statusFilter = 'all';
         this.rarityFilter = 'all';
         this.effectFilter = 'all';
+    }
+
+    getActiveInventoryFilterLabels({ includeStatus = true } = {}) {
+        const labels = [];
+        if (includeStatus && this.statusFilter !== 'all') {
+            const statusLabels = { free: 'Libres', equipped: 'Equipados' };
+            labels.push(`Estado: ${statusLabels[this.statusFilter] || 'Todos'}`);
+        }
+        if (this.rarityFilter !== 'all') labels.push(`Rareza: ${normalizeRarity(this.rarityFilter)}`);
+        if (this.tierFilter !== 0) labels.push(`Tier ${this.tierFilter}`);
+        if (this.slotFilter !== 'all') labels.push(`Tipo: ${SLOT_LABELS[this.slotFilter] || this.slotFilter}`);
+        if (this.effectFilter !== 'all') {
+            const effectLabel = ITEM_EFFECT_FILTERS.find((filter) => filter.id === this.effectFilter)?.label || this.effectFilter;
+            labels.push(`Tactica: ${effectLabel}`);
+        }
+        return labels.length ? labels : ['Sin filtros'];
     }
 
     render(title = 'Inventario') {
@@ -216,6 +239,9 @@ export class InventoryPanel {
             ['equipped', 'Equipados']
         ];
         const hasActiveFilters = this.hasActiveInventoryFilters();
+        const advancedLabels = this.getActiveInventoryFilterLabels({ includeStatus: false });
+        const advancedCount = this.hasActiveAdvancedInventoryFilters() ? advancedLabels.length : 0;
+        const advancedSummary = advancedCount > 0 ? advancedLabels.join(' | ') : 'Sin filtros avanzados';
 
         this.ui.panelContent.innerHTML = `
             <div class="panel-title-row">
@@ -242,48 +268,62 @@ export class InventoryPanel {
                 </div>
             </section>
 
-            <div class="inventory-filters inventory-filters--compact">
+            <section class="inventory-filters inventory-filters--compact" aria-label="Filtros de inventario">
                 <div class="inventory-status-filters" aria-label="Filtrar por estado">
                     ${statusOptions.map(([status, label]) => {
                         const active = this.statusFilter === status;
                         return `<button class="status-filter ${active ? 'active' : ''}" type="button" data-status="${status}" aria-pressed="${active}" aria-label="Filtrar objetos: ${label}" title="Filtrar objetos: ${label}" data-tooltip="Filtrar objetos: ${label}">${label}</button>`;
                     }).join('')}
                 </div>
-                <div class="inventory-rarity-filters" aria-label="Filtrar por rareza">
-                    ${ITEM_RARITY_FILTERS.map((rarity) => {
-                        const label = rarity === 'all' ? 'Todas' : rarity;
-                        const filterLabel = `Filtrar rareza ${label}`;
-                        const active = this.rarityFilter === rarity;
-                        const rarityClass = rarity === 'all' ? '' : getRarityClass(rarity);
-                        const classes = ['rarity-filter', 'inventory-rarity-filter', rarityClass, active ? 'active' : ''].filter(Boolean).join(' ');
-                        return `<button class="${classes}" type="button" data-rarity="${rarity}" aria-pressed="${active}" aria-label="${filterLabel}" title="${filterLabel}" data-tooltip="${filterLabel}">${label}</button>`;
-                    }).join('')}
-                </div>
-                <div class="tier-filters" aria-label="Filtrar por tier">
-                    ${[0, 1, 2, 3, 4].map((tier) => {
-                        const label = tier === 0 ? 'Todos' : `T${tier}`;
-                        const filterLabel = tier === 0 ? 'Mostrar todos los tiers' : `Filtrar tier ${tier}`;
-                        return `<button class="tier-filter ${this.tierFilter === tier ? 'active' : ''}" type="button" data-tier="${tier}" aria-pressed="${this.tierFilter === tier}" aria-label="${filterLabel}" title="${filterLabel}" data-tooltip="${filterLabel}">${label}</button>`;
-                    }).join('')}
-                </div>
-                <div class="slot-filters" aria-label="Filtrar por tipo">
-                    ${['all', ...ITEM_SLOTS].map((slot) => {
-                        const label = slot === 'all' ? 'Todas' : SLOT_LABELS[slot];
-                        const filterLabel = slot === 'all' ? 'Mostrar todos los tipos de objeto' : `Filtrar tipo ${label}`;
-                        return `<button class="slot-filter ${this.slotFilter === slot ? 'active' : ''}" type="button" data-slot="${slot}" aria-pressed="${this.slotFilter === slot}" aria-label="${filterLabel}" title="${filterLabel}" data-tooltip="${filterLabel}">${label}</button>`;
-                    }).join('')}
-                </div>
-                <label class="inventory-effect-filter">
-                    <span>Táctica</span>
-                    <select id="inventory-effect-filter" aria-label="Filtrar objetos por efecto tactico">
-                        ${ITEM_EFFECT_FILTERS.map((filter) => `<option value="${filter.id}" ${this.effectFilter === filter.id ? 'selected' : ''}>${filter.label}</option>`).join('')}
-                    </select>
-                </label>
+                <details class="inventory-advanced-filters" data-advanced-count="${advancedCount}">
+                    <summary><span><i class="fas fa-sliders"></i><b>Filtros avanzados</b></span><small>${advancedSummary}</small></summary>
+                    <div class="inventory-advanced-filter-body">
+                        <div class="inventory-filter-group">
+                            <span>Rareza</span>
+                            <div class="inventory-rarity-filters" aria-label="Filtrar por rareza">
+                                ${ITEM_RARITY_FILTERS.map((rarity) => {
+                                    const label = rarity === 'all' ? 'Todas' : rarity;
+                                    const filterLabel = `Filtrar rareza ${label}`;
+                                    const active = this.rarityFilter === rarity;
+                                    const rarityClass = rarity === 'all' ? '' : getRarityClass(rarity);
+                                    const classes = ['rarity-filter', 'inventory-rarity-filter', rarityClass, active ? 'active' : ''].filter(Boolean).join(' ');
+                                    return `<button class="${classes}" type="button" data-rarity="${rarity}" aria-pressed="${active}" aria-label="${filterLabel}" title="${filterLabel}" data-tooltip="${filterLabel}">${label}</button>`;
+                                }).join('')}
+                            </div>
+                        </div>
+                        <div class="inventory-filter-group">
+                            <span>Tier</span>
+                            <div class="tier-filters" aria-label="Filtrar por tier">
+                                ${[0, 1, 2, 3, 4].map((tier) => {
+                                    const label = tier === 0 ? 'Todos' : `T${tier}`;
+                                    const filterLabel = tier === 0 ? 'Mostrar todos los tiers' : `Filtrar tier ${tier}`;
+                                    return `<button class="tier-filter ${this.tierFilter === tier ? 'active' : ''}" type="button" data-tier="${tier}" aria-pressed="${this.tierFilter === tier}" aria-label="${filterLabel}" title="${filterLabel}" data-tooltip="${filterLabel}">${label}</button>`;
+                                }).join('')}
+                            </div>
+                        </div>
+                        <div class="inventory-filter-group">
+                            <span>Tipo</span>
+                            <div class="slot-filters" aria-label="Filtrar por tipo">
+                                ${['all', ...ITEM_SLOTS].map((slot) => {
+                                    const label = slot === 'all' ? 'Todas' : SLOT_LABELS[slot];
+                                    const filterLabel = slot === 'all' ? 'Mostrar todos los tipos de objeto' : `Filtrar tipo ${label}`;
+                                    return `<button class="slot-filter ${this.slotFilter === slot ? 'active' : ''}" type="button" data-slot="${slot}" aria-pressed="${this.slotFilter === slot}" aria-label="${filterLabel}" title="${filterLabel}" data-tooltip="${filterLabel}">${label}</button>`;
+                                }).join('')}
+                            </div>
+                        </div>
+                        <label class="inventory-effect-filter inventory-filter-group">
+                            <span>Táctica</span>
+                            <select id="inventory-effect-filter" aria-label="Filtrar objetos por efecto tactico">
+                                ${ITEM_EFFECT_FILTERS.map((filter) => `<option value="${filter.id}" ${this.effectFilter === filter.id ? 'selected' : ''}>${filter.label}</option>`).join('')}
+                            </select>
+                        </label>
+                    </div>
+                </details>
                 <button id="inventory-clear-filters" class="inventory-clear-filters icon-command" type="button" ${hasActiveFilters ? '' : 'disabled'} title="Limpiar filtros" aria-label="Limpiar filtros" data-tooltip="Limpiar filtros">
                     <i class="fas fa-broom"></i>
                 </button>
                 <strong class="inventory-filter-count">${entries.length}/${allEntries.length}</strong>
-            </div>
+            </section>
 
             <div class="inventory-grid inventory-grid-v2">
                 ${entries.length ? entries.map((entry) => this.renderItemCard(entry)).join('') : '<p class="empty-copy">No hay objetos con estos filtros.</p>'}

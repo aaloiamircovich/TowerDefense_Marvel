@@ -7265,7 +7265,7 @@ select {
 
 .inventory-filters--compact {
     display: grid;
-    grid-template-columns: auto minmax(0, 1fr) repeat(3, minmax(118px, auto)) 38px auto;
+    grid-template-columns: auto minmax(260px, 1fr) 38px auto;
     align-items: center;
     gap: 8px;
     padding: 9px;
@@ -7304,6 +7304,108 @@ select {
 
 .inventory-clear-filters {
     justify-self: end;
+}
+
+.inventory-advanced-filters {
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid rgba(64, 201, 255, 0.18);
+    border-radius: 8px;
+    background:
+        linear-gradient(135deg, rgba(64, 201, 255, 0.08), transparent 60%),
+        rgba(3, 7, 12, 0.52);
+}
+
+.inventory-advanced-filters summary {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: 10px;
+    min-height: 38px;
+    padding: 7px 10px;
+    color: var(--text);
+    cursor: pointer;
+    list-style: none;
+}
+
+.inventory-advanced-filters summary::-webkit-details-marker {
+    display: none;
+}
+
+.inventory-advanced-filters summary span {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+}
+
+.inventory-advanced-filters summary i {
+    color: var(--level-accent);
+}
+
+.inventory-advanced-filters summary b {
+    color: #ffffff;
+    font-size: 11px;
+    text-transform: uppercase;
+}
+
+.inventory-advanced-filters summary small {
+    min-width: 0;
+    overflow: hidden;
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 900;
+    text-align: right;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.inventory-advanced-filters summary small::after {
+    content: '+';
+    display: inline-grid;
+    place-items: center;
+    width: 18px;
+    height: 18px;
+    margin-left: 8px;
+    border: 1px solid rgba(64, 201, 255, 0.24);
+    border-radius: 6px;
+    color: var(--level-accent);
+    line-height: 1;
+}
+
+.inventory-advanced-filters[open] summary {
+    border-bottom: 1px solid rgba(64, 201, 255, 0.12);
+}
+
+.inventory-advanced-filters[open] summary small::after {
+    content: '-';
+}
+
+.inventory-advanced-filter-body {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 8px;
+    padding: 10px;
+}
+
+.inventory-filter-group {
+    display: grid;
+    align-content: start;
+    gap: 6px;
+    min-width: 0;
+    padding: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 7px;
+    background: rgba(4, 10, 18, 0.56);
+}
+
+.inventory-filter-group > span {
+    color: var(--muted);
+    font-size: 9px;
+    font-weight: 900;
+    line-height: 1;
+    text-transform: uppercase;
 }
 
 .inventory-effect-filter {
@@ -7590,6 +7692,15 @@ select {
 
     .inventory-toolbar-v2 {
         grid-template-columns: 1fr;
+    }
+
+    .inventory-filters--compact {
+        grid-template-columns: 1fr auto;
+    }
+
+    .inventory-status-filters,
+    .inventory-advanced-filters {
+        grid-column: 1 / -1;
     }
 }
 
