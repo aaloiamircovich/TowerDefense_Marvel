@@ -174,8 +174,7 @@ export class ShopPanel {
                     <strong>Héroe aleatorio sin duplicados</strong>
                     <small>La quinta apertura común garantiza Rare o superior. Costo +${Math.round((HERO_BOX_COST_GROWTH - 1) * 100)}% por apertura.</small>
                 </div>
-                ${this.renderPityTrack(pityValue, odds.guaranteedActive)}
-                ${this.renderHeroBoxOdds(odds)}
+                ${this.renderRecruitDetails(pityValue, odds)}
                 <div class="shop-buy-stack">
                     <button class="btn-primary" id="gacha-btn" type="button" data-affordability="${canRecruit ? 'ready' : 'locked'}" aria-label="${escapeHtml(recruitAriaLabel)}" title="${escapeHtml(recruitAriaLabel)}" data-tooltip="${escapeHtml(recruitAriaLabel)}" aria-disabled="${!canRecruit}" ${canRecruit ? '' : 'disabled'}>${recruitButtonText}</button>
                     ${this.renderAffordabilityMeter(recruitAffordability, 'Progreso para caja')}
@@ -201,6 +200,31 @@ export class ShopPanel {
         this.ui.panelContent.querySelectorAll('.btn-buy-item').forEach((button) => {
             button.addEventListener('click', () => this.buyItem(button.dataset.id));
         });
+    }
+
+    renderRecruitDetails(pityValue = 0, odds = {}) {
+        const value = Math.max(0, Math.min(4, Math.floor(Number(pityValue) || 0)));
+        const stateLabel = odds?.empty
+            ? 'Completa'
+            : odds?.guaranteedActive
+                ? 'Rare+ lista'
+                : `${value}/4`;
+        const detailCount = odds?.entries?.length
+            ? `${odds.entries.length} rarezas`
+            : 'Sin pendientes';
+
+        return `
+            <details class="shop-recruit-details" ${odds?.guaranteedActive ? 'open' : ''}>
+                <summary>
+                    <span><i class="fas fa-satellite-dish"></i><b>Garantía y odds</b></span>
+                    <small>${escapeHtml(stateLabel)} · ${escapeHtml(detailCount)}</small>
+                </summary>
+                <div class="shop-recruit-details-body">
+                    ${this.renderPityTrack(value, odds?.guaranteedActive)}
+                    ${this.renderHeroBoxOdds(odds)}
+                </div>
+            </details>
+        `;
     }
 
     renderPityTrack(pityValue = 0, guaranteedActive = false) {
@@ -294,18 +318,26 @@ export class ShopPanel {
                     <strong>Firma</strong>
                     <span>${escapeHtml(signatureHint.detail)}</span>
                 </div>` : ''}
-                <p>${item.desc}</p>
-                <div class="shop-effect-pills item-effect-pills" aria-label="Efectos principales">
-                    ${effectPills.map((pill) => `<span class="${pill.tone}"><b>${pill.label}</b><small>${pill.value}</small></span>`).join('')}
-                </div>
-                <div class="shop-insight ${insight.tone}" aria-label="Recomendado por ${escapeHtml(insight.reasons.join(', '))}">
-                    <strong>${escapeHtml(insight.label)}</strong>
-                    <span>${insight.reasons.map(escapeHtml).join(' | ')}</span>
-                </div>
-                ${setProgress ? `<div class="shop-set-progress ${setProgress.status}" aria-label="${escapeHtml(setProgress.ariaLabel)}">
-                    <strong>${escapeHtml(setProgress.label)}</strong>
-                    <span>${escapeHtml(setProgress.detail)}</span>
-                </div>` : ''}
+                <details class="shop-card-details">
+                    <summary>
+                        <span><i class="fas fa-circle-info"></i><b>Detalles</b></span>
+                        <small>${effectPills.length} efectos</small>
+                    </summary>
+                    <div class="shop-card-details-body">
+                        <p>${item.desc}</p>
+                        <div class="shop-effect-pills item-effect-pills" aria-label="Efectos principales">
+                            ${effectPills.map((pill) => `<span class="${pill.tone}"><b>${pill.label}</b><small>${pill.value}</small></span>`).join('')}
+                        </div>
+                        <div class="shop-insight ${insight.tone}" aria-label="Recomendado por ${escapeHtml(insight.reasons.join(', '))}">
+                            <strong>${escapeHtml(insight.label)}</strong>
+                            <span>${insight.reasons.map(escapeHtml).join(' | ')}</span>
+                        </div>
+                        ${setProgress ? `<div class="shop-set-progress ${setProgress.status}" aria-label="${escapeHtml(setProgress.ariaLabel)}">
+                            <strong>${escapeHtml(setProgress.label)}</strong>
+                            <span>${escapeHtml(setProgress.detail)}</span>
+                        </div>` : ''}
+                    </div>
+                </details>
                 <div class="shop-card-footer">
                     ${this.renderAffordabilityMeter(affordability, `Progreso para comprar ${item.name}`)}
                     <small>${purchased ? 'Adquirido' : canBuy ? `Copias: ${owned}` : `Faltan $${missing}`}</small>

@@ -136,6 +136,8 @@ test('ShopPanel renderiza tienda progresiva y delega compra de objetos', () => {
     assert.match(panelContent.innerHTML, /shop-economy-readout/);
     assert.match(panelContent.innerHTML, /\+\$60/);
     assert.match(panelContent.innerHTML, /shop-recruit-strip/);
+    assert.match(panelContent.innerHTML, /shop-recruit-details/);
+    assert.match(panelContent.innerHTML, /Garantía y odds/);
     assert.match(panelContent.innerHTML, /Costo \+12% por apertura/);
     assert.match(panelContent.innerHTML, /Garantía de rareza 0 de 4/);
     assert.match(panelContent.innerHTML, /pity-pips/);
@@ -154,6 +156,8 @@ test('ShopPanel renderiza tienda progresiva y delega compra de objetos', () => {
     assert.match(panelContent.innerHTML, /shop-reveal-dock" role="status" aria-live="polite"/);
     assert.match(panelContent.innerHTML, /data-affordability="ready"/);
     assert.match(panelContent.innerHTML, /Lentes E.D.I.T.H./);
+    assert.match(panelContent.innerHTML, /shop-card-details/);
+    assert.match(panelContent.innerHTML, />Detalles</);
     assert.match(panelContent.innerHTML, /shop-effect-pills/);
     assert.match(panelContent.innerHTML, /Detecta sigilo[\s\S]*activo/);
     assert.match(panelContent.innerHTML, /Buena respuesta/);
