@@ -139,7 +139,6 @@ export class StarterPanel {
 
     getStarterSpecs(hero) {
         return [
-            { label: 'Coste', value: `$${Math.round(Number(hero.cost) || 0)}`, icon: 'fa-coins' },
             { label: 'Daño', value: String(Math.round(Number(hero.damage) || 0)), icon: 'fa-bolt' },
             { label: 'Alcance', value: String(Math.round(Number(hero.range) || 0)), icon: 'fa-bullseye' },
             { label: 'Cadencia', value: `${(Number(hero.fireRate) || 0).toFixed(1)}/s`, icon: 'fa-gauge-high' },

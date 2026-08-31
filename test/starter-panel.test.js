@@ -89,10 +89,10 @@ test('StarterPanel renderiza cartas tacticas y selecciona heroe inicial', () => 
         assert.match(panelContent.innerHTML, /Opciones/);
         assert.match(panelContent.innerHTML, /Black Widow/);
         assert.match(panelContent.innerHTML, /starter-card-upgraded rarity-common" type="button"/);
-        assert.match(panelContent.innerHTML, /aria-label="Elegir Black Widow\. Rareza Common\. Urbano\. saboteo de soporte\. Radar 4, Control 3\. Coste \$195, Daño 18, Alcance 130, Cadencia 1\.8\/s, Terreno Pasto\. Mejor Control, Mejor Radar" title="Elegir Black Widow\. Rareza Common\. Urbano\. saboteo de soporte\. Radar 4, Control 3\. Coste \$195, Daño 18, Alcance 130, Cadencia 1\.8\/s, Terreno Pasto\. Mejor Control, Mejor Radar" data-tooltip="Elegir Black Widow\. Rareza Common\. Urbano\. saboteo de soporte\. Radar 4, Control 3\. Coste \$195, Daño 18, Alcance 130, Cadencia 1\.8\/s, Terreno Pasto\. Mejor Control, Mejor Radar"/);
+        assert.match(panelContent.innerHTML, /aria-label="Elegir Black Widow\. Rareza Common\. Urbano\. saboteo de soporte\. Radar 4, Control 3\. Daño 18, Alcance 130, Cadencia 1\.8\/s, Terreno Pasto\. Mejor Control, Mejor Radar" title="Elegir Black Widow\. Rareza Common\. Urbano\. saboteo de soporte\. Radar 4, Control 3\. Daño 18, Alcance 130, Cadencia 1\.8\/s, Terreno Pasto\. Mejor Control, Mejor Radar" data-tooltip="Elegir Black Widow\. Rareza Common\. Urbano\. saboteo de soporte\. Radar 4, Control 3\. Daño 18, Alcance 130, Cadencia 1\.8\/s, Terreno Pasto\. Mejor Control, Mejor Radar"/);
         assert.match(panelContent.innerHTML, /starter-spec-strip/);
-        assert.match(panelContent.innerHTML, /Coste/);
-        assert.match(panelContent.innerHTML, /\$195/);
+        assert.doesNotMatch(panelContent.innerHTML, /Coste/);
+        assert.doesNotMatch(panelContent.innerHTML, /\$195/);
         assert.match(panelContent.innerHTML, /Alcance/);
         assert.match(panelContent.innerHTML, /Cadencia/);
         assert.match(panelContent.innerHTML, /Terreno/);
