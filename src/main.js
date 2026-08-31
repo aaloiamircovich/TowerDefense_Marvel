@@ -13,6 +13,7 @@ import { GameModeSystem } from './systems/GameModeSystem.js';
 import { ReplaySystem } from './systems/ReplaySystem.js';
 import { registerPwa } from './pwa/register.js';
 import { getFixedDifficultyKey, isLevelUnlockedByStars } from './utils/LevelProgression.js';
+import { selectStarterHeroes } from './utils/StarterSelection.js';
 
 function escapeModalText(value = '') {
     return String(value).replace(/[&<>"']/g, (char) => ({
@@ -224,11 +225,7 @@ async function initGame() {
             ui.updateLevelTheme(levelConfig);
         };
 
-        const starterPool = [
-            data.heroes.black_widow,
-            data.heroes.hawkeye,
-            data.heroes.korg
-        ].filter(Boolean);
+        const starterPool = selectStarterHeroes(data.heroes);
 
         const rawSavedLevel = data.levels.find((level) => level.id === game.progression.state.lastLevelId);
         const savedLevel = rawSavedLevel && game.isLevelUnlocked(rawSavedLevel) ? rawSavedLevel : data.levels[0];
