@@ -74,7 +74,7 @@ test('ProgressionManager reinicia todo el progreso persistido', () => {
     manager.initialize(game, data);
     manager.startProfile('iron_man');
     manager.addOwnedItem('reactor_arc');
-    manager.state.mapProgress.level_1 = { bestWave: 8, stars: 3, difficulty: 'hard', challenges: [], missionObjectives: [] };
+    manager.state.mapProgress.level_1 = { bestWave: 8, stars: 3, challenges: [], missionObjectives: [] };
     manager.updateSetting('locale', 'en');
 
     assert.equal(manager.resetAllProgress(), true);
@@ -109,6 +109,7 @@ test('modo admin requiere contraseña y desbloquea contenido completo', () => {
     assert.equal(manager.state.activeTeamIds.length, 6);
     assert.equal(manager.state.credits, 999999999);
     assert.equal(manager.getTotalStars(), data.levels.length * 100);
+    assert.equal('difficulty' in manager.getMapProgress('level_1'), false);
     assert.equal(infiniteCredits, true);
     assert.equal(manager.spendCredits(500000), true);
     assert.equal(manager.state.credits, 999999999);
@@ -288,6 +289,7 @@ test('Progreso de mapa guarda estrellas y desafios', () => {
     const progress = manager.getMapProgress('level_1');
     assert.equal(progress.bestWave, 25);
     assert.equal(progress.stars, 25);
+    assert.equal('difficulty' in progress, false);
     assert.deepEqual(progress.challenges.sort(), ['cazajefes', 'sin_danos']);
 });
 

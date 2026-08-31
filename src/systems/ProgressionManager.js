@@ -72,7 +72,6 @@ function createMapProgress(progress = {}) {
     return {
         bestWave,
         stars: Math.max(rawStars, bestWave),
-        difficulty: ['easy', 'normal', 'hard'].includes(progress.difficulty) ? progress.difficulty : 'normal',
         challenges: [...new Set(progress.challenges || [])],
         missionObjectives: [...new Set(progress.missionObjectives || [])]
     };
@@ -630,7 +629,6 @@ export class ProgressionManager {
         this.state.mapProgress = Object.fromEntries((this.data.levels || []).map((level) => [level.id, {
             bestWave: ADMIN_STARS_PER_LEVEL,
             stars: ADMIN_STARS_PER_LEVEL,
-            difficulty: level.difficulty || 'normal',
             challenges: ['sin_danos', 'cazajefes'],
             missionObjectives: (level.mission?.objectives || []).map((objective) => objective.id)
         }]));
@@ -1244,14 +1242,6 @@ export class ProgressionManager {
         progress.missionObjectives.push(objectiveId);
         this.state.mapProgress[levelId] = progress;
         this.addCredits(reward);
-        return true;
-    }
-
-    setDifficulty(levelId, difficulty) {
-        if (!['easy', 'normal', 'hard'].includes(difficulty)) return false;
-        const progress = this.getMapProgress(levelId);
-        this.state.mapProgress[levelId] = { ...progress, difficulty };
-        this.save();
         return true;
     }
 
