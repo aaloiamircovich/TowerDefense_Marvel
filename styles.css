@@ -11520,30 +11520,54 @@ canvas {
     grid-column: 1 / -1;
 }
 
-.radar-section header {
+.radar-section summary {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-columns: minmax(0, 1fr) auto auto;
     align-items: center;
     gap: 9px;
     padding: 11px 13px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     color: color-mix(in srgb, var(--level-accent), white 14%);
+    cursor: pointer;
     font-size: 12px;
     font-weight: 900;
+    list-style: none;
     text-transform: uppercase;
+    user-select: none;
 }
 
-.radar-section header > span {
+.radar-section[open] summary {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.radar-section summary::-webkit-details-marker {
+    display: none;
+}
+
+.radar-section summary > span {
     display: flex;
     align-items: center;
     gap: 9px;
     min-width: 0;
 }
 
-.radar-section header strong {
+.radar-section summary strong {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+.radar-section summary::after {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-right: 2px solid color-mix(in srgb, var(--level-accent), white 14%);
+    border-bottom: 2px solid color-mix(in srgb, var(--level-accent), white 14%);
+    transform: rotate(45deg);
+    transition: transform var(--transition-fast);
+}
+
+.radar-section[open] summary::after {
+    transform: translateY(2px) rotate(225deg);
 }
 
 .radar-section-state {

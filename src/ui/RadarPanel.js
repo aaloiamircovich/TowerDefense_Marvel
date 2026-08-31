@@ -103,9 +103,10 @@ export class RadarPanel {
         const priorityTitle = [...activeSections]
             .sort((a, b) => a.priority - b.priority)
             .at(0)?.title || 'Patrulla';
-        const sections = [...activeSections]
-            .sort((a, b) => a.priority - b.priority)
-            .map((section) => this.renderSection(section))
+        const sortedActiveSections = [...activeSections].sort((a, b) => a.priority - b.priority);
+        const prioritySectionId = sortedActiveSections[0]?.id || null;
+        const sections = sortedActiveSections
+            .map((section) => this.renderSection(section, section.id === prioritySectionId))
             .join('');
 
         this.ui.panelContent.innerHTML = `
@@ -153,33 +154,33 @@ export class RadarPanel {
         };
     }
 
-    renderSection(section) {
+    renderSection(section, open = false) {
         return `
-            <article class="radar-section radar-section-${escapeHtml(section.id)} ${section.stateClass}">
-                <header>
+            <details class="radar-section radar-section-${escapeHtml(section.id)} ${section.stateClass}"${open ? ' open' : ''}>
+                <summary>
                     <span>
                         <i class="fas ${escapeHtml(section.icon)}"></i>
                         <strong>${escapeHtml(section.title)}</strong>
                     </span>
                     <b class="radar-section-state">${escapeHtml(section.stateLabel)}</b>
-                </header>
+                </summary>
                 <div class="radar-section-body">
                     ${section.hasContent ? section.content : `<p class="radar-empty">${escapeHtml(section.empty)}</p>`}
                 </div>
-            </article>
+            </details>
         `;
     }
 
     renderTacticalGlossary() {
         return `
-            <article class="radar-section radar-section-glossary active">
-                <header>
+            <details class="radar-section radar-section-glossary active">
+                <summary>
                     <span>
                         <i class="fas fa-book-open"></i>
                         <strong>Glosario tactico</strong>
                     </span>
                     <b class="radar-section-state">Referencia</b>
-                </header>
+                </summary>
                 <div class="radar-glossary-grid">
                     ${RADAR_TACTICAL_GLOSSARY.map((entry) => `
                         <span class="radar-glossary-chip">
@@ -189,21 +190,21 @@ export class RadarPanel {
                         </span>
                     `).join('')}
                 </div>
-            </article>
+            </details>
         `;
     }
 
     renderDormantChannels(sections) {
         if (!sections.length) return '';
         return `
-            <article class="radar-section radar-section-dormant empty">
-                <header>
+            <details class="radar-section radar-section-dormant empty">
+                <summary>
                     <span>
                         <i class="fas fa-broadcast-tower"></i>
                         <strong>Canales en espera</strong>
                     </span>
                     <b class="radar-section-state">Sin lectura · ${sections.length}</b>
-                </header>
+                </summary>
                 <div class="radar-dormant-grid">
                     ${sections
                         .sort((a, b) => a.priority - b.priority)
@@ -214,7 +215,7 @@ export class RadarPanel {
                             </span>
                         `).join('')}
                 </div>
-            </article>
+            </details>
         `;
     }
 
