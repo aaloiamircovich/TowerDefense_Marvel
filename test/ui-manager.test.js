@@ -1309,19 +1309,17 @@ test('buildTacticalContributionModel resume aportes no basados en dano', () => {
         armorBreaks: 2,
         marks: 1,
         detectionReveals: 1,
-        livesSaved: 1,
         score: 430,
         heroes: [
-            { id: 'luke_cage', name: 'Luke Cage', tacticalScore: 260, controlSeconds: 1, armorBreaks: 1, livesSaved: 1 }
+            { id: 'luke_cage', name: 'Luke Cage', tacticalScore: 260, controlSeconds: 1, armorBreaks: 1 }
         ]
     });
 
     assert.equal(model.active, true);
     assert.equal(model.score, 430);
-    assert.deepEqual(model.metrics.map((metric) => metric.id), ['control', 'armor', 'marks', 'detect', 'saved']);
-    assert.equal(model.metrics.find((metric) => metric.id === 'saved').label, 'Intercepciones');
+    assert.deepEqual(model.metrics.map((metric) => metric.id), ['control', 'armor', 'marks', 'detect']);
     assert.equal(model.heroes[0].name, 'Luke Cage');
-    assert.match(model.heroes[0].detail, /1 intercepcion/);
+    assert.match(model.heroes[0].detail, /1 ruptura/);
 });
 
 test('buildWaveReportState convierte fugas en recomendacion tactica', () => {

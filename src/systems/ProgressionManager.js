@@ -56,7 +56,7 @@ export const ACHIEVEMENT_CATALOG = {
     maestro: achievement('Maestro heroico', 'Completa una maestria entera con un heroe.'),
     coleccionista: achievement('Coleccionista', 'Recluta al menos 10 heroes.'),
     tactico_superior: achievement('Tactico superior', 'Acumula 2500 de valor tactico en una mision.'),
-    protector: achievement('Protector', 'Acumula 5 intercepciones con efectos defensivos en una mision.'),
+    protector: achievement('Protector', 'Acumula 4 rupturas de armadura defensivas en una mision.'),
     controlador: achievement('Control de masas', 'Acumula 30 segundos de control en una mision.'),
     arsenal_vivo: achievement('Arsenal vivo', 'Activa 6 habilidades en una mision.'),
     sinergia_activa: achievement('Sinergia activa', 'Termina una mision con una agrupacion activa.'),
@@ -873,9 +873,11 @@ export class ProgressionManager {
     recordMissionSummary(game, result = 'defeat') {
         if (!game || game.missionSummaryRecorded) return this.state.lastMissionSummary;
         game.missionSummaryRecorded = true;
-        const heroes = (game.heroes || []).map((hero) => ({
-            id: hero.id, name: hero.name, ...hero.combatStats
-        })).sort((a, b) => b.damageDealt - a.damageDealt);
+        const heroes = (game.heroes || []).map((hero) => {
+            const combatStats = { ...(hero.combatStats || {}) };
+            delete combatStats.livesSaved;
+            return { id: hero.id, name: hero.name, ...combatStats };
+        }).sort((a, b) => b.damageDealt - a.damageDealt);
         const totals = heroes.reduce((sum, hero) => ({
             damage: sum.damage + (hero.damageDealt || 0),
             kills: sum.kills + (hero.kills || 0),
@@ -887,9 +889,8 @@ export class ProgressionManager {
             armorBreaks: sum.armorBreaks + (hero.armorBreaks || 0),
             marks: sum.marks + (hero.marks || 0),
             detectionReveals: sum.detectionReveals + (hero.detectionReveals || 0),
-            livesSaved: sum.livesSaved + (hero.livesSaved || 0),
             tacticalScore: sum.tacticalScore + (hero.tacticalScore || 0)
-        }), { controlSeconds: 0, armorBreaks: 0, marks: 0, detectionReveals: 0, livesSaved: 0, tacticalScore: 0 });
+        }), { controlSeconds: 0, armorBreaks: 0, marks: 0, detectionReveals: 0, tacticalScore: 0 });
         const teamSnapshot = game.teamSynergy?.getSnapshot?.() || analyzeTeam(game.activeTeam || []);
         const activeFamilyTags = (teamSnapshot.families || []).filter((family) => family.activeTier).map((family) => family.tag);
         const activePairIds = (teamSnapshot.pairs || []).filter((pair) => pair.active).map((pair) => pair.id);
@@ -920,7 +921,7 @@ export class ProgressionManager {
         if (Object.values(this.state.heroMastery).some((entry) => entry.completed?.length >= 3)) unlocked.add('maestro');
         if (this.state.unlockedHeroIds.length >= 10) unlocked.add('coleccionista');
         if (tactical.tacticalScore >= 2500) unlocked.add('tactico_superior');
-        if (tactical.livesSaved >= 5) unlocked.add('protector');
+        if (tactical.armorBreaks >= 4) unlocked.add('protector');
         if (tactical.controlSeconds >= 30) unlocked.add('controlador');
         if (totals.abilities >= 6) unlocked.add('arsenal_vivo');
         if (synergies.activeFamilies > 0 || synergies.activePairs > 0) unlocked.add('sinergia_activa');

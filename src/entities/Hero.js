@@ -68,8 +68,7 @@ export class Hero {
             controlSeconds: 0,
             armorBreaks: 0,
             marks: 0,
-            detectionReveals: 0,
-            livesSaved: 0
+            detectionReveals: 0
         };
         this.size = 36;
         this.flashTimer = 0;
@@ -372,10 +371,6 @@ export class Hero {
         if (type === 'armorBreak') this.combatStats.armorBreaks++;
         if (type === 'mark' || type === 'curse') this.combatStats.marks++;
         if (target?.stealth && (type === 'mark' || this.getEffectiveStats?.().canSeeStealth)) this.combatStats.detectionReveals++;
-    }
-
-    recordLifeSaved(amount = 1) {
-        this.combatStats.livesSaved += Math.max(0, Number(amount || 0));
     }
 
     getProjectileVisualStyle() {

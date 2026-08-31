@@ -892,8 +892,7 @@ export class WaveManager {
                 controlSeconds: Number(stats.controlSeconds || 0),
                 armorBreaks: Number(stats.armorBreaks || 0),
                 marks: Number(stats.marks || 0),
-                detectionReveals: Number(stats.detectionReveals || 0),
-                livesSaved: Number(stats.livesSaved || 0)
+                detectionReveals: Number(stats.detectionReveals || 0)
             };
         }
 
@@ -919,13 +918,11 @@ export class WaveManager {
             const armorBreaks = Math.max(0, Number(stats.armorBreaks || 0) - Number(startStats.armorBreaks || 0));
             const marks = Math.max(0, Number(stats.marks || 0) - Number(startStats.marks || 0));
             const detectionReveals = Math.max(0, Number(stats.detectionReveals || 0) - Number(startStats.detectionReveals || 0));
-            const livesSaved = Math.max(0, Number(stats.livesSaved || 0) - Number(startStats.livesSaved || 0));
             const tacticalScore = Math.round(
                 controlSeconds * 18
                 + armorBreaks * 42
                 + marks * 32
                 + detectionReveals * 55
-                + livesSaved * 180
             );
             return {
                 id,
@@ -936,7 +933,6 @@ export class WaveManager {
                 armorBreaks,
                 marks,
                 detectionReveals,
-                livesSaved,
                 tacticalScore,
                 score: damage + kills * 120 + tacticalScore
             };
@@ -949,9 +945,8 @@ export class WaveManager {
             armorBreaks: sum.armorBreaks + hero.armorBreaks,
             marks: sum.marks + hero.marks,
             detectionReveals: sum.detectionReveals + hero.detectionReveals,
-            livesSaved: sum.livesSaved + hero.livesSaved,
             tacticalScore: sum.tacticalScore + hero.tacticalScore
-        }), { damage: 0, kills: 0, controlSeconds: 0, armorBreaks: 0, marks: 0, detectionReveals: 0, livesSaved: 0, tacticalScore: 0 });
+        }), { damage: 0, kills: 0, controlSeconds: 0, armorBreaks: 0, marks: 0, detectionReveals: 0, tacticalScore: 0 });
         const best = heroDeltas.sort((a, b) => b.score - a.score)[0];
         const tacticalMvp = [...heroDeltas].sort((a, b) => b.tacticalScore - a.tacticalScore || b.score - a.score)[0];
         const leaks = Math.max(0, Number(start.lives || currentLives) - currentLives);
@@ -976,7 +971,6 @@ export class WaveManager {
                 armorBreaks: totals.armorBreaks,
                 marks: totals.marks,
                 detectionReveals: totals.detectionReveals,
-                livesSaved: totals.livesSaved,
                 score: totals.tacticalScore,
                 mvp: tacticalMvp?.tacticalScore > 0 ? tacticalMvp.name : '',
                 mvpId: tacticalMvp?.tacticalScore > 0 ? tacticalMvp.id : '',

@@ -136,7 +136,6 @@ test('CombatSystem usa la fuente aleatoria sembrada para efectos', () => {
 
 test('CombatSystem ignora efectos heal de proyectiles de heroes', () => {
     let lives = 0;
-    let saved = 0;
     const target = createTarget('Urbano', (damage) => ({ damage, killed: false }));
     const attacker = {
         items: [],
@@ -144,8 +143,7 @@ test('CombatSystem ignora efectos heal de proyectiles de heroes', () => {
             enemies: [],
             random: { next: () => 0 },
             resourceManager: { addLife: (amount) => { lives += amount; } }
-        },
-        recordLifeSaved: (amount) => { saved += amount; }
+        }
     };
 
     CombatSystem.applyImpact({
@@ -155,7 +153,6 @@ test('CombatSystem ignora efectos heal de proyectiles de heroes', () => {
     }, target, attacker, null);
 
     assert.equal(lives, 0);
-    assert.equal(saved, 0);
 });
 
 test('CombatSystem no aplica heal como estado del enemigo', () => {
@@ -168,8 +165,7 @@ test('CombatSystem no aplica heal como estado del enemigo', () => {
             enemies: [],
             random: { next: () => 0 },
             resourceManager: { addLife: () => {} }
-        },
-        recordLifeSaved: () => {}
+        }
     };
 
     CombatSystem.applyImpact({
@@ -256,7 +252,7 @@ test('CombatSystem respeta ajuste para ocultar texto flotante de combate', () =>
     assert.equal(floating.length, 0);
 });
 
-test('Hero acumula control, ruptura, marcas, deteccion e intercepciones', () => {
+test('Hero acumula control, ruptura, marcas y deteccion', () => {
     const hero = new Hero({
         id: 'black_widow',
         name: 'Black Widow',
@@ -275,13 +271,11 @@ test('Hero acumula control, ruptura, marcas, deteccion e intercepciones', () => 
     hero.recordStatusApplied({ type: 'stun', duration: 0.5 }, stealthTarget);
     hero.recordStatusApplied({ type: 'armorBreak', duration: 2 }, stealthTarget);
     hero.recordStatusApplied({ type: 'mark', duration: 2 }, stealthTarget);
-    hero.recordLifeSaved(2);
 
     assert.equal(hero.combatStats.controlSeconds, 2.7);
     assert.equal(hero.combatStats.armorBreaks, 1);
     assert.equal(hero.combatStats.marks, 1);
     assert.equal(hero.combatStats.detectionReveals, 4);
-    assert.equal(hero.combatStats.livesSaved, 2);
 });
 
 function createTarget(category, takeDamage) {

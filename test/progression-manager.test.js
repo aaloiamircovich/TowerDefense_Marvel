@@ -471,7 +471,6 @@ test('resumen de mision desbloquea logros tacticos y sinergia activa', () => {
                 armorBreaks: 4,
                 marks: 5,
                 detectionReveals: 3,
-                livesSaved: 5,
                 tacticalScore: 2700
             }
         }
@@ -482,7 +481,7 @@ test('resumen de mision desbloquea logros tacticos y sinergia activa', () => {
 
     assert.ok(manager.state.achievements.includes('tactico_superior'));
     assert.ok(manager.state.achievements.includes('protector'));
-    assert.match(ACHIEVEMENT_CATALOG.protector.description, /intercepciones/);
+    assert.match(ACHIEVEMENT_CATALOG.protector.description, /rupturas/);
     assert.ok(manager.state.achievements.includes('controlador'));
     assert.ok(manager.state.achievements.includes('arsenal_vivo'));
     assert.ok(manager.state.achievements.includes('sinergia_activa'));

@@ -328,7 +328,6 @@ test('WaveManager emite informe tactico con deltas de la oleada', () => {
     game.heroes[0].combatStats.kills += 5;
     game.heroes[0].combatStats.controlSeconds = 3;
     game.heroes[0].combatStats.armorBreaks = 2;
-    game.heroes[0].combatStats.livesSaved = 1;
     game.resourceManager.lives = 18;
     manager.enemiesQueue = [];
     manager.finishWave();
@@ -342,7 +341,6 @@ test('WaveManager emite informe tactico con deltas de la oleada', () => {
     assert.equal(reports[0].bestHeroId, 'iron_man');
     assert.equal(reports[0].tactical.controlSeconds, 3);
     assert.equal(reports[0].tactical.armorBreaks, 2);
-    assert.equal(reports[0].tactical.livesSaved, 1);
     assert.equal(reports[0].tactical.mvp, 'Iron Man');
     assert.ok(reports[0].tactical.score > 0);
     assert.ok(reports[0].credits >= 188);
