@@ -2078,7 +2078,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.4,
       "canSeeStealth": false,
       "ability": "DEFENSOR INQUEBRANTABLE",
-      "abilityDesc": "Protege aliados cercanos y devuelve a la ruta a enemigos que superan el ultimo tramo de la defensa.",
+      "abilityDesc": "Protege aliados cercanos con presencia de calle y rompe armadura con golpes pesados.",
       "sprite": "assets/images/heroes/luke_cage/portrait.png",
       "allowedTerrains": [
         1,
@@ -2095,7 +2095,7 @@ window.__MARVEL_TD_DATA__ = {
         "support": 5,
         "detection": 1
       },
-      "niche": "intercepcion de brechas y proteccion local",
+      "niche": "proteccion local y ruptura de blindaje",
       "visual": {
         "portrait": "assets/images/heroes/luke_cage/portrait.png",
         "size": 96,
@@ -2161,7 +2161,7 @@ window.__MARVEL_TD_DATA__ = {
         "support": 5,
         "detection": 5
       },
-      "niche": "economia por ataque y control de suerte",
+      "niche": "economia por ataque y deteccion tactica",
       "visual": {
         "portrait": "assets/images/heroes/domino/portrait.png",
         "size": 96,

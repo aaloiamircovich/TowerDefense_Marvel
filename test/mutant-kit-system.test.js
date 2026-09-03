@@ -49,11 +49,13 @@ test('Storm crea clima de hielo y electricidad sobre la ruta', () => {
     assert.equal(hero.abilitySystem.setCombatMode('lightning'), true);
 });
 
-test('Domino usa suerte sembrada para desviar una fuga', () => {
+test('Domino genera economia sin desviar enemigos de la salida', () => {
     const game = createGame(); const hero = createHero('domino', game); const enemy = createEnemy(370);
     game.heroes = [hero]; game.enemies = [enemy]; const start = enemy.distanceTravelled;
     hero.abilitySystem.update(0.1, [enemy], hero.getEffectiveStats(), []);
-    assert.ok(enemy.distanceTravelled < start); assert.equal(enemy.y, 0);
+    for (let index = 0; index < 5; index++) hero.abilitySystem.onAttack(enemy, hero.getEffectiveStats(), {}, []);
+    assert.equal(enemy.distanceTravelled, start); assert.equal(enemy.y, 0);
+    assert.equal(hero.abilitySystem.getDisplayState().label, 'Economia: +15% recompensa');
 });
 
 test('Scarlet Witch enlaza maldiciones y altera el tiempo', () => {

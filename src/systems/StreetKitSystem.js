@@ -43,7 +43,6 @@ export class StreetKitSystem {
         if (this.hero.id === 'daredevil') this.updateDaredevil(dt);
         if (this.hero.id === 'moon_knight') this.updateMoonCycle(dt);
         if (this.hero.id === 'ghost_rider') this.updatePenance(enemies, stats);
-        if (this.hero.id === 'luke_cage') this.updateInterception(enemies);
     }
 
     onAttack(target, stats) {
@@ -253,20 +252,6 @@ export class StreetKitSystem {
         this.cooldownRemaining = this.getCooldown(11);
     }
 
-    updateInterception(enemies) {
-        if (this.cooldownRemaining > 0) return;
-        const target = enemies.filter((enemy) => enemy.isAlive && !enemy.flying && pathProgress(enemy) >= 0.82)
-            .sort((a, b) => b.distanceTravelled - a.distanceTravelled)[0];
-        if (!target) return;
-        const moved = target.moveBackward?.(target.isBoss ? 42 : 92) || 0;
-        if (moved <= 0) return;
-        target.applyStatus?.({ type: 'armorBreak', duration: 4, power: 0.3 }, this.hero);
-        this.hero.game.vfx?.addBeam(this.hero, target, { color: '#f2c94c', width: 7, duration: 0.28 });
-        this.hero.game.audio?.play('intercept');
-        this.hero.recordAbility();
-        this.cooldownRemaining = this.getCooldown(10);
-    }
-
     counterDaredevil(target, stats) {
         if (!target?.isAlive) return;
         CombatSystem.applyDamage({ attackerType: this.hero.category, damage: stats.damage * 0.72 * this.getPowerScale(), armorPenetration: 0.2 }, target, this.hero, this.hero.game.resourceManager, 1);
@@ -324,13 +309,6 @@ function staticState(label) {
 
 function distance(a, b) {
     return Math.hypot(a.x - b.x, a.y - b.y);
-}
-
-function pathProgress(enemy) {
-    if (!enemy.path?.length) return 0;
-    let total = 0;
-    for (let index = 1; index < enemy.path.length; index++) total += distance(enemy.path[index - 1], enemy.path[index]);
-    return total > 0 ? enemy.distanceTravelled / total : 0;
 }
 
 export { MOON_PHASES, STREET_CONTROLS };

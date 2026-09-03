@@ -28,7 +28,6 @@ export class MutantKitSystem {
         this.attackCount = 0;
         this.resource = 0;
         this.cooldownRemaining = 0;
-        this.secondaryCooldown = 0;
         this.jumpTimer = 0;
         this.jumpOrigin = null;
         this.weatherZone = null;
@@ -37,11 +36,9 @@ export class MutantKitSystem {
 
     update(dt, enemies, stats) {
         this.cooldownRemaining = Math.max(0, this.cooldownRemaining - dt);
-        this.secondaryCooldown = Math.max(0, this.secondaryCooldown - dt);
         if (this.hero.id === 'wolverine') this.updateWolverine(dt, enemies, stats);
         if (this.hero.id === 'jean_grey') this.updatePhoenix(enemies, stats);
         if (this.hero.id === 'storm') this.updateWeather(dt, enemies, stats);
-        if (this.hero.id === 'domino') this.updateDomino(enemies);
         if (this.hero.id === 'scarlet_witch') this.updateHexTime(enemies, stats);
     }
 
@@ -54,7 +51,6 @@ export class MutantKitSystem {
             if (this.attackCount % 4 === 0) this.telekineticPush(target, stats);
         }
         if (this.hero.id === 'cyclops' && this.attackCount % (this.mode === 'focus' ? 3 : 2) === 0) this.fireOpticLine(target, stats);
-        if (this.hero.id === 'domino' && this.attackCount % 5 === 0) this.luckyShot(target, stats);
         if (this.hero.id === 'scarlet_witch') this.linkHexes(target);
         if (this.hero.id === 'ant_man' && this.mode === 'giant' && this.attackCount % 3 === 0) this.giantImpact(target, stats);
     }
@@ -150,7 +146,7 @@ export class MutantKitSystem {
         if (this.hero.id === 'jean_grey') return meter(`Phoenix ${Math.round(this.resource)}/100`, this.resource, 100);
         if (this.hero.id === 'cyclops') return staticState(`Visor: ${this.getModeLabel()}`);
         if (this.hero.id === 'storm') return staticState(`Clima: ${this.getModeLabel()}`);
-        if (this.hero.id === 'domino') return meter(`Suerte controlada ${this.attackCount % 5}/5`, (this.attackCount % 5) * 20, 80);
+        if (this.hero.id === 'domino') return staticState('Economia: +15% recompensa');
         if (this.hero.id === 'scarlet_witch') return cooldownState('Alteracion temporal', this.cooldownRemaining, 9);
         if (this.hero.id === 'ant_man') return staticState(`Forma: ${this.getModeLabel()}`);
         if (this.hero.id === 'winter_soldier') return staticState(`Municion: ${this.getModeLabel()}`);
@@ -266,20 +262,6 @@ export class MutantKitSystem {
         this.hero.recordAbility();
     }
 
-    updateDomino(enemies) {
-        if (this.secondaryCooldown > 0) return;
-        const target = enemies.filter((enemy) => enemy.isAlive && !enemy.flying && pathProgress(enemy) > 0.88)
-            .sort((a, b) => b.distanceTravelled - a.distanceTravelled)[0];
-        if (!target) return;
-        const lucky = (this.hero.game.random?.next?.() ?? Math.random()) < 0.65;
-        this.secondaryCooldown = this.getCooldown(13);
-        if (!lucky) return;
-        target.moveBackward?.(target.isBoss ? 24 : 62);
-        this.hero.game.vfx?.addBurst(target.x, target.y, { color: '#d8c8ff', radius: 30, duration: 0.24 });
-        this.hero.game.audio?.play('luck');
-        this.hero.recordAbility();
-    }
-
     updateHexTime(enemies, stats) {
         if (this.cooldownRemaining > 0) return;
         const targets = enemies.filter((enemy) => enemy.isAlive && distance(enemy, this.hero) <= stats.range * 1.25);
@@ -308,15 +290,6 @@ export class MutantKitSystem {
         victims.forEach((enemy) => CombatSystem.applyDamage({ attackerType: this.hero.category, damage: stats.damage * (this.mode === 'focus' ? 0.86 : 0.55) * this.getPowerScale(), armorPenetration: this.mode === 'focus' ? 0.6 : 0.25 }, enemy, this.hero, this.hero.game.resourceManager, 1));
         this.hero.game.vfx?.addBeam(this.hero, getLineEndpoint(this.hero, target, length), { color: '#ff3535', width: this.mode === 'focus' ? 8 : 5, duration: 0.2 });
         this.hero.game.audio?.play('optic');
-        this.hero.recordAbility();
-    }
-
-    luckyShot(target, stats) {
-        if (!target?.isAlive || target.flying) return;
-        target.moveBackward?.(target.isBoss ? 12 : 34);
-        target.applyStatus?.({ type: 'mark', duration: 2.4, power: 0.1 }, this.hero);
-        this.hero.game.vfx?.addBurst(target.x, target.y, { color: '#d8c8ff', radius: 28, duration: 0.24 });
-        this.hero.game.audio?.play('luck');
         this.hero.recordAbility();
     }
 
@@ -360,6 +333,5 @@ function meter(label, value, readyAt) {
 function staticState(label) { return { label, progress: null, ready: true }; }
 function cooldownState(label, remaining, total) { return { label: remaining <= 0 ? `${label} lista` : `${label} ${remaining.toFixed(1)} s`, progress: remaining <= 0 ? 1 : 1 - remaining / total, ready: remaining <= 0 }; }
 function distance(a, b) { return Math.hypot(a.x - b.x, a.y - b.y); }
-function pathProgress(enemy) { if (!enemy.path?.length) return 0; let total = 0; for (let index = 1; index < enemy.path.length; index++) total += distance(enemy.path[index - 1], enemy.path[index]); return total > 0 ? enemy.distanceTravelled / total : 0; }
 
 export { MUTANT_CONTROLS };

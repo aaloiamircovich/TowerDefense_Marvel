@@ -12,7 +12,7 @@ function createLoopHarness() {
         lives: 7,
         removeLife(amount) {
             this.lives = Math.max(0, this.lives - amount);
-            loop.gameOver();
+            if (this.lives <= 0) loop.gameOver();
         }
     };
     loop.waveManager = {
@@ -20,7 +20,13 @@ function createLoopHarness() {
             leaks.push({ enemy, payload });
         }
     };
-    loop.missionSystem = { handleLeak: () => true };
+    loop.missionSystem = {
+        leakCalls: 0,
+        handleLeak() {
+            this.leakCalls++;
+            return true;
+        }
+    };
     loop.modeSystem = { handleLeak: () => true };
     loop.uiManager = { showToast: (...args) => toasts.push(args) };
     loop.gameOver = function gameOver() {
@@ -37,30 +43,29 @@ test('GameLoop derrota inmediatamente si un boss cruza la meta', () => {
     const result = loop.handleEnemyReachedEnd(boss);
 
     assert.equal(result.isBoss, true);
-    assert.equal(result.absorbed, false);
     assert.equal(result.lifeLoss, 7);
     assert.equal(loop.resourceManager.lives, 0);
     assert.equal(loop.isGameOver, true);
     assert.equal(loop.gameOverCalls, 1);
     assert.equal(boss.processed, true);
     assert.equal(leaks.length, 1);
-    assert.deepEqual(leaks[0].payload, { lifeLoss: 7, absorbed: false });
+    assert.deepEqual(leaks[0].payload, { lifeLoss: 7 });
     assert.match(toasts[0][0], /Loki cruzo la linea/);
 });
 
-test('GameLoop conserva absorcion de fugas para enemigos comunes', () => {
+test('GameLoop ya no absorbe fugas de enemigos comunes', () => {
     const { loop, leaks } = createLoopHarness();
     const enemy = { id: 'hydra', name: 'Soldado de Hydra', processed: false };
 
     const result = loop.handleEnemyReachedEnd(enemy);
 
     assert.equal(result.isBoss, false);
-    assert.equal(result.absorbed, true);
-    assert.equal(result.lifeLoss, 0);
-    assert.equal(loop.resourceManager.lives, 7);
+    assert.equal(result.lifeLoss, 1);
+    assert.equal(loop.resourceManager.lives, 6);
     assert.equal(loop.isGameOver, false);
     assert.equal(enemy.processed, true);
-    assert.deepEqual(leaks[0].payload, { lifeLoss: 0, absorbed: true });
+    assert.equal(loop.missionSystem.leakCalls, 1);
+    assert.deepEqual(leaks[0].payload, { lifeLoss: 1 });
 });
 
 test('GameLoop reintenta campania desde oleada uno sin resetear heroes ni recursos', () => {

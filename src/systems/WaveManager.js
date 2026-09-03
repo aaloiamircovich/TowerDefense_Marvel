@@ -766,7 +766,7 @@ export class WaveManager {
         });
     }
 
-    recordLeak(enemy, { lifeLoss = 0, absorbed = false } = {}) {
+    recordLeak(enemy, { lifeLoss = 0 } = {}) {
         if (!enemy) return null;
         const segmentPct = this.getEnemyPathProgress(enemy);
         const traits = this.getLeakTraits(enemy);
@@ -775,7 +775,6 @@ export class WaveManager {
             name: enemy.name || enemy.config?.name || 'Enemigo',
             counter: this.getLeakCounter(enemy),
             lifeLoss: Math.max(0, Number(lifeLoss || 0)),
-            absorbed: Boolean(absorbed),
             segmentPct,
             traits
         };

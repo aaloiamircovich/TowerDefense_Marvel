@@ -742,14 +742,13 @@ export function buildLeakIntel(events = [], fallbackLeaks = 0) {
         .map((event) => {
             const segment = Number.isFinite(Number(event.segmentPct)) ? Math.max(0, Math.min(100, Math.round(Number(event.segmentPct)))) : null;
             const lifeLoss = Math.max(0, Number(event.lifeLoss || 0));
-            const absorbed = Boolean(event.absorbed);
             const counter = event.counter || 'Cubre salida';
             const name = event.name || 'Enemigo';
-            const lossCopy = absorbed ? 'absorbida' : lifeLoss > 0 ? `-${lifeLoss} vida` : 'sin dano';
+            const lossCopy = lifeLoss > 0 ? `-${lifeLoss} vida` : 'sin dano';
             return {
                 name,
                 counter,
-                tone: absorbed ? 'absorbed' : lifeLoss >= 3 ? 'boss' : 'leak',
+                tone: lifeLoss >= 3 ? 'boss' : 'leak',
                 detail: `${counter} | ${segment ?? 100}% ruta | ${lossCopy}`,
                 traits: (event.traits || []).filter(Boolean).slice(0, 3)
             };

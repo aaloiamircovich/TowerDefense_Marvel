@@ -282,23 +282,21 @@ export class GameLoop {
         if (!enemy || enemy.processed) return null;
 
         const isBoss = Boolean(enemy.isBoss || enemy.config?.isBoss);
-        const missionAbsorbed = isBoss ? false : (this.missionSystem?.handleLeak(enemy) || false);
-        const modeAbsorbed = isBoss ? false : (this.modeSystem?.handleLeak(enemy) || false);
-        const absorbed = missionAbsorbed || modeAbsorbed;
+        if (!isBoss) this.missionSystem?.handleLeak?.(enemy);
         const remainingLives = Math.max(0, Number(this.resourceManager?.lives || 0));
-        const lifeLoss = isBoss ? Math.max(1, remainingLives || 1) : (absorbed ? 0 : 1);
+        const lifeLoss = isBoss ? Math.max(1, remainingLives || 1) : 1;
 
-        this.waveManager?.recordLeak?.(enemy, { lifeLoss, absorbed });
+        this.waveManager?.recordLeak?.(enemy, { lifeLoss });
         if (isBoss) {
             this.uiManager?.showToast?.(`${enemy.name || enemy.config?.name || 'El jefe'} cruzo la linea: derrota inmediata`, 'danger');
             if (this.resourceManager && remainingLives > 0) this.resourceManager.removeLife(remainingLives);
             if (!this.isGameOver) this.gameOver();
-        } else if (!absorbed) {
+        } else {
             this.resourceManager?.removeLife?.(lifeLoss);
         }
 
         enemy.processed = true;
-        return { isBoss, absorbed, lifeLoss };
+        return { isBoss, lifeLoss };
     }
 
     render(ctx) {

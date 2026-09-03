@@ -22,7 +22,6 @@ const CUES = {
     blood: { frequency: 130, endFrequency: 70, duration: 0.18, type: 'sawtooth', volume: 0.035 },
     chain: { frequency: 210, endFrequency: 105, duration: 0.14, type: 'square', volume: 0.04 },
     penance: { frequency: 95, endFrequency: 640, duration: 0.34, type: 'sawtooth', volume: 0.052 },
-    intercept: { frequency: 145, endFrequency: 250, duration: 0.12, type: 'square', volume: 0.032 },
     impact: { frequency: 88, endFrequency: 44, duration: 0.22, type: 'square', volume: 0.055 },
     claws: { frequency: 760, endFrequency: 180, duration: 0.1, type: 'sawtooth', volume: 0.035 },
     telekinesis: { frequency: 280, endFrequency: 620, duration: 0.2, type: 'sine', volume: 0.038 },
