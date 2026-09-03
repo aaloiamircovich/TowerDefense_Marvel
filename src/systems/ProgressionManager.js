@@ -248,7 +248,7 @@ function createDefaultState() {
         statistics: { missions: 0, victories: 0, defeats: 0, waves: 0, enemiesDefeated: 0, damageDealt: 0, creditsEarned: 0 },
         lastMissionSummary: null,
         lastLevelId: 'level_1',
-        shop: { rotationKey: '', slotIds: [], purchasedIds: [], heroPity: 0, heroBoxCost: 500 },
+        shop: { heroPity: 0, heroBoxCost: 500 },
         settings: {
             adminMode: false,
             ranges: true,
@@ -428,9 +428,11 @@ export class ProgressionManager {
             .map((key) => [key, Math.max(0, Math.round(Number(statistics[key]) || 0))]));
         this.state.credits = Math.max(0, Number(this.state.credits ?? this.state.metaCredits) || 0);
         delete this.state.metaCredits;
-        this.state.shop = { ...createDefaultState().shop, ...(this.state.shop || {}) };
-        this.state.shop.heroPity = Math.max(0, Math.floor(Number(this.state.shop.heroPity) || 0));
-        this.state.shop.heroBoxCost = Math.max(500, Math.ceil(Number(this.state.shop.heroBoxCost) || 500));
+        const shop = this.state.shop || {};
+        this.state.shop = {
+            heroPity: Math.max(0, Math.floor(Number(shop.heroPity) || 0)),
+            heroBoxCost: Math.max(500, Math.ceil(Number(shop.heroBoxCost) || 500))
+        };
         this.state.settings.keyBindings = { ...createDefaultState().settings.keyBindings, ...(this.state.settings.keyBindings || {}) };
         this.state.settings.locale = ['es', 'en'].includes(this.state.settings.locale) ? this.state.settings.locale : 'es';
         this.state.settings.musicTrackId = getMusicTrack(this.state.settings.musicTrackId).id;

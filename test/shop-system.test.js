@@ -39,6 +39,7 @@ test('ShopSystem rellena la vitrina con el siguiente objeto al comprar', () => {
     assert.deepEqual(shop.getRotation().map((slot) => slot.item.id), [first, second, third]);
     assert.equal(shop.purchaseItem(first).ok, true);
     assert.deepEqual(shop.getRotation().map((slot) => slot.item.id), [second, third, fourth]);
+    assert.deepEqual(progression.state.shop, { heroPity: 0, heroBoxCost: HERO_BOX_BASE_COST });
 });
 
 test('ShopSystem impide comprar dos veces el mismo objeto', () => {

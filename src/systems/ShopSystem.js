@@ -34,30 +34,9 @@ export function sortItemsWeakestFirst(items = []) {
 }
 
 export class ShopSystem {
-    constructor(game, progression, dateProvider = () => new Date()) {
+    constructor(game, progression) {
         this.game = game;
         this.progression = progression;
-        this.dateProvider = dateProvider;
-    }
-
-    getRotationKey() {
-        return 'arsenal-progressivo';
-    }
-
-    ensureRotation() {
-        const shop = this.progression.state.shop;
-        const rotationKey = this.getRotationKey();
-        const slotIds = this.getProgressiveQueue().slice(0, 3).map((item) => item.id);
-        const changed = shop.rotationKey !== rotationKey
-            || shop.purchasedIds.length > 0
-            || shop.slotIds.length !== slotIds.length
-            || shop.slotIds.some((id, index) => id !== slotIds[index]);
-        if (!changed) return;
-
-        shop.rotationKey = rotationKey;
-        shop.purchasedIds = [];
-        shop.slotIds = slotIds;
-        this.progression.save();
     }
 
     getProgressiveQueue() {
@@ -65,25 +44,25 @@ export class ShopSystem {
             .filter((item) => !this.progression.hasItem(item.id));
     }
 
-    getRotation() {
-        this.ensureRotation();
-        const shop = this.progression.state.shop;
-        return shop.slotIds.map((id) => ({
-            item: this.game.itemDatabase[id],
+    getShowcase() {
+        return this.getProgressiveQueue().slice(0, 3).map((item) => ({
+            item,
             purchased: false
-        })).filter((slot) => slot.item);
+        }));
+    }
+
+    getRotation() {
+        return this.getShowcase();
     }
 
     purchaseItem(itemId) {
-        this.ensureRotation();
-        const shop = this.progression.state.shop;
         const item = this.game.itemDatabase[itemId];
-        if (!item || !shop.slotIds.includes(itemId) || this.progression.hasItem(itemId)) {
+        const visibleIds = new Set(this.getShowcase().map((slot) => slot.item.id));
+        if (!item || !visibleIds.has(itemId) || this.progression.hasItem(itemId)) {
             return { ok: false, reason: 'Objeto no disponible' };
         }
         if (!this.progression.spendCredits(item.price)) return { ok: false, reason: 'Creditos insuficientes' };
         this.progression.addOwnedItem(itemId);
-        shop.slotIds = this.getProgressiveQueue().slice(0, 3).map((nextItem) => nextItem.id);
         this.progression.save();
         return { ok: true, item };
     }
