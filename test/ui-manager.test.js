@@ -460,7 +460,7 @@ test('renderHeroDetails muestra counter de oleada dentro de estadisticas', () =>
 
         ui.renderHeroDetails(hero, 'upgrade');
         assert.match(ui.panelContent.innerHTML, /hero-detail-tab-panel upgrade/);
-        assert.match(ui.panelContent.innerHTML, /hero-detail-quick-strip/);
+        assert.doesNotMatch(ui.panelContent.innerHTML, /hero-detail-quick-strip/);
         assert.match(ui.panelContent.innerHTML, /Mejora de nivel/);
         assert.match(ui.panelContent.innerHTML, /hero-upgrade-grid/);
         assert.match(ui.panelContent.innerHTML, /hero-upgrade-card/);
@@ -468,7 +468,7 @@ test('renderHeroDetails muestra counter de oleada dentro de estadisticas', () =>
 
         ui.renderHeroDetails(hero, 'equipment');
         assert.match(ui.panelContent.innerHTML, /hero-detail-tab-panel equipment/);
-        assert.match(ui.panelContent.innerHTML, /hero-detail-quick-strip/);
+        assert.doesNotMatch(ui.panelContent.innerHTML, /hero-detail-quick-strip/);
         assert.match(ui.panelContent.innerHTML, /id="hero-detail-tab-equipment" class="hero-detail-tab active" data-view="equipment" role="tab" aria-selected="true" aria-controls="hero-detail-panel" tabindex="0" type="button" aria-label="Objeto: Libre" title="Objeto: Libre" data-tooltip="Objeto: Libre"><i class="fas fa-shield-alt"><\/i><span>Objeto<\/span>/);
         assert.match(ui.panelContent.innerHTML, /hero-detail-tab-badge">Libre<\/b>/);
         assert.match(ui.panelContent.innerHTML, /Equipamiento/);

@@ -2515,7 +2515,7 @@ export class UIManager {
                             ${compactStats.map(([label, value]) => `<span><small>${label}</small><strong>${value}</strong></span>`).join('')}
                         </div>
 
-                        ${this.renderHeroQuickIdentityStrip(hero)}
+                        ${activeDetailView === 'summary' ? this.renderHeroQuickIdentityStrip(hero) : ''}
 
                         <div class="hero-detail-tabs" role="tablist" aria-label="Detalle de heroe">
                             ${detailTabs.map((tab) => {
