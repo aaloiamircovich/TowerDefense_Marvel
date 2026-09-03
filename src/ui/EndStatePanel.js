@@ -158,7 +158,11 @@ export class EndStatePanel {
         const stars = this.getTotalStars();
         const credits = this.getCredits();
         const nextMap = this.getNextMapStatus(stars);
-        const actionHint = type === 'victory' ? 'Puedes seguir con el siguiente mapa.' : 'Reintentar vuelve a oleada 1.';
+        const actionHint = type === 'victory'
+            ? nextMap.complete
+                ? 'Puedes repetir mapas, buscar estrellas o ajustar el equipo.'
+                : 'Puedes seguir con el siguiente mapa.'
+            : 'Reintentar vuelve a oleada 1.';
         const rows = [
             { icon: 'fa-star', label: 'Estrellas guardadas', value: formatNumber(stars), hint: nextMap.detail },
             { icon: 'fa-coins', label: 'Creditos disponibles', value: credits, hint: 'Se conservan entre intentos.' },
@@ -200,14 +204,16 @@ export class EndStatePanel {
         if (nextLockedIndex < 0) {
             return {
                 title: 'Progreso conservado',
-                detail: levels.length ? 'Todas las operaciones desbloqueadas.' : 'Campaña lista.'
+                detail: levels.length ? 'Todas las operaciones desbloqueadas.' : 'Campaña lista.',
+                complete: true
             };
         }
         const requirement = getLevelUnlockRequirement(nextLockedIndex);
         const remaining = Math.max(0, requirement - totalStars);
         return {
             title: `Siguiente mapa: ${levels[nextLockedIndex]?.name || 'Operacion clasificada'}`,
-            detail: `${formatNumber(remaining)} estrellas restantes (${formatNumber(totalStars)}/${formatNumber(requirement)}).`
+            detail: `${formatNumber(remaining)} estrellas restantes (${formatNumber(totalStars)}/${formatNumber(requirement)}).`,
+            complete: false
         };
     }
 

@@ -90,7 +90,8 @@ test('EndStatePanel renderiza victoria y error fatal con acciones principales', 
         assert.match(ui.panelContent.innerHTML, /Solo cambia la operacion que elijas jugar/);
         assert.match(ui.panelContent.innerHTML, /Progreso conservado/);
         assert.match(ui.panelContent.innerHTML, /Todas las operaciones desbloqueadas/);
-        assert.match(ui.panelContent.innerHTML, /Puedes seguir con el siguiente mapa/);
+        assert.match(ui.panelContent.innerHTML, /Puedes repetir mapas, buscar estrellas o ajustar el equipo/);
+        assert.doesNotMatch(ui.panelContent.innerHTML, /Puedes seguir con el siguiente mapa/);
         assert.match(ui.panelContent.innerHTML, /Siguiente objetivo/);
         assert.match(ui.panelContent.innerHTML, /Buscar mas estrellas/);
         assert.match(ui.panelContent.innerHTML, /id="victory-close" type="button" aria-label="Volver al mapa" title="Volver al mapa" data-tooltip="Volver al mapa"/);
