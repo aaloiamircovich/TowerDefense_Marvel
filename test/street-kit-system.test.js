@@ -69,6 +69,7 @@ test('Luke Cage ya no intercepta fugas y conserva soporte cercano', () => {
     assert.equal(enemy.y, 0);
     assert.ok(ally.getEffectiveStats().range > ally.range);
     assert.ok(ally.getEffectiveStats().fireRate > ally.fireRate);
+    assert.equal(hero.abilitySystem.getDisplayState().label, 'Guardia urbana lista');
 });
 
 test('Shang-Chi configura tres patrones de los Diez Anillos', () => {

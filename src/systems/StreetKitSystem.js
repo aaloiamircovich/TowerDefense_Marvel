@@ -163,7 +163,7 @@ export class StreetKitSystem {
         if (this.hero.id === 'moon_knight') return timerState(`Ciclo: ${MOON_PHASES[this.moonPhase].label}`, this.moonTimer / 10, this.moonPhase === 1);
         if (this.hero.id === 'blade') return timerState(`Sed de sangre ${this.bloodTally}/6`, this.bloodTally / 6, this.bloodTally >= 5);
         if (this.hero.id === 'ghost_rider') return timerState(this.cooldownRemaining <= 0 ? 'Penitencia lista' : `Penitencia ${this.cooldownRemaining.toFixed(1)} s`, this.cooldownRemaining <= 0 ? 1 : 1 - this.cooldownRemaining / 11, this.cooldownRemaining <= 0);
-        if (this.hero.id === 'luke_cage') return timerState(this.cooldownRemaining <= 0 ? 'Intercepcion lista' : `Intercepcion ${this.cooldownRemaining.toFixed(1)} s`, this.cooldownRemaining <= 0 ? 1 : 1 - this.cooldownRemaining / 10, this.cooldownRemaining <= 0);
+        if (this.hero.id === 'luke_cage') return timerState(this.cooldownRemaining <= 0 ? 'Guardia urbana lista' : `Guardia urbana ${this.cooldownRemaining.toFixed(1)} s`, this.cooldownRemaining <= 0 ? 1 : 1 - this.cooldownRemaining / 10, this.cooldownRemaining <= 0);
         if (this.hero.id === 'shang_chi') return staticState(`Anillos: ${this.getModeLabel()}`);
         if (this.hero.id === 'she_hulk') return staticState('Provocacion e impacto cada 3 golpes');
         return null;
