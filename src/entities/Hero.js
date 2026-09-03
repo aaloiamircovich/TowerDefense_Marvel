@@ -10,6 +10,16 @@ import { getScaledSupportAura, normalizeHeroLevel } from '../utils/HeroLevel.js'
 import { TERRAIN } from '../utils/TerrainRules.js';
 import { resolveHeroVisual } from '../utils/HeroVisuals.js';
 
+export const SUPPORT_AURA_VISUALS = {
+    damage: { color: '#fca311' },
+    fireRate: { color: '#40c9ff' },
+    range: { color: '#b865ff' }
+};
+
+export function getSupportAuraVisual(type = 'damage') {
+    return SUPPORT_AURA_VISUALS[type] || { color: '#46d369' };
+}
+
 export function buildHeroTargetIntent(hero, enemies = [], stats = null) {
     if (!hero?.getBestTarget) return null;
     const effectiveStats = stats || hero.getEffectiveStats?.();
@@ -397,6 +407,7 @@ export class Hero {
 
     render(ctx) {
         ctx.save();
+        this.renderSupportAura(ctx);
         if (this.flashTimer > 0) {
             ctx.beginPath();
             ctx.arc(this.x, this.y, 25, 0, Math.PI * 2);
@@ -438,6 +449,46 @@ export class Hero {
             ctx.fillText('STUN', this.x, this.y - 34);
         }
         this.renderAbilityIndicator(ctx);
+        ctx.restore();
+    }
+
+    renderSupportAura(ctx) {
+        const aura = getScaledSupportAura(this.config.special?.supportAura, this.level, this.config.rarity);
+        if (!aura?.type) return;
+
+        const radius = Math.max(28, Number(aura.range || this.range || 0));
+        const visual = getSupportAuraVisual(aura.type);
+        const reducedVfx = Boolean(this.game?.progression?.state?.settings?.reducedVfx
+            || this.game?.progression?.state?.settings?.reduceMotion);
+        const pulse = reducedVfx ? 0 : (Math.sin(this.visualTime * 2.4) + 1) / 2;
+        const satelliteRadius = 19 + pulse * 5;
+        const satelliteCount = aura.detectStealth ? 4 : 3;
+
+        ctx.save();
+        ctx.globalAlpha = reducedVfx ? 0.12 : 0.14 + pulse * 0.07;
+        ctx.strokeStyle = visual.color;
+        ctx.lineWidth = 2;
+        ctx.setLineDash?.([8, 10]);
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, radius, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.setLineDash?.([]);
+
+        ctx.globalAlpha = reducedVfx ? 0.18 : 0.28 + pulse * 0.12;
+        ctx.lineWidth = 1.4;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, satelliteRadius, 0, Math.PI * 2);
+        ctx.stroke();
+
+        if (!reducedVfx) {
+            ctx.fillStyle = visual.color;
+            for (let index = 0; index < satelliteCount; index++) {
+                const angle = this.visualTime * 1.35 + (Math.PI * 2 * index / satelliteCount);
+                ctx.beginPath();
+                ctx.arc(this.x + Math.cos(angle) * satelliteRadius, this.y + Math.sin(angle) * satelliteRadius, 2.8, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
         ctx.restore();
     }
 

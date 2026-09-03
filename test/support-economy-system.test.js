@@ -60,6 +60,26 @@ test('auras de soporte mejoran al subir nivel del heroe soporte', () => {
     assert.equal(Math.round(ally.getEffectiveStats().damage), 117);
 });
 
+test('auras de soporte tienen pulso visual diferenciado por tipo', () => {
+    const game = createGame();
+    const captain = new Hero(heroes.capitan_america, 0, 0, game);
+    const fury = new Hero(heroes.nick_fury, 0, 0, game);
+    const reed = new Hero(heroes.mister_fantastic, 0, 0, game);
+
+    const damageCtx = createAuraContextSpy();
+    const cadenceCtx = createAuraContextSpy();
+    const rangeCtx = createAuraContextSpy();
+    captain.renderSupportAura(damageCtx);
+    fury.renderSupportAura(cadenceCtx);
+    reed.renderSupportAura(rangeCtx);
+
+    assert.ok(damageCtx.calls.some((call) => call[0] === 'arc' && call[3] === 255));
+    assert.ok(cadenceCtx.calls.some((call) => call[0] === 'arc' && call[3] === 265));
+    assert.ok(rangeCtx.calls.some((call) => call[0] === 'arc' && call[3] === 145));
+    assert.notEqual(damageCtx.strokeStyles[0], cadenceCtx.strokeStyles[0]);
+    assert.notEqual(cadenceCtx.strokeStyles[0], rangeCtx.strokeStyles[0]);
+});
+
 test('Domino genera 15 por ciento de recompensa por cada ataque realizado', () => {
     const game = createGame();
     const domino = new Hero(heroes.domino, 0, 0, game);
@@ -88,6 +108,32 @@ function createGame() {
         vfx: { addBeam: () => {}, addBurst: () => {}, addFloatingText: () => {}, addLightning: () => {}, addRing: () => {} },
         audio: { play: () => {} },
         showHeroRanges: false
+    };
+}
+
+function createAuraContextSpy() {
+    const calls = [];
+    const strokeStyles = [];
+    return {
+        calls,
+        strokeStyles,
+        globalAlpha: 1,
+        lineWidth: 1,
+        fillStyle: '',
+        get strokeStyle() {
+            return this._strokeStyle;
+        },
+        set strokeStyle(value) {
+            this._strokeStyle = value;
+            strokeStyles.push(value);
+        },
+        save: () => calls.push(['save']),
+        restore: () => calls.push(['restore']),
+        setLineDash: (value) => calls.push(['setLineDash', value]),
+        beginPath: () => calls.push(['beginPath']),
+        arc: (x, y, radius, start, end) => calls.push(['arc', x, y, radius, start, end]),
+        stroke: () => calls.push(['stroke']),
+        fill: () => calls.push(['fill'])
     };
 }
 
