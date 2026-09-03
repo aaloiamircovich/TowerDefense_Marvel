@@ -154,7 +154,7 @@ body {
     position: absolute;
     inset: 0;
     z-index: 0;
-    opacity: 0;
+    opacity: 0.92;
     background:
         linear-gradient(90deg, rgba(3, 4, 15, 0.92) 0%, rgba(3, 4, 15, 0.64) 27%, rgba(3, 4, 15, 0.08) 58%),
         linear-gradient(0deg, rgba(3, 4, 15, 0.82), rgba(3, 4, 15, 0.04) 38%),
@@ -281,7 +281,8 @@ body.start-assets-ready .start-screen__subtitle {
 
 .start-screen__loading-meta span,
 .start-screen__loading-meta strong {
-    font-family: "Avengeance", Impact, fantasy;
+    font-family: Consolas, "Segoe UI", system-ui, sans-serif;
+    font-weight: 900;
     letter-spacing: 0;
     text-transform: uppercase;
 }
