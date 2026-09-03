@@ -617,7 +617,28 @@ test('agrupaciones minimizadas muestran resumen compacto de bonus cercanos', () 
     assert.match(html, /allegiance-quick-summary/);
     assert.match(html, /Avengers/);
     assert.match(html, /activo/);
-    assert.match(html, /allegiance-grid" hidden/);
+    assert.doesNotMatch(html, /class="allegiance-grid"/);
+    assert.doesNotMatch(html, /class="synergy-overview"/);
+    assert.doesNotMatch(html, /class="allegiance-card/);
+});
+
+test('agrupaciones expandidas muestran resumen y heroes exactos requeridos', () => {
+    const ui = createUiStub();
+    const panel = new TeamBuilderPanel(ui);
+    panel.synergyExpanded = true;
+    const team = [data.heroes.iron_man, data.heroes.capitan_america];
+    const html = panel.renderSynergyMenu(
+        analyzeTeam(team),
+        team,
+        new Set(team.map((hero) => hero.id))
+    );
+
+    assert.match(html, /allegiance-menu expanded/);
+    assert.match(html, /class="synergy-overview"/);
+    assert.match(html, /class="allegiance-grid"/);
+    assert.match(html, /<b>Necesitas:<\/b>/);
+    assert.match(html, /Iron Man/);
+    assert.match(html, /Capit/);
 });
 
 test('tienda de skins queda como panel independiente vacio', () => {

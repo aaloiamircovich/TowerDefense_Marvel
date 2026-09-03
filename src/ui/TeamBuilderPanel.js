@@ -264,18 +264,6 @@ export class TeamBuilderPanel {
                     `).join('')}
                 </div>
                 ${this.renderTeamReadinessAlerts(snapshot, game.activeTeam)}
-                <div class="synergy-overview">
-                    ${snapshot.families.filter((family) => family.count > 0).map((family) => {
-                        const rarity = normalizeRarity(family.definition.rarity);
-                        const rarityClass = getRarityClass(rarity);
-                        return `
-                        <span class="synergy-chip ${rarityClass} ${family.activeTier ? 'active' : ''}" style="--synergy-color:${family.definition.color}">
-                            <b>${family.tag}</b> ${family.nextTier ? `${family.count}/${family.nextTier.count}` : `${family.count}/${family.activeTier?.count || 0}`}${family.activeTier ? ` · ${family.activeTier.label}` : ''} <i>${rarity}</i>
-                        </span>
-                    `;
-                    }).join('')}
-                    ${snapshot.pairs.filter((pair) => pair.active).map((pair) => `<span class="synergy-chip pair active"><b>${pair.label}</b></span>`).join('')}
-                </div>
                 ${this.renderSynergyMenu(snapshot, readyHeroes, unlockedIds)}
                 </section>
 
@@ -352,10 +340,30 @@ export class TeamBuilderPanel {
                         <i class="fas fa-chevron-${this.synergyExpanded ? 'up' : 'down'}"></i>
                     </button>
                 </div>
-                <div class="allegiance-grid" ${collapsed ? 'hidden' : ''}>
-                    ${groups.map((group) => this.renderSynergyGroup(group)).join('')}
-                </div>
+                ${collapsed ? '' : this.renderSynergyOverview(snapshot)}
+                ${collapsed ? '' : `
+                    <div class="allegiance-grid">
+                        ${groups.map((group) => this.renderSynergyGroup(group)).join('')}
+                    </div>
+                `}
             </section>
+        `;
+    }
+
+    renderSynergyOverview(snapshot) {
+        return `
+            <div class="synergy-overview">
+                ${snapshot.families.filter((family) => family.count > 0).map((family) => {
+                    const rarity = normalizeRarity(family.definition.rarity);
+                    const rarityClass = getRarityClass(rarity);
+                    return `
+                    <span class="synergy-chip ${rarityClass} ${family.activeTier ? 'active' : ''}" style="--synergy-color:${family.definition.color}">
+                        <b>${family.tag}</b> ${family.nextTier ? `${family.count}/${family.nextTier.count}` : `${family.count}/${family.activeTier?.count || 0}`}${family.activeTier ? ` · ${family.activeTier.label}` : ''} <i>${rarity}</i>
+                    </span>
+                `;
+                }).join('')}
+                ${snapshot.pairs.filter((pair) => pair.active).map((pair) => `<span class="synergy-chip pair active"><b>${pair.label}</b></span>`).join('')}
+            </div>
         `;
     }
 
