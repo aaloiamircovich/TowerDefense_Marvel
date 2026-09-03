@@ -605,6 +605,49 @@ export function buildCounterCoverageModel(summary = null, activeTeam = [], deplo
     };
 }
 
+function normalizeCounterText(value = '') {
+    return String(value)
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase();
+}
+
+function resolveCounterIdFromText(value = '') {
+    const text = normalizeCounterText(value);
+    if (/detec|sigilo|fase/.test(text)) return 'detection';
+    if (/perfor|penetr|blind|barrera|armor/.test(text)) return 'piercing';
+    if (/control|slow|stun|web|ralent|congel|aturd/.test(text)) return 'control';
+    if (/alcance|rango|volador|aereo|cadena/.test(text)) return 'reach';
+    if (/foco|soporte|invoc|aura|comand/.test(text)) return 'focus';
+    return 'dps';
+}
+
+export function buildWaveCounterBrief(summary = null, counterCoverage = null) {
+    if (!summary) return null;
+
+    const label = summary.counter || 'Dano equilibrado';
+    const counterId = resolveCounterIdFromText(label);
+    const coverageEntry = counterCoverage?.entries?.find((entry) => entry.id === counterId) || null;
+    const copy = COUNTER_COPY[counterId] || COUNTER_COPY.dps;
+    const tone = coverageEntry?.tone || (counterCoverage?.ready ? 'ready' : 'neutral');
+    const stateCopy = coverageEntry
+        ? `${coverageEntry.label}: ${coverageEntry.detail}.`
+        : copy.detail;
+    let detail = stateCopy;
+
+    if (summary.hasBoss || summary.bossMilestone) {
+        detail = `${stateCopy} Si el boss cruza la base, pierdes.`;
+    }
+
+    return {
+        id: counterId,
+        label,
+        detail,
+        icon: coverageEntry?.icon || copy.icon,
+        tone
+    };
+}
+
 export function buildBossMilestoneState(uniqueEnemies = [], waveNumber = 1, summary = null) {
     const milestone = summary?.bossMilestone || null;
     const boss = (uniqueEnemies || []).find((enemy) => enemy?.isBoss) || null;
@@ -1984,6 +2027,7 @@ export class UIManager {
                 this.game.heroes || []
             )
             : null;
+        const counterBrief = summary ? buildWaveCounterBrief(summary, counterCoverage) : null;
         const bossMilestone = buildBossMilestoneState(uniqueEnemies, waveNumber, summary);
 
         if (numberEl) numberEl.textContent = waveNumber;
@@ -2025,7 +2069,10 @@ export class UIManager {
                         <span><b>${summary.fastest}</b> vel. máx.</span>
                         <span><b>${summary.maxThreat}/5</b> amenaza</span>
                     </div>
-                    <small class="wave-counter"><i class="fas fa-crosshairs"></i> Respuesta: ${summary.counter}</small>
+                    ${counterBrief ? `<div class="wave-counter wave-counter-brief ${escapeHtml(counterBrief.tone)}" aria-label="${escapeHtml(`Respuesta: ${counterBrief.label}. ${counterBrief.detail}`)}">
+                        <i class="fas ${escapeHtml(counterBrief.icon)}"></i>
+                        <div><strong>Respuesta: ${escapeHtml(counterBrief.label)}</strong><span>${escapeHtml(counterBrief.detail)}</span></div>
+                    </div>` : ''}
                     ${stealthCoverage ? `<div class="wave-stealth-coverage ${stealthCoverage.tone}" aria-label="${escapeHtml(stealthCoverage.label)}: ${escapeHtml(stealthCoverage.detail)}">
                         <i class="fas fa-eye"></i>
                         <div><strong>${escapeHtml(stealthCoverage.label)}</strong><span>${escapeHtml(stealthCoverage.detail)}</span></div>

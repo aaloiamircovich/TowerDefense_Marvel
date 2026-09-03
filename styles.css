@@ -1804,10 +1804,44 @@ canvas {
 }
 
 #wave-intel .wave-counter {
-    margin-top: 3px;
-    color: var(--bright-yellow);
+    --counter-color: var(--bright-yellow);
+    display: grid;
+    grid-template-columns: 24px minmax(0, 1fr);
+    align-items: center;
+    gap: 7px;
+    margin-top: 5px;
+    padding: 7px;
+    border: 1px solid color-mix(in srgb, var(--counter-color), transparent 66%);
+    border-left: 3px solid var(--counter-color);
+    border-radius: 7px;
+    background: color-mix(in srgb, var(--counter-color), transparent 92%);
+    line-height: 1.25;
+}
+
+#wave-intel .wave-counter.ready { --counter-color: #46d369; }
+#wave-intel .wave-counter.warning { --counter-color: #fca311; }
+#wave-intel .wave-counter.danger { --counter-color: #e63946; }
+
+#wave-intel .wave-counter > i {
+    color: var(--counter-color);
+    text-align: center;
+}
+
+#wave-intel .wave-counter div {
+    display: grid;
+    gap: 2px;
+    min-width: 0;
+}
+
+#wave-intel .wave-counter strong {
+    color: var(--counter-color);
     font-size: 10px;
-    line-height: 1.35;
+}
+
+#wave-intel .wave-counter span {
+    color: var(--muted);
+    font-size: 10px;
+    overflow-wrap: anywhere;
 }
 
 #wave-intel .wave-stealth-coverage {
@@ -11732,6 +11766,7 @@ canvas {
 .radar-section-body .wave-threat,
 .radar-section-body .wave-readiness,
 .radar-section-body .wave-boss-telegraph,
+.radar-section-body .wave-counter,
 .radar-section-body .wave-stealth-coverage,
 .radar-section-body .wave-status-legend,
 .radar-section-body .wave-counter-coverage,

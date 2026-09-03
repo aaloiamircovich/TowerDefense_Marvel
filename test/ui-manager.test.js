@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildBossCountdownState, buildBossHudState, buildBossMilestoneState, buildCombatPressureState, buildCounterCoverageModel, buildEnemyIntel, buildEnemyTraitPreview, buildHeroCombatIdentity, buildLeakIntel, buildOnboardingCoachState, buildPanelNavigationMarkup, buildPressureActionState, buildRosterWaveFitView, buildShopItemInsight, buildShopSetProgress, buildSpawnQueueState, buildStatusLegendModel, buildStealthCoverageState, buildTacticalContributionModel, buildTargetingControlState, buildWaveDamageCheckMeter, buildWaveLaunchState, buildWavePrepActionControl, buildWavePreparationPlan, buildWaveReportActionState, buildWaveReportGrade, buildWaveReportLesson, buildWaveReportState, evaluateHeroWaveFit, formatHudResource, getNextTargetingPriority, UIManager } from '../src/systems/UIManager.js';
+import { buildBossCountdownState, buildBossHudState, buildBossMilestoneState, buildCombatPressureState, buildCounterCoverageModel, buildEnemyIntel, buildEnemyTraitPreview, buildHeroCombatIdentity, buildLeakIntel, buildOnboardingCoachState, buildPanelNavigationMarkup, buildPressureActionState, buildRosterWaveFitView, buildShopItemInsight, buildShopSetProgress, buildSpawnQueueState, buildStatusLegendModel, buildStealthCoverageState, buildTacticalContributionModel, buildTargetingControlState, buildWaveCounterBrief, buildWaveDamageCheckMeter, buildWaveLaunchState, buildWavePrepActionControl, buildWavePreparationPlan, buildWaveReportActionState, buildWaveReportGrade, buildWaveReportLesson, buildWaveReportState, evaluateHeroWaveFit, formatHudResource, getNextTargetingPriority, UIManager } from '../src/systems/UIManager.js';
 import { calculateHeroLevelCost } from '../src/utils/HeroLevel.js';
 
 test('buildWaveLaunchState muestra riesgo critico en el CTA', () => {
@@ -227,6 +227,25 @@ test('buildCounterCoverageModel distingue counters en campo, banco y faltantes',
         ['control', 'warning']
     ]);
     assert.match(model.entries[0].detail, /Spider-Man/);
+});
+
+test('buildWaveCounterBrief explica la respuesta principal con estado de cobertura', () => {
+    const coverage = buildCounterCoverageModel(
+        {
+            armoredCount: 1,
+            barrierCount: 1,
+            roles: ['tank'],
+            counter: 'Perforacion'
+        },
+        [],
+        []
+    );
+    const brief = buildWaveCounterBrief({ counter: 'Perforacion', armoredCount: 1, barrierCount: 1, roles: ['tank'] }, coverage);
+
+    assert.equal(brief.id, 'piercing');
+    assert.equal(brief.tone, 'danger');
+    assert.match(brief.detail, /Sin perforacion/);
+    assert.match(brief.detail, /equipo actual/);
 });
 
 test('buildBossMilestoneState resume mini boss con stats y counters visibles', () => {
@@ -783,6 +802,9 @@ test('renderWavePreview etiqueta preparacion y rutas tacticas con tooltips', () 
         assert.match(waveIntel.innerHTML, /Potencia justa/);
         assert.match(waveIntel.innerHTML, /1\.8k\/2\.4k/);
         assert.match(waveIntel.innerHTML, /DPS 80/);
+        assert.match(waveIntel.innerHTML, /wave-counter wave-counter-brief/);
+        assert.match(waveIntel.innerHTML, /Respuesta: Perforacion/);
+        assert.match(waveIntel.innerHTML, /Perforacion lista: Iron Man/);
         assert.match(waveIntel.innerHTML, /data-branch="ambush" class="active" aria-label="Emboscada: Mas recompensa" title="Emboscada: Mas recompensa" data-tooltip="Emboscada: Mas recompensa"/);
     } finally {
         globalThis.document = previousDocument;
