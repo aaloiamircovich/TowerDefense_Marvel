@@ -6471,7 +6471,6 @@ select {
 }
 
 .panel-title-row,
-.tree-heading,
 .equipped-summary {
     display: flex;
     align-items: center;
@@ -6479,8 +6478,7 @@ select {
     gap: 12px;
 }
 
-.panel-title-row strong,
-.tree-heading span {
+.panel-title-row strong {
     color: var(--bright-yellow);
     font-size: 13px;
 }
@@ -7838,60 +7836,6 @@ select {
 
 .equipped-summary .btn-primary {
     width: auto;
-}
-
-.upgrade-tree {
-    padding: 16px;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    background: rgba(20, 31, 45, 0.9);
-}
-
-.tree-heading h3 {
-    margin: 0;
-}
-
-.tree-branches {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-top: 14px;
-}
-
-.tree-branch {
-    display: grid;
-    gap: 8px;
-}
-
-.tree-branch > strong {
-    color: var(--level-accent);
-    text-transform: uppercase;
-}
-
-.skill-node {
-    display: grid;
-    gap: 3px;
-    min-height: 72px;
-    padding: 10px;
-    border: 1px solid var(--border);
-    border-radius: 7px;
-    background: #080b10;
-    color: var(--text);
-    text-align: left;
-}
-
-.skill-node small {
-    color: var(--muted);
-}
-
-.skill-node b {
-    color: var(--bright-yellow);
-    font-size: 11px;
-}
-
-.skill-node.owned {
-    border-color: rgba(70, 211, 105, 0.65);
-    background: rgba(70, 211, 105, 0.08);
 }
 
 .map-list {
@@ -9703,7 +9647,6 @@ body.tactical-paused #gameCanvas {
     .hero-tactic-compact,
     .hero-ability-compact,
     .hero-wave-fit-compact,
-    .tree-branches,
     .collection-toolbar,
     .inventory-toolbar,
     .briefing-objectives > div {
