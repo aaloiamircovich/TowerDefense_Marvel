@@ -29,8 +29,7 @@ test('EndStatePanel renderiza derrota y reintenta sin resetear progreso externo'
         assert.match(ui.panelContent.innerHTML, /Informe de mision/);
         assert.match(ui.panelContent.innerHTML, /mission-summary-grid/);
         assert.match(ui.panelContent.innerHTML, /Black Widow/);
-        assert.match(ui.panelContent.innerHTML, /Siguiente mapa: Wakanda/);
-        assert.match(ui.panelContent.innerHTML, /37 estrellas restantes/);
+        assert.match(ui.panelContent.innerHTML, /Todas las operaciones desbloqueadas/);
         assert.match(ui.panelContent.innerHTML, /Creditos disponibles/);
         assert.match(ui.panelContent.innerHTML, /Niveles y objetos guardados/);
         assert.match(ui.panelContent.innerHTML, /Reintentar vuelve a oleada 1/);

@@ -1,6 +1,6 @@
 export const CAMPAIGN_MAX_WAVES = 100;
 export const MINI_BOSS_WAVE_INTERVAL = 25;
-export const STARS_PER_LEVEL_UNLOCK = 50;
+export const STARS_PER_LEVEL_UNLOCK = 25;
 
 export function normalizeCampaignWave(wave = 1) {
     return Math.max(1, Math.floor(Number(wave) || 1));

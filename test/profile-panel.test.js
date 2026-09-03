@@ -46,7 +46,7 @@ test('ProfilePanel muestra racha y emblemas de contrato', () => {
         }),
         getSynergyChallengeSnapshot: () => ({ completed: 0, total: 0, challenges: [] }),
         getCredits: () => 1200,
-        getTotalStars: () => 75,
+        getTotalStars: () => 25,
         getHeroMastery: (heroId) => ({ completed: heroId === 'hero_1' ? ['waves', 'kills'] : [] }),
         exportBuildCode: () => 'BUILD'
     };
@@ -65,7 +65,7 @@ test('ProfilePanel muestra racha y emblemas de contrato', () => {
                 { id: 'level_3', name: 'Reino de Wakanda' }
             ],
             waveManager: { maxWaves: 100 },
-            stars: 75,
+            stars: 25,
             unlockedHeroes,
             activeTeam: [],
             currentLevel: { theme: { label: 'Base Avengers', brief: 'Defensa tactica' } },
@@ -83,10 +83,10 @@ test('ProfilePanel muestra racha y emblemas de contrato', () => {
     assert.match(panelContent.innerHTML, /id="profile-tab-panel" class="profile-tab-panel profile-view-summary" role="tabpanel" aria-labelledby="profile-tab-summary"/);
     assert.match(panelContent.innerHTML, /data-profile-view="summary" role="tab" aria-selected="true"/);
     assert.match(panelContent.innerHTML, /profile-tab-badge/);
-    assert.match(panelContent.innerHTML, /Resumen: 25% completado/);
-    assert.match(panelContent.innerHTML, /title="Resumen: 25% completado" data-tooltip="Resumen: 25% completado"/);
+    assert.match(panelContent.innerHTML, /Resumen: 8% completado/);
+    assert.match(panelContent.innerHTML, /title="Resumen: 8% completado" data-tooltip="Resumen: 8% completado"/);
     assert.match(panelContent.innerHTML, /profile-next-unlock/);
-    assert.match(panelContent.innerHTML, /--profile-next-progress:75%/);
+    assert.match(panelContent.innerHTML, /--profile-next-progress:50%/);
     assert.match(panelContent.innerHTML, /Proxima operacion/);
     assert.match(panelContent.innerHTML, /Reino de Wakanda/);
     assert.match(panelContent.innerHTML, /25 estrellas para desbloquear/);
