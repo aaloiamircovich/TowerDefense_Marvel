@@ -161,6 +161,10 @@ body {
     transition: opacity 180ms ease;
 }
 
+body:not(.start-assets-ready) .start-screen::before {
+    opacity: 0;
+}
+
 body.start-assets-ready .start-screen::before {
     opacity: 1;
 }

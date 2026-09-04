@@ -22,6 +22,8 @@ const bodyTag = html.match(/<body\b[^>]*>/i)?.[0] || '';
 if (!/@font-face[\s\S]*Avengeance[\s\S]*avengeance-heroic-avenger-bd\.ttf/i.test(criticalStyle)) errors.push('La pantalla inicial debe declarar la fuente critica inline');
 if (!/start-screen-cover-final-clean-20260809\.png/i.test(criticalStyle)) errors.push('La pantalla inicial debe declarar el fondo critico inline');
 if (!/start-assets-ready/i.test(criticalStyle) || !/#start-screen::before/i.test(criticalStyle)) errors.push('La pantalla inicial debe esperar assets criticos antes de mostrar fondo/titulo');
+if (!/body:not\(\.start-assets-ready\)\s*#start-screen::before[\s\S]*opacity:\s*0/i.test(criticalStyle)) errors.push('El fondo inicial debe permanecer oculto hasta que carguen los assets criticos');
+if (!/body:not\(\.start-assets-ready\)\s*\.start-screen::before[\s\S]*opacity:\s*0/i.test(css)) errors.push('El CSS principal debe conservar la proteccion anti-flash del fondo inicial');
 if (!/prepareStartScreenAssets/i.test(mainSource) || !/document\.fonts\.load/i.test(mainSource)) errors.push('La carga inicial debe precargar fondo, logo y fuente antes de mostrar el menu');
 if (!/body\.title-screen-active\s*#top-bar[\s\S]*body\.title-screen-active\s*#main-content/i.test(criticalStyle)) errors.push('Falta estilo critico para ocultar el HUD durante la pantalla inicial');
 if (!/body\[data-app-state="loading"\]\s*\.start-screen__panel/i.test(criticalStyle)) errors.push('Falta estilo critico para ocultar botones de inicio durante carga');
