@@ -168,13 +168,32 @@ test('curva de salud escala suave, exponencial y extrema por oleada', () => {
     const wave100 = getWaveHealthCurve(100);
     const boss100 = getWaveHealthCurve(100, true);
     const final100 = getFinalBossHealthCurve(100);
-
     assert.ok(wave30 > wave1 * 2);
     assert.ok(wave60 > wave30 * 3);
     assert.ok(wave100 > wave60 * 10);
     assert.ok(boss100 > wave100 * 1.7);
     assert.ok(final100 < wave100);
-    assert.ok(final100 > wave30 * 4);
+    assert.ok(final100 > wave30 * 3.5);
+});
+
+test('jefe final queda por encima del ultimo mini boss sin salto desmedido', () => {
+    const game = createGame('avengers');
+    game.currentLevel = { id: 'level_1', theme: { id: 'avengers' }, difficulty: 'Fácil' };
+    game.levelsData = [{ id: 'level_1' }];
+    const manager = new WaveManager(game, enemies);
+
+    manager.currentWave = 75;
+    manager.prepareNextWave();
+    const lateMiniBossHp = manager.preparedQueue[0].config.hp;
+
+    manager.currentWave = 100;
+    manager.prepareNextWave();
+    const finalBoss = manager.preparedQueue[0].config;
+
+    assert.equal(finalBoss.id, 'thanos_final');
+    assert.equal(finalBoss.isFinalBoss, true);
+    assert.ok(finalBoss.hp > lateMiniBossHp * 1.8);
+    assert.ok(finalBoss.hp < lateMiniBossHp * 2.4);
 });
 
 test('factor de salud sube con dificultad fija y posicion del mapa', () => {

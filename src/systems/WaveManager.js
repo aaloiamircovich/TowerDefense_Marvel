@@ -140,7 +140,7 @@ export function getWaveHealthCurve(wave = 1, isBoss = false) {
 }
 
 export function getFinalBossHealthCurve(wave = CAMPAIGN_MAX_WAVES) {
-    return getWaveHealthCurve(wave, false) * 0.11;
+    return getWaveHealthCurve(wave, false) * 0.095;
 }
 
 export function getLevelHealthFactor(level = {}, levelIndex = 0) {
@@ -423,7 +423,7 @@ export class WaveManager {
             ? getFinalBossHealthCurve(this.currentWave)
             : getWaveHealthCurve(this.currentWave, isBoss || config.isBoss);
         const levelHealth = getLevelHealthFactor(this.game.currentLevel, levelIndex);
-        const scalingMultiplier = config.isFinalBoss ? 1 : multiplier;
+        const scalingMultiplier = multiplier;
         return {
             ...config,
             hp: Math.round(config.hp * scalingMultiplier * waveHealth * levelHealth * (modifier.hpFactor || 1) * difficulty.hp),
