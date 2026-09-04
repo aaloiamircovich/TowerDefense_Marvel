@@ -7,7 +7,6 @@ const items = JSON.parse(fs.readFileSync(new URL('../data/items.json', import.me
 
 const utility = {
     iron_man: 1.25, spiderman: 1.3, capitan_america: 1.35, thor: 1.55, doctor_strange: 1.5,
-    groot: 1.35, scarlet_witch: 1.3, storm: 1.25,
     hulk: 2.25, black_widow: 1.2, hawkeye: 1.35, black_panther: 1.55, vision: 1.6, falcon: 1.55,
     captain_marvel: 1.45, star_lord: 1.4, groot: 1.9, gamora: 1.4, silver_surfer: 1.75,
     daredevil: 1.2, moon_knight: 1.4, blade: 1.35, ghost_rider: 1.45,
