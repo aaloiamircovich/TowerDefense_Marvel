@@ -5,7 +5,7 @@ import { Hero } from '../src/entities/Hero.js';
 
 const heroes = JSON.parse(fs.readFileSync(new URL('../data/heroes.json', import.meta.url), 'utf8'));
 
-test('soportes puros tienen auras diferenciadas y no disparan', () => {
+test('soportes con aura son puros y tienen variantes por tipo', () => {
     const expected = {
         capitan_america: ['damage', 0.10, 255],
         black_panther: ['damage', 0.20, 135],
@@ -28,6 +28,30 @@ test('soportes puros tienen auras diferenciadas y no disparan', () => {
         const projectiles = [];
         hero.update(3, [{ isAlive: true, x: 30, y: 0, stealth: false }], projectiles);
         assert.equal(projectiles.length, 0, `${id} no debe atacar`);
+    }
+
+    const supportHeroes = Object.values(heroes).filter((hero) => hero.special?.supportAura?.type);
+    for (const heroConfig of supportHeroes) {
+        const game = createGame();
+        const hero = new Hero(heroConfig, 0, 0, game);
+        const projectiles = [];
+        game.heroes = [hero];
+
+        hero.update(3, [{ isAlive: true, x: 30, y: 0, stealth: false }], projectiles);
+        assert.equal(projectiles.length, 0, `${heroConfig.id} debe buffear sin atacar`);
+    }
+
+    for (const type of ['damage', 'fireRate', 'range']) {
+        const variants = supportHeroes
+            .filter((hero) => hero.special.supportAura.type === type)
+            .map((hero) => ({ id: hero.id, aura: hero.special.supportAura }));
+        assert.ok(variants.length >= 2, `${type} necesita al menos dos soportes`);
+
+        const widest = [...variants].sort((a, b) => b.aura.range - a.aura.range)[0];
+        const strongest = [...variants].sort((a, b) => b.aura.power - a.aura.power)[0];
+        assert.notEqual(widest.id, strongest.id, `${type} necesita una variante de rango y otra de potencia`);
+        assert.ok(widest.aura.range > strongest.aura.range);
+        assert.ok(widest.aura.power < strongest.aura.power);
     }
 });
 
