@@ -3,9 +3,9 @@ import assert from 'node:assert/strict';
 import {
     HERO_MAX_LEVEL,
     calculateHeroLevelCost,
-    getHeroEvolutionStage,
     getHeroDamageAtLevel,
     getHeroLevelDamageMultiplier,
+    getHeroPowerSpikeStage,
     getHeroLevelUpgradeSteps,
     getScaledSupportAura,
     normalizeHeroLevel
@@ -23,10 +23,10 @@ test('nivel de heroe queda limitado entre 1 y 100', () => {
 test('el dano escala por nivel sin superar el cap', () => {
     assert.equal(getHeroDamageAtLevel(10, 1), 10);
     assert.equal(getHeroDamageAtLevel(10, 101), getHeroDamageAtLevel(10, 100));
-    assert.equal(getHeroEvolutionStage(15), 0);
-    assert.equal(getHeroEvolutionStage(16), 1);
-    assert.equal(getHeroEvolutionStage(36), 2);
-    assert.equal(getHeroEvolutionStage(100), 3);
+    assert.equal(getHeroPowerSpikeStage(15), 0);
+    assert.equal(getHeroPowerSpikeStage(16), 1);
+    assert.equal(getHeroPowerSpikeStage(36), 2);
+    assert.equal(getHeroPowerSpikeStage(100), 3);
     assert.ok(getHeroLevelDamageMultiplier(100, 'Secret') > getHeroLevelDamageMultiplier(100, 'Common'));
 });
 

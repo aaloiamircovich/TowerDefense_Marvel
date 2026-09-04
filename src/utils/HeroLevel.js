@@ -1,7 +1,7 @@
 export const HERO_MAX_LEVEL = 100;
 export const HERO_LEVEL_COST_BASE = 180;
 export const HERO_LEVEL_COST_GROWTH = 1.08;
-export const HERO_EVOLUTION_LEVELS = [16, 36, 100];
+export const HERO_POWER_SPIKE_LEVELS = [16, 36, 100];
 
 const RARITY_DAMAGE_CAPS = {
     Common: 18,
@@ -21,7 +21,7 @@ const SUPPORT_AURA_SCALE_CAPS = {
     Secret: 0.95
 };
 
-const EVOLUTION_DAMAGE_ANCHORS = [
+const HERO_DAMAGE_CURVE_ANCHORS = [
     [1, 1],
     [15, 2.8],
     [16, 3.4],
@@ -58,18 +58,20 @@ export function normalizeHeroRarity(rarity = 'Common') {
     return RARITY_DAMAGE_CAPS[rarity] ? rarity : 'Common';
 }
 
-export function getHeroEvolutionStage(level = 1) {
+export function getHeroPowerSpikeStage(level = 1) {
     const normalized = normalizeHeroLevel(level);
-    if (normalized >= HERO_EVOLUTION_LEVELS[2]) return 3;
-    if (normalized >= HERO_EVOLUTION_LEVELS[1]) return 2;
-    if (normalized >= HERO_EVOLUTION_LEVELS[0]) return 1;
+    if (normalized >= HERO_POWER_SPIKE_LEVELS[2]) return 3;
+    if (normalized >= HERO_POWER_SPIKE_LEVELS[1]) return 2;
+    if (normalized >= HERO_POWER_SPIKE_LEVELS[0]) return 1;
     return 0;
 }
+
+export const getHeroEvolutionStage = getHeroPowerSpikeStage;
 
 export function getHeroLevelDamageMultiplier(level = 1, rarity = 'Common') {
     const normalized = normalizeHeroLevel(level);
     const cap = RARITY_DAMAGE_CAPS[normalizeHeroRarity(rarity)];
-    const anchors = EVOLUTION_DAMAGE_ANCHORS.map(([anchorLevel, value]) => [
+    const anchors = HERO_DAMAGE_CURVE_ANCHORS.map(([anchorLevel, value]) => [
         anchorLevel,
         anchorLevel >= 99 ? cap * value : value
     ]);
