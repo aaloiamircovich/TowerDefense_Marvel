@@ -13,7 +13,13 @@ const data = {
 
 test('ProgressionManager migra un guardado antiguo', () => {
     const storage = new MemoryStorage();
-    storage.setItem(SAVE_KEY, JSON.stringify({ credits: 700, heroes: ['iron_man'], team: ['iron_man'], items: ['reactor_arc'] }));
+    storage.setItem(SAVE_KEY, JSON.stringify({
+        credits: 700,
+        heroes: ['iron_man'],
+        team: ['iron_man'],
+        items: ['reactor_arc'],
+        settings: { tutorialHints: false, showFps: true }
+    }));
     const manager = new ProgressionManager(storage);
     manager.initialize(createGame(), data);
 
@@ -21,6 +27,8 @@ test('ProgressionManager migra un guardado antiguo', () => {
     assert.equal(manager.state.credits, 700);
     assert.deepEqual(manager.state.unlockedHeroIds, ['iron_man']);
     assert.deepEqual(manager.state.ownedItemIds, ['reactor_arc']);
+    assert.equal(manager.state.settings.showFps, true);
+    assert.equal('tutorialHints' in manager.state.settings, false);
 });
 
 test('Migracion conserva un solo objeto equipado antiguo', () => {
@@ -342,7 +350,6 @@ test('Ajustes accesibles conservan tipos y límites válidos', () => {
         manager.updateSetting('uiScale', 'large');
         manager.updateSetting('musicVolume', 4);
         manager.updateSetting('simplifiedUi', true);
-        manager.updateSetting('tutorialHints', false);
         manager.updateSetting('pixelArtCrisp', true);
         manager.updateSetting('reducedVfx', true);
         manager.updateSetting('showFps', true);
@@ -353,7 +360,7 @@ test('Ajustes accesibles conservan tipos y límites válidos', () => {
         assert.equal(manager.state.settings.uiScale, 'large');
         assert.equal(manager.state.settings.musicVolume, 1);
         assert.equal(manager.state.settings.simplifiedUi, true);
-        assert.equal(manager.state.settings.tutorialHints, false);
+        assert.equal('tutorialHints' in manager.state.settings, false);
         assert.equal(manager.state.settings.pixelArtCrisp, true);
         assert.equal(manager.state.settings.reducedVfx, true);
         assert.equal(manager.state.settings.showFps, true);

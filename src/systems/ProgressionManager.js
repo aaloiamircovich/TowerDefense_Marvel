@@ -259,7 +259,6 @@ function createDefaultState() {
             reduceMotion: false,
             pixelArtCrisp: false,
             reducedVfx: false,
-            tutorialHints: true,
             simplifiedUi: false,
             showFps: false,
             uiScale: 'normal',
@@ -433,7 +432,10 @@ export class ProgressionManager {
             heroPity: Math.max(0, Math.floor(Number(shop.heroPity) || 0)),
             heroBoxCost: Math.max(500, Math.ceil(Number(shop.heroBoxCost) || 500))
         };
-        this.state.settings.keyBindings = { ...createDefaultState().settings.keyBindings, ...(this.state.settings.keyBindings || {}) };
+        const defaultSettings = createDefaultState().settings;
+        this.state.settings = Object.fromEntries(Object.entries(this.state.settings || {}).filter(([key]) => key in defaultSettings));
+        this.state.settings = { ...defaultSettings, ...this.state.settings };
+        this.state.settings.keyBindings = { ...defaultSettings.keyBindings, ...(this.state.settings.keyBindings || {}) };
         this.state.settings.locale = ['es', 'en'].includes(this.state.settings.locale) ? this.state.settings.locale : 'es';
         this.state.settings.musicTrackId = getMusicTrack(this.state.settings.musicTrackId).id;
         this.state.settings.musicLoop = Boolean(this.state.settings.musicLoop);
@@ -1253,7 +1255,7 @@ export class ProgressionManager {
 
     updateSetting(key, value) {
         if (!(key in this.state.settings)) return;
-        if (['ranges', 'grid', 'combatText', 'audio', 'highContrast', 'reduceMotion', 'pixelArtCrisp', 'reducedVfx', 'tutorialHints', 'simplifiedUi', 'showFps', 'musicLoop'].includes(key)) {
+        if (['ranges', 'grid', 'combatText', 'audio', 'highContrast', 'reduceMotion', 'pixelArtCrisp', 'reducedVfx', 'simplifiedUi', 'showFps', 'musicLoop'].includes(key)) {
             this.state.settings[key] = Boolean(value);
         } else if (['masterVolume', 'musicVolume', 'sfxVolume'].includes(key)) {
             this.state.settings[key] = Math.max(0, Math.min(1, Number(value) || 0));
