@@ -87,7 +87,7 @@ test('SettingsPanel usa el locale guardado para renderizar textos reales', () =>
         assert.match(panelContent.html, /Show tactical grid/);
         assert.match(panelContent.html, /Crisp pixel art/);
         assert.match(panelContent.html, /Reduced VFX/);
-        assert.match(panelContent.html, /Contextual tactical guide/);
+        assert.doesNotMatch(panelContent.html, /Contextual tactical guide/);
         assert.match(panelContent.html, /Simplified interface/);
         assert.match(panelContent.html, /Show FPS/);
         assert.match(panelContent.html, /Start wave/);
@@ -256,7 +256,7 @@ test('SettingsPanel refresca resumen de audio y musica sin reabrir panel', () =>
 
     panel.refreshSummary();
 
-    assert.equal(nodes.get('[data-settings-summary="activeOptions"]').textContent, '5/11');
+    assert.equal(nodes.get('[data-settings-summary="activeOptions"]').textContent, '4/10');
     assert.equal(nodes.get('[data-settings-summary="masterVolume"]').textContent, '35%');
     assert.equal(nodes.get('[data-settings-summary="currentTrack"]').textContent, 'X-Men 97 Extended Theme');
     assert.equal(nodes.get('[data-settings-status="locale"]').textContent, 'EN');

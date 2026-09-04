@@ -77,7 +77,6 @@ body.pixel-art-crisp img {
 }
 
 body.reduced-vfx .toast,
-body.reduced-vfx .onboarding-coach,
 body.reduced-vfx .suggested-placement-action {
     box-shadow: none;
 }
@@ -1299,96 +1298,6 @@ canvas {
     background: var(--suggestion-color, #fca311);
     font-size: 10px;
     text-transform: uppercase;
-}
-
-.onboarding-coach {
-    position: absolute;
-    left: 16px;
-    top: 104px;
-    z-index: 7;
-    display: grid;
-    grid-template-columns: 30px minmax(0, 1fr) auto 26px;
-    align-items: center;
-    gap: 9px;
-    width: min(500px, calc(100% - 32px));
-    padding: 9px;
-    border: 1px solid color-mix(in srgb, var(--coach-color, #40c9ff), transparent 50%);
-    border-left: 3px solid var(--coach-color, #40c9ff);
-    border-radius: 8px;
-    background: rgba(5, 7, 11, 0.84);
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.32);
-    pointer-events: none;
-}
-
-.onboarding-coach.hidden {
-    display: none;
-}
-
-.onboarding-coach.guide { --coach-color: #40c9ff; }
-.onboarding-coach.action { --coach-color: #fca311; }
-.onboarding-coach.report { --coach-color: #b88cff; }
-
-.coach-icon {
-    display: grid;
-    place-items: center;
-    width: 30px;
-    height: 30px;
-    border-radius: 7px;
-    color: var(--coach-color);
-    background: color-mix(in srgb, var(--coach-color), transparent 84%);
-}
-
-.onboarding-coach > div:not(.coach-icon) {
-    display: grid;
-    gap: 2px;
-    min-width: 0;
-}
-
-.onboarding-coach span {
-    color: var(--muted);
-    font-size: 9px;
-    font-weight: 800;
-}
-
-.onboarding-coach strong {
-    overflow: hidden;
-    color: var(--coach-color);
-    font-size: 11px;
-    text-overflow: ellipsis;
-    text-transform: uppercase;
-    white-space: nowrap;
-}
-
-.onboarding-coach p {
-    margin: 0;
-    color: var(--muted);
-    font-size: 10px;
-    line-height: 1.3;
-}
-
-.coach-action,
-.coach-dismiss {
-    border: 1px solid color-mix(in srgb, var(--coach-color), transparent 46%);
-    border-radius: 6px;
-    color: var(--text);
-    background: color-mix(in srgb, var(--coach-color), transparent 84%);
-    cursor: pointer;
-    pointer-events: auto;
-}
-
-.coach-action {
-    min-height: 30px;
-    padding: 0 9px;
-    font-size: 10px;
-    font-weight: 800;
-    text-transform: uppercase;
-}
-
-.coach-dismiss {
-    display: grid;
-    place-items: center;
-    width: 26px;
-    height: 26px;
 }
 
 .toast {

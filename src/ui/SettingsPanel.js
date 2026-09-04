@@ -10,7 +10,6 @@ const BOOLEAN_SETTINGS = [
     ['reduceMotion', 'toggle-motion', 'reduceMotion'],
     ['pixelArtCrisp', 'toggle-pixel-crisp', 'pixelArtCrisp'],
     ['reducedVfx', 'toggle-vfx', 'reducedVfx'],
-    ['tutorialHints', 'toggle-tutorial', 'tutorialHints'],
     ['simplifiedUi', 'toggle-simple-ui', 'simplifiedUi'],
     ['showFps', 'toggle-fps', 'showFps']
 ];
