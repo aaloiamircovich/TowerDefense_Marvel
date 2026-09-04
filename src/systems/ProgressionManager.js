@@ -65,6 +65,7 @@ export const ACHIEVEMENT_CATALOG = {
 
 const ACHIEVEMENT_IDS = Object.keys(ACHIEVEMENT_CATALOG);
 const WEEKLY_FACTIONS = ['Hydra', 'A.I.M.', 'La Mano', 'Ultron', 'Kang', 'Thanos'];
+const MAP_CHALLENGE_IDS = new Set(['cazajefes']);
 
 function createMapProgress(progress = {}) {
     const bestWave = Math.min(CAMPAIGN_MAX_WAVES, Math.max(0, Number(progress.bestWave) || 0));
@@ -72,7 +73,7 @@ function createMapProgress(progress = {}) {
     return {
         bestWave,
         stars: Math.max(rawStars, bestWave),
-        challenges: [...new Set(progress.challenges || [])],
+        challenges: [...new Set(progress.challenges || [])].filter((challenge) => MAP_CHALLENGE_IDS.has(challenge)),
         missionObjectives: [...new Set(progress.missionObjectives || [])]
     };
 }
@@ -629,7 +630,7 @@ export class ProgressionManager {
         this.state.mapProgress = Object.fromEntries((this.data.levels || []).map((level) => [level.id, {
             bestWave: ADMIN_STARS_PER_LEVEL,
             stars: ADMIN_STARS_PER_LEVEL,
-            challenges: ['sin_danos', 'cazajefes'],
+            challenges: ['cazajefes'],
             missionObjectives: (level.mission?.objectives || []).map((objective) => objective.id)
         }]));
         this.state.codexDiscovered = {
@@ -1188,9 +1189,6 @@ export class ProgressionManager {
         const campaignWave = Math.min(CAMPAIGN_MAX_WAVES, Math.max(1, Math.floor(Number(waveNumber) || 1)));
         progress.bestWave = Math.max(progress.bestWave, campaignWave);
         progress.stars = Math.max(progress.stars, campaignWave);
-        if (campaignWave >= 5 && game.resourceManager.lives === game.resourceManager.maxLives) {
-            progress.challenges = [...new Set([...progress.challenges, 'sin_danos'])];
-        }
         const isScheduledBoss = isBossWave(campaignWave, CAMPAIGN_MAX_WAVES);
         if (isScheduledBoss) progress.challenges = [...new Set([...progress.challenges, 'cazajefes'])];
         const reward = 18 + campaignWave * 3 + (isScheduledBoss ? 180 : 0);

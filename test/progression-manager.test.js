@@ -289,18 +289,22 @@ test('prioridad de objetivo por heroe persiste al sincronizar equipo y campo', (
 
     assert.deepEqual(manager.state.heroTargetPriorities, { iron_man: 'Rápido' });
 });
-test('Progreso de mapa guarda estrellas y desafios', () => {
+test('Progreso de mapa guarda estrellas y desafio de jefe', () => {
     const manager = new ProgressionManager(new MemoryStorage());
     const game = createGame();
     manager.initialize(game, data);
     game.progression = manager;
+    manager.state.mapProgress.level_1 = { bestWave: 8, stars: 3, challenges: ['sin_danos', 'fantasma'], missionObjectives: [] };
+
+    assert.deepEqual(manager.getMapProgress('level_1').challenges, []);
+
     manager.recordWave(game, 25);
 
     const progress = manager.getMapProgress('level_1');
     assert.equal(progress.bestWave, 25);
     assert.equal(progress.stars, 25);
     assert.equal('difficulty' in progress, false);
-    assert.deepEqual(progress.challenges.sort(), ['cazajefes', 'sin_danos']);
+    assert.deepEqual(progress.challenges, ['cazajefes']);
 });
 
 test('Cada oleada nueva superada cuenta como una estrella', () => {

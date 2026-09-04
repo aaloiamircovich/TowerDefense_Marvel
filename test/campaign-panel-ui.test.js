@@ -56,6 +56,7 @@ test('CampaignPanel compacta operaciones y resume desbloqueos por estrellas', ()
     assert.match(ui.panelContent.innerHTML, /25\/50/);
     assert.match(ui.panelContent.innerHTML, /Mapa 01/);
     assert.match(ui.panelContent.innerHTML, /Acceso principal/);
+    assert.doesNotMatch(ui.panelContent.innerHTML, /Sin daños|sin_danos/);
 
     assert.deepEqual(panel.buildMapUnlockProgress(2, 38), {
         current: 38,
