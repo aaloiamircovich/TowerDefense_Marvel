@@ -336,6 +336,8 @@ test('coleccion conecta tabs con panel activo', () => {
 
     panel.viewMode = 'heroes';
     panel.render('Constructor de equipo');
+    assert.match(ui.panelContent.innerHTML, /<strong>0\/6 activos<\/strong>/);
+    assert.doesNotMatch(ui.panelContent.innerHTML, /despliegue libre/i);
     assert.match(ui.panelContent.innerHTML, /id="collection-tab-heroes"[\s\S]*aria-controls="collection-panel-heroes"/);
     assert.match(ui.panelContent.innerHTML, /id="collection-panel-heroes" class="collection-tab-panel" role="tabpanel" aria-labelledby="collection-tab-heroes"/);
     assert.match(ui.panelContent.innerHTML, /class="team-builder-summary"/);

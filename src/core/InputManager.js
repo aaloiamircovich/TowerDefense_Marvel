@@ -291,7 +291,7 @@ export class InputManager {
         const suggestionState = buildPlacementSuggestionState(this.suggestedPlacement, heroConfig);
         const suggestion = suggestionState ? ` Sugerencia: ${suggestionState.label}; ${suggestionState.detail}.` : '';
         const terrainText = getAllowedTerrainLabels(heroConfig.allowedTerrains || [TERRAIN.grass]);
-        this.uiManager.setSelectionStatus(`Colocando ${heroConfig.name}. Terreno: ${terrainText}. Despliegue libre.${suggestion} Esc para cancelar.`);
+        this.uiManager.setSelectionStatus(`Colocando ${heroConfig.name}. Terreno: ${terrainText}. Sin costo.${suggestion} Esc para cancelar.`);
         this.uiManager.updatePlacementSuggestion?.(suggestionState);
     }
 

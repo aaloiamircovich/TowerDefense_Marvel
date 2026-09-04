@@ -246,7 +246,7 @@ export class TeamBuilderPanel {
         this.ui.panelContent.innerHTML = `
             <div class="panel-title-row">
                 <h2>${title}</h2>
-                <strong>${game.activeTeam.length}/6 activos · despliegue libre</strong>
+                <strong>${game.activeTeam.length}/6 activos</strong>
             </div>
             ${this.renderCollectionCommandHeader({ readyHeroes, filteredHeroes, unlockedIds, snapshot })}
             ${this.renderCollectionTabs()}
