@@ -132,7 +132,8 @@ function validateHeroSpecial(heroId, special, schema) {
         else special.attackEffects.forEach((effect, index) => {
             const label = `heroes.${heroId}.special.attackEffects.${index}`;
             validateAllowedKeys(label, effect, schema.allowedAttackEffectKeys);
-            if (!schema.allowedAttackEffectTypes.has(effect.type)) errors.push(`${label}.type no es valido`);
+            if (effect.type === 'heal') errors.push(`${label}.type heal esta prohibido: los heroes no pueden curar la base`);
+            else if (!schema.allowedAttackEffectTypes.has(effect.type)) errors.push(`${label}.type no es valido`);
             if (!isUnitNumber(effect.chance)) errors.push(`${label}.chance debe estar entre 0 y 1`);
             requireNonNegativeNumber(effect.duration, `${label}.duration`);
             requireNonNegativeNumber(effect.power, `${label}.power`);

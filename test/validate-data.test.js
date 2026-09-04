@@ -84,6 +84,16 @@ test('validate-data bloquea campos y valores invalidos en especiales de heroes',
     assert.match(result.stderr, /heroes\.loki\.special\.projectileColor debe ser color hex/);
 });
 
+test('validate-data bloquea curacion de base en efectos de heroes', () => {
+    const workspace = createDataWorkspace((data) => {
+        data.heroes.loki.special.attackEffects = [{ type: 'heal', chance: 1, duration: 1, power: 1 }];
+    });
+    const result = runValidator(workspace);
+
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr, /heroes\.loki\.special\.attackEffects\.0\.type heal esta prohibido/);
+});
+
 function createDataWorkspace(mutator = null) {
     const workspace = fs.mkdtempSync(path.join(os.tmpdir(), 'marvel-td-data-'));
     const dataDir = path.join(workspace, 'data');
