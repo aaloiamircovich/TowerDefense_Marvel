@@ -45,6 +45,42 @@ export const CAMPAIGN_BALANCE_CHECKPOINTS = [
         ]
     },
     {
+        id: 'new-york-wave-25-unlocked',
+        label: 'Nueva York W25, mapa desbloqueado',
+        levelId: 'level_2',
+        wave: 25,
+        coverageSeconds: 24,
+        expected: 'pass',
+        minMargin: 1.12,
+        maxMargin: 2.1,
+        team: [
+            ['cyclops', 38],
+            ['black_widow', 25],
+            ['hawkeye', 25],
+            ['groot', 25],
+            ['korg', 25],
+            ['ms_marvel', 25]
+        ]
+    },
+    {
+        id: 'wakanda-wave-25-unlocked',
+        label: 'Wakanda W25, mapa desbloqueado',
+        levelId: 'level_3',
+        wave: 25,
+        coverageSeconds: 24,
+        expected: 'pass',
+        minMargin: 1.1,
+        maxMargin: 1.75,
+        team: [
+            ['black_panther', 42],
+            ['shuri', 36],
+            ['okoye', 36],
+            ['iron_man', 38],
+            ['cyclops', 38],
+            ['hawkeye', 34]
+        ]
+    },
+    {
         id: 'base-avengers-wave-50-ready',
         label: 'Base Avengers W50, segundo checkpoint',
         levelId: 'level_1',

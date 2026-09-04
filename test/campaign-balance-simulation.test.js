@@ -11,7 +11,7 @@ test('simulacion de campaña mantiene bosses vencibles sin regalarlos', () => {
     const readyAttempts = report.results.filter((result) => result.expected === 'pass');
 
     assert.ok(firstAttempt.margin < 0.95);
-    assert.equal(readyAttempts.length, 4);
+    assert.equal(readyAttempts.length, 6);
     assert.ok(readyAttempts.every((result) => result.margin >= result.minMargin));
     assert.ok(readyAttempts.every((result) => result.margin <= result.maxMargin));
 });
