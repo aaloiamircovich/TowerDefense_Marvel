@@ -10,7 +10,7 @@ const contracts = {
         cost: 400,
         ability: 'FURIA GAMMA',
         abilityDesc: 'Acumula furia al atacar y cuando la defensa pierde vidas. Con 50 de furia salta sobre un grupo, inflige daño en área y aturde sin sacar enemigos de su ruta.',
-        niche: 'tanque cercano, respuesta a brechas y control de grupos'
+        niche: 'tanque cercano, aguante y control de grupos'
     },
     black_widow: {
         cost: 190,

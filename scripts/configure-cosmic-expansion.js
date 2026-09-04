@@ -11,7 +11,7 @@ const directions = ['north', 'north-east', 'east', 'south-east', 'south', 'south
 const contracts = {
     captain_marvel: { cost: 650, ability: 'ENERGÍA BINARIA', abilityDesc: 'Carga energía al atacar y derrotar enemigos. Al superar 60 vuela a una posición avanzada, atraviesa la línea enemiga y regresa a su puesto.', niche: 'artillería móvil y ruptura de líneas', metrics: [5, 2, 2, 3] },
     star_lord: { cost: 220, ability: 'BLÁSTERS ELEMENTALES', abilityDesc: 'Dispara a dos blancos y alterna plasma perforante, munición criogénica o cargas incendiarias.', niche: 'doble objetivo y respuesta elemental', metrics: [4, 4, 3, 2] },
-    groot: { cost: 300, ability: 'MURO DE RAÍCES', abilityDesc: 'Levanta una barrera temporal sobre la ruta que ralentiza grupos sin desplazarlos. Con otro Guardián recupera una vida cada veinte segundos.', niche: 'control de paso y recuperación de Guardianes', metrics: [2, 5, 5, 1] },
+    groot: { cost: 300, ability: 'MURO DE RAÍCES', abilityDesc: 'Levanta raíces temporales sobre la ruta que ralentizan grupos sin desplazarlos. Con otro Guardián refuerza el control de zona.', niche: 'control de paso y sinergia de Guardianes', metrics: [2, 5, 5, 1] },
     gamora: { cost: 360, ability: 'ASESINA DE ÉLITE', abilityDesc: 'Encadena ataques cercanos y ejecuta enemigos no jefes por debajo del 25% de salud.', niche: 'ejecución, cadenas cuerpo a cuerpo y élites', metrics: [5, 2, 1, 4] },
     silver_surfer: { cost: 760, ability: 'PODER CÓSMICO', abilityDesc: 'Traza rayos que atraviesan enemigos y configura su poder para daño, control o resonancia de equipo.', niche: 'trayectorias globales y potencia configurable', metrics: [5, 4, 3, 5] }
 };
