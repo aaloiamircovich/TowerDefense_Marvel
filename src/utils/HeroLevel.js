@@ -21,6 +21,15 @@ const SUPPORT_AURA_SCALE_CAPS = {
     Secret: 0.95
 };
 
+const SUPPORT_AURA_RANGE_SCALE_CAPS = {
+    Common: 0.06,
+    Rare: 0.075,
+    Epic: 0.09,
+    Legendary: 0.105,
+    Mythic: 0.12,
+    Secret: 0.135
+};
+
 const HERO_DAMAGE_CURVE_ANCHORS = [
     [1, 1],
     [15, 2.8],
@@ -97,10 +106,19 @@ export function getSupportAuraLevelScale(level = 1, rarity = 'Common') {
     return 1 + Math.min(cap, (normalizeHeroLevel(level) - 1) * (cap / (HERO_MAX_LEVEL - 1)));
 }
 
+export function getSupportAuraRangeScale(level = 1, rarity = 'Common') {
+    const cap = SUPPORT_AURA_RANGE_SCALE_CAPS[normalizeHeroRarity(rarity)];
+    return 1 + Math.min(cap, (normalizeHeroLevel(level) - 1) * (cap / (HERO_MAX_LEVEL - 1)));
+}
+
 export function getScaledSupportAura(aura = null, level = 1, rarity = 'Common') {
     if (!aura?.type) return null;
-    return {
+    const scaled = {
         ...aura,
         power: Number(aura.power || 0) * getSupportAuraLevelScale(level, rarity)
     };
+    if (Number.isFinite(Number(aura.range))) {
+        scaled.range = Number(aura.range) * getSupportAuraRangeScale(level, rarity);
+    }
+    return scaled;
 }

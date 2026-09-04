@@ -1504,6 +1504,22 @@ test('UIManager mejora rapida reconoce creditos infinitos de admin', () => {
     assert.equal(hero.level, 6);
 });
 
+test('UIManager previsualiza mejoras de potencia y radio de aura', () => {
+    const ui = createUpgradeUi(9999);
+    const hero = deployedHero({ id: 'capitan_america', name: 'Capitán América', level: 1, damage: 0, fireRate: 0, range: 255 });
+    hero.config.rarity = 'Epic';
+    hero.config.special = { supportAura: { type: 'damage', power: 0.1, range: 255 } };
+
+    const rows = ui.getHeroLevelPreviewRows(hero, 10);
+    const byLabel = Object.fromEntries(rows.map((row) => [row.label, row]));
+    const html = ui.renderHeroLevelPreview(hero, 10);
+
+    assert.ok(byLabel.Aura.value > 0);
+    assert.ok(byLabel.Radio.value > 0);
+    assert.match(html, /Aura \+0\.7%/);
+    assert.match(html, /Radio \+2/);
+});
+
 function path() {
     return [{ x: 0, y: 0 }, { x: 400, y: 0 }];
 }

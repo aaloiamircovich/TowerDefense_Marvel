@@ -2511,6 +2511,8 @@ export class UIManager {
         const nextAura = getScaledSupportAura(aura, currentLevel + steps, rarity);
         const auraDelta = Number(nextAura?.power || 0) - Number(currentAura?.power || 0);
         if (auraDelta) rows.push({ label: 'Aura', value: auraDelta * 100, suffix: '%', precision: 1 });
+        const auraRangeDelta = Number(nextAura?.range || 0) - Number(currentAura?.range || 0);
+        if (auraRangeDelta) rows.push({ label: 'Radio', value: auraRangeDelta });
 
         return rows;
     }
