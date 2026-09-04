@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildBossCountdownState, buildBossHudState, buildBossMilestoneState, buildCombatPressureState, buildCounterCoverageModel, buildEnemyIntel, buildEnemyTraitPreview, buildHeroCombatIdentity, buildLeakIntel, buildOnboardingCoachState, buildPanelNavigationMarkup, buildPressureActionState, buildRosterWaveFitView, buildShopItemInsight, buildShopSetProgress, buildSpawnQueueState, buildStatusLegendModel, buildStealthCoverageState, buildTacticalContributionModel, buildTargetingControlState, buildWaveCounterBrief, buildWaveDamageCheckMeter, buildWaveLaunchState, buildWavePrepActionControl, buildWavePreparationPlan, buildWaveReportActionState, buildWaveReportGrade, buildWaveReportLesson, buildWaveReportState, evaluateHeroWaveFit, formatHudResource, getNextTargetingPriority, UIManager } from '../src/systems/UIManager.js';
+import { buildBossCountdownState, buildBossHudState, buildBossMilestoneState, buildCombatPressureState, buildCounterCoverageModel, buildEnemyIntel, buildEnemyTraitPreview, buildHeroCombatIdentity, buildLeakIntel, buildPanelNavigationMarkup, buildPressureActionState, buildRosterWaveFitView, buildShopItemInsight, buildShopSetProgress, buildSpawnQueueState, buildStatusLegendModel, buildStealthCoverageState, buildTacticalContributionModel, buildTargetingControlState, buildWaveCounterBrief, buildWaveDamageCheckMeter, buildWaveLaunchState, buildWavePrepActionControl, buildWavePreparationPlan, buildWaveReportActionState, buildWaveReportGrade, buildWaveReportLesson, buildWaveReportState, evaluateHeroWaveFit, formatHudResource, getNextTargetingPriority, UIManager } from '../src/systems/UIManager.js';
 import { calculateHeroLevelCost } from '../src/utils/HeroLevel.js';
 
 test('buildWaveLaunchState muestra riesgo critico en el CTA', () => {
@@ -105,19 +105,6 @@ test('formatHudResource compacta recursos sin romper creditos exactos', () => {
     assert.equal(formatHudResource(567666), '568k');
     assert.equal(formatHudResource(Number.POSITIVE_INFINITY), '∞');
     assert.equal(ui.getMissionCredits(), 95913);
-});
-
-test('buildOnboardingCoachState guia segun el estado tactico actual', () => {
-    const noTeam = buildOnboardingCoachState({ activeTeamCount: 0 }, { tutorialHints: true });
-    const placing = buildOnboardingCoachState({ activeTeamCount: 1, placingHero: true, hasSuggestion: true }, { tutorialHints: true });
-    const report = buildOnboardingCoachState({ activeTeamCount: 1, deployedCount: 1, currentWave: 2, hasReport: true }, { tutorialHints: true });
-    const disabled = buildOnboardingCoachState({ activeTeamCount: 1 }, { tutorialHints: false });
-
-    assert.equal(noTeam.id, 'squad');
-    assert.equal(placing.id, 'suggestion');
-    assert.equal(placing.progressLabel, '3/5');
-    assert.equal(report.id, 'report');
-    assert.equal(disabled, null);
 });
 
 test('getNextTargetingPriority cicla prioridades tacticas del roster', () => {

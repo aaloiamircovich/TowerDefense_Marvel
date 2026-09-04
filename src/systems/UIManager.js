@@ -1387,74 +1387,6 @@ export function buildWaveReportActionState(report = {}, heroes = [], credits = 0
     };
 }
 
-export const ONBOARDING_STEPS = [
-    {
-        id: 'squad',
-        label: 'Escuadron listo',
-        detail: 'Elige tu nucleo inicial y piensa en roles: dano, control y deteccion.',
-        actionLabel: 'Abrir equipo',
-        icon: 'fa-users'
-    },
-    {
-        id: 'deploy',
-        label: 'Primera defensa',
-        detail: 'Coloca un heroe donde cubra la mayor cantidad de ruta posible.',
-        actionLabel: 'Preparar heroe',
-        icon: 'fa-map-marker-alt'
-    },
-    {
-        id: 'suggestion',
-        label: 'Celda recomendada',
-        detail: 'Usa la sugerencia cuando priorice cobertura, terreno valido y distancia al camino.',
-        actionLabel: 'Usar sugerida',
-        icon: 'fa-location-crosshairs'
-    },
-    {
-        id: 'radar',
-        label: 'Lee el radar',
-        detail: 'Antes de iniciar, revisa counters clave y cobertura contra sigilo o blindaje.',
-        actionLabel: 'Ver radar',
-        icon: 'fa-satellite-dish'
-    },
-    {
-        id: 'report',
-        label: 'Ajuste post-oleada',
-        detail: 'Tras cada oleada, refuerza lo que fallo: base, DPS, control o deteccion.',
-        actionLabel: 'Revisar informe',
-        icon: 'fa-clipboard-list'
-    }
-];
-
-export function buildOnboardingCoachState(snapshot = {}, settings = {}) {
-    if (settings.tutorialHints === false) return null;
-    const dismissed = new Set(snapshot.dismissedSteps || []);
-    const activeTeamCount = Number(snapshot.activeTeamCount || 0);
-    const deployedCount = Number(snapshot.deployedCount || 0);
-    const currentWave = Math.max(1, Number(snapshot.currentWave || 1));
-    const waveActive = Boolean(snapshot.waveActive);
-    const hasReport = Boolean(snapshot.hasReport);
-    const placingHero = Boolean(snapshot.placingHero);
-    const hasSuggestion = Boolean(snapshot.hasSuggestion);
-
-    let id = 'radar';
-    if (activeTeamCount === 0) id = 'squad';
-    else if (placingHero && hasSuggestion) id = 'suggestion';
-    else if (deployedCount === 0) id = 'deploy';
-    else if (hasReport || currentWave > 1) id = 'report';
-    else if (!waveActive) id = 'radar';
-
-    if (dismissed.has(id)) return null;
-    const index = ONBOARDING_STEPS.findIndex((step) => step.id === id);
-    const step = ONBOARDING_STEPS[index] || ONBOARDING_STEPS[0];
-    return {
-        ...step,
-        index: index + 1,
-        total: ONBOARDING_STEPS.length,
-        progressLabel: `${index + 1}/${ONBOARDING_STEPS.length}`,
-        tone: id === 'report' ? 'report' : id === 'suggestion' ? 'action' : 'guide'
-    };
-}
-
 export class UIManager {
     constructor(gameInstance) {
         this.game = gameInstance;
@@ -1484,7 +1416,6 @@ export class UIManager {
         this.nextWaveSummary = null;
         this.activePanelType = null;
         this.combatPressureSignature = '';
-        this.dismissedOnboardingSteps = new Set();
         this.profilePanel = new ProfilePanel(this);
         this.campaignPanel = new CampaignPanel(this);
         this.settingsPanel = new SettingsPanel(this);
@@ -1742,48 +1673,10 @@ export class UIManager {
         this.renderOnboardingCoach();
     }
 
-    getOnboardingSnapshot() {
-        return {
-            activeTeamCount: this.game.activeTeam?.length || 0,
-            deployedCount: this.game.heroes?.length || 0,
-            currentWave: this.game.waveManager?.currentWave || 1,
-            waveActive: this.game.waveManager?.isWaveActive || false,
-            placingHero: Boolean(this.game.inputManager?.placingHero),
-            hasSuggestion: Boolean(this.game.inputManager?.suggestedPlacement),
-            hasReport: Boolean(this.lastWaveReport),
-            dismissedSteps: [...this.dismissedOnboardingSteps]
-        };
-    }
-
     renderOnboardingCoach() {
         const coach = document.getElementById('onboarding-coach');
         if (coach) coach.remove();
         return null;
-    }
-
-    handleOnboardingAction(state) {
-        if (!state) return false;
-        if (state.id === 'squad') {
-            this.openPanel('collection');
-            return true;
-        }
-        if (state.id === 'deploy') {
-            const candidate = (this.game.activeTeam || []).find((hero) => !this.game.heroes?.some((unit) => unit.id === hero.id));
-            if (candidate) {
-                this.game.inputManager?.setPlacementMode(candidate);
-                return true;
-            }
-        }
-        if (state.id === 'suggestion') return Boolean(this.game.inputManager?.confirmSuggestedPlacement?.());
-        if (state.id === 'radar') {
-            this.openPanel('radar');
-            return true;
-        }
-        if (state.id === 'report') {
-            this.openPanel('radar');
-            return true;
-        }
-        return false;
     }
 
     shouldShowFps() {
