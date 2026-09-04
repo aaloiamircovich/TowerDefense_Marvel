@@ -648,6 +648,6 @@ test('tienda de skins queda como panel independiente vacio', () => {
     ui.renderSkinShop('Skins');
 
     assert.match(ui.panelContent.innerHTML, /skins-shop-panel/);
-    assert.match(ui.panelContent.innerHTML, /Skins de héroes/);
-    assert.match(ui.panelContent.innerHTML, /Próximamente/);
+    assert.match(ui.panelContent.innerHTML, /Sin skins disponibles/);
+    assert.doesNotMatch(ui.panelContent.innerHTML, /Próximamente/);
 });

@@ -6982,37 +6982,31 @@ select {
 
 .skins-shop-panel {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: center;
-    gap: 18px;
-    min-height: 220px;
+    place-items: center;
+    gap: 10px;
+    min-height: 150px;
     padding: 18px;
     border: 1px dashed rgba(64, 201, 255, 0.42);
     border-radius: 8px;
-    background:
-        linear-gradient(135deg, rgba(64, 201, 255, 0.12), transparent 54%),
-        rgba(7, 16, 24, 0.72);
+    background: rgba(7, 16, 24, 0.72);
+    text-align: center;
 }
 
-.skins-shop-panel h3 {
-    margin: 2px 0 6px;
+.skins-shop-panel strong {
     color: #ffffff;
-}
-
-.skins-shop-panel p {
-    max-width: 620px;
-    color: var(--muted);
+    font-size: 13px;
+    text-transform: uppercase;
 }
 
 .skins-shop-panel > i {
     display: grid;
     place-items: center;
-    width: 86px;
-    height: 86px;
+    width: 58px;
+    height: 58px;
     border: 1px solid rgba(64, 201, 255, 0.42);
     border-radius: 8px;
     color: var(--level-accent);
-    font-size: 38px;
+    font-size: 26px;
     background: rgba(5, 8, 13, 0.62);
 }
 

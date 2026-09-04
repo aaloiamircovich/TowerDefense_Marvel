@@ -361,15 +361,10 @@ export class ShopPanel {
         this.ui.panelContent.innerHTML = `
             <div class="panel-title-row">
                 <h2>${title}</h2>
-                <strong>Próximamente</strong>
             </div>
-            <section class="skins-shop-panel">
-                <div>
-                    <span class="briefing-kicker">TIENDA COSMÉTICA</span>
-                    <h3>Skins de héroes</h3>
-                    <p>Este menú queda reservado para skins cuando estén listas.</p>
-                </div>
+            <section class="skins-shop-panel skins-shop-panel--empty" aria-label="Sin skins disponibles">
                 <i class="fas fa-shirt"></i>
+                <strong>Sin skins disponibles</strong>
             </section>
         `;
     }

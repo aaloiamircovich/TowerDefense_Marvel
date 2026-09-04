@@ -251,7 +251,8 @@ test('ShopPanel recluta heroe, actualiza costo y permite tienda de skins vacia',
 
     panel.renderSkinShop('Skins');
     assert.match(panelContent.innerHTML, /skins-shop-panel/);
-    assert.match(panelContent.innerHTML, /Próximamente/);
+    assert.match(panelContent.innerHTML, /Sin skins disponibles/);
+    assert.doesNotMatch(panelContent.innerHTML, /Próximamente/);
 });
 
 test('ShopPanel limpia timers pendientes de apertura al cerrar tienda', () => {
