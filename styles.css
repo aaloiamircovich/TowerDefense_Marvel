@@ -5115,12 +5115,14 @@ body.panel-open {
     height: 34px;
 }
 
-.hero-item-corner img {
+.hero-item-corner img,
+.hero-item-corner .sprite-fallback {
     display: block;
     width: 26px;
     height: 26px;
     object-fit: contain;
     object-position: center;
+    transform: none;
 }
 
 .team-hero-card.item-target-mode {
@@ -7624,12 +7626,14 @@ select {
     height: 38px;
 }
 
-.item-owner-corner img {
+.item-owner-corner img,
+.item-owner-corner .sprite-fallback {
     display: block;
     width: 30px;
     height: 30px;
     object-fit: contain;
     object-position: center;
+    transform: none;
 }
 
 .item-card-status {
@@ -11814,14 +11818,22 @@ button:not(:disabled):active,
     transform: translate3d(0, -3px, 0) scale(1.012);
 }
 
-.starter-card:hover img,
-.collection-card:hover img,
-.shop-card:hover img,
-.inventory-object-card:hover img {
+.starter-card:hover .starter-sprite-frame img,
+.collection-card:hover > img,
+.shop-card:hover > img,
+.inventory-object-card:hover .item-sprite-frame img {
     transform: translate3d(0, -2px, 0) scale(1.035);
     filter:
         drop-shadow(0 10px 12px rgba(0, 0, 0, 0.34))
         drop-shadow(0 0 10px color-mix(in srgb, var(--rarity-color, var(--level-accent)), transparent 58%));
+}
+
+.collection-card:hover .hero-item-corner img,
+.collection-card:hover .hero-item-corner .sprite-fallback,
+.inventory-object-card:hover .item-owner-corner img,
+.inventory-object-card:hover .item-owner-corner .sprite-fallback {
+    transform: none;
+    filter: none;
 }
 
 .hero-card img,
