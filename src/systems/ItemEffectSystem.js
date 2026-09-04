@@ -6,15 +6,6 @@ export const SLOT_LABELS = {
     artifact: 'Artefacto'
 };
 
-const LEGACY_SET_BONUSES = {
-    stark: { name: 'Stark', description: '2 piezas: +10% cadencia.', effects: { fireRatePct: 0.1 } },
-    vibranium: { name: 'Vibranium', description: '2 piezas: +10% daño.', effects: { damagePct: 0.1 } },
-    pym: { name: 'Pym', description: '2 piezas: +12% alcance.', effects: { rangePct: 0.12 } },
-    mystic: { name: 'Místico', description: '2 piezas: +5% crítico.', effects: { critChance: 5 } },
-    symbiote: { name: 'Simbionte', description: '2 piezas: daño acumulativo adicional.', effects: { consecutiveDamagePct: 0.012 } },
-    shield: { name: 'Tactico', description: 'Deteccion, control y anti-blindaje.', effects: { damagePct: 0.06, rangePct: 0.06 } }
-};
-
 export const SET_BONUSES = {
     stark: { name: 'Stark', description: 'Tecnologia ofensiva y cadencia.', effects: { fireRatePct: 0.1 } },
     vibranium: { name: 'Vibranium', description: 'Dano estable y respuesta contra blindaje.', effects: { damagePct: 0.1 } },
@@ -29,10 +20,6 @@ export const SET_BONUSES = {
 
 const NON_SCALING = new Set(['chainCount']);
 const MAXIMUM_EFFECTS = new Set(['chainRange', 'chainFactor', 'splashRadius', 'splashFactor']);
-
-export function getForgeMultiplier(level = 1) {
-    return 1;
-}
 
 export function aggregateItemEffects(items = []) {
     const total = {};

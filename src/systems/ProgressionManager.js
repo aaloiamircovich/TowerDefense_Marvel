@@ -230,8 +230,6 @@ function createDefaultState() {
         activeTeamIds: [],
         ownedItemIds: [],
         equippedItems: {},
-        itemLevels: {},
-        forgeMaterials: 0,
         loadouts: {},
         mapTeamLoadouts: {},
         favoriteHeroIds: [],
@@ -321,8 +319,6 @@ export class ProgressionManager {
         migrated.activeTeamIds = raw.activeTeamIds || raw.team || migrated.unlockedHeroIds.slice(0, 6);
         migrated.ownedItemIds = raw.ownedItemIds || raw.items || [];
         migrated.equippedItems = raw.equippedItems || {};
-        migrated.itemLevels = {};
-        migrated.forgeMaterials = 0;
         migrated.loadouts = raw.loadouts || {};
         migrated.mapTeamLoadouts = raw.mapTeamLoadouts || {};
         migrated.favoriteHeroIds = raw.favoriteHeroIds || [];
@@ -367,8 +363,8 @@ export class ProgressionManager {
             if (equippedItemId) this.state.equippedItems[heroId] = { [this.data.items[equippedItemId].slot]: equippedItemId };
             else delete this.state.equippedItems[heroId];
         });
-        this.state.itemLevels = {};
-        this.state.forgeMaterials = 0;
+        delete this.state.itemLevels;
+        delete this.state.forgeMaterials;
         this.state.loadouts = Object.fromEntries(Object.entries(this.state.loadouts || {})
             .filter(([heroId]) => heroIds.has(heroId))
             .map(([heroId, loadout]) => [heroId, {

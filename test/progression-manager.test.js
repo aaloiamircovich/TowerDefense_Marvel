@@ -195,8 +195,8 @@ test('Forja y reciclaje de objetos quedan retirados', () => {
     manager.state.forgeMaterials = 500;
     assert.equal(manager.upgradeItem('reactor_arc').ok, false);
     manager.sanitize();
-    assert.equal(manager.state.forgeMaterials, 0);
-    assert.deepEqual(manager.state.itemLevels, {});
+    assert.equal('forgeMaterials' in manager.state, false);
+    assert.equal('itemLevels' in manager.state, false);
 });
 
 test('Loadout restaura un solo objeto de forma atomica', () => {
