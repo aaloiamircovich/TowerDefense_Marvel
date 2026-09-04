@@ -53,7 +53,7 @@ test('WaveReportPanel renderiza informe y delega mejora recomendada', () => {
         assert.match(container.innerHTML, /wave-report-scoreline/);
         assert.match(container.innerHTML, /wave-report-quickline/);
         assert.match(container.innerHTML, /Resumen rapido de oleada/);
-        assert.match(container.innerHTML, /Linea[\s\S]*Cerrada/);
+        assert.match(container.innerHTML, /Base[\s\S]*Intacta/);
         assert.match(container.innerHTML, /Recompensa[\s\S]*\+\$320/);
         assert.match(container.innerHTML, /Siguiente[\s\S]*Mejorar Iron Man \$240/);
         assert.match(container.innerHTML, /<details class="wave-report-details">/);
@@ -83,7 +83,7 @@ test('WaveReportPanel renderiza informe y delega mejora recomendada', () => {
     }
 });
 
-test('WaveReportPanel resume brecha recompensa y accion en lectura rapida', () => {
+test('WaveReportPanel resume dano a base recompensa y accion en lectura rapida', () => {
     const panel = new WaveReportPanel({});
     const html = panel.renderQuickline(
         { leaks: 2, credits: 75 },
@@ -92,7 +92,7 @@ test('WaveReportPanel resume brecha recompensa y accion en lectura rapida', () =
 
     assert.match(html, /wave-report-quickline/);
     assert.match(html, /quickline-danger/);
-    assert.match(html, /2 brechas/);
+    assert.match(html, /-2 vida/);
     assert.match(html, /quickline-reward/);
     assert.match(html, /\+\$75/);
     assert.match(html, /quickline-saving/);
@@ -128,7 +128,7 @@ test('WaveReportPanel desglosa ahorro cuando no alcanza para mejorar', () => {
 });
 
 
-test('WaveReportPanel mantiene compacto el desglose salvo brecha seria', () => {
+test('WaveReportPanel mantiene compacto el desglose salvo dano serio a base', () => {
     const panel = new WaveReportPanel({});
     const minorLeakHtml = panel.renderDetailDrawer({
         ...buildReportState(),

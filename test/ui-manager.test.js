@@ -820,7 +820,7 @@ test('buildCombatPressureState vigila un frente a mitad de ruta', () => {
     assert.equal(state.dangerCount, 0);
 });
 
-test('buildCombatPressureState marca fuga inminente cerca de salida', () => {
+test('buildCombatPressureState marca presion inminente cerca de salida', () => {
     const state = buildCombatPressureState([
         enemy({ name: 'Runner', distanceTravelled: 372, uid: 'lead' }),
         enemy({ name: 'Soldier', distanceTravelled: 330, uid: 'tail' })
@@ -1046,7 +1046,7 @@ test('renderCombatPressurePanel etiqueta acciones de emergencia con tooltips', (
             enemy({ name: 'Runner', distanceTravelled: 372, uid: 'lead' })
         ], path(), true);
 
-        assert.match(container.innerHTML, /id="pressure-upgrade" class="btn-mode-action" type="button" aria-label="Mejorar Iron Man por 120 creditos\. Respuesta recomendada para cortar la brecha\." title="Mejorar Iron Man por 120 creditos\. Respuesta recomendada para cortar la brecha\." data-tooltip="Mejorar Iron Man por 120 creditos\. Respuesta recomendada para cortar la brecha\."/);
+        assert.match(container.innerHTML, /id="pressure-upgrade" class="btn-mode-action" type="button" aria-label="Mejorar Iron Man por 120 creditos\. Respuesta recomendada para cerrar la salida\." title="Mejorar Iron Man por 120 creditos\. Respuesta recomendada para cerrar la salida\." data-tooltip="Mejorar Iron Man por 120 creditos\. Respuesta recomendada para cerrar la salida\."/);
         assert.match(container.innerHTML, /id="pressure-pause" class="btn-mode-action" type="button" aria-label="Activar pausa tactica por presion de ruta" title="Activar pausa tactica por presion de ruta" data-tooltip="Activar pausa tactica por presion de ruta"/);
     } finally {
         globalThis.document = previousDocument;
@@ -1331,7 +1331,7 @@ test('buildTacticalContributionModel resume aportes no basados en dano', () => {
     assert.match(model.heroes[0].detail, /1 ruptura/);
 });
 
-test('buildWaveReportState convierte fugas en recomendacion tactica', () => {
+test('buildWaveReportState convierte dano a base en recomendacion tactica', () => {
     const report = buildWaveReportState({
         wave: 2,
         leaks: 4,
@@ -1341,12 +1341,12 @@ test('buildWaveReportState convierte fugas en recomendacion tactica', () => {
     });
 
     assert.equal(report.tone, 'breach');
-    assert.equal(report.label, 'Brecha seria');
+    assert.equal(report.label, 'Base en riesgo');
     assert.match(report.advice, /Refuerza la salida/);
     assert.equal(report.lesson.label, 'Prioridad: salida');
 });
 
-test('buildWaveReportState destaca maestria cuando no hubo fugas', () => {
+test('buildWaveReportState destaca maestria cuando la base queda intacta', () => {
     const report = buildWaveReportState({
         wave: 8,
         leaks: 0,
@@ -1401,7 +1401,7 @@ test('buildWaveReportGrade valora ejecucion dominante sin bonus perfecto', () =>
     assert.match(grade.detail, /Ejecucion dominante/);
 });
 
-test('buildWaveReportGrade degrada una brecha grave aunque haya bajas', () => {
+test('buildWaveReportGrade degrada dano grave a base aunque haya bajas', () => {
     const grade = buildWaveReportGrade({
         leaks: 4,
         kills: 9,
@@ -1431,7 +1431,7 @@ test('buildWaveReportActionState recomienda mejorar al MVP si hay creditos', () 
     assert.match(action.reason, /MVP/);
 });
 
-test('buildWaveReportActionState indica ahorro si falta para reforzar tras fugas', () => {
+test('buildWaveReportActionState indica ahorro si falta para reforzar tras dano a base', () => {
     const action = buildWaveReportActionState(
         { bestHeroId: 'spiderman', bestHero: 'Spider-Man', leaks: 2 },
         [deployedHero({ id: 'spiderman', name: 'Spider-Man', level: 2, damage: 20, fireRate: 2, range: 140 })],

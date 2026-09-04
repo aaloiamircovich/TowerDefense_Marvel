@@ -300,7 +300,7 @@ export function buildEnemyIntel(enemy = {}) {
     } else if (enemy.archetype === 'runner' || Number(enemy.speed || 0) >= 85) {
         counterId = 'control';
         counter = 'Control';
-        counterDetail = 'Velocidad alta; slow, stun o web en curvas evita brechas tempranas.';
+        counterDetail = 'Velocidad alta; slow, stun o web en curvas protege la salida.';
     } else if (enemy.archetype === 'flying' || enemy.flying) {
         counterId = 'reach';
         counter = 'Alcance';
@@ -799,7 +799,7 @@ export function buildLeakIntel(events = [], fallbackLeaks = 0) {
 
     if (!cleanEvents.length && fallbackLeaks > 0) {
         cleanEvents.push({
-            name: 'Brechas registradas',
+            name: 'Daño a la base',
             counter: 'Cubre salida',
             tone: fallbackLeaks >= 3 ? 'boss' : 'leak',
             detail: `${fallbackLeaks} vida perdida; falta detalle de enemigo.`,
@@ -1173,7 +1173,7 @@ export function buildPressureActionState(pressureState, heroes = [], credits = 0
             heroName: name,
             cost: affordable.cost,
             label: `Mejorar ${name}`,
-            reason: pressureState.id === 'critical' ? 'Respuesta recomendada para cortar la brecha.' : 'Refuerzo rapido antes de que escale.',
+            reason: pressureState.id === 'critical' ? 'Respuesta recomendada para cerrar la salida.' : 'Refuerzo rapido antes de que escale.',
             signature: `upgrade:${affordable.hero.id || name}:${affordable.level}:${affordable.cost}:${Math.floor(credits)}`
         };
     }
@@ -1206,7 +1206,7 @@ export function buildWaveReportLesson(report = {}) {
         return {
             tone: 'leak',
             label: 'Refuerzo final',
-            detail: 'Una mejora cerca de la meta puede convertir brechas en bajas.'
+            detail: 'Una mejora cerca de la meta puede frenar enemigos antes de la base.'
         };
     }
     if (kills === 0 && damage === 0) {
@@ -1280,7 +1280,7 @@ export function buildWaveReportGrade(report = {}) {
 
     let detail = 'Sostuviste la ruta; prepara el proximo salto de amenaza.';
     if (leaks >= 3) detail = 'La salida quedo expuesta; suma control final antes de acelerar.';
-    else if (leaks > 0) detail = 'Hubo brechas aisladas; una mejora cerca de meta puede sellar la linea.';
+    else if (leaks > 0) detail = 'La base recibio dano menor; una mejora cerca de meta puede sellar la linea.';
     else if (kills === 0 && damage === 0) detail = 'No hubo lectura ofensiva; despliega dano antes de la siguiente oleada.';
     else if (medal === 'S') detail = 'Ejecucion dominante: buen momento para greed de economia.';
     else if (bestShare >= 0.65) detail = 'El MVP cargo demasiado peso; agrega soporte para evitar dependencia.';
@@ -1305,7 +1305,7 @@ export function buildWaveReportState(report = {}) {
 
     if (leaks > 0) {
         tone = leaks >= 3 ? 'breach' : 'leak';
-        label = leaks >= 3 ? 'Brecha seria' : 'Brecha contenida';
+        label = leaks >= 3 ? 'Base en riesgo' : 'Daño contenido';
         advice = leaks >= 3
             ? 'Refuerza la salida y prioriza control antes de iniciar.'
             : 'Sube una defensa cercana al final del camino.';
@@ -1381,7 +1381,7 @@ export function buildWaveReportActionState(report = {}, heroes = [], credits = 0
         available: Math.floor(available),
         remaining: Math.max(0, Math.floor(available - cost)),
         reason: report.leaks > 0
-            ? 'Recomendado tras brechas: potencia tu defensa mas efectiva.'
+            ? 'Recomendado tras dano a base: potencia tu defensa mas efectiva.'
             : 'Aprovecha el rendimiento del MVP antes de escalar amenaza.',
         signature: `upgrade:${heroId}:${level}:${cost}:${Math.floor(available)}`
     };

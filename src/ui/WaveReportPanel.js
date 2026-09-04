@@ -77,7 +77,7 @@ export class WaveReportPanel {
                 </div>
             </div>
             <div class="wave-report-grid wave-report-grid--upgraded">
-                ${this.renderMetric({ icon: 'fa-route', label: 'Brechas', value: state.leaks, tone: state.leaks > 0 ? 'danger' : 'safe' })}
+                ${this.renderMetric({ icon: 'fa-heart-crack', label: 'Base', value: state.leaks > 0 ? `-${state.leaks}` : 'OK', tone: state.leaks > 0 ? 'danger' : 'safe' })}
                 ${this.renderMetric({ icon: 'fa-skull', label: 'Bajas', value: state.kills })}
                 ${this.renderMetric({ icon: 'fa-bolt', label: 'Dano', value: state.damage })}
                 ${this.renderMetric({ icon: 'fa-coins', label: 'Creditos', value: `$${state.credits}` })}
@@ -100,7 +100,7 @@ export class WaveReportPanel {
                 ? 'fa-piggy-bank'
                 : 'fa-compass';
         const chips = [
-            { icon: 'fa-shield-halved', label: 'Linea', value: leaks > 0 ? `${leaks} brecha${leaks === 1 ? '' : 's'}` : 'Cerrada', tone: leaks > 0 ? 'danger' : 'safe' },
+            { icon: 'fa-shield-halved', label: 'Base', value: leaks > 0 ? `-${leaks} vida` : 'Intacta', tone: leaks > 0 ? 'danger' : 'safe' },
             { icon: 'fa-coins', label: 'Recompensa', value: `+$${credits}`, tone: 'reward' },
             { icon: actionIcon, label: 'Siguiente', value: actionText, tone: action?.type || 'stable' }
         ];
