@@ -1155,22 +1155,6 @@ export class ProgressionManager {
         return true;
     }
 
-    getItemLevel(itemId) {
-        return 1;
-    }
-
-    getForgeCost(itemId) {
-        return Infinity;
-    }
-
-    salvageItem(itemId) {
-        return { ok: false, reason: 'La forja fue retirada' };
-    }
-
-    upgradeItem(itemId) {
-        return { ok: false, reason: 'La forja fue retirada' };
-    }
-
     saveLoadout(heroId) {
         if (!this.state.unlockedHeroIds.includes(heroId)) return false;
         this.state.loadouts[heroId] = { slots: { ...(this.state.equippedItems[heroId] || {}) } };

@@ -11958,10 +11958,10 @@ window.__MARVEL_TD_DATA__ = {
         "briefing": "La reliquia está lista para extracción, pero medio puerto quiere cobrarla. Mantén abierto el corredor de embarque.",
         "dialogue": "Plan sencillo: ustedes disparan, yo salvo la galaxia y después discutimos quién eligió la música.",
         "mechanic": {
-          "type": "salvage",
+          "type": "cosmic_route",
           "label": "Puerto de extracción",
-          "description": "Cada ocho bajas recuperan carga Celestial y conceden $40 créditos adicionales.",
-          "status": "La Milano espera autorización para despegar.",
+          "description": "Defiende el corredor de embarque mientras los saqueadores intentan tomar la reliquia Celestial.",
+          "status": "La Milano espera autorización para despegar; la recompensa depende solo del combate y los objetivos.",
           "landmarks": [
             {
               "x": 260,

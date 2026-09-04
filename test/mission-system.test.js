@@ -75,7 +75,7 @@ test('Las runas del Sanctum marcan enemigos dentro de su zona', () => {
     assert.ok(statuses.some((status) => status.type === 'mark' && status.power === 0.12));
 });
 
-test('Knowhere entrega créditos por cada ocho bajas', () => {
+test('Knowhere no entrega creditos automaticos por carga retirada', () => {
     const game = createGame();
     game.resourceManager.credits = 0;
     game.resourceManager.addCredits = (amount) => { game.resourceManager.credits += amount; };
@@ -83,8 +83,9 @@ test('Knowhere entrega créditos por cada ocho bajas', () => {
     mission.loadLevel(levels[5]);
     for (let index = 0; index < 8; index++) mission.onEnemyDefeated({ isBoss: false });
 
-    assert.equal(game.resourceManager.credits, 40);
-    assert.equal(mission.state.metrics.mechanicUses, 1);
+    assert.equal(levels[5].mission.mechanic.type, 'cosmic_route');
+    assert.equal(game.resourceManager.credits, 0);
+    assert.equal(mission.state.metrics.mechanicUses, 0);
 });
 
 function createGame() {

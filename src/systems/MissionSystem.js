@@ -166,12 +166,6 @@ export class MissionSystem {
         if (enemy.isBoss) this.state.metrics.bosses++;
 
         const type = this.level.mission?.mechanic?.type;
-        if (type === 'salvage' && this.state.metrics.kills % 8 === 0) {
-            this.game.resourceManager.addCredits(40);
-            this.state.metrics.mechanicUses++;
-            this.state.message = 'Carga recuperada: +$40 créditos de misión.';
-            this.publish();
-        }
         if (type === 'fortress' && this.state.metrics.kills % 10 === 0) {
             this.game.enemies.forEach((target) => target.applyStatus({ type: 'armorBreak', duration: 5, power: 0.16 }));
             this.state.metrics.mechanicUses++;

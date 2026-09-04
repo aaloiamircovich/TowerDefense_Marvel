@@ -183,7 +183,7 @@ test('Mover un objeto equipado lo transfiere a otro heroe si no hay copia libre'
     assert.deepEqual(manager.state.equippedItems.spiderman, { weapon: 'reactor_arc' });
 });
 
-test('Forja y reciclaje de objetos quedan retirados', () => {
+test('Forja y reciclaje de objetos no existen en progreso', () => {
     const manager = new ProgressionManager(new MemoryStorage());
     manager.initialize(createGame(), data);
     manager.startProfile('iron_man');
@@ -191,9 +191,11 @@ test('Forja y reciclaje de objetos quedan retirados', () => {
     manager.addOwnedItem('reactor_arc');
 
     assert.equal(manager.getOwnedQuantity('reactor_arc'), 2);
-    assert.equal(manager.salvageItem('reactor_arc').ok, false);
+    assert.equal(typeof manager.salvageItem, 'undefined');
+    assert.equal(typeof manager.upgradeItem, 'undefined');
+    assert.equal(typeof manager.getForgeCost, 'undefined');
+    assert.equal(typeof manager.getItemLevel, 'undefined');
     manager.state.forgeMaterials = 500;
-    assert.equal(manager.upgradeItem('reactor_arc').ok, false);
     manager.sanitize();
     assert.equal('forgeMaterials' in manager.state, false);
     assert.equal('itemLevels' in manager.state, false);
