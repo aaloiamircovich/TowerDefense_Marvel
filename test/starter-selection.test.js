@@ -1,11 +1,14 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
 import {
     isStarterEligible,
     RECOMMENDED_STARTER_IDS,
     scoreStarterHero,
     selectStarterHeroes
 } from '../src/utils/StarterSelection.js';
+
+const realHeroes = JSON.parse(fs.readFileSync(new URL('../data/heroes.json', import.meta.url), 'utf8'));
 
 const hero = (overrides) => ({
     id: 'hero',
@@ -38,6 +41,18 @@ test('selectStarterHeroes mantiene tres opciones comunes recomendadas', () => {
 
     assert.deepEqual(RECOMMENDED_STARTER_IDS, ['black_widow', 'hawkeye', 'korg']);
     assert.deepEqual(selectStarterHeroes(heroes).map((entry) => entry.id), ['black_widow', 'hawkeye', 'korg']);
+});
+
+test('selector inicial usa el roster real con tres comunes sin auras puras', () => {
+    const selected = selectStarterHeroes(realHeroes);
+    const ids = selected.map((entry) => entry.id);
+
+    assert.deepEqual(ids, RECOMMENDED_STARTER_IDS);
+    assert.equal(selected.length, 3);
+    assert.equal(selected.every((entry) => entry.rarity === 'Common'), true);
+    assert.equal(selected.every((entry) => !entry.special?.supportAura), true);
+    assert.equal(ids.includes('iron_man'), false);
+    assert.equal(ids.includes('capitan_america'), false);
 });
 
 test('selectStarterHeroes filtra rarezas altas, auras puras y heroes sin visual', () => {
