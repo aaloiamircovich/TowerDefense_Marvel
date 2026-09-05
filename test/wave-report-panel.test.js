@@ -137,8 +137,8 @@ test('WaveReportPanel mantiene compacto el desglose salvo dano serio a base', ()
         ...buildReportState(),
         leaks: 2,
         leakIntel: {
-            label: 'Brechas detectadas',
-            items: [{ tone: 'boss', name: 'Ultron', detail: 'Cruzo la salida' }],
+            label: 'Lectura de base',
+            items: [{ tone: 'boss', name: 'Ultron', detail: 'Llego a la base' }],
             overflow: 0
         }
     });
@@ -146,8 +146,8 @@ test('WaveReportPanel mantiene compacto el desglose salvo dano serio a base', ()
         ...buildReportState(),
         leaks: 3,
         leakIntel: {
-            label: 'Brechas detectadas',
-            items: [{ tone: 'boss', name: 'Ultron', detail: 'Cruzo la salida' }],
+            label: 'Lectura de base',
+            items: [{ tone: 'boss', name: 'Ultron', detail: 'Llego a la base' }],
             overflow: 0
         }
     });

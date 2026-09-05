@@ -21,18 +21,27 @@ test('scripts generadores no reintroducen fuga, brecha ni curacion de base', () 
     assert.deepEqual(offenders, []);
 });
 
-test('datos y UI visible no reintroducen salida como objetivo defensivo', () => {
+test('datos y UI visible no reintroducen copia antigua de objetivo defensivo', () => {
     const files = [
         'data/heroes.json',
         'data/levels.json',
         'data/bootstrapData.js',
         'src/systems/UIManager.js',
-        'src/systems/WaveManager.js'
+        'src/systems/WaveManager.js',
+        'src/ui/WaveReportPanel.js'
+    ];
+    const forbidden = [
+        /\bsalidas?\b/i,
+        /\bbonus perfecto\b/i,
+        /\bcerca de meta\b/i,
+        /\bantes de meta\b/i,
+        /\bcruz[óo]\s+la\s+salida\b/i
     ];
     const offenders = files
         .map((file) => ({ file, text: fs.readFileSync(path.join(process.cwd(), file), 'utf8') }))
-        .filter(({ text }) => /\bsalidas?\b/i.test(text))
-        .map(({ file }) => file);
+        .flatMap(({ file, text }) => forbidden
+            .filter((pattern) => pattern.test(text))
+            .map((pattern) => `${file}: ${pattern}`));
 
     assert.deepEqual(offenders, []);
 });
