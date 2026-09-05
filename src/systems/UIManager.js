@@ -785,7 +785,7 @@ export function buildLeakIntel(events = [], fallbackLeaks = 0) {
         .map((event) => {
             const segment = Number.isFinite(Number(event.segmentPct)) ? Math.max(0, Math.min(100, Math.round(Number(event.segmentPct)))) : null;
             const lifeLoss = Math.max(0, Number(event.lifeLoss || 0));
-            const counter = event.counter || 'Cubre salida';
+            const counter = event.counter || 'Cubre la base';
             const name = event.name || 'Enemigo';
             const lossCopy = lifeLoss > 0 ? `-${lifeLoss} vida` : 'sin dano';
             return {
@@ -800,7 +800,7 @@ export function buildLeakIntel(events = [], fallbackLeaks = 0) {
     if (!cleanEvents.length && fallbackLeaks > 0) {
         cleanEvents.push({
             name: 'Daño a la base',
-            counter: 'Cubre salida',
+            counter: 'Cubre la base',
             tone: fallbackLeaks >= 3 ? 'boss' : 'leak',
             detail: `${fallbackLeaks} vida perdida; falta detalle de enemigo.`,
             traits: []
@@ -1198,15 +1198,15 @@ export function buildWaveReportLesson(report = {}) {
     if (leaks >= 3) {
         return {
             tone: 'breach',
-            label: 'Prioridad: salida',
-            detail: 'Invierte en control o alcance final antes de escalar.'
+            label: 'Prioridad: base',
+            detail: 'Invierte en control o dano en el ultimo tramo antes de escalar.'
         };
     }
     if (leaks > 0) {
         return {
             tone: 'leak',
             label: 'Refuerzo final',
-            detail: 'Una mejora cerca de la meta puede frenar enemigos antes de la base.'
+            detail: 'Una mejora en el ultimo tramo puede frenar enemigos antes de la base.'
         };
     }
     if (kills === 0 && damage === 0) {
@@ -1279,7 +1279,7 @@ export function buildWaveReportGrade(report = {}) {
     }
 
     let detail = 'Sostuviste la ruta; prepara el proximo salto de amenaza.';
-    if (leaks >= 3) detail = 'La salida quedo expuesta; suma control final antes de acelerar.';
+    if (leaks >= 3) detail = 'La base quedo expuesta; suma control final antes de acelerar.';
     else if (leaks > 0) detail = 'La base recibio dano menor; una mejora cerca de meta puede sellar la linea.';
     else if (kills === 0 && damage === 0) detail = 'No hubo lectura ofensiva; despliega dano antes de la siguiente oleada.';
     else if (medal === 'S') detail = 'Ejecucion dominante: buen momento para greed de economia.';
@@ -1307,8 +1307,8 @@ export function buildWaveReportState(report = {}) {
         tone = leaks >= 3 ? 'breach' : 'leak';
         label = leaks >= 3 ? 'Base en riesgo' : 'Daño contenido';
         advice = leaks >= 3
-            ? 'Refuerza la salida y prioriza control antes de iniciar.'
-            : 'Sube una defensa cercana al final del camino.';
+            ? 'Refuerza la base y prioriza control antes de iniciar.'
+            : 'Sube una defensa en el ultimo tramo del camino.';
     } else if (kills === 0 && damage === 0) {
         tone = 'warning';
         label = 'Sin lectura ofensiva';
@@ -1367,7 +1367,7 @@ export function buildWaveReportActionState(report = {}, heroes = [], credits = 0
             available: Math.floor(available),
             cost,
             reason: report.leaks > 0
-                ? 'Ahorra para reforzar al heroe que mas sostuvo la salida.'
+                ? 'Ahorra para reforzar al heroe que mas protegio la base.'
                 : 'Guarda creditos para convertir al MVP en carry.',
             signature: `saving:${heroId}:${cost}:${Math.floor(available)}`
         };

@@ -1342,8 +1342,8 @@ test('buildWaveReportState convierte dano a base en recomendacion tactica', () =
 
     assert.equal(report.tone, 'breach');
     assert.equal(report.label, 'Base en riesgo');
-    assert.match(report.advice, /Refuerza la salida/);
-    assert.equal(report.lesson.label, 'Prioridad: salida');
+    assert.match(report.advice, /Refuerza la base/);
+    assert.equal(report.lesson.label, 'Prioridad: base');
 });
 
 test('buildWaveReportState destaca maestria cuando la base queda intacta', () => {
@@ -1412,7 +1412,7 @@ test('buildWaveReportGrade degrada dano grave a base aunque haya bajas', () => {
 
     assert.equal(grade.medal, 'D');
     assert.equal(grade.tone, 'critical');
-    assert.match(grade.detail, /salida/);
+    assert.match(grade.detail, /base/);
 });
 
 test('buildWaveReportActionState recomienda mejorar al MVP si hay creditos', () => {
@@ -1444,7 +1444,7 @@ test('buildWaveReportActionState indica ahorro si falta para reforzar tras dano 
     assert.equal(action.missing, 160);
     assert.equal(action.available, 80);
     assert.equal(action.cost, 240);
-    assert.match(action.reason, /salida/);
+    assert.match(action.reason, /base/);
 });
 
 test('UIManager recalcula coste del panel con el nivel vivo tras mejora rapida', () => {
