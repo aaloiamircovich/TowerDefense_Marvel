@@ -29,6 +29,18 @@ cachedPaths.filter((file) => file && file !== '/').forEach(requireFile);
 const serverSource = fs.readFileSync(path.join(root, 'dev-server.js'), 'utf8');
 if (!/process\.env\.PORT/.test(serverSource)) errors.push('dev-server.js debe escuchar process.env.PORT para Railway');
 if (!/['"]0\.0\.0\.0['"]/.test(serverSource)) errors.push('dev-server.js debe escuchar en 0.0.0.0 para exponer el servicio en Railway');
+if (!serverSource.includes('path.resolve(process.cwd())')) errors.push('dev-server.js debe resolver root con path.resolve');
+if (!serverSource.includes('path.resolve(root, `.${urlPath}`)')) errors.push('dev-server.js debe resolver archivos dentro del root');
+for (const [extension, mime] of Object.entries({
+    '.mp3': 'audio/mpeg',
+    '.gif': 'image/gif',
+    '.webp': 'image/webp',
+    '.ico': 'image/x-icon'
+})) {
+    if (!serverSource.includes(`'${extension}': '${mime}'`)) {
+        errors.push(`dev-server.js debe servir ${extension} como ${mime}`);
+    }
+}
 
 const notice = fs.readFileSync(path.join(root, 'NOTICE.md'), 'utf8');
 if (!notice.includes('proyecto fan no oficial') || !FAN_PROJECT_NOTICE.includes('no oficial')) {

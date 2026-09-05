@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import http from 'node:http';
 import path from 'node:path';
 
-const root = process.cwd();
+const root = path.resolve(process.cwd());
 const port = Number(process.env.PORT || 5173);
 const host = process.env.HOST || '0.0.0.0';
 
@@ -14,16 +14,29 @@ const types = {
     '.png': 'image/png',
     '.jpg': 'image/jpeg',
     '.jpeg': 'image/jpeg',
+    '.gif': 'image/gif',
+    '.webp': 'image/webp',
+    '.ico': 'image/x-icon',
     '.svg': 'image/svg+xml',
+    '.mp3': 'audio/mpeg',
+    '.ogg': 'audio/ogg',
+    '.wav': 'audio/wav',
     '.webmanifest': 'application/manifest+json; charset=utf-8'
 };
 
 http.createServer((req, res) => {
-    let urlPath = decodeURIComponent(req.url.split('?')[0]);
+    let urlPath;
+    try {
+        urlPath = decodeURIComponent(req.url.split('?')[0]);
+    } catch (error) {
+        res.writeHead(400);
+        res.end('Bad request');
+        return;
+    }
     if (urlPath === '/') urlPath = '/index.html';
 
-    const file = path.normalize(path.join(root, urlPath));
-    if (!file.startsWith(root)) {
+    const file = path.resolve(root, `.${urlPath}`);
+    if (file !== root && !file.startsWith(`${root}${path.sep}`)) {
         res.writeHead(403);
         res.end('Forbidden');
         return;
