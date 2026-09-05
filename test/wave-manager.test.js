@@ -282,6 +282,27 @@ test('WaveManager evalua preparacion con heroes desplegados y creditos', () => {
     assert.equal(summary.readiness.damageCheck.contributors.reduce((total, entry) => total + entry.share, 0), 100);
 });
 
+test('WaveManager no cuenta soportes de aura pura como DPS esperado', () => {
+    const game = createGame('new-york', [], [
+        deployedHero({
+            id: 'capitan_america',
+            name: 'Capitán América',
+            damage: 1,
+            fireRate: 0,
+            range: 255,
+            special: { supportAura: { type: 'damage', power: 0.12, range: 255 } }
+        }),
+        deployedHero({ id: 'iron_man', damage: 58, fireRate: 1.4, range: 180 })
+    ]);
+    const manager = new WaveManager(game, enemies);
+    const check = manager.getDamageCheckForSummary(game.heroes, { effectiveHp: 1600, totalHp: 1600 });
+
+    assert.equal(check.requiredDamage, 1600);
+    assert.ok(check.expectedDamage > 0);
+    assert.deepEqual(check.contributors.map((entry) => entry.name), ['iron_man']);
+    assert.equal(check.contributors.reduce((total, entry) => total + entry.share, 0), 100);
+});
+
 test('WaveManager refresca el radar tactico al cambiar heroes desplegados', () => {
     const rendered = [];
     const game = createGame();
@@ -557,7 +578,7 @@ function captureThreatCalls() {
     };
 }
 
-function deployedHero({ id, name = id, damage, fireRate, range, level = 1, canSeeStealth = false }) {
+function deployedHero({ id, name = id, damage, fireRate, range, level = 1, canSeeStealth = false, special = null }) {
     return {
         id,
         name,
@@ -568,7 +589,8 @@ function deployedHero({ id, name = id, damage, fireRate, range, level = 1, canSe
         canSeeStealth,
         items: [],
         combatStats: { damageDealt: 0, kills: 0, shots: 0, crits: 0, goldGenerated: 0, abilityActivations: 0 },
-        config: { id, level },
+        config: { id, level, special },
+        special,
         getEffectiveStats: () => ({ damage, fireRate, range, canSeeStealth })
     };
 }
