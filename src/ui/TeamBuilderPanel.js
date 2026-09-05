@@ -13,7 +13,7 @@ const METRIC_LABELS = {
     detection: 'Detección',
 };
 
-const HERO_TACTIC_FILTERS = [
+export const HERO_TACTIC_FILTERS = [
     { id: 'all', label: 'Todas', icon: 'fa-filter' },
     { id: 'grass', label: 'Pasto', icon: 'fa-seedling' },
     { id: 'water', label: 'Agua', icon: 'fa-water' },

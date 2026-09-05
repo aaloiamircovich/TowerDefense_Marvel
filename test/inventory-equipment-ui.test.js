@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { buildItemEffectPills, buildItemEquipDeltaRows, getItemEffectTags, InventoryPanel } from '../src/ui/InventoryPanel.js';
-import { buildTeamReadinessAlerts, getHeroTacticBadges, heroMatchesTacticId, TeamBuilderPanel } from '../src/ui/TeamBuilderPanel.js';
+import { HERO_TACTIC_FILTERS, buildTeamReadinessAlerts, getHeroTacticBadges, heroMatchesTacticId, TeamBuilderPanel } from '../src/ui/TeamBuilderPanel.js';
 import { UIManager } from '../src/systems/UIManager.js';
 import { analyzeTeam } from '../src/systems/TeamSynergySystem.js';
 
@@ -270,6 +270,30 @@ test('coleccion muestra badges tacticos compactos coherentes con los filtros', (
     assert.match(html, /aria-label="Respuestas tacticas: /);
     assert.match(html, /data-tactic="detection"/);
     assert.match(html, /fa-eye/);
+});
+
+test('coleccion mantiene filtros tacticos con heroes candidatos', () => {
+    const playableHeroes = Object.values(data.heroes).filter((hero) => hero.visual);
+    const tacticIds = HERO_TACTIC_FILTERS
+        .map((filter) => filter.id)
+        .filter((filterId) => filterId !== 'all');
+    const emptyFilters = tacticIds
+        .filter((filterId) => !playableHeroes.some((hero) => heroMatchesTacticId(hero, filterId)));
+
+    assert.deepEqual(emptyFilters, []);
+});
+
+test('coleccion clasifica todos los heroes visibles en al menos una tactica', () => {
+    const tacticIds = HERO_TACTIC_FILTERS
+        .map((filter) => filter.id)
+        .filter((filterId) => filterId !== 'all');
+    const unclassifiedHeroes = Object.values(data.heroes)
+        .filter((hero) => hero.visual)
+        .filter((hero) => !tacticIds.some((filterId) => heroMatchesTacticId(hero, filterId)))
+        .map((hero) => hero.id)
+        .sort();
+
+    assert.deepEqual(unclassifiedHeroes, []);
 });
 test('previsualizacion de objeto compara mejoras y perdidas numericas', () => {
     const rows = buildItemEquipDeltaRows(data.items.lentes_edith, data.items.reactor_arc);
