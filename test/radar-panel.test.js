@@ -51,9 +51,6 @@ test('RadarPanel centraliza secciones tacticas y delega acciones interactivas', 
                 extract() {
                     calls.push('extract');
                 },
-                repair() {
-                    calls.push('repair');
-                }
             }
         },
         closePanel() {
@@ -129,7 +126,7 @@ function createRadarSources() {
     return {
         'wave-intel': createSource('<div id="wave-intel-content">Informe listo</div>'),
         'mission-status': createSource('', false),
-        'mode-status': createSource('<button id="extract-mode">Extraer</button><button id="repair-mode">Reparar</button>'),
+        'mode-status': createSource('<button id="extract-mode">Extraer</button>'),
         'spawn-queue': createSource('<button data-branch="ambush">Emboscada</button>'),
         'boss-hud': createSource('', true),
         'wave-report': createSource('<button id="wave-report-action">Mejorar</button>'),

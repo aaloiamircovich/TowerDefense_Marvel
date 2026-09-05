@@ -254,6 +254,5 @@ export class RadarPanel {
             if (action?.heroId && this.ui.quickUpgradeHeroById(action.heroId)) this.render('Radar tactico');
         });
         this.ui.panelContent.querySelector('#extract-mode')?.addEventListener('click', () => this.ui.game.modeSystem.extract());
-        this.ui.panelContent.querySelector('#repair-mode')?.addEventListener('click', () => this.ui.game.modeSystem.repair());
     }
 }

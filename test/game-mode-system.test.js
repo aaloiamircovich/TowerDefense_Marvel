@@ -29,15 +29,18 @@ test('Boss Rush prepara un jefe distinto por ronda y recompensa tienda breve', (
     assert.ok(game.resourceManager.credits > before);
     game.resourceManager.maxLives = 30; game.resourceManager.lives = 25;
     const shopCredits = game.resourceManager.credits;
-    assert.equal(modes.repair(), true);
-    assert.equal(game.resourceManager.lives, 27);
-    assert.equal(game.resourceManager.credits, shopCredits - 120);
+    assert.equal(modes.repair(), false);
+    assert.equal(game.resourceManager.lives, 25);
+    assert.equal(game.resourceManager.credits, shopCredits);
+    assert.equal('canRepair' in modes.getSnapshot(), false);
 });
 
 test('Supervivencia entrega hitos y permite extracción entre oleadas', () => {
     const game = createGame(); const modes = attachModes(game); modes.modeId = 'survival'; game.waveManager = { currentWave: 6, isWaveActive: false };
+    game.resourceManager.lives = 12;
     const credits = game.resourceManager.credits; modes.onWaveFinished(5);
     assert.equal(game.resourceManager.credits, credits + 300);
+    assert.equal(game.resourceManager.lives, 12);
     assert.equal(modes.extract(), true);
     assert.equal(game.recorded.at(-1).result, 'extracted');
 });

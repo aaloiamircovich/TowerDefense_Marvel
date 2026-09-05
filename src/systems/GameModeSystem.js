@@ -86,8 +86,7 @@ export class GameModeSystem {
         if (this.modeId === 'boss_rush') this.game.resourceManager.addCredits(180 + waveNumber * 35);
         if (this.modeId === 'survival' && waveNumber % 5 === 0) {
             this.game.resourceManager.addCredits(300);
-            this.game.resourceManager.addLife(1);
-            this.game.uiManager?.showToast(`Hito ${waveNumber}: +$300 y +1 vida`, 'reward');
+            this.game.uiManager?.showToast(`Hito ${waveNumber}: +$300`, 'reward');
         }
         if (this.modeId === 'draft' && waveNumber % 3 === 0 && this.draftPool.length) this.offerDraft();
         this.publish();
@@ -131,12 +130,7 @@ export class GameModeSystem {
     }
 
     repair() {
-        if (this.modeId !== 'boss_rush' || this.game.waveManager?.isWaveActive || this.game.resourceManager.lives >= this.game.resourceManager.maxLives) return false;
-        if (!this.game.resourceManager.removeCredits(120)) return false;
-        this.game.resourceManager.addLife(2);
-        this.game.uiManager?.showToast('Taller de campo: +2 vidas', 'success');
-        this.publish();
-        return true;
+        return false;
     }
 
     finishRun(result = 'defeat') {
@@ -165,8 +159,7 @@ export class GameModeSystem {
             streakDetail,
             wavesCleared: this.wavesCleared,
             lastWaveScore: this.lastWaveScore,
-            canExtract: this.modeId === 'survival' && !this.game.waveManager?.isWaveActive && !this.finished,
-            canRepair: this.modeId === 'boss_rush' && !this.game.waveManager?.isWaveActive && this.game.resourceManager.lives < this.game.resourceManager.maxLives && !this.finished
+            canExtract: this.modeId === 'survival' && !this.game.waveManager?.isWaveActive && !this.finished
         };
     }
 
