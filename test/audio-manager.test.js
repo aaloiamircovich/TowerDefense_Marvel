@@ -1,5 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
 import { AudioManager, MUSIC_TRACKS } from '../src/audio/AudioManager.js';
 
 test('AudioManager mantiene volúmenes separados y normalizados', () => {
@@ -42,4 +44,21 @@ test('AudioManager avanza a la siguiente cancion al terminar si loop esta apagad
     audio.handleTrackEnded();
 
     assert.equal(audio.musicTrackId, secondPlayable.id);
+});
+
+test('MUSIC_TRACKS se mantiene sincronizado con los mp3 disponibles', () => {
+    const musicDir = path.resolve(process.cwd(), 'assets/audio/music');
+    const declaredSources = MUSIC_TRACKS
+        .filter((track) => track.src)
+        .map((track) => track.src.replaceAll('\\', '/'))
+        .sort();
+    const fileSources = fs.readdirSync(musicDir)
+        .filter((file) => file.toLowerCase().endsWith('.mp3'))
+        .map((file) => `assets/audio/music/${file}`)
+        .sort();
+
+    declaredSources.forEach((source) => {
+        assert.ok(fs.existsSync(path.resolve(process.cwd(), source)), `${source} debe existir`);
+    });
+    assert.deepEqual(declaredSources, fileSources);
 });
