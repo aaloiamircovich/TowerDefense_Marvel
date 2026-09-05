@@ -36,7 +36,7 @@ function createLoopHarness() {
     return { loop, leaks, toasts };
 }
 
-test('GameLoop derrota inmediatamente si un boss cruza la meta', () => {
+test('GameLoop derrota inmediatamente si un boss llega a la base', () => {
     const { loop, leaks, toasts } = createLoopHarness();
     const boss = { id: 'loki', name: 'Loki', isBoss: true, processed: false };
 
@@ -50,7 +50,7 @@ test('GameLoop derrota inmediatamente si un boss cruza la meta', () => {
     assert.equal(boss.processed, true);
     assert.equal(leaks.length, 1);
     assert.deepEqual(leaks[0].payload, { lifeLoss: 7 });
-    assert.match(toasts[0][0], /Loki cruzo la linea/);
+    assert.match(toasts[0][0], /Loki llego a la base/);
 });
 
 test('GameLoop ya no absorbe fugas de enemigos comunes', () => {

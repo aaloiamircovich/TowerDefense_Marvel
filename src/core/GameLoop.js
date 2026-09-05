@@ -288,7 +288,7 @@ export class GameLoop {
 
         this.waveManager?.recordLeak?.(enemy, { lifeLoss });
         if (isBoss) {
-            this.uiManager?.showToast?.(`${enemy.name || enemy.config?.name || 'El jefe'} cruzo la linea: derrota inmediata`, 'danger');
+            this.uiManager?.showToast?.(`${enemy.name || enemy.config?.name || 'El jefe'} llego a la base: derrota inmediata`, 'danger');
             if (this.resourceManager && remainingLives > 0) this.resourceManager.removeLife(remainingLives);
             if (!this.isGameOver) this.gameOver();
         } else {
