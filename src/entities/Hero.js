@@ -319,8 +319,7 @@ export class Hero {
     }
 
     isSupportAuraOnly() {
-        return Boolean(this.config.special?.supportAura?.type)
-            && !this.game.progression?.getHeroEvolution?.(this.id)?.allowsSupportAttack;
+        return Boolean(this.config.special?.supportAura?.type);
     }
 
     applySupportAuras(stats) {

@@ -52,7 +52,7 @@ test('un objeto signature mejora la evolucion sin bloquear la base', () => {
     assert.equal(base.activeItemId, undefined);
     assert.equal(withItem.activeItemId, 'mjolnir');
     assert.equal(withItem.transformId, 'capitan_america_mjolnir');
-    assert.equal(withItem.allowsSupportAttack, true);
+    assert.equal('allowsSupportAttack' in withItem, false);
     assert.ok(withItem.stats.damage > base.stats.damage);
 });
 

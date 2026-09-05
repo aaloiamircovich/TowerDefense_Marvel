@@ -410,7 +410,7 @@ test('evoluciones se activan automaticamente por nivel y respetan objetos signat
     assert.equal(manager.equipItem('capitan_america', 'mjolnir'), true);
     const withItem = manager.getHeroEvolution('capitan_america');
     assert.equal(withItem.activeItemId, 'mjolnir');
-    assert.equal(withItem.allowsSupportAttack, true);
+    assert.equal('allowsSupportAttack' in withItem, false);
     assert.ok(withItem.stats.damage > base.stats.damage);
 });
 

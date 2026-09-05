@@ -32,7 +32,7 @@ test('Redwing MK II solo asiste a Falcon cuando ya evoluciono por nivel', () => 
     assert.equal(evolvedProjectiles.length, 5);
 });
 
-test('Mjolnir permite que Captain America ataque ademas de su aura', () => {
+test('Mjolnir mantiene a Captain America como aura pura sin ataque', () => {
     const game = createGame({
         evolutionOverrides: {
             capitan_america: { id: 'capitan_america_evolution', levelEvolved: true, allowsSupportAttack: true, stats: {} }
@@ -45,10 +45,10 @@ test('Mjolnir permite que Captain America ataque ademas de su aura', () => {
     game.heroes = [captain];
     game.enemies = [target];
 
-    assert.equal(captain.isSupportAuraOnly(), false);
+    assert.equal(captain.isSupportAuraOnly(), true);
     captain.update(2, [target], projectiles);
 
-    assert.ok(projectiles.length > 0);
+    assert.equal(projectiles.length, 0);
 });
 
 test('Capucha Infernal propaga una maldicion al matar', () => {

@@ -35,7 +35,7 @@ const OVERRIDES = {
     blade: { name: 'Blade King of the Vampires', rarity: 'Legendary', color: '#ff3b5f', stats: { damage: 0.18, fireRate: 0.06, range: 0.04, critChance: 5 } },
     capitan_america: {
         stats: SUPPORT_STATS,
-        transforms: [transform('mjolnir', 'capitan_america_mjolnir', 'Captain America Mjolnir', { stats: { damage: 0.26, fireRate: 0.12, range: 0.05, critChance: 4 }, allowsSupportAttack: true, canSeeStealth: true })]
+        transforms: [transform('mjolnir', 'capitan_america_mjolnir', 'Captain America Mjolnir', { stats: { damage: 0.26, fireRate: 0.12, range: 0.05, critChance: 4 }, canSeeStealth: true })]
     },
     captain_marvel: { name: 'Binary', rarity: 'Mythic', color: '#ffd166', stats: HIGH_POWER_STATS },
     cloak: { name: 'Cloak Fusion', rarity: 'Epic', color: '#111827', stats: { damage: 0.22, fireRate: 0.05, range: 0.07, critChance: 3 } },
@@ -130,7 +130,6 @@ export function getEvolutionForHero(hero, selectedEvolutions = {}, options = {})
         stats: mergeStats(base.stats, activeTransform.stats),
         activeItemId: activeTransform.itemId,
         transformId: activeTransform.id,
-        allowsSupportAttack: Boolean(activeTransform.allowsSupportAttack || base.allowsSupportAttack),
         canSeeStealth: Boolean(activeTransform.canSeeStealth || base.canSeeStealth)
     };
 }
@@ -157,7 +156,6 @@ function createEvolution(heroId, id, override = {}) {
         rarity: override.rarity || null,
         stats: override.stats || DEFAULT_STATS,
         itemTransforms: override.transforms || [],
-        allowsSupportAttack: Boolean(override.allowsSupportAttack),
         canSeeStealth: Boolean(override.canSeeStealth)
     };
 }
@@ -173,7 +171,6 @@ function transform(itemId, id, name, options = {}) {
         rarity: options.rarity || null,
         color: options.color,
         stats: options.stats || {},
-        allowsSupportAttack: Boolean(options.allowsSupportAttack),
         canSeeStealth: Boolean(options.canSeeStealth),
         priority: options.priority || 0
     };

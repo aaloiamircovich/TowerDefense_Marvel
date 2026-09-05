@@ -94,6 +94,18 @@ test('validate-data bloquea curacion de base en efectos de heroes', () => {
     assert.match(result.stderr, /heroes\.loki\.special\.attackEffects\.0\.type heal esta prohibido/);
 });
 
+test('validate-data exige soportes de aura puros sin dano ofensivo', () => {
+    const workspace = createDataWorkspace((data) => {
+        data.heroes.capitan_america.damage = 40;
+        data.heroes.capitan_america.formationRole = 'vanguard';
+    });
+    const result = runValidator(workspace);
+
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr, /heroes\.capitan_america\.damage debe ser 1 para soportes de aura/);
+    assert.match(result.stderr, /heroes\.capitan_america\.formationRole debe ser support/);
+});
+
 function createDataWorkspace(mutator = null) {
     const workspace = fs.mkdtempSync(path.join(os.tmpdir(), 'marvel-td-data-'));
     const dataDir = path.join(workspace, 'data');

@@ -98,7 +98,7 @@ function validateHeroes(heroes) {
             allowedSupportAuraKeys,
             allowedSupportAuraTypes,
             allowedEconomyOnHitKeys
-        });
+        }, hero);
 
         if (hero.evolutionId) {
             if (!EVOLUTION_CATALOG[hero.evolutionId]) errors.push(`heroes.${key}.evolutionId referencia '${hero.evolutionId}', que no existe`);
@@ -108,7 +108,7 @@ function validateHeroes(heroes) {
     }
 }
 
-function validateHeroSpecial(heroId, special, schema) {
+function validateHeroSpecial(heroId, special, schema, hero = {}) {
     validateAllowedKeys(`heroes.${heroId}.special`, special, schema.allowedSpecialKeys);
 
     if (special.statModifiers) {
@@ -158,6 +158,8 @@ function validateHeroSpecial(heroId, special, schema) {
         if (!schema.allowedSupportAuraTypes.has(special.supportAura.type)) errors.push(`heroes.${heroId}.special.supportAura.type no es valido`);
         if (!isUnitNumber(special.supportAura.power)) errors.push(`heroes.${heroId}.special.supportAura.power debe estar entre 0 y 1`);
         requirePositive(special.supportAura.range, `heroes.${heroId}.special.supportAura.range`);
+        if (Number(hero.damage || 0) !== 1) errors.push(`heroes.${heroId}.damage debe ser 1 para soportes de aura que no atacan`);
+        if (hero.formationRole !== 'support') errors.push(`heroes.${heroId}.formationRole debe ser support para soportes de aura`);
         if (special.supportAura.label !== undefined) requireText(special.supportAura.label, `heroes.${heroId}.special.supportAura.label`);
         if (special.supportAura.detectStealth !== undefined && typeof special.supportAura.detectStealth !== 'boolean') {
             errors.push(`heroes.${heroId}.special.supportAura.detectStealth debe ser booleano`);
