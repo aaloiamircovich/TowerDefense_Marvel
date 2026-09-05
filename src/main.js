@@ -112,12 +112,11 @@ function preloadStartScreenFonts() {
     if (!document.fonts?.load) return Promise.resolve();
     return Promise.allSettled([
         document.fonts.load('700 96px "Avengeance"'),
-        document.fonts.load('700 24px "Avengeance"'),
-        document.fonts.ready
+        document.fonts.load('700 24px "Avengeance"')
     ]);
 }
 
-async function prepareStartScreenAssets(timeoutMs = 2200) {
+async function prepareStartScreenAssets(timeoutMs = 4500) {
     try {
         await Promise.race([
             Promise.allSettled([
