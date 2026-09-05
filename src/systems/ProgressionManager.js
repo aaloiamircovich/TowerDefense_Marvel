@@ -582,14 +582,6 @@ export class ProgressionManager {
         this.save();
     }
 
-    spendMetaCredits(amount) {
-        return this.spendCredits(amount);
-    }
-
-    addMetaCredits(amount) {
-        return this.addCredits(amount);
-    }
-
     unlockHero(heroId) {
         if (this.state.unlockedHeroIds.includes(heroId) || !this.data.heroes[heroId]) return false;
         this.state.unlockedHeroIds.push(heroId);

@@ -195,6 +195,8 @@ test('Forja y reciclaje de objetos no existen en progreso', () => {
     assert.equal(typeof manager.upgradeItem, 'undefined');
     assert.equal(typeof manager.getForgeCost, 'undefined');
     assert.equal(typeof manager.getItemLevel, 'undefined');
+    assert.equal(typeof manager.spendMetaCredits, 'undefined');
+    assert.equal(typeof manager.addMetaCredits, 'undefined');
     manager.state.forgeMaterials = 500;
     manager.sanitize();
     assert.equal('forgeMaterials' in manager.state, false);
