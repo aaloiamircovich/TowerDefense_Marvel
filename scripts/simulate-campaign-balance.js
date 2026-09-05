@@ -10,15 +10,15 @@ const levels = JSON.parse(fs.readFileSync(new URL('../data/levels.json', import.
 
 export const CAMPAIGN_BALANCE_CHECKPOINTS = [
     {
-        id: 'base-avengers-wave-25-first-attempt',
-        label: 'Base Avengers W25, primer intento',
+        id: 'base-avengers-wave-25-attempt-1',
+        label: 'Base Avengers W25, intento 1',
         levelId: 'level_1',
         wave: 25,
         coverageSeconds: 24,
         expected: 'fail',
         maxMargin: 0.95,
         team: [
-            ['cyclops', 30],
+            ['cyclops', 20],
             ['black_widow', 15],
             ['hawkeye', 15],
             ['groot', 15],
@@ -27,21 +27,55 @@ export const CAMPAIGN_BALANCE_CHECKPOINTS = [
         ]
     },
     {
-        id: 'base-avengers-wave-25-ready',
-        label: 'Base Avengers W25, equipo preparado',
+        id: 'base-avengers-wave-25-attempt-2',
+        label: 'Base Avengers W25, intento 2',
+        levelId: 'level_1',
+        wave: 25,
+        coverageSeconds: 24,
+        expected: 'fail',
+        maxMargin: 0.95,
+        team: [
+            ['cyclops', 24],
+            ['black_widow', 15],
+            ['hawkeye', 15],
+            ['groot', 15],
+            ['korg', 15],
+            ['ms_marvel', 15]
+        ]
+    },
+    {
+        id: 'base-avengers-wave-25-attempt-3',
+        label: 'Base Avengers W25, intento 3',
+        levelId: 'level_1',
+        wave: 25,
+        coverageSeconds: 24,
+        expected: 'fail',
+        maxMargin: 0.95,
+        team: [
+            ['cyclops', 27],
+            ['black_widow', 15],
+            ['hawkeye', 15],
+            ['groot', 15],
+            ['korg', 15],
+            ['ms_marvel', 15]
+        ]
+    },
+    {
+        id: 'base-avengers-wave-25-attempt-4-ready',
+        label: 'Base Avengers W25, intento 4 preparado',
         levelId: 'level_1',
         wave: 25,
         coverageSeconds: 24,
         expected: 'pass',
-        minMargin: 1.08,
-        maxMargin: 1.45,
+        minMargin: 1.04,
+        maxMargin: 1.32,
         team: [
-            ['cyclops', 34],
-            ['black_widow', 20],
-            ['hawkeye', 20],
-            ['groot', 20],
-            ['korg', 20],
-            ['ms_marvel', 20]
+            ['cyclops', 30],
+            ['black_widow', 16],
+            ['hawkeye', 16],
+            ['groot', 16],
+            ['korg', 16],
+            ['ms_marvel', 16]
         ]
     },
     {
