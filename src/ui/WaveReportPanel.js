@@ -76,12 +76,6 @@ export class WaveReportPanel {
                     </span>
                 </div>
             </div>
-            <div class="wave-report-grid wave-report-grid--upgraded">
-                ${this.renderMetric({ icon: 'fa-heart-crack', label: 'Base', value: state.leaks > 0 ? `-${state.leaks}` : 'OK', tone: state.leaks > 0 ? 'danger' : 'safe' })}
-                ${this.renderMetric({ icon: 'fa-skull', label: 'Bajas', value: state.kills })}
-                ${this.renderMetric({ icon: 'fa-bolt', label: 'Dano', value: state.damage })}
-                ${this.renderMetric({ icon: 'fa-coins', label: 'Creditos', value: `$${state.credits}` })}
-            </div>
             ${this.renderDetailDrawer(state)}
             <p class="wave-report-advice"><i class="fas fa-compass"></i><span>${escapeHtml(state.advice)}</span></p>
             ${this.renderAction(action)}
@@ -91,6 +85,8 @@ export class WaveReportPanel {
     renderQuickline(state, action) {
         const leaks = Number(state.leaks || 0);
         const credits = Math.max(0, Number(state.credits || 0));
+        const kills = Math.max(0, Number(state.kills || 0));
+        const damage = Math.max(0, Number(state.damage || 0));
         const actionText = action?.type === 'upgrade'
             ? `${action.label} $${action.cost}`
             : action?.label || 'Sin accion urgente';
@@ -101,6 +97,7 @@ export class WaveReportPanel {
                 : 'fa-compass';
         const chips = [
             { icon: 'fa-shield-halved', label: 'Base', value: leaks > 0 ? `-${leaks} vida` : 'Intacta', tone: leaks > 0 ? 'danger' : 'safe' },
+            { icon: 'fa-skull', label: 'Combate', value: `${kills} KO | ${damage} dano`, tone: 'combat' },
             { icon: 'fa-coins', label: 'Recompensa', value: `+$${credits}`, tone: 'reward' },
             { icon: actionIcon, label: 'Siguiente', value: actionText, tone: action?.type || 'stable' }
         ];
@@ -111,13 +108,6 @@ export class WaveReportPanel {
                 <b>${escapeHtml(chip.value)}</b>
             </span>`).join('')}
         </div>`;
-    }
-    renderMetric(metric) {
-        return `<span class="wave-report-metric metric-${escapeHtml(metric.tone || 'neutral')}">
-            <i class="fas ${escapeHtml(metric.icon)}"></i>
-            <b>${escapeHtml(metric.value)}</b>
-            <small>${escapeHtml(metric.label)}</small>
-        </span>`;
     }
 
     renderDetailDrawer(state) {

@@ -54,14 +54,15 @@ test('WaveReportPanel renderiza informe y delega mejora recomendada', () => {
         assert.match(container.innerHTML, /wave-report-quickline/);
         assert.match(container.innerHTML, /Resumen rapido de oleada/);
         assert.match(container.innerHTML, /Base[\s\S]*Intacta/);
+        assert.match(container.innerHTML, /Combate[\s\S]*12 KO \| 1800 dano/);
         assert.match(container.innerHTML, /Recompensa[\s\S]*\+\$320/);
         assert.match(container.innerHTML, /Siguiente[\s\S]*Mejorar Iron Man \$240/);
+        assert.doesNotMatch(container.innerHTML, /wave-report-grid/);
         assert.match(container.innerHTML, /<details class="wave-report-details">/);
         assert.match(container.innerHTML, /Ver desglose/);
         assert.match(container.innerHTML, /2 lecturas/);
         assert.match(container.innerHTML, /wave-reward-strip/);
         assert.match(container.innerHTML, /wave-report-advice/);
-        assert.match(container.innerHTML, /metric-safe/);
         assert.match(container.innerHTML, /\+\$320/);
         assert.match(container.innerHTML, /Objetivos/);
         assert.match(container.innerHTML, /Extras/);
@@ -93,6 +94,8 @@ test('WaveReportPanel resume dano a base recompensa y accion en lectura rapida',
     assert.match(html, /wave-report-quickline/);
     assert.match(html, /quickline-danger/);
     assert.match(html, /-2 vida/);
+    assert.match(html, /quickline-combat/);
+    assert.match(html, /0 KO \| 0 dano/);
     assert.match(html, /quickline-reward/);
     assert.match(html, /\+\$75/);
     assert.match(html, /quickline-saving/);
