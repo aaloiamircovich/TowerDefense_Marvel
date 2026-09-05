@@ -9,9 +9,10 @@ const manifest = readJson('manifest.webmanifest');
 
 if (packageData.version !== APP_VERSION) errors.push(`package.json (${packageData.version}) no coincide con APP_VERSION (${APP_VERSION})`);
 if (!manifest.icons?.length) errors.push('manifest.webmanifest no define iconos');
+if (packageData.scripts?.start !== 'node dev-server.js') errors.push('package.json debe exponer "start": "node dev-server.js" para Railway');
 for (const icon of manifest.icons || []) requireFile(icon.src);
 
-for (const required of ['service-worker.js', 'CHANGELOG.md', 'NOTICE.md', 'docs/RELEASE_2_0_CHECKLIST.md', 'data/sprite-atlas.js', 'assets/images/heroes/atlas.png']) {
+for (const required of ['dev-server.js', 'service-worker.js', 'CHANGELOG.md', 'NOTICE.md', 'docs/RELEASE_2_0_CHECKLIST.md', 'data/sprite-atlas.js', 'assets/images/heroes/atlas.png']) {
     requireFile(required);
 }
 
@@ -24,6 +25,10 @@ const serviceWorker = fs.readFileSync(path.join(root, 'service-worker.js'), 'utf
 if (!serviceWorker.includes(`v${APP_VERSION}`)) errors.push('El service worker no usa la versión actual de caché');
 const cachedPaths = [...serviceWorker.matchAll(/'\.\/([^']+)'/g)].map((match) => match[1]);
 cachedPaths.filter((file) => file && file !== '/').forEach(requireFile);
+
+const serverSource = fs.readFileSync(path.join(root, 'dev-server.js'), 'utf8');
+if (!/process\.env\.PORT/.test(serverSource)) errors.push('dev-server.js debe escuchar process.env.PORT para Railway');
+if (!/['"]0\.0\.0\.0['"]/.test(serverSource)) errors.push('dev-server.js debe escuchar en 0.0.0.0 para exponer el servicio en Railway');
 
 const notice = fs.readFileSync(path.join(root, 'NOTICE.md'), 'utf8');
 if (!notice.includes('proyecto fan no oficial') || !FAN_PROJECT_NOTICE.includes('no oficial')) {
