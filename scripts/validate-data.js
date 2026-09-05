@@ -3,7 +3,7 @@ import path from 'node:path';
 import { isOrthogonalPath } from '../src/utils/PathUtils.js';
 import { DIRECTIONS, collectVisualSources } from '../src/rendering/SpriteAnimator.js';
 import { buildBootstrapSource, readProjectData } from './lib/project-data.js';
-import { EVOLUTION_CATALOG } from '../src/systems/EvolutionSystem.js';
+import { DEFAULT_EVOLUTION_LEVEL, EVOLUTION_CATALOG } from '../src/systems/EvolutionSystem.js';
 import { SYNERGY_DEFINITIONS } from '../src/systems/TeamSynergySystem.js';
 import { TERRAIN } from '../src/utils/TerrainRules.js';
 
@@ -15,6 +15,7 @@ const data = readProjectData(root);
 const VALID_RARITIES = new Set(['Common', 'Rare', 'Epic', 'Legendary', 'Mythic', 'Secret']);
 
 validateHeroes(data.heroes);
+validateEvolutionCatalog();
 validateEnemies(data.enemies);
 validateItems(data.items);
 validateLevels(data.levels);
@@ -104,6 +105,21 @@ function validateHeroes(heroes) {
             if (!EVOLUTION_CATALOG[hero.evolutionId]) errors.push(`heroes.${key}.evolutionId referencia '${hero.evolutionId}', que no existe`);
             else if (EVOLUTION_CATALOG[hero.evolutionId].baseHeroId !== key) errors.push(`heroes.${key}.evolutionId no pertenece a este heroe`);
             if (knownIds.has(hero.evolutionId)) errors.push(`heroes.${key}.evolutionId no debe apuntar a un heroe base`);
+        }
+    }
+}
+
+function validateEvolutionCatalog() {
+    const allowedLevels = new Set([DEFAULT_EVOLUTION_LEVEL, 100]);
+    for (const evolution of Object.values(EVOLUTION_CATALOG)) {
+        if (!allowedLevels.has(evolution.requiredLevel)) {
+            errors.push(`evolutions.${evolution.id}.requiredLevel debe ser ${DEFAULT_EVOLUTION_LEVEL} o 100`);
+        }
+        for (const transform of evolution.itemTransforms || []) {
+            const requiredLevel = transform.requiredLevel || evolution.requiredLevel;
+            if (!allowedLevels.has(requiredLevel)) {
+                errors.push(`evolutions.${evolution.id}.itemTransforms.${transform.id}.requiredLevel debe ser ${DEFAULT_EVOLUTION_LEVEL} o 100`);
+            }
         }
     }
 }

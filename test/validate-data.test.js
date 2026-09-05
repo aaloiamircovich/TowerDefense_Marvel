@@ -6,6 +6,7 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { buildBootstrapSource, DATA_KEYS } from '../scripts/lib/project-data.js';
+import { DEFAULT_EVOLUTION_LEVEL, EVOLUTION_CATALOG } from '../src/systems/EvolutionSystem.js';
 
 const root = path.resolve(fileURLToPath(new URL('..', import.meta.url)));
 const validator = path.join(root, 'scripts', 'validate-data.js');
@@ -25,6 +26,18 @@ test('validate-data bloquea evoluciones parciales del roster', () => {
 
     assert.notEqual(result.status, 0);
     assert.match(result.stderr, /evolutionId debe activarse para todo el roster/);
+});
+
+test('validate-data mantiene evoluciones solo en nivel base o final', () => {
+    const allowedLevels = new Set([DEFAULT_EVOLUTION_LEVEL, 100]);
+
+    for (const evolution of Object.values(EVOLUTION_CATALOG)) {
+        assert.equal(allowedLevels.has(evolution.requiredLevel), true, `${evolution.id} usa nivel ${evolution.requiredLevel}`);
+        for (const transform of evolution.itemTransforms || []) {
+            const requiredLevel = transform.requiredLevel || evolution.requiredLevel;
+            assert.equal(allowedLevels.has(requiredLevel), true, `${evolution.id}/${transform.id} usa nivel ${requiredLevel}`);
+        }
+    }
 });
 
 test('validate-data bloquea campos no declarados en heroes', () => {
