@@ -27,6 +27,7 @@
     "sprite:import": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/import-pixellab-sprite.ps1",
     "audit:rarities": "node scripts/audit-hero-rarities.js",
     "balance:heroes": "node scripts/balance-hero-roster.js",
+    "balance:heroes:check": "node scripts/balance-hero-roster.js --check",
     "balance:items": "node scripts/rebalance-pokepath-inspired-items.js",
     "balance:campaign": "node scripts/simulate-campaign-balance.js",
     "balance": "node scripts/simulate-economy.js",
@@ -34,7 +35,7 @@
     "audit:a11y": "node scripts/audit-accessibility.js",
     "release:check": "node scripts/validate-release.js",
     "smoke:browser": "node scripts/smoke-browser.js",
-    "check": "npm run validate && npm test && npm run balance && npm run balance:campaign && npm run benchmark && npm run audit:a11y && npm run release:check && npm run smoke:browser"
+    "check": "npm run validate && npm test && npm run balance && npm run balance:heroes:check && npm run balance:campaign && npm run benchmark && npm run audit:a11y && npm run release:check && npm run smoke:browser"
   },
   "devDependencies": {
     "playwright": "^1.61.1"

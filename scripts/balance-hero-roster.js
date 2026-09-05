@@ -12,7 +12,8 @@ const TARGET_DPS_BY_RARITY = {
     Secret: 112
 };
 
-const dryRun = process.argv.includes('--dry-run');
+const dryRun = process.argv.includes('--dry-run') || process.argv.includes('--check');
+const checkMode = process.argv.includes('--check');
 const rows = [];
 
 for (const hero of Object.values(heroes)) {
@@ -32,7 +33,8 @@ for (const hero of Object.values(heroes)) {
         currentDamage,
         nextDamage,
         currentDps,
-        nextDps
+        nextDps,
+        targetDps
     });
 
     hero.damage = nextDamage;
@@ -45,11 +47,25 @@ if (!dryRun) {
 const changed = rows.filter((row) => row.currentDamage !== row.nextDamage).length;
 console.log(`Balance de heroes ${dryRun ? 'simulado' : 'aplicado'}: ${changed}/${rows.length} atacantes ajustados.`);
 
+const medians = [];
 for (const rarity of Object.keys(TARGET_DPS_BY_RARITY)) {
     const group = rows.filter((row) => row.rarity === rarity);
     if (!group.length) continue;
     const values = group.map((row) => Math.round(row.nextDps)).sort((a, b) => a - b);
+    medians.push({ rarity, value: median(values) });
     console.log(`${rarity}: ${group.length} heroes | DPS ${values[0]}-${values.at(-1)} | mediana ${median(values)}`);
+}
+
+if (checkMode) {
+    const brokenMedians = medians.filter((entry, index) => index > 0 && entry.value < medians[index - 1].value);
+    if (changed > 0) {
+        console.error('ERROR: hay heroes fuera del presupuesto de DPS por rareza. Ejecuta npm run balance:heroes para recalibrar.');
+        process.exitCode = 1;
+    }
+    if (brokenMedians.length) {
+        console.error(`ERROR: la mediana de DPS por rareza no es creciente en: ${brokenMedians.map((entry) => entry.rarity).join(', ')}`);
+        process.exitCode = 1;
+    }
 }
 
 function getUtilityFactor(hero) {
