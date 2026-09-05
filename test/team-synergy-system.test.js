@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
+    PAIR_SYNERGIES,
     SYNERGY_DEFINITIONS,
     TeamSynergySystem,
     analyzeTeam,
@@ -94,6 +95,58 @@ test('parejas exactas no aplican efectos con un solo integrante', () => {
 
     assert.equal(pair.active, false);
     assert.deepEqual(effects, {});
+});
+
+test('ninguna agrupacion familiar aplica efectos antes del primer requisito', () => {
+    for (const [tag, definition] of Object.entries(SYNERGY_DEFINITIONS)) {
+        const firstTier = definition.tiers[0];
+        const partialTeam = Array.from(
+            { length: Math.max(1, firstTier.count - 1) },
+            (_, index) => hero(`${tag}_partial_${index}`, [tag])
+        );
+        const snapshot = analyzeTeam(partialTeam);
+        const family = snapshot.families.find((entry) => entry.tag === tag);
+        const effects = getHeroTeamEffects(partialTeam[0], partialTeam);
+
+        assert.equal(family.activeTier, null, `${tag} no debe activar ${firstTier.count}/${firstTier.count} con ${partialTeam.length}`);
+        assert.deepEqual(effects, {}, `${tag} no debe entregar bonus parcial`);
+    }
+});
+
+test('cada escalon de agrupacion familiar exige su umbral exacto', () => {
+    for (const [tag, definition] of Object.entries(SYNERGY_DEFINITIONS)) {
+        for (const tier of definition.tiers) {
+            const fullTeam = Array.from({ length: tier.count }, (_, index) => hero(`${tag}_full_${tier.count}_${index}`, [tag]));
+            const fullSnapshot = analyzeTeam(fullTeam);
+            const fullFamily = fullSnapshot.families.find((entry) => entry.tag === tag);
+            assert.equal(fullFamily.activeTier.count, tier.count, `${tag} debe activar ${tier.count}/${tier.count}`);
+
+            if (tier.count <= 2) continue;
+
+            const partialTeam = fullTeam.slice(0, tier.count - 1);
+            const partialSnapshot = analyzeTeam(partialTeam);
+            const partialFamily = partialSnapshot.families.find((entry) => entry.tag === tag);
+            assert.notEqual(partialFamily.activeTier?.count, tier.count, `${tag} no debe adelantar ${tier.count}/${tier.count}`);
+        }
+    }
+});
+
+test('todas las parejas exigen ambos heroes antes de aplicar efectos', () => {
+    for (const pair of PAIR_SYNERGIES) {
+        const partialTeam = [hero(pair.heroIds[0], ['Pareja de prueba'])];
+        const partialSnapshot = analyzeTeam(partialTeam);
+        const partialEffects = getHeroTeamEffects(partialTeam[0], partialTeam);
+
+        assert.equal(partialSnapshot.pairs.find((entry) => entry.id === pair.id).active, false, `${pair.id} no debe activar con un solo heroe`);
+        assert.deepEqual(partialEffects, {}, `${pair.id} no debe entregar bonus parcial`);
+
+        const fullTeam = pair.heroIds.map((id) => hero(id, ['Pareja de prueba']));
+        const fullSnapshot = analyzeTeam(fullTeam);
+        const fullEffects = getHeroTeamEffects(fullTeam[0], fullTeam);
+
+        assert.equal(fullSnapshot.pairs.find((entry) => entry.id === pair.id).active, true, `${pair.id} debe activar con ambos heroes`);
+        assert.deepEqual(fullEffects, pair.effects, `${pair.id} debe aplicar solo su bonus exacto`);
+    }
 });
 
 test('formaciones de rol quedan retiradas del sistema de sinergias', () => {
