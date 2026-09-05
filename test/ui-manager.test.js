@@ -187,7 +187,7 @@ test('buildStatusLegendModel prioriza counters de la oleada', () => {
     assert.equal(model.label, 'Counters clave');
 });
 
-test('buildCounterCoverageModel distingue counters en campo, banco y faltantes', () => {
+test('buildCounterCoverageModel distingue counters listos, disponibles y faltantes', () => {
     const model = buildCounterCoverageModel(
         {
             stealthCount: 1,
@@ -274,7 +274,7 @@ test('buildBossMilestoneState distingue final boss fatal', () => {
     assert.ok(state.counters.includes('Control dosificado'));
 });
 
-test('buildStealthCoverageState distingue detector desplegado, banco y faltante', () => {
+test('buildStealthCoverageState distingue detector listo, disponible y faltante', () => {
     const summary = { stealthCount: 2, roles: ['stealth'] };
     const detector = { id: 'black_widow', name: 'Black Widow', cost: 180, canSeeStealth: true };
     const deployed = buildStealthCoverageState(summary, [detector], [{ ...detector, cost: 180 }], 0);

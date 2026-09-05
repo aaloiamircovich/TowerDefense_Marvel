@@ -140,7 +140,7 @@ function createWeeklyContracts(weekKey = getWeekKey()) {
         },
         {
             id: `${weekKey}:active_allegiance`,
-            title: 'Agrupacion en campo',
+            title: 'Agrupacion activa',
             group: 'Agrupaciones',
             reward: 240,
             goal: 'Termina con al menos una agrupacion activa.',

@@ -114,15 +114,15 @@ const COUNTER_COPY = {
         detail: 'revela sigilo y faseadores',
         icon: 'fa-eye',
         missing: 'Sin detector',
-        bench: 'Detector en banco',
-        ready: 'Detector en campo'
+        bench: 'Detector disponible',
+        ready: 'Detector listo'
     },
     piercing: {
         label: 'Perforacion',
         detail: 'rompe blindaje y barreras',
         icon: 'fa-bullseye',
         missing: 'Sin perforacion',
-        bench: 'Perforacion en banco',
+        bench: 'Perforacion disponible',
         ready: 'Perforacion lista'
     },
     control: {
@@ -130,7 +130,7 @@ const COUNTER_COPY = {
         detail: 'corta corredores antes de meta',
         icon: 'fa-hand-paper',
         missing: 'Sin control',
-        bench: 'Control en banco',
+        bench: 'Control disponible',
         ready: 'Control activo'
     },
     reach: {
@@ -138,7 +138,7 @@ const COUNTER_COPY = {
         detail: 'cubre voladores y rutas largas',
         icon: 'fa-location-arrow',
         missing: 'Sin alcance',
-        bench: 'Alcance en banco',
+        bench: 'Alcance disponible',
         ready: 'Alcance listo'
     },
     focus: {
@@ -146,7 +146,7 @@ const COUNTER_COPY = {
         detail: 'elimina soporte e invocadores',
         icon: 'fa-crosshairs',
         missing: 'Sin foco claro',
-        bench: 'Foco en banco',
+        bench: 'Foco disponible',
         ready: 'Foco listo'
     },
     dps: {
@@ -154,8 +154,8 @@ const COUNTER_COPY = {
         detail: 'sostiene jefes y elites',
         icon: 'fa-bolt',
         missing: 'DPS bajo',
-        bench: 'DPS en banco',
-        ready: 'DPS en campo'
+        bench: 'DPS disponible',
+        ready: 'DPS listo'
     }
 };
 
@@ -750,7 +750,7 @@ export function buildStealthCoverageState(summary = null, activeTeam = [], deplo
         return {
             tone: 'ready',
             label: 'Sigilo cubierto',
-            detail: `Detectores en campo: ${names}.`,
+            detail: `Detectores listos: ${names}.`,
             detectorCount: deployedDetectors.length
         };
     }
