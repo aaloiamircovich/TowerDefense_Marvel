@@ -300,7 +300,7 @@ export function buildEnemyIntel(enemy = {}) {
     } else if (enemy.archetype === 'runner' || Number(enemy.speed || 0) >= 85) {
         counterId = 'control';
         counter = 'Control';
-        counterDetail = 'Velocidad alta; slow, stun o web en curvas protege la salida.';
+        counterDetail = 'Velocidad alta; slow, stun o web en curvas protege la base.';
     } else if (enemy.archetype === 'flying' || enemy.flying) {
         counterId = 'reach';
         counter = 'Alcance';
@@ -774,7 +774,7 @@ export function buildStealthCoverageState(summary = null, activeTeam = [], deplo
     return {
         tone: 'danger',
         label: 'Sigilo descubierto',
-        detail: 'No hay detector disponible; prioriza control y salida.',
+        detail: 'No hay detector disponible; prioriza control y base.',
         detectorCount: 0
     };
 }
@@ -1076,8 +1076,8 @@ export function buildCombatPressureState(enemies = [], path = [], waveActive = f
     const score = lead.progress + dangerCount * 0.08 + Math.min(0.16, active.length * 0.012);
 
     let state = { id: 'holding', label: 'Controlada', advice: 'Sostén daño y ahorra si puedes.' };
-    if (score >= 0.92 || lead.progress >= 0.9) state = { id: 'critical', label: 'Salida critica', advice: 'Pausa, mejora o reposiciona ya.' };
-    else if (score >= 0.72 || dangerCount > 0) state = { id: 'warning', label: 'Presión alta', advice: 'Refuerza la salida o activa control.' };
+    if (score >= 0.92 || lead.progress >= 0.9) state = { id: 'critical', label: 'Base critica', advice: 'Pausa, mejora o reposiciona ya.' };
+    else if (score >= 0.72 || dangerCount > 0) state = { id: 'warning', label: 'Presión alta', advice: 'Refuerza la base o activa control.' };
     else if (score >= 0.48) state = { id: 'watch', label: 'Vigilar ruta', advice: 'El frente avanza; prepara mejora.' };
 
     const progress = Math.round(lead.progress * 100);
@@ -1141,7 +1141,7 @@ export function buildPressureActionState(pressureState, heroes = [], credits = 0
         return {
             type: 'hint',
             label: 'Sin heroes desplegados',
-            reason: 'Coloca defensa antes de que el frente llegue a la salida.',
+            reason: 'Coloca defensa antes de que el frente llegue a la base.',
             signature: `hint:none:${pressureState.id}`
         };
     }
@@ -1173,7 +1173,7 @@ export function buildPressureActionState(pressureState, heroes = [], credits = 0
             heroName: name,
             cost: affordable.cost,
             label: `Mejorar ${name}`,
-            reason: pressureState.id === 'critical' ? 'Respuesta recomendada para cerrar la salida.' : 'Refuerzo rapido antes de que escale.',
+            reason: pressureState.id === 'critical' ? 'Respuesta recomendada para proteger la base.' : 'Refuerzo rapido antes de que escale.',
             signature: `upgrade:${affordable.hero.id || name}:${affordable.level}:${affordable.cost}:${Math.floor(credits)}`
         };
     }
@@ -1763,7 +1763,7 @@ export class UIManager {
             <div class="pressure-meta">
                 <span>${state.activeCount} activos</span>
                 <span>${state.leadEnemyName || 'Ruta'} ${state.progress}%</span>
-                ${state.dangerCount ? `<b>${state.dangerCount} en salida</b>` : ''}
+                ${state.dangerCount ? `<b>${state.dangerCount} en base</b>` : ''}
             </div>
             ${action ? `<div class="pressure-action pressure-action-${action.type}">
                 <span>${action.reason}</span>
@@ -1989,8 +1989,8 @@ export class UIManager {
                             </span>`).join('')}
                         </div>
                     </div>` : ''}
-                    ${summary.spawnTimeline?.entries?.length ? `<div class="wave-timeline" data-testid="wave-timeline" aria-label="Cadencia de salida enemiga">
-                        <strong>Salida enemiga</strong>
+                    ${summary.spawnTimeline?.entries?.length ? `<div class="wave-timeline" data-testid="wave-timeline" aria-label="Cadencia enemiga">
+                        <strong>Llegada enemiga</strong>
                         <div>
                             ${summary.spawnTimeline.entries.map((entry) => `<span class="${entry.danger}">
                                 <b>${escapeHtml(entry.etaLabel)}</b>

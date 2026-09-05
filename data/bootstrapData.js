@@ -302,7 +302,7 @@ window.__MARVEL_TD_DATA__ = {
         1,
         3
       ],
-      "niche": "tanque cercano, defensa de salida y control de grupos",
+      "niche": "tanque cercano, defensa de base y control de grupos",
       "visual": {
         "portrait": "assets/images/heroes/hulk/portrait.png",
         "size": 96,
@@ -3012,7 +3012,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.05,
       "canSeeStealth": false,
       "ability": "GOLPE PRIVADO",
-      "abilityDesc": "Baja cadencia, mucho impacto y chance de aturdir al primer enemigo cerca de la salida.",
+      "abilityDesc": "Baja cadencia, mucho impacto y chance de aturdir al primer enemigo cerca de la base.",
       "niche": "tanque urbano economico",
       "allowedTerrains": [
         1,
@@ -3769,7 +3769,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.35,
       "canSeeStealth": false,
       "ability": "HOJA ATLANTE",
-      "abilityDesc": "Puede operar en agua y castiga enemigos blindados cerca de la salida.",
+      "abilityDesc": "Puede operar en agua y castiga enemigos blindados cerca de la base.",
       "niche": "duelista anfibia anti blindaje",
       "allowedTerrains": [
         0
@@ -5370,7 +5370,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.75,
       "canSeeStealth": true,
       "ability": "MAREA AMABLE",
-      "abilityDesc": "Control anfibio que opera en agua, detecta sigilo y ralentiza amenazas cerca de la salida.",
+      "abilityDesc": "Control anfibio que opera en agua, detecta sigilo y ralentiza amenazas cerca de la base.",
       "niche": "soporte anfibio de control",
       "allowedTerrains": [
         0,
@@ -11536,7 +11536,7 @@ window.__MARVEL_TD_DATA__ = {
         "operation": "Invasión de Manhattan",
         "speaker": "Spider-Man",
         "briefing": "Hydra, A.I.M. y células Chitauri avanzan por Manhattan rumbo a la Torre Stark. Controla las avenidas y corta la invasión antes de que crucen la ciudad.",
-        "dialogue": "Mantengan cubierta la avenida. Yo vigilo los tejados; ustedes hagan que nadie llegue a la salida.",
+        "dialogue": "Mantengan cubierta la avenida. Yo vigilo los tejados; ustedes hagan que nadie alcance la base.",
         "mechanic": {
           "type": "urban_assault",
           "label": "Frente de Manhattan",
@@ -12126,7 +12126,7 @@ window.__MARVEL_TD_DATA__ = {
         "mechanic": {
           "type": "bifrost",
           "label": "Anclas del Bifrost",
-          "description": "La entrada alterna y cada portal adelanta enemigos por su misma ruta. Controla las salidas antes del salto.",
+          "description": "La entrada alterna y cada portal adelanta enemigos por su misma ruta. Controla los anclajes antes del salto.",
           "status": "Heimdall mantiene dos anclas abiertas.",
           "portals": [
             {

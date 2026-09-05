@@ -32,7 +32,7 @@ const allegianceHeroes = {
         visualStyle: 'elemental',
         projectileColor: '#f97316'
     }),
-    namora: contract('Namora', 'Atlantico', 'Rare', 300, 44, 125, 1.35, false, 'HOJA ATLANTE', 'Puede operar en agua y castiga enemigos blindados cerca de la salida.', 'duelista anfibia anti blindaje', ['Atlanticos', 'Marciales'], 'vanguard', [4, 3, 3, 2], {
+    namora: contract('Namora', 'Atlantico', 'Rare', 300, 44, 125, 1.35, false, 'HOJA ATLANTE', 'Puede operar en agua y castiga enemigos blindados cerca de la base.', 'duelista anfibia anti blindaje', ['Atlanticos', 'Marciales'], 'vanguard', [4, 3, 3, 2], {
         projectileProfile: { armorPenetration: 0.22 },
         attackEffects: [{ type: 'armorBreak', duration: 2.8, power: 0.16, chance: 0.3 }],
         statModifiers: { allowWater: true, damagePct: 0.04 },

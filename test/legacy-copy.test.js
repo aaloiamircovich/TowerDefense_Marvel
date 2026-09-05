@@ -20,3 +20,19 @@ test('scripts generadores no reintroducen fuga, brecha ni curacion de base', () 
 
     assert.deepEqual(offenders, []);
 });
+
+test('datos y UI visible no reintroducen salida como objetivo defensivo', () => {
+    const files = [
+        'data/heroes.json',
+        'data/levels.json',
+        'data/bootstrapData.js',
+        'src/systems/UIManager.js',
+        'src/systems/WaveManager.js'
+    ];
+    const offenders = files
+        .map((file) => ({ file, text: fs.readFileSync(path.join(process.cwd(), file), 'utf8') }))
+        .filter(({ text }) => /\bsalidas?\b/i.test(text))
+        .map(({ file }) => file);
+
+    assert.deepEqual(offenders, []);
+});

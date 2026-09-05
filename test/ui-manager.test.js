@@ -32,7 +32,7 @@ test('buildWaveLaunchState ignora bonuses perfectos retirados', () => {
     const state = buildWaveLaunchState(true, {
         pressureScore: 14,
         perfectBonus: 30,
-        threatTier: { id: 'guarded', label: 'Amenaza media', advice: 'Cubre salida.' }
+        threatTier: { id: 'guarded', label: 'Amenaza media', advice: 'Cubre la base.' }
     });
 
     assert.equal(state.secondary, 'Amenaza media · 14');
@@ -820,7 +820,7 @@ test('buildCombatPressureState vigila un frente a mitad de ruta', () => {
     assert.equal(state.dangerCount, 0);
 });
 
-test('buildCombatPressureState marca presion inminente cerca de salida', () => {
+test('buildCombatPressureState marca presion inminente cerca de base', () => {
     const state = buildCombatPressureState([
         enemy({ name: 'Runner', distanceTravelled: 372, uid: 'lead' }),
         enemy({ name: 'Soldier', distanceTravelled: 330, uid: 'tail' })
@@ -1046,7 +1046,7 @@ test('renderCombatPressurePanel etiqueta acciones de emergencia con tooltips', (
             enemy({ name: 'Runner', distanceTravelled: 372, uid: 'lead' })
         ], path(), true);
 
-        assert.match(container.innerHTML, /id="pressure-upgrade" class="btn-mode-action" type="button" aria-label="Mejorar Iron Man por 120 creditos\. Respuesta recomendada para cerrar la salida\." title="Mejorar Iron Man por 120 creditos\. Respuesta recomendada para cerrar la salida\." data-tooltip="Mejorar Iron Man por 120 creditos\. Respuesta recomendada para cerrar la salida\."/);
+        assert.match(container.innerHTML, /id="pressure-upgrade" class="btn-mode-action" type="button" aria-label="Mejorar Iron Man por 120 creditos\. Respuesta recomendada para proteger la base\." title="Mejorar Iron Man por 120 creditos\. Respuesta recomendada para proteger la base\." data-tooltip="Mejorar Iron Man por 120 creditos\. Respuesta recomendada para proteger la base\."/);
         assert.match(container.innerHTML, /id="pressure-pause" class="btn-mode-action" type="button" aria-label="Activar pausa tactica por presion de ruta" title="Activar pausa tactica por presion de ruta" data-tooltip="Activar pausa tactica por presion de ruta"/);
     } finally {
         globalThis.document = previousDocument;

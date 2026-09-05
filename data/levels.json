@@ -148,7 +148,7 @@
       "operation": "Invasión de Manhattan",
       "speaker": "Spider-Man",
       "briefing": "Hydra, A.I.M. y células Chitauri avanzan por Manhattan rumbo a la Torre Stark. Controla las avenidas y corta la invasión antes de que crucen la ciudad.",
-      "dialogue": "Mantengan cubierta la avenida. Yo vigilo los tejados; ustedes hagan que nadie llegue a la salida.",
+      "dialogue": "Mantengan cubierta la avenida. Yo vigilo los tejados; ustedes hagan que nadie alcance la base.",
       "mechanic": {
         "type": "urban_assault",
         "label": "Frente de Manhattan",
@@ -738,7 +738,7 @@
       "mechanic": {
         "type": "bifrost",
         "label": "Anclas del Bifrost",
-        "description": "La entrada alterna y cada portal adelanta enemigos por su misma ruta. Controla las salidas antes del salto.",
+        "description": "La entrada alterna y cada portal adelanta enemigos por su misma ruta. Controla los anclajes antes del salto.",
         "status": "Heimdall mantiene dos anclas abiertas.",
         "portals": [
           {

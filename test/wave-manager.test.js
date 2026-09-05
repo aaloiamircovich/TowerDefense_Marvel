@@ -231,7 +231,7 @@ test('WaveManager resume cantidad, botin y counter de la cola preparada', () => 
     assert.equal(summary.readiness.damageCheck.tone, 'danger');
 });
 
-test('WaveManager expone cadencia compacta de salida enemiga', () => {
+test('WaveManager expone cadencia compacta enemiga', () => {
     const manager = new WaveManager(createGame(), enemies);
     const timeline = manager.getSpawnTimeline();
 
@@ -321,7 +321,7 @@ test('WaveManager refresca el radar tactico al cambiar heroes desplegados', () =
     assert.equal(rendered.at(-1).readiness.id, refreshed.readiness.id);
 });
 
-test('WaveManager incluye cadencia de salida en el resumen preparado', () => {
+test('WaveManager incluye cadencia enemiga en el resumen preparado', () => {
     const manager = new WaveManager(createGame(), enemies);
     const summary = manager.buildPreparedSummary();
 

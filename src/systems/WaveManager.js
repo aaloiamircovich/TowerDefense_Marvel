@@ -623,7 +623,7 @@ export class WaveManager {
         const margin = score - pressureScore;
 
         if (margin >= 7) return { id: 'ready', label: 'Preparado', score, margin, advice: 'Puedes iniciar o ahorrar para escalar.', damageCheck };
-        if (margin >= 0) return { id: 'stable', label: 'Defensa estable', score, margin, advice: 'Listo, pero vigila counters y salida.', damageCheck };
+        if (margin >= 0) return { id: 'stable', label: 'Defensa estable', score, margin, advice: 'Listo, pero vigila counters y base.', damageCheck };
         if (margin >= -7) return { id: 'thin', label: 'Defensa justa', score, margin, advice: 'Mejora o coloca apoyo si tienes creditos.', damageCheck };
         return { id: 'underbuilt', label: 'Defensa debil', score, margin, advice: 'Coloca otro heroe antes de iniciar.', damageCheck };
     }
@@ -794,7 +794,7 @@ export class WaveManager {
         if ((enemy.armor || enemy.config?.armor || 0) >= 0.25 || (enemy.barrierRatio || enemy.config?.barrierRatio || 0) > 0 || ['tank', 'shield'].includes(archetype)) return 'Perforacion';
         if (archetype === 'runner' || speed >= 85) return 'Control';
         if (archetype === 'flying' || enemy.flying || enemy.config?.flying) return 'Alcance';
-        return 'Cubre salida';
+        return 'Cubre la base';
     }
 
     getLeakTraits(enemy = {}) {
