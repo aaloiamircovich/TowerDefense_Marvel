@@ -151,7 +151,7 @@ export class WaveReportPanel {
         const rows = [
             { icon: 'fa-sack-dollar', label: 'Total', value: `+$${credits}`, tone: 'total' },
             bounty > 0 ? { icon: 'fa-skull', label: 'Bajas', value: `+$${bounty}` } : null,
-            metaReward > 0 ? { icon: 'fa-medal', label: 'Objetivos', value: `+$${metaReward}` } : null,
+            metaReward > 0 ? { icon: 'fa-medal', label: 'Progreso', value: `+$${metaReward}` } : null,
             extra > 0 ? { icon: 'fa-dice', label: 'Extras', value: `+$${extra}` } : null
         ].filter(Boolean);
         if (!credits && rows.length <= 1) return '';

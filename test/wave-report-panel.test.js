@@ -64,7 +64,7 @@ test('WaveReportPanel renderiza informe y delega mejora recomendada', () => {
         assert.match(container.innerHTML, /wave-reward-strip/);
         assert.match(container.innerHTML, /wave-report-advice/);
         assert.match(container.innerHTML, /\+\$320/);
-        assert.match(container.innerHTML, /Objetivos/);
+        assert.match(container.innerHTML, /Progreso/);
         assert.match(container.innerHTML, /Extras/);
         assert.match(container.innerHTML, /MVP/);
         assert.match(container.innerHTML, /Mejorar Iron Man/);
