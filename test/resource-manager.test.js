@@ -24,11 +24,11 @@ test('ResourceManager conserva creditos infinitos en modo admin', () => {
     assert.equal(resources.credits, Number.POSITIVE_INFINITY);
 });
 
-test('ResourceManager limita la curacion a maxLives', () => {
+test('ResourceManager no expone curacion directa de base', () => {
     const resources = new ResourceManager({}, 20, 0);
     resources.removeLife(5);
-    resources.addLife(99);
-    assert.equal(resources.lives, 20);
+    assert.equal(typeof resources.addLife, 'undefined');
+    assert.equal(resources.lives, 15);
 });
 
 test('ResourceManager dispara gameOver una sola vez al llegar a cero', () => {

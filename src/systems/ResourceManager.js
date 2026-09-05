@@ -46,12 +46,6 @@ export class ResourceManager {
         this.game?.progression?.syncCreditsFromResource?.(this.credits);
     }
 
-    addLife(amount = 1) {
-        if (Number.isFinite(amount) && amount > 0) {
-            this.lives = Math.min(this.maxLives, this.lives + amount);
-        }
-    }
-
     removeLife(amount = 1) {
         if (!Number.isFinite(amount) || amount <= 0 || this.lives <= 0) return;
 
