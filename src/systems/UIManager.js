@@ -1183,7 +1183,7 @@ export function buildPressureActionState(pressureState, heroes = [], credits = 0
     return {
         type: 'hint',
         label: `Faltan $${Math.ceil(missing)}`,
-        reason: 'Ahorra para la siguiente mejora de campo.',
+        reason: 'Ahorra para la siguiente mejora clave.',
         signature: `hint:${cheapest?.hero?.id || 'none'}:${cheapest?.cost || 0}:${Math.floor(credits)}`
     };
 }
@@ -2608,7 +2608,7 @@ export class UIManager {
             return false;
         }
         if (!this.spendMissionCredits(cost)) {
-            this.showToast('Creditos insuficientes para mejora de campo', 'warning');
+            this.showToast('Creditos insuficientes para mejora rapida', 'warning');
             this.refreshHeroUpgradeUi(unit);
             return false;
         }
