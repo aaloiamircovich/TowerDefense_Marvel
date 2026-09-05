@@ -349,6 +349,43 @@ test('InputManager confirma la celda sugerida con Enter durante colocacion', () 
     }
 });
 
+test('InputManager comunica reposicion libre sin limite por oleada', () => {
+    const previousWindow = globalThis.window;
+    globalThis.window = { addEventListener: () => {} };
+
+    const statuses = [];
+    const game = {
+        ...placementGame(),
+        selectedUnit: null,
+        progression: { state: { settings: { keyBindings: {} } } },
+        tacticalActions: { canReposition: () => ({ ok: true }) }
+    };
+    const ui = {
+        updatePlacementSuggestion: () => {},
+        setManualPause: () => {},
+        setSelectionStatus: (message) => statuses.push(message),
+        showToast: () => {}
+    };
+    const hero = {
+        id: 'iron_man',
+        name: 'Iron Man',
+        x: 80,
+        y: 80,
+        range: 95,
+        config: { id: 'iron_man', name: 'Iron Man', range: 95, allowedTerrains: [TERRAIN.grass] }
+    };
+
+    try {
+        const input = new InputManager({ addEventListener: () => {} }, game, ui, {});
+
+        assert.equal(input.setRepositionMode(hero), true);
+        assert.match(statuses.at(-1), /Mueve libremente/);
+        assert.doesNotMatch(statuses.at(-1), /movimiento por oleada|una vez por oleada/i);
+    } finally {
+        globalThis.window = previousWindow;
+    }
+});
+
 test('InputManager no consume atajo de mejora sin heroe desplegado seleccionado', () => {
     const previousWindow = globalThis.window;
     let keydownHandler = null;

@@ -308,7 +308,7 @@ export class InputManager {
         this.uiManager.updatePlacementSuggestion?.(buildPlacementSuggestionState(this.suggestedPlacement, hero.config));
         this.game.selectedUnit = hero;
         this.uiManager.setManualPause?.(true, false);
-        this.uiManager.setSelectionStatus(`Reposicionando ${hero.name}. Un movimiento por oleada · Esc para cancelar.`);
+        this.uiManager.setSelectionStatus(`Reposicionando ${hero.name}. Mueve libremente · Esc para cancelar.`);
         return true;
     }
 
