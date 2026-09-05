@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { buildBossCountdownState, buildBossHudState, buildBossMilestoneState, buildCombatPressureState, buildCounterCoverageModel, buildEnemyIntel, buildEnemyTraitPreview, buildHeroCombatIdentity, buildLeakIntel, buildPanelNavigationMarkup, buildPressureActionState, buildRosterWaveFitView, buildShopItemInsight, buildShopSetProgress, buildSpawnQueueState, buildStatusLegendModel, buildStealthCoverageState, buildTacticalContributionModel, buildTargetingControlState, buildWaveCounterBrief, buildWaveDamageCheckMeter, buildWaveLaunchState, buildWavePrepActionControl, buildWavePreparationPlan, buildWaveReportActionState, buildWaveReportGrade, buildWaveReportLesson, buildWaveReportState, evaluateHeroWaveFit, formatHudResource, getNextTargetingPriority, UIManager } from '../src/systems/UIManager.js';
-import { calculateHeroLevelCost } from '../src/utils/HeroLevel.js';
+import { calculateHeroLevelCost, getHeroDamageAtLevel } from '../src/utils/HeroLevel.js';
 
 test('buildWaveLaunchState muestra riesgo critico en el CTA', () => {
     const state = buildWaveLaunchState(true, {
@@ -1468,6 +1468,32 @@ test('UIManager recalcula coste del panel con el nivel vivo tras mejora rapida',
     assert.equal(hero.level, 3);
     assert.equal(ui.game.resourceManager.credits, nextCost - 1);
     assert.ok(ui.__calls.some((call) => call[0] === 'toast' && /insuficientes/i.test(call[1])));
+});
+
+test('UIManager mejora rapida escala solo dano y conserva identidad de rango y cadencia', () => {
+    const hero = deployedHero({
+        id: 'hawkeye',
+        name: 'Hawkeye',
+        level: 35,
+        damage: 140,
+        fireRate: 0.85,
+        range: 255
+    });
+    hero.config.rarity = 'Common';
+    hero.config.baseDamage = 36;
+    hero.config.baseRange = 255;
+    hero.config.baseFireRate = 0.85;
+    const originalRange = hero.range;
+    const originalFireRate = hero.fireRate;
+    const ui = createUpgradeUi(calculateHeroLevelCost(hero.level, 1));
+
+    assert.equal(ui.quickUpgradeHero(hero), true);
+
+    assert.equal(hero.level, 36);
+    assert.equal(hero.range, originalRange);
+    assert.equal(hero.fireRate, originalFireRate);
+    assert.equal(hero.damage, getHeroDamageAtLevel(hero.config.baseDamage, 36, hero.config.rarity));
+    assert.ok(hero.damage > 140);
 });
 
 test('UIManager mejora rapida no cobra ni sube nivel si faltan creditos', () => {

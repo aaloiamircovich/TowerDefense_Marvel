@@ -695,6 +695,26 @@ test('nivel de heroe persiste al retirarlo del campo y del equipo', () => {
     );
 });
 
+test('subir nivel solo aumenta dano y mantiene alcance y cadencia base', () => {
+    const game = createGame();
+    const manager = new ProgressionManager(new MemoryStorage());
+    manager.initialize(game, data);
+    manager.startProfile('spiderman');
+
+    const hero = game.activeTeam[0];
+    const baseDamage = hero.baseDamage;
+    const baseRange = hero.baseRange;
+    const baseFireRate = hero.baseFireRate;
+
+    manager.setHeroLevel('spiderman', 80);
+
+    assert.equal(hero.level, 80);
+    assert.equal(hero.range, baseRange);
+    assert.equal(hero.fireRate, baseFireRate);
+    assert.equal(hero.damage, getHeroDamageAtLevel(baseDamage, 80, hero.rarity));
+    assert.ok(hero.damage > baseDamage);
+});
+
 function createGame() {
     return {
         heroes: [], audio: { setEnabled: () => {} }, resourceManager: { lives: 20, maxLives: 20 },
