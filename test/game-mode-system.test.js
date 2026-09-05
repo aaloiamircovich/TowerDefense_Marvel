@@ -29,7 +29,7 @@ test('Boss Rush prepara un jefe distinto por ronda y recompensa tienda breve', (
     assert.ok(game.resourceManager.credits > before);
     game.resourceManager.maxLives = 30; game.resourceManager.lives = 25;
     const shopCredits = game.resourceManager.credits;
-    assert.equal(modes.repair(), false);
+    assert.equal(typeof modes.repair, 'undefined');
     assert.equal(game.resourceManager.lives, 25);
     assert.equal(game.resourceManager.credits, shopCredits);
     assert.equal('canRepair' in modes.getSnapshot(), false);

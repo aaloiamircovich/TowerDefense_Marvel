@@ -129,10 +129,6 @@ export class GameModeSystem {
         return true;
     }
 
-    repair() {
-        return false;
-    }
-
     finishRun(result = 'defeat') {
         if (this.modeId === 'campaign' || this.finished) return;
         this.finished = true;
