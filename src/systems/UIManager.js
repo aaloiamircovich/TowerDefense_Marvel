@@ -127,7 +127,7 @@ const COUNTER_COPY = {
     },
     control: {
         label: 'Control',
-        detail: 'corta corredores antes de meta',
+        detail: 'corta corredores antes de la base',
         icon: 'fa-hand-paper',
         missing: 'Sin control',
         bench: 'Control disponible',
@@ -1271,7 +1271,7 @@ export function buildWaveReportGrade(report = {}) {
     } else if (score >= 72) {
         medal = 'B';
         tone = 'stable';
-        label = 'Linea estable';
+        label = 'Defensa estable';
     } else if (score >= 55) {
         medal = 'C';
         tone = 'thin';
@@ -1280,7 +1280,7 @@ export function buildWaveReportGrade(report = {}) {
 
     let detail = 'Sostuviste la ruta; prepara el proximo salto de amenaza.';
     if (leaks >= 3) detail = 'La base quedo expuesta; suma control final antes de acelerar.';
-    else if (leaks > 0) detail = 'La base recibio dano menor; una mejora cerca de meta puede sellar la linea.';
+    else if (leaks > 0) detail = 'La base recibio dano menor; una mejora en el ultimo tramo puede sellar la defensa.';
     else if (kills === 0 && damage === 0) detail = 'No hubo lectura ofensiva; despliega dano antes de la siguiente oleada.';
     else if (medal === 'S') detail = 'Ejecucion dominante: buen momento para greed de economia.';
     else if (bestShare >= 0.65) detail = 'El MVP cargo demasiado peso; agrega soporte para evitar dependencia.';
