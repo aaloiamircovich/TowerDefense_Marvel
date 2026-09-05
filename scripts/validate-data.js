@@ -256,6 +256,19 @@ function validateItems(items) {
     if (Object.keys(items).length < 30) errors.push('items necesita al menos 30 objetos para la Fase 11');
     const validSlots = new Set(['weapon', 'armor', 'artifact']);
     const allowedItemKeys = new Set(['id', 'name', 'desc', 'price', 'tier', 'rarity', 'slot', 'set', 'effects', 'icon']);
+    const allowedItemEffectKeys = new Set([
+        'allowGrass', 'allowMountain', 'allowWater', 'armorBreakChance', 'armorBreakPower', 'armorDamagePct',
+        'armorPenetration', 'bossDamagePct', 'burnChance', 'burnDuration', 'burnPower', 'chainCount',
+        'chainFactor', 'chainRange', 'closeRangeDamagePenaltyPct', 'closeRangeThreshold', 'consecutiveDamagePct',
+        'critChance', 'critDamageBonus', 'curseChance', 'curseDuration', 'cursePower', 'damagePct',
+        'damageToBurnedPct', 'damageToControlledPct', 'damageToCursedPct', 'detectStealth', 'fireRatePct',
+        'longRangeDamagePct', 'longRangeThreshold', 'lowLifeDamagePct', 'onHitCreditPct', 'poisonChance',
+        'poisonDuration', 'poisonPower', 'poisonStacks', 'rangePct', 'slowChance', 'slowPower',
+        'splashFactor', 'splashRadius', 'statusDamageCap', 'statusDamagePct', 'stunChance', 'stunDuration'
+    ]);
+    const booleanItemEffectKeys = new Set(['allowGrass', 'allowMountain', 'allowWater', 'detectStealth']);
+    const integerItemEffectKeys = new Set(['chainCount', 'poisonStacks']);
+    const forbiddenBaseHealingItemKeys = new Set(['baseHeal', 'heal', 'life', 'lifeGain', 'lives', 'maxLives', 'restore', 'restoreLives']);
     for (const [key, item] of Object.entries(items)) {
         validateAllowedKeys(`items.${key}`, item, allowedItemKeys);
         requireText(item.name, `items.${key}.name`);
@@ -268,8 +281,38 @@ function validateItems(items) {
         requireText(item.set, `items.${key}.set`);
         if (!item.effects || typeof item.effects !== 'object' || Array.isArray(item.effects)) {
             errors.push(`items.${key}.effects debe ser un objeto`);
+        } else {
+            validateItemEffects(key, item.effects, {
+                allowedItemEffectKeys,
+                booleanItemEffectKeys,
+                integerItemEffectKeys,
+                forbiddenBaseHealingItemKeys
+            });
         }
         if (item.icon) validateAsset(item.icon, `items.${key}.icon`);
+    }
+}
+
+function validateItemEffects(itemId, effects, schema) {
+    for (const [key, value] of Object.entries(effects)) {
+        const label = `items.${itemId}.effects.${key}`;
+        if (schema.forbiddenBaseHealingItemKeys.has(key)) {
+            errors.push(`${label} esta prohibido: los objetos no pueden curar la base`);
+            continue;
+        }
+        if (!schema.allowedItemEffectKeys.has(key)) {
+            errors.push(`${label} no esta permitido`);
+            continue;
+        }
+        if (schema.booleanItemEffectKeys.has(key)) {
+            if (typeof value !== 'boolean') errors.push(`${label} debe ser booleano`);
+            continue;
+        }
+        if (schema.integerItemEffectKeys.has(key)) {
+            if (!Number.isInteger(value) || value < 0) errors.push(`${label} debe ser un entero no negativo`);
+            continue;
+        }
+        requireFiniteNumber(value, label);
     }
 }
 

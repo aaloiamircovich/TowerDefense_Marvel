@@ -107,6 +107,22 @@ test('validate-data bloquea curacion de base en efectos de heroes', () => {
     assert.match(result.stderr, /heroes\.loki\.special\.attackEffects\.0\.type heal esta prohibido/);
 });
 
+test('validate-data bloquea curacion de base y efectos inventados en objetos', () => {
+    const workspace = createDataWorkspace((data) => {
+        data.items.reactor_arc.effects.heal = 1;
+        data.items.reactor_arc.effects.comboOculto = 0.5;
+        data.items.lentes_edith.effects.detectStealth = 1;
+        data.items.cetro_loki.effects.chainCount = 1.5;
+    });
+    const result = runValidator(workspace);
+
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr, /items\.reactor_arc\.effects\.heal esta prohibido: los objetos no pueden curar la base/);
+    assert.match(result.stderr, /items\.reactor_arc\.effects\.comboOculto no esta permitido/);
+    assert.match(result.stderr, /items\.lentes_edith\.effects\.detectStealth debe ser booleano/);
+    assert.match(result.stderr, /items\.cetro_loki\.effects\.chainCount debe ser un entero no negativo/);
+});
+
 test('validate-data exige soportes de aura puros sin dano ofensivo', () => {
     const workspace = createDataWorkspace((data) => {
         data.heroes.capitan_america.damage = 40;
