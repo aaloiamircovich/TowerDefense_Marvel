@@ -38,8 +38,13 @@ test('la evolucion por nivel se activa al requisito y no antes', () => {
 });
 
 test('los requisitos especiales de nivel se respetan', () => {
-    assert.equal(getEvolutionForHero(heroes.star_lord, {}, { level: 74 }), null);
-    assert.equal(getEvolutionForHero(heroes.star_lord, {}, { level: 75 })?.id, 'star_lord_evolution');
+    const allowedLevels = new Set([50, 100]);
+    for (const evolution of Object.values(EVOLUTION_CATALOG)) {
+        assert.equal(allowedLevels.has(evolution.requiredLevel), true, `${evolution.id} usa nivel ${evolution.requiredLevel}`);
+    }
+
+    assert.equal(getEvolutionForHero(heroes.star_lord, {}, { level: 49 }), null);
+    assert.equal(getEvolutionForHero(heroes.star_lord, {}, { level: 50 })?.id, 'star_lord_evolution');
     assert.equal(getEvolutionForHero(heroes.sentry, {}, { level: 99 }), null);
     assert.equal(getEvolutionForHero(heroes.sentry, {}, { level: 100 })?.id, 'sentry_evolution');
 });

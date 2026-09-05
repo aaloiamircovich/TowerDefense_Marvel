@@ -80,7 +80,7 @@ const OVERRIDES = {
         id: 'iron_spider', name: 'Iron Spider', shortName: 'Iron Spider', color: '#f4c542', stats: { damage: 0.14, fireRate: 0.04, range: 0.16, critChance: 3 }, canSeeStealth: true,
         transforms: [transform('simbionte', 'spiderman_black_suit', 'Spider-Man Black Suit', { rarity: 'Legendary', stats: { damage: 0.16, fireRate: 0.08, range: 0.02, critChance: 4 }, canSeeStealth: true })]
     },
-    star_lord: { name: 'Master of the Sun', requiredLevel: 75, rarity: 'Legendary', color: '#ffd166', stats: HIGH_POWER_STATS },
+    star_lord: { name: 'Master of the Sun', rarity: 'Legendary', color: '#ffd166', stats: HIGH_POWER_STATS },
     thor: { name: 'King Thor', color: '#93c5fd', stats: HIGH_POWER_STATS },
     venom: {
         stats: HIGH_POWER_STATS,
