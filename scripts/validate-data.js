@@ -107,6 +107,35 @@ function validateHeroes(heroes) {
             if (knownIds.has(hero.evolutionId)) errors.push(`heroes.${key}.evolutionId no debe apuntar a un heroe base`);
         }
     }
+
+    validateSupportAuraRoster(heroes);
+}
+
+function validateSupportAuraRoster(heroes) {
+    const supportHeroes = Object.entries(heroes)
+        .filter(([, hero]) => hero.special?.supportAura?.type)
+        .map(([id, hero]) => ({ id, hero, aura: hero.special.supportAura }));
+
+    for (const { id, hero } of supportHeroes) {
+        if (!/no ataca/i.test(hero.abilityDesc || '')) {
+            errors.push(`heroes.${id}.abilityDesc debe aclarar "No ataca" para soportes de aura`);
+        }
+    }
+
+    for (const type of ['damage', 'fireRate', 'range']) {
+        const variants = supportHeroes.filter((entry) => entry.aura.type === type);
+        if (variants.length < 2) {
+            errors.push(`heroes.supportAura.${type} necesita al menos dos variantes`);
+            continue;
+        }
+        const widest = [...variants].sort((a, b) => Number(b.aura.range || 0) - Number(a.aura.range || 0))[0];
+        const strongest = [...variants].sort((a, b) => Number(b.aura.power || 0) - Number(a.aura.power || 0))[0];
+        if (widest.id === strongest.id
+            || Number(widest.aura.range || 0) <= Number(strongest.aura.range || 0)
+            || Number(widest.aura.power || 0) >= Number(strongest.aura.power || 0)) {
+            errors.push(`heroes.supportAura.${type} necesita una variante amplia de menor potencia y otra corta de mayor potencia`);
+        }
+    }
 }
 
 function validateEvolutionCatalog() {

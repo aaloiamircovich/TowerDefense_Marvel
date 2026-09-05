@@ -135,6 +135,21 @@ test('validate-data exige soportes de aura puros sin dano ofensivo', () => {
     assert.match(result.stderr, /heroes\.capitan_america\.formationRole debe ser support/);
 });
 
+test('validate-data exige variedad y descripcion explicita en soportes de aura', () => {
+    const workspace = createDataWorkspace((data) => {
+        data.heroes.capitan_america.abilityDesc = 'Inspira a aliados cercanos con un aura amplia.';
+        data.heroes.black_panther.special.supportAura.range = 280;
+        delete data.heroes.wasp.special.supportAura;
+        delete data.heroes.profesor_x.special.supportAura;
+    });
+    const result = runValidator(workspace);
+
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr, /heroes\.capitan_america\.abilityDesc debe aclarar "No ataca" para soportes de aura/);
+    assert.match(result.stderr, /heroes\.supportAura\.damage necesita una variante amplia de menor potencia y otra corta de mayor potencia/);
+    assert.match(result.stderr, /heroes\.supportAura\.fireRate necesita al menos dos variantes/);
+});
+
 function createDataWorkspace(mutator = null) {
     const workspace = fs.mkdtempSync(path.join(os.tmpdir(), 'marvel-td-data-'));
     const dataDir = path.join(workspace, 'data');
