@@ -144,6 +144,42 @@ test('Enemy dibuja la barra de vida por encima del sprite visual completo', () =
     assert.ok(fillRects[0][1] < enemy.y - enemy.size / 2);
 });
 
+test('Enemy dibuja la barra de vida como overlay final', () => {
+    const enemy = new Enemy({
+        id: 'boss',
+        name: 'Ultron',
+        hp: 100,
+        speed: 0,
+        isBoss: true,
+        phases: [{ threshold: 0.8, name: 'Pulso', telegraph: 1 }]
+    }, [{ x: 0, y: 0 }]);
+    enemy.x = 80;
+    enemy.y = 80;
+    enemy.telegraph = { label: 'Pulso', duration: 0.5, maxDuration: 1 };
+    const calls = [];
+    const ctx = {
+        save: () => calls.push('save'),
+        restore: () => calls.push('restore'),
+        beginPath: () => calls.push('beginPath'),
+        arc: () => calls.push('arc'),
+        fill: () => calls.push('fill'),
+        stroke: () => calls.push('stroke'),
+        fillRect: () => calls.push('fillRect'),
+        fillText: () => calls.push('fillText'),
+        setLineDash: () => calls.push('setLineDash'),
+        set fillStyle(value) {},
+        set strokeStyle(value) {},
+        set lineWidth(value) {},
+        set font(value) {},
+        set textAlign(value) {},
+        set textBaseline(value) {}
+    };
+
+    enemy.render(ctx);
+
+    assert.ok(calls.lastIndexOf('fillRect') > calls.lastIndexOf('stroke'));
+});
+
 test('Enemy atribuye una baja por quemadura a su fuente', () => {
     const enemy = new Enemy({ id: 'test', hp: 5, speed: 50 }, [{ x: 0, y: 0 }]);
     const stats = { damage: 0, kills: 0 };

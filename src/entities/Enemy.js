@@ -453,10 +453,10 @@ export class Enemy {
             this.renderFallback(ctx);
         }
 
-        this.renderHealthBar(ctx);
         this.renderBarrier(ctx);
         this.renderDebuffPips(ctx);
         this.renderTelegraph(ctx);
+        this.renderHealthBar(ctx);
         ctx.restore();
     }
 
