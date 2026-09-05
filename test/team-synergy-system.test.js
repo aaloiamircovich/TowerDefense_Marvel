@@ -68,6 +68,34 @@ test('un equipo mixto sin requisitos completos no obtiene bonus gratuito', () =>
     assert.deepEqual(effects, {});
 });
 
+test('agrupaciones parciales no adelantan el bonus del siguiente umbral', () => {
+    const team = [
+        hero('spiderman', ['Callejero']),
+        hero('daredevil', ['Callejero']),
+        hero('moon_knight', ['Callejero'])
+    ];
+    const snapshot = analyzeTeam(team);
+    const street = snapshot.families.find((family) => family.tag === 'Callejero');
+    const effects = getHeroTeamEffects(team[0], team);
+
+    assert.equal(street.count, 3);
+    assert.equal(street.activeTier.count, 2);
+    assert.equal(street.nextTier.count, 4);
+    assert.equal(effects.rangePct, 0.03);
+    assert.equal(effects.detectStealth, true);
+    assert.equal(effects.fireRatePct, undefined);
+});
+
+test('parejas exactas no aplican efectos con un solo integrante', () => {
+    const team = [hero('iron_man', ['Avengers', 'Tecnología'])];
+    const snapshot = analyzeTeam(team);
+    const pair = snapshot.pairs.find((entry) => entry.id === 'ciencia_y_escudo');
+    const effects = getHeroTeamEffects(team[0], team);
+
+    assert.equal(pair.active, false);
+    assert.deepEqual(effects, {});
+});
+
 test('formaciones de rol quedan retiradas del sistema de sinergias', () => {
     const game = { activeTeam: [], heroes: [], selectedUnit: null, isManuallyPaused: false };
     const system = new TeamSynergySystem(game);
