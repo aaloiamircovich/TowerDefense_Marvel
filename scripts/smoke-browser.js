@@ -68,7 +68,11 @@ try {
         );
         const toastText = document.querySelector('[data-testid="toast"]')?.textContent || '';
         const effects = game?.vfx?.effects || [];
-        const enemyIntelCards = [...document.querySelectorAll('[data-testid="wave-enemy-card"]')].map((card) => card.textContent || '');
+        const enemyIntelCardNodes = [...document.querySelectorAll('#right-panel [data-testid="wave-enemy-card"]')];
+        const enemyIntelCards = enemyIntelCardNodes.map((card) => card.textContent || '');
+        const enemyIntelCardHeights = enemyIntelCardNodes.map((card) => Math.round(card.getBoundingClientRect().height));
+        const wavePreviewRect = document.querySelector('#right-panel #wave-preview')?.getBoundingClientRect();
+        const waveControlsRect = document.querySelector('#right-panel #wave-controls')?.getBoundingClientRect();
         return {
             appState: document.body.dataset.appState,
             startAssetsReady: document.body.classList.contains('start-assets-ready'),
@@ -83,7 +87,10 @@ try {
             threatRingVisible: effects.some((effect) => effect.type === 'ring' && effect.radius === 58),
             threatTextVisible: effects.some((effect) => effect.type === 'floatingText' && effect.text === 'ELITE'),
             enemyIntelCards: enemyIntelCards.length,
-            enemyIntelCounterSeen: enemyIntelCards.some((text) => /Perforacion|Deteccion|Control|Dano estable|Foco al soporte|Corta invocador/.test(text))
+            enemyIntelCounterSeen: enemyIntelCards.some((text) => /Perforacion|Deteccion|Control|Dano estable|Foco al soporte|Corta invocador/.test(text)),
+            enemyIntelMaxCardHeight: enemyIntelCardHeights.length ? Math.max(...enemyIntelCardHeights) : 0,
+            enemyIntelPreviewHeight: wavePreviewRect ? Math.round(wavePreviewRect.height) : 0,
+            enemyIntelControlsOverlap: wavePreviewRect && waveControlsRect ? Math.max(0, Math.round(wavePreviewRect.bottom - waveControlsRect.top)) : 0
         };
     });
 
@@ -101,6 +108,9 @@ try {
     if (!summary.threatTextVisible) failures.push('no se observo texto flotante de amenaza elite');
     if (summary.enemyIntelCards <= 0) failures.push('no se observaron tarjetas de intel enemiga');
     if (!summary.enemyIntelCounterSeen) failures.push('no se observaron counters en tarjetas de intel enemiga');
+    if (summary.enemyIntelMaxCardHeight > 110) failures.push(`tarjeta de intel enemiga demasiado alta: ${summary.enemyIntelMaxCardHeight}px`);
+    if (summary.enemyIntelPreviewHeight > 330) failures.push(`preview de oleada demasiado alto: ${summary.enemyIntelPreviewHeight}px`);
+    if (summary.enemyIntelControlsOverlap > 2) failures.push(`preview de oleada invade controles: ${summary.enemyIntelControlsOverlap}px`);
 
     const desktopSummary = await runLayoutSmoke(page, failures, { label: 'desktop', width: 1366, height: 768 });
     const mobileSummary = await runLayoutSmoke(page, failures, { label: 'mobile', width: 390, height: 844 });

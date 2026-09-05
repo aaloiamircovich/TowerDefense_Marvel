@@ -167,10 +167,13 @@ test('buildEnemyIntel explica jefes y amenazas de control', () => {
 
 test('buildEnemyTraitPreview limita rasgos visibles y resume overflow', () => {
     const preview = buildEnemyTraitPreview(['Jefe', 'Barrera', 'Blindaje', 'Resiste control', 'Barrera'], 3);
+    const compact = buildEnemyTraitPreview(['Jefe', 'Barrera', 'Blindaje', 'Resiste control'], 2);
 
     assert.deepEqual(preview.visible, ['Jefe', 'Barrera', 'Blindaje']);
     assert.equal(preview.overflow, 1);
     assert.match(preview.title, /Resiste control/);
+    assert.deepEqual(compact.visible, ['Jefe', 'Barrera']);
+    assert.equal(compact.overflow, 2);
 });
 
 test('buildStatusLegendModel prioriza counters de la oleada', () => {

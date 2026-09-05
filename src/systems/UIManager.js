@@ -2057,7 +2057,7 @@ export class UIManager {
             card.dataset.tooltip = intel.counterDetail;
             card.title = `${intel.name} | ${intel.roleLabel} | ${intel.counter} | Amenaza ${intel.threat}/5`;
             card.setAttribute('aria-label', `${intel.name}. ${intel.roleLabel}. Respuesta: ${intel.counter}. Amenaza ${intel.threat} de 5.`);
-            const traitPreview = buildEnemyTraitPreview(intel.traits, 3);
+            const traitPreview = buildEnemyTraitPreview(intel.traits, 2);
             const traitsMarkup = [
                 ...traitPreview.visible.map((trait) => `<b>${escapeHtml(trait)}</b>`),
                 traitPreview.overflow > 0 ? `<b class="trait-overflow">+${traitPreview.overflow}</b>` : ''

@@ -11227,10 +11227,13 @@ canvas {
     grid-template-columns: 1fr;
     align-content: start;
     grid-auto-rows: max-content;
-    flex: 1;
+    flex: 0 1 auto;
     min-height: 0;
-    max-height: none;
-    padding: 14px;
+    max-height: min(42vh, 310px);
+    gap: 6px;
+    padding: 10px;
+    overflow-y: auto;
+    scrollbar-gutter: stable;
     border-bottom: 0;
     background:
         linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent),
@@ -11239,23 +11242,26 @@ canvas {
 
 #right-panel .wave-enemy-card {
     display: grid;
-    grid-template-columns: 34px minmax(0, 1fr) auto;
+    grid-template-columns: 30px minmax(0, 1fr) auto;
     grid-template-areas:
         "token name count"
         "token role count"
-        "traits traits traits"
         "counter counter counter";
     align-items: center;
-    min-height: 0;
-    padding: 8px 9px;
-    gap: 3px 8px;
+    align-self: start;
+    min-height: 68px;
+    max-height: 92px;
+    padding: 7px 8px;
+    gap: 2px 7px;
+    overflow: hidden;
+    border-left-width: 3px;
 }
 
 #right-panel .wave-enemy-card .enemy-token {
     grid-area: token;
-    width: 32px;
-    height: 32px;
-    font-size: 12px;
+    width: 30px;
+    height: 30px;
+    font-size: 11px;
 }
 
 #right-panel .wave-enemy-card .enemy-count {
@@ -11276,14 +11282,16 @@ canvas {
 }
 
 #right-panel .wave-enemy-card .enemy-traits {
-    grid-area: traits;
-    min-height: 0;
-    margin-top: 4px;
+    display: none;
 }
 
 #right-panel .wave-enemy-card em {
     grid-area: counter;
-    margin-top: 2px;
+    min-width: 0;
+    margin-top: 3px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 #right-panel #wave-controls {
