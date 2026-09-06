@@ -1,18 +1,27 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { applyCooldownReductions, getSpecialCooldownReduction } from '../src/utils/AbilityModifiers.js';
+import { MAX_TOTAL_COOLDOWN_REDUCTION, applyCooldownReductions, getSpecialCooldownReduction } from '../src/utils/AbilityModifiers.js';
 
-test('applyCooldownReductions combina nivel, progreso, sinergia y especial', () => {
+test('applyCooldownReductions combina fuentes pequenas y limita acumulaciones extremas', () => {
     const hero = {
         id: 'loki',
-        config: { special: { statModifiers: { cooldown: 0.25 } } },
+        config: { special: { statModifiers: { cooldown: 0.04 } } },
         game: {
             progression: { getHeroBonuses: () => ({ cooldown: 0.1 }) },
-            teamSynergy: { getAbilityModifiers: () => ({ cooldown: 0.2 }) }
+            teamSynergy: { getAbilityModifiers: () => ({ cooldown: 0.05 }) }
+        }
+    };
+    const stackedHero = {
+        id: 'thor',
+        config: { special: { statModifiers: { cooldown: 0.5 } } },
+        game: {
+            progression: { getHeroBonuses: () => ({ cooldown: 0.75 }) },
+            teamSynergy: { getAbilityModifiers: () => ({ cooldown: 0.75 }) }
         }
     };
 
-    assert.equal(applyCooldownReductions(hero, 10, 0.1), 4.86);
+    assert.equal(Number(applyCooldownReductions(hero, 10).toFixed(3)), 8.208);
+    assert.equal(applyCooldownReductions(stackedHero, 10, 0.5), 10 * (1 - MAX_TOTAL_COOLDOWN_REDUCTION));
 });
 
 test('getSpecialCooldownReduction ignora valores invalidos y limita reducciones extremas', () => {
