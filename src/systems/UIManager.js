@@ -11,8 +11,9 @@ import { ShopPanel } from '../ui/ShopPanel.js';
 import { StarterPanel } from '../ui/StarterPanel.js';
 import { EndStatePanel } from '../ui/EndStatePanel.js';
 import { HeroRosterPanel } from '../ui/HeroRosterPanel.js';
-import { buildHeroDetailViewModel, formatHeroDetailMetric } from '../ui/HeroDetailViewModel.js';
-import { SET_BONUSES, SLOT_LABELS } from './ItemEffectSystem.js';
+import { HeroDetailsPanel } from '../ui/HeroDetailsPanel.js';
+import { formatHeroDetailMetric } from '../ui/HeroDetailViewModel.js';
+import { SET_BONUSES } from './ItemEffectSystem.js';
 import { getAllowedTerrainLabels } from '../utils/TerrainRules.js';
 import { getRarityClass, normalizeRarity } from '../utils/Rarity.js';
 import { HERO_MAX_LEVEL, calculateHeroLevelCost, getHeroDamageAtLevel, getHeroLevelUpgradeSteps, getScaledSupportAura, normalizeHeroLevel } from '../utils/HeroLevel.js';
@@ -1436,6 +1437,11 @@ export class UIManager {
         });
         this.starterPanel = new StarterPanel(this);
         this.endStatePanel = new EndStatePanel(this);
+        this.heroDetailsPanel = new HeroDetailsPanel(this, {
+            buildRosterWaveFitView,
+            evaluateHeroWaveFit,
+            targetingPriorities: TARGETING_PRIORITIES
+        });
         this.heroRosterPanel = new HeroRosterPanel(this, {
             buildTargetingControlState,
             getNextTargetingPriority
@@ -2212,263 +2218,14 @@ export class UIManager {
     }
 
     renderHeroDetails(hero, detailView = 'summary') {
-        const config = hero.config || hero;
-        const heroName = hero.name || config.name;
-        const level = this.getHeroLevel(hero);
-        const bonuses = this.game.progression?.getHeroBonuses(config.id) || {};
-        const effectiveStats = hero.getEffectiveStats?.();
-        const baseDamage = Math.round(hero.damage || config.damage || 0);
-        const baseRange = Math.round(hero.range || config.range || 0);
-        const baseFireRate = Number(hero.fireRate || config.fireRate || 1);
-        const baseCritChance = Math.round(hero.critChance || config.critChance || 5);
-        const damage = Math.round(effectiveStats?.damage || (hero.damage || config.damage || 0) * (1 + (bonuses.damage || 0)));
-        const range = Math.round(effectiveStats?.range || (hero.range || config.range || 0) * (1 + (bonuses.range || 0)));
-        const fireRate = Number(effectiveStats?.fireRate || (hero.fireRate || config.fireRate || 1) * (1 + (bonuses.fireRate || 0))).toFixed(1);
-        const critChance = Math.round(effectiveStats?.critChance || (hero.critChance || config.critChance || 5) + (bonuses.critChance || 0));
-        const terrains = this.getTerrainText(hero.allowedTerrains || config.allowedTerrains || [1]);
-        const equippedSlots = this.game.progression?.state.equippedItems[config.id] || {};
-        const items = hero.items?.length
-            ? hero.items
-            : Object.values(equippedSlots).map((itemId) => this.game.itemDatabase?.[itemId]).filter(Boolean);
-        const equippedItem = items[0] || null;
-        const equippedSlot = Object.keys(equippedSlots)[0] || equippedItem?.slot || null;
-        const combat = hero.combatStats || {};
-        const abilityState = hero.abilitySystem?.getDisplayState?.() || null;
-        const kitControl = hero.abilitySystem?.getControlState?.() || null;
-        const isUnlocked = this.game.progression?.state.unlockedHeroIds.includes(config.id) ?? true;
-        const rarity = normalizeRarity(config.rarity);
-        const rarityClass = getRarityClass(rarity);
-        const identityTags = [...new Set([...(config.tags || [])].filter(Boolean))];
-        const isDeployed = this.game.heroes.includes(hero);
-        const repositionPermission = isDeployed ? this.game.tacticalActions?.canReposition(hero) : null;
-        const sellPermission = isDeployed ? this.game.tacticalActions?.canSell(hero) : null;
-        const isMaxLevel = level >= HERO_MAX_LEVEL;
-        const currentTargeting = hero.targetingPriority || config.targetingPriority || TARGETING_PRIORITIES[0];
-        const waveSummary = this.nextWaveSummary || (!this.game.waveManager?.isWaveActive ? this.game.waveManager?.buildPreparedSummary?.() : null);
-        const waveFitView = buildRosterWaveFitView(evaluateHeroWaveFit(hero, waveSummary, this.getMissionCredits()));
-        const supportAura = config.special?.supportAura || config.supportAura || null;
-        const scaledAura = getScaledSupportAura(supportAura, level, rarity);
-        const supportAuraLabel = {
-            damage: 'Daño',
-            fireRate: 'Cad.',
-            range: 'Rango'
-        }[scaledAura?.type] || 'Aura';
-        const isAuraOnly = hero.isSupportAuraOnly?.() || Boolean(scaledAura?.type && config.formationRole === 'support');
-        const detailViewModel = buildHeroDetailViewModel({
-            detailView,
-            level,
-            maxLevel: HERO_MAX_LEVEL,
-            damage,
-            fireRate,
-            critChance,
-            range,
-            baseDamage,
-            baseFireRate,
-            baseCritChance,
-            baseRange,
-            combat,
-            equippedItem,
-            isAuraOnly,
-            scaledAura,
-            supportAuraLabel,
-            upgradeCost: this.getHeroUpgradeCost(hero, 1),
-            formatStatDelta: (...args) => this.formatStatDelta(...args)
-        });
-        const { activeDetailView, compactStats, detailTabs, upgradeBadge } = detailViewModel;
-        const upgradeControls = isUnlocked ? `<div class="upgrade-list hero-upgrade-grid" aria-label="Mejoras de nivel">
-            ${[1, 5, 10].map((amount) => {
-                const cost = this.getHeroUpgradeCost(hero, amount);
-                const steps = getHeroLevelUpgradeSteps(level, amount);
-                const previewLabel = isMaxLevel ? '' : this.getHeroLevelPreviewLabel(hero, steps);
-                const preview = isMaxLevel ? '' : this.renderHeroLevelPreview(hero, steps);
-                const upgradeLabel = isMaxLevel
-                    ? `${heroName} ya esta en nivel maximo`
-                    : `Mejorar ${heroName} ${steps} niveles por ${cost} creditos${previewLabel ? `. Cambios: ${previewLabel}` : ''}`;
-                return `<button class="modal-btn-upgrade hero-upgrade-card btn-primary ghost" type="button" data-amt="${amount}" data-cost="${cost}" aria-label="${escapeHtml(upgradeLabel)}" title="${escapeHtml(upgradeLabel)}" data-tooltip="${escapeHtml(upgradeLabel)}" aria-disabled="${isMaxLevel}" ${isMaxLevel ? 'disabled' : ''}>
-                    <span class="hero-upgrade-step">${isMaxLevel ? 'MAX' : `+${steps}`}</span>
-                    <span class="hero-upgrade-cost">${isMaxLevel ? 'Nivel maximo' : `$${cost}`}</span>
-                    ${preview}
-                </button>`;
-            }).join('')}
-        </div>` : '<div class="locked-hero-note"><i class="fas fa-lock"></i> Recluta al héroe para mejorarlo</div>';
-        let detailBody = '';
-
-        if (activeDetailView === 'upgrade') {
-            detailBody = `
-                <div class="hero-detail-subpanel detail-card hero-tab-upgrade">
-                    <h3>Mejora de nivel</h3>
-                    <p><span>Nivel actual</span><strong>${level}/${HERO_MAX_LEVEL}</strong></p>
-                    <p><span>Siguiente coste</span><strong>${upgradeBadge}</strong></p>
-                    ${upgradeControls}
-                </div>
-            `;
-        } else if (activeDetailView === 'equipment') {
-            detailBody = `
-                <div class="equipment-card hero-tab-equipment">
-                    <h3>Equipamiento</h3>
-                    <div class="hero-equipment-slots single-equipment-slot">
-                        <div class="item-slot ${equippedItem ? 'filled' : ''}">
-                            <span>${equippedItem ? `${SLOT_LABELS[equippedItem.slot]} | ${SET_BONUSES[equippedItem.set]?.name || 'Sin familia'}` : 'Objeto'}</span>
-                            <strong>${equippedItem?.name || 'Ranura libre'}</strong>
-                            ${equippedItem ? `<small>${equippedItem.desc}</small><button class="btn-unequip-modal icon-command" type="button" data-slot="${equippedSlot}" aria-label="Desequipar ${equippedItem.name}" title="Desequipar" data-tooltip="Desequipar"><i class="fas fa-eject"></i></button>` : '<small>Un solo objeto equipado por heroe.</small>'}
-                        </div>
-                    </div>
-                    <button id="open-inventory-panel" class="btn-primary ghost" type="button" aria-label="${escapeHtml(isUnlocked ? `Abrir inventario para ${heroName}` : `${heroName} no reclutado: inventario bloqueado`)}" title="${escapeHtml(isUnlocked ? `Abrir inventario para ${heroName}` : `${heroName} no reclutado: inventario bloqueado`)}" data-tooltip="${escapeHtml(isUnlocked ? `Abrir inventario para ${heroName}` : `${heroName} no reclutado: inventario bloqueado`)}" aria-disabled="${!isUnlocked}" ${isUnlocked ? '' : 'disabled'}><i class="fas fa-box-open"></i> ${isUnlocked ? 'Abrir inventario' : 'Recluta para equipar'}</button>
-                </div>
-            `;
-        } else if (activeDetailView === 'combat') {
-            detailBody = `
-                <div class="hero-detail-subpanel detail-card hero-tab-combat">
-                    <h3>Combate</h3>
-                    <p><span>Daño total</span><strong>${Math.round(combat.damageDealt || 0)}</strong></p>
-                    <p><span>Bajas</span><strong>${combat.kills || 0}</strong></p>
-                    <p><span>Disparos</span><strong>${combat.shots || 0}</strong></p>
-                    <p><span>Críticos</span><strong>${combat.crits || 0}</strong></p>
-                    <p><span>Habilidades</span><strong>${combat.abilityActivations || 0}</strong></p>
-                </div>
-            `;
-        } else {
-            detailBody = `
-                <div class="hero-identity-card">
-                    <span><small>Tipo</small><strong>${escapeHtml(config.category || 'Heroe')}</strong></span>
-                    <span><small>Rareza</small><b class="rarity-badge ${rarityClass}">${rarity}</b></span>
-                    ${identityTags.length ? `<div class="hero-tag-list">${identityTags.map((tag) => `<span>${escapeHtml(tag)}</span>`).join('')}</div>` : ''}
-                </div>
-
-                <div class="hero-ability-compact">
-                    <div>
-                        <h3>${config.ability || 'Ataque básico'}</h3>
-                        <p>${config.abilityDesc || 'Ataca al enemigo objetivo con su daño base.'}</p>
-                    </div>
-                    ${config.niche ? `<b>${config.niche}</b>` : ''}
-                </div>
-
-                ${waveFitView ? `
-                    <div class="hero-wave-fit-compact ${escapeHtml(waveFitView.id)}" aria-label="${escapeHtml(waveFitView.ariaLabel)}">
-                        <span><small>Lectura de oleada</small><strong><i class="fas fa-crosshairs"></i>${escapeHtml(waveFitView.label)}</strong></span>
-                        <b>${escapeHtml(waveFitView.scoreLabel)}</b>
-                        <em>${escapeHtml(waveFitView.reasonText)}</em>
-                    </div>
-                ` : ''}
-
-                <div class="hero-tactic-compact">
-                    <div>
-                        <small>Terreno</small>
-                        <strong>${terrains}</strong>
-                    </div>
-                    <label>
-                        <small>Apuntar a</small>
-                        <select id="targeting-select">
-                            ${TARGETING_PRIORITIES.map((priority) => `<option value="${priority}" ${currentTargeting === priority ? 'selected' : ''}>${priority}</option>`).join('')}
-                        </select>
-                    </label>
-                    ${this.renderTargetingPriorityLegend(currentTargeting)}
-                </div>
-
-                ${abilityState ? `
-                    <div class="ability-status ${abilityState.ready ? 'ready' : ''}">
-                        <span>${abilityState.label}</span>
-                        ${abilityState.progress === null ? '' : `<div class="ability-meter"><i style="width:${Math.round(abilityState.progress * 100)}%"></i></div>`}
-                    </div>
-                ` : ''}
-                ${kitControl ? `
-                    <div class="kit-mode-control" role="group" aria-label="${kitControl.label}">
-                        <span>${kitControl.label}</span>
-                        <div>
-                            ${kitControl.options.map((option) => `<button class="kit-mode-btn ${option.id === kitControl.value ? 'active' : ''}" type="button" data-mode="${option.id}" aria-pressed="${option.id === kitControl.value}" aria-label="${escapeHtml(`${kitControl.label}: ${option.label}`)}" title="${escapeHtml(`${kitControl.label}: ${option.label}`)}" data-tooltip="${escapeHtml(`${kitControl.label}: ${option.label}`)}">${option.label}</button>`).join('')}
-                        </div>
-                    </div>
-                ` : ''}
-            `;
-        }
-
-        this.panelContent.innerHTML = `
-            <div class="hero-detail">
-                <section class="hero-portrait ${rarityClass}" data-rarity="${rarity}">
-                    <div class="hero-portrait-header">
-                        <div>
-                            <small>Ficha de heroe</small>
-                            <h2>${escapeHtml(heroName)}</h2>
-                        </div>
-                        <b class="rarity-badge ${rarityClass}">${rarity}</b>
-                    </div>
-                    <div class="portrait-frame">${this.renderSprite(this.getHeroDisplaySprite(config), heroName)}</div>
-                    <div class="hero-level-readout">
-                        <span><small>Nivel</small><b>${level}/${HERO_MAX_LEVEL}</b></span>
-                        <span><small>Mejora</small><b>${isMaxLevel ? 'MAX' : `$${this.getHeroUpgradeCost(hero, 1)}`}</b></span>
-                    </div>
-                    ${isDeployed ? `
-                        <div class="tactical-actions">
-                            <button id="reposition-hero" class="btn-primary ghost" type="button" aria-label="${escapeHtml(`Reposicionar ${heroName}: ${repositionPermission?.reason || 'Mover libremente'}`)}" title="${escapeHtml(`Reposicionar ${heroName}: ${repositionPermission?.reason || 'Mover libremente'}`)}" data-tooltip="${escapeHtml(`Reposicionar ${heroName}: ${repositionPermission?.reason || 'Mover libremente'}`)}" aria-disabled="${!repositionPermission?.ok}" ${repositionPermission?.ok ? '' : 'disabled'}><i class="fas fa-arrows-alt"></i> Reposicionar</button>
-                            <button id="sell-hero" class="btn-primary danger" type="button" aria-label="${escapeHtml(`Retirar ${heroName}: ${sellPermission?.reason || 'Retirar heroe'}`)}" title="${escapeHtml(`Retirar ${heroName}: ${sellPermission?.reason || 'Retirar heroe'}`)}" data-tooltip="${escapeHtml(`Retirar ${heroName}: ${sellPermission?.reason || 'Retirar heroe'}`)}" aria-disabled="${!sellPermission?.ok}" ${sellPermission?.ok ? '' : 'disabled'}><i class="fas fa-eject"></i> Retirar</button>
-                        </div>
-                    ` : ''}
-                </section>
-
-                <section class="detail-stack">
-                    <div class="hero-summary-card">
-                        <div class="hero-stat-strip">
-                            ${compactStats.map(([label, value]) => `<span><small>${label}</small><strong>${value}</strong></span>`).join('')}
-                        </div>
-
-                        ${activeDetailView === 'summary' ? this.renderHeroQuickIdentityStrip(hero) : ''}
-
-                        <div class="hero-detail-tabs" role="tablist" aria-label="Detalle de heroe">
-                            ${detailTabs.map((tab) => {
-                                const tabAriaLabel = escapeHtml(`${tab.label}: ${tab.badge}`);
-                                return `<button id="hero-detail-tab-${tab.id}" class="hero-detail-tab ${activeDetailView === tab.id ? 'active' : ''}" data-view="${tab.id}" role="tab" aria-selected="${activeDetailView === tab.id}" aria-controls="hero-detail-panel" tabindex="${activeDetailView === tab.id ? '0' : '-1'}" type="button" aria-label="${tabAriaLabel}" title="${tabAriaLabel}" data-tooltip="${tabAriaLabel}"><i class="fas ${tab.icon}"></i><span>${tab.label}</span><b class="hero-detail-tab-badge">${escapeHtml(tab.badge)}</b></button>`;
-                            }).join('')}
-                        </div>
-
-                        <div id="hero-detail-panel" class="hero-detail-tab-panel ${activeDetailView}" role="tabpanel" aria-labelledby="hero-detail-tab-${activeDetailView}">
-                            ${detailBody}
-                        </div>
-                    </div>
-                </section>
-            </div>
-        `;
-
-        document.getElementById('targeting-select')?.addEventListener('change', (event) => {
-            hero.targetingPriority = event.target.value;
-            if (hero.config) hero.config.targetingPriority = event.target.value;
-            this.game.progression?.setHeroTargetingPriority?.(config.id, event.target.value);
-        });
-
-        this.panelContent.querySelectorAll('.modal-btn-upgrade').forEach((button) => {
-            button.addEventListener('click', () => {
-                this.processUpgrade(hero, Number(button.dataset.amt));
+        if (!this.heroDetailsPanel) {
+            this.heroDetailsPanel = new HeroDetailsPanel(this, {
+                buildRosterWaveFitView,
+                evaluateHeroWaveFit,
+                targetingPriorities: TARGETING_PRIORITIES
             });
-        });
-
-        this.panelContent.querySelectorAll('.kit-mode-btn').forEach((button) => button.addEventListener('click', () => {
-            if (!hero.abilitySystem?.setCombatMode?.(button.dataset.mode)) return;
-            this.showToast(`${kitControl.label}: ${button.textContent}`, 'success');
-            this.renderHeroRoster(this.game.activeTeam, (config) => this.game.inputManager.setPlacementMode(config));
-            this.renderHeroDetails(hero, activeDetailView);
-        }));
-
-        this.bindHeroDetailTabs(hero);
-
-        document.getElementById('reposition-hero')?.addEventListener('click', () => {
-            if (this.game.inputManager.setRepositionMode(hero)) this.closePanel();
-        });
-
-        document.getElementById('sell-hero')?.addEventListener('click', () => {
-            const result = this.game.inputManager.sellHero(hero);
-            if (result.ok) this.closePanel();
-        });
-
-
-        this.panelContent.querySelectorAll('.btn-unequip-modal').forEach((button) => button.addEventListener('click', () => {
-            this.game.progression.unequipItem(config.id, button.dataset.slot);
-            this.showToast('Objeto devuelto al inventario', 'success');
-            const deployed = this.game.heroes.find((unit) => unit.id === config.id);
-            this.renderHeroDetails(deployed || config, 'equipment');
-        }));
-        document.getElementById('open-inventory-panel')?.addEventListener('click', () => {
-            this.inventoryPanel.heroId = config.id;
-            this.renderPanel('inventory');
-        });
+        }
+        this.heroDetailsPanel.render(hero, detailView);
     }
 
     getHeroLevel(unit) {
