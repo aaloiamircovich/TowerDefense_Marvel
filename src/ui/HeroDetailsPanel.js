@@ -1,9 +1,8 @@
 import { SET_BONUSES, SLOT_LABELS } from '../systems/ItemEffectSystem.js';
 import { HERO_MAX_LEVEL, getHeroLevelUpgradeSteps, getScaledSupportAura } from '../utils/HeroLevel.js';
 import { getRarityClass, normalizeRarity } from '../utils/Rarity.js';
+import { TARGETING_PRIORITIES } from '../utils/TargetingPriority.js';
 import { buildHeroDetailViewModel } from './HeroDetailViewModel.js';
-
-const DEFAULT_TARGETING_PRIORITIES = ['Primero', 'Último', 'Fuerte', 'Débil', 'Rápido', 'Sigilo', 'Jefe'];
 
 function escapeHtml(value = '') {
     return String(value)
@@ -19,7 +18,7 @@ export class HeroDetailsPanel {
         this.ui = ui;
         this.evaluateHeroWaveFit = builders.evaluateHeroWaveFit || (() => null);
         this.buildRosterWaveFitView = builders.buildRosterWaveFitView || (() => null);
-        this.targetingPriorities = builders.targetingPriorities || DEFAULT_TARGETING_PRIORITIES;
+        this.targetingPriorities = builders.targetingPriorities || TARGETING_PRIORITIES;
     }
 
     render(hero, detailView = 'summary') {

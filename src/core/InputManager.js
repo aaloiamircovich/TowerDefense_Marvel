@@ -1,6 +1,6 @@
 import { getSpriteFrame } from '../rendering/ImageCache.js';
 import { TacticalActionSystem } from '../systems/TacticalActionSystem.js';
-import { getNextTargetingPriority } from '../systems/UIManager.js';
+import { getNextTargetingPriority } from '../utils/TargetingPriority.js';
 import { getClosestPointOnPath } from '../utils/PathUtils.js';
 import { buildHeroTargetIntent } from '../entities/Hero.js';
 import { getHeroRangePattern, getRangePatternLabel, isPointInRangePattern } from '../utils/RangePattern.js';
