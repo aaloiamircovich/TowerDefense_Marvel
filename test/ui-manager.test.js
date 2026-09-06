@@ -454,7 +454,7 @@ test('renderHeroDetails muestra counter de oleada dentro de estadisticas', () =>
         assert.match(ui.panelContent.innerHTML, /Mejora de nivel/);
         assert.match(ui.panelContent.innerHTML, /hero-upgrade-grid/);
         assert.match(ui.panelContent.innerHTML, /hero-upgrade-card/);
-        assert.match(ui.panelContent.innerHTML, /class="modal-btn-upgrade hero-upgrade-card btn-primary ghost" type="button" data-amt="1" data-cost="\d+" aria-label="Mejorar Iron Man 1 niveles por \d+ creditos" title="Mejorar Iron Man 1 niveles por \d+ creditos" data-tooltip="Mejorar Iron Man 1 niveles por \d+ creditos" aria-disabled="false"/);
+        assert.match(ui.panelContent.innerHTML, /class="modal-btn-upgrade hero-upgrade-card btn-primary ghost" type="button" data-amt="1" data-cost="\d+" aria-label="Mejorar Iron Man 1 niveles por \d+ creditos\. Cambios: Dano \+\d+" title="Mejorar Iron Man 1 niveles por \d+ creditos\. Cambios: Dano \+\d+" data-tooltip="Mejorar Iron Man 1 niveles por \d+ creditos\. Cambios: Dano \+\d+" aria-disabled="false"/);
 
         ui.renderHeroDetails(hero, 'equipment');
         assert.match(ui.panelContent.innerHTML, /hero-detail-tab-panel equipment/);
@@ -1547,6 +1547,7 @@ test('UIManager previsualiza mejoras de potencia y radio de aura', () => {
     assert.ok(byLabel.Radio.value > 0);
     assert.match(html, /Aura \+0\.7%/);
     assert.match(html, /Radio \+2/);
+    assert.match(ui.getHeroLevelPreviewLabel(hero, 10), /Aura \+0\.7%, Radio \+2/);
 });
 
 function path() {

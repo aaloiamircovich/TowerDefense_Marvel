@@ -2279,8 +2279,11 @@ export class UIManager {
             ${[1, 5, 10].map((amount) => {
                 const cost = this.getHeroUpgradeCost(hero, amount);
                 const steps = getHeroLevelUpgradeSteps(level, amount);
+                const previewLabel = isMaxLevel ? '' : this.getHeroLevelPreviewLabel(hero, steps);
                 const preview = isMaxLevel ? '' : this.renderHeroLevelPreview(hero, steps);
-                const upgradeLabel = isMaxLevel ? `${heroName} ya esta en nivel maximo` : `Mejorar ${heroName} ${steps} niveles por ${cost} creditos`;
+                const upgradeLabel = isMaxLevel
+                    ? `${heroName} ya esta en nivel maximo`
+                    : `Mejorar ${heroName} ${steps} niveles por ${cost} creditos${previewLabel ? `. Cambios: ${previewLabel}` : ''}`;
                 return `<button class="modal-btn-upgrade hero-upgrade-card btn-primary ghost" type="button" data-amt="${amount}" data-cost="${cost}" aria-label="${escapeHtml(upgradeLabel)}" title="${escapeHtml(upgradeLabel)}" data-tooltip="${escapeHtml(upgradeLabel)}" aria-disabled="${isMaxLevel}" ${isMaxLevel ? 'disabled' : ''}>
                     <span class="hero-upgrade-step">${isMaxLevel ? 'MAX' : `+${steps}`}</span>
                     <span class="hero-upgrade-cost">${isMaxLevel ? 'Nivel maximo' : `$${cost}`}</span>
@@ -2489,6 +2492,12 @@ export class UIManager {
                 ${rows.map((row) => `<em class="${row.value < 0 ? 'negative' : 'positive'}">${row.label} ${this.formatSignedPreviewValue(row.value, row.suffix, row.precision)}</em>`).join('')}
             </span>
         `;
+    }
+
+    getHeroLevelPreviewLabel(unit, amount = 1) {
+        return this.getHeroLevelPreviewRows(unit, amount)
+            .map((row) => `${row.label} ${this.formatSignedPreviewValue(row.value, row.suffix, row.precision)}`)
+            .join(', ');
     }
 
     getHeroLevelPreviewRows(unit, amount = 1) {
