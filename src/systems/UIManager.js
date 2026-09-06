@@ -17,6 +17,7 @@ import { EnemyInfoPanel } from '../ui/EnemyInfoPanel.js';
 import { CombatPressurePanel } from '../ui/CombatPressurePanel.js';
 import { ThreatHudPanel } from '../ui/ThreatHudPanel.js';
 import { MissionStatusPanel } from '../ui/MissionStatusPanel.js';
+import { ToastPanel } from '../ui/ToastPanel.js';
 import { SET_BONUSES } from './ItemEffectSystem.js';
 import { getAllowedTerrainLabels } from '../utils/TerrainRules.js';
 import { getRarityClass, normalizeRarity } from '../utils/Rarity.js';
@@ -1392,6 +1393,7 @@ export class UIManager {
         this.inventoryPanel = new InventoryPanel(this);
         this.teamBuilderPanel = new TeamBuilderPanel(this);
         this.modePanel = new ModePanel(this);
+        this.toastPanel = new ToastPanel(this);
         this.waveReportPanel = new WaveReportPanel(this, {
             buildState: buildWaveReportState,
             buildAction: buildWaveReportActionState
@@ -1801,14 +1803,12 @@ export class UIManager {
     }
 
     showToast(message, type = 'info') {
-        if (!this.toastEl) return;
-        window.clearTimeout(this.toastTimer);
-        this.toastEl.textContent = message;
-        this.toastEl.className = `toast ${type}`;
-        if (type === 'success') this.game.audio?.play('confirm');
-        if (type === 'warning') this.game.audio?.play('warning');
-        if (type === 'reward') this.game.audio?.play('reward');
-        this.toastTimer = window.setTimeout(() => this.toastEl.classList.add('hidden'), 2200);
+        return this.getToastPanel().show(message, type);
+    }
+
+    getToastPanel() {
+        if (!this.toastPanel) this.toastPanel = new ToastPanel(this);
+        return this.toastPanel;
     }
 
     renderWavePreview(uniqueEnemies, modifier = null, faction = null, waveNumber = 1, summary = null) {
