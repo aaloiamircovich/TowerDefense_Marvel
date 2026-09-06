@@ -15,6 +15,7 @@ import { HeroDetailsPanel } from '../ui/HeroDetailsPanel.js';
 import { WavePreviewPanel } from '../ui/WavePreviewPanel.js';
 import { EnemyInfoPanel } from '../ui/EnemyInfoPanel.js';
 import { CombatPressurePanel } from '../ui/CombatPressurePanel.js';
+import { ThreatHudPanel } from '../ui/ThreatHudPanel.js';
 import { SET_BONUSES } from './ItemEffectSystem.js';
 import { getAllowedTerrainLabels } from '../utils/TerrainRules.js';
 import { getRarityClass, normalizeRarity } from '../utils/Rarity.js';
@@ -1410,6 +1411,10 @@ export class UIManager {
             buildCombatPressureState,
             buildPressureActionState
         });
+        this.threatHudPanel = new ThreatHudPanel({
+            buildBossHudState,
+            buildSpawnQueueState
+        });
         this.radarPanel = new RadarPanel(this, {
             buildWaveReportState,
             buildWaveReportActionState
@@ -1733,49 +1738,21 @@ export class UIManager {
     }
 
     updateBossHud(enemies = [], waveActive = false) {
-        const container = document.getElementById('boss-hud');
-        if (!container) return null;
-        const state = buildBossHudState(enemies, waveActive);
-        if (!state) {
-            container.classList.add('hidden');
-            container.innerHTML = '';
-            return null;
-        }
-
-        container.className = `boss-hud ${state.critical ? 'critical' : ''} ${state.isFinalBoss ? 'final-boss' : ''}`;
-        container.setAttribute('aria-label', `${state.name}. ${state.phase}. Salud ${state.hpPct} por ciento.`);
-        container.innerHTML = `
-            <div class="boss-hud-heading">
-                <span>${state.isFinalBoss ? 'Jefe final' : 'Jefe activo'}</span>
-                <strong>${escapeHtml(state.name)}</strong>
-            </div>
-            <div class="boss-hud-meter" aria-hidden="true"><i style="width:${state.hpPct}%"></i></div>
-            <div class="boss-hud-meta">
-                <span>${escapeHtml(state.phase)}</span>
-                <b>${state.hpPct}%</b>
-            </div>
-        `;
-        return state;
+        return this.getThreatHudPanel().updateBoss(enemies, waveActive);
     }
 
     updateSpawnQueue(queue = [], spawnTimer = 0, waveActive = false) {
-        const container = document.getElementById('spawn-queue');
-        if (!container) return null;
-        const state = buildSpawnQueueState(queue, spawnTimer, waveActive);
-        if (!state) {
-            container.classList.add('hidden');
-            container.innerHTML = '';
-            return null;
-        }
+        return this.getThreatHudPanel().updateSpawnQueue(queue, spawnTimer, waveActive);
+    }
 
-        container.className = `spawn-queue ${state.danger}`;
-        container.setAttribute('aria-label', `Proximo refuerzo ${state.name} en ${state.eta} segundos. Quedan ${state.remaining}.`);
-        container.innerHTML = `
-            <span>Refuerzos</span>
-            <strong>${escapeHtml(state.name)}</strong>
-            <b>${state.eta}s | ${state.remaining} pendientes</b>
-        `;
-        return state;
+    getThreatHudPanel() {
+        if (!this.threatHudPanel) {
+            this.threatHudPanel = new ThreatHudPanel({
+                buildBossHudState,
+                buildSpawnQueueState
+            });
+        }
+        return this.threatHudPanel;
     }
 
     clearWaveReport() {
