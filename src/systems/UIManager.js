@@ -12,7 +12,7 @@ import { StarterPanel } from '../ui/StarterPanel.js';
 import { EndStatePanel } from '../ui/EndStatePanel.js';
 import { HeroRosterPanel } from '../ui/HeroRosterPanel.js';
 import { HeroDetailsPanel } from '../ui/HeroDetailsPanel.js';
-import { formatHeroDetailMetric } from '../ui/HeroDetailViewModel.js';
+import { WavePreviewPanel } from '../ui/WavePreviewPanel.js';
 import { SET_BONUSES } from './ItemEffectSystem.js';
 import { getAllowedTerrainLabels } from '../utils/TerrainRules.js';
 import { getRarityClass, normalizeRarity } from '../utils/Rarity.js';
@@ -179,10 +179,6 @@ function escapeHtml(value = '') {
         .replaceAll('>', '&gt;')
         .replaceAll('"', '&quot;')
         .replaceAll("'", '&#39;');
-}
-
-function formatCompactMetric(value = 0) {
-    return formatHeroDetailMetric(value);
 }
 
 export function buildBossCountdownState(wave = 1, maxWaves = CAMPAIGN_MAX_WAVES, interval = MINI_BOSS_WAVE_INTERVAL) {
@@ -1396,6 +1392,18 @@ export class UIManager {
             buildState: buildWaveReportState,
             buildAction: buildWaveReportActionState
         });
+        this.wavePreviewPanel = new WavePreviewPanel(this, {
+            buildBossMilestoneState,
+            buildCounterCoverageModel,
+            buildEnemyIntel,
+            buildEnemyTraitPreview,
+            buildStatusLegendModel,
+            buildStealthCoverageState,
+            buildWaveCounterBrief,
+            buildWaveDamageCheckMeter,
+            buildWavePrepActionControl,
+            buildWavePreparationPlan
+        });
         this.radarPanel = new RadarPanel(this, {
             buildWaveReportState,
             buildWaveReportActionState
@@ -1866,214 +1874,31 @@ export class UIManager {
     }
 
     renderWavePreview(uniqueEnemies, modifier = null, faction = null, waveNumber = 1, summary = null) {
-        const container = document.getElementById('wave-preview');
-        const numberEl = document.getElementById('next-wave-number');
-        const intelEl = document.getElementById('wave-intel');
-        if (!container) return;
-        const prepPlan = summary
-            ? buildWavePreparationPlan(
-                summary,
-                this.game.activeTeam || [],
-                this.game.heroes || [],
-                this.game.resourceManager?.credits || 0,
-                (level, amount = 1) => this.calculateLevelCost(level, amount)
-            )
-            : [];
-        const stealthCoverage = summary
-            ? buildStealthCoverageState(
-                summary,
-                this.game.activeTeam || [],
-                this.game.heroes || [],
-                this.game.resourceManager?.credits || 0
-            )
-            : null;
-        const statusLegend = buildStatusLegendModel(summary);
-        const counterCoverage = summary
-            ? buildCounterCoverageModel(
-                summary,
-                this.game.activeTeam || [],
-                this.game.heroes || []
-            )
-            : null;
-        const counterBrief = summary ? buildWaveCounterBrief(summary, counterCoverage) : null;
-        const bossMilestone = buildBossMilestoneState(uniqueEnemies, waveNumber, summary);
-
-        if (numberEl) numberEl.textContent = waveNumber;
-        if (intelEl) {
-            intelEl.innerHTML = `
-                <strong>${faction?.label || 'Amenaza desconocida'}</strong>
-                <span>${modifier?.label || 'Oleada estándar'}: ${modifier?.description || ''}</span>
-                ${summary ? `
-                    <div class="wave-threat ${summary.threatTier?.id || 'low'}" aria-label="${summary.threatTier?.label || 'Amenaza baja'}: ${summary.threatTier?.advice || 'Buen momento para ahorrar.'} Puntaje ${summary.pressureScore || 0}">
-                        <div><strong>${summary.threatTier?.label || 'Amenaza baja'}</strong><span>${summary.threatTier?.advice || 'Buen momento para ahorrar.'}</span></div>
-                        <b>${summary.pressureScore || 0}</b>
-                    </div>
-                    <div class="wave-readiness ${summary.readiness?.id || 'empty'}" aria-label="${summary.readiness?.label || 'Sin defensa'}: ${summary.readiness?.advice || 'Despliega al menos un heroe antes de iniciar.'}">
-                        <div><strong>${summary.readiness?.label || 'Sin defensa'}</strong><span>${summary.readiness?.advice || 'Despliega al menos un heroe antes de iniciar.'}</span></div>
-                        <b>${summary.readiness?.score || 0}</b>
-                    </div>
-                    ${this.renderWaveDamageCheck(summary.readiness?.damageCheck)}
-                    ${bossMilestone ? `<div class="wave-boss-telegraph ${bossMilestone.tone}" data-testid="wave-boss-telegraph" aria-label="${escapeHtml(`${bossMilestone.title}: ${bossMilestone.name}. ${bossMilestone.warning}`)}">
-                        <div class="wave-boss-portrait">
-                            ${bossMilestone.portrait
-                                ? `<img src="${escapeHtml(bossMilestone.portrait)}" alt="" loading="lazy">`
-                                : `<span>${escapeHtml(bossMilestone.name.charAt(0))}</span>`}
-                        </div>
-                        <div class="wave-boss-copy">
-                            <span>${escapeHtml(bossMilestone.title)} · Oleada ${bossMilestone.wave}</span>
-                            <strong>${escapeHtml(bossMilestone.name)}</strong>
-                            <small><i class="fas fa-triangle-exclamation"></i>${escapeHtml(bossMilestone.warning)}</small>
-                        </div>
-                        <div class="wave-boss-stats">
-                            ${bossMilestone.stats.map((stat) => `<span><b>${escapeHtml(stat.value)}</b><small>${escapeHtml(stat.label)}</small></span>`).join('')}
-                        </div>
-                        <div class="wave-boss-counters">
-                            ${bossMilestone.counters.map((counter) => `<b>${escapeHtml(counter)}</b>`).join('')}
-                        </div>
-                    </div>` : ''}
-                    <div class="wave-summary">
-                        <span><b>${summary.total}</b> enemigos</span>
-                        <span><b>$${summary.reward}</b> botín</span>
-                        <span><b>${summary.fastest}</b> vel. máx.</span>
-                        <span><b>${summary.maxThreat}/5</b> amenaza</span>
-                    </div>
-                    ${counterBrief ? `<div class="wave-counter wave-counter-brief ${escapeHtml(counterBrief.tone)}" aria-label="${escapeHtml(`Respuesta: ${counterBrief.label}. ${counterBrief.detail}`)}">
-                        <i class="fas ${escapeHtml(counterBrief.icon)}"></i>
-                        <div><strong>Respuesta: ${escapeHtml(counterBrief.label)}</strong><span>${escapeHtml(counterBrief.detail)}</span></div>
-                    </div>` : ''}
-                    ${stealthCoverage ? `<div class="wave-stealth-coverage ${stealthCoverage.tone}" aria-label="${escapeHtml(stealthCoverage.label)}: ${escapeHtml(stealthCoverage.detail)}">
-                        <i class="fas fa-eye"></i>
-                        <div><strong>${escapeHtml(stealthCoverage.label)}</strong><span>${escapeHtml(stealthCoverage.detail)}</span></div>
-                    </div>` : ''}
-                    ${statusLegend ? `<div class="wave-status-legend" aria-label="${escapeHtml(statusLegend.label)}">
-                        <strong>${escapeHtml(statusLegend.label)}</strong>
-                        <div>
-                            ${statusLegend.entries.map((entry) => `<span title="${escapeHtml(entry.detail)}">
-                                <i class="fas ${escapeHtml(entry.icon)}"></i>
-                                <b>${escapeHtml(entry.label)}</b>
-                            </span>`).join('')}
-                        </div>
-                    </div>` : ''}
-                    ${counterCoverage ? `<div class="wave-counter-coverage ${counterCoverage.ready ? 'ready' : 'warning'}" aria-label="${escapeHtml(counterCoverage.label)}: ${counterCoverage.covered} de ${counterCoverage.total} counters cubiertos">
-                        <strong>${escapeHtml(counterCoverage.label)} <b>${counterCoverage.covered}/${counterCoverage.total}</b></strong>
-                        <div>
-                            ${counterCoverage.entries.map((entry) => `<span class="${entry.tone}" data-tooltip="${escapeHtml(`${entry.counter}: ${entry.detail}`)}">
-                                <i class="fas ${escapeHtml(entry.icon)}"></i>
-                                <b>${escapeHtml(entry.counter)}</b>
-                                <small>${escapeHtml(entry.label)}</small>
-                            </span>`).join('')}
-                        </div>
-                    </div>` : ''}
-                    ${summary.spawnTimeline?.entries?.length ? `<div class="wave-timeline" data-testid="wave-timeline" aria-label="Cadencia enemiga">
-                        <strong>Llegada enemiga</strong>
-                        <div>
-                            ${summary.spawnTimeline.entries.map((entry) => `<span class="${entry.danger}">
-                                <b>${escapeHtml(entry.etaLabel)}</b>
-                                <em>${entry.count > 1 ? `x${entry.count} ` : ''}${escapeHtml(entry.name)}</em>
-                            </span>`).join('')}
-                            ${summary.spawnTimeline.overflow > 0 ? `<small>+${summary.spawnTimeline.overflow} entradas mas</small>` : ''}
-                        </div>
-                    </div>` : ''}
-                    ${prepPlan.length ? `<div class="wave-prep-plan" data-testid="wave-prep-plan" aria-label="Preparacion recomendada">
-                        <strong>Preparacion recomendada</strong>
-                        ${prepPlan.map((item) => {
-                            const control = buildWavePrepActionControl(item);
-                            const attrs = control.actionable
-                                ? `type="button" data-prep-action="${escapeHtml(item.type)}" data-hero-id="${escapeHtml(item.heroId)}" aria-label="${escapeHtml(control.ariaLabel)}" title="${escapeHtml(control.title)}" data-tooltip="${escapeHtml(control.tooltip)}"`
-                                : `role="note" aria-label="${escapeHtml(control.ariaLabel)}"`;
-                            return `<${control.tag} class="wave-prep-item ${item.type}" ${attrs}>
-                            <span>${item.label}</span>
-                            <small>${item.reason}${item.cost ? ` | $${item.cost}` : ''}</small>
-                        </${control.tag}>`;
-                        }).join('')}
-                    </div>` : ''}
-                    ${summary.branchOptions?.length ? `<div class="wave-branches" aria-label="Ruta de encuentro">
-                        ${summary.branchOptions.map((option) => {
-                            const branchLabel = `${option.label}: ${option.description}`;
-                            return `<button type="button" data-branch="${escapeHtml(option.id)}" class="${summary.selectedBranch === option.id ? 'active' : ''}" aria-label="${escapeHtml(branchLabel)}" title="${escapeHtml(branchLabel)}" data-tooltip="${escapeHtml(branchLabel)}">${escapeHtml(option.label)}</button>`;
-                        }).join('')}
-                    </div>` : ''}
-                ` : ''}
-            `;
-            intelEl.querySelectorAll('[data-prep-action]').forEach((button) => button.addEventListener('click', () => {
-                const heroId = button.dataset.heroId;
-                if (button.dataset.prepAction === 'deploy') {
-                    const hero = this.game.activeTeam?.find((candidate) => candidate.id === heroId);
-                    if (!hero) return;
-                    this.game.inputManager?.setPlacementMode(hero);
-                    this.showToast(`${hero.name}: elige una posicion`, 'info');
-                    this.game.audio?.play('ui');
-                }
-                if (button.dataset.prepAction === 'upgrade') {
-                    this.quickUpgradeHeroById(heroId);
-                }
-            }));
-            intelEl.querySelectorAll('[data-branch]').forEach((button) => button.addEventListener('click', () => {
-                const changed = this.game.waveManager?.chooseBranch(button.dataset.branch);
-                if (changed) this.renderHeroRoster(this.game.activeTeam, (hero) => this.game.inputManager.setPlacementMode(hero));
-                this.game.audio?.play('ui');
-            }));
-        }
-        document.getElementById('enemy-info-empty')?.classList.remove('hidden');
-        document.getElementById('enemy-info-content')?.classList.add('hidden');
-        container.innerHTML = '';
-
-        const categoryColors = {
-            Tecnológico: '#40c9ff', Místico: '#b865ff', Urbano: '#e63946',
-            Cósmico: '#ff8bd1', Mutante: '#c7f464'
-        };
-
-        uniqueEnemies.forEach((enemy) => {
-            const intel = buildEnemyIntel(enemy);
-            const card = document.createElement('button');
-            card.className = `wave-enemy-card ${intel.danger}`;
-            card.dataset.testid = 'wave-enemy-card';
-            card.style.setProperty('--enemy-color', categoryColors[enemy.category] || '#fca311');
-            card.dataset.tooltip = intel.counterDetail;
-            card.title = `${intel.name} | ${intel.roleLabel} | ${intel.counter} | Amenaza ${intel.threat}/5`;
-            card.setAttribute('aria-label', `${intel.name}. ${intel.roleLabel}. Respuesta: ${intel.counter}. Amenaza ${intel.threat} de 5.`);
-            const traitPreview = buildEnemyTraitPreview(intel.traits, 2);
-            const traitsMarkup = [
-                ...traitPreview.visible.map((trait) => `<b>${escapeHtml(trait)}</b>`),
-                traitPreview.overflow > 0 ? `<b class="trait-overflow">+${traitPreview.overflow}</b>` : ''
-            ].filter(Boolean).join('');
-            const portrait = enemy.visual?.portrait || enemy.sprite;
-            card.innerHTML = `
-                ${portrait
-                    ? `<span class="enemy-token enemy-token-sprite"><img src="${escapeHtml(portrait)}" alt="" loading="lazy"></span>`
-                    : `<span class="enemy-token">${escapeHtml(intel.initial)}</span>`}
-                <span class="enemy-count">x${enemy.previewCount || 1}</span>
-                <strong>${escapeHtml(intel.name)}</strong>
-                <span class="enemy-role">${escapeHtml(intel.roleLabel)} | ${escapeHtml(intel.pips)}</span>
-                <small class="enemy-traits" title="${escapeHtml(traitPreview.title)}">${traitsMarkup}</small>
-                <em><i class="fas fa-crosshairs"></i>${escapeHtml(intel.counter)}</em>
-                <small>${enemy.affix?.label ? `${enemy.affix.label} · ` : ''}${enemy.stealth ? 'Sigilo · ' : ''}${'◆'.repeat(Math.max(1, enemy.threat || 1))}</small>
-            `;
-            card.addEventListener('click', () => this.inspectUnit(enemy, true));
-            container.appendChild(card);
-        });
+        this.getWavePreviewPanel().render(uniqueEnemies, modifier, faction, waveNumber, summary);
     }
 
     renderWaveDamageCheck(check) {
-        if (!check) return '';
-        const meter = buildWaveDamageCheckMeter(check);
-        const contributors = (check.contributors || [])
-            .filter(Boolean)
-            .slice(0, 3)
-            .map((entry) => `${entry.name} ${entry.share}%`);
-        const contributorCopy = contributors.length ? ` Aportes: ${contributors.join(', ')}.` : '';
-        const contributorMarkup = contributors.length
-            ? `<small class="wave-damage-contributors"><i class="fas fa-users-rays"></i>${contributors.map((entry) => `<span>${escapeHtml(entry)}</span>`).join('')}</small>`
-            : '';
-        return `<div class="wave-damage-check ${escapeHtml(check.tone)}" aria-label="${escapeHtml(`${check.label}: ${check.detail}. ${meter.ariaLabel}. DPS ${check.dps}.${contributorCopy}`)}" style="--damage-fill: ${meter.fillPct}%">
-            <i class="fas fa-chart-line"></i>
-            <div><strong>${escapeHtml(check.label)}</strong><span>${escapeHtml(check.detail)}</span></div>
-            <b>${formatCompactMetric(check.expectedDamage)}/${formatCompactMetric(check.requiredDamage)}</b>
-            <small>DPS ${formatCompactMetric(check.dps)}</small>
-            ${contributorMarkup}
-            <div class="wave-damage-meter" aria-hidden="true"><span></span><em>${escapeHtml(meter.label)}</em></div>
-        </div>`;
+        return this.getWavePreviewPanel().renderDamageCheck(check);
     }
+
+    getWavePreviewPanel() {
+        if (!this.wavePreviewPanel) {
+            this.wavePreviewPanel = new WavePreviewPanel(this, {
+                buildBossMilestoneState,
+                buildCounterCoverageModel,
+                buildEnemyIntel,
+                buildEnemyTraitPreview,
+                buildStatusLegendModel,
+                buildStealthCoverageState,
+                buildWaveCounterBrief,
+                buildWaveDamageCheckMeter,
+                buildWavePrepActionControl,
+                buildWavePreparationPlan
+            });
+        }
+        return this.wavePreviewPanel;
+    }
+
     inspectUnit(unit, isEnemyFlag = false) {
         if (!unit) return;
         this.tooltipController.hide();
