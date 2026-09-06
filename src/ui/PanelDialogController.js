@@ -1,13 +1,4 @@
-const PANEL_TITLES = {
-    profile: 'Perfil',
-    radar: 'Radar tactico',
-    collection: 'Colección',
-    inventory: 'Inventario',
-    shop: 'Tienda',
-    skins: 'Skins',
-    map: 'Mapa',
-    settings: 'Ajustes'
-};
+import { getPanelTitle, isPanelNavigationType } from './PanelNavigation.js';
 
 export class PanelDialogController {
     constructor(ui, builders = {}) {
@@ -104,9 +95,9 @@ export class PanelDialogController {
     }
 
     renderPanel(type) {
-        const title = PANEL_TITLES[type] || type;
+        const title = getPanelTitle(type);
         this.ui.setPanelDialogLabel(title);
-        this.ui.setActiveHubButton(PANEL_TITLES[type] ? type : null);
+        this.ui.setActiveHubButton(isPanelNavigationType(type) ? type : null);
 
         let result;
         if (type === 'shop') result = this.ui.renderShop(title);
@@ -123,7 +114,7 @@ export class PanelDialogController {
     }
 
     renderPanelNavigation(activeType = '') {
-        if (!this.ui.panelContent || !Object.prototype.hasOwnProperty.call(PANEL_TITLES, activeType)) return;
+        if (!this.ui.panelContent || !isPanelNavigationType(activeType)) return;
         this.ui.panelContent.querySelector?.('.panel-modal-nav')?.remove?.();
         this.ui.panelContent.insertAdjacentHTML?.('afterbegin', this.buildPanelNavigationMarkup(activeType));
         this.ui.panelContent.querySelectorAll?.('[data-panel-nav]')?.forEach((button) => {

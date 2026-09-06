@@ -67,11 +67,14 @@ test('UIManager delega mejoras de heroe en controlador dedicado', () => {
 test('UIManager delega apertura y navegacion de paneles en controlador modal', () => {
     const source = read('src/systems/UIManager.js');
     const controller = read('src/ui/PanelDialogController.js');
+    const navigation = read('src/ui/PanelNavigation.js');
 
     assert.match(source, /import \{ PanelDialogController \}/);
     assert.match(source, /new PanelDialogController\(this, \{ buildPanelNavigationMarkup \}\)/);
+    assert.match(source, /from ['"]\.\.\/ui\/PanelNavigation\.js['"]/);
     assert.match(controller, /export class PanelDialogController\b/);
-    assert.match(controller, /const PANEL_TITLES =/);
+    assert.match(navigation, /export const PANEL_NAV_ITEMS =/);
+    assert.match(navigation, /export function buildPanelNavigationMarkup\b/);
 });
 
 test('estados puros del HUD viven fuera de UIManager', () => {
