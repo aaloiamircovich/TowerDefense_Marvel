@@ -13,6 +13,7 @@ import { EndStatePanel } from '../ui/EndStatePanel.js';
 import { HeroRosterPanel } from '../ui/HeroRosterPanel.js';
 import { HeroDetailsPanel } from '../ui/HeroDetailsPanel.js';
 import { WavePreviewPanel } from '../ui/WavePreviewPanel.js';
+import { EnemyInfoPanel } from '../ui/EnemyInfoPanel.js';
 import { SET_BONUSES } from './ItemEffectSystem.js';
 import { getAllowedTerrainLabels } from '../utils/TerrainRules.js';
 import { getRarityClass, normalizeRarity } from '../utils/Rarity.js';
@@ -1414,6 +1415,7 @@ export class UIManager {
         });
         this.starterPanel = new StarterPanel(this);
         this.endStatePanel = new EndStatePanel(this);
+        this.enemyInfoPanel = new EnemyInfoPanel(this, { buildEnemyIntel });
         this.heroDetailsPanel = new HeroDetailsPanel(this, {
             buildRosterWaveFitView,
             evaluateHeroWaveFit,
@@ -1905,28 +1907,7 @@ export class UIManager {
 
         const isEnemy = isEnemyFlag || (unit.hp !== undefined && unit.takeDamage !== undefined);
         if (isEnemy) {
-            document.getElementById('enemy-info-empty')?.classList.add('hidden');
-            document.getElementById('enemy-info-content')?.classList.remove('hidden');
-            document.getElementById('en-info-name').textContent = (unit.name || 'Enemigo').toUpperCase();
-            document.getElementById('en-info-hp').textContent = `${Math.ceil(unit.hp || 0)} / ${Math.ceil(unit.maxHp || unit.hp || 0)}`;
-            document.getElementById('en-info-speed').textContent = Math.round(unit.speed || 0);
-            document.getElementById('en-info-armor').textContent = `${Math.round((unit.armor || 0) * 100)}%`;
-            document.getElementById('en-info-reward').textContent = `$${unit.reward ?? 10}`;
-            document.getElementById('en-info-faction').textContent = unit.faction || 'Independiente';
-            document.getElementById('en-info-role').textContent = this.getEnemyRole(unit.archetype, unit.isBoss);
-            document.getElementById('en-info-resists').textContent = this.getResistanceText(unit);
-            document.getElementById('en-info-threat').textContent = `${unit.threat || 1} / 5`;
-            document.getElementById('en-info-phase').textContent = unit.currentPhase || (unit.phases?.length ? `${unit.phases.length} fases` : '-');
-            const intel = buildEnemyIntel(unit);
-            const content = document.getElementById('enemy-info-content');
-            content?.querySelector('.enemy-tactical-brief')?.remove();
-            content?.insertAdjacentHTML('beforeend', `
-                <div class="enemy-tactical-brief ${escapeHtml(intel.danger)}">
-                    <strong><i class="fas fa-crosshairs"></i>${escapeHtml(intel.counter)}</strong>
-                    <span>${escapeHtml(intel.counterDetail)}</span>
-                    ${intel.traits.length ? `<small>${intel.traits.map((trait) => escapeHtml(trait)).join(' | ')}</small>` : ''}
-                </div>
-            `);
+            this.getEnemyInfoPanel().render(unit);
             return;
         }
 
@@ -2020,6 +2001,11 @@ export class UIManager {
             });
         }
         this.heroDetailsPanel.render(hero, detailView);
+    }
+
+    getEnemyInfoPanel() {
+        if (!this.enemyInfoPanel) this.enemyInfoPanel = new EnemyInfoPanel(this, { buildEnemyIntel });
+        return this.enemyInfoPanel;
     }
 
     getHeroLevel(unit) {
