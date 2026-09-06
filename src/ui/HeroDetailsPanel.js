@@ -1,7 +1,7 @@
 import { SET_BONUSES, SLOT_LABELS } from '../systems/ItemEffectSystem.js';
 import { HERO_MAX_LEVEL, getHeroLevelUpgradeSteps, getScaledSupportAura } from '../utils/HeroLevel.js';
 import { getRarityClass, normalizeRarity } from '../utils/Rarity.js';
-import { TARGETING_PRIORITIES } from '../utils/TargetingPriority.js';
+import { TARGETING_PRIORITIES, TARGETING_PRIORITY_COPY } from '../utils/TargetingPriority.js';
 import { buildHeroDetailViewModel } from './HeroDetailViewModel.js';
 
 function escapeHtml(value = '') {
@@ -18,6 +18,7 @@ export class HeroDetailsPanel {
         this.ui = ui;
         this.evaluateHeroWaveFit = builders.evaluateHeroWaveFit || (() => null);
         this.buildRosterWaveFitView = builders.buildRosterWaveFitView || (() => null);
+        this.buildHeroCombatIdentity = builders.buildHeroCombatIdentity || (() => []);
         this.targetingPriorities = builders.targetingPriorities || TARGETING_PRIORITIES;
     }
 
@@ -90,7 +91,7 @@ export class HeroDetailsPanel {
                 const cost = this.ui.getHeroUpgradeCost(hero, amount);
                 const steps = getHeroLevelUpgradeSteps(level, amount);
                 const previewLabel = isMaxLevel ? '' : this.ui.getHeroLevelPreviewLabel(hero, steps);
-                const preview = isMaxLevel ? '' : this.ui.renderHeroLevelPreview(hero, steps);
+                const preview = isMaxLevel ? '' : this.renderHeroLevelPreview(hero, steps);
                 const upgradeLabel = isMaxLevel
                     ? `${heroName} ya esta en nivel maximo`
                     : `Mejorar ${heroName} ${steps} niveles por ${cost} creditos${previewLabel ? `. Cambios: ${previewLabel}` : ''}`;
@@ -172,7 +173,7 @@ export class HeroDetailsPanel {
                             ${this.targetingPriorities.map((priority) => `<option value="${priority}" ${currentTargeting === priority ? 'selected' : ''}>${priority}</option>`).join('')}
                         </select>
                     </label>
-                    ${this.ui.renderTargetingPriorityLegend(currentTargeting)}
+                    ${this.renderTargetingPriorityLegend(currentTargeting)}
                 </div>
 
                 ${abilityState ? `
@@ -221,7 +222,7 @@ export class HeroDetailsPanel {
                             ${compactStats.map(([label, value]) => `<span><small>${label}</small><strong>${value}</strong></span>`).join('')}
                         </div>
 
-                        ${activeDetailView === 'summary' ? this.ui.renderHeroQuickIdentityStrip(hero) : ''}
+                        ${activeDetailView === 'summary' ? this.renderHeroQuickIdentityStrip(hero) : ''}
 
                         <div class="hero-detail-tabs" role="tablist" aria-label="Detalle de heroe">
                             ${detailTabs.map((tab) => {
@@ -278,5 +279,65 @@ export class HeroDetailsPanel {
             this.ui.inventoryPanel.heroId = config.id;
             this.ui.renderPanel('inventory');
         });
+    }
+
+    renderHeroCombatIdentity(hero) {
+        const chips = this.buildHeroCombatIdentity(hero);
+        return `
+            <div class="hero-combat-identity" aria-label="Identidad tactica de combate">
+                ${chips.map((chip) => `
+                    <span class="${escapeHtml(chip.tone)}">
+                        <i class="fas ${escapeHtml(chip.icon)}"></i>
+                        <small>${escapeHtml(chip.label)}</small>
+                        <b>${escapeHtml(chip.value)}</b>
+                    </span>
+                `).join('')}
+            </div>
+        `;
+    }
+
+    renderHeroQuickIdentityStrip(hero) {
+        const chips = this.buildHeroCombatIdentity(hero);
+        return `
+            <div class="hero-detail-quick-strip" aria-label="Resumen tactico del heroe">
+                ${chips.map((chip) => {
+                    const label = `${chip.label}: ${chip.value}`;
+                    return `
+                        <span class="${escapeHtml(chip.tone)}" title="${escapeHtml(label)}" data-tooltip="${escapeHtml(label)}">
+                            <i class="fas ${escapeHtml(chip.icon)}"></i>
+                            <small>${escapeHtml(chip.label)}</small>
+                            <b>${escapeHtml(chip.value)}</b>
+                        </span>
+                    `;
+                }).join('')}
+            </div>
+        `;
+    }
+
+    renderTargetingPriorityLegend(currentTargeting = this.targetingPriorities[0]) {
+        return `
+            <div class="targeting-priority-legend" aria-label="Leyenda de prioridad de objetivo">
+                ${this.targetingPriorities.map((priority) => {
+                    const copy = TARGETING_PRIORITY_COPY[priority];
+                    const active = priority === currentTargeting;
+                    const label = `${priority}: ${copy.description}`;
+                    return `<span class="${active ? 'active' : ''}" title="${escapeHtml(label)}" data-tooltip="${escapeHtml(label)}">
+                        <i class="fas ${escapeHtml(copy.icon)}"></i>
+                        <b>${escapeHtml(copy.label)}</b>
+                        <small>${escapeHtml(copy.description)}</small>
+                    </span>`;
+                }).join('')}
+            </div>
+        `;
+    }
+
+    renderHeroLevelPreview(unit, amount = 1) {
+        const rows = this.ui.getHeroLevelPreviewRows(unit, amount);
+        if (!rows.length) return '';
+        return `
+            <span class="upgrade-preview" aria-hidden="true">
+                ${rows.map((row) => `<em class="${row.value < 0 ? 'negative' : 'positive'}">${row.label} ${this.ui.formatSignedPreviewValue(row.value, row.suffix, row.precision)}</em>`).join('')}
+            </span>
+        `;
     }
 }

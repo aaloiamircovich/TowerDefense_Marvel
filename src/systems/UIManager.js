@@ -25,7 +25,7 @@ import { getRarityClass, normalizeRarity } from '../utils/Rarity.js';
 import { HERO_MAX_LEVEL, calculateHeroLevelCost, getHeroDamageAtLevel, getHeroLevelUpgradeSteps, getScaledSupportAura, normalizeHeroLevel } from '../utils/HeroLevel.js';
 import { pickHeroDisplaySprite } from '../utils/HeroVisuals.js';
 import { CAMPAIGN_MAX_WAVES, MINI_BOSS_WAVE_INTERVAL } from '../utils/LevelProgression.js';
-import { TARGETING_PRIORITIES, TARGETING_PRIORITY_COPY, buildTargetingControlState, getNextTargetingPriority } from '../utils/TargetingPriority.js';
+import { TARGETING_PRIORITIES, buildTargetingControlState, getNextTargetingPriority } from '../utils/TargetingPriority.js';
 
 export { TARGETING_PRIORITIES, buildTargetingControlState, getNextTargetingPriority } from '../utils/TargetingPriority.js';
 
@@ -1428,6 +1428,7 @@ export class UIManager {
         this.endStatePanel = new EndStatePanel(this);
         this.enemyInfoPanel = new EnemyInfoPanel(this, { buildEnemyIntel });
         this.heroDetailsPanel = new HeroDetailsPanel(this, {
+            buildHeroCombatIdentity,
             buildRosterWaveFitView,
             evaluateHeroWaveFit,
             targetingPriorities: TARGETING_PRIORITIES
@@ -1816,64 +1817,31 @@ export class UIManager {
     }
 
     renderHeroCombatIdentity(hero) {
-        const chips = buildHeroCombatIdentity(hero);
-        return `
-            <div class="hero-combat-identity" aria-label="Identidad tactica de combate">
-                ${chips.map((chip) => `
-                    <span class="${escapeHtml(chip.tone)}">
-                        <i class="fas ${escapeHtml(chip.icon)}"></i>
-                        <small>${escapeHtml(chip.label)}</small>
-                        <b>${escapeHtml(chip.value)}</b>
-                    </span>
-                `).join('')}
-            </div>
-        `;
+        return this.getHeroDetailsPanel().renderHeroCombatIdentity(hero);
     }
 
     renderHeroQuickIdentityStrip(hero) {
-        const chips = buildHeroCombatIdentity(hero);
-        return `
-            <div class="hero-detail-quick-strip" aria-label="Resumen tactico del heroe">
-                ${chips.map((chip) => {
-                    const label = `${chip.label}: ${chip.value}`;
-                    return `
-                        <span class="${escapeHtml(chip.tone)}" title="${escapeHtml(label)}" data-tooltip="${escapeHtml(label)}">
-                            <i class="fas ${escapeHtml(chip.icon)}"></i>
-                            <small>${escapeHtml(chip.label)}</small>
-                            <b>${escapeHtml(chip.value)}</b>
-                        </span>
-                    `;
-                }).join('')}
-            </div>
-        `;
+        return this.getHeroDetailsPanel().renderHeroQuickIdentityStrip(hero);
     }
 
     renderTargetingPriorityLegend(currentTargeting = TARGETING_PRIORITIES[0]) {
-        return `
-            <div class="targeting-priority-legend" aria-label="Leyenda de prioridad de objetivo">
-                ${TARGETING_PRIORITIES.map((priority) => {
-                    const copy = TARGETING_PRIORITY_COPY[priority];
-                    const active = priority === currentTargeting;
-                    const label = `${priority}: ${copy.description}`;
-                    return `<span class="${active ? 'active' : ''}" title="${escapeHtml(label)}" data-tooltip="${escapeHtml(label)}">
-                        <i class="fas ${escapeHtml(copy.icon)}"></i>
-                        <b>${escapeHtml(copy.label)}</b>
-                        <small>${escapeHtml(copy.description)}</small>
-                    </span>`;
-                }).join('')}
-            </div>
-        `;
+        return this.getHeroDetailsPanel().renderTargetingPriorityLegend(currentTargeting);
     }
 
     renderHeroDetails(hero, detailView = 'summary') {
+        this.getHeroDetailsPanel().render(hero, detailView);
+    }
+
+    getHeroDetailsPanel() {
         if (!this.heroDetailsPanel) {
             this.heroDetailsPanel = new HeroDetailsPanel(this, {
+                buildHeroCombatIdentity,
                 buildRosterWaveFitView,
                 evaluateHeroWaveFit,
                 targetingPriorities: TARGETING_PRIORITIES
             });
         }
-        this.heroDetailsPanel.render(hero, detailView);
+        return this.heroDetailsPanel;
     }
 
     getEnemyInfoPanel() {
@@ -1895,13 +1863,7 @@ export class UIManager {
     }
 
     renderHeroLevelPreview(unit, amount = 1) {
-        const rows = this.getHeroLevelPreviewRows(unit, amount);
-        if (!rows.length) return '';
-        return `
-            <span class="upgrade-preview" aria-hidden="true">
-                ${rows.map((row) => `<em class="${row.value < 0 ? 'negative' : 'positive'}">${row.label} ${this.formatSignedPreviewValue(row.value, row.suffix, row.precision)}</em>`).join('')}
-            </span>
-        `;
+        return this.getHeroDetailsPanel().renderHeroLevelPreview(unit, amount);
     }
 
     getHeroLevelPreviewLabel(unit, amount = 1) {
