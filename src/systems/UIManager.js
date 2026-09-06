@@ -14,6 +14,7 @@ import { HeroRosterPanel } from '../ui/HeroRosterPanel.js';
 import { HeroDetailsPanel } from '../ui/HeroDetailsPanel.js';
 import { WavePreviewPanel } from '../ui/WavePreviewPanel.js';
 import { EnemyInfoPanel } from '../ui/EnemyInfoPanel.js';
+import { CombatPressurePanel } from '../ui/CombatPressurePanel.js';
 import { SET_BONUSES } from './ItemEffectSystem.js';
 import { getAllowedTerrainLabels } from '../utils/TerrainRules.js';
 import { getRarityClass, normalizeRarity } from '../utils/Rarity.js';
@@ -1405,6 +1406,10 @@ export class UIManager {
             buildWavePrepActionControl,
             buildWavePreparationPlan
         });
+        this.combatPressurePanel = new CombatPressurePanel(this, {
+            buildCombatPressureState,
+            buildPressureActionState
+        });
         this.radarPanel = new RadarPanel(this, {
             buildWaveReportState,
             buildWaveReportActionState
@@ -1714,58 +1719,17 @@ export class UIManager {
     }
 
     renderCombatPressurePanel(enemies = [], path = [], waveActive = false) {
-        const container = document.getElementById('combat-pressure');
-        if (!container) return null;
-        const state = buildCombatPressureState(enemies, path, waveActive);
-        const action = buildPressureActionState(
-            state,
-            this.game.heroes || [],
-            this.game.resourceManager?.credits || 0,
-            (level, amount) => this.calculateLevelCost(level, amount)
-        );
-        const signature = `${state.signature}:${action?.signature || 'none'}`;
-        if (signature === this.combatPressureSignature) return state;
-        this.combatPressureSignature = signature;
+        return this.getCombatPressurePanel().render(enemies, path, waveActive);
+    }
 
-        if (!waveActive && state.id === 'clear') {
-            container.classList.add('hidden');
-            container.innerHTML = '';
-            return state;
+    getCombatPressurePanel() {
+        if (!this.combatPressurePanel) {
+            this.combatPressurePanel = new CombatPressurePanel(this, {
+                buildCombatPressureState,
+                buildPressureActionState
+            });
         }
-
-        container.className = `combat-pressure pressure-${state.id}`;
-        container.setAttribute('aria-label', `${state.label}. ${state.advice}`);
-        const pressureActionLabel = action?.type === 'upgrade'
-            ? `${action.label} por ${action.cost} creditos. ${action.reason}`
-            : '';
-        const pressurePauseLabel = 'Activar pausa tactica por presion de ruta';
-        container.innerHTML = `
-            <div class="pressure-copy">
-                <strong>${state.label}</strong>
-                <span>${state.advice}</span>
-            </div>
-            <div class="pressure-meter" aria-hidden="true"><i style="width:${state.progress}%"></i></div>
-            <div class="pressure-meta">
-                <span>${state.activeCount} activos</span>
-                <span>${state.leadEnemyName || 'Ruta'} ${state.progress}%</span>
-                ${state.dangerCount ? `<b>${state.dangerCount} en base</b>` : ''}
-            </div>
-            ${action ? `<div class="pressure-action pressure-action-${action.type}">
-                <span>${action.reason}</span>
-                ${action.type === 'upgrade'
-                    ? `<button id="pressure-upgrade" class="btn-mode-action" type="button" aria-label="${escapeHtml(pressureActionLabel)}" title="${escapeHtml(pressureActionLabel)}" data-tooltip="${escapeHtml(pressureActionLabel)}">${escapeHtml(action.label)} $${escapeHtml(action.cost)}</button>`
-                    : `<small>${action.label}</small>`}
-            </div>` : ''}
-            ${state.id === 'warning' || state.id === 'critical' ? `<button id="pressure-pause" class="btn-mode-action" type="button" aria-label="${escapeHtml(pressurePauseLabel)}" title="${escapeHtml(pressurePauseLabel)}" data-tooltip="${escapeHtml(pressurePauseLabel)}">Pausa táctica</button>` : ''}
-        `;
-        document.getElementById('pressure-upgrade')?.addEventListener('click', () => {
-            if (this.quickUpgradeHeroById(action.heroId)) {
-                this.combatPressureSignature = '';
-                this.renderCombatPressurePanel(enemies, path, waveActive);
-            }
-        });
-        document.getElementById('pressure-pause')?.addEventListener('click', () => this.setManualPause(true));
-        return state;
+        return this.combatPressurePanel;
     }
 
     updateBossHud(enemies = [], waveActive = false) {
