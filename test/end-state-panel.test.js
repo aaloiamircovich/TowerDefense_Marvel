@@ -32,7 +32,7 @@ test('EndStatePanel renderiza derrota y reintenta sin resetear progreso externo'
         assert.match(ui.panelContent.innerHTML, /Todas las operaciones desbloqueadas/);
         assert.match(ui.panelContent.innerHTML, /Creditos disponibles/);
         assert.match(ui.panelContent.innerHTML, /Niveles y objetos guardados/);
-        assert.match(ui.panelContent.innerHTML, /Reintentar vuelve a oleada 1/);
+        assert.match(ui.panelContent.innerHTML, /Solo vuelve a oleada 1; progreso y equipo quedan guardados/);
         assert.match(ui.panelContent.innerHTML, /Plan de recuperacion/);
         assert.match(ui.panelContent.innerHTML, /Mejorar Black Widow/);
         assert.match(ui.panelContent.innerHTML, /id="retry-run" type="button" aria-label="Reintentar desde oleada 1" title="Reintentar desde oleada 1" data-tooltip="Reintentar desde oleada 1"/);

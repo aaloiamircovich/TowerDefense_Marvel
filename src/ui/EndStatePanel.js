@@ -162,7 +162,7 @@ export class EndStatePanel {
             ? nextMap.complete
                 ? 'Puedes repetir mapas, buscar estrellas o ajustar el equipo.'
                 : 'Puedes seguir con el siguiente mapa.'
-            : 'Reintentar vuelve a oleada 1.';
+            : 'Solo vuelve a oleada 1; progreso y equipo quedan guardados.';
         const rows = [
             { icon: 'fa-star', label: 'Estrellas guardadas', value: formatNumber(stars), hint: nextMap.detail },
             { icon: 'fa-coins', label: 'Creditos disponibles', value: credits, hint: 'Se conservan entre intentos.' },
