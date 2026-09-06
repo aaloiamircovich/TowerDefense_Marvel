@@ -24,6 +24,7 @@ test('UIManager delega paneles visuales extraidos en componentes dedicados', () 
         'HeroDetailsPanel',
         'MissionStatusPanel',
         'ThreatHudPanel',
+        'TopHudPanel',
         'ToastPanel',
         'WavePreviewPanel'
     ];
@@ -41,6 +42,7 @@ test('paneles extraidos viven fuera de systems y exportan clases reutilizables',
         'src/ui/HeroDetailsPanel.js',
         'src/ui/MissionStatusPanel.js',
         'src/ui/ThreatHudPanel.js',
+        'src/ui/TopHudPanel.js',
         'src/ui/ToastPanel.js',
         'src/ui/WavePreviewPanel.js'
     ];

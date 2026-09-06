@@ -18,6 +18,7 @@ import { CombatPressurePanel } from '../ui/CombatPressurePanel.js';
 import { ThreatHudPanel } from '../ui/ThreatHudPanel.js';
 import { MissionStatusPanel } from '../ui/MissionStatusPanel.js';
 import { ToastPanel } from '../ui/ToastPanel.js';
+import { TopHudPanel } from '../ui/TopHudPanel.js';
 import { SET_BONUSES } from './ItemEffectSystem.js';
 import { getAllowedTerrainLabels } from '../utils/TerrainRules.js';
 import { getRarityClass, normalizeRarity } from '../utils/Rarity.js';
@@ -220,15 +221,6 @@ export function formatHudResource(value = 0) {
     if (amount >= 1000000) return `${(amount / 1000000).toFixed(amount >= 10000000 ? 0 : 1).replace(/\.0$/, '')}M`;
     if (amount >= 10000) return `${(amount / 1000).toFixed(amount >= 100000 ? 0 : 1).replace(/\.0$/, '')}k`;
     return `${Math.floor(amount)}`;
-}
-
-function setHudResourceElement(element, value = 0) {
-    if (!element) return;
-    const exact = value === Number.POSITIVE_INFINITY ? 'Infinity' : `${Math.floor(Math.max(0, Number(value) || 0))}`;
-    element.textContent = formatHudResource(value);
-    if (!element.dataset) element.dataset = {};
-    element.dataset.value = exact;
-    element.title = exact === 'Infinity' ? 'Recursos infinitos' : exact;
 }
 
 export function buildEnemyTraitPreview(traits = [], limit = 3) {
@@ -1394,6 +1386,11 @@ export class UIManager {
         this.teamBuilderPanel = new TeamBuilderPanel(this);
         this.modePanel = new ModePanel(this);
         this.toastPanel = new ToastPanel(this);
+        this.topHudPanel = new TopHudPanel(this, {
+            buildBossCountdownState,
+            buildWaveLaunchState,
+            formatHudResource
+        });
         this.waveReportPanel = new WaveReportPanel(this, {
             buildState: buildWaveReportState,
             buildAction: buildWaveReportActionState
@@ -1581,66 +1578,19 @@ export class UIManager {
     }
 
     updateSpeedButton(button = document.getElementById('btn-speed')) {
-        if (!button) return;
-        const speed = Number(this.game?.gameSpeed || 1);
-        const label = `Cambiar velocidad de juego. Velocidad actual x${speed}`;
-        button.innerHTML = `x${speed} <i class="fas fa-rocket"></i>`;
-        button.setAttribute('aria-label', label);
-        button.title = `Velocidad actual x${speed}`;
-        button.dataset.tooltip = `Velocidad actual x${speed}`;
+        return this.getTopHudPanel().updateSpeedButton(button);
     }
 
     updateAutoWaveButton(button = document.getElementById('btn-auto')) {
-        if (!button) return;
-        const enabled = Boolean(this.game?.waveManager?.autoWave);
-        const label = enabled ? 'Auto oleada activado' : 'Auto oleada desactivado';
-        const tooltip = enabled ? 'Desactivar inicio automatico' : 'Activar inicio automatico de oleadas';
-        button.classList.toggle('active', enabled);
-        button.classList.toggle('muted', !enabled);
-        button.setAttribute('aria-pressed', String(enabled));
-        button.setAttribute('aria-label', label);
-        button.title = tooltip;
-        button.dataset.tooltip = tooltip;
+        return this.getTopHudPanel().updateAutoWaveButton(button);
     }
 
     setManualPause(paused, announce = true) {
-        this.game.isManuallyPaused = Boolean(paused);
-        if (this.game.isManuallyPaused) this.game.pause();
-        else this.game.start();
-
-        const button = document.getElementById('btn-pause');
-        if (button) {
-            button.innerHTML = this.game.isManuallyPaused ? '<i class="fas fa-play"></i>' : '<i class="fas fa-pause"></i>';
-            button.classList.toggle('active', this.game.isManuallyPaused);
-            const tooltip = this.game.isManuallyPaused ? 'Reanudar partida' : 'Entrar en pausa táctica';
-            button.setAttribute('aria-pressed', String(this.game.isManuallyPaused));
-            button.setAttribute('aria-label', this.game.isManuallyPaused ? 'Reanudar' : 'Pausar');
-            button.title = tooltip;
-            button.dataset.tooltip = tooltip;
-        }
-        document.body.classList.toggle('tactical-paused', this.game.isManuallyPaused);
-        if (announce) this.showToast(this.game.isManuallyPaused ? 'Pausa táctica: inspecciona y reorganiza' : 'Partida reanudada', 'info');
-        return this.game.isManuallyPaused;
+        return this.getTopHudPanel().setManualPause(paused, announce);
     }
 
     setNextWaveEnabled(enabled, summary = null) {
-        const button = document.getElementById('next-wave-btn');
-        if (!button) return;
-        if (summary) this.nextWaveSummary = summary;
-        const state = buildWaveLaunchState(enabled, summary || this.nextWaveSummary);
-        button.disabled = !enabled;
-        button.className = `btn-primary next-wave-cta threat-${state.tier}`;
-        button.dataset.threatTier = state.tier;
-        button.dataset.tooltip = state.tooltip;
-        button.title = state.tooltip;
-        button.setAttribute('aria-label', state.ariaLabel);
-
-        const primary = document.createElement('strong');
-        const secondary = document.createElement('small');
-        primary.textContent = state.primary;
-        secondary.textContent = state.secondary;
-        button.replaceChildren(primary, secondary);
-        this.renderOnboardingCoach();
+        return this.getTopHudPanel().setNextWaveEnabled(enabled, summary);
     }
 
     updatePlacementSuggestion(state = null) {
@@ -1683,39 +1633,26 @@ export class UIManager {
     }
 
     updateFpsDisplay(text, { warning = false, title = '' } = {}) {
-        if (!this.fpsEl) return;
-        const visible = this.shouldShowFps();
-        this.fpsEl.classList?.toggle('hidden', !visible);
-        this.fpsEl.classList?.toggle('performance-warning', visible && warning);
-        if (!visible) {
-            this.fpsEl.removeAttribute?.('title');
-            return;
-        }
-        this.fpsEl.textContent = text;
-        if (title) this.fpsEl.title = title;
-        else this.fpsEl.removeAttribute?.('title');
+        return this.getTopHudPanel().updateFpsDisplay(text, { warning, title });
     }
 
     updateUI(lives, credits, wave, fps, stars) {
-        if (this.livesEl) this.livesEl.textContent = lives;
-        if (this.creditsEl) setHudResourceElement(this.creditsEl, credits);
-        if (this.waveEl) this.waveEl.textContent = wave;
-        this.updateBossCountdown(wave);
-        this.updateFpsDisplay(`${Math.round(fps || 0)} FPS`);
-        if (this.starsEl && stars !== undefined) setHudResourceElement(this.starsEl, stars);
+        return this.getTopHudPanel().updateUI(lives, credits, wave, fps, stars);
     }
 
     updateBossCountdown(wave = 1) {
-        if (!this.bossCountdownEl) return null;
-        const state = buildBossCountdownState(
-            wave,
-            this.game.waveManager?.maxWaves || CAMPAIGN_MAX_WAVES,
-            MINI_BOSS_WAVE_INTERVAL
-        );
-        this.bossCountdownEl.className = `status-item boss-countdown boss-countdown-${state.tone}`;
-        this.bossCountdownEl.setAttribute('aria-label', state.ariaLabel);
-        this.bossCountdownEl.innerHTML = `<i class="fas fa-skull"></i><span>${escapeHtml(state.label)}</span><b>${escapeHtml(state.detail)}</b>`;
-        return state;
+        return this.getTopHudPanel().updateBossCountdown(wave);
+    }
+
+    getTopHudPanel() {
+        if (!this.topHudPanel) {
+            this.topHudPanel = new TopHudPanel(this, {
+                buildBossCountdownState,
+                buildWaveLaunchState,
+                formatHudResource
+            });
+        }
+        return this.topHudPanel;
     }
 
     updateCombatPressure(enemies = [], path = [], waveActive = false) {
