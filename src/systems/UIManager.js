@@ -16,6 +16,7 @@ import { WavePreviewPanel } from '../ui/WavePreviewPanel.js';
 import { EnemyInfoPanel } from '../ui/EnemyInfoPanel.js';
 import { CombatPressurePanel } from '../ui/CombatPressurePanel.js';
 import { ThreatHudPanel } from '../ui/ThreatHudPanel.js';
+import { MissionStatusPanel } from '../ui/MissionStatusPanel.js';
 import { SET_BONUSES } from './ItemEffectSystem.js';
 import { getAllowedTerrainLabels } from '../utils/TerrainRules.js';
 import { getRarityClass, normalizeRarity } from '../utils/Rarity.js';
@@ -1415,6 +1416,7 @@ export class UIManager {
             buildBossHudState,
             buildSpawnQueueState
         });
+        this.missionStatusPanel = new MissionStatusPanel();
         this.radarPanel = new RadarPanel(this, {
             buildWaveReportState,
             buildWaveReportActionState
@@ -1778,19 +1780,12 @@ export class UIManager {
     }
 
     updateMissionStatus(snapshot) {
-        const container = document.getElementById('mission-status');
-        if (!container || !snapshot) return;
-        const specialStatus = snapshot.blackout > 0
-            ? `<b>Corte: ${snapshot.blackout}s</b>`
-            : '';
-        container.innerHTML = `
-            <div class="mission-heading"><strong>${snapshot.operation}</strong><span>${snapshot.mechanicLabel}</span></div>
-            <p>${snapshot.message}</p>
-            ${specialStatus}
-            <div class="mission-objectives-mini">
-                ${snapshot.objectives.map((objective) => `<span class="${objective.complete ? 'done' : ''}">${objective.complete ? '✓' : `${objective.value}/${objective.target}`} ${objective.label}</span>`).join('')}
-            </div>
-        `;
+        return this.getMissionStatusPanel().update(snapshot);
+    }
+
+    getMissionStatusPanel() {
+        if (!this.missionStatusPanel) this.missionStatusPanel = new MissionStatusPanel();
+        return this.missionStatusPanel;
     }
 
     updateModeStatus(snapshot) {
