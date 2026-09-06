@@ -3,7 +3,7 @@ import { EVOLUTION_CATALOG } from '../systems/EvolutionSystem.js';
 import { buildVillainCodexModel } from '../systems/VillainCodexSystem.js';
 import { HERO_RARITIES, getRarityClass, normalizeRarity } from '../utils/Rarity.js';
 import { resolveEvolutionVisualContract } from '../utils/HeroVisuals.js';
-import { buildItemEquipDeltaRows, renderItemDeltaRows } from './InventoryPanel.js';
+import { buildItemEquipDeltaRows, formatItemDeltaLabel, renderItemDeltaRows } from './InventoryPanel.js';
 import {
     HERO_TACTIC_FILTERS,
     buildTeamReadinessAlerts,
@@ -498,8 +498,14 @@ export class TeamBuilderPanel {
             || game.progression.state.favoriteHeroIds?.includes(hero.id)
             || false;
         const alreadyHasPendingItem = equippedItem?.id === pendingItem?.id;
+        const itemDeltaRows = pendingItem && unlocked
+            ? buildItemEquipDeltaRows(pendingItem, equippedItem)
+            : [];
+        const itemDeltaLabel = pendingItem && unlocked && !alreadyHasPendingItem
+            ? formatItemDeltaLabel(itemDeltaRows)
+            : '';
         const itemDeltaPreview = pendingItem && unlocked
-            ? `<div class="hero-item-delta-preview">${renderItemDeltaRows(buildItemEquipDeltaRows(pendingItem, equippedItem))}</div>`
+            ? `<div class="hero-item-delta-preview">${renderItemDeltaRows(itemDeltaRows)}</div>`
             : '';
         const heroStateLabel = unlocked
             ? equipped ? 'en equipo activo' : 'desbloqueado'
@@ -510,7 +516,7 @@ export class TeamBuilderPanel {
             ? alreadyHasPendingItem
                 ? `${pendingItem.name} ya esta equipado en ${hero.name}`
                 : unlocked
-                    ? `${equippedItem ? 'Reemplazar objeto de' : 'Equipar'} ${hero.name} con ${pendingItem.name}`
+                    ? `${equippedItem ? 'Reemplazar objeto de' : 'Equipar'} ${hero.name} con ${pendingItem.name}${itemDeltaLabel ? `. Cambios: ${itemDeltaLabel}` : ''}`
                     : `${hero.name} requiere reclutamiento antes de equipar ${pendingItem.name}`
             : unlocked
                 ? equipped

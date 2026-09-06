@@ -125,13 +125,23 @@ export function buildItemEquipDeltaRows(nextItem, currentItem = null) {
         .filter((row) => Math.abs(row.value) > 0.0001);
 }
 
+function formatItemDeltaValue(row) {
+    const value = row.value * row.multiplier;
+    const fixed = Math.abs(value).toFixed(row.precision);
+    const clean = row.precision > 0 ? fixed.replace(/\.0$/, '') : fixed;
+    return { value, label: `${row.label} ${value >= 0 ? '+' : '-'}${clean}${row.suffix}` };
+}
+
+export function formatItemDeltaLabel(rows = []) {
+    if (!rows.length) return 'Sin cambios numericos';
+    return rows.map((row) => formatItemDeltaValue(row).label).join(', ');
+}
+
 export function renderItemDeltaRows(rows) {
     if (!rows.length) return '<em class="neutral">Sin cambios numericos</em>';
     return rows.map((row) => {
-        const value = row.value * row.multiplier;
-        const fixed = Math.abs(value).toFixed(row.precision);
-        const clean = row.precision > 0 ? fixed.replace(/\.0$/, '') : fixed;
-        return `<em class="${value < 0 ? 'negative' : 'positive'}">${row.label} ${value >= 0 ? '+' : '-'}${clean}${row.suffix}</em>`;
+        const delta = formatItemDeltaValue(row);
+        return `<em class="${delta.value < 0 ? 'negative' : 'positive'}">${delta.label}</em>`;
     }).join('');
 }
 

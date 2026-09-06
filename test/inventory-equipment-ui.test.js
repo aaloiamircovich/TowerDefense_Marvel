@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import { buildItemEffectPills, buildItemEquipDeltaRows, getItemEffectTags, InventoryPanel } from '../src/ui/InventoryPanel.js';
+import { buildItemEffectPills, buildItemEquipDeltaRows, formatItemDeltaLabel, getItemEffectTags, InventoryPanel } from '../src/ui/InventoryPanel.js';
 import { HERO_TACTIC_FILTERS, buildTeamReadinessAlerts, getHeroTacticBadges, heroMatchesTacticId, TeamBuilderPanel } from '../src/ui/TeamBuilderPanel.js';
 import { UIManager } from '../src/systems/UIManager.js';
 import { analyzeTeam } from '../src/systems/TeamSynergySystem.js';
@@ -215,7 +215,7 @@ test('coleccion muestra el objeto equipado y permite elegir heroe destino', () =
 
     const spiderManHtml = panel.renderHeroCard(data.heroes.spiderman, true);
     assert.match(spiderManHtml, /btn-assign-item/);
-    assert.match(spiderManHtml, /type="button" data-id="spiderman" aria-label="Equipar Spider-Man con REACTOR ARC" title="Equipar Spider-Man con REACTOR ARC" data-tooltip="Equipar Spider-Man con REACTOR ARC" aria-disabled="false"/);
+    assert.match(spiderManHtml, /type="button" data-id="spiderman" aria-label="Equipar Spider-Man con REACTOR ARC\. Cambios: Cadencia \+18%, Dano \+4%" title="Equipar Spider-Man con REACTOR ARC\. Cambios: Cadencia \+18%, Dano \+4%" data-tooltip="Equipar Spider-Man con REACTOR ARC\. Cambios: Cadencia \+18%, Dano \+4%" aria-disabled="false"/);
     assert.match(spiderManHtml, /Equipar/);
 });
 
@@ -301,6 +301,7 @@ test('previsualizacion de objeto compara mejoras y perdidas numericas', () => {
 
     assert.equal(byKey.rangePct.value, 0.04);
     assert.equal(byKey.fireRatePct.value, -0.18);
+    assert.equal(formatItemDeltaLabel(rows), 'Cadencia -18%, Dano -4%, Alcance +4%, Critico +2');
 
     const ui = createUiStub();
     const panel = new InventoryPanel(ui);
