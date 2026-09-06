@@ -296,8 +296,7 @@ export class AvengerKitSystem {
     }
 
     getCooldown(base) {
-        const levelReduction = Math.min(0.2, Math.max(0, this.hero.level - 1) * 0.015);
-        return applyCooldownReductions(this.hero, base, levelReduction);
+        return applyCooldownReductions(this.hero, base);
     }
 }
 

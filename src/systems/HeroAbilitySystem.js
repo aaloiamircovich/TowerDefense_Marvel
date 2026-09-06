@@ -161,8 +161,7 @@ export class HeroAbilitySystem {
 
     getCooldown() {
         const base = ACTIVE_COOLDOWNS[this.hero.id] || 0;
-        const reduction = Math.min(0.25, Math.max(0, this.hero.level - 1) * 0.02);
-        return applyCooldownReductions(this.hero, base, reduction);
+        return applyCooldownReductions(this.hero, base);
     }
 
     getPowerScale() {

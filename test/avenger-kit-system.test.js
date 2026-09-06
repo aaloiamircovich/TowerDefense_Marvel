@@ -98,6 +98,14 @@ test('Redwing revela sigilo y marca objetivos en reconocimiento', () => {
     assert.ok(falcon.abilitySystem.avengerKit.cooldownRemaining > 0);
 });
 
+test('kit Avenger mantiene cooldown fijo aunque suba el nivel', () => {
+    const levelOne = createHero('falcon', createGame(), { level: 1 });
+    const levelHundred = createHero('falcon', createGame(), { level: 100 });
+
+    assert.equal(levelOne.abilitySystem.avengerKit.getCooldown(2.4), 2.4);
+    assert.equal(levelHundred.abilitySystem.avengerKit.getCooldown(2.4), 2.4);
+});
+
 function createHero(id, game, overrides = {}) {
     return new Hero({
         id,

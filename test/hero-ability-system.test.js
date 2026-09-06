@@ -110,6 +110,14 @@ test('Thor activa Tormenta Divina con varios objetivos', () => {
     assert.equal(hero.combatStats.abilityActivations, 1);
 });
 
+test('cooldown de habilidad activa no baja solo por nivel', () => {
+    const levelOne = new Hero({ ...createHeroConfig('thor'), level: 1 }, 0, 0, createGame());
+    const levelHundred = new Hero({ ...createHeroConfig('thor'), level: 100 }, 0, 0, createGame());
+
+    assert.equal(levelOne.abilitySystem.getCooldown(), 11);
+    assert.equal(levelHundred.abilitySystem.getCooldown(), 11);
+});
+
 test('Doctor Strange duplica cada segundo proyectil', () => {
     const game = createGame();
     const targets = [createEnemy(50, 0), createEnemy(80, 0)];
