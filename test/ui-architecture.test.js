@@ -63,3 +63,13 @@ test('UIManager delega mejoras de heroe en controlador dedicado', () => {
     assert.match(controller, /export class HeroUpgradeController\b/);
     assert.doesNotMatch(source, /from ['"]\.\.\/utils\/HeroLevel\.js['"]/);
 });
+
+test('UIManager delega apertura y navegacion de paneles en controlador modal', () => {
+    const source = read('src/systems/UIManager.js');
+    const controller = read('src/ui/PanelDialogController.js');
+
+    assert.match(source, /import \{ PanelDialogController \}/);
+    assert.match(source, /new PanelDialogController\(this, \{ buildPanelNavigationMarkup \}\)/);
+    assert.match(controller, /export class PanelDialogController\b/);
+    assert.match(controller, /const PANEL_TITLES =/);
+});

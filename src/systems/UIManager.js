@@ -2,6 +2,7 @@ import { CampaignPanel } from '../ui/CampaignPanel.js';
 import { ProfilePanel } from '../ui/ProfilePanel.js';
 import { SettingsPanel } from '../ui/SettingsPanel.js';
 import { TooltipController } from '../ui/TooltipController.js';
+import { PanelDialogController } from '../ui/PanelDialogController.js';
 import { InventoryPanel } from '../ui/InventoryPanel.js';
 import { TeamBuilderPanel } from '../ui/TeamBuilderPanel.js';
 import { ModePanel } from '../ui/ModePanel.js';
@@ -1385,6 +1386,7 @@ export class UIManager {
         this.inventoryPanel = new InventoryPanel(this);
         this.teamBuilderPanel = new TeamBuilderPanel(this);
         this.modePanel = new ModePanel(this);
+        this.panelDialogController = new PanelDialogController(this, { buildPanelNavigationMarkup });
         this.toastPanel = new ToastPanel(this);
         this.topHudPanel = new TopHudPanel(this, {
             buildBossCountdownState,
@@ -1495,84 +1497,40 @@ export class UIManager {
     }
 
     handleHubButtonClick(type) {
-        const closeButtonHidden = document.getElementById('close-panel-btn')?.classList.contains('hidden');
-        const panelOpen = !this.overlay?.classList.contains('hidden');
-        if (type && this.activePanelType === type && panelOpen && !closeButtonHidden) {
-            this.closePanel();
-            return;
-        }
-        this.openPanel(type);
+        return this.getPanelDialogController().handleHubButtonClick(type);
     }
 
     openPanel(type) {
-        this.tooltipController.hide();
-        this.lastFocusedElement = document.activeElement;
-        this.game.pause();
-        this.showPanelOverlay(true);
-        this.game.audio?.play('ui');
-        this.renderPanel(type);
-        window.requestAnimationFrame(() => document.getElementById('close-panel-btn')?.focus());
+        return this.getPanelDialogController().openPanel(type);
     }
 
     closePanel() {
-        this.shopPanel?.clearGachaRevealTimers?.();
-        this.hidePanelOverlay();
-        this.setActiveHubButton(null);
-        if (!document.body.classList.contains('title-screen-active') && !this.game.isManuallyPaused && !this.game.isGameOver) this.game.start();
-        const restoreFocus = this.lastFocusedElement;
-        this.lastFocusedElement = null;
-        if (restoreFocus?.isConnected !== false) restoreFocus?.focus?.();
+        return this.getPanelDialogController().closePanel();
     }
 
     setActiveHubButton(type = null) {
-        this.activePanelType = type || null;
-        document.querySelectorAll?.('.hub-btn').forEach((button) => {
-            const active = Boolean(type && button.dataset.panel === type);
-            button.classList.toggle('active', active);
-            button.setAttribute('aria-current', active ? 'dialog' : 'false');
-            button.setAttribute('aria-expanded', String(active));
-            button.setAttribute('aria-controls', 'panel-container');
-        });
+        return this.getPanelDialogController().setActiveHubButton(type);
     }
 
     showPanelOverlay(showCloseButton = true) {
-        document.body.classList.add('panel-open');
-        this.overlay.classList.remove('hidden');
-        document.getElementById('close-panel-btn')?.classList.toggle('hidden', !showCloseButton);
+        return this.getPanelDialogController().showPanelOverlay(showCloseButton);
     }
 
     hidePanelOverlay() {
-        this.overlay.classList.add('hidden');
-        document.body.classList.remove('panel-open');
+        return this.getPanelDialogController().hidePanelOverlay();
     }
 
     handlePanelBackdropPointerDown(event) {
-        if (event.target !== this.overlay) return;
-        if (document.getElementById('close-panel-btn')?.classList.contains('hidden')) return;
-        event.preventDefault();
-        this.closePanel();
+        return this.getPanelDialogController().handlePanelBackdropPointerDown(event);
     }
 
     handleDialogKeydown(event) {
-        if (this.overlay.classList.contains('hidden')) return;
-        if (event.key === 'Escape' && !document.getElementById('close-panel-btn')?.classList.contains('hidden')) {
-            event.preventDefault();
-            this.closePanel();
-            return;
-        }
-        if (event.key !== 'Tab') return;
-        const focusable = [...this.overlay.querySelectorAll('button:not([disabled]), select, input, [tabindex="0"]')]
-            .filter((element) => !element.classList.contains('hidden'));
-        if (focusable.length === 0) return;
-        const first = focusable[0];
-        const last = focusable.at(-1);
-        if (event.shiftKey && document.activeElement === first) {
-            event.preventDefault();
-            last.focus();
-        } else if (!event.shiftKey && document.activeElement === last) {
-            event.preventDefault();
-            first.focus();
-        }
+        return this.getPanelDialogController().handleDialogKeydown(event);
+    }
+
+    getPanelDialogController() {
+        if (!this.panelDialogController) this.panelDialogController = new PanelDialogController(this, { buildPanelNavigationMarkup });
+        return this.panelDialogController;
     }
 
     setSelectionStatus(text) {
@@ -1926,52 +1884,15 @@ export class UIManager {
     }
 
     setPanelDialogLabel(title = 'Panel del juego') {
-        const dialog = document.getElementById('panel-container');
-        dialog?.setAttribute('aria-label', title || 'Panel del juego');
+        return this.getPanelDialogController().setPanelDialogLabel(title);
     }
 
     renderPanel(type) {
-        const panelTitles = {
-            profile: 'Perfil',
-            radar: 'Radar tactico',
-            collection: 'Colección',
-            inventory: 'Inventario',
-            shop: 'Tienda',
-            skins: 'Skins',
-            map: 'Mapa',
-            settings: 'Ajustes'
-        };
-        const title = panelTitles[type] || type;
-        this.setPanelDialogLabel(title);
-        this.setActiveHubButton(panelTitles[type] ? type : null);
-
-        let result;
-        if (type === 'shop') result = this.renderShop(title);
-        else if (type === 'skins') result = this.renderSkinShop(title);
-        else if (type === 'radar') result = this.renderRadarPanel(title);
-        else if (type === 'collection') result = this.teamBuilderPanel.render('Constructor de equipo');
-        else if (type === 'inventory') result = this.inventoryPanel.render(title);
-        else if (type === 'map') result = this.renderMap(title);
-        else if (type === 'settings') result = this.renderSettings(title);
-        else result = this.renderProfile(title);
-
-        this.renderPanelNavigation(type);
-        return result;
+        return this.getPanelDialogController().renderPanel(type);
     }
 
     renderPanelNavigation(activeType = '') {
-        if (!this.panelContent || !PANEL_NAV_ITEMS.some((item) => item.id === activeType)) return;
-        this.panelContent.querySelector?.('.panel-modal-nav')?.remove?.();
-        this.panelContent.insertAdjacentHTML?.('afterbegin', buildPanelNavigationMarkup(activeType));
-        this.panelContent.querySelectorAll?.('[data-panel-nav]')?.forEach((button) => {
-            button.addEventListener('click', () => {
-                const nextType = button.dataset.panelNav;
-                if (!nextType || nextType === this.activePanelType) return;
-                this.game.audio?.play('ui');
-                this.renderPanel(nextType);
-                window.requestAnimationFrame(() => this.panelContent?.querySelector?.('.panel-modal-nav-btn.active')?.focus?.());
-            });
-        });
+        return this.getPanelDialogController().renderPanelNavigation(activeType);
     }
 
     renderRadarPanel(title = 'Radar tactico') {
