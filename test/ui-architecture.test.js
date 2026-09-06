@@ -53,3 +53,13 @@ test('paneles extraidos viven fuera de systems y exportan clases reutilizables',
         assert.match(source, new RegExp(`export class ${className}\\b`), `${file} debe exportar ${className}`);
     });
 });
+
+test('UIManager delega mejoras de heroe en controlador dedicado', () => {
+    const source = read('src/systems/UIManager.js');
+    const controller = read('src/ui/HeroUpgradeController.js');
+
+    assert.match(source, /import \{ HeroUpgradeController \}/);
+    assert.match(source, /new HeroUpgradeController\(this\)/);
+    assert.match(controller, /export class HeroUpgradeController\b/);
+    assert.doesNotMatch(source, /from ['"]\.\.\/utils\/HeroLevel\.js['"]/);
+});
