@@ -73,3 +73,15 @@ test('UIManager delega apertura y navegacion de paneles en controlador modal', (
     assert.match(controller, /export class PanelDialogController\b/);
     assert.match(controller, /const PANEL_TITLES =/);
 });
+
+test('estados puros del HUD viven fuera de UIManager', () => {
+    const source = read('src/systems/UIManager.js');
+    const hudState = read('src/ui/HudState.js');
+
+    assert.match(source, /from ['"]\.\.\/ui\/HudState\.js['"]/);
+    assert.match(source, /export \{ buildBossCountdownState, buildWaveLaunchState, formatHudResource \}/);
+    assert.match(hudState, /export function buildWaveLaunchState\b/);
+    assert.match(hudState, /export function buildBossCountdownState\b/);
+    assert.match(hudState, /export function formatHudResource\b/);
+    assert.doesNotMatch(source, /from ['"]\.\.\/utils\/LevelProgression\.js['"]/);
+});
