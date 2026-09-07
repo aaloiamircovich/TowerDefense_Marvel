@@ -88,3 +88,15 @@ test('estados puros del HUD viven fuera de UIManager', () => {
     assert.match(hudState, /export function formatHudResource\b/);
     assert.doesNotMatch(source, /from ['"]\.\.\/utils\/LevelProgression\.js['"]/);
 });
+
+test('inteligencia enemiga vive fuera de UIManager', () => {
+    const source = read('src/systems/UIManager.js');
+    const enemyIntel = read('src/ui/EnemyIntelState.js');
+
+    assert.match(source, /from ['"]\.\.\/ui\/EnemyIntelState\.js['"]/);
+    assert.match(source, /export \{ buildEnemyIntel, buildEnemyTraitPreview \}/);
+    assert.match(enemyIntel, /export function buildEnemyIntel\b/);
+    assert.match(enemyIntel, /export function buildEnemyTraitPreview\b/);
+    assert.match(enemyIntel, /export function getEnemyRoleLabel\b/);
+    assert.doesNotMatch(source, /const ENEMY_ROLE_COPY =/);
+});
