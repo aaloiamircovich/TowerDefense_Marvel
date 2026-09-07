@@ -21,6 +21,7 @@ import { ThreatHudPanel } from '../ui/ThreatHudPanel.js';
 import { MissionStatusPanel } from '../ui/MissionStatusPanel.js';
 import { ToastPanel } from '../ui/ToastPanel.js';
 import { TopHudPanel } from '../ui/TopHudPanel.js';
+import { PlacementSuggestionPanel } from '../ui/PlacementSuggestionPanel.js';
 import { getAllowedTerrainLabels } from '../utils/TerrainRules.js';
 import { pickHeroDisplaySprite } from '../utils/HeroVisuals.js';
 import { TARGETING_PRIORITIES, buildTargetingControlState, getNextTargetingPriority } from '../utils/TargetingPriority.js';
@@ -174,6 +175,7 @@ export class UIManager {
             buildSpawnQueueState
         });
         this.missionStatusPanel = new MissionStatusPanel();
+        this.placementSuggestionPanel = new PlacementSuggestionPanel(this);
         this.radarPanel = new RadarPanel(this, {
             buildWaveReportState,
             buildWaveReportActionState
@@ -310,32 +312,12 @@ export class UIManager {
     }
 
     updatePlacementSuggestion(state = null) {
-        const button = document.getElementById('suggested-placement-action');
-        if (!button) return;
-        const idleLabel = 'Usar celda sugerida';
-        if (!state) {
-            button.classList.add('hidden');
-            button.innerHTML = '';
-            button.onclick = null;
-            button.setAttribute('aria-label', idleLabel);
-            button.title = idleLabel;
-            button.dataset.tooltip = idleLabel;
-            this.renderOnboardingCoach();
-            return;
-        }
+        return this.getPlacementSuggestionPanel().update(state);
+    }
 
-        const suggestionLabel = `${state.label}. ${state.detail}`;
-        button.className = `suggested-placement-action ${state.qualityId || 'solid'}`;
-        button.setAttribute('aria-label', suggestionLabel);
-        button.title = suggestionLabel;
-        button.dataset.tooltip = suggestionLabel;
-        button.innerHTML = `
-            <i class="fas fa-location-crosshairs"></i>
-            <span><strong>${escapeHtml(state.label)}</strong><small>${escapeHtml(state.detail)}</small></span>
-            <b>${escapeHtml(state.actionLabel || 'Usar')}</b>
-        `;
-        button.onclick = () => this.game.inputManager?.confirmSuggestedPlacement?.();
-        this.renderOnboardingCoach();
+    getPlacementSuggestionPanel() {
+        if (!this.placementSuggestionPanel) this.placementSuggestionPanel = new PlacementSuggestionPanel(this);
+        return this.placementSuggestionPanel;
     }
 
     renderOnboardingCoach() {
