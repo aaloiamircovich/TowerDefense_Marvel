@@ -151,3 +151,15 @@ test('estado de amenaza de combate vive fuera de UIManager', () => {
     assert.doesNotMatch(source, /function getPathLength\b/);
     assert.doesNotMatch(source, /export function buildCombatPressureState\b/);
 });
+
+test('lectura de objetos de tienda vive fuera de UIManager', () => {
+    const source = read('src/systems/UIManager.js');
+    const shopItemState = read('src/ui/ShopItemState.js');
+
+    assert.match(source, /from ['"]\.\.\/ui\/ShopItemState\.js['"]/);
+    assert.match(source, /export \{ buildShopItemInsight, buildShopSetProgress \} from ['"]\.\.\/ui\/ShopItemState\.js['"]/);
+    assert.match(shopItemState, /from ['"]\.\.\/systems\/ItemEffectSystem\.js['"]/);
+    assert.match(shopItemState, /export function buildShopItemInsight\b/);
+    assert.doesNotMatch(source, /from ['"].*ItemEffectSystem\.js['"]/);
+    assert.doesNotMatch(source, /export function buildShopItemInsight\b/);
+});
