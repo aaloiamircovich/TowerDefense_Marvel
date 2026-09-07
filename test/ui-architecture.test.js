@@ -100,3 +100,15 @@ test('inteligencia enemiga vive fuera de UIManager', () => {
     assert.match(enemyIntel, /export function getEnemyRoleLabel\b/);
     assert.doesNotMatch(source, /const ENEMY_ROLE_COPY =/);
 });
+
+test('tactica de heroes vive fuera de UIManager', () => {
+    const source = read('src/systems/UIManager.js');
+    const heroTactics = read('src/ui/HeroTacticsState.js');
+
+    assert.match(source, /from ['"]\.\.\/ui\/HeroTacticsState\.js['"]/);
+    assert.match(source, /export \{ buildHeroCombatIdentity, evaluateHeroWaveFit \}/);
+    assert.match(heroTactics, /export function evaluateHeroWaveFit\b/);
+    assert.match(heroTactics, /export function buildHeroCombatIdentity\b/);
+    assert.match(heroTactics, /export function heroCoversCounter\b/);
+    assert.doesNotMatch(source, /const PIERCING_HERO_IDS =/);
+});
