@@ -528,6 +528,15 @@ test('coleccion filtra counters avanzados y busqueda sin acentos', () => {
     assert.match(panel.renderCollectionFilters(1, 6), /<option value="frontline"[^>]*>Cercano<\/option>/);
 });
 
+test('coleccion clasifica tacticas sin depender del rol heredado', () => {
+    const withoutLegacyRole = (hero) => ({ ...hero, formationRole: undefined });
+
+    assert.equal(heroMatchesTacticId(withoutLegacyRole(data.heroes.hawkeye), 'dps'), true);
+    assert.equal(heroMatchesTacticId(withoutLegacyRole(data.heroes.capitan_america), 'support'), true);
+    assert.equal(heroMatchesTacticId(withoutLegacyRole(data.heroes.ghost_rider), 'frontline'), true);
+    assert.equal(heroMatchesTacticId(withoutLegacyRole(data.heroes.gamora), 'frontline'), true);
+});
+
 test('coleccion permite limpiar todos los filtros de heroes', () => {
     const ui = createUiStub();
     const panel = new TeamBuilderPanel(ui);

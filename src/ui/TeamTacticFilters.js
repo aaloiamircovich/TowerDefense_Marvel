@@ -22,6 +22,9 @@ export const HERO_TACTIC_FILTERS = [
 const CONTROL_EFFECT_TYPES = new Set(['slow', 'stun', 'freeze', 'web', 'knockback']);
 const HERO_TACTIC_BADGE_IDS = ['aura', 'economy', 'detection', 'antiarmor', 'control', 'dot', 'area', 'boss', 'crit', 'support', 'dps', 'frontline', 'water', 'mountain'];
 const HERO_TACTIC_BADGE_LIMIT = 3;
+const FRONTLINE_TRAITS = ['asalto', 'cadena', 'cadenas', 'cercan', 'corta', 'corto', 'cuerpo a cuerpo', 'duelista', 'frente', 'golpe', 'tanque', 'vanguardia'];
+const DPS_TRAITS = ['artilleria', 'daño sostenido', 'dano sostenido', 'explosivo', 'laser', 'linea', 'perfora', 'splash'];
+const SUPPORT_TRAITS = ['anti-soporte', 'aura', 'detector', 'economia', 'marca', 'revela', 'soporte'];
 
 export function normalizeHeroSearchText(value = '') {
     return String(value)
@@ -32,6 +35,10 @@ export function normalizeHeroSearchText(value = '') {
 
 function getTacticFilterConfig(filterId) {
     return HERO_TACTIC_FILTERS.find((filter) => filter.id === filterId) || null;
+}
+
+function textIncludesAny(text, fragments = []) {
+    return fragments.some((fragment) => text.includes(fragment));
 }
 
 export function getHeroTraitText(hero = {}) {
@@ -75,28 +82,20 @@ export function heroMatchesTacticId(hero = {}, filter = 'all') {
     }
     if (filter === 'dps') {
         return Boolean(metrics.damage >= 4
-            || hero.formationRole === 'artillery'
             || hero.damage >= 35
-            || traitText.includes('laser')
-            || traitText.includes('explosivo'));
+            || textIncludesAny(traitText, DPS_TRAITS));
     }
     if (filter === 'frontline') {
-        return Boolean(hero.formationRole === 'vanguard'
-            || hero.rangePattern === 'ring'
-            || hero.range <= 95
-            || traitText.includes('cuerpo a cuerpo')
-            || traitText.includes('frente')
-            || traitText.includes('tanque'));
+        const range = Number(hero.range || 0);
+        return Boolean(hero.rangePattern === 'ring'
+            || (range > 0 && range <= 120 && (metrics.damage >= 3 || metrics.control >= 3))
+            || (range > 0 && range <= 155 && metrics.damage >= 4 && textIncludesAny(traitText, FRONTLINE_TRAITS)));
     }
     if (filter === 'support') {
-        return Boolean(hero.formationRole === 'support'
-            || metrics.support >= 4
+        return Boolean(metrics.support >= 4
             || special.supportAura?.type
             || special.economyOnHit
-            || traitText.includes('soporte')
-            || traitText.includes('aura')
-            || traitText.includes('detector')
-            || traitText.includes('economia'));
+            || textIncludesAny(traitText, SUPPORT_TRAITS));
     }
     if (filter === 'control') {
         return Boolean(metrics.control >= 4
