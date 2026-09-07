@@ -112,3 +112,16 @@ test('tactica de heroes vive fuera de UIManager', () => {
     assert.match(heroTactics, /export function heroCoversCounter\b/);
     assert.doesNotMatch(source, /const PIERCING_HERO_IDS =/);
 });
+
+test('tactica de oleadas vive fuera de UIManager', () => {
+    const source = read('src/systems/UIManager.js');
+    const waveTactics = read('src/ui/WaveTacticsState.js');
+
+    assert.match(source, /from ['"]\.\.\/ui\/WaveTacticsState\.js['"]/);
+    assert.match(source, /export \{[\s\S]*buildWavePreparationPlan[\s\S]*\} from ['"]\.\.\/ui\/WaveTacticsState\.js['"]/);
+    assert.match(waveTactics, /export function buildCounterCoverageModel\b/);
+    assert.match(waveTactics, /export function buildWavePreparationPlan\b/);
+    assert.match(waveTactics, /export function buildRosterWaveFitView\b/);
+    assert.doesNotMatch(source, /const COUNTER_COPY =/);
+    assert.doesNotMatch(source, /function getRequiredCounterIds\b/);
+});
