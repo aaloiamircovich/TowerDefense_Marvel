@@ -138,3 +138,16 @@ test('estado de reporte de oleada vive fuera de UIManager', () => {
     assert.doesNotMatch(source, /export function buildWaveReportState\b/);
     assert.doesNotMatch(source, /export function buildLeakIntel\b/);
 });
+
+test('estado de amenaza de combate vive fuera de UIManager', () => {
+    const source = read('src/systems/UIManager.js');
+    const combatThreatState = read('src/ui/CombatThreatState.js');
+
+    assert.match(source, /from ['"]\.\.\/ui\/CombatThreatState\.js['"]/);
+    assert.match(source, /export \{[\s\S]*buildCombatPressureState[\s\S]*\} from ['"]\.\.\/ui\/CombatThreatState\.js['"]/);
+    assert.match(combatThreatState, /export function buildCombatPressureState\b/);
+    assert.match(combatThreatState, /export function buildBossHudState\b/);
+    assert.match(combatThreatState, /export function buildPressureActionState\b/);
+    assert.doesNotMatch(source, /function getPathLength\b/);
+    assert.doesNotMatch(source, /export function buildCombatPressureState\b/);
+});
