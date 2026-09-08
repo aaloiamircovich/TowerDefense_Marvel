@@ -232,7 +232,7 @@ export class WavePreviewPanel {
             <i class="fas fa-chart-line"></i>
             <div><strong>${escapeHtml(check.label)}</strong><span>${escapeHtml(check.detail)}</span></div>
             <b>${formatCompactMetric(check.expectedDamage)}/${formatCompactMetric(check.requiredDamage)}</b>
-            <small>DPS ${formatCompactMetric(check.dps)}</small>
+            <small class="wave-damage-readout">DPS ${formatCompactMetric(check.dps)} <b class="wave-damage-gap ${escapeHtml(meter.gapTone)}">${escapeHtml(meter.gapLabel)}</b></small>
             ${contributorMarkup}
             <div class="wave-damage-meter" aria-hidden="true"><span></span><em>${escapeHtml(meter.label)}</em></div>
         </div>`;

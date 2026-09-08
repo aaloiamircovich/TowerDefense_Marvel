@@ -1,4 +1,5 @@
 import { buildEnemyIntel } from './EnemyIntelState.js';
+import { formatHeroDetailMetric } from './HeroDetailViewModel.js';
 import {
     evaluateHeroWaveFit,
     getHeroCost,
@@ -400,12 +401,22 @@ export function buildWaveDamageCheckMeter(check = {}) {
     const ratio = required > 0 ? expected / required : expected > 0 ? 1 : 0;
     const ratioPct = Math.max(0, Math.round(ratio * 100));
     const fillPct = Math.max(0, Math.min(100, ratioPct));
+    const gap = Math.round(expected - required);
+    const gapTone = required <= 0 ? 'neutral' : gap >= 0 ? 'surplus' : 'deficit';
+    const gapLabel = required <= 0
+        ? 'Sin objetivo'
+        : gap >= 0
+            ? `Margen +${formatHeroDetailMetric(gap)}`
+            : `Faltan ${formatHeroDetailMetric(Math.abs(gap))}`;
     return {
         ratio,
         ratioPct,
         fillPct,
+        gap,
+        gapTone,
+        gapLabel,
         label: `${ratioPct}% cubierto`,
-        ariaLabel: `Daño estimado ${ratioPct}% del total requerido`
+        ariaLabel: `Daño estimado ${ratioPct}% del total requerido. ${gapLabel}`
     };
 }
 

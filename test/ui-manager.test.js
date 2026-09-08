@@ -787,6 +787,8 @@ test('renderWavePreview etiqueta preparacion y rutas tacticas con tooltips', () 
         assert.match(waveIntel.innerHTML, /wave-damage-check thin/);
         assert.match(waveIntel.innerHTML, /wave-damage-meter/);
         assert.match(waveIntel.innerHTML, /75% cubierto/);
+        assert.match(waveIntel.innerHTML, /wave-damage-gap deficit/);
+        assert.match(waveIntel.innerHTML, /Faltan 600/);
         assert.match(waveIntel.innerHTML, /wave-damage-contributors/);
         assert.match(waveIntel.innerHTML, /Iron Man 62%/);
         assert.match(waveIntel.innerHTML, /Spider-Man 38%/);

@@ -123,6 +123,7 @@ test('WaveTacticsState recomienda acciones tacticas antes de oleadas criticas', 
 
 test('WaveTacticsState arma medidor controles clickeables y vista de ajuste', () => {
     const meter = buildWaveDamageCheckMeter({ expectedDamage: 3600, requiredDamage: 2400 });
+    const deficit = buildWaveDamageCheckMeter({ expectedDamage: 1800, requiredDamage: 2400 });
     const deploy = buildWavePrepActionControl({ type: 'deploy', heroId: 'iron_man', label: 'Colocar Iron Man', reason: 'DPS', cost: 0 });
     const fit = buildRosterWaveFitView({
         id: 'prime',
@@ -133,6 +134,11 @@ test('WaveTacticsState arma medidor controles clickeables y vista de ajuste', ()
 
     assert.equal(meter.ratioPct, 150);
     assert.equal(meter.fillPct, 100);
+    assert.equal(meter.gap, 1200);
+    assert.equal(meter.gapTone, 'surplus');
+    assert.equal(meter.gapLabel, 'Margen +1.2k');
+    assert.equal(deficit.gapTone, 'deficit');
+    assert.equal(deficit.gapLabel, 'Faltan 600');
     assert.equal(deploy.actionable, true);
     assert.equal(deploy.tag, 'button');
     assert.equal(fit.scoreLabel, '8 pts');
