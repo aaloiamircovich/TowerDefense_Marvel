@@ -303,6 +303,42 @@ test('WaveManager no cuenta soportes de aura pura como DPS esperado', () => {
     assert.equal(check.contributors.reduce((total, entry) => total + entry.share, 0), 100);
 });
 
+test('WaveManager reduce DPS esperado sin deteccion contra sigilo', () => {
+    const striker = deployedHero({ id: 'hulk', name: 'Hulk', damage: 100, fireRate: 1, range: 170 });
+    const detector = deployedHero({ id: 'black_widow', name: 'Black Widow', damage: 30, fireRate: 2, range: 150, canSeeStealth: true });
+    const manager = new WaveManager(createGame('new-york', [], [striker]), enemies);
+
+    const blocked = manager.getDamageCheckForSummary([striker], {
+        total: 4,
+        stealthCount: 4,
+        roles: ['stealth'],
+        effectiveHp: 1200,
+        totalHp: 1200
+    });
+    const mixed = manager.getDamageCheckForSummary([striker], {
+        total: 4,
+        stealthCount: 2,
+        roles: ['stealth'],
+        effectiveHp: 1200,
+        totalHp: 1200
+    });
+    const covered = manager.getDamageCheckForSummary([striker, detector], {
+        total: 4,
+        stealthCount: 4,
+        roles: ['stealth'],
+        effectiveHp: 1200,
+        totalHp: 1200
+    });
+
+    assert.equal(blocked.expectedDamage, 0);
+    assert.equal(blocked.contributors.length, 0);
+    assert.match(blocked.detail, /DPS sin deteccion reducido/);
+    assert.ok(mixed.expectedDamage > 0);
+    assert.ok(mixed.expectedDamage < covered.expectedDamage);
+    assert.deepEqual(covered.contributors.map((entry) => entry.name), ['Black Widow']);
+    assert.doesNotMatch(covered.detail, /DPS sin deteccion reducido/);
+});
+
 test('WaveManager refresca el radar tactico al cambiar heroes desplegados', () => {
     const rendered = [];
     const game = createGame();

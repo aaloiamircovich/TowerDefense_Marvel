@@ -583,7 +583,14 @@ export class WaveManager {
             totalHp: Math.round(totalHp),
             effectiveHp: Math.round(effectiveHp),
             threatTier: this.getThreatTier(pressureScore),
-            readiness: this.getReadinessForSummary(pressureScore, { totalHp, effectiveHp, hasBoss })
+            readiness: this.getReadinessForSummary(pressureScore, {
+                total: this.preparedQueue.length,
+                totalHp,
+                effectiveHp,
+                hasBoss,
+                stealthCount,
+                roles: [...roles]
+            })
         };
     }
 
@@ -631,6 +638,16 @@ export class WaveManager {
     getDamageCheckForSummary(heroes = [], waveModel = {}) {
         const requiredDamage = Math.max(0, Math.round(Number(waveModel.effectiveHp || waveModel.totalHp || 0)));
         const waveSeconds = Math.max(8, Math.min(46, this.getPreparedWaveDuration() + 7 + (waveModel.hasBoss ? 12 : 0)));
+        const totalEnemies = Math.max(0, Number(waveModel.total || 0));
+        const stealthCount = Math.max(0, Number(waveModel.stealthCount || 0));
+        const roles = new Set(waveModel.roles || []);
+        const needsDetection = stealthCount > 0 || roles.has('stealth') || roles.has('phaser');
+        const stealthShare = totalEnemies > 0 ? Math.min(1, stealthCount / totalEnemies) : needsDetection ? 1 : 0;
+        const visibleShareForNonDetectors = needsDetection ? Math.max(0, 1 - stealthShare) : 1;
+        const hasDetector = heroes.some((hero) => {
+            const stats = hero.getEffectiveStats?.() || hero;
+            return Boolean(hero.canSeeStealth || stats.canSeeStealth);
+        });
         const contributors = heroes.map((hero) => {
             const stats = hero.getEffectiveStats?.() || hero;
             const damage = Math.max(0, Number(stats.damage || hero.damage || 0));
@@ -638,10 +655,12 @@ export class WaveManager {
             const range = Math.max(0, Number(stats.range || hero.range || 100));
             const config = hero.config || hero;
             const isPureAura = Boolean(config.special?.supportAura || hero.special?.supportAura) && damage <= 2;
+            const detectsStealth = Boolean(hero.canSeeStealth || stats.canSeeStealth);
             const control = Number(config.teamMetrics?.control || hero.teamMetrics?.control || 0);
             const coverageFactor = Math.max(0.55, Math.min(1.12, range / 170));
             const controlFactor = 1 + Math.min(0.1, control * 0.015);
-            const contribution = isPureAura ? 0 : damage * fireRate * coverageFactor * controlFactor;
+            const detectionFactor = detectsStealth ? 1 : visibleShareForNonDetectors;
+            const contribution = isPureAura ? 0 : damage * fireRate * coverageFactor * controlFactor * detectionFactor;
             return {
                 id: hero.id || config.id || '',
                 name: hero.name || config.name || hero.id || 'Heroe',
@@ -673,6 +692,7 @@ export class WaveManager {
             tone = 'thin';
             label = 'Potencia justa';
         }
+        const detectionDetail = needsDetection && !hasDetector ? ' · DPS sin deteccion reducido' : '';
         return {
             tone,
             label,
@@ -681,7 +701,7 @@ export class WaveManager {
             requiredDamage,
             ratio: Number(ratio.toFixed(2)),
             contributors: topContributors,
-            detail: requiredDamage > 0 ? `Cubre ${pct}% del HP estimado` : 'Sin HP preparado para comparar'
+            detail: requiredDamage > 0 ? `Cubre ${pct}% del HP estimado${detectionDetail}` : 'Sin HP preparado para comparar'
         };
     }
 
