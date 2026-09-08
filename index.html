@@ -109,6 +109,15 @@
             margin: clamp(64px, 8vh, 92px) 0 0 clamp(54px, 5.4vw, 104px);
         }
 
+        body:not(.start-assets-ready) .start-screen__content {
+            align-content: end;
+            box-sizing: border-box;
+            width: 100%;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0 clamp(18px, 5vw, 96px) clamp(34px, 7vh, 74px);
+        }
+
         body:not(.start-assets-ready) .start-screen__logo,
         body:not(.start-assets-ready) #start-screen h1,
         body:not(.start-assets-ready) .start-screen__subtitle {
@@ -179,6 +188,11 @@
             margin-top: calc(clamp(58px, 14vh, 170px) * -0.55);
             margin-bottom: clamp(34px, 8vh, 86px);
             color: #dff9ff;
+        }
+
+        body:not(.start-assets-ready) .start-screen__loading {
+            width: min(520px, calc(100vw - 36px));
+            margin: 0;
         }
 
         .start-screen__loading-meta {
