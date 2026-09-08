@@ -8799,10 +8799,10 @@ select {
 }
 
 .admin-settings {
-    border: 1px solid rgba(255, 209, 102, 0.26);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 8px;
     padding: 14px;
-    background: linear-gradient(135deg, rgba(252, 163, 17, 0.08), rgba(64, 201, 255, 0.04));
+    background: rgba(5, 7, 11, 0.24);
 }
 
 .settings-details.admin-settings {
@@ -8811,6 +8811,7 @@ select {
 
 .admin-settings.admin-active {
     border-color: rgba(255, 209, 102, 0.7);
+    background: linear-gradient(135deg, rgba(252, 163, 17, 0.08), rgba(64, 201, 255, 0.04));
     box-shadow: 0 0 18px rgba(252, 163, 17, 0.14);
 }
 

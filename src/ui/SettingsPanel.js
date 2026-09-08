@@ -44,9 +44,11 @@ export class SettingsPanel {
             { key: 'locale', icon: 'fa-language', label: t('language'), value: locale.toUpperCase(), tone: 'neutral' },
             { key: 'uiScale', icon: 'fa-desktop', label: t('uiSize'), value: t(settings.uiScale || 'normal'), tone: 'neutral' },
             { key: 'audio', icon: 'fa-volume-high', label: t('gameAudio'), value: settings.audio ? t('enabled') : t('disabled'), tone: settings.audio ? 'ready' : 'muted' },
-            { key: 'musicLoop', icon: 'fa-repeat', label: t('musicLoop'), value: settings.musicLoop ? t('enabled') : t('disabled'), tone: settings.musicLoop ? 'ready' : 'muted' },
-            { key: 'adminMode', icon: 'fa-user-shield', label: t('adminMode'), value: settings.adminMode ? t('enabled') : t('disabled'), tone: settings.adminMode ? 'danger' : 'muted' }
+            { key: 'musicLoop', icon: 'fa-repeat', label: t('musicLoop'), value: settings.musicLoop ? t('enabled') : t('disabled'), tone: settings.musicLoop ? 'ready' : 'muted' }
         ];
+        if (settings.adminMode) {
+            statusChips.push({ key: 'adminMode', icon: 'fa-user-shield', label: t('adminMode'), value: t('enabled'), tone: 'danger' });
+        }
 
         return { enabledOptions, masterVolume, currentTrack, statusChips };
     }
@@ -142,7 +144,7 @@ export class SettingsPanel {
                     <div class="settings-details-body settings-actions"><button class="btn-primary ghost" id="export-save" type="button" aria-label="${t('export')}" title="${t('export')}" data-tooltip="${t('export')}"><i class="fas fa-download"></i> ${t('export')}</button><button class="btn-primary ghost" id="import-save" type="button" aria-label="${t('import')}" title="${t('import')}" data-tooltip="${t('import')}"><i class="fas fa-upload"></i> ${t('import')}</button><button class="btn-primary ghost" id="export-replay" type="button" aria-label="${t('replay')}" title="${t('replay')}" data-tooltip="${t('replay')}"><i class="fas fa-film"></i> ${t('replay')}</button><button class="btn-primary danger" id="reset-all-game" type="button" aria-label="${t('resetAllGame')}" title="${t('resetAllGame')}" data-tooltip="${t('resetAllGame')}"><i class="fas fa-trash"></i> ${t('resetAllGame')}</button><input id="import-save-file" type="file" accept="application/json,.json" hidden></div>
                 </details>
                 <details class="settings-details admin-settings ${settings.adminMode ? 'admin-active' : ''}" data-settings-group="admin" ${settings.adminMode ? 'open' : ''}>
-                    <summary><span><i class="fas fa-user-shield"></i><b>${t('adminMode')}</b></span><small>${settings.adminMode ? t('enabled') : t('disabled')}</small></summary>
+                    <summary><span><i class="fas fa-toolbox"></i><b>${t('advancedTools')}</b></span><small>${settings.adminMode ? t('adminMode') : t('disabled')}</small></summary>
                     <div class="settings-details-body">
                         <p>${settings.adminMode ? t('adminModeActive') : t('adminModeHint')}</p>
                         <div class="settings-actions">

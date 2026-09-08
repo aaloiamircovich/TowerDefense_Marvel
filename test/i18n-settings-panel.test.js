@@ -9,6 +9,8 @@ test('I18n expone idiomas soportados y fallback seguro', () => {
     assert.equal(translate('settings', 'es'), 'Ajustes');
     assert.equal(translate('showFps', 'en'), 'Show FPS');
     assert.equal(translate('showFps', 'es'), 'Mostrar FPS');
+    assert.equal(translate('advancedTools', 'en'), 'Advanced tools');
+    assert.equal(translate('advancedTools', 'es'), 'Herramientas avanzadas');
     assert.equal(translate('unknown_key', 'en'), 'unknown_key');
 });
 
@@ -68,8 +70,9 @@ test('SettingsPanel usa el locale guardado para renderizar textos reales', () =>
         assert.match(panelContent.html, /settings-status-strip/);
         assert.match(panelContent.html, /Game audio/);
         assert.match(panelContent.html, /Enabled/);
-        assert.match(panelContent.html, /Admin mode/);
+        assert.match(panelContent.html, /Advanced tools/);
         assert.match(panelContent.html, /Disabled/);
+        assert.doesNotMatch(panelContent.html, /data-settings-status-chip="adminMode"/);
         assert.match(panelContent.html, /Active options/);
         assert.match(panelContent.html, /Master audio/);
         assert.match(panelContent.html, /80%/);
@@ -104,6 +107,15 @@ test('SettingsPanel usa el locale guardado para renderizar textos reales', () =>
     } finally {
         globalThis.document = previousDocument;
     }
+});
+
+test('SettingsPanel muestra admin en resumen solo cuando esta activo', () => {
+    const panel = new SettingsPanel({});
+    const inactive = panel.buildSummaryState({ audio: true, musicLoop: false, uiScale: 'normal', adminMode: false, musicTrackId: 'the-avengers-theme-song' }, 'en', (key) => translate(key, 'en'));
+    const active = panel.buildSummaryState({ audio: true, musicLoop: false, uiScale: 'normal', adminMode: true, musicTrackId: 'the-avengers-theme-song' }, 'en', (key) => translate(key, 'en'));
+
+    assert.equal(inactive.statusChips.some((chip) => chip.key === 'adminMode'), false);
+    assert.equal(active.statusChips.some((chip) => chip.key === 'adminMode'), true);
 });
 
 test('SettingsPanel refresca el resumen al cambiar toggles', () => {
