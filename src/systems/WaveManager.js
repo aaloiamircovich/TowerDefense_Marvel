@@ -6,6 +6,7 @@ import {
     isFinalBossWave,
     isMiniBossWave
 } from '../utils/LevelProgression.js';
+import { buildWaveDamageCheck } from './WaveDamageCheck.js';
 
 const FACTIONS = {
     'new-york': {
@@ -636,73 +637,8 @@ export class WaveManager {
     }
 
     getDamageCheckForSummary(heroes = [], waveModel = {}) {
-        const requiredDamage = Math.max(0, Math.round(Number(waveModel.effectiveHp || waveModel.totalHp || 0)));
         const waveSeconds = Math.max(8, Math.min(46, this.getPreparedWaveDuration() + 7 + (waveModel.hasBoss ? 12 : 0)));
-        const totalEnemies = Math.max(0, Number(waveModel.total || 0));
-        const stealthCount = Math.max(0, Number(waveModel.stealthCount || 0));
-        const roles = new Set(waveModel.roles || []);
-        const needsDetection = stealthCount > 0 || roles.has('stealth') || roles.has('phaser');
-        const stealthShare = totalEnemies > 0 ? Math.min(1, stealthCount / totalEnemies) : needsDetection ? 1 : 0;
-        const visibleShareForNonDetectors = needsDetection ? Math.max(0, 1 - stealthShare) : 1;
-        const hasDetector = heroes.some((hero) => {
-            const stats = hero.getEffectiveStats?.() || hero;
-            return Boolean(hero.canSeeStealth || stats.canSeeStealth);
-        });
-        const contributors = heroes.map((hero) => {
-            const stats = hero.getEffectiveStats?.() || hero;
-            const damage = Math.max(0, Number(stats.damage || hero.damage || 0));
-            const fireRate = Math.max(0, Number(stats.fireRate || hero.fireRate || 0));
-            const range = Math.max(0, Number(stats.range || hero.range || 100));
-            const config = hero.config || hero;
-            const isPureAura = Boolean(config.special?.supportAura || hero.special?.supportAura) && damage <= 2;
-            const detectsStealth = Boolean(hero.canSeeStealth || stats.canSeeStealth);
-            const control = Number(config.teamMetrics?.control || hero.teamMetrics?.control || 0);
-            const coverageFactor = Math.max(0.55, Math.min(1.12, range / 170));
-            const controlFactor = 1 + Math.min(0.1, control * 0.015);
-            const detectionFactor = detectsStealth ? 1 : visibleShareForNonDetectors;
-            const contribution = isPureAura ? 0 : damage * fireRate * coverageFactor * controlFactor * detectionFactor;
-            return {
-                id: hero.id || config.id || '',
-                name: hero.name || config.name || hero.id || 'Heroe',
-                dps: contribution
-            };
-        }).filter((entry) => entry.dps > 0);
-        const dps = contributors.reduce((total, entry) => total + entry.dps, 0);
-        const expectedDamage = Math.round(dps * waveSeconds);
-        const topContributors = contributors
-            .sort((a, b) => b.dps - a.dps)
-            .slice(0, 3)
-            .map((entry) => ({
-                id: entry.id,
-                name: entry.name,
-                dps: Math.round(entry.dps),
-                share: dps > 0 ? Math.round((entry.dps / dps) * 100) : 0
-            }));
-        const ratio = requiredDamage > 0 ? expectedDamage / requiredDamage : 0;
-        const pct = Math.round(ratio * 100);
-        let tone = 'danger';
-        let label = 'Falta daño';
-        if (ratio >= 1.25) {
-            tone = 'dominant';
-            label = 'Potencia amplia';
-        } else if (ratio >= 1) {
-            tone = 'ready';
-            label = 'Potencia suficiente';
-        } else if (ratio >= 0.76) {
-            tone = 'thin';
-            label = 'Potencia justa';
-        }
-        const detectionDetail = needsDetection && !hasDetector ? ' · DPS sin deteccion reducido' : '';
-        return {
-            tone,
-            label,
-            dps: Math.round(dps),
-            expectedDamage,
-            requiredDamage,
-            ratio: Number(ratio.toFixed(2)),
-            contributors: topContributors,
-            detail: requiredDamage > 0 ? `Cubre ${pct}% del HP estimado${detectionDetail}` : 'Sin HP preparado para comparar'
-        };
+        return buildWaveDamageCheck({ heroes, waveModel, waveSeconds });
     }
 
     getPreparedWaveDuration() {

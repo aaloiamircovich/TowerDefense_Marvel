@@ -193,6 +193,16 @@ test('estado de amenaza de combate vive fuera de UIManager', () => {
     assert.doesNotMatch(source, /export function buildCombatPressureState\b/);
 });
 
+test('calculo de dano esperado de oleada vive fuera de WaveManager', () => {
+    const source = read('src/systems/WaveManager.js');
+    const damageCheck = read('src/systems/WaveDamageCheck.js');
+
+    assert.match(source, /from ['"]\.\/WaveDamageCheck\.js['"]/);
+    assert.match(source, /return buildWaveDamageCheck\(\{ heroes, waveModel, waveSeconds \}\)/);
+    assert.match(damageCheck, /export function buildWaveDamageCheck\b/);
+    assert.doesNotMatch(source, /const contributors = heroes\.map/);
+});
+
 test('lectura de objetos de tienda vive fuera de UIManager', () => {
     const source = read('src/systems/UIManager.js');
     const shopItemState = read('src/ui/ShopItemState.js');
