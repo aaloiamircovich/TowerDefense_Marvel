@@ -121,6 +121,30 @@ test('WaveTacticsState recomienda acciones tacticas antes de oleadas criticas', 
     assert.equal(upgradePlan[0].cost, 240);
 });
 
+test('WaveTacticsState recomienda deteccion contra faseadores aunque no haya contador de sigilo', () => {
+    const plan = buildWavePreparationPlan(
+        {
+            stealthCount: 0,
+            armoredCount: 0,
+            barrierCount: 0,
+            fastest: 74,
+            roles: ['phaser'],
+            pressureScore: 18,
+            threatTier: { id: 'high' },
+            readiness: { id: 'thin' }
+        },
+        [
+            { id: 'daredevil', name: 'Daredevil', cost: 150, damage: 26, fireRate: 1.8, range: 145, teamMetrics: { detection: 4 } }
+        ],
+        [],
+        150
+    );
+
+    assert.equal(plan[0].type, 'deploy');
+    assert.equal(plan[0].heroId, 'daredevil');
+    assert.match(plan[0].reason, /fase/);
+});
+
 test('WaveTacticsState arma medidor controles clickeables y vista de ajuste', () => {
     const meter = buildWaveDamageCheckMeter({ expectedDamage: 3600, requiredDamage: 2400 });
     const deficit = buildWaveDamageCheckMeter({ expectedDamage: 1800, requiredDamage: 2400 });

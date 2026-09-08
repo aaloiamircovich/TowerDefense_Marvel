@@ -239,9 +239,7 @@ export function buildStatusLegendModel(summary = null) {
 }
 
 export function buildStealthCoverageState(summary = null, activeTeam = [], deployedHeroes = [], credits = 0) {
-    const roles = new Set(summary?.roles || []);
-    const needsDetection = Number(summary?.stealthCount || 0) > 0 || roles.has('stealth') || roles.has('phaser');
-    if (!needsDetection) return null;
+    if (!waveNeedsDetection(summary)) return null;
 
     const deployed = (deployedHeroes || []).filter(Boolean);
     const deployedDetectors = deployed.filter(heroDetectsStealth);
@@ -317,8 +315,8 @@ export function buildWavePreparationPlan(summary = null, activeTeam = [], deploy
         } : null;
     };
 
-    if (summary.stealthCount > 0 && !deployed.some(heroDetectsStealth)) {
-        add(pickDeploy(heroDetectsStealth, 'Necesitas deteccion antes de que el sigilo cruce la ruta.'));
+    if (waveNeedsDetection(summary) && !deployed.some(heroDetectsStealth)) {
+        add(pickDeploy(heroDetectsStealth, 'Necesitas deteccion antes de que sigilo o fase crucen la ruta.'));
     }
 
     if ((summary.armoredCount > 0 || summary.barrierCount > 0 || summary.hasBoss) && !deployed.some((hero) => heroPiercesArmor(hero) || getHeroDps(hero) >= 42)) {
@@ -393,6 +391,11 @@ export function buildWavePreparationPlan(summary = null, activeTeam = [], deploy
     }
 
     return plan.slice(0, 3);
+}
+
+function waveNeedsDetection(summary = null) {
+    const roles = new Set(summary?.roles || []);
+    return Number(summary?.stealthCount || 0) > 0 || roles.has('stealth') || roles.has('phaser');
 }
 
 export function buildWaveDamageCheckMeter(check = {}) {
