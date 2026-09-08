@@ -4,6 +4,7 @@ import {
     buildLeakIntel,
     buildTacticalContributionModel,
     buildWaveReportActionState,
+    buildWaveReportComparison,
     buildWaveReportGrade,
     buildWaveReportLesson,
     buildWaveReportState
@@ -27,6 +28,29 @@ test('WaveReportState resume oleada limpia con lectura economica', () => {
     assert.equal(state.grade.medal, 'S');
     assert.equal(state.leakIntel.label, 'Base intacta');
     assert.match(state.lesson.detail, /ahorrar|tienda|power spike/);
+});
+
+test('WaveReportState compara la oleada contra la anterior', () => {
+    const comparison = buildWaveReportComparison(
+        { wave: 8, leaks: 0, kills: 12, damage: 1850, credits: 430 },
+        { wave: 7, leaks: 2, kills: 9, damage: 1200, credits: 350 }
+    );
+    const state = buildWaveReportState(
+        { wave: 8, leaks: 0, kills: 12, damage: 1850, credits: 430 },
+        { wave: 7, leaks: 2, kills: 9, damage: 1200, credits: 350 }
+    );
+
+    assert.equal(comparison.active, true);
+    assert.equal(comparison.label, 'vs oleada 7');
+    assert.equal(comparison.tone, 'up');
+    assert.deepEqual(comparison.metrics.map((metric) => metric.id), ['kills', 'damage', 'credits', 'leaks']);
+    assert.equal(comparison.metrics[0].value, '+3 KO');
+    assert.equal(comparison.metrics[1].value, '+650');
+    assert.equal(comparison.metrics[2].value, '+$80');
+    assert.equal(comparison.metrics[3].value, '-2 vida');
+    assert.equal(comparison.metrics[3].tone, 'up');
+    assert.equal(state.comparison.label, 'vs oleada 7');
+    assert.equal(buildWaveReportComparison({ wave: 8 }, { wave: 8 }).active, false);
 });
 
 test('WaveReportState convierte fugas en alerta y lectura de enemigo', () => {

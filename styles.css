@@ -2641,6 +2641,67 @@ canvas {
     text-transform: uppercase;
 }
 
+.wave-report-comparison {
+    display: grid;
+    gap: 6px;
+    padding: 6px 7px;
+    border: 1px solid rgba(64, 201, 255, 0.16);
+    border-left: 3px solid var(--comparison-color, #40c9ff);
+    border-radius: 7px;
+    background: rgba(5, 7, 11, 0.36);
+}
+
+.wave-report-comparison > strong {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--comparison-color, #40c9ff);
+    font-size: 10px;
+    text-transform: uppercase;
+}
+
+.wave-report-comparison > div {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 5px;
+}
+
+.wave-report-comparison span {
+    display: grid;
+    min-width: 0;
+    gap: 2px;
+    padding: 5px 6px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.055);
+}
+
+.wave-report-comparison small,
+.wave-report-comparison b {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.wave-report-comparison small {
+    color: var(--muted);
+    font-size: 8px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.wave-report-comparison b {
+    color: var(--trend-color, var(--text));
+    font-size: 10px;
+}
+
+.comparison-up { --comparison-color: #46d369; }
+.comparison-down { --comparison-color: #ff8f3d; }
+.comparison-same { --comparison-color: #40c9ff; }
+.trend-up { --trend-color: #46d369; }
+.trend-down { --trend-color: #ff8f3d; }
+.trend-same { --trend-color: var(--muted); }
+
 .wave-report-rating {
     display: grid;
     gap: 3px;
@@ -2948,6 +3009,10 @@ canvas {
     .wave-report-quickline,
     .wave-report-scoreline {
         grid-template-columns: 1fr;
+    }
+
+    .wave-report-comparison > div {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 
@@ -11776,6 +11841,7 @@ canvas {
 .radar-section-body .wave-report-advice,
 .radar-section-body .wave-leak-intel,
 .radar-section-body .wave-tactical-contribution,
+.radar-section-body .wave-report-comparison,
 .radar-section-body .mission-objectives-mini,
 .radar-section-body .stat-list {
     max-width: 100%;
@@ -11819,7 +11885,8 @@ canvas {
 .radar-section-body .wave-status-legend,
 .radar-section-body .wave-counter-coverage,
 .radar-section-body .wave-leak-intel,
-.radar-section-body .wave-tactical-contribution {
+.radar-section-body .wave-tactical-contribution,
+.radar-section-body .wave-report-comparison {
     padding: 10px;
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 8px;

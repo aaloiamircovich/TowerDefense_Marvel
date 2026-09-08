@@ -18,6 +18,7 @@ export class WaveReportPanel {
     clear() {
         const container = document.getElementById('wave-report');
         this.ui.lastWaveReport = null;
+        this.ui.waveReportComparisonBase = null;
         if (!container) return;
         container.classList.add('hidden');
         container.innerHTML = '';
@@ -28,13 +29,19 @@ export class WaveReportPanel {
         const container = document.getElementById('wave-report');
         if (!container) return null;
 
-        const state = this.buildState(report);
+        const isSameReport = this.ui.lastWaveReport === report;
+        const previousReport = isSameReport ? this.ui.waveReportComparisonBase : this.ui.previousWaveReport;
+        const state = this.buildState(report, previousReport);
         const action = this.buildAction(
             state,
             this.ui.game.heroes || [],
             this.ui.game.resourceManager?.credits || 0,
             (level, amount) => this.ui.calculateLevelCost(level, amount)
         );
+        if (!isSameReport) {
+            this.ui.waveReportComparisonBase = previousReport || null;
+            this.ui.previousWaveReport = report;
+        }
         this.ui.lastWaveReport = report;
 
         container.className = `wave-report report-${state.tone}`;
@@ -113,6 +120,7 @@ export class WaveReportPanel {
     renderDetailDrawer(state) {
         const sections = [
             this.renderRewardBreakdown(state),
+            this.renderComparison(state.comparison),
             this.renderTacticalContribution(state.tacticalContribution),
             this.renderLesson(state.lesson),
             this.renderLeakIntel(state.leakIntel)
@@ -121,7 +129,9 @@ export class WaveReportPanel {
         const shouldOpen = Number(state.leaks || 0) >= 3;
         const label = state.leaks > 0
             ? 'Ver base y recompensas'
-            : state.tacticalContribution?.active
+            : state.comparison?.active
+                ? 'Ver progreso'
+                : state.tacticalContribution?.active
                 ? 'Ver aporte tactico'
                 : 'Ver desglose';
         return `<details class="wave-report-details"${shouldOpen ? ' open' : ''}>
@@ -161,6 +171,19 @@ export class WaveReportPanel {
                 <b>${escapeHtml(row.value)}</b>
                 <small>${escapeHtml(row.label)}</small>
             </span>`).join('')}
+        </div>`;
+    }
+
+    renderComparison(comparison) {
+        if (!comparison?.active || !comparison.metrics?.length) return '';
+        return `<div class="wave-report-comparison comparison-${escapeHtml(comparison.tone)}" aria-label="${escapeHtml(comparison.label)}">
+            <strong><i class="fas fa-chart-simple"></i> ${escapeHtml(comparison.label)}</strong>
+            <div>
+                ${comparison.metrics.map((metric) => `<span class="trend-${escapeHtml(metric.tone)}">
+                    <small>${escapeHtml(metric.label)}</small>
+                    <b>${escapeHtml(metric.value)}</b>
+                </span>`).join('')}
+            </div>
         </div>`;
     }
 

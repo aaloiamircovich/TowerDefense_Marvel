@@ -166,7 +166,31 @@ export function buildWaveReportGrade(report = {}) {
     return { score, medal, tone, label, detail };
 }
 
-export function buildWaveReportState(report = {}) {
+export function buildWaveReportComparison(report = {}, previousReport = null) {
+    if (!previousReport) return { active: false, label: '', tone: 'same', metrics: [] };
+    const currentWave = Math.max(1, Number(report.wave || 1));
+    const previousWave = Math.max(1, Number(previousReport.wave || 1));
+    if (currentWave === previousWave) return { active: false, label: '', tone: 'same', metrics: [] };
+
+    const metrics = [
+        compareWaveMetric('kills', 'Bajas', report.kills, previousReport.kills, { suffix: ' KO', higherIsBetter: true }),
+        compareWaveMetric('damage', 'Dano', report.damage, previousReport.damage, { higherIsBetter: true }),
+        compareWaveMetric('credits', 'Creditos', report.credits, previousReport.credits, { currency: true, higherIsBetter: true }),
+        compareWaveMetric('leaks', 'Base', report.leaks, previousReport.leaks, { suffix: ' vida', higherIsBetter: false })
+    ];
+    const ups = metrics.filter((metric) => metric.tone === 'up').length;
+    const downs = metrics.filter((metric) => metric.tone === 'down').length;
+    const tone = ups > downs ? 'up' : downs > ups ? 'down' : 'same';
+
+    return {
+        active: true,
+        label: `vs oleada ${previousWave}`,
+        tone,
+        metrics
+    };
+}
+
+export function buildWaveReportState(report = {}, previousReport = null) {
     const leaks = Math.max(0, Number(report.leaks || 0));
     const kills = Math.max(0, Number(report.kills || 0));
     const damage = Math.max(0, Number(report.damage || 0));
@@ -219,8 +243,27 @@ export function buildWaveReportState(report = {}) {
         lesson: buildWaveReportLesson(report),
         grade: buildWaveReportGrade(report),
         leakIntel: buildLeakIntel(report.leakEvents || [], leaks),
-        tacticalContribution: buildTacticalContributionModel(report.tactical || {})
+        tacticalContribution: buildTacticalContributionModel(report.tactical || {}),
+        comparison: buildWaveReportComparison(report, previousReport || report.previousReport || null)
     };
+}
+
+function compareWaveMetric(id, label, currentValue = 0, previousValue = 0, options = {}) {
+    const current = Math.round(Math.max(0, Number(currentValue || 0)));
+    const previous = Math.round(Math.max(0, Number(previousValue || 0)));
+    const delta = current - previous;
+    const improved = options.higherIsBetter ? delta > 0 : delta < 0;
+    const worsened = options.higherIsBetter ? delta < 0 : delta > 0;
+    const tone = delta === 0 ? 'same' : improved ? 'up' : worsened ? 'down' : 'same';
+    const sign = delta > 0 ? '+' : delta < 0 ? '-' : '';
+    const absDelta = Math.abs(delta);
+    const value = delta === 0
+        ? 'Igual'
+        : options.currency
+            ? `${sign}$${absDelta}`
+            : `${sign}${absDelta}${options.suffix || ''}`;
+
+    return { id, label, value, tone };
 }
 
 export function buildWaveReportActionState(report = {}, heroes = [], credits = 0, levelCost = (level) => level * 120) {

@@ -32,7 +32,17 @@ test('WaveReportPanel renderiza informe y delega mejora recomendada', () => {
         lastWaveReport: null
     };
     const panel = new WaveReportPanel(ui, {
-        buildState: () => buildReportState(),
+        buildState: (_report, previousReport) => ({
+            ...buildReportState(),
+            comparison: previousReport
+                ? {
+                    active: true,
+                    label: `vs oleada ${previousReport.wave}`,
+                    tone: 'up',
+                    metrics: [{ id: 'kills', label: 'Bajas', value: '+4 KO', tone: 'up' }]
+                }
+                : { active: false, label: '', tone: 'same', metrics: [] }
+        }),
         buildAction: () => ({
             type: 'upgrade',
             heroId: 'iron_man',
@@ -79,6 +89,60 @@ test('WaveReportPanel renderiza informe y delega mejora recomendada', () => {
         panel.clear();
         assert.equal(container.innerHTML, '');
         assert.equal(ui.lastWaveReport, null);
+        assert.equal(ui.previousWaveReport.wave, 3);
+    } finally {
+        globalThis.document = previousDocument;
+    }
+});
+
+test('WaveReportPanel conserva base de comparacion entre oleadas', () => {
+    const previousDocument = globalThis.document;
+    const container = createElementStub();
+    globalThis.document = {
+        getElementById(id) {
+            if (id === 'wave-report') return container;
+            return null;
+        }
+    };
+
+    const seenPrevious = [];
+    const ui = {
+        game: { heroes: [], resourceManager: { credits: 0 } },
+        calculateLevelCost: () => 120,
+        renderOnboardingCoach() {},
+        lastWaveReport: null
+    };
+    const panel = new WaveReportPanel(ui, {
+        buildState: (report, previousReport) => {
+            seenPrevious.push(previousReport?.wave || 0);
+            return {
+                ...buildReportState(),
+                wave: report.wave,
+                comparison: previousReport
+                    ? {
+                        active: true,
+                        label: `vs oleada ${previousReport.wave}`,
+                        tone: 'up',
+                        metrics: [{ id: 'kills', label: 'Bajas', value: '+2 KO', tone: 'up' }]
+                    }
+                    : { active: false, label: '', tone: 'same', metrics: [] }
+            };
+        },
+        buildAction: () => null
+    });
+
+    try {
+        const first = { wave: 4 };
+        const second = { wave: 5 };
+        panel.render(first);
+        panel.clear();
+        panel.render(second);
+        panel.render(second);
+
+        assert.deepEqual(seenPrevious, [0, 4, 4]);
+        assert.match(container.innerHTML, /wave-report-comparison/);
+        assert.match(container.innerHTML, /vs oleada 4/);
+        assert.match(container.innerHTML, /Ver progreso/);
     } finally {
         globalThis.document = previousDocument;
     }
@@ -206,6 +270,7 @@ function buildReportState() {
         grade: { tone: 'strong', detail: 'Buen control', medal: 'A', score: 90, label: 'Control superior' },
         lesson: { tone: 'economy', label: 'Economia estable', detail: 'Ahorra' },
         leakIntel: { label: 'Base intacta', items: [], overflow: 0 },
-        tacticalContribution: { active: false, score: 0, metrics: [], heroes: [] }
+        tacticalContribution: { active: false, score: 0, metrics: [], heroes: [] },
+        comparison: { active: false, label: '', tone: 'same', metrics: [] }
     };
 }
