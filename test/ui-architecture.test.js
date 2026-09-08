@@ -203,6 +203,14 @@ test('calculo de dano esperado de oleada vive fuera de WaveManager', () => {
     assert.doesNotMatch(source, /const contributors = heroes\.map/);
 });
 
+test('tarjeta de dano de oleada mantiene selectores compactos', () => {
+    const css = read('styles.css');
+
+    assert.match(css, /\.wave-damage-check > div > span/);
+    assert.doesNotMatch(css, /\.wave-damage-check span\s*\{/);
+    assert.match(css, /\.wave-damage-meter\s*\{[\s\S]*grid-column: 1 \/ -1/);
+});
+
 test('lectura de objetos de tienda vive fuera de UIManager', () => {
     const source = read('src/systems/UIManager.js');
     const shopItemState = read('src/ui/ShopItemState.js');
