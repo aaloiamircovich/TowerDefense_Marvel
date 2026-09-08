@@ -241,13 +241,14 @@ export function buildStatusLegendModel(summary = null) {
 export function buildStealthCoverageState(summary = null, activeTeam = [], deployedHeroes = [], credits = 0) {
     if (!waveNeedsDetection(summary)) return null;
 
+    const threatLabel = getDetectionThreatLabel(summary);
     const deployed = (deployedHeroes || []).filter(Boolean);
     const deployedDetectors = deployed.filter(heroDetectsStealth);
     if (deployedDetectors.length) {
         const names = deployedDetectors.slice(0, 2).map(getHeroName).join(' + ');
         return {
             tone: 'ready',
-            label: 'Sigilo cubierto',
+            label: `${threatLabel} cubierto`,
             detail: `Detectores listos: ${names}.`,
             detectorCount: deployedDetectors.length
         };
@@ -262,7 +263,7 @@ export function buildStealthCoverageState(summary = null, activeTeam = [], deplo
         const detector = benchDetectors[0];
         return {
             tone: 'warning',
-            label: 'Sigilo sin desplegar',
+            label: `${threatLabel} sin desplegar`,
             detail: `Coloca ${getHeroName(detector)} antes de iniciar.`,
             detectorCount: 0,
             heroId: detector.id || detector.config?.id || ''
@@ -271,8 +272,8 @@ export function buildStealthCoverageState(summary = null, activeTeam = [], deplo
 
     return {
         tone: 'danger',
-        label: 'Sigilo descubierto',
-        detail: 'No hay detector disponible; prioriza control y base.',
+        label: `${threatLabel} descubierto`,
+        detail: `No hay detector disponible; ${threatLabel.toLowerCase()} puede cruzar.`,
         detectorCount: 0
     };
 }
@@ -396,6 +397,15 @@ export function buildWavePreparationPlan(summary = null, activeTeam = [], deploy
 function waveNeedsDetection(summary = null) {
     const roles = new Set(summary?.roles || []);
     return Number(summary?.stealthCount || 0) > 0 || roles.has('stealth') || roles.has('phaser');
+}
+
+function getDetectionThreatLabel(summary = null) {
+    const roles = new Set(summary?.roles || []);
+    const hasStealth = Number(summary?.stealthCount || 0) > 0 || roles.has('stealth');
+    const hasPhaser = roles.has('phaser');
+    if (hasStealth && hasPhaser) return 'Sigilo/fase';
+    if (hasPhaser) return 'Fase';
+    return 'Sigilo';
 }
 
 export function buildWaveDamageCheckMeter(check = {}) {

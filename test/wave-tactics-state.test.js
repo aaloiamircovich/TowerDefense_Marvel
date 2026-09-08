@@ -4,6 +4,7 @@ import {
     buildBossMilestoneState,
     buildCounterCoverageModel,
     buildRosterWaveFitView,
+    buildStealthCoverageState,
     buildWaveDamageCheckMeter,
     buildWavePreparationPlan,
     buildWavePrepActionControl
@@ -143,6 +144,25 @@ test('WaveTacticsState recomienda deteccion contra faseadores aunque no haya con
     assert.equal(plan[0].type, 'deploy');
     assert.equal(plan[0].heroId, 'daredevil');
     assert.match(plan[0].reason, /fase/);
+});
+
+test('WaveTacticsState nombra faseadores en cobertura de deteccion', () => {
+    const coverage = buildStealthCoverageState(
+        { stealthCount: 0, roles: ['phaser'] },
+        [{ id: 'daredevil', name: 'Daredevil', teamMetrics: { detection: 4 } }],
+        [],
+        0
+    );
+    const mixed = buildStealthCoverageState(
+        { stealthCount: 2, roles: ['stealth', 'phaser'] },
+        [],
+        [{ id: 'spiderman', name: 'Spider-Man', canSeeStealth: true }],
+        0
+    );
+
+    assert.equal(coverage.label, 'Fase sin desplegar');
+    assert.match(coverage.detail, /Daredevil/);
+    assert.equal(mixed.label, 'Sigilo/fase cubierto');
 });
 
 test('WaveTacticsState arma medidor controles clickeables y vista de ajuste', () => {
