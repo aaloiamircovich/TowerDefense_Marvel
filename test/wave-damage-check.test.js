@@ -37,6 +37,7 @@ test('buildWaveDamageCheck trata phaser como amenaza invisible sin detector', ()
     assert.equal(blocked.contributors.length, 0);
     assert.equal(blocked.supports.length, 0);
     assert.deepEqual(blocked.warnings.map((entry) => entry.id), ['detection']);
+    assert.equal(blocked.warnings[0].detail, 'DPS reducido contra fase.');
     assert.match(blocked.detail, /DPS sin deteccion reducido/);
     assert.ok(covered.expectedDamage > 0);
     assert.equal(covered.warnings.length, 0);
@@ -67,4 +68,22 @@ test('buildWaveDamageCheck reconoce detectores por metrica tactica', () => {
     assert.ok(check.expectedDamage > 0);
     assert.equal(check.warnings.length, 0);
     assert.deepEqual(check.contributors.map((entry) => entry.name), ['Daredevil']);
+});
+
+test('buildWaveDamageCheck distingue amenazas mixtas de deteccion', () => {
+    const check = buildWaveDamageCheck({
+        heroes: [{ id: 'hulk', name: 'Hulk', damage: 100, fireRate: 1, range: 170 }],
+        waveSeconds: 20,
+        waveModel: {
+            total: 5,
+            stealthCount: 2,
+            roles: ['stealth', 'phaser'],
+            effectiveHp: 1500,
+            totalHp: 1500
+        }
+    });
+
+    assert.ok(check.expectedDamage > 0);
+    assert.ok(check.expectedDamage < 2000);
+    assert.equal(check.warnings[0].detail, 'DPS reducido contra sigilo/fase.');
 });

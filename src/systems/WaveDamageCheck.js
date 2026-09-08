@@ -54,12 +54,13 @@ export function buildWaveDamageCheck({ heroes = [], waveModel = {}, waveSeconds 
     const ratio = requiredDamage > 0 ? expectedDamage / requiredDamage : 0;
     const pct = Math.round(ratio * 100);
     const { tone, label } = getDamageTone(ratio);
+    const detectionThreatLabel = getDetectionThreatLabel(waveModel);
     const warnings = needsDetection && !hasDetector
         ? [{
             id: 'detection',
             icon: 'fa-eye-slash',
             label: 'Sin deteccion',
-            detail: 'DPS reducido contra sigilo y fase.'
+            detail: `DPS reducido contra ${detectionThreatLabel}.`
         }]
         : [];
     const detectionDetail = warnings.length ? ' · DPS sin deteccion reducido' : '';
@@ -112,6 +113,15 @@ function heroCanDetect(hero = {}) {
     return Boolean(hero.canSeeStealth || stats.canSeeStealth || config.canSeeStealth || aura?.detectStealth)
         || detectionScore >= 4
         || /sigilo|deteccion|rastreo|edith|revela/.test(text);
+}
+
+function getDetectionThreatLabel(waveModel = {}) {
+    const roles = new Set(waveModel.roles || []);
+    const hasStealth = Number(waveModel.stealthCount || 0) > 0 || roles.has('stealth');
+    const hasPhaser = roles.has('phaser');
+    if (hasStealth && hasPhaser) return 'sigilo/fase';
+    if (hasPhaser) return 'fase';
+    return 'sigilo';
 }
 
 function getDamageTone(ratio) {
