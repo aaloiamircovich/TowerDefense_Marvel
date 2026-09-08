@@ -66,6 +66,35 @@ test('UIManager delega mejoras de heroe en controlador dedicado', () => {
     assert.doesNotMatch(source, /from ['"]\.\.\/utils\/HeroLevel\.js['"]/);
 });
 
+test('UIManager delega render de sprites y tema de rendimiento', () => {
+    const source = read('src/systems/UIManager.js');
+    const spriteRenderer = read('src/ui/SpriteRenderer.js');
+    const performanceTheme = read('src/ui/PerformanceThemeController.js');
+
+    assert.match(source, /from ['"]\.\.\/ui\/SpriteRenderer\.js['"]/);
+    assert.match(source, /return renderSpriteMarkup\(src, name\)/);
+    assert.match(spriteRenderer, /export function renderSpriteMarkup\b/);
+    assert.doesNotMatch(source, /const ASSET_VERSION =/);
+    assert.doesNotMatch(source, /function versionAssetSource\b/);
+
+    assert.match(source, /from ['"]\.\.\/ui\/PerformanceThemeController\.js['"]/);
+    assert.match(source, /new PerformanceThemeController\(this\)/);
+    assert.match(performanceTheme, /export class PerformanceThemeController\b/);
+    assert.doesNotMatch(source, /Frame promedio/);
+});
+
+test('textos de unidades viven fuera de UIManager', () => {
+    const source = read('src/systems/UIManager.js');
+    const unitInfoText = read('src/ui/UnitInfoText.js');
+
+    assert.match(source, /from ['"]\.\.\/ui\/UnitInfoText\.js['"]/);
+    assert.match(source, /return getTerrainText\(terrains\)/);
+    assert.match(source, /return getEnemyRoleText\(archetype, isBoss\)/);
+    assert.match(source, /return getResistanceText\(unit\)/);
+    assert.match(unitInfoText, /export function getResistanceText\b/);
+    assert.doesNotMatch(source, /Detección requerida/);
+});
+
 test('UIManager delega apertura y navegacion de paneles en controlador modal', () => {
     const source = read('src/systems/UIManager.js');
     const controller = read('src/ui/PanelDialogController.js');
@@ -126,6 +155,16 @@ test('tactica de oleadas vive fuera de UIManager', () => {
     assert.match(waveTactics, /export function buildRosterWaveFitView\b/);
     assert.doesNotMatch(source, /const COUNTER_COPY =/);
     assert.doesNotMatch(source, /function getRequiredCounterIds\b/);
+});
+
+test('tarjeta compacta de enemigo de oleada vive fuera de WavePreviewPanel', () => {
+    const panel = read('src/ui/WavePreviewPanel.js');
+    const state = read('src/ui/WaveEnemyCardState.js');
+
+    assert.match(panel, /from ['"]\.\/WaveEnemyCardState\.js['"]/);
+    assert.match(panel, /buildWaveEnemyCardModel\(enemy, intel, traitPreview\)/);
+    assert.match(state, /export function buildWaveEnemyCardModel\b/);
+    assert.doesNotMatch(panel, /ENEMY_CATEGORY_COLORS/);
 });
 
 test('estado de reporte de oleada vive fuera de UIManager', () => {
