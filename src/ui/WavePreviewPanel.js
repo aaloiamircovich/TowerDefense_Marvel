@@ -1,4 +1,5 @@
 import { formatHeroDetailMetric } from './HeroDetailViewModel.js';
+import { buildWaveEnemyCardModel } from './WaveEnemyCardState.js';
 
 function escapeHtml(value = '') {
     return String(value)
@@ -181,36 +182,31 @@ export class WavePreviewPanel {
         document.getElementById('enemy-info-content')?.classList.add('hidden');
         container.innerHTML = '';
 
-        const categoryColors = {
-            Tecnológico: '#40c9ff', Místico: '#b865ff', Urbano: '#e63946',
-            Cósmico: '#ff8bd1', Mutante: '#c7f464'
-        };
-
         uniqueEnemies.forEach((enemy) => {
             const intel = this.buildEnemyIntel(enemy);
-            const card = document.createElement('button');
-            card.className = `wave-enemy-card ${intel.danger}`;
-            card.dataset.testid = 'wave-enemy-card';
-            card.style.setProperty('--enemy-color', categoryColors[enemy.category] || '#fca311');
-            card.dataset.tooltip = intel.counterDetail;
-            card.title = `${intel.name} | ${intel.roleLabel} | ${intel.counter} | Amenaza ${intel.threat}/5`;
-            card.setAttribute('aria-label', `${intel.name}. ${intel.roleLabel}. Respuesta: ${intel.counter}. Amenaza ${intel.threat} de 5.`);
             const traitPreview = this.buildEnemyTraitPreview(intel.traits, 2);
-            const traitsMarkup = [
-                ...traitPreview.visible.map((trait) => `<b>${escapeHtml(trait)}</b>`),
-                traitPreview.overflow > 0 ? `<b class="trait-overflow">+${traitPreview.overflow}</b>` : ''
-            ].filter(Boolean).join('');
-            const portrait = enemy.visual?.portrait || enemy.sprite;
+            const model = buildWaveEnemyCardModel(enemy, intel, traitPreview);
+            const card = document.createElement('button');
+            card.className = `wave-enemy-card ${model.danger}`;
+            card.dataset.testid = 'wave-enemy-card';
+            card.style.setProperty('--enemy-color', model.color);
+            card.dataset.tooltip = model.tooltip;
+            card.title = model.title;
+            card.setAttribute('aria-label', model.ariaLabel);
+            const traitsMarkup = model.traits.map((trait) => {
+                const className = String(trait).startsWith('+') ? ' class="trait-overflow"' : '';
+                return `<b${className}>${escapeHtml(trait)}</b>`;
+            }).join('');
             card.innerHTML = `
-                ${portrait
-                    ? `<span class="enemy-token enemy-token-sprite"><img src="${escapeHtml(portrait)}" alt="" loading="lazy"></span>`
-                    : `<span class="enemy-token">${escapeHtml(intel.initial)}</span>`}
-                <span class="enemy-count">x${enemy.previewCount || 1}</span>
-                <strong>${escapeHtml(intel.name)}</strong>
-                <span class="enemy-role">${escapeHtml(intel.roleLabel)} | ${escapeHtml(intel.pips)}</span>
-                <small class="enemy-traits" title="${escapeHtml(traitPreview.title)}">${traitsMarkup}</small>
-                <em><i class="fas fa-crosshairs"></i>${escapeHtml(intel.counter)}</em>
-                <small>${enemy.affix?.label ? `${enemy.affix.label} · ` : ''}${enemy.stealth ? 'Sigilo · ' : ''}${'◆'.repeat(Math.max(1, enemy.threat || 1))}</small>
+                ${model.portrait
+                    ? `<span class="enemy-token enemy-token-sprite"><img src="${escapeHtml(model.portrait)}" alt="" loading="lazy"></span>`
+                    : `<span class="enemy-token">${escapeHtml(model.initial)}</span>`}
+                <span class="enemy-count">${escapeHtml(model.countLabel)}</span>
+                <strong>${escapeHtml(model.name)}</strong>
+                <span class="enemy-role">${escapeHtml(model.roleLine)}</span>
+                <small class="enemy-traits" title="${escapeHtml(model.traitTitle)}">${traitsMarkup}</small>
+                <em><i class="fas fa-crosshairs"></i>${escapeHtml(model.counter)}</em>
+                <small>${escapeHtml(model.metaLine)}</small>
             `;
             card.addEventListener('click', () => this.ui.inspectUnit(enemy, true));
             container.appendChild(card);
