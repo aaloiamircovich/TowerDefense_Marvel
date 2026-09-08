@@ -571,6 +571,8 @@ test('coleccion muestra alertas compactas de composicion tactica', () => {
 
     assert.ok(alerts.some((alert) => alert.id === 'slots'));
     assert.ok(alerts.some((alert) => alert.id === 'antiarmor'));
+    assert.ok(alerts.length <= 4);
+    assert.ok(alerts.some((alert) => alert.id === 'more'));
     assert.ok(alerts.every((alert) => ['danger', 'warning', 'info', 'good'].includes(alert.tone)));
 
     const ui = createUiStub();
