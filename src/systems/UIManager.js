@@ -24,7 +24,7 @@ import { TopHudPanel } from '../ui/TopHudPanel.js';
 import { PlacementSuggestionPanel } from '../ui/PlacementSuggestionPanel.js';
 import { renderSpriteMarkup } from '../ui/SpriteRenderer.js';
 import { PerformanceThemeController } from '../ui/PerformanceThemeController.js';
-import { getAllowedTerrainLabels } from '../utils/TerrainRules.js';
+import { getEnemyRoleText, getResistanceText, getTerrainText } from '../ui/UnitInfoText.js';
 import { pickHeroDisplaySprite } from '../utils/HeroVisuals.js';
 import { TARGETING_PRIORITIES, buildTargetingControlState, getNextTargetingPriority } from '../utils/TargetingPriority.js';
 import { buildBossCountdownState, buildWaveLaunchState, formatHudResource } from '../ui/HudState.js';
@@ -95,6 +95,7 @@ export {
 export { buildShopItemInsight, buildShopSetProgress } from '../ui/ShopItemState.js';
 export { ASSET_VERSION, renderSpriteMarkup, versionAssetSource } from '../ui/SpriteRenderer.js';
 export { buildLevelThemeState, buildPerformanceTitle, PerformanceThemeController, shouldShowFps } from '../ui/PerformanceThemeController.js';
+export { getEnemyRoleText, getResistanceText, getTerrainText } from '../ui/UnitInfoText.js';
 
 export class UIManager {
     constructor(gameInstance) {
@@ -745,20 +746,15 @@ export class UIManager {
     }
 
     getTerrainText(terrains) {
-        return getAllowedTerrainLabels(terrains);
+        return getTerrainText(terrains);
     }
 
     getEnemyRole(archetype, isBoss = false) {
-        return getEnemyRoleLabel(archetype, isBoss);
+        return getEnemyRoleText(archetype, isBoss);
     }
 
     getResistanceText(unit) {
-        const labels = Object.entries(unit.resistances || {})
-            .filter(([, value]) => value > 0)
-            .map(([type, value]) => `${type} ${Math.round(value * 100)}%`);
-        if (unit.statusResistance > 0) labels.push(`Estados ${Math.round(unit.statusResistance * 100)}%`);
-        if (unit.stealth) labels.push('Detección requerida');
-        return labels.join(', ') || 'Ninguna';
+        return getResistanceText(unit);
     }
 
     renderSprite(src, name = '') {
