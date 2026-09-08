@@ -1,4 +1,9 @@
-import { getLevelUnlockRequirement, isLevelUnlockedByStars } from '../utils/LevelProgression.js';
+import {
+    buildMissionSummaryModel,
+    buildOutcomeCoachModel,
+    buildProgressCarryoverModel,
+    formatEndStateNumber
+} from './EndStateState.js';
 
 function escapeHtml(value = '') {
     return String(value)
@@ -7,10 +12,6 @@ function escapeHtml(value = '') {
         .replaceAll('>', '&gt;')
         .replaceAll('"', '&quot;')
         .replaceAll("'", '&#039;');
-}
-
-function formatNumber(value = 0) {
-    return Math.round(Number(value) || 0).toLocaleString('es-AR');
 }
 
 export class EndStatePanel {
@@ -27,8 +28,8 @@ export class EndStatePanel {
         const levelName = this.ui.game.currentLevel?.name || 'Mapa actual';
         const title = modeSnapshot ? `${modeSnapshot.name}: finalizada` : 'Base destruida';
         const subtitle = modeSnapshot
-            ? `${formatNumber(modeSnapshot.score)} puntos | oleada ${formatNumber(wave)}`
-            : `Llegaste hasta la oleada ${formatNumber(wave)}. Ajusta el equipo y vuelve a intentarlo.`;
+            ? `${formatEndStateNumber(modeSnapshot.score)} puntos | oleada ${formatEndStateNumber(wave)}`
+            : `Llegaste hasta la oleada ${formatEndStateNumber(wave)}. Ajusta el equipo y vuelve a intentarlo.`;
 
         this.ui.panelContent.innerHTML = `
             <section class="end-state end-state-defeat">
@@ -42,9 +43,9 @@ export class EndStatePanel {
                 </div>
                 ${this.renderRunReadout([
                     { label: 'Mapa', value: levelName, icon: 'fa-map' },
-                    { label: 'Oleada', value: formatNumber(wave), icon: 'fa-signal' },
-                    { label: modeSnapshot ? 'Puntos' : 'Estrellas', value: formatNumber(modeSnapshot?.score ?? this.ui.game.stars), icon: modeSnapshot ? 'fa-chart-line' : 'fa-star' },
-                    { label: 'Vidas', value: formatNumber(lives), icon: 'fa-heart' }
+                    { label: 'Oleada', value: formatEndStateNumber(wave), icon: 'fa-signal' },
+                    { label: modeSnapshot ? 'Puntos' : 'Estrellas', value: formatEndStateNumber(modeSnapshot?.score ?? this.ui.game.stars), icon: modeSnapshot ? 'fa-chart-line' : 'fa-star' },
+                    { label: 'Vidas', value: formatEndStateNumber(lives), icon: 'fa-heart' }
                 ])}
                 ${this.renderPersistenceRules('defeat', modeSnapshot)}
                 ${modeSnapshot ? '' : this.renderProgressCarryover('defeat')}
@@ -84,13 +85,13 @@ export class EndStatePanel {
                     <div class="end-state-copy">
                         <span class="briefing-kicker">OPERACION COMPLETADA</span>
                         <h2>Victoria</h2>
-                        <p>Completaste el mapa con ${formatNumber(this.ui.game.stars)} estrellas.</p>
+                        <p>Completaste el mapa con ${formatEndStateNumber(this.ui.game.stars)} estrellas.</p>
                     </div>
                 </div>
                 ${this.renderRunReadout([
                     { label: 'Mapa', value: levelName, icon: 'fa-map' },
-                    { label: 'Estrellas', value: formatNumber(this.ui.game.stars), icon: 'fa-star' },
-                    { label: 'Vidas', value: formatNumber(summary?.lives ?? this.ui.game.resourceManager?.lives ?? 0), icon: 'fa-heart' },
+                    { label: 'Estrellas', value: formatEndStateNumber(this.ui.game.stars), icon: 'fa-star' },
+                    { label: 'Vidas', value: formatEndStateNumber(summary?.lives ?? this.ui.game.resourceManager?.lives ?? 0), icon: 'fa-heart' },
                     { label: 'Mejor unidad', value: summary?.bestHero || 'Equipo', icon: 'fa-shield-halved' }
                 ])}
                 ${this.renderPersistenceRules('victory')}
@@ -155,24 +156,17 @@ export class EndStatePanel {
     }
 
     renderProgressCarryover(type = 'defeat') {
-        const stars = this.getTotalStars();
-        const credits = this.getCredits();
-        const nextMap = this.getNextMapStatus(stars);
-        const actionHint = type === 'victory'
-            ? nextMap.complete
-                ? 'Puedes repetir mapas, buscar estrellas o ajustar el equipo.'
-                : 'Puedes seguir con el siguiente mapa.'
-            : 'Solo vuelve a oleada 1; progreso y equipo quedan guardados.';
-        const rows = [
-            { icon: 'fa-star', label: 'Estrellas guardadas', value: formatNumber(stars), hint: nextMap.detail },
-            { icon: 'fa-coins', label: 'Creditos disponibles', value: credits, hint: 'Se conservan entre intentos.' },
-            { icon: 'fa-user-shield', label: 'Equipo', value: 'Niveles y objetos guardados', hint: actionHint }
-        ];
+        const model = buildProgressCarryoverModel({
+            type,
+            levels: this.ui.game.levelsData || [],
+            totalStars: this.getTotalStars(),
+            credits: this.getCredits()
+        });
         return `
             <div class="end-state-carryover">
-                <strong>${escapeHtml(nextMap.title)}</strong>
+                <strong>${escapeHtml(model.title)}</strong>
                 <div>
-                    ${rows.map((row) => `
+                    ${model.rows.map((row) => `
                         <span>
                             <i class="fas ${row.icon}"></i>
                             <small>${escapeHtml(row.label)}</small>
@@ -195,46 +189,22 @@ export class EndStatePanel {
         const credits = Number.isFinite(progressionCredits)
             ? progressionCredits
             : this.ui.game.resourceManager?.credits;
-        return credits === Number.POSITIVE_INFINITY ? '∞' : `$${formatNumber(credits)}`;
-    }
-
-    getNextMapStatus(totalStars = 0) {
-        const levels = this.ui.game.levelsData || [];
-        const nextLockedIndex = levels.findIndex((_level, index) => !isLevelUnlockedByStars(index, totalStars));
-        if (nextLockedIndex < 0) {
-            return {
-                title: 'Progreso conservado',
-                detail: levels.length ? 'Todas las operaciones desbloqueadas.' : 'Campaña lista.',
-                complete: true
-            };
-        }
-        const requirement = getLevelUnlockRequirement(nextLockedIndex);
-        const remaining = Math.max(0, requirement - totalStars);
-        return {
-            title: `Siguiente mapa: ${levels[nextLockedIndex]?.name || 'Operacion clasificada'}`,
-            detail: `${formatNumber(remaining)} estrellas restantes (${formatNumber(totalStars)}/${formatNumber(requirement)}).`,
-            complete: false
-        };
+        return credits === Number.POSITIVE_INFINITY ? Number.POSITIVE_INFINITY : (Number(credits) || 0);
     }
 
     renderMissionSummary(summary) {
-        if (!summary) return '';
-        const totals = summary.totals || {};
-        const rows = [
-            { label: 'Daño', value: formatNumber(totals.damage), icon: 'fa-bolt' },
-            { label: 'Bajas', value: formatNumber(totals.kills), icon: 'fa-skull' },
-            { label: 'Habilidades', value: formatNumber(totals.abilities), icon: 'fa-star' },
-            { label: 'Créditos', value: `$${formatNumber(totals.credits)}`, icon: 'fa-coins' }
-        ];
+        const model = buildMissionSummaryModel(summary);
+        if (!model) return '';
 
         return `
             <div class="mission-summary mission-summary-upgraded">
                 <div class="mission-summary-title">
-                    <strong>Informe de mision</strong>
-                    <small>Destacado: ${escapeHtml(summary.bestHero || 'Equipo')} | ${formatNumber(summary.lives)} vidas restantes</small>
+                    <strong>${escapeHtml(model.title)}</strong>
+                    <small>${escapeHtml(model.subtitle)}</small>
+                    ${model.tacticalDetail ? `<em>${escapeHtml(model.tacticalDetail)}</em>` : ''}
                 </div>
                 <div class="mission-summary-grid">
-                    ${rows.map((row) => `
+                    ${model.rows.map((row) => `
                         <span class="mission-summary-card">
                             <i class="fas ${row.icon}"></i>
                             <small>${row.label}</small>
@@ -247,24 +217,12 @@ export class EndStatePanel {
     }
 
     renderOutcomeCoach(type, context = {}) {
-        const isVictory = type === 'victory';
-        const summary = context.summary;
-        const cards = isVictory
-            ? [
-                { icon: 'fa-star', label: 'Objetivo', value: 'Buscar mas estrellas' },
-                { icon: 'fa-list-check', label: 'Desafios', value: 'Completar misiones pendientes' },
-                { icon: 'fa-box-open', label: 'Progreso', value: 'Invertir creditos en arsenal' }
-            ]
-            : [
-                { icon: 'fa-signal', label: 'Corte', value: `Oleada ${formatNumber(context.wave || 1)}` },
-                { icon: 'fa-arrow-up-right-dots', label: 'Prioridad', value: summary?.bestHero ? `Mejorar ${summary.bestHero}` : 'Reforzar el equipo' },
-                { icon: 'fa-satellite-dish', label: 'Lectura', value: context.modeSnapshot ? 'Revisar modo especial' : 'Abrir radar antes de salir' }
-            ];
+        const model = buildOutcomeCoachModel(type, context);
         return `
-            <div class="end-state-coach ${isVictory ? 'victory' : 'defeat'}">
-                <strong>${isVictory ? 'Siguiente objetivo' : 'Plan de recuperacion'}</strong>
+            <div class="end-state-coach ${model.tone}">
+                <strong>${escapeHtml(model.title)}</strong>
                 <div>
-                    ${cards.map((card) => `
+                    ${model.cards.map((card) => `
                         <span>
                             <i class="fas ${card.icon}"></i>
                             <small>${escapeHtml(card.label)}</small>

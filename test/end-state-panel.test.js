@@ -1,6 +1,34 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { EndStatePanel } from '../src/ui/EndStatePanel.js';
+import { buildMissionSummaryModel, buildProgressCarryoverModel } from '../src/ui/EndStateState.js';
+
+test('EndStateState compacta progreso conservado y resumen tactico', () => {
+    const carryover = buildProgressCarryoverModel({
+        type: 'defeat',
+        levels: [
+            { id: 'level_1', name: 'Base de los Vengadores' },
+            { id: 'level_2', name: 'Reino de Wakanda' }
+        ],
+        totalStars: 17,
+        credits: 1850
+    });
+    const mission = buildMissionSummaryModel({
+        totals: { damage: 12345, kills: 67, abilities: 8, credits: 910 },
+        tactical: { score: 320, mvp: 'Black Widow', controlSeconds: 12, armorBreaks: 4 },
+        bestHero: 'Black Widow',
+        lives: 18
+    });
+
+    assert.equal(carryover.title, 'Siguiente mapa: Reino de Wakanda');
+    assert.equal(carryover.rows[1].value, '$1.850');
+    assert.match(carryover.rows[2].hint, /Solo vuelve a oleada 1/);
+    assert.equal(mission.rows[2].label, 'Táctico');
+    assert.equal(mission.rows[2].value, '320');
+    assert.match(mission.tacticalDetail, /MVP táctico: Black Widow/);
+    assert.match(mission.tacticalDetail, /Control 12s/);
+    assert.match(mission.tacticalDetail, /Rupturas 4/);
+});
 
 test('EndStatePanel renderiza derrota y reintenta sin resetear progreso externo', () => {
     const previousDocument = globalThis.document;
@@ -29,6 +57,8 @@ test('EndStatePanel renderiza derrota y reintenta sin resetear progreso externo'
         assert.match(ui.panelContent.innerHTML, /Informe de mision/);
         assert.match(ui.panelContent.innerHTML, /mission-summary-grid/);
         assert.match(ui.panelContent.innerHTML, /Black Widow/);
+        assert.match(ui.panelContent.innerHTML, /Táctico/);
+        assert.match(ui.panelContent.innerHTML, /MVP táctico: Black Widow/);
         assert.match(ui.panelContent.innerHTML, /Todas las operaciones desbloqueadas/);
         assert.match(ui.panelContent.innerHTML, /Creditos disponibles/);
         assert.match(ui.panelContent.innerHTML, /Niveles y objetos guardados/);
@@ -126,6 +156,7 @@ function createUiStub(calls) {
                 state: {
                     lastMissionSummary: {
                         totals: { damage: 12345, kills: 67, abilities: 8, credits: 910 },
+                        tactical: { score: 320, mvp: 'Black Widow', controlSeconds: 12, armorBreaks: 4 },
                         bestHero: 'Black Widow',
                         lives: 18
                     },

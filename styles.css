@@ -9382,6 +9382,14 @@ body.reduce-motion :is(.collection-card, .starter-card, .hero-portrait):is(.rari
     grid-column: auto;
 }
 
+.mission-summary-title em {
+    color: color-mix(in srgb, var(--level-accent), white 14%);
+    font-size: 11px;
+    font-style: normal;
+    font-weight: 800;
+    line-height: 1.25;
+}
+
 .mission-summary-grid {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
