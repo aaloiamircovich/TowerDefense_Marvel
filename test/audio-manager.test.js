@@ -46,6 +46,38 @@ test('AudioManager avanza a la siguiente cancion al terminar si loop esta apagad
     assert.equal(audio.musicTrackId, secondPlayable.id);
 });
 
+test('AudioManager carga pistas con preload liviano', () => {
+    const previousAudio = globalThis.Audio;
+    const created = [];
+    globalThis.Audio = class FakeAudio {
+        constructor() {
+            this.src = '';
+            this.currentTime = 0;
+            this.loop = false;
+            created.push(this);
+        }
+
+        addEventListener() {}
+
+        play() {
+            return { catch: () => {} };
+        }
+
+        pause() {}
+    };
+
+    try {
+        const audio = new AudioManager();
+        audio.musicTrackId = MUSIC_TRACKS.find((track) => track.src).id;
+
+        assert.equal(audio.startTrackElement(), true);
+        assert.equal(created.length, 1);
+        assert.equal(created[0].preload, 'metadata');
+    } finally {
+        globalThis.Audio = previousAudio;
+    }
+});
+
 test('MUSIC_TRACKS se mantiene sincronizado con los mp3 disponibles', () => {
     const musicDir = path.resolve(process.cwd(), 'assets/audio/music');
     const declaredSources = MUSIC_TRACKS

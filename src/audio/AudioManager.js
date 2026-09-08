@@ -203,7 +203,7 @@ export class AudioManager {
         if (!track.src || typeof Audio === 'undefined') return false;
         if (!this.musicElement) {
             this.musicElement = new Audio();
-            this.musicElement.preload = 'auto';
+            this.musicElement.preload = 'metadata';
             this.musicElement.addEventListener('ended', () => this.handleTrackEnded());
         }
         if (!this.musicElement.src.endsWith(track.src)) {
