@@ -23,6 +23,7 @@ import { ToastPanel } from '../ui/ToastPanel.js';
 import { TopHudPanel } from '../ui/TopHudPanel.js';
 import { PlacementSuggestionPanel } from '../ui/PlacementSuggestionPanel.js';
 import { renderSpriteMarkup } from '../ui/SpriteRenderer.js';
+import { PerformanceThemeController } from '../ui/PerformanceThemeController.js';
 import { getAllowedTerrainLabels } from '../utils/TerrainRules.js';
 import { pickHeroDisplaySprite } from '../utils/HeroVisuals.js';
 import { TARGETING_PRIORITIES, buildTargetingControlState, getNextTargetingPriority } from '../utils/TargetingPriority.js';
@@ -93,6 +94,7 @@ export {
 } from '../ui/CombatThreatState.js';
 export { buildShopItemInsight, buildShopSetProgress } from '../ui/ShopItemState.js';
 export { ASSET_VERSION, renderSpriteMarkup, versionAssetSource } from '../ui/SpriteRenderer.js';
+export { buildLevelThemeState, buildPerformanceTitle, PerformanceThemeController, shouldShowFps } from '../ui/PerformanceThemeController.js';
 
 export class UIManager {
     constructor(gameInstance) {
@@ -162,6 +164,7 @@ export class UIManager {
         });
         this.missionStatusPanel = new MissionStatusPanel();
         this.placementSuggestionPanel = new PlacementSuggestionPanel(this);
+        this.performanceThemeController = new PerformanceThemeController(this);
         this.radarPanel = new RadarPanel(this, {
             buildWaveReportState,
             buildWaveReportActionState
@@ -313,7 +316,7 @@ export class UIManager {
     }
 
     shouldShowFps() {
-        return this.game.progression?.state.settings?.showFps === true;
+        return this.getPerformanceThemeController().shouldShowFps();
     }
 
     updateFpsDisplay(text, { warning = false, title = '' } = {}) {
@@ -389,17 +392,16 @@ export class UIManager {
     }
 
     updatePerformance(snapshot, poolStats = {}) {
-        this.updateFpsDisplay(`${Math.round(snapshot.fps)} FPS`, {
-            warning: snapshot.p95Ms > 16.67,
-            title: `Frame promedio ${snapshot.averageMs.toFixed(2)} ms · p95 ${snapshot.p95Ms.toFixed(2)} ms · pico ${snapshot.peakEntities} entidades · ${poolStats.reused || 0} proyectiles reutilizados`
-        });
+        return this.getPerformanceThemeController().updatePerformance(snapshot, poolStats);
     }
 
     updateLevelTheme(levelConfig) {
-        if (this.levelNameEl) this.levelNameEl.textContent = levelConfig.theme?.label || levelConfig.name || 'Mapa';
-        document.documentElement.style.setProperty('--level-accent', levelConfig.theme?.accent || '#40c9ff');
-        if (this.operationTitleEl) this.operationTitleEl.textContent = levelConfig.theme?.label || levelConfig.name || 'Mapa';
-        this.game.audio?.setTheme(levelConfig.theme?.id || 'new-york');
+        return this.getPerformanceThemeController().updateLevelTheme(levelConfig);
+    }
+
+    getPerformanceThemeController() {
+        if (!this.performanceThemeController) this.performanceThemeController = new PerformanceThemeController(this);
+        return this.performanceThemeController;
     }
 
     updateMissionStatus(snapshot) {
