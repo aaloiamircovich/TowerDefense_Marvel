@@ -22,6 +22,7 @@ import { MissionStatusPanel } from '../ui/MissionStatusPanel.js';
 import { ToastPanel } from '../ui/ToastPanel.js';
 import { TopHudPanel } from '../ui/TopHudPanel.js';
 import { PlacementSuggestionPanel } from '../ui/PlacementSuggestionPanel.js';
+import { renderSpriteMarkup } from '../ui/SpriteRenderer.js';
 import { getAllowedTerrainLabels } from '../utils/TerrainRules.js';
 import { pickHeroDisplaySprite } from '../utils/HeroVisuals.js';
 import { TARGETING_PRIORITIES, buildTargetingControlState, getNextTargetingPriority } from '../utils/TargetingPriority.js';
@@ -91,22 +92,7 @@ export {
     buildSpawnQueueState
 } from '../ui/CombatThreatState.js';
 export { buildShopItemInsight, buildShopSetProgress } from '../ui/ShopItemState.js';
-
-const ASSET_VERSION = 'evolution-enemy-sprites-20260812';
-
-function versionAssetSource(source) {
-    if (!source?.startsWith?.('assets/images/')) return source;
-    return `${source}${source.includes('?') ? '&' : '?'}v=${ASSET_VERSION}`;
-}
-
-function escapeHtml(value = '') {
-    return String(value)
-        .replaceAll('&', '&amp;')
-        .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;')
-        .replaceAll('"', '&quot;')
-        .replaceAll("'", '&#39;');
-}
+export { ASSET_VERSION, renderSpriteMarkup, versionAssetSource } from '../ui/SpriteRenderer.js';
 
 export class UIManager {
     constructor(gameInstance) {
@@ -774,12 +760,7 @@ export class UIManager {
     }
 
     renderSprite(src, name = '') {
-        const label = String(name || 'Sprite');
-        const fallback = label.charAt(0) || '?';
-        const safeLabel = escapeHtml(label);
-        const safeFallback = escapeHtml(fallback);
-        if (!src) return `<span class="sprite-fallback">${safeFallback}</span>`;
-        return `<img src="${escapeHtml(versionAssetSource(src))}" alt="${safeLabel}" data-fallback="${safeFallback}" onerror="this.replaceWith(Object.assign(document.createElement('span'), { className: 'sprite-fallback', textContent: this.dataset.fallback || '?' }))">`;
+        return renderSpriteMarkup(src, name);
     }
 
     getHeroDisplaySprite(hero) {
