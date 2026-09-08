@@ -771,7 +771,8 @@ test('renderWavePreview etiqueta preparacion y rutas tacticas con tooltips', () 
                     contributors: [
                         { name: 'Iron Man', share: 62 },
                         { name: 'Spider-Man', share: 38 }
-                    ]
+                    ],
+                    warnings: [{ id: 'detection', icon: 'fa-eye-slash', label: 'Sin deteccion', detail: 'DPS reducido contra sigilo y fase.' }]
                 }
             },
             spawnTimeline: { entries: [], overflow: 0 },
@@ -789,6 +790,8 @@ test('renderWavePreview etiqueta preparacion y rutas tacticas con tooltips', () 
         assert.match(waveIntel.innerHTML, /75% cubierto/);
         assert.match(waveIntel.innerHTML, /wave-damage-gap deficit/);
         assert.match(waveIntel.innerHTML, /Faltan 600/);
+        assert.match(waveIntel.innerHTML, /wave-damage-alerts/);
+        assert.match(waveIntel.innerHTML, /Sin deteccion/);
         assert.match(waveIntel.innerHTML, /wave-damage-contributors/);
         assert.match(waveIntel.innerHTML, /Iron Man 62%/);
         assert.match(waveIntel.innerHTML, /Spider-Man 38%/);

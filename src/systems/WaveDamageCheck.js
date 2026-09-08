@@ -42,7 +42,15 @@ export function buildWaveDamageCheck({ heroes = [], waveModel = {}, waveSeconds 
     const ratio = requiredDamage > 0 ? expectedDamage / requiredDamage : 0;
     const pct = Math.round(ratio * 100);
     const { tone, label } = getDamageTone(ratio);
-    const detectionDetail = needsDetection && !hasDetector ? ' · DPS sin deteccion reducido' : '';
+    const warnings = needsDetection && !hasDetector
+        ? [{
+            id: 'detection',
+            icon: 'fa-eye-slash',
+            label: 'Sin deteccion',
+            detail: 'DPS reducido contra sigilo y fase.'
+        }]
+        : [];
+    const detectionDetail = warnings.length ? ' · DPS sin deteccion reducido' : '';
     return {
         tone,
         label,
@@ -51,6 +59,7 @@ export function buildWaveDamageCheck({ heroes = [], waveModel = {}, waveSeconds 
         requiredDamage,
         ratio: Number(ratio.toFixed(2)),
         contributors: topContributors,
+        warnings,
         detail: requiredDamage > 0 ? `Cubre ${pct}% del HP estimado${detectionDetail}` : 'Sin HP preparado para comparar'
     };
 }

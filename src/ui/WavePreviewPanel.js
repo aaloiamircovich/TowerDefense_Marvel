@@ -224,11 +224,17 @@ export class WavePreviewPanel {
         const contributorMarkup = contributors.length
             ? `<small class="wave-damage-contributors"><i class="fas fa-users-rays"></i>${contributors.map((entry) => `<span>${escapeHtml(entry)}</span>`).join('')}</small>`
             : '';
-        return `<div class="wave-damage-check ${escapeHtml(check.tone)}" aria-label="${escapeHtml(`${check.label}: ${check.detail}. ${meter.ariaLabel}. DPS ${check.dps}.${contributorCopy}`)}" style="--damage-fill: ${meter.fillPct}%">
+        const warnings = (check.warnings || []).filter(Boolean).slice(0, 3);
+        const warningCopy = warnings.length ? ` Alertas: ${warnings.map((entry) => `${entry.label}: ${entry.detail}`).join(', ')}.` : '';
+        const warningMarkup = warnings.length
+            ? `<small class="wave-damage-alerts">${warnings.map((entry) => `<span title="${escapeHtml(entry.detail)}" data-tooltip="${escapeHtml(entry.detail)}"><i class="fas ${escapeHtml(entry.icon)}"></i>${escapeHtml(entry.label)}</span>`).join('')}</small>`
+            : '';
+        return `<div class="wave-damage-check ${escapeHtml(check.tone)}" aria-label="${escapeHtml(`${check.label}: ${check.detail}. ${meter.ariaLabel}. DPS ${check.dps}.${contributorCopy}${warningCopy}`)}" style="--damage-fill: ${meter.fillPct}%">
             <i class="fas fa-chart-line"></i>
             <div><strong>${escapeHtml(check.label)}</strong><span>${escapeHtml(check.detail)}</span></div>
             <b>${formatCompactMetric(check.expectedDamage)}/${formatCompactMetric(check.requiredDamage)}</b>
             <small class="wave-damage-readout">DPS ${formatCompactMetric(check.dps)} <b class="wave-damage-gap ${escapeHtml(meter.gapTone)}">${escapeHtml(meter.gapLabel)}</b></small>
+            ${warningMarkup}
             ${contributorMarkup}
             <div class="wave-damage-meter" aria-hidden="true"><span></span><em>${escapeHtml(meter.label)}</em></div>
         </div>`;

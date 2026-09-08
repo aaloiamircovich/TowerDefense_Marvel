@@ -32,7 +32,9 @@ test('buildWaveDamageCheck trata phaser como amenaza invisible sin detector', ()
 
     assert.equal(blocked.expectedDamage, 0);
     assert.equal(blocked.contributors.length, 0);
+    assert.deepEqual(blocked.warnings.map((entry) => entry.id), ['detection']);
     assert.match(blocked.detail, /DPS sin deteccion reducido/);
     assert.ok(covered.expectedDamage > 0);
+    assert.equal(covered.warnings.length, 0);
     assert.deepEqual(covered.contributors.map((entry) => entry.name), ['Black Widow']);
 });
