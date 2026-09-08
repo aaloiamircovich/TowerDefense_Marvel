@@ -26,7 +26,7 @@ export function buildWaveEnemyCardModel(enemy = {}, intel = {}, traitPreview = {
         portrait: enemy.visual?.portrait || enemy.sprite || '',
         initial: intel.initial || name.charAt(0) || '?',
         countLabel: `x${enemy.previewCount || 1}`,
-        roleLine: `${roleLabel} | ${intel.pips || ''}`.trim(),
+        roleLine: [roleLabel, intel.pips].filter(Boolean).join(' | '),
         traits,
         traitTitle: traitPreview.title || '',
         counter,

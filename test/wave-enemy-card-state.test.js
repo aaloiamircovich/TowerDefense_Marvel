@@ -32,3 +32,9 @@ test('buildWaveEnemyCardModel resume tarjeta compacta de enemigo', () => {
     assert.equal(model.metaLine, 'Elite · Sigilo · ◆◆◆');
     assert.match(model.ariaLabel, /Respuesta: Foco al soporte/);
 });
+
+test('buildWaveEnemyCardModel evita separadores vacios cuando no hay pips', () => {
+    const model = buildWaveEnemyCardModel({ name: 'Soldado Hydra' }, { roleLabel: 'Soldado' }, {});
+
+    assert.equal(model.roleLine, 'Soldado');
+});
