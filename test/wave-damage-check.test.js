@@ -42,3 +42,29 @@ test('buildWaveDamageCheck trata phaser como amenaza invisible sin detector', ()
     assert.equal(covered.warnings.length, 0);
     assert.deepEqual(covered.contributors.map((entry) => entry.name), ['Black Widow']);
 });
+
+test('buildWaveDamageCheck reconoce detectores por metrica tactica', () => {
+    const detector = {
+        id: 'daredevil',
+        name: 'Daredevil',
+        damage: 42,
+        fireRate: 1.4,
+        range: 145,
+        teamMetrics: { detection: 4 }
+    };
+    const check = buildWaveDamageCheck({
+        heroes: [detector],
+        waveSeconds: 20,
+        waveModel: {
+            total: 4,
+            stealthCount: 4,
+            roles: ['stealth'],
+            effectiveHp: 1000,
+            totalHp: 1000
+        }
+    });
+
+    assert.ok(check.expectedDamage > 0);
+    assert.equal(check.warnings.length, 0);
+    assert.deepEqual(check.contributors.map((entry) => entry.name), ['Daredevil']);
+});

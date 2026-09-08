@@ -97,8 +97,21 @@ function buildSupportContribution(hero = {}) {
 }
 
 function heroCanDetect(hero = {}) {
+    const config = hero.config || hero;
     const stats = hero.getEffectiveStats?.() || hero;
-    return Boolean(hero.canSeeStealth || stats.canSeeStealth);
+    const aura = config.special?.supportAura || config.supportAura || hero.special?.supportAura || hero.supportAura;
+    const detectionScore = Number(config.teamMetrics?.detection || hero.teamMetrics?.detection || 0);
+    const text = normalizeDetectionText([
+        config.name,
+        config.ability,
+        config.abilityDesc,
+        config.niche,
+        ...(config.tags || [])
+    ].filter(Boolean).join(' '));
+
+    return Boolean(hero.canSeeStealth || stats.canSeeStealth || config.canSeeStealth || aura?.detectStealth)
+        || detectionScore >= 4
+        || /sigilo|deteccion|rastreo|edith|revela/.test(text);
 }
 
 function getDamageTone(ratio) {
@@ -106,4 +119,11 @@ function getDamageTone(ratio) {
     if (ratio >= 1) return { tone: 'ready', label: 'Potencia suficiente' };
     if (ratio >= 0.76) return { tone: 'thin', label: 'Potencia justa' };
     return { tone: 'danger', label: 'Falta daño' };
+}
+
+function normalizeDetectionText(value = '') {
+    return String(value)
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase();
 }
