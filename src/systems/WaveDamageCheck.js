@@ -1,3 +1,11 @@
+import { getScaledSupportAura } from '../utils/HeroLevel.js';
+
+const SUPPORT_AURA_COPY = {
+    damage: 'dano',
+    fireRate: 'cadencia',
+    range: 'rango'
+};
+
 export function buildWaveDamageCheck({ heroes = [], waveModel = {}, waveSeconds = 8 } = {}) {
     const requiredDamage = Math.max(0, Math.round(Number(waveModel.effectiveHp || waveModel.totalHp || 0)));
     const safeWaveSeconds = Math.max(0, Number(waveSeconds || 0));
@@ -28,6 +36,10 @@ export function buildWaveDamageCheck({ heroes = [], waveModel = {}, waveSeconds 
             dps: contribution
         };
     }).filter((entry) => entry.dps > 0);
+    const supports = heroes
+        .map(buildSupportContribution)
+        .filter(Boolean)
+        .slice(0, 4);
     const dps = contributors.reduce((total, entry) => total + entry.dps, 0);
     const expectedDamage = Math.round(dps * safeWaveSeconds);
     const topContributors = contributors
@@ -59,8 +71,28 @@ export function buildWaveDamageCheck({ heroes = [], waveModel = {}, waveSeconds 
         requiredDamage,
         ratio: Number(ratio.toFixed(2)),
         contributors: topContributors,
+        supports,
         warnings,
         detail: requiredDamage > 0 ? `Cubre ${pct}% del HP estimado${detectionDetail}` : 'Sin HP preparado para comparar'
+    };
+}
+
+function buildSupportContribution(hero = {}) {
+    const config = hero.config || hero;
+    const aura = config.special?.supportAura || config.supportAura || hero.special?.supportAura || hero.supportAura;
+    const scaledAura = getScaledSupportAura(aura, hero.level || config.level || 1, hero.rarity || config.rarity || 'Common');
+    if (!scaledAura?.type) return null;
+    const typeLabel = SUPPORT_AURA_COPY[scaledAura.type] || 'aura';
+    const power = Math.max(0, Math.round(Number(scaledAura.power || 0) * 100));
+    const range = Math.max(0, Math.round(Number(scaledAura.range || hero.range || config.range || 0)));
+
+    return {
+        id: hero.id || config.id || '',
+        name: hero.name || config.name || hero.id || 'Heroe',
+        type: scaledAura.type,
+        label: `+${power}% ${typeLabel}`,
+        range,
+        detectStealth: Boolean(scaledAura.detectStealth)
     };
 }
 

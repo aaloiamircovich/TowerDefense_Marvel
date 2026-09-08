@@ -1552,12 +1552,26 @@ canvas {
     text-transform: none !important;
 }
 
+.wave-damage-supports {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px;
+    text-transform: none !important;
+}
+
 .wave-damage-contributors i {
     color: var(--damage-check-color);
     font-size: 9px;
 }
 
+.wave-damage-supports i {
+    color: #40c9ff;
+    font-size: 9px;
+}
+
 .wave-damage-alerts span,
+.wave-damage-supports span,
 .wave-damage-contributors span {
     display: inline-flex;
     align-items: center;
@@ -1578,6 +1592,12 @@ canvas {
     color: #ffd39b;
     font-weight: 900;
     text-transform: uppercase;
+}
+
+.wave-damage-supports span {
+    border-color: rgba(64, 201, 255, 0.34);
+    background: rgba(64, 201, 255, 0.12);
+    color: #c9f2ff;
 }
 
 .wave-damage-meter {

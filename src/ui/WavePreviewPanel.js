@@ -224,17 +224,26 @@ export class WavePreviewPanel {
         const contributorMarkup = contributors.length
             ? `<small class="wave-damage-contributors"><i class="fas fa-users-rays"></i>${contributors.map((entry) => `<span>${escapeHtml(entry)}</span>`).join('')}</small>`
             : '';
+        const supports = (check.supports || [])
+            .filter(Boolean)
+            .slice(0, 4)
+            .map((entry) => `${entry.name} ${entry.label}${entry.range ? ` r${entry.range}` : ''}${entry.detectStealth ? ' +vision' : ''}`);
+        const supportCopy = supports.length ? ` Soportes: ${supports.join(', ')}.` : '';
+        const supportMarkup = supports.length
+            ? `<small class="wave-damage-supports"><i class="fas fa-broadcast-tower"></i>${supports.map((entry) => `<span>${escapeHtml(entry)}</span>`).join('')}</small>`
+            : '';
         const warnings = (check.warnings || []).filter(Boolean).slice(0, 3);
         const warningCopy = warnings.length ? ` Alertas: ${warnings.map((entry) => `${entry.label}: ${entry.detail}`).join(', ')}.` : '';
         const warningMarkup = warnings.length
             ? `<small class="wave-damage-alerts">${warnings.map((entry) => `<span title="${escapeHtml(entry.detail)}" data-tooltip="${escapeHtml(entry.detail)}"><i class="fas ${escapeHtml(entry.icon)}"></i>${escapeHtml(entry.label)}</span>`).join('')}</small>`
             : '';
-        return `<div class="wave-damage-check ${escapeHtml(check.tone)}" aria-label="${escapeHtml(`${check.label}: ${check.detail}. ${meter.ariaLabel}. DPS ${check.dps}.${contributorCopy}${warningCopy}`)}" style="--damage-fill: ${meter.fillPct}%">
+        return `<div class="wave-damage-check ${escapeHtml(check.tone)}" aria-label="${escapeHtml(`${check.label}: ${check.detail}. ${meter.ariaLabel}. DPS ${check.dps}.${contributorCopy}${supportCopy}${warningCopy}`)}" style="--damage-fill: ${meter.fillPct}%">
             <i class="fas fa-chart-line"></i>
             <div><strong>${escapeHtml(check.label)}</strong><span>${escapeHtml(check.detail)}</span></div>
             <b>${formatCompactMetric(check.expectedDamage)}/${formatCompactMetric(check.requiredDamage)}</b>
             <small class="wave-damage-readout">DPS ${formatCompactMetric(check.dps)} <b class="wave-damage-gap ${escapeHtml(meter.gapTone)}">${escapeHtml(meter.gapLabel)}</b></small>
             ${warningMarkup}
+            ${supportMarkup}
             ${contributorMarkup}
             <div class="wave-damage-meter" aria-hidden="true"><span></span><em>${escapeHtml(meter.label)}</em></div>
         </div>`;

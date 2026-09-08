@@ -7,7 +7,7 @@ test('buildWaveDamageCheck ignora auras puras como dano directo', () => {
         waveSeconds: 20,
         waveModel: { total: 4, effectiveHp: 1600, totalHp: 1600 },
         heroes: [
-            { id: 'capitan_america', name: 'Capitan America', damage: 1, fireRate: 0, range: 255, special: { supportAura: { type: 'damage', power: 0.12, range: 255 } } },
+            { id: 'capitan_america', name: 'Capitan America', rarity: 'Common', level: 100, damage: 1, fireRate: 0, range: 255, special: { supportAura: { type: 'damage', power: 0.12, range: 255 } } },
             { id: 'iron_man', name: 'Iron Man', damage: 58, fireRate: 1.4, range: 180 }
         ]
     });
@@ -15,6 +15,9 @@ test('buildWaveDamageCheck ignora auras puras como dano directo', () => {
     assert.equal(check.requiredDamage, 1600);
     assert.ok(check.expectedDamage > 0);
     assert.deepEqual(check.contributors.map((entry) => entry.name), ['Iron Man']);
+    assert.deepEqual(check.supports.map((entry) => entry.name), ['Capitan America']);
+    assert.equal(check.supports[0].label, '+17% dano');
+    assert.equal(check.supports[0].range, 270);
 });
 
 test('buildWaveDamageCheck trata phaser como amenaza invisible sin detector', () => {
@@ -32,6 +35,7 @@ test('buildWaveDamageCheck trata phaser como amenaza invisible sin detector', ()
 
     assert.equal(blocked.expectedDamage, 0);
     assert.equal(blocked.contributors.length, 0);
+    assert.equal(blocked.supports.length, 0);
     assert.deepEqual(blocked.warnings.map((entry) => entry.id), ['detection']);
     assert.match(blocked.detail, /DPS sin deteccion reducido/);
     assert.ok(covered.expectedDamage > 0);

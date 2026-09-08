@@ -772,6 +772,7 @@ test('renderWavePreview etiqueta preparacion y rutas tacticas con tooltips', () 
                         { name: 'Iron Man', share: 62 },
                         { name: 'Spider-Man', share: 38 }
                     ],
+                    supports: [{ name: 'Capitan America', label: '+15% dano', range: 270, detectStealth: true }],
                     warnings: [{ id: 'detection', icon: 'fa-eye-slash', label: 'Sin deteccion', detail: 'DPS reducido contra sigilo y fase.' }]
                 }
             },
@@ -792,6 +793,8 @@ test('renderWavePreview etiqueta preparacion y rutas tacticas con tooltips', () 
         assert.match(waveIntel.innerHTML, /Faltan 600/);
         assert.match(waveIntel.innerHTML, /wave-damage-alerts/);
         assert.match(waveIntel.innerHTML, /Sin deteccion/);
+        assert.match(waveIntel.innerHTML, /wave-damage-supports/);
+        assert.match(waveIntel.innerHTML, /Capitan America \+15% dano r270 \+vision/);
         assert.match(waveIntel.innerHTML, /wave-damage-contributors/);
         assert.match(waveIntel.innerHTML, /Iron Man 62%/);
         assert.match(waveIntel.innerHTML, /Spider-Man 38%/);
