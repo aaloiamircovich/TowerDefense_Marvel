@@ -74,7 +74,10 @@ test('HeroRosterPanel renderiza tarjeta ligera y conserva acciones del roster', 
     const panel = new HeroRosterPanel(ui, {
         buildTargetingControlState: () => ({
             icon: 'fa-crosshairs',
+            key: 'first',
             label: 'Pri',
+            color: '#40c9ff',
+            next: 'Último',
             tooltip: 'Cambiar prioridad',
             ariaLabel: 'Cambiar prioridad'
         }),
@@ -92,6 +95,9 @@ test('HeroRosterPanel renderiza tarjeta ligera y conserva acciones del roster', 
         assert.match(heroGrid.children[0].innerHTML, /aria-label="Reposicionar Spider-Man"/);
         assert.match(heroGrid.children[0].innerHTML, /aria-label="Spider-Man: Mejora rapida \$220"/);
         assert.match(heroGrid.children[0].innerHTML, /aria-label="Spider-Man: Cambiar prioridad"/);
+        assert.match(heroGrid.children[0].innerHTML, /data-priority="first"/);
+        assert.match(heroGrid.children[0].innerHTML, /data-next-priority="Último"/);
+        assert.match(heroGrid.children[0].innerHTML, /style="--target-color:#40c9ff"/);
         assert.match(heroGrid.children[0].innerHTML, /aria-label="Abrir estadisticas y mejoras de Spider-Man"/);
         assert.match(heroGrid.children[1].innerHTML, /aria-label="Colocar Black Widow"/);
         assert.match(heroGrid.children[0].innerHTML, /data-upgrade-state="ready"/);

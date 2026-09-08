@@ -119,6 +119,8 @@ test('buildTargetingControlState resume el modo actual y el siguiente click', ()
 
     assert.equal(state.priority, 'Rápido');
     assert.equal(state.next, 'Sigilo');
+    assert.equal(state.key, 'fast');
+    assert.equal(state.color, '#ff6b6b');
     assert.equal(state.label, 'Rap');
     assert.match(state.tooltip, /corredores/);
     assert.match(state.ariaLabel, /Sigilo/);
