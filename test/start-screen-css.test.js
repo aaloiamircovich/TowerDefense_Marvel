@@ -22,3 +22,11 @@ test('pantalla inicial mantiene loader estable antes de assets listos', () => {
         assert.match(source, /width: min\(520px, calc\(100vw - 36px\)\)/);
     });
 });
+
+test('pantalla inicial adelanta recursos criticos de arranque', () => {
+    const index = read('index.html');
+
+    assert.match(index, /rel="modulepreload" href="src\/main\.js"/);
+    assert.match(index, /rel="preconnect" href="https:\/\/cdnjs\.cloudflare\.com" crossorigin/);
+    assert.match(index, /rel="dns-prefetch" href="https:\/\/cdnjs\.cloudflare\.com"/);
+});
