@@ -165,8 +165,19 @@ body:not(.start-assets-ready) .start-screen::before {
     opacity: 0;
 }
 
+body:not(.start-assets-ready) .start-screen__shade,
+body:not(.start-assets-ready) .start-screen__frame {
+    opacity: 0;
+}
+
 body.start-assets-ready .start-screen::before {
     opacity: 1;
+}
+
+body.start-assets-ready .start-screen__shade,
+body.start-assets-ready .start-screen__frame {
+    opacity: 1;
+    transition: opacity 180ms ease;
 }
 
 .start-screen__shade {

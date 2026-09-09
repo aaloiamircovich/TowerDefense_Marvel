@@ -17,6 +17,8 @@ test('pantalla inicial mantiene loader estable antes de assets listos', () => {
         assert.match(source, /body:not\(\.start-assets-ready\) \.start-screen__content/);
         assert.match(source, /align-content: end/);
         assert.match(source, /body:not\(\.start-assets-ready\) \.start-screen__loading/);
+        assert.match(source, /body:not\(\.start-assets-ready\) \.start-screen__shade/);
+        assert.match(source, /body:not\(\.start-assets-ready\) \.start-screen__frame/);
         assert.match(source, /width: min\(520px, calc\(100vw - 36px\)\)/);
     });
 });
