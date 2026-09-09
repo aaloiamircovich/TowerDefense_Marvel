@@ -1100,6 +1100,7 @@ test('buildPanelNavigationMarkup crea navegacion compacta de paneles', () => {
     assert.match(html, /data-panel-nav="collection"/);
     assert.match(html, /data-panel-nav="inventory"[^>]+aria-current="page"/);
     assert.match(html, /type="button"[^>]+data-panel-nav="shop"[^>]+data-tooltip="Abrir Tienda"/);
+    assert.match(html, /type="button"[^>]+data-panel-nav="skins"[^>]+title="Tienda de skins"[^>]+data-tooltip="Abrir Tienda de skins"[\s\S]*<span>Skins<\/span>/);
 });
 
 
@@ -1120,6 +1121,7 @@ test('UIManager etiqueta el dialogo con el panel abierto', () => {
     const ui = Object.create(UIManager.prototype);
     ui.setActiveHubButton = (type) => calls.push(`hub:${type}`);
     ui.renderShop = (title) => calls.push(`shop:${title}`);
+    ui.renderSkinShop = (title) => calls.push(`skins:${title}`);
     ui.renderProfile = (title) => calls.push(`profile:${title}`);
     ui.teamBuilderPanel = { render: (title) => calls.push(`collection:${title}`) };
 
@@ -1132,6 +1134,11 @@ test('UIManager etiqueta el dialogo con el panel abierto', () => {
         ui.renderPanel('collection');
         assert.equal(dialog.attributes['aria-label'], 'Colección');
         assert.ok(calls.includes('collection:Constructor de equipo'));
+
+        ui.renderPanel('skins');
+        assert.equal(dialog.attributes['aria-label'], 'Tienda de skins');
+        assert.ok(calls.includes('hub:skins'));
+        assert.ok(calls.includes('skins:Tienda de skins'));
 
         ui.renderPanel('legacy-panel');
         assert.equal(dialog.attributes['aria-label'], 'legacy-panel');

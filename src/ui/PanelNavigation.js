@@ -4,12 +4,12 @@ export const PANEL_NAV_ITEMS = [
     { id: 'collection', label: 'Colección', icon: 'fa-grip' },
     { id: 'inventory', label: 'Inventario', icon: 'fa-box-open' },
     { id: 'shop', label: 'Tienda', icon: 'fa-shopping-cart' },
-    { id: 'skins', label: 'Skins', icon: 'fa-shirt' },
+    { id: 'skins', label: 'Skins', title: 'Tienda de skins', icon: 'fa-shirt' },
     { id: 'map', label: 'Mapa', icon: 'fa-map-marked-alt' },
     { id: 'settings', label: 'Ajustes', icon: 'fa-cog' }
 ];
 
-export const PANEL_TITLES = Object.fromEntries(PANEL_NAV_ITEMS.map((item) => [item.id, item.label]));
+export const PANEL_TITLES = Object.fromEntries(PANEL_NAV_ITEMS.map((item) => [item.id, item.title || item.label]));
 
 function escapeHtml(value = '') {
     return String(value)
@@ -31,8 +31,9 @@ export function isPanelNavigationType(type = '') {
 export function buildPanelNavigationMarkup(activeType = '') {
     const buttons = PANEL_NAV_ITEMS.map((item) => {
         const active = item.id === activeType;
-        const label = 'Abrir ' + item.label;
-        return '<button class="panel-modal-nav-btn ' + (active ? 'active' : '') + '" type="button" data-panel-nav="' + escapeHtml(item.id) + '" aria-label="' + escapeHtml(label) + '" title="' + escapeHtml(item.label) + '" data-tooltip="' + escapeHtml(label) + '" aria-current="' + (active ? 'page' : 'false') + '"><i class="fas ' + escapeHtml(item.icon) + '"></i><span>' + escapeHtml(item.label) + '</span></button>';
+        const title = item.title || item.label;
+        const label = 'Abrir ' + title;
+        return '<button class="panel-modal-nav-btn ' + (active ? 'active' : '') + '" type="button" data-panel-nav="' + escapeHtml(item.id) + '" aria-label="' + escapeHtml(label) + '" title="' + escapeHtml(title) + '" data-tooltip="' + escapeHtml(label) + '" aria-current="' + (active ? 'page' : 'false') + '"><i class="fas ' + escapeHtml(item.icon) + '"></i><span>' + escapeHtml(item.label) + '</span></button>';
     }).join('');
     return '<nav class="panel-modal-nav" aria-label="Navegación de paneles">' + buttons + '</nav>';
 }
