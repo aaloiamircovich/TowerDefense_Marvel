@@ -9,6 +9,7 @@ import { ModePanel } from '../ui/ModePanel.js';
 import { WaveReportPanel } from '../ui/WaveReportPanel.js';
 import { RadarPanel } from '../ui/RadarPanel.js';
 import { ShopPanel } from '../ui/ShopPanel.js';
+import { SkinShopPanel } from '../ui/SkinShopPanel.js';
 import { StarterPanel } from '../ui/StarterPanel.js';
 import { EndStatePanel } from '../ui/EndStatePanel.js';
 import { HeroRosterPanel } from '../ui/HeroRosterPanel.js';
@@ -174,6 +175,7 @@ export class UIManager {
             buildShopItemInsight,
             buildShopSetProgress
         });
+        this.skinShopPanel = new SkinShopPanel(this);
         this.starterPanel = new StarterPanel(this);
         this.endStatePanel = new EndStatePanel(this);
         this.enemyInfoPanel = new EnemyInfoPanel(this, { buildEnemyIntel });
@@ -657,7 +659,12 @@ export class UIManager {
     }
 
     renderSkinShop(title = 'Skins') {
-        return this.getShopPanel().renderSkinShop(title);
+        return this.getSkinShopPanel().render(title);
+    }
+
+    getSkinShopPanel() {
+        if (!this.skinShopPanel) this.skinShopPanel = new SkinShopPanel(this);
+        return this.skinShopPanel;
     }
 
     renderProfile(title) {

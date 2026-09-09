@@ -358,18 +358,6 @@ export class ShopPanel {
         this.render('Tienda');
     }
 
-    renderSkinShop(title = 'Skins') {
-        this.ui.panelContent.innerHTML = `
-            <div class="panel-title-row">
-                <h2>${title}</h2>
-            </div>
-            <section class="skins-shop-panel skins-shop-panel--empty" aria-label="Sin skins disponibles">
-                <i class="fas fa-shirt"></i>
-                <strong>Sin skins disponibles</strong>
-            </section>
-        `;
-    }
-
     buildGachaRevealSequence(finalHero, count = 12) {
         const roster = Object.values(this.ui.game.heroDatabase || {})
             .filter((hero) => hero.visual && hero.id !== finalHero.id);

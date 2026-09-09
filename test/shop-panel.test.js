@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { buildHeroBoxOdds, buildItemSignatureHint, buildShopAffordabilityState, ShopPanel } from '../src/ui/ShopPanel.js';
+import { SkinShopPanel } from '../src/ui/SkinShopPanel.js';
 
 test('buildShopAffordabilityState normaliza progreso de compra', () => {
     assert.deepEqual(buildShopAffordabilityState(100, 500), {
@@ -250,7 +251,7 @@ test('ShopPanel recluta heroe, actualiza costo y permite tienda de skins vacia',
     assert.equal(gachaButton.attributes['data-tooltip'], 'Plantilla completa');
     assert.ok(calls.includes('roster:0'));
 
-    panel.renderSkinShop('Skins');
+    new SkinShopPanel({ panelContent }).render('Skins');
     assert.match(panelContent.innerHTML, /skins-shop-panel/);
     assert.match(panelContent.innerHTML, /Sin skins disponibles/);
     assert.doesNotMatch(panelContent.innerHTML, /Próximamente/);
