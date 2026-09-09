@@ -142,3 +142,19 @@ test('mapa RPG Maker usa imagen y matriz logica de terreno', () => {
     assert.equal(map[17][14], TERRAIN.blocked);
     assert.equal(map[15][14], TERRAIN.mountain);
 });
+
+test('Base de los Vengadores real bloquea calle y conserva jardines colocables', () => {
+    const level = levels.find((entry) => entry.id === 'level_1');
+    const map = buildPixelTerrainMap(level, { width: 800, height: 600 }, 32);
+    const grassHero = { allowedTerrains: [TERRAIN.grass] };
+
+    [[5, 13], [6, 13], [7, 13]].forEach(([x, y]) => {
+        assert.equal(map[y][x], TERRAIN.path, `celda ${x},${y} debe ser calle/ruta`);
+        assert.equal(canPlaceOnTerrain(grassHero, map[y][x]), false);
+    });
+
+    [[5, 15], [6, 15], [7, 15], [9, 12]].forEach(([x, y]) => {
+        assert.equal(map[y][x], TERRAIN.grass, `celda ${x},${y} debe ser jardin colocable`);
+        assert.equal(canPlaceOnTerrain(grassHero, map[y][x]), true);
+    });
+});
