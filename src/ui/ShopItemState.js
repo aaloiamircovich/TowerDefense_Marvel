@@ -18,8 +18,8 @@ export function buildShopItemInsight(item = {}, summary = null) {
     add(effects.burnChance || effects.poisonChance || effects.curseChance || effects.statusDamagePct, 'escala con estados');
     add(effects.lowLifeDamagePct || effects.lowLifeFireRatePct, 'seguro de base');
 
-    const setName = SET_BONUSES[item.set]?.name || item.set || 'sin set';
-    if (reasons.length < 3 && item.set) reasons.push(`set ${setName}`);
+    const familyName = SET_BONUSES[item.set]?.name || item.set || 'sin familia';
+    if (reasons.length < 3 && item.set) reasons.push(`familia ${familyName}`);
     const tone = reasons.some((reason) => ['cubre sigilo', 'rompe blindaje', 'frena corredores', 'sube DPS'].includes(reason))
         ? 'counter'
         : item.tier >= 3 ? 'power' : 'utility';
@@ -27,7 +27,8 @@ export function buildShopItemInsight(item = {}, summary = null) {
         tone,
         label: reasons[0] || 'mejora versatil',
         reasons: reasons.slice(0, 3),
-        setName
+        familyName,
+        setName: familyName
     };
 }
 

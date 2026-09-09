@@ -109,7 +109,7 @@ export function buildWaveReportLesson(report = {}) {
     return {
         tone: 'economy',
         label: 'Economia estable',
-        detail: 'Puedes ahorrar para set, tienda o siguiente power spike.'
+        detail: 'Puedes ahorrar para tienda, objeto clave o siguiente power spike.'
     };
 }
 
@@ -161,7 +161,7 @@ export function buildWaveReportGrade(report = {}) {
     else if (medal === 'S') detail = 'Ejecucion dominante: buen momento para greed de economia.';
     else if (bestShare >= 0.65) detail = 'El MVP cargo demasiado peso; agrega soporte para evitar dependencia.';
     else if (teamBonus > 0) detail = 'Dano bien repartido: la composicion esta escalando como escuadron.';
-    else if (credits >= 400) detail = 'Tienes margen economico para tienda, set o mejora clave.';
+    else if (credits >= 400) detail = 'Tienes margen economico para tienda, objeto o mejora clave.';
 
     return { score, medal, tone, label, detail };
 }

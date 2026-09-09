@@ -24,7 +24,8 @@ test('ShopItemState conecta efectos de objeto con counters de oleada', () => {
     assert.equal(insight.tone, 'counter');
     assert.equal(insight.label, 'cubre sigilo');
     assert.deepEqual(insight.reasons, ['cubre sigilo', 'rompe blindaje', 'sube DPS']);
-    assert.ok(insight.setName.length > 0);
+    assert.ok(insight.familyName.length > 0);
+    assert.equal(insight.setName, insight.familyName);
 });
 
 test('ShopItemState distingue poder utilidad y economia de objetos', () => {
@@ -36,7 +37,7 @@ test('ShopItemState distingue poder utilidad y economia de objetos', () => {
     assert.equal(power.label, 'mejora versatil');
     assert.equal(utility.tone, 'utility');
     assert.equal(utility.label, 'economia por impacto');
-    assert.deepEqual(setFallback.reasons, ['set unknown_set']);
+    assert.deepEqual(setFallback.reasons, ['familia unknown_set']);
 });
 
 test('ShopItemState mantiene progreso de set desactivado con objeto unico', () => {

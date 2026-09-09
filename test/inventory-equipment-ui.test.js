@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import { buildItemEffectPills, buildItemEquipDeltaRows, formatItemDeltaLabel, getItemEffectTags, InventoryPanel } from '../src/ui/InventoryPanel.js';
+import { buildItemEffectPills, buildItemEquipDeltaRows, formatItemDeltaLabel, getItemEffectTags, getItemFamilyName, InventoryPanel } from '../src/ui/InventoryPanel.js';
 import { HERO_TACTIC_FILTERS, buildTeamReadinessAlerts, getHeroTacticBadges, heroMatchesTacticId, TeamBuilderPanel } from '../src/ui/TeamBuilderPanel.js';
 import { UIManager } from '../src/systems/UIManager.js';
 import { analyzeTeam } from '../src/systems/TeamSynergySystem.js';
@@ -71,10 +71,13 @@ test('inventario muestra objetos equipados con el sprite del heroe dueño', () =
     assert.match(html, /Equipado por Iron Man/);
     assert.match(html, /item-effect-pills/);
     assert.match(html, /Cadencia[\s\S]*\+18%/);
+    assert.match(html, /Familia Stark/);
+    assert.equal(getItemFamilyName(reactorEntry.item), 'Stark');
 
     const equippedHtml = panel.renderEquippedItem(reactorEntry.item, 'weapon');
     assert.match(equippedHtml, /class="icon-command unequip-item" type="button" data-slot="weapon" aria-label="Desequipar REACTOR ARC"/);
     assert.match(equippedHtml, /title="Desequipar" data-tooltip="Desequipar"/);
+    assert.match(equippedHtml, /Familia Stark/);
 });
 
 test('inventario resume efectos principales de cada objeto', () => {

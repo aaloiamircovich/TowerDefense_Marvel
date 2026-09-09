@@ -311,7 +311,7 @@ export class ShopPanel {
                 <div class="item-badge rarity-badge ${rarityClass}">${rarity}</div>
                 <div class="shop-item-heading">
                     ${this.ui.renderSprite(item.icon, item.name)}
-                    <div><small>${SLOT_LABELS[item.slot]} · ${SET_BONUSES[item.set]?.name || item.set}</small><h4>${item.name}</h4></div>
+                    <div><small>${SLOT_LABELS[item.slot]} · Familia ${SET_BONUSES[item.set]?.name || item.set || 'Sin familia'}</small><h4>${item.name}</h4></div>
                 </div>
                 ${signatureHint ? `<div class="shop-signature-hint" aria-label="Objeto firma para ${escapeHtml(signatureHint.fullDetail)}" title="Objeto firma para ${escapeHtml(signatureHint.fullDetail)}" data-tooltip="Objeto firma para ${escapeHtml(signatureHint.fullDetail)}">
                     <i class="fas fa-file-signature"></i>

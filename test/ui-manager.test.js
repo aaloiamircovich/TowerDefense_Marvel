@@ -522,7 +522,7 @@ test('buildShopItemInsight conecta deteccion y blindaje con la oleada', () => {
     assert.equal(armor.tone, 'counter');
 });
 
-test('buildShopItemInsight reconoce control, grupos y fallback de set', () => {
+test('buildShopItemInsight reconoce control, grupos y familia de objeto', () => {
     const control = buildShopItemInsight({ set: 'pym', tier: 1, effects: { slowChance: 0.3, splashRadius: 40 } }, { fastest: 96, total: 10, roles: ['runner'] });
     const utility = buildShopItemInsight({ set: 'mystic', tier: 1, effects: { allowWater: true } }, null);
 
@@ -1397,7 +1397,7 @@ test('buildWaveReportLesson recomienda economia en oleadas estables repartidas',
     });
 
     assert.equal(lesson.tone, 'economy');
-    assert.match(lesson.detail, /set/);
+    assert.match(lesson.detail, /objeto clave/);
 });
 
 test('buildWaveReportGrade valora ejecucion dominante sin bonus perfecto', () => {

@@ -164,6 +164,10 @@ export function getItemEffectTags(item) {
         .map((filter) => filter.id);
 }
 
+export function getItemFamilyName(item = {}) {
+    return SET_BONUSES[item.set]?.name || item.set || 'Sin familia';
+}
+
 function hasMeaningfulEffect(value) {
     if (typeof value === 'boolean') return value;
     return Number.isFinite(value) && Math.abs(value) > 0.0001;
@@ -404,7 +408,7 @@ export class InventoryPanel {
         return `
             <article class="equipment-slot filled single">
                 ${this.ui.renderSprite(item.icon, item.name)}
-                <div><span>${SLOT_LABELS[item.slot]} | ${SET_BONUSES[item.set]?.name || 'Sin familia'}</span><strong>${item.name}</strong><small>${item.desc}</small></div>
+                <div><span>${SLOT_LABELS[item.slot]} | Familia ${getItemFamilyName(item)}</span><strong>${item.name}</strong><small>${item.desc}</small></div>
                 <div class="slot-actions">
                     <button class="icon-command unequip-item" type="button" data-slot="${slot}" aria-label="Desequipar ${item.name}" title="Desequipar" data-tooltip="Desequipar"><i class="fas fa-eject"></i></button>
                 </div>
@@ -431,7 +435,7 @@ export class InventoryPanel {
                 ${primaryHero ? `<span class="item-owner-corner" title="Equipado por ${primaryHero.name}">${this.ui.renderSprite(this.ui.getHeroDisplaySprite(primaryHero), primaryHero.name)}</span>` : ''}
                 <div class="item-sprite-frame">${this.ui.renderSprite(item.icon, item.name)}</div>
                 <h3>${item.name}</h3>
-                <small>${SLOT_LABELS[item.slot]} | <b class="rarity-badge ${rarityClass}">${rarity}</b> | ${SET_BONUSES[item.set]?.name || 'Sin familia'}</small>
+                <small>${SLOT_LABELS[item.slot]} | <b class="rarity-badge ${rarityClass}">${rarity}</b> | Familia ${getItemFamilyName(item)}</small>
                 <p>${item.desc}</p>
                 <div class="item-effect-pills" aria-label="Efectos principales">
                     ${effectPills.map((pill) => `<span class="${pill.tone}"><b>${pill.label}</b><small>${pill.value}</small></span>`).join('')}

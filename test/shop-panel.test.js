@@ -156,6 +156,7 @@ test('ShopPanel renderiza tienda progresiva y delega compra de objetos', () => {
     assert.match(panelContent.innerHTML, /shop-reveal-dock" role="status" aria-live="polite"/);
     assert.match(panelContent.innerHTML, /data-affordability="ready"/);
     assert.match(panelContent.innerHTML, /Lentes E.D.I.T.H./);
+    assert.match(panelContent.innerHTML, /Familia Stark/);
     assert.match(panelContent.innerHTML, /shop-card-details/);
     assert.match(panelContent.innerHTML, />Detalles</);
     assert.match(panelContent.innerHTML, /shop-effect-pills/);
