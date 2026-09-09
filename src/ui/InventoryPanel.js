@@ -1,5 +1,8 @@
-import { aggregateItemEffects, ITEM_SLOTS, SET_BONUSES, SLOT_LABELS } from '../systems/ItemEffectSystem.js';
+import { aggregateItemEffects, ITEM_SLOTS, SLOT_LABELS } from '../systems/ItemEffectSystem.js';
 import { HERO_RARITIES, getRarityClass, normalizeRarity } from '../utils/Rarity.js';
+import { getItemFamilyName } from './ItemPresentation.js';
+
+export { getItemFamilyName };
 
 const ITEM_RARITY_FILTERS = ['all', ...HERO_RARITIES];
 
@@ -162,10 +165,6 @@ export function getItemEffectTags(item) {
         .filter((filter) => filter.id !== 'all')
         .filter((filter) => (ITEM_EFFECT_GROUPS[filter.id] || []).some((key) => hasMeaningfulEffect(effects[key])))
         .map((filter) => filter.id);
-}
-
-export function getItemFamilyName(item = {}) {
-    return SET_BONUSES[item.set]?.name || item.set || 'Sin familia';
 }
 
 function hasMeaningfulEffect(value) {

@@ -1,9 +1,10 @@
-import { SET_BONUSES, SLOT_LABELS } from '../systems/ItemEffectSystem.js';
+import { SLOT_LABELS } from '../systems/ItemEffectSystem.js';
 import { EVOLUTION_CATALOG } from '../systems/EvolutionSystem.js';
 import { ITEM_SIGNATURES } from '../systems/ItemSignatureSystem.js';
 import { HERO_BOX_COST_GROWTH, HERO_RARITY_WEIGHTS, getHeroBoxCost } from '../systems/ShopSystem.js';
 import { HERO_RARITIES, getRarityClass, normalizeRarity } from '../utils/Rarity.js';
 import { buildItemEffectPills } from './InventoryPanel.js';
+import { getItemFamilyName } from './ItemPresentation.js';
 
 function escapeHtml(value = '') {
     return String(value)
@@ -311,7 +312,7 @@ export class ShopPanel {
                 <div class="item-badge rarity-badge ${rarityClass}">${rarity}</div>
                 <div class="shop-item-heading">
                     ${this.ui.renderSprite(item.icon, item.name)}
-                    <div><small>${SLOT_LABELS[item.slot]} · Familia ${SET_BONUSES[item.set]?.name || item.set || 'Sin familia'}</small><h4>${item.name}</h4></div>
+                    <div><small>${SLOT_LABELS[item.slot]} · Familia ${getItemFamilyName(item)}</small><h4>${item.name}</h4></div>
                 </div>
                 ${signatureHint ? `<div class="shop-signature-hint" aria-label="Objeto firma para ${escapeHtml(signatureHint.fullDetail)}" title="Objeto firma para ${escapeHtml(signatureHint.fullDetail)}" data-tooltip="Objeto firma para ${escapeHtml(signatureHint.fullDetail)}">
                     <i class="fas fa-file-signature"></i>

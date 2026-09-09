@@ -1,8 +1,9 @@
-import { SET_BONUSES, SLOT_LABELS } from '../systems/ItemEffectSystem.js';
+import { SLOT_LABELS } from '../systems/ItemEffectSystem.js';
 import { HERO_MAX_LEVEL, getHeroLevelUpgradeSteps, getScaledSupportAura } from '../utils/HeroLevel.js';
 import { getRarityClass, normalizeRarity } from '../utils/Rarity.js';
 import { TARGETING_PRIORITIES, TARGETING_PRIORITY_COPY } from '../utils/TargetingPriority.js';
 import { buildHeroDetailViewModel } from './HeroDetailViewModel.js';
+import { getItemFamilyName } from './ItemPresentation.js';
 
 function escapeHtml(value = '') {
     return String(value)
@@ -118,7 +119,7 @@ export class HeroDetailsPanel {
                     <h3>Equipamiento</h3>
                     <div class="hero-equipment-slots single-equipment-slot">
                         <div class="item-slot ${equippedItem ? 'filled' : ''}">
-                            <span>${equippedItem ? `${SLOT_LABELS[equippedItem.slot]} | ${SET_BONUSES[equippedItem.set]?.name || 'Sin familia'}` : 'Objeto'}</span>
+                            <span>${equippedItem ? `${SLOT_LABELS[equippedItem.slot]} | Familia ${getItemFamilyName(equippedItem)}` : 'Objeto'}</span>
                             <strong>${equippedItem?.name || 'Ranura libre'}</strong>
                             ${equippedItem ? `<small>${equippedItem.desc}</small><button class="btn-unequip-modal icon-command" type="button" data-slot="${equippedSlot}" aria-label="Desequipar ${equippedItem.name}" title="Desequipar" data-tooltip="Desequipar"><i class="fas fa-eject"></i></button>` : '<small>Un solo objeto equipado por heroe.</small>'}
                         </div>

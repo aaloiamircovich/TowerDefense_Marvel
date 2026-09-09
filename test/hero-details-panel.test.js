@@ -51,3 +51,73 @@ test('HeroDetailsPanel muestra preview numerico de mejora con signos', () => {
     assert.match(html, /Dano \+14/);
     assert.match(html, /Aura \+2\.5%/);
 });
+
+test('HeroDetailsPanel muestra familia del objeto equipado en tab de equipamiento', () => {
+    const previousDocument = globalThis.document;
+    const ui = {
+        game: {
+            progression: {
+                state: {
+                    equippedItems: { iron_man: { weapon: 'reactor_arc' } },
+                    unlockedHeroIds: ['iron_man']
+                },
+                getHeroBonuses: () => ({})
+            },
+            itemDatabase: {
+                reactor_arc: {
+                    id: 'reactor_arc',
+                    name: 'REACTOR ARC',
+                    slot: 'weapon',
+                    set: 'stark',
+                    desc: 'Tecnologia Stark compacta.'
+                }
+            },
+            heroes: [],
+            waveManager: {}
+        },
+        panelContent: {
+            innerHTML: '',
+            querySelectorAll: () => []
+        },
+        inventoryPanel: {},
+        getHeroLevel: () => 12,
+        getHeroUpgradeCost: () => 450,
+        getHeroLevelPreviewLabel: () => 'Dano +5',
+        getHeroLevelPreviewRows: () => [{ label: 'Dano', value: 5 }],
+        formatSignedPreviewValue: (value) => `+${value}`,
+        getTerrainText: () => 'Pasto',
+        getMissionCredits: () => 650,
+        getHeroDisplaySprite: () => 'iron-man.png',
+        renderSprite: (source, name) => `<img src="${source}" alt="${name}">`,
+        bindHeroDetailTabs: () => {},
+        renderPanel: () => {}
+    };
+    globalThis.document = { getElementById: () => null };
+
+    try {
+        const panel = new HeroDetailsPanel(ui);
+        panel.render({
+            id: 'iron_man',
+            name: 'Iron Man',
+            damage: 24,
+            range: 128,
+            fireRate: 1.2,
+            critChance: 8,
+            config: {
+                id: 'iron_man',
+                name: 'Iron Man',
+                rarity: 'Rare',
+                damage: 24,
+                range: 128,
+                fireRate: 1.2,
+                critChance: 8,
+                allowedTerrains: [1]
+            }
+        }, 'equipment');
+
+        assert.match(ui.panelContent.innerHTML, /Arma \| Familia Stark/);
+        assert.doesNotMatch(ui.panelContent.innerHTML, /Arma \| Stark/);
+    } finally {
+        globalThis.document = previousDocument;
+    }
+});
