@@ -383,7 +383,7 @@ export function buildWavePreparationPlan(summary = null, activeTeam = [], deploy
             add({
                 type: 'save',
                 label: `Faltan $${Math.ceil(nextCost - availableCredits)}`,
-                reason: 'Reserva creditos para una mejora o counter antes de escalar.',
+                reason: 'Reserva creditos para una mejora o respuesta antes de escalar.',
                 cost: nextCost,
                 priority: summary.readiness?.id || 'save',
                 signature: `save:${nextCost}:${Math.floor(availableCredits)}:${summary.pressureScore}`

@@ -60,7 +60,7 @@ export class EncounterDirector {
 
     sanitizeModifier(modifier, capabilities) {
         if (modifier.id === 'covert' && capabilities.detection === false) {
-            return { id: 'standard', label: 'Patrulla adaptada', description: 'Amenaza ajustada a los counters disponibles.' };
+            return { id: 'standard', label: 'Patrulla adaptada', description: 'Amenaza ajustada a las respuestas disponibles.' };
         }
         return modifier;
     }

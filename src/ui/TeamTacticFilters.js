@@ -199,7 +199,7 @@ export function buildTeamReadinessAlerts(snapshot = {}, team = []) {
 
     const priority = { danger: 0, warning: 1, info: 2, good: 3 };
     const sorted = alerts.sort((a, b) => priority[a.tone] - priority[b.tone] || a.label.localeCompare(b.label));
-    if (!sorted.length) return [{ id: 'ready', label: 'Equipo estable', detail: 'cubre counters y terrenos principales', icon: 'fa-shield-halved', tone: 'good' }];
+    if (!sorted.length) return [{ id: 'ready', label: 'Equipo estable', detail: 'cubre respuestas y terrenos principales', icon: 'fa-shield-halved', tone: 'good' }];
     const visible = sorted.slice(0, 3);
     const overflow = sorted.length - visible.length;
     if (overflow > 0) {

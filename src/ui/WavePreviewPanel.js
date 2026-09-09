@@ -118,7 +118,7 @@ export class WavePreviewPanel {
                             </span>`).join('')}
                         </div>
                     </div>` : ''}
-                    ${counterCoverage ? `<div class="wave-counter-coverage ${counterCoverage.ready ? 'ready' : 'warning'}" aria-label="${escapeHtml(counterCoverage.label)}: ${counterCoverage.covered} de ${counterCoverage.total} counters cubiertos">
+                    ${counterCoverage ? `<div class="wave-counter-coverage ${counterCoverage.ready ? 'ready' : 'warning'}" aria-label="${escapeHtml(counterCoverage.label)}: ${counterCoverage.covered} de ${counterCoverage.total} respuestas cubiertas">
                         <strong>${escapeHtml(counterCoverage.label)} <b>${counterCoverage.covered}/${counterCoverage.total}</b></strong>
                         <div>
                             ${counterCoverage.entries.map((entry) => `<span class="${entry.tone}" data-tooltip="${escapeHtml(`${entry.counter}: ${entry.detail}`)}">

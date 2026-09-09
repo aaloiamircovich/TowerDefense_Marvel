@@ -57,7 +57,7 @@ export class ModePanel {
                 <div class="draft-choice-header">
                     <span class="briefing-kicker">DRAFT HEROICO</span>
                     <h2>Elige un refuerzo</h2>
-                    <p>Sumá una pieza al escuadrón: priorizá cobertura, rareza o el counter que te falte.</p>
+                    <p>Sumá una pieza al escuadrón: priorizá cobertura, rareza o la respuesta que te falte.</p>
                 </div>
                 <div class="draft-choice-grid">
                     ${heroes.map((hero, index) => this.renderDraftCard(hero, index)).join('')}

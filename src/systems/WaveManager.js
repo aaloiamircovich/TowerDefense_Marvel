@@ -598,7 +598,7 @@ export class WaveManager {
     getThreatTier(score) {
         if (score >= 24) return { id: 'critical', label: 'Amenaza critica', advice: 'Invierte o reposiciona antes de iniciar.' };
         if (score >= 18) return { id: 'high', label: 'Amenaza alta', advice: 'Refuerza dano o control.' };
-        if (score >= 12) return { id: 'guarded', label: 'Amenaza media', advice: 'Revisa counters y cobertura.' };
+        if (score >= 12) return { id: 'guarded', label: 'Amenaza media', advice: 'Revisa respuestas y cobertura.' };
         return { id: 'low', label: 'Amenaza baja', advice: 'Buen momento para ahorrar.' };
     }
 
@@ -631,7 +631,7 @@ export class WaveManager {
         const margin = score - pressureScore;
 
         if (margin >= 7) return { id: 'ready', label: 'Preparado', score, margin, advice: 'Puedes iniciar o ahorrar para escalar.', damageCheck };
-        if (margin >= 0) return { id: 'stable', label: 'Defensa estable', score, margin, advice: 'Listo, pero vigila counters y base.', damageCheck };
+        if (margin >= 0) return { id: 'stable', label: 'Defensa estable', score, margin, advice: 'Listo, pero vigila respuestas y base.', damageCheck };
         if (margin >= -7) return { id: 'thin', label: 'Defensa justa', score, margin, advice: 'Mejora o coloca apoyo si tienes creditos.', damageCheck };
         return { id: 'underbuilt', label: 'Defensa debil', score, margin, advice: 'Coloca otro heroe antes de iniciar.', damageCheck };
     }
