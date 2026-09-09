@@ -82,8 +82,7 @@ export class HeroDetailsPanel {
             isAuraOnly,
             scaledAura,
             supportAuraLabel,
-            upgradeCost: this.ui.getHeroUpgradeCost(hero, 1),
-            formatStatDelta: (...args) => this.ui.formatStatDelta(...args)
+            upgradeCost: this.ui.getHeroUpgradeCost(hero, 1)
         });
         const { activeDetailView, compactStats, detailTabs, upgradeBadge } = detailViewModel;
         const upgradeControls = isUnlocked ? `<div class="upgrade-list hero-upgrade-grid" aria-label="Mejoras de nivel">

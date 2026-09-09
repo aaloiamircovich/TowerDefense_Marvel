@@ -648,13 +648,6 @@ export class UIManager {
         return this.getShopPanel().render(title);
     }
 
-    formatStatDelta(current, base, suffix = '', decimals = 0) {
-        const difference = current - base;
-        if (Math.abs(difference) < 0.001) return '';
-        const value = Math.abs(difference).toFixed(decimals);
-        return `<small class="stat-delta ${difference < 0 ? 'negative' : ''}">${difference > 0 ? '+' : '-'}${value}${suffix}</small>`;
-    }
-
     renderShopItem(item, purchased = false) {
         return this.getShopPanel().renderItem(item, purchased);
     }

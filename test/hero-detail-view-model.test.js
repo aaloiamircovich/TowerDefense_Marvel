@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildHeroDetailViewModel, formatHeroDetailMetric, normalizeHeroDetailView } from '../src/ui/HeroDetailViewModel.js';
+import { buildHeroDetailViewModel, formatHeroDetailMetric, formatStatDelta, normalizeHeroDetailView } from '../src/ui/HeroDetailViewModel.js';
 
 test('buildHeroDetailViewModel arma badges y estadisticas compactas', () => {
     const model = buildHeroDetailViewModel({
@@ -56,10 +56,13 @@ test('buildHeroDetailViewModel prioriza aura de soporte y nivel maximo', () => {
     assert.equal(model.equipmentBadge, 'Libre');
 });
 
-test('helpers de detalle normalizan vista y metricas grandes', () => {
+test('helpers de detalle normalizan vista metricas y deltas', () => {
     assert.equal(normalizeHeroDetailView('combat'), 'combat');
     assert.equal(normalizeHeroDetailView('legacy'), 'summary');
     assert.equal(formatHeroDetailMetric(999), '999');
     assert.equal(formatHeroDetailMetric(12500), '13k');
     assert.equal(formatHeroDetailMetric(1250000), '1.3M');
+    assert.equal(formatStatDelta(42, 40), '<small class="stat-delta ">+2</small>');
+    assert.equal(formatStatDelta(0.8, 1, '/s', 1), '<small class="stat-delta negative">-0.2/s</small>');
+    assert.equal(formatStatDelta(10, 10), '');
 });

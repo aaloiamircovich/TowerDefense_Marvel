@@ -59,10 +59,13 @@ test('paneles extraidos viven fuera de systems y exportan clases reutilizables',
 test('UIManager delega mejoras de heroe en controlador dedicado', () => {
     const source = read('src/systems/UIManager.js');
     const controller = read('src/ui/HeroUpgradeController.js');
+    const detailViewModel = read('src/ui/HeroDetailViewModel.js');
 
     assert.match(source, /import \{ HeroUpgradeController \}/);
     assert.match(source, /new HeroUpgradeController\(this\)/);
     assert.match(controller, /export class HeroUpgradeController\b/);
+    assert.match(detailViewModel, /export function formatStatDelta\b/);
+    assert.doesNotMatch(source, /formatStatDelta\(current, base/);
     assert.doesNotMatch(source, /from ['"]\.\.\/utils\/HeroLevel\.js['"]/);
 });
 

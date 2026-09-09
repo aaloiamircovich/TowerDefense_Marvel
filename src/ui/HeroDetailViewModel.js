@@ -12,6 +12,13 @@ export function formatHeroDetailMetric(value = 0) {
     return `${Math.round(amount)}`;
 }
 
+export function formatStatDelta(current, base, suffix = '', decimals = 0) {
+    const difference = Number(current) - Number(base);
+    if (Math.abs(difference) < 0.001) return '';
+    const value = Math.abs(difference).toFixed(decimals);
+    return `<small class="stat-delta ${difference < 0 ? 'negative' : ''}">${difference > 0 ? '+' : '-'}${value}${suffix}</small>`;
+}
+
 export function normalizeHeroDetailView(detailView = 'summary') {
     return HERO_DETAIL_TABS.some((tab) => tab.id === detailView) ? detailView : 'summary';
 }
@@ -34,7 +41,7 @@ export function buildHeroDetailViewModel({
     scaledAura = null,
     supportAuraLabel = 'Aura',
     upgradeCost = 0,
-    formatStatDelta = () => ''
+    formatStatDelta: formatStatDeltaFn = formatStatDelta
 } = {}) {
     const activeDetailView = normalizeHeroDetailView(detailView);
     const normalizedFireRate = Number(fireRate || 0).toFixed(1);
@@ -53,10 +60,10 @@ export function buildHeroDetailViewModel({
         equipmentBadge,
         combatBadge,
         compactStats: [
-            ['Daño', `${Math.round(Number(damage) || 0)}${formatStatDelta(Math.round(Number(damage) || 0), baseDamage)}`],
-            ['Recarga', `${normalizedFireRate}/s${formatStatDelta(Number(normalizedFireRate), baseFireRate, '', 1)}`],
-            ['Crítico', `${Math.round(Number(critChance) || 0)}%${formatStatDelta(Math.round(Number(critChance) || 0), baseCritChance, '%')}`],
-            ['Alcance', `${Math.round(Number(range) || 0)}${formatStatDelta(Math.round(Number(range) || 0), baseRange)}`]
+            ['Daño', `${Math.round(Number(damage) || 0)}${formatStatDeltaFn(Math.round(Number(damage) || 0), baseDamage)}`],
+            ['Recarga', `${normalizedFireRate}/s${formatStatDeltaFn(Number(normalizedFireRate), baseFireRate, '', 1)}`],
+            ['Crítico', `${Math.round(Number(critChance) || 0)}%${formatStatDeltaFn(Math.round(Number(critChance) || 0), baseCritChance, '%')}`],
+            ['Alcance', `${Math.round(Number(range) || 0)}${formatStatDeltaFn(Math.round(Number(range) || 0), baseRange)}`]
         ],
         detailTabs: HERO_DETAIL_TABS.map((tab) => ({
             ...tab,
