@@ -168,7 +168,7 @@ export class EndStatePanel {
                 <div>
                     ${model.rows.map((row) => `
                         <span>
-                            <i class="fas ${row.icon}"></i>
+                            <i class="fas ${escapeHtml(row.icon)}"></i>
                             <small>${escapeHtml(row.label)}</small>
                             <b>${escapeHtml(row.value)}</b>
                             <em>${escapeHtml(row.hint)}</em>
@@ -206,9 +206,9 @@ export class EndStatePanel {
                 <div class="mission-summary-grid">
                     ${model.rows.map((row) => `
                         <span class="mission-summary-card">
-                            <i class="fas ${row.icon}"></i>
-                            <small>${row.label}</small>
-                            <b>${row.value}</b>
+                            <i class="fas ${escapeHtml(row.icon)}"></i>
+                            <small>${escapeHtml(row.label)}</small>
+                            <b>${escapeHtml(row.value)}</b>
                         </span>
                     `).join('')}
                 </div>
@@ -219,12 +219,12 @@ export class EndStatePanel {
     renderOutcomeCoach(type, context = {}) {
         const model = buildOutcomeCoachModel(type, context);
         return `
-            <div class="end-state-coach ${model.tone}">
+            <div class="end-state-coach ${escapeHtml(model.tone)}">
                 <strong>${escapeHtml(model.title)}</strong>
                 <div>
                     ${model.cards.map((card) => `
                         <span>
-                            <i class="fas ${card.icon}"></i>
+                            <i class="fas ${escapeHtml(card.icon)}"></i>
                             <small>${escapeHtml(card.label)}</small>
                             <b>${escapeHtml(card.value)}</b>
                         </span>

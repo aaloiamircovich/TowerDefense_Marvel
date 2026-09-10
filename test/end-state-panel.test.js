@@ -146,6 +146,26 @@ test('EndStatePanel renderiza victoria y error fatal con acciones principales', 
     }
 });
 
+test('EndStatePanel escapa textos dinamicos del resumen final', () => {
+    const panel = new EndStatePanel(createUiStub([]));
+    const summaryHtml = panel.renderMissionSummary({
+        totals: { damage: 12345, kills: 67, abilities: 8, credits: 910 },
+        tactical: { score: 320, mvp: 'Widow <script>', controlSeconds: 12 },
+        bestHero: 'Iron <Man>',
+        lives: 18
+    });
+    const coachHtml = panel.renderOutcomeCoach('defeat', {
+        wave: 4,
+        summary: { bestHero: 'Hulk <smash>' }
+    });
+
+    assert.match(summaryHtml, /Destacado: Iron &lt;Man&gt;/);
+    assert.match(summaryHtml, /MVP táctico: Widow &lt;script&gt;/);
+    assert.doesNotMatch(summaryHtml, /<script>|<Man>/);
+    assert.match(coachHtml, /Mejorar Hulk &lt;smash&gt;/);
+    assert.doesNotMatch(coachHtml, /<smash>/);
+});
+
 function createUiStub(calls) {
     return {
         panelContent: { innerHTML: '' },
