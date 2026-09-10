@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { clampPercent, escapeHtml, normalizeClassToken, normalizeControlTag, normalizeIconClass } from '../src/ui/HtmlSanitizer.js';
+import { clampPercent, escapeHtml, normalizeClassToken, normalizeControlTag, normalizeCssColor, normalizeIconClass } from '../src/ui/HtmlSanitizer.js';
 
 test('HtmlSanitizer escapa texto y normaliza tokens visuales', () => {
     assert.equal(escapeHtml('<img src=x onerror="bad()">'), '&lt;img src=x onerror=&quot;bad()&quot;&gt;');
@@ -12,4 +12,7 @@ test('HtmlSanitizer escapa texto y normaliza tokens visuales', () => {
     assert.equal(clampPercent('bad'), 0);
     assert.equal(normalizeControlTag('button'), 'button');
     assert.equal(normalizeControlTag('script'), 'div');
+    assert.equal(normalizeCssColor('#40c9ff'), '#40c9ff');
+    assert.equal(normalizeCssColor('var(--level-accent)'), 'var(--level-accent)');
+    assert.equal(normalizeCssColor('url(javascript:bad)'), 'var(--level-accent)');
 });

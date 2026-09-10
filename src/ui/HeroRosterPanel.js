@@ -1,13 +1,5 @@
 import { getRarityClass, normalizeRarity } from '../utils/Rarity.js';
-
-function escapeHtml(value = '') {
-    return String(value)
-        .replaceAll('&', '&amp;')
-        .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;')
-        .replaceAll('"', '&quot;')
-        .replaceAll("'", '&#039;');
-}
+import { escapeHtml, normalizeClassToken, normalizeCssColor, normalizeIconClass } from './HtmlSanitizer.js';
 
 export class HeroRosterPanel {
     constructor(ui, builders = {}) {
@@ -47,7 +39,7 @@ export class HeroRosterPanel {
             : 'maxed';
         const targetingState = deployedHero ? this.buildTargetingControlState(deployedHero.targetingPriority || hero.targetingPriority) : null;
         const rarity = normalizeRarity(hero.rarity);
-        const rarityClass = getRarityClass(rarity);
+        const rarityClass = normalizeClassToken(getRarityClass(rarity), 'rarity-common');
         const level = this.getHeroLevel(liveHero);
         const cardLabel = `${hero.name}. Rareza ${rarity}. Nivel ${level}.`;
         const placeLabel = deployed
@@ -64,7 +56,7 @@ export class HeroRosterPanel {
             <div class="hero-card-main">
                 <div class="hero-card-heading">
                     <strong>${escapeHtml(hero.name)}</strong>
-                    <span class="rarity-badge ${rarityClass}">${rarity}</span>
+                    <span class="rarity-badge ${rarityClass}">${escapeHtml(rarity)}</span>
                 </div>
                 <div class="hero-card-status">
                     <span class="hero-card-level">Nv. ${level}</span>
@@ -72,8 +64,8 @@ export class HeroRosterPanel {
             </div>
             <div class="hero-actions">
                 <button class="btn-action place-btn" type="button" data-testid="hero-place-${escapeHtml(hero.id)}" title="${deployed ? 'Reposicionar' : 'Colocar'}" aria-label="${escapeHtml(placeLabel)}" data-tooltip="${deployed ? 'Mover libremente' : 'Colocar héroe gratis'}"><i class="fas ${deployed ? 'fa-arrows-alt' : 'fa-map-marker-alt'}"></i></button>
-                ${deployedHero ? `<button class="btn-action upgrade-btn ${canQuickUpgrade ? '' : 'is-unaffordable'}" type="button" data-testid="hero-upgrade-${escapeHtml(hero.id)}" data-quick-upgrade-id="${escapeHtml(hero.id)}" data-affordable="${canQuickUpgrade ? 'true' : 'false'}" data-upgrade-state="${quickUpgradeState}" title="${escapeHtml(quickUpgradeTooltip)}" aria-label="${escapeHtml(`${hero.name}: ${quickUpgradeTooltip}`)}" data-tooltip="${escapeHtml(quickUpgradeTooltip)}"><i class="fas fa-arrow-up"></i></button>` : ''}
-                ${targetingState ? `<button class="btn-action target-btn" type="button" data-testid="hero-target-${escapeHtml(hero.id)}" data-priority="${escapeHtml(targetingState.key || 'first')}" data-next-priority="${escapeHtml(targetingState.next)}" style="--target-color:${escapeHtml(targetingState.color || 'var(--level-accent)')}" title="${escapeHtml(targetingState.tooltip)}" aria-label="${escapeHtml(`${hero.name}: ${targetingState.ariaLabel}`)}" data-tooltip="${escapeHtml(targetingState.tooltip)}"><i class="fas ${targetingState.icon}"></i><span>${escapeHtml(targetingState.label)}</span></button>` : ''}
+                ${deployedHero ? `<button class="btn-action upgrade-btn ${canQuickUpgrade ? '' : 'is-unaffordable'}" type="button" data-testid="hero-upgrade-${escapeHtml(hero.id)}" data-quick-upgrade-id="${escapeHtml(hero.id)}" data-affordable="${canQuickUpgrade ? 'true' : 'false'}" data-upgrade-state="${escapeHtml(quickUpgradeState)}" title="${escapeHtml(quickUpgradeTooltip)}" aria-label="${escapeHtml(`${hero.name}: ${quickUpgradeTooltip}`)}" data-tooltip="${escapeHtml(quickUpgradeTooltip)}"><i class="fas fa-arrow-up"></i></button>` : ''}
+                ${targetingState ? `<button class="btn-action target-btn" type="button" data-testid="hero-target-${escapeHtml(hero.id)}" data-priority="${escapeHtml(targetingState.key || 'first')}" data-next-priority="${escapeHtml(targetingState.next)}" style="--target-color:${normalizeCssColor(targetingState.color)}" title="${escapeHtml(targetingState.tooltip)}" aria-label="${escapeHtml(`${hero.name}: ${targetingState.ariaLabel}`)}" data-tooltip="${escapeHtml(targetingState.tooltip)}"><i class="fas ${normalizeIconClass(targetingState.icon)}"></i><span>${escapeHtml(targetingState.label)}</span></button>` : ''}
                 <button class="btn-action stats-btn" type="button" title="Mejoras" aria-label="${escapeHtml(statsLabel)}" data-tooltip="Estadísticas y mejoras"><i class="fas fa-chart-bar"></i></button>
             </div>
         `;

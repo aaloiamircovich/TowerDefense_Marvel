@@ -177,6 +177,68 @@ test('HeroRosterPanel muestra cuanto falta para mejora rapida', () => {
     }
 });
 
+test('HeroRosterPanel normaliza icono y color del control de objetivo', () => {
+    const previousDocument = globalThis.document;
+    globalThis.document = {
+        createElement() {
+            return createCardStub();
+        }
+    };
+
+    const heroGrid = createHeroGridStub();
+    const hero = { id: 'storm" onclick="bad', name: '<Storm>', rarity: 'Epic', level: 3, sprite: 'storm.png', targetingPriority: 'Primero' };
+    const deployedHero = { ...hero, config: { id: hero.id, targetingPriority: 'Primero' } };
+    const ui = {
+        heroGrid,
+        game: {
+            activeTeam: [hero],
+            heroes: [deployedHero],
+            resourceManager: { credits: 700 },
+            progression: { setHeroTargetingPriority() {} },
+            inputManager: {
+                setRepositionMode() {},
+                setPlacementMode() {}
+            }
+        },
+        getHeroUpgradeCost: () => Number.POSITIVE_INFINITY,
+        canAffordHeroUpgrade: () => false,
+        getHeroLevel: (unit) => unit.level || 1,
+        renderSprite() {
+            return '<span class="sprite-safe"></span>';
+        },
+        getHeroDisplaySprite() {
+            return 'storm.png';
+        },
+        findDeployedHeroById: () => deployedHero,
+        inspectUnit() {},
+        showToast() {},
+        renderOnboardingCoach() {}
+    };
+
+    try {
+        new HeroRosterPanel(ui, {
+            buildTargetingControlState: () => ({
+                icon: 'fa-eye" onclick="bad',
+                key: 'first',
+                label: '<Sig>',
+                color: 'url(javascript:bad)',
+                next: '<Next>',
+                tooltip: '<Tooltip>',
+                ariaLabel: '<Cambiar>'
+            })
+        }).render([hero]);
+
+        assert.match(heroGrid.children[0].innerHTML, /data-testid="hero-target-storm&quot; onclick=&quot;bad"/);
+        assert.match(heroGrid.children[0].innerHTML, /style="--target-color:var\(--level-accent\)"/);
+        assert.match(heroGrid.children[0].innerHTML, /fa-circle-info/);
+        assert.match(heroGrid.children[0].innerHTML, /&lt;Sig&gt;/);
+        assert.match(heroGrid.children[0].innerHTML, /aria-label="&lt;Storm&gt;: &lt;Cambiar&gt;"/);
+        assert.doesNotMatch(heroGrid.children[0].innerHTML, /javascript:bad|onclick="bad|<Sig>|<Storm>/);
+    } finally {
+        globalThis.document = previousDocument;
+    }
+});
+
 function createHeroGridStub() {
     return {
         _innerHTML: '',
