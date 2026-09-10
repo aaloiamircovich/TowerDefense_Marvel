@@ -1,14 +1,5 @@
 import { formatHudResource } from './HudState.js';
-
-function escapeHtml(value = '') {
-    return String(value).replace(/[&<>"']/g, (char) => ({
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#39;'
-    }[char]));
-}
+import { clampPercent, escapeHtml, normalizeClassToken, normalizeIconClass } from './HtmlSanitizer.js';
 
 function formatReportNumber(value = 0) {
     return formatHudResource(value);
@@ -54,7 +45,7 @@ export class WaveReportPanel {
         }
         this.ui.lastWaveReport = report;
 
-        container.className = `wave-report report-${state.tone}`;
+        container.className = `wave-report report-${normalizeClassToken(state.tone, 'neutral')}`;
         container.setAttribute('role', 'status');
         container.setAttribute('aria-live', 'polite');
         container.setAttribute('aria-label', `${state.label}. ${state.advice}`);
@@ -73,14 +64,14 @@ export class WaveReportPanel {
                     <span>Informe oleada ${escapeHtml(state.wave)}</span>
                     <strong>${escapeHtml(state.label)}</strong>
                 </div>
-                <b class="wave-report-grade grade-${escapeHtml(state.grade.tone)}" title="${escapeHtml(state.grade.detail)}">
+                <b class="wave-report-grade grade-${normalizeClassToken(state.grade.tone, 'neutral')}" title="${escapeHtml(state.grade.detail)}">
                     <em>${escapeHtml(state.grade.medal)}</em>
                     <small>${escapeHtml(state.grade.score)}</small>
                 </b>
             </div>
             ${this.renderQuickline(state, action)}
             <div class="wave-report-scoreline">
-                <div class="wave-report-rating grade-${escapeHtml(state.grade.tone)}" aria-label="${escapeHtml(state.grade.label)}: ${escapeHtml(state.grade.detail)}">
+                <div class="wave-report-rating grade-${normalizeClassToken(state.grade.tone, 'neutral')}" aria-label="${escapeHtml(state.grade.label)}: ${escapeHtml(state.grade.detail)}">
                     <strong>${escapeHtml(state.grade.label)}</strong>
                     <span>${escapeHtml(state.grade.detail)}</span>
                 </div>
@@ -119,8 +110,8 @@ export class WaveReportPanel {
             { icon: actionIcon, label: 'Siguiente', value: actionText, tone: action?.type || 'stable' }
         ];
         return `<div class="wave-report-quickline" aria-label="Resumen rapido de oleada">
-            ${chips.map((chip) => `<span class="quickline-${escapeHtml(chip.tone)}">
-                <i class="fas ${escapeHtml(chip.icon)}"></i>
+            ${chips.map((chip) => `<span class="quickline-${normalizeClassToken(chip.tone, 'stable')}">
+                <i class="fas ${normalizeIconClass(chip.icon)}"></i>
                 <small>${escapeHtml(chip.label)}</small>
                 <b>${escapeHtml(chip.value)}</b>
             </span>`).join('')}
@@ -157,7 +148,7 @@ export class WaveReportPanel {
 
     renderLesson(lesson) {
         if (!lesson) return '';
-        return `<div class="wave-report-lesson lesson-${escapeHtml(lesson.tone)}" aria-label="${escapeHtml(lesson.label)}: ${escapeHtml(lesson.detail)}">
+        return `<div class="wave-report-lesson lesson-${normalizeClassToken(lesson.tone, 'neutral')}" aria-label="${escapeHtml(lesson.label)}: ${escapeHtml(lesson.detail)}">
             <strong>${escapeHtml(lesson.label)}</strong>
             <span>${escapeHtml(lesson.detail)}</span>
         </div>`;
@@ -176,8 +167,8 @@ export class WaveReportPanel {
         ].filter(Boolean);
         if (!credits && rows.length <= 1) return '';
         return `<div class="wave-reward-strip" aria-label="Recompensa de oleada">
-            ${rows.map((row) => `<span class="${escapeHtml(row.tone || '')}">
-                <i class="fas ${escapeHtml(row.icon)}"></i>
+            ${rows.map((row) => `<span class="${normalizeClassToken(row.tone || '', 'item')}">
+                <i class="fas ${normalizeIconClass(row.icon)}"></i>
                 <b>${escapeHtml(row.value)}</b>
                 <small>${escapeHtml(row.label)}</small>
             </span>`).join('')}
@@ -186,10 +177,10 @@ export class WaveReportPanel {
 
     renderComparison(comparison) {
         if (!comparison?.active || !comparison.metrics?.length) return '';
-        return `<div class="wave-report-comparison comparison-${escapeHtml(comparison.tone)}" aria-label="${escapeHtml(comparison.label)}">
+        return `<div class="wave-report-comparison comparison-${normalizeClassToken(comparison.tone, 'same')}" aria-label="${escapeHtml(comparison.label)}">
             <strong><i class="fas fa-chart-simple"></i> ${escapeHtml(comparison.label)}</strong>
             <div>
-                ${comparison.metrics.map((metric) => `<span class="trend-${escapeHtml(metric.tone)}">
+                ${comparison.metrics.map((metric) => `<span class="trend-${normalizeClassToken(metric.tone, 'same')}">
                     <small>${escapeHtml(metric.label)}</small>
                     <b>${escapeHtml(metric.value)}</b>
                 </span>`).join('')}
@@ -200,11 +191,11 @@ export class WaveReportPanel {
     renderTacticalContribution(contribution) {
         if (!contribution?.active) return '';
         return `<div class="wave-tactical-contribution" aria-label="Contribucion tactica de la oleada">
-            <strong><i class="fas fa-chart-line"></i> Valor tactico ${contribution.score}</strong>
+            <strong><i class="fas fa-chart-line"></i> Valor tactico ${escapeHtml(contribution.score)}</strong>
             <div>
-                ${contribution.metrics.map((metric) => `<span class="${escapeHtml(metric.id)}">
-                    <i class="fas ${escapeHtml(metric.icon)}"></i>
-                    <b>${metric.value}${escapeHtml(metric.suffix)}</b>
+                ${contribution.metrics.map((metric) => `<span class="${normalizeClassToken(metric.id, 'metric')}">
+                    <i class="fas ${normalizeIconClass(metric.icon)}"></i>
+                    <b>${escapeHtml(metric.value)}${escapeHtml(metric.suffix)}</b>
                     <small>${escapeHtml(metric.label)}</small>
                 </span>`).join('')}
             </div>
@@ -216,21 +207,21 @@ export class WaveReportPanel {
         if (!leakIntel?.items?.length) return '';
         return `<div class="wave-leak-intel" aria-label="${escapeHtml(leakIntel.label)}">
             <strong><i class="fas fa-route"></i> ${escapeHtml(leakIntel.label)}</strong>
-            ${leakIntel.items.map((item) => `<span class="${escapeHtml(item.tone)}">
+            ${leakIntel.items.map((item) => `<span class="${normalizeClassToken(item.tone, 'neutral')}">
                 <b>${escapeHtml(item.name)}</b>
                 <small>${escapeHtml(item.detail)}</small>
             </span>`).join('')}
-            ${leakIntel.overflow > 0 ? `<em>+${leakIntel.overflow} mas</em>` : ''}
+            ${leakIntel.overflow > 0 ? `<em>+${escapeHtml(leakIntel.overflow)} mas</em>` : ''}
         </div>`;
     }
 
     renderAction(action) {
         if (!action) return '';
-        const type = escapeHtml(action.type);
+        const type = normalizeClassToken(action.type, 'stable');
         const available = Math.max(0, Number(action.available || 0));
         const cost = Math.max(0, Number(action.cost || 0));
         const savingProgress = action.type === 'saving' && cost > 0
-            ? Math.min(100, Math.max(0, Math.round((available / cost) * 100)))
+            ? clampPercent((available / cost) * 100)
             : null;
         const economyNote = action.type === 'upgrade' && Number.isFinite(Number(action.remaining))
             ? `<small>Saldo tras mejora: $${escapeHtml(action.remaining)}</small>`

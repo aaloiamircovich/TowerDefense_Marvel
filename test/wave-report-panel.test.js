@@ -253,6 +253,43 @@ test('WaveReportPanel mantiene compacto el desglose salvo dano serio a base', ()
     assert.match(tacticalHtml, /Ver aporte tactico/);
 });
 
+test('WaveReportPanel normaliza clases dinamicas e iconos del informe', () => {
+    const panel = new WaveReportPanel({});
+    const quicklineHtml = panel.renderQuickline(
+        { leaks: 0, kills: 1, damage: 1, credits: 1 },
+        { type: 'saving" onclick="bad', label: '<Accion>' }
+    );
+    const lessonHtml = panel.renderLesson({
+        tone: 'leak" onclick="bad',
+        label: '<Leccion>',
+        detail: '<Detalle>'
+    });
+    const contributionHtml = panel.renderTacticalContribution({
+        active: true,
+        score: '<9>',
+        metrics: [{ id: 'control" onclick="bad', icon: 'fa-eye" onclick="bad', value: '<2>', suffix: '<s>', label: '<Control>' }],
+        heroes: [{ name: '<Heroe>', detail: '<Detalle>' }]
+    });
+    const actionHtml = panel.renderAction({
+        type: 'upgrade" onclick="bad',
+        label: '<Mejorar>',
+        reason: '<Razon>',
+        cost: 100
+    });
+
+    assert.match(quicklineHtml, /quickline-saving-onclick-bad/);
+    assert.match(quicklineHtml, /&lt;Accion&gt;/);
+    assert.match(lessonHtml, /lesson-leak-onclick-bad/);
+    assert.match(lessonHtml, /&lt;Leccion&gt;/);
+    assert.match(contributionHtml, /Valor tactico &lt;9&gt;/);
+    assert.match(contributionHtml, /class="control-onclick-bad"/);
+    assert.match(contributionHtml, /fa-circle-info/);
+    assert.match(contributionHtml, /&lt;2&gt;&lt;s&gt;/);
+    assert.match(actionHtml, /report-action-upgrade-onclick-bad/);
+    assert.match(actionHtml, /&lt;Razon&gt;/);
+    assert.doesNotMatch(`${quicklineHtml}${lessonHtml}${contributionHtml}${actionHtml}`, /onclick="bad|<Accion>|<Leccion>|<Control>|<Razon>/);
+});
+
 function createElementStub() {
     return {
         innerHTML: '',
