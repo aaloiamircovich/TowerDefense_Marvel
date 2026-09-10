@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { buildBossCountdownState, buildBossHudState, buildBossMilestoneState, buildCombatPressureState, buildCounterCoverageModel, buildEnemyIntel, buildEnemyTraitPreview, buildHeroCombatIdentity, buildLeakIntel, buildPanelNavigationMarkup, buildPressureActionState, buildRosterWaveFitView, buildShopItemInsight, buildShopSetProgress, buildSpawnQueueState, buildStatusLegendModel, buildStealthCoverageState, buildTacticalContributionModel, buildTargetingControlState, buildWaveCounterBrief, buildWaveDamageCheckMeter, buildWaveLaunchState, buildWavePrepActionControl, buildWavePreparationPlan, buildWaveReportActionState, buildWaveReportGrade, buildWaveReportLesson, buildWaveReportState, evaluateHeroWaveFit, formatHudResource, getNextTargetingPriority, UIManager } from '../src/systems/UIManager.js';
 import { CombatPressurePanel } from '../src/ui/CombatPressurePanel.js';
+import { WavePreviewPanel } from '../src/ui/WavePreviewPanel.js';
 import { calculateHeroLevelCost, getHeroDamageAtLevel } from '../src/utils/HeroLevel.js';
 
 test('buildWaveLaunchState muestra riesgo critico en el CTA', () => {
@@ -807,6 +808,114 @@ test('renderWavePreview etiqueta preparacion y rutas tacticas con tooltips', () 
         assert.match(waveIntel.innerHTML, /Respuesta: Perforacion/);
         assert.match(waveIntel.innerHTML, /Perforacion lista: Iron Man/);
         assert.match(waveIntel.innerHTML, /data-branch="ambush" class="active" aria-label="Emboscada: Mas recompensa" title="Emboscada: Mas recompensa" data-tooltip="Emboscada: Mas recompensa"/);
+    } finally {
+        globalThis.document = previousDocument;
+    }
+});
+
+test('WavePreviewPanel escapa datos dinamicos de radar de oleada', () => {
+    const previousDocument = globalThis.document;
+    const wavePreview = createDomStub();
+    const waveIntel = createDomStub();
+    const nextWaveNumber = createDomStub();
+    const enemyInfoEmpty = createDomStub();
+    const enemyInfoContent = createDomStub();
+    const elements = {
+        'wave-preview': wavePreview,
+        'wave-intel': waveIntel,
+        'next-wave-number': nextWaveNumber,
+        'enemy-info-empty': enemyInfoEmpty,
+        'enemy-info-content': enemyInfoContent
+    };
+    globalThis.document = { getElementById: (id) => elements[id] || null };
+    const ui = {
+        game: {
+            activeTeam: [],
+            heroes: [],
+            resourceManager: { credits: 0 },
+            inputManager: { setPlacementMode() {} },
+            waveManager: { chooseBranch() { return false; } },
+            audio: { play() {} }
+        },
+        calculateLevelCost: () => 120,
+        quickUpgradeHeroById: () => true,
+        showToast: () => {},
+        renderHeroRoster: () => {}
+    };
+    const panel = new WavePreviewPanel(ui, {
+        buildWavePreparationPlan: () => [
+            { type: 'deploy" onclick="alert(1)', heroId: 'hero"><script>', label: 'Colocar <img src=x>', reason: 'Razon <script>', cost: '90"><img' }
+        ],
+        buildWavePrepActionControl: () => ({ actionable: false, tag: 'script', ariaLabel: '<b>Nota</b>', title: '', tooltip: '' }),
+        buildStealthCoverageState: () => ({ tone: 'ready" onclick="x', label: 'Vision <img>', detail: 'Cubre <script>' }),
+        buildStatusLegendModel: () => ({
+            label: 'Estados <img>',
+            entries: [{ icon: 'fa-eye" onclick="x', label: 'Sigilo <script>', detail: 'Detalle <img>' }]
+        }),
+        buildCounterCoverageModel: () => ({
+            ready: true,
+            label: 'Respuestas <img>',
+            covered: '<b>1</b>',
+            total: '<script>2</script>',
+            entries: [{ tone: 'ok" onclick="x', icon: 'fa-shield" onclick="x', counter: 'Armadura <script>', detail: 'Detalle <b>', label: 'Cubierto <img>' }]
+        }),
+        buildWaveCounterBrief: () => ({ tone: 'strong" onclick="x', icon: 'fa-crosshairs" onclick="x', label: 'Perforacion <img>', detail: 'Lista <script>' }),
+        buildBossMilestoneState: () => ({
+            tone: 'critical" onclick="x',
+            title: 'Mini boss <img>',
+            name: '<script>Ultron</script>',
+            warning: 'Pierdes <img>',
+            wave: '25<script>',
+            portrait: '',
+            stats: [{ value: '<b>HP</b>', label: 'Vida <script>' }],
+            counters: ['Ruptura <img>']
+        }),
+        buildWaveDamageCheckMeter: () => ({ fillPct: '150<script>', label: 'Mucho <img>', ariaLabel: 'Daño <script>', gapTone: 'deficit" onclick="x', gapLabel: 'Faltan <b>100</b>' })
+    });
+
+    try {
+        panel.render([], { label: 'Mod <img>', description: 'Desc <script>' }, { label: 'Hydra <img>' }, 4, {
+            total: '<b>8</b>',
+            reward: '220<script>',
+            fastest: '78<img>',
+            maxThreat: '4<script>',
+            pressureScore: '24<img>',
+            threatTier: { id: 'critical" onclick="x', label: 'Amenaza <img>', advice: 'Refuerza <script>' },
+            readiness: {
+                id: 'thin" onclick="x',
+                label: 'Cobertura <img>',
+                advice: 'Mejora <script>',
+                score: '42<script>',
+                damageCheck: {
+                    tone: 'thin" onclick="x',
+                    label: 'Potencia <img>',
+                    detail: 'Detalle <script>',
+                    expectedDamage: 1800,
+                    requiredDamage: 2400,
+                    dps: 80,
+                    warnings: [{ icon: 'fa-eye-slash" onclick="x', label: 'Sin <img>', detail: 'DPS <script>' }]
+                }
+            },
+            spawnTimeline: {
+                entries: [{ danger: 'high" onclick="x', etaLabel: '2s<script>', count: '<b>3</b>', name: 'Runner <img>' }],
+                overflow: 2
+            },
+            branchOptions: [{ id: 'ambush"><script>', label: 'Emboscada <img>', description: 'Mas <script>' }],
+            selectedBranch: 'ambush"><script>'
+        });
+
+        assert.doesNotMatch(waveIntel.innerHTML, /<img\s/i);
+        assert.doesNotMatch(waveIntel.innerHTML, /<script/i);
+        assert.doesNotMatch(waveIntel.innerHTML, /onclick=/i);
+        assert.match(waveIntel.innerHTML, /Hydra &lt;img&gt;/);
+        assert.match(waveIntel.innerHTML, /wave-threat critical-onclick-x/);
+        assert.match(waveIntel.innerHTML, /wave-readiness thin-onclick-x/);
+        assert.match(waveIntel.innerHTML, /wave-boss-telegraph critical-onclick-x/);
+        assert.match(waveIntel.innerHTML, /wave-stealth-coverage ready-onclick-x/);
+        assert.match(waveIntel.innerHTML, /class="high-onclick-x"/);
+        assert.match(waveIntel.innerHTML, /wave-prep-item deploy-onclick-alert-1/);
+        assert.match(waveIntel.innerHTML, /style="--damage-fill: 0%"/);
+        assert.match(waveIntel.innerHTML, /class="fas fa-circle-info"/);
     } finally {
         globalThis.document = previousDocument;
     }
