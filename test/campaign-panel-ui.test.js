@@ -67,6 +67,55 @@ test('CampaignPanel compacta operaciones y resume desbloqueos por estrellas', ()
     });
 });
 
+test('CampaignPanel escapa textos dinamicos de modos y mapas', () => {
+    const previousDocument = globalThis.document;
+    globalThis.document = { getElementById: () => null };
+    const ui = createCampaignUi({ stars: 0 });
+    const panel = new CampaignPanel(ui);
+    const level = {
+        id: 'level_escape',
+        name: 'Base <X>',
+        difficulty: 'Alta "rara"',
+        description: '<b>descripcion</b>',
+        theme: { id: 'escape-theme', label: 'Zona <test>', brief: 'Brief <mapa>' },
+        mission: {
+            operation: 'Operacion <script>',
+            briefing: 'Briefing <b>seguro</b>',
+            speaker: 'Fury <Nick>',
+            dialogue: 'Dialogo <alert>',
+            mechanic: { label: 'Mecanica <rara>', description: 'Descripcion <mecanica>' },
+            objectives: [{ id: 'obj_escape', label: 'Objetivo <uno>', description: 'No insertar <html>', reward: 12500 }]
+        }
+    };
+    const modeCard = panel.renderModeCard({
+        id: 'modo"escape',
+        name: 'Modo <Boss>',
+        icon: 'fa-bolt" onclick="bad',
+        description: 'Descripcion <modo>'
+    });
+    const mapCard = panel.renderMapCard(level, 0);
+
+    try {
+        panel.renderBriefing(level);
+
+        assert.match(modeCard, /Modo &lt;Boss&gt;/);
+        assert.match(modeCard, /Descripcion &lt;modo&gt;/);
+        assert.match(modeCard, /data-mode="modo&quot;escape"/);
+        assert.doesNotMatch(modeCard, /<Boss>|onclick="bad/);
+        assert.match(mapCard, /Base &lt;X&gt;/);
+        assert.match(mapCard, /Brief &lt;mapa&gt;/);
+        assert.match(mapCard, /Objetivo &lt;uno&gt; · \$12\.5k/);
+        assert.doesNotMatch(mapCard, /<b>descripcion|<uno>/);
+        assert.match(ui.panelContent.innerHTML, /Operacion &lt;script&gt;/);
+        assert.match(ui.panelContent.innerHTML, /Briefing &lt;b&gt;seguro&lt;\/b&gt;/);
+        assert.match(ui.panelContent.innerHTML, /No insertar &lt;html&gt;/);
+        assert.match(ui.panelContent.innerHTML, /\+\$12\.5k/);
+        assert.doesNotMatch(ui.panelContent.innerHTML, /<script>|<html>/);
+    } finally {
+        globalThis.document = previousDocument;
+    }
+});
+
 function createCampaignUi({ stars = 0 } = {}) {
     const visibleLevels = levels.slice(0, 3);
     return {

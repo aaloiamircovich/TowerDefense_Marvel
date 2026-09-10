@@ -15,6 +15,15 @@ function formatCampaignCurrency(value = 0) {
     return `$${formatCampaignScore(value)}`;
 }
 
+function escapeHtml(value = '') {
+    return String(value)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+}
+
 export class CampaignPanel {
     constructor(ui) {
         this.ui = ui;
@@ -24,23 +33,23 @@ export class CampaignPanel {
         const { game, panelContent } = this.ui;
         const summary = this.buildCampaignSummary();
         panelContent.innerHTML = `
-            <h2>${title}</h2>
+            <h2>${escapeHtml(title)}</h2>
             <section class="campaign-ops-strip">
                 <div class="campaign-ops-copy">
                     <span class="briefing-kicker">CAMPAÑA</span>
-                    <strong>${summary.currentName}</strong>
-                    <small>${summary.nextUnlock}</small>
+                    <strong>${escapeHtml(summary.currentName)}</strong>
+                    <small>${escapeHtml(summary.nextUnlock)}</small>
                 </div>
-                <div class="campaign-unlock-track" role="meter" aria-label="Progreso hacia ${summary.nextMapName}: ${summary.nextProgress}%" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${summary.nextProgress}" style="--campaign-unlock-progress:${summary.nextProgress}%">
+                <div class="campaign-unlock-track" role="meter" aria-label="Progreso hacia ${escapeHtml(summary.nextMapName)}: ${summary.nextProgress}%" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${summary.nextProgress}" style="--campaign-unlock-progress:${summary.nextProgress}%">
                     <div>
                         <small>Siguiente operacion</small>
-                        <b>${summary.nextMapName}</b>
-                        <span>${summary.starsRemaining ? `${summary.starsRemaining} estrellas restantes` : 'Ruta completa'}</span>
+                        <b>${escapeHtml(summary.nextMapName)}</b>
+                        <span>${escapeHtml(summary.starsRemaining ? `${summary.starsRemaining} estrellas restantes` : 'Ruta completa')}</span>
                     </div>
                     <i aria-hidden="true"></i>
                 </div>
                 <div class="campaign-progress-readout">
-                    <span><b>${summary.totalStars}</b><small>estrellas</small></span>
+                    <span><b>${formatCampaignNumber(summary.totalStars)}</b><small>estrellas</small></span>
                     <span><b>${summary.unlockedCount}/${summary.totalMaps}</b><small>mapas</small></span>
                 </div>
                 ${this.renderCampaignMilestones(summary.milestones)}
@@ -83,9 +92,9 @@ export class CampaignPanel {
         const record = this.ui.game.progression.getModeRecord(mode.id);
         const actionLabel = `Jugar modo ${mode.name}`;
         return `<article class="mode-card">
-            <i class="fas ${mode.icon}"></i>
-            <div><strong>${mode.name}</strong><span>${mode.description}</span><small>Récord ${formatCampaignScore(record.bestScore)} · oleada ${formatCampaignNumber(record.bestWave)}</small></div>
-            <button class="btn-start-mode btn-primary ghost" type="button" data-mode="${mode.id}" aria-label="${actionLabel}" title="${actionLabel}" data-tooltip="${actionLabel}">Jugar</button>
+            <i class="fas ${escapeHtml(mode.icon)}"></i>
+            <div><strong>${escapeHtml(mode.name)}</strong><span>${escapeHtml(mode.description)}</span><small>Récord ${formatCampaignScore(record.bestScore)} · oleada ${formatCampaignNumber(record.bestWave)}</small></div>
+            <button class="btn-start-mode btn-primary ghost" type="button" data-mode="${escapeHtml(mode.id)}" aria-label="${escapeHtml(actionLabel)}" title="${escapeHtml(actionLabel)}" data-tooltip="${escapeHtml(actionLabel)}">Jugar</button>
         </article>`;
     }
 
@@ -96,10 +105,10 @@ export class CampaignPanel {
             <div class="briefing-hero">
                 <div>
                     <span class="briefing-kicker">OPERACIÓN ESPECIAL</span>
-                    <h2>${mode.name}</h2>
-                    <p class="briefing-copy">${mode.description}</p>
+                    <h2>${escapeHtml(mode.name)}</h2>
+                    <p class="briefing-copy">${escapeHtml(mode.description)}</p>
                 </div>
-                <div class="briefing-sigil" aria-hidden="true"><i class="fas ${mode.icon}"></i></div>
+                <div class="briefing-sigil" aria-hidden="true"><i class="fas ${escapeHtml(mode.icon)}"></i></div>
             </div>
             <div class="briefing-signal">
                 <span><i class="fas fa-trophy"></i><small>Récord</small><b>${formatCampaignScore(snapshot.best)}</b></span>
@@ -107,8 +116,8 @@ export class CampaignPanel {
                 <span><i class="fas fa-star"></i><small>Puntos</small><b>${formatCampaignScore(snapshot.score)}</b></span>
             </div>
             <div class="briefing-mechanic"><b>Reglas independientes</b><span>La puntuación, oleada y resultado se guardan fuera de la campaña.</span></div>
-            <div class="briefing-objectives"><div><span>Objetivo</span><small>${snapshot.detail}</small><b>Récord ${formatCampaignScore(snapshot.best)}</b></div></div>
-            <button class="btn-primary" id="deploy-mode" type="button" aria-label="${actionLabel}" title="${actionLabel}" data-tooltip="${actionLabel}">DESPLEGAR EQUIPO</button>
+            <div class="briefing-objectives"><div><span>Objetivo</span><small>${escapeHtml(snapshot.detail)}</small><b>Récord ${formatCampaignScore(snapshot.best)}</b></div></div>
+            <button class="btn-primary" id="deploy-mode" type="button" aria-label="${escapeHtml(actionLabel)}" title="${escapeHtml(actionLabel)}" data-tooltip="${escapeHtml(actionLabel)}">DESPLEGAR EQUIPO</button>
         </section>`;
         document.getElementById('deploy-mode')?.addEventListener('click', () => this.ui.closePanel());
     }
@@ -124,26 +133,26 @@ export class CampaignPanel {
         const totalStars = this.getTotalStars();
         const unlockProgress = this.buildMapUnlockProgress(index, totalStars);
         const actionLabel = unlocked ? `Jugar ${level.name}` : `Bloqueado. Requiere ${requirement} estrellas`;
-        return `<article class="map-card map-card--compact ${themeClass} ${this.ui.game.currentLevel?.id === level.id ? 'active' : ''} ${unlocked ? '' : 'locked'}" data-unlock-state="${unlocked ? 'unlocked' : 'locked'}" aria-label="${level.name}. ${unlocked ? 'Desbloqueado' : `Bloqueado, requiere ${requirement} estrellas`}">
+        return `<article class="map-card map-card--compact ${escapeHtml(themeClass)} ${this.ui.game.currentLevel?.id === level.id ? 'active' : ''} ${unlocked ? '' : 'locked'}" data-unlock-state="${unlocked ? 'unlocked' : 'locked'}" aria-label="${escapeHtml(`${level.name}. ${unlocked ? 'Desbloqueado' : `Bloqueado, requiere ${requirement} estrellas`}`)}">
             <div class="map-card-heading">
                 <div>
                     <span class="map-index">Mapa ${mapNumber}</span>
-                    <strong>${level.name}</strong>
+                    <strong>${escapeHtml(level.name)}</strong>
                 </div>
-                <button class="btn-load-map btn-primary ghost" type="button" data-index="${index}" aria-label="${actionLabel}" title="${actionLabel}" data-tooltip="${actionLabel}" aria-disabled="${!unlocked}" ${unlocked ? '' : 'disabled'}>${unlocked ? 'Jugar' : 'Bloqueado'}</button>
+                <button class="btn-load-map btn-primary ghost" type="button" data-index="${index}" aria-label="${escapeHtml(actionLabel)}" title="${escapeHtml(actionLabel)}" data-tooltip="${escapeHtml(actionLabel)}" aria-disabled="${!unlocked}" ${unlocked ? '' : 'disabled'}>${unlocked ? 'Jugar' : 'Bloqueado'}</button>
             </div>
             <div class="map-card-stats">
-                <span><small>Mejor</small><b>${progress.bestWave || 0}</b></span>
-                <span><small>Estrellas</small><b>${progress.stars || 0}</b></span>
-                <span><small>Dificultad</small><b>${level.difficulty}</b></span>
+                <span><small>Mejor</small><b>${formatCampaignNumber(progress.bestWave || 0)}</b></span>
+                <span><small>Estrellas</small><b>${formatCampaignNumber(progress.stars || 0)}</b></span>
+                <span><small>Dificultad</small><b>${escapeHtml(level.difficulty)}</b></span>
             </div>
-            <p class="map-brief">${level.theme?.brief || level.description}</p>
+            <p class="map-brief">${escapeHtml(level.theme?.brief || level.description)}</p>
             <div class="map-unlock-row map-card-meta">
-                <span class="map-difficulty ${fixedDifficulty}">${mechanic.label || 'Defensa táctica'}</span>
+                <span class="map-difficulty ${escapeHtml(fixedDifficulty)}">${escapeHtml(mechanic.label || 'Defensa táctica')}</span>
                 <span class="${unlocked ? 'map-unlocked' : 'map-locked'}">${unlocked ? 'Desbloqueado' : `Requiere ${requirement} estrellas`}</span>
             </div>
             ${unlocked ? '' : this.renderMapUnlockProgress(unlockProgress)}
-            <div class="challenge-row map-challenge-row"><span class="${progress.challenges.includes('cazajefes') ? 'done' : ''}">Cazajefes</span>${(level.mission?.objectives || []).map((objective) => `<span class="${progress.missionObjectives.includes(objective.id) ? 'done' : ''}">${objective.label} · ${formatCampaignCurrency(objective.reward)}</span>`).join('')}</div>
+            <div class="challenge-row map-challenge-row"><span class="${progress.challenges.includes('cazajefes') ? 'done' : ''}">Cazajefes</span>${(level.mission?.objectives || []).map((objective) => `<span class="${progress.missionObjectives.includes(objective.id) ? 'done' : ''}">${escapeHtml(objective.label)} · ${formatCampaignCurrency(objective.reward)}</span>`).join('')}</div>
         </article>`;
     }
 
@@ -159,10 +168,10 @@ export class CampaignPanel {
     renderCampaignMilestones(milestones = []) {
         if (!milestones.length) return '';
         return `<div class="campaign-milestone-strip" role="list" aria-label="Ruta de desbloqueo de mapas">
-            ${milestones.map((milestone) => `<span class="${milestone.state}" role="listitem" aria-label="${milestone.name}. ${milestone.stateLabel}. Requiere ${milestone.requirement} estrellas">
+            ${milestones.map((milestone) => `<span class="${escapeHtml(milestone.state)}" role="listitem" aria-label="${escapeHtml(`${milestone.name}. ${milestone.stateLabel}. Requiere ${milestone.requirement} estrellas`)}">
                 <b>${milestone.index}</b>
                 <small>${milestone.requirement}★</small>
-                <em>${milestone.name}</em>
+                <em>${escapeHtml(milestone.name)}</em>
             </span>`).join('')}
         </div>`;
     }
@@ -186,26 +195,26 @@ export class CampaignPanel {
         const signal = this.buildBriefingSignal(level, mission, progress);
         const actionLabel = `Desplegar equipo en ${level.name}`;
         this.ui.panelContent.innerHTML = `
-            <section class="mission-briefing ${themeClass}">
+            <section class="mission-briefing ${escapeHtml(themeClass)}">
                 <div class="briefing-hero">
                     <div>
-                        <span class="briefing-kicker">${mission.operation || 'Operación táctica'}</span>
-                        <h2>${level.name}</h2>
-                        <p class="briefing-copy">${mission.briefing || level.description}</p>
+                        <span class="briefing-kicker">${escapeHtml(mission.operation || 'Operación táctica')}</span>
+                        <h2>${escapeHtml(level.name)}</h2>
+                        <p class="briefing-copy">${escapeHtml(mission.briefing || level.description)}</p>
                     </div>
-                    <div class="briefing-sigil" aria-hidden="true">${this.getThemeMark(level)}</div>
+                    <div class="briefing-sigil" aria-hidden="true">${escapeHtml(this.getThemeMark(level))}</div>
                 </div>
                 <div class="briefing-signal">
-                    ${signal.map((item) => `<span><i class="fas ${item.icon}"></i><small>${item.label}</small><b>${item.value}</b></span>`).join('')}
+                    ${signal.map((item) => `<span><i class="fas ${escapeHtml(item.icon)}"></i><small>${escapeHtml(item.label)}</small><b>${escapeHtml(item.value)}</b></span>`).join('')}
                 </div>
                 <div class="briefing-grid">
-                    <blockquote><strong>${mission.speaker || 'Comando'}</strong><span>${mission.dialogue || level.theme?.brief || ''}</span></blockquote>
-                    <div class="briefing-mechanic"><b>${mission.mechanic?.label || 'Defensa táctica'}</b><span>${mission.mechanic?.description || ''}</span></div>
+                    <blockquote><strong>${escapeHtml(mission.speaker || 'Comando')}</strong><span>${escapeHtml(mission.dialogue || level.theme?.brief || '')}</span></blockquote>
+                    <div class="briefing-mechanic"><b>${escapeHtml(mission.mechanic?.label || 'Defensa táctica')}</b><span>${escapeHtml(mission.mechanic?.description || '')}</span></div>
                 </div>
                 <div class="briefing-objectives">
-                    ${(mission.objectives || []).map((objective) => `<div><span>${objective.label}</span><small>${objective.description}</small><b>+${formatCampaignCurrency(objective.reward)}</b></div>`).join('')}
+                    ${(mission.objectives || []).map((objective) => `<div><span>${escapeHtml(objective.label)}</span><small>${escapeHtml(objective.description)}</small><b>+${formatCampaignCurrency(objective.reward)}</b></div>`).join('')}
                 </div>
-                <button class="btn-primary" id="deploy-mission" type="button" aria-label="${actionLabel}" title="${actionLabel}" data-tooltip="${actionLabel}">DESPLEGAR EQUIPO</button>
+                <button class="btn-primary" id="deploy-mission" type="button" aria-label="${escapeHtml(actionLabel)}" title="${escapeHtml(actionLabel)}" data-tooltip="${escapeHtml(actionLabel)}">DESPLEGAR EQUIPO</button>
             </section>
         `;
         document.getElementById('deploy-mission')?.addEventListener('click', () => this.ui.closePanel());
@@ -236,8 +245,8 @@ export class CampaignPanel {
         return [
             { icon: 'fa-location-dot', label: 'Zona', value: level.theme?.label || level.name },
             { icon: 'fa-shield-halved', label: 'Sistema', value: mission.mechanic?.label || 'Defensa' },
-            { icon: 'fa-star', label: 'Estrellas', value: progress.stars || 0 },
-            { icon: 'fa-flag-checkered', label: 'Mejor', value: `Oleada ${progress.bestWave || 0}` }
+            { icon: 'fa-star', label: 'Estrellas', value: formatCampaignNumber(progress.stars || 0) },
+            { icon: 'fa-flag-checkered', label: 'Mejor', value: `Oleada ${formatCampaignNumber(progress.bestWave || 0)}` }
         ];
     }
 
