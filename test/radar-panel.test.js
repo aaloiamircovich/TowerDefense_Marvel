@@ -122,6 +122,26 @@ test('RadarPanel centraliza secciones tacticas y delega acciones interactivas', 
     }
 });
 
+test('RadarPanel normaliza el marco de secciones del radar', () => {
+    const panel = new RadarPanel({ panelContent: createPanelContentStub({}), game: {} });
+    const html = panel.renderSection({
+        id: 'wave"><script>',
+        title: '<Titulo>',
+        icon: 'fa-eye" onclick="bad',
+        empty: '<Vacio>',
+        stateClass: 'active" onclick="bad',
+        stateLabel: '<Estado>',
+        hasContent: false
+    }, true);
+
+    assert.match(html, /radar-section-wave-script active-onclick-bad/);
+    assert.match(html, /fa-circle-info/);
+    assert.match(html, /&lt;Titulo&gt;/);
+    assert.match(html, /&lt;Estado&gt;/);
+    assert.match(html, /&lt;Vacio&gt;/);
+    assert.doesNotMatch(html, /onclick="bad|<script>|<Titulo>|<Vacio>/);
+});
+
 function createRadarSources() {
     return {
         'wave-intel': createSource('<div id="wave-intel-content">Informe listo</div>'),

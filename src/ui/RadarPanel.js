@@ -1,11 +1,4 @@
-function escapeHtml(value = '') {
-    return String(value)
-        .replaceAll('&', '&amp;')
-        .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;')
-        .replaceAll('"', '&quot;')
-        .replaceAll("'", '&#039;');
-}
+import { escapeHtml, normalizeClassToken, normalizeIconClass } from './HtmlSanitizer.js';
 
 const RADAR_SECTION_DEFINITIONS = [
     {
@@ -155,11 +148,13 @@ export class RadarPanel {
     }
 
     renderSection(section, open = false) {
+        const sectionIdClass = normalizeClassToken(section.id, 'section');
+        const stateClass = normalizeClassToken(section.stateClass, 'empty');
         return `
-            <details class="radar-section radar-section-${escapeHtml(section.id)} ${section.stateClass}"${open ? ' open' : ''}>
+            <details class="radar-section radar-section-${sectionIdClass} ${stateClass}"${open ? ' open' : ''}>
                 <summary>
                     <span>
-                        <i class="fas ${escapeHtml(section.icon)}"></i>
+                        <i class="fas ${normalizeIconClass(section.icon)}"></i>
                         <strong>${escapeHtml(section.title)}</strong>
                     </span>
                     <b class="radar-section-state">${escapeHtml(section.stateLabel)}</b>
@@ -184,7 +179,7 @@ export class RadarPanel {
                 <div class="radar-glossary-grid">
                     ${RADAR_TACTICAL_GLOSSARY.map((entry) => `
                         <span class="radar-glossary-chip">
-                            <i class="fas ${escapeHtml(entry.icon)}"></i>
+                            <i class="fas ${normalizeIconClass(entry.icon)}"></i>
                             <b>${escapeHtml(entry.label)}</b>
                             <small>${escapeHtml(entry.detail)}</small>
                         </span>
@@ -210,7 +205,7 @@ export class RadarPanel {
                         .sort((a, b) => a.priority - b.priority)
                         .map((section) => `
                             <span>
-                                <b><i class="fas ${escapeHtml(section.icon)}"></i>${escapeHtml(section.title)}</b>
+                                <b><i class="fas ${normalizeIconClass(section.icon)}"></i>${escapeHtml(section.title)}</b>
                                 <small>${escapeHtml(section.empty)}</small>
                             </span>
                         `).join('')}
