@@ -257,6 +257,35 @@ test('ShopPanel recluta heroe, actualiza costo y permite tienda de skins vacia',
     assert.doesNotMatch(panelContent.innerHTML, /Próximamente/);
 });
 
+test('ShopPanel reutiliza la misma secuencia visual de caja al animar', async () => {
+    const previousDocument = globalThis.document;
+    const panel = new ShopPanel(createShopUi(createPanelContentStub({}), []));
+    const finalHero = { id: 'spiderman', name: 'Spider-Man', rarity: 'Common', visual: { idle: 'spiderman.png' } };
+    const previewHero = { id: 'iron_man', name: 'Iron Man', rarity: 'Rare', visual: { idle: 'iron_man.png' } };
+    let sequenceCalls = 0;
+    panel.buildGachaRevealSequence = () => {
+        sequenceCalls += 1;
+        return [previewHero, finalHero];
+    };
+    panel.getTimerHost = () => ({ setTimeout: () => 1, clearTimeout: () => {} });
+    const reveal = createRevealStub();
+    globalThis.document = {
+        querySelector(selector) {
+            return selector === '#gacha-res .gacha-reveal' ? reveal : null;
+        }
+    };
+
+    try {
+        panel.renderGachaReveal({ hero: finalHero });
+        panel.startGachaRevealAnimation({ hero: finalHero });
+        await Promise.resolve();
+
+        assert.equal(sequenceCalls, 1);
+    } finally {
+        globalThis.document = previousDocument;
+    }
+});
+
 test('ShopPanel limpia timers pendientes de apertura al cerrar tienda', () => {
     const panel = new ShopPanel(createShopUi(createPanelContentStub({}), []));
     const cleared = [];
@@ -381,6 +410,30 @@ function createNodeStub() {
     return {
         innerHTML: '',
         textContent: ''
+    };
+}
+
+function createRevealStub() {
+    const classList = {
+        add() {},
+        remove() {}
+    };
+    const slot = {
+        innerHTML: '',
+        offsetWidth: 24,
+        classList
+    };
+    const finalCopy = { classList };
+    const skipButton = { classList, addEventListener() {} };
+    return {
+        dataset: {},
+        classList,
+        querySelector(selector) {
+            if (selector === '.gacha-roll-sprite') return slot;
+            if (selector === '.gacha-final') return finalCopy;
+            if (selector === '.gacha-skip-btn') return skipButton;
+            return null;
+        }
     };
 }
 

@@ -128,6 +128,7 @@ export class ShopPanel {
         this.buildShopItemInsight = builders.buildShopItemInsight || (() => ({ tone: 'neutral', label: 'Uso flexible', reasons: ['Sin lectura tactica'] }));
         this.buildShopSetProgress = builders.buildShopSetProgress || (() => null);
         this.gachaRevealTimers = [];
+        this.pendingGachaRevealSequence = null;
     }
 
     render(title = 'Tienda') {
@@ -373,6 +374,7 @@ export class ShopPanel {
         const rarity = normalizeRarity(hero.rarity);
         const rarityClass = getRarityClass(rarity);
         const sequence = this.buildGachaRevealSequence(hero);
+        this.pendingGachaRevealSequence = sequence;
         const firstPreview = sequence[0] || hero;
         const firstRarity = normalizeRarity(firstPreview.rarity);
         const firstRarityClass = getRarityClass(firstRarity);
@@ -406,7 +408,8 @@ export class ShopPanel {
             return;
         }
 
-        const sequence = this.buildGachaRevealSequence(result.hero);
+        const timers = this.getTimerHost();
+        const sequence = this.takeGachaRevealSequence(result.hero);
         const delays = [320, 360, 400, 440, 500, 560, 640, 720, 820, 940, 1080, 1220];
         let index = 0;
         let finished = false;
@@ -457,6 +460,13 @@ export class ShopPanel {
                 if (finished) return;
                 this.gachaRevealTimers.push(timers.setTimeout(showEntry, 220));
             });
+    }
+
+    takeGachaRevealSequence(finalHero) {
+        const sequence = this.pendingGachaRevealSequence;
+        this.pendingGachaRevealSequence = null;
+        if (Array.isArray(sequence) && sequence.at(-1)?.id === finalHero?.id) return sequence;
+        return this.buildGachaRevealSequence(finalHero);
     }
 
     handleGacha() {
