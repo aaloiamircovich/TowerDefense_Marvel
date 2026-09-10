@@ -61,11 +61,11 @@ test('PlacementSuggestionPanel renderiza detalle escapado y confirma colocacion'
         panel.update({
             label: 'Celda <ideal>',
             detail: 'Pasto con "cobertura"',
-            qualityId: 'excellent',
+            qualityId: 'excellent" bad',
             actionLabel: 'Colocar'
         });
 
-        assert.equal(button.className, 'suggested-placement-action excellent');
+        assert.equal(button.className, 'suggested-placement-action excellent-bad');
         assert.equal(button.getAttribute('aria-label'), 'Celda <ideal>. Pasto con "cobertura"');
         assert.match(button.innerHTML, /Celda &lt;ideal&gt;/);
         assert.match(button.innerHTML, /Pasto con &quot;cobertura&quot;/);

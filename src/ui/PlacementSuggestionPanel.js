@@ -7,6 +7,14 @@ function escapeHtml(value = '') {
         .replaceAll("'", '&#39;');
 }
 
+function normalizeClassToken(value = '', fallback = 'solid') {
+    const token = String(value || '')
+        .toLowerCase()
+        .replace(/[^a-z0-9-]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+    return token || fallback;
+}
+
 export class PlacementSuggestionPanel {
     constructor(ui) {
         this.ui = ui;
@@ -28,7 +36,8 @@ export class PlacementSuggestionPanel {
         }
 
         const suggestionLabel = `${state.label}. ${state.detail}`;
-        button.className = `suggested-placement-action ${state.qualityId || 'solid'}`;
+        const qualityClass = normalizeClassToken(state.qualityId);
+        button.className = `suggested-placement-action ${qualityClass}`;
         button.setAttribute('aria-label', suggestionLabel);
         button.title = suggestionLabel;
         button.dataset.tooltip = suggestionLabel;
