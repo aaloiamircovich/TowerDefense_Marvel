@@ -1,6 +1,7 @@
 import { GAME_MODES } from '../systems/GameModeSystem.js';
 import { getFixedDifficultyKey, getLevelUnlockRequirement, isLevelUnlockedByStars } from '../utils/LevelProgression.js';
 import { formatHudResource } from './HudState.js';
+import { clampPercent, escapeHtml, normalizeClassToken, normalizeIconClass } from './HtmlSanitizer.js';
 
 function formatCampaignNumber(value = 0) {
     return Math.round(Number(value) || 0).toLocaleString('es-AR');
@@ -15,15 +16,6 @@ function formatCampaignCurrency(value = 0) {
     return `$${formatCampaignScore(value)}`;
 }
 
-function escapeHtml(value = '') {
-    return String(value)
-        .replaceAll('&', '&amp;')
-        .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;')
-        .replaceAll('"', '&quot;')
-        .replaceAll("'", '&#039;');
-}
-
 export class CampaignPanel {
     constructor(ui) {
         this.ui = ui;
@@ -32,6 +24,7 @@ export class CampaignPanel {
     render(title = 'Mapa') {
         const { game, panelContent } = this.ui;
         const summary = this.buildCampaignSummary();
+        const nextProgress = clampPercent(summary.nextProgress);
         panelContent.innerHTML = `
             <h2>${escapeHtml(title)}</h2>
             <section class="campaign-ops-strip">
@@ -40,7 +33,7 @@ export class CampaignPanel {
                     <strong>${escapeHtml(summary.currentName)}</strong>
                     <small>${escapeHtml(summary.nextUnlock)}</small>
                 </div>
-                <div class="campaign-unlock-track" role="meter" aria-label="Progreso hacia ${escapeHtml(summary.nextMapName)}: ${summary.nextProgress}%" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${summary.nextProgress}" style="--campaign-unlock-progress:${summary.nextProgress}%">
+                <div class="campaign-unlock-track" role="meter" aria-label="Progreso hacia ${escapeHtml(summary.nextMapName)}: ${nextProgress}%" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${nextProgress}" style="--campaign-unlock-progress:${nextProgress}%">
                     <div>
                         <small>Siguiente operacion</small>
                         <b>${escapeHtml(summary.nextMapName)}</b>
@@ -92,7 +85,7 @@ export class CampaignPanel {
         const record = this.ui.game.progression.getModeRecord(mode.id);
         const actionLabel = `Jugar modo ${mode.name}`;
         return `<article class="mode-card">
-            <i class="fas ${escapeHtml(mode.icon)}"></i>
+            <i class="fas ${normalizeIconClass(mode.icon)}"></i>
             <div><strong>${escapeHtml(mode.name)}</strong><span>${escapeHtml(mode.description)}</span><small>Récord ${formatCampaignScore(record.bestScore)} · oleada ${formatCampaignNumber(record.bestWave)}</small></div>
             <button class="btn-start-mode btn-primary ghost" type="button" data-mode="${escapeHtml(mode.id)}" aria-label="${escapeHtml(actionLabel)}" title="${escapeHtml(actionLabel)}" data-tooltip="${escapeHtml(actionLabel)}">Jugar</button>
         </article>`;
@@ -108,7 +101,7 @@ export class CampaignPanel {
                     <h2>${escapeHtml(mode.name)}</h2>
                     <p class="briefing-copy">${escapeHtml(mode.description)}</p>
                 </div>
-                <div class="briefing-sigil" aria-hidden="true"><i class="fas ${escapeHtml(mode.icon)}"></i></div>
+                <div class="briefing-sigil" aria-hidden="true"><i class="fas ${normalizeIconClass(mode.icon)}"></i></div>
             </div>
             <div class="briefing-signal">
                 <span><i class="fas fa-trophy"></i><small>Récord</small><b>${formatCampaignScore(snapshot.best)}</b></span>
@@ -124,16 +117,16 @@ export class CampaignPanel {
 
     renderMapCard(level, index) {
         const progress = this.ui.game.progression.getMapProgress(level.id);
-        const themeClass = this.getThemeClass(level);
+        const themeClass = normalizeClassToken(this.getThemeClass(level), 'map-theme-default');
         const requirement = getLevelUnlockRequirement(index);
         const unlocked = this.isLevelUnlocked(index);
-        const fixedDifficulty = getFixedDifficultyKey(level);
+        const fixedDifficulty = normalizeClassToken(getFixedDifficultyKey(level), 'standard');
         const mapNumber = String(index + 1).padStart(2, '0');
         const mechanic = level.mission?.mechanic || {};
         const totalStars = this.getTotalStars();
         const unlockProgress = this.buildMapUnlockProgress(index, totalStars);
         const actionLabel = unlocked ? `Jugar ${level.name}` : `Bloqueado. Requiere ${requirement} estrellas`;
-        return `<article class="map-card map-card--compact ${escapeHtml(themeClass)} ${this.ui.game.currentLevel?.id === level.id ? 'active' : ''} ${unlocked ? '' : 'locked'}" data-unlock-state="${unlocked ? 'unlocked' : 'locked'}" aria-label="${escapeHtml(`${level.name}. ${unlocked ? 'Desbloqueado' : `Bloqueado, requiere ${requirement} estrellas`}`)}">
+        return `<article class="map-card map-card--compact ${themeClass} ${this.ui.game.currentLevel?.id === level.id ? 'active' : ''} ${unlocked ? '' : 'locked'}" data-unlock-state="${unlocked ? 'unlocked' : 'locked'}" aria-label="${escapeHtml(`${level.name}. ${unlocked ? 'Desbloqueado' : `Bloqueado, requiere ${requirement} estrellas`}`)}">
             <div class="map-card-heading">
                 <div>
                     <span class="map-index">Mapa ${mapNumber}</span>
@@ -148,7 +141,7 @@ export class CampaignPanel {
             </div>
             <p class="map-brief">${escapeHtml(level.theme?.brief || level.description)}</p>
             <div class="map-unlock-row map-card-meta">
-                <span class="map-difficulty ${escapeHtml(fixedDifficulty)}">${escapeHtml(mechanic.label || 'Defensa táctica')}</span>
+                <span class="map-difficulty ${fixedDifficulty}">${escapeHtml(mechanic.label || 'Defensa táctica')}</span>
                 <span class="${unlocked ? 'map-unlocked' : 'map-locked'}">${unlocked ? 'Desbloqueado' : `Requiere ${requirement} estrellas`}</span>
             </div>
             ${unlocked ? '' : this.renderMapUnlockProgress(unlockProgress)}
@@ -168,7 +161,7 @@ export class CampaignPanel {
     renderCampaignMilestones(milestones = []) {
         if (!milestones.length) return '';
         return `<div class="campaign-milestone-strip" role="list" aria-label="Ruta de desbloqueo de mapas">
-            ${milestones.map((milestone) => `<span class="${escapeHtml(milestone.state)}" role="listitem" aria-label="${escapeHtml(`${milestone.name}. ${milestone.stateLabel}. Requiere ${milestone.requirement} estrellas`)}">
+            ${milestones.map((milestone) => `<span class="${normalizeClassToken(milestone.state, 'locked')}" role="listitem" aria-label="${escapeHtml(`${milestone.name}. ${milestone.stateLabel}. Requiere ${milestone.requirement} estrellas`)}">
                 <b>${milestone.index}</b>
                 <small>${milestone.requirement}★</small>
                 <em>${escapeHtml(milestone.name)}</em>
@@ -184,18 +177,18 @@ export class CampaignPanel {
             current,
             required,
             remaining: Math.max(0, required - current),
-            percent: Math.round((current / required) * 100)
+            percent: clampPercent((current / required) * 100)
         };
     }
 
     renderBriefing(level) {
         const mission = level.mission || {};
-        const themeClass = this.getThemeClass(level);
+        const themeClass = normalizeClassToken(this.getThemeClass(level), 'map-theme-default');
         const progress = this.ui.game.progression.getMapProgress(level.id);
         const signal = this.buildBriefingSignal(level, mission, progress);
         const actionLabel = `Desplegar equipo en ${level.name}`;
         this.ui.panelContent.innerHTML = `
-            <section class="mission-briefing ${escapeHtml(themeClass)}">
+            <section class="mission-briefing ${themeClass}">
                 <div class="briefing-hero">
                     <div>
                         <span class="briefing-kicker">${escapeHtml(mission.operation || 'Operación táctica')}</span>
@@ -205,7 +198,7 @@ export class CampaignPanel {
                     <div class="briefing-sigil" aria-hidden="true">${escapeHtml(this.getThemeMark(level))}</div>
                 </div>
                 <div class="briefing-signal">
-                    ${signal.map((item) => `<span><i class="fas ${escapeHtml(item.icon)}"></i><small>${escapeHtml(item.label)}</small><b>${escapeHtml(item.value)}</b></span>`).join('')}
+                    ${signal.map((item) => `<span><i class="fas ${normalizeIconClass(item.icon)}"></i><small>${escapeHtml(item.label)}</small><b>${escapeHtml(item.value)}</b></span>`).join('')}
                 </div>
                 <div class="briefing-grid">
                     <blockquote><strong>${escapeHtml(mission.speaker || 'Comando')}</strong><span>${escapeHtml(mission.dialogue || level.theme?.brief || '')}</span></blockquote>
