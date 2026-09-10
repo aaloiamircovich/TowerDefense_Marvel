@@ -80,6 +80,52 @@ test('inventario muestra objetos equipados con el sprite del heroe dueño', () =
     assert.match(equippedHtml, /Familia Stark/);
 });
 
+test('inventario escapa datos dinamicos de objetos y dueños', () => {
+    const ui = createUiStub();
+    ui.renderSprite = () => '<span class="sprite-safe"></span>';
+    const panel = new InventoryPanel(ui);
+    const item = {
+        id: 'item" onclick="bad',
+        name: '<Item>',
+        rarity: 'Rare',
+        slot: 'weapon"><script>',
+        tier: 1,
+        icon: 'item.png',
+        desc: '<Desc>',
+        effects: { damagePct: 0.1 }
+    };
+    const currentItem = {
+        id: 'current',
+        name: '<Actual>',
+        rarity: 'Common',
+        slot: 'weapon',
+        tier: 1,
+        icon: 'current.png',
+        desc: 'Actual',
+        effects: { fireRatePct: 0.1 }
+    };
+    panel.heroId = 'iron_man';
+    panel.getHeroCurrentItem = () => currentItem;
+
+    const cardHtml = panel.renderItemCard({
+        item,
+        freeCount: 1,
+        equippedHeroes: [{ hero: { id: 'hero', name: '<Hero>', visual: { portrait: 'hero.png' } } }],
+        totalCount: 2
+    });
+    const equippedHtml = panel.renderEquippedItem(item, 'weapon" onclick="bad');
+
+    assert.match(cardHtml, /data-item-id="item&quot; onclick=&quot;bad"/);
+    assert.match(cardHtml, /title="Equipado por &lt;Hero&gt;"/);
+    assert.match(cardHtml, /<h3>&lt;Item&gt;<\/h3>/);
+    assert.match(cardHtml, /&lt;Desc&gt;/);
+    assert.match(cardHtml, /vs &lt;Actual&gt;/);
+    assert.match(cardHtml, /Dano \+10%/);
+    assert.match(equippedHtml, /data-slot="weapon&quot; onclick=&quot;bad"/);
+    assert.match(equippedHtml, /aria-label="Desequipar &lt;Item&gt;"/);
+    assert.doesNotMatch(`${cardHtml}${equippedHtml}`, /onclick="bad|<Item>|<Hero>|<Desc>|<Actual>|<script>/);
+});
+
 test('inventario resume efectos principales de cada objeto', () => {
     const pills = buildItemEffectPills(data.items.lentes_edith);
 

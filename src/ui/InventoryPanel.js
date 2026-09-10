@@ -1,5 +1,6 @@
 import { aggregateItemEffects, ITEM_SLOTS, SLOT_LABELS } from '../systems/ItemEffectSystem.js';
 import { HERO_RARITIES, getRarityClass, normalizeRarity } from '../utils/Rarity.js';
+import { escapeHtml, normalizeClassToken } from './HtmlSanitizer.js';
 import { getItemFamilyName } from './ItemPresentation.js';
 
 export { getItemFamilyName };
@@ -33,15 +34,7 @@ const ITEM_EFFECT_GROUPS = {
     terrain: ['allowWater', 'allowMountain', 'allowGrass']
 };
 
-function escapeAttribute(value = '') {
-    return String(value).replace(/[&<>"']/g, (char) => ({
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#39;'
-    }[char]));
-}
+const escapeAttribute = escapeHtml;
 
 const ITEM_EFFECT_LABELS = {
     damagePct: 'Dano',
@@ -144,7 +137,7 @@ export function renderItemDeltaRows(rows) {
     if (!rows.length) return '<em class="neutral">Sin cambios numericos</em>';
     return rows.map((row) => {
         const delta = formatItemDeltaValue(row);
-        return `<em class="${delta.value < 0 ? 'negative' : 'positive'}">${delta.label}</em>`;
+        return `<em class="${delta.value < 0 ? 'negative' : 'positive'}">${escapeHtml(delta.label)}</em>`;
     }).join('');
 }
 
@@ -258,7 +251,7 @@ export class InventoryPanel {
 
         this.ui.panelContent.innerHTML = `
             <div class="panel-title-row">
-                <h2>${title}</h2>
+                <h2>${escapeHtml(title)}</h2>
                 <strong><i class="fas fa-gem"></i> 1 objeto por heroe</strong>
             </div>
             <section class="inventory-command-header inventory-command-header--compact">
@@ -275,7 +268,7 @@ export class InventoryPanel {
                     </div>
                     <div class="inventory-rarity-strip" aria-label="Objetos por rareza">
                         ${raritySummary.length
-                            ? raritySummary.map(({ rarity, count }) => `<span class="${getRarityClass(rarity)}"><b>${rarity}</b><small>x${count}</small></span>`).join('')
+                            ? raritySummary.map(({ rarity, count }) => `<span class="${normalizeClassToken(getRarityClass(rarity), 'rarity-common')}"><b>${escapeHtml(rarity)}</b><small>x${escapeHtml(count)}</small></span>`).join('')
                             : '<span><b>Sin objetos</b><small>x0</small></span>'}
                     </div>
                 </div>
@@ -285,11 +278,12 @@ export class InventoryPanel {
                 <div class="inventory-status-filters" aria-label="Filtrar por estado">
                     ${statusOptions.map(([status, label]) => {
                         const active = this.statusFilter === status;
-                        return `<button class="status-filter ${active ? 'active' : ''}" type="button" data-status="${status}" aria-pressed="${active}" aria-label="Filtrar objetos: ${label}" title="Filtrar objetos: ${label}" data-tooltip="Filtrar objetos: ${label}">${label}</button>`;
+                        const filterLabel = `Filtrar objetos: ${label}`;
+                        return `<button class="status-filter ${active ? 'active' : ''}" type="button" data-status="${escapeHtml(status)}" aria-pressed="${active}" aria-label="${escapeHtml(filterLabel)}" title="${escapeHtml(filterLabel)}" data-tooltip="${escapeHtml(filterLabel)}">${escapeHtml(label)}</button>`;
                     }).join('')}
                 </div>
                 <details class="inventory-advanced-filters" data-advanced-count="${advancedCount}">
-                    <summary><span><i class="fas fa-sliders"></i><b>Filtros avanzados</b></span><small>${advancedSummary}</small></summary>
+                    <summary><span><i class="fas fa-sliders"></i><b>Filtros avanzados</b></span><small>${escapeHtml(advancedSummary)}</small></summary>
                     <div class="inventory-advanced-filter-body">
                         <div class="inventory-filter-group">
                             <span>Rareza</span>
@@ -298,9 +292,9 @@ export class InventoryPanel {
                                     const label = rarity === 'all' ? 'Todas' : rarity;
                                     const filterLabel = `Filtrar rareza ${label}`;
                                     const active = this.rarityFilter === rarity;
-                                    const rarityClass = rarity === 'all' ? '' : getRarityClass(rarity);
+                                    const rarityClass = rarity === 'all' ? '' : normalizeClassToken(getRarityClass(rarity), 'rarity-common');
                                     const classes = ['rarity-filter', 'inventory-rarity-filter', rarityClass, active ? 'active' : ''].filter(Boolean).join(' ');
-                                    return `<button class="${classes}" type="button" data-rarity="${rarity}" aria-pressed="${active}" aria-label="${filterLabel}" title="${filterLabel}" data-tooltip="${filterLabel}">${label}</button>`;
+                                    return `<button class="${classes}" type="button" data-rarity="${escapeHtml(rarity)}" aria-pressed="${active}" aria-label="${escapeHtml(filterLabel)}" title="${escapeHtml(filterLabel)}" data-tooltip="${escapeHtml(filterLabel)}">${escapeHtml(label)}</button>`;
                                 }).join('')}
                             </div>
                         </div>
@@ -310,7 +304,7 @@ export class InventoryPanel {
                                 ${[0, 1, 2, 3, 4].map((tier) => {
                                     const label = tier === 0 ? 'Todos' : `T${tier}`;
                                     const filterLabel = tier === 0 ? 'Mostrar todos los tiers' : `Filtrar tier ${tier}`;
-                                    return `<button class="tier-filter ${this.tierFilter === tier ? 'active' : ''}" type="button" data-tier="${tier}" aria-pressed="${this.tierFilter === tier}" aria-label="${filterLabel}" title="${filterLabel}" data-tooltip="${filterLabel}">${label}</button>`;
+                                    return `<button class="tier-filter ${this.tierFilter === tier ? 'active' : ''}" type="button" data-tier="${escapeHtml(tier)}" aria-pressed="${this.tierFilter === tier}" aria-label="${escapeHtml(filterLabel)}" title="${escapeHtml(filterLabel)}" data-tooltip="${escapeHtml(filterLabel)}">${escapeHtml(label)}</button>`;
                                 }).join('')}
                             </div>
                         </div>
@@ -320,14 +314,14 @@ export class InventoryPanel {
                                 ${['all', ...ITEM_SLOTS].map((slot) => {
                                     const label = slot === 'all' ? 'Todas' : SLOT_LABELS[slot];
                                     const filterLabel = slot === 'all' ? 'Mostrar todos los tipos de objeto' : `Filtrar tipo ${label}`;
-                                    return `<button class="slot-filter ${this.slotFilter === slot ? 'active' : ''}" type="button" data-slot="${slot}" aria-pressed="${this.slotFilter === slot}" aria-label="${filterLabel}" title="${filterLabel}" data-tooltip="${filterLabel}">${label}</button>`;
+                                    return `<button class="slot-filter ${this.slotFilter === slot ? 'active' : ''}" type="button" data-slot="${escapeHtml(slot)}" aria-pressed="${this.slotFilter === slot}" aria-label="${escapeHtml(filterLabel)}" title="${escapeHtml(filterLabel)}" data-tooltip="${escapeHtml(filterLabel)}">${escapeHtml(label)}</button>`;
                                 }).join('')}
                             </div>
                         </div>
                         <label class="inventory-effect-filter inventory-filter-group">
                             <span>Táctica</span>
                             <select id="inventory-effect-filter" aria-label="Filtrar objetos por efecto tactico">
-                                ${ITEM_EFFECT_FILTERS.map((filter) => `<option value="${filter.id}" ${this.effectFilter === filter.id ? 'selected' : ''}>${filter.label}</option>`).join('')}
+                                ${ITEM_EFFECT_FILTERS.map((filter) => `<option value="${escapeHtml(filter.id)}" ${this.effectFilter === filter.id ? 'selected' : ''}>${escapeHtml(filter.label)}</option>`).join('')}
                             </select>
                         </label>
                     </div>
@@ -407,9 +401,9 @@ export class InventoryPanel {
         return `
             <article class="equipment-slot filled single">
                 ${this.ui.renderSprite(item.icon, item.name)}
-                <div><span>${SLOT_LABELS[item.slot]} | Familia ${getItemFamilyName(item)}</span><strong>${item.name}</strong><small>${item.desc}</small></div>
+                <div><span>${escapeHtml(SLOT_LABELS[item.slot] || item.slot)} | Familia ${escapeHtml(getItemFamilyName(item))}</span><strong>${escapeHtml(item.name)}</strong><small>${escapeHtml(item.desc)}</small></div>
                 <div class="slot-actions">
-                    <button class="icon-command unequip-item" type="button" data-slot="${slot}" aria-label="Desequipar ${item.name}" title="Desequipar" data-tooltip="Desequipar"><i class="fas fa-eject"></i></button>
+                    <button class="icon-command unequip-item" type="button" data-slot="${escapeHtml(slot)}" aria-label="${escapeHtml(`Desequipar ${item.name}`)}" title="Desequipar" data-tooltip="Desequipar"><i class="fas fa-eject"></i></button>
                 </div>
             </article>
         `;
@@ -419,7 +413,7 @@ export class InventoryPanel {
         const { item, freeCount, equippedHeroes, totalCount } = entry;
         const primaryHero = equippedHeroes[0]?.hero || null;
         const rarity = normalizeRarity(item.rarity);
-        const rarityClass = getRarityClass(rarity);
+        const rarityClass = normalizeClassToken(getRarityClass(rarity), 'rarity-common');
         const ownerLabel = equippedHeroes.length
             ? equippedHeroes.map(({ hero }) => hero?.name || 'Heroe').join(', ')
             : 'Sin equipar';
@@ -429,22 +423,22 @@ export class InventoryPanel {
         const equipPreview = this.heroId ? this.renderEquipPreview(item) : '';
         const effectPills = buildItemEffectPills(item);
         return `
-            <article class="inventory-card item-card-v2 inventory-object-card ${rarityClass}" data-item-id="${item.id}" data-rarity="${rarity}" role="button" tabindex="0" aria-label="${escapeAttribute(itemAriaLabel)}" title="${escapeAttribute(itemAriaLabel)}" data-tooltip="${escapeAttribute(itemAriaLabel)}">
-                <b class="item-quantity-badge">x${totalCount}</b>
-                ${primaryHero ? `<span class="item-owner-corner" title="Equipado por ${primaryHero.name}">${this.ui.renderSprite(this.ui.getHeroDisplaySprite(primaryHero), primaryHero.name)}</span>` : ''}
+            <article class="inventory-card item-card-v2 inventory-object-card ${rarityClass}" data-item-id="${escapeAttribute(item.id)}" data-rarity="${escapeHtml(rarity)}" role="button" tabindex="0" aria-label="${escapeAttribute(itemAriaLabel)}" title="${escapeAttribute(itemAriaLabel)}" data-tooltip="${escapeAttribute(itemAriaLabel)}">
+                <b class="item-quantity-badge">x${escapeHtml(totalCount)}</b>
+                ${primaryHero ? `<span class="item-owner-corner" title="${escapeHtml(`Equipado por ${primaryHero.name}`)}">${this.ui.renderSprite(this.ui.getHeroDisplaySprite(primaryHero), primaryHero.name)}</span>` : ''}
                 <div class="item-sprite-frame">${this.ui.renderSprite(item.icon, item.name)}</div>
-                <h3>${item.name}</h3>
-                <small>${SLOT_LABELS[item.slot]} | <b class="rarity-badge ${rarityClass}">${rarity}</b> | Familia ${getItemFamilyName(item)}</small>
-                <p>${item.desc}</p>
+                <h3>${escapeHtml(item.name)}</h3>
+                <small>${escapeHtml(SLOT_LABELS[item.slot] || item.slot)} | <b class="rarity-badge ${rarityClass}">${escapeHtml(rarity)}</b> | Familia ${escapeHtml(getItemFamilyName(item))}</small>
+                <p>${escapeHtml(item.desc)}</p>
                 <div class="item-effect-pills" aria-label="Efectos principales">
-                    ${effectPills.map((pill) => `<span class="${pill.tone}"><b>${pill.label}</b><small>${pill.value}</small></span>`).join('')}
+                    ${effectPills.map((pill) => `<span class="${normalizeClassToken(pill.tone, 'neutral')}"><b>${escapeHtml(pill.label)}</b><small>${escapeHtml(pill.value)}</small></span>`).join('')}
                 </div>
                 <div class="item-card-status">
-                    <span>${freeCount} libre${freeCount === 1 ? '' : 's'}</span>
-                    <b>${ownerLabel}</b>
+                    <span>${escapeHtml(freeCount)} libre${freeCount === 1 ? '' : 's'}</span>
+                    <b>${escapeHtml(ownerLabel)}</b>
                 </div>
                 <div class="item-card-actions">
-                    <button class="btn-primary equip-item" type="button" data-id="${item.id}" aria-label="Elegir heroe para ${item.name}" title="Elegir heroe para ${item.name}" data-tooltip="Elegir heroe para ${item.name}"><i class="fas fa-users"></i> Elegir héroe</button>
+                    <button class="btn-primary equip-item" type="button" data-id="${escapeHtml(item.id)}" aria-label="${escapeHtml(`Elegir heroe para ${item.name}`)}" title="${escapeHtml(`Elegir heroe para ${item.name}`)}" data-tooltip="${escapeHtml(`Elegir heroe para ${item.name}`)}"><i class="fas fa-users"></i> Elegir héroe</button>
                 </div>
                 ${equipPreview}
             </article>
@@ -456,7 +450,7 @@ export class InventoryPanel {
         const rows = buildItemEquipDeltaRows(item, currentItem);
         return `
             <div class="item-equip-preview">
-                <strong>${currentItem ? `vs ${currentItem.name}` : 'Al equipar'}</strong>
+                <strong>${escapeHtml(currentItem ? `vs ${currentItem.name}` : 'Al equipar')}</strong>
                 ${renderItemDeltaRows(rows)}
             </div>
         `;
