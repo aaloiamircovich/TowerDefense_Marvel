@@ -165,6 +165,26 @@ test('WaveReportPanel resume dano a base recompensa y accion en lectura rapida',
     assert.match(html, /quickline-saving/);
     assert.match(html, /Faltan &lt;160&gt;/);
 });
+
+test('WaveReportPanel compacta numeros grandes del late game', () => {
+    const panel = new WaveReportPanel({});
+    const quickline = panel.renderQuickline(
+        { leaks: 0, kills: 12500, damage: 2450000, credits: 1850000 },
+        { type: 'stable', label: 'Preparar jefe final' }
+    );
+    const rewards = panel.renderRewardBreakdown({
+        credits: 1850000,
+        bounty: 1420000,
+        metaReward: 12500
+    });
+
+    assert.match(quickline, /12\.5k KO \| 2\.5M dano/);
+    assert.match(quickline, /\+\$1\.9M/);
+    assert.match(rewards, /\+\$1\.9M/);
+    assert.match(rewards, /\+\$1\.4M/);
+    assert.match(rewards, /\+\$12\.5k/);
+});
+
 test('WaveReportPanel desglosa ahorro cuando no alcanza para mejorar', () => {
     const panel = new WaveReportPanel({});
     const html = panel.renderAction({

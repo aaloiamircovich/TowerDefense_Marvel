@@ -1,3 +1,5 @@
+import { formatHudResource } from './HudState.js';
+
 function escapeHtml(value = '') {
     return String(value).replace(/[&<>"']/g, (char) => ({
         '&': '&amp;',
@@ -6,6 +8,14 @@ function escapeHtml(value = '') {
         '"': '&quot;',
         "'": '&#39;'
     }[char]));
+}
+
+function formatReportNumber(value = 0) {
+    return formatHudResource(value);
+}
+
+function formatReportCurrency(value = 0) {
+    return `$${formatReportNumber(value)}`;
 }
 
 export class WaveReportPanel {
@@ -104,8 +114,8 @@ export class WaveReportPanel {
                 : 'fa-compass';
         const chips = [
             { icon: 'fa-shield-halved', label: 'Base', value: leaks > 0 ? `-${leaks} vida` : 'Intacta', tone: leaks > 0 ? 'danger' : 'safe' },
-            { icon: 'fa-skull', label: 'Combate', value: `${kills} KO | ${damage} dano`, tone: 'combat' },
-            { icon: 'fa-coins', label: 'Recompensa', value: `+$${credits}`, tone: 'reward' },
+            { icon: 'fa-skull', label: 'Combate', value: `${formatReportNumber(kills)} KO | ${formatReportNumber(damage)} dano`, tone: 'combat' },
+            { icon: 'fa-coins', label: 'Recompensa', value: `+${formatReportCurrency(credits)}`, tone: 'reward' },
             { icon: actionIcon, label: 'Siguiente', value: actionText, tone: action?.type || 'stable' }
         ];
         return `<div class="wave-report-quickline" aria-label="Resumen rapido de oleada">
@@ -159,10 +169,10 @@ export class WaveReportPanel {
         const known = bounty + metaReward;
         const extra = Math.max(0, credits - known);
         const rows = [
-            { icon: 'fa-sack-dollar', label: 'Total', value: `+$${credits}`, tone: 'total' },
-            bounty > 0 ? { icon: 'fa-skull', label: 'Bajas', value: `+$${bounty}` } : null,
-            metaReward > 0 ? { icon: 'fa-medal', label: 'Progreso', value: `+$${metaReward}` } : null,
-            extra > 0 ? { icon: 'fa-dice', label: 'Extras', value: `+$${extra}` } : null
+            { icon: 'fa-sack-dollar', label: 'Total', value: `+${formatReportCurrency(credits)}`, tone: 'total' },
+            bounty > 0 ? { icon: 'fa-skull', label: 'Bajas', value: `+${formatReportCurrency(bounty)}` } : null,
+            metaReward > 0 ? { icon: 'fa-medal', label: 'Progreso', value: `+${formatReportCurrency(metaReward)}` } : null,
+            extra > 0 ? { icon: 'fa-dice', label: 'Extras', value: `+${formatReportCurrency(extra)}` } : null
         ].filter(Boolean);
         if (!credits && rows.length <= 1) return '';
         return `<div class="wave-reward-strip" aria-label="Recompensa de oleada">
