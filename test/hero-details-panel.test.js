@@ -121,3 +121,138 @@ test('HeroDetailsPanel muestra familia del objeto equipado en tab de equipamient
         globalThis.document = previousDocument;
     }
 });
+
+test('HeroDetailsPanel escapa textos dinamicos del render completo', () => {
+    const previousDocument = globalThis.document;
+    globalThis.document = { getElementById: () => null };
+    const hero = {
+        id: 'hero_bad',
+        name: '<img src=x onerror=alert(1)>',
+        rarity: 'Rare',
+        category: 'Tecnologico <script>',
+        level: 8,
+        damage: 30,
+        fireRate: 1.4,
+        range: 165,
+        critChance: 7,
+        ability: 'Rayo <script>',
+        abilityDesc: 'Dispara <b>fuerte</b>',
+        niche: 'Nicho <img>',
+        allowedTerrains: [1],
+        targetPriority: 'Mal"><script>',
+        items: [
+            {
+                id: 'bad_item',
+                name: 'Objeto <script>',
+                slot: 'weapon"><img',
+                set: 'stark<script>',
+                desc: 'Descripcion <img src=x>'
+            }
+        ],
+        abilitySystem: {
+            getDisplayState: () => ({ ready: true, label: 'Listo <img>', progress: 'bad<script>' }),
+            getControlState: () => ({
+                label: 'Modo <script>',
+                value: 'a"><img',
+                options: [
+                    { id: 'a"><img', label: 'Opcion <b>' }
+                ]
+            })
+        },
+        config: {
+            id: 'hero_bad',
+            name: '<img src=x onerror=alert(1)>',
+            rarity: 'Rare',
+            category: 'Tecnologico <script>',
+            damage: 30,
+            range: 165,
+            fireRate: 1.4,
+            critChance: 7,
+            ability: 'Rayo <script>',
+            abilityDesc: 'Dispara <b>fuerte</b>',
+            niche: 'Nicho <img>',
+            tags: ['Avengers <script>'],
+            allowedTerrains: [1],
+            targetingPriority: 'Mal"><script>'
+        }
+    };
+    const ui = {
+        game: {
+            heroes: [hero],
+            tacticalActions: {
+                canReposition: () => ({ ok: true, reason: 'Mover <img>' }),
+                canSell: () => ({ ok: true, reason: 'Retirar <script>' })
+            },
+            progression: {
+                state: { equippedItems: {}, unlockedHeroIds: ['hero_bad'] },
+                getHeroBonuses: () => ({})
+            },
+            itemDatabase: {},
+            resourceManager: { credits: 650 },
+            waveManager: {}
+        },
+        nextWaveSummary: {},
+        panelContent: {
+            innerHTML: '',
+            querySelectorAll: () => [],
+            querySelector: () => null
+        },
+        inventoryPanel: {},
+        getHeroLevel: () => 8,
+        getHeroUpgradeCost: () => 120,
+        getHeroLevelPreviewLabel: () => 'Dano <script>',
+        getHeroLevelPreviewRows: () => [{ label: 'Dano <img>', value: 12 }],
+        formatSignedPreviewValue: (value) => `+${value}`,
+        getTerrainText: () => 'Pasto <script>',
+        getMissionCredits: () => 650,
+        getHeroDisplaySprite: () => null,
+        renderSprite: () => '<span class="sprite-fallback">?</span>',
+        bindHeroDetailTabs: () => {},
+        renderPanel: () => {},
+        showToast: () => {},
+        renderHeroRoster: () => {},
+        renderHeroDetails: () => {}
+    };
+    const panel = new HeroDetailsPanel(ui, {
+        targetingPriorities: ['Primero', 'Mal"><script>'],
+        evaluateHeroWaveFit: () => ({}),
+        buildRosterWaveFitView: () => ({
+            id: 'thin" onclick="x',
+            ariaLabel: 'Lectura <script>',
+            label: 'Respuesta <img>',
+            scoreLabel: '6 <b>',
+            reasonText: 'Motivo <script>'
+        }),
+        buildHeroCombatIdentity: () => [
+            { label: 'Impacto <script>', value: '<AoE>', icon: 'fa-bolt" onclick="x', tone: 'prime" onclick="x' }
+        ]
+    });
+
+    try {
+        panel.render(hero);
+        assert.doesNotMatch(ui.panelContent.innerHTML, /<img\s/i);
+        assert.doesNotMatch(ui.panelContent.innerHTML, /<script/i);
+        assert.doesNotMatch(ui.panelContent.innerHTML, /onclick=/i);
+        assert.match(ui.panelContent.innerHTML, /&lt;img src=x onerror=alert\(1\)&gt;/);
+        assert.match(ui.panelContent.innerHTML, /Rayo &lt;script&gt;/);
+        assert.match(ui.panelContent.innerHTML, /Pasto &lt;script&gt;/);
+        assert.match(ui.panelContent.innerHTML, /hero-wave-fit-compact thin-onclick-x/);
+        assert.match(ui.panelContent.innerHTML, /class="prime-onclick-x"/);
+        assert.match(ui.panelContent.innerHTML, /class="fas fa-circle-info"/);
+        assert.match(ui.panelContent.innerHTML, /style="width:0%"/);
+
+        panel.render(hero, 'equipment');
+        assert.doesNotMatch(ui.panelContent.innerHTML, /<img\s/i);
+        assert.doesNotMatch(ui.panelContent.innerHTML, /<script/i);
+        assert.match(ui.panelContent.innerHTML, /Objeto &lt;script&gt;/);
+        assert.match(ui.panelContent.innerHTML, /Descripcion &lt;img src=x&gt;/);
+
+        panel.render(hero, 'upgrade');
+        assert.doesNotMatch(ui.panelContent.innerHTML, /<img\s/i);
+        assert.doesNotMatch(ui.panelContent.innerHTML, /<script/i);
+        assert.match(ui.panelContent.innerHTML, /Dano &lt;img&gt; \+12/);
+        assert.match(ui.panelContent.innerHTML, /Cambios: Dano &lt;script&gt;/);
+    } finally {
+        globalThis.document = previousDocument;
+    }
+});
