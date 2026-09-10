@@ -1,11 +1,4 @@
-function escapeHtml(value = '') {
-    return String(value)
-        .replaceAll('&', '&amp;')
-        .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;')
-        .replaceAll('"', '&quot;')
-        .replaceAll("'", '&#39;');
-}
+import { escapeHtml, normalizeClassToken } from './HtmlSanitizer.js';
 
 export class EnemyInfoPanel {
     constructor(ui, builders = {}) {
@@ -31,7 +24,7 @@ export class EnemyInfoPanel {
         const content = document.getElementById('enemy-info-content');
         content?.querySelector('.enemy-tactical-brief')?.remove();
         content?.insertAdjacentHTML('beforeend', `
-            <div class="enemy-tactical-brief ${escapeHtml(intel.danger)}">
+            <div class="enemy-tactical-brief ${normalizeClassToken(intel.danger, 'low')}">
                 <strong><i class="fas fa-crosshairs"></i>${escapeHtml(intel.counter)}</strong>
                 <span>${escapeHtml(intel.counterDetail)}</span>
                 ${intel.traits.length ? `<small>${intel.traits.map((trait) => escapeHtml(trait)).join(' | ')}</small>` : ''}

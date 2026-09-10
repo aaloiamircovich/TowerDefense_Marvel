@@ -1,17 +1,10 @@
+import { escapeHtml } from './HtmlSanitizer.js';
+
 export const ASSET_VERSION = 'evolution-enemy-sprites-20260812';
 
 export function versionAssetSource(source, assetVersion = ASSET_VERSION) {
     if (!source?.startsWith?.('assets/images/')) return source;
     return `${source}${source.includes('?') ? '&' : '?'}v=${assetVersion}`;
-}
-
-function escapeHtml(value = '') {
-    return String(value)
-        .replaceAll('&', '&amp;')
-        .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;')
-        .replaceAll('"', '&quot;')
-        .replaceAll("'", '&#39;');
 }
 
 export function renderSpriteMarkup(src, name = '', assetVersion = ASSET_VERSION) {
