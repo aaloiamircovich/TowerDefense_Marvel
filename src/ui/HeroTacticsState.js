@@ -86,7 +86,7 @@ export function evaluateHeroWaveFit(hero, summary = null, credits = 0) {
         reasons.push('perfil versatil');
     }
 
-    if (score >= 6) return { id: 'prime', label: 'Counter ideal', score, reasons: reasons.slice(0, 3) };
+    if (score >= 6) return { id: 'prime', label: 'Respuesta ideal', score, reasons: reasons.slice(0, 3) };
     if (score >= 3) return { id: 'good', label: 'Buen ajuste', score, reasons: reasons.slice(0, 3) };
     return { id: 'neutral', label: 'Neutro', score, reasons: reasons.slice(0, 2) };
 }
@@ -185,7 +185,7 @@ export function buildHeroCombatIdentity(hero = {}) {
             tone: 'impact'
         },
         {
-            label: 'Counters',
+            label: 'Respuestas',
             value: counters.slice(0, 3).join(' · ') || 'DPS',
             icon: 'fa-crosshairs',
             tone: counters.length >= 3 ? 'prime' : counters.length ? 'ready' : 'neutral'

@@ -171,7 +171,7 @@ test('WaveTacticsState arma medidor controles clickeables y vista de ajuste', ()
     const deploy = buildWavePrepActionControl({ type: 'deploy', heroId: 'iron_man', label: 'Colocar Iron Man', reason: 'DPS', cost: 0 });
     const fit = buildRosterWaveFitView({
         id: 'prime',
-        label: 'Counter ideal',
+        label: 'Respuesta ideal',
         score: 8.4,
         reasons: ['detecta sigilo', 'frena corredores']
     });

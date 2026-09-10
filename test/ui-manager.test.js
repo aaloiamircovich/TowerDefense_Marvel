@@ -189,7 +189,7 @@ test('buildStatusLegendModel prioriza counters de la oleada', () => {
     });
 
     assert.deepEqual(model.entries.map((entry) => entry.id), ['detection', 'piercing', 'control']);
-    assert.equal(model.label, 'Counters clave');
+    assert.equal(model.label, 'Respuestas clave');
 });
 
 test('buildCounterCoverageModel distingue counters listos, disponibles y faltantes', () => {
@@ -308,7 +308,7 @@ test('buildLeakIntel resume enemigo filtrado y counter recomendado', () => {
 test('buildRosterWaveFitView expone score y razones visibles', () => {
     const view = buildRosterWaveFitView({
         id: 'prime',
-        label: 'Counter ideal',
+        label: 'Respuesta ideal',
         score: 8.4,
         reasons: ['detecta sigilo', 'frena corredores']
     });
@@ -342,7 +342,7 @@ test('buildHeroCombatIdentity resume rango impacto counters y rol', () => {
         }
     });
     assert.equal(storm.find((chip) => chip.label === 'Impacto').value, 'Rebote + Propagación + Slow');
-    assert.equal(storm.find((chip) => chip.label === 'Counters').value, 'Control · Alcance');
+    assert.equal(storm.find((chip) => chip.label === 'Respuestas').value, 'Control · Alcance');
     assert.equal(storm.find((chip) => chip.label === 'Rol').value, 'Grupos');
 
     const domino = buildHeroCombatIdentity({
@@ -430,7 +430,7 @@ test('renderHeroDetails muestra counter de oleada dentro de estadisticas', () =>
         assert.match(ui.panelContent.innerHTML, /id="hero-detail-panel" class="hero-detail-tab-panel summary" role="tabpanel" aria-labelledby="hero-detail-tab-summary"/);
         assert.match(ui.panelContent.innerHTML, /data-view="summary" role="tab" aria-selected="true"/);
         assert.match(ui.panelContent.innerHTML, /Lectura de oleada/);
-        assert.match(ui.panelContent.innerHTML, /Counter ideal/);
+        assert.match(ui.panelContent.innerHTML, /Respuesta ideal/);
         assert.match(ui.panelContent.innerHTML, /6 pts/);
         assert.match(ui.panelContent.innerHTML, /rompe armadura/);
         assert.match(ui.panelContent.innerHTML, /hero-detail-quick-strip/);
@@ -438,7 +438,7 @@ test('renderHeroDetails muestra counter de oleada dentro de estadisticas', () =>
         assert.doesNotMatch(ui.panelContent.innerHTML, /hero-combat-identity/);
         assert.match(ui.panelContent.innerHTML, /Rango[\s\S]*Círculo/);
         assert.match(ui.panelContent.innerHTML, /Impacto[\s\S]*Directo/);
-        assert.match(ui.panelContent.innerHTML, /Counters[\s\S]*Perforación · Alcance · DPS/);
+        assert.match(ui.panelContent.innerHTML, /Respuestas[\s\S]*Perforación · Alcance · DPS/);
         assert.match(ui.panelContent.innerHTML, /Rol[\s\S]*Daño/);
         assert.match(ui.panelContent.innerHTML, /targeting-priority-legend/);
         assert.match(ui.panelContent.innerHTML, /class="active" title="Primero: prioriza al enemigo mas avanzado"/);

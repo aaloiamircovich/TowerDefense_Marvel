@@ -233,7 +233,7 @@ export function buildStatusLegendModel(summary = null) {
     if (!entries.length) return null;
 
     return {
-        label: 'Counters clave',
+        label: 'Respuestas clave',
         entries: entries.slice(0, 4)
     };
 }
