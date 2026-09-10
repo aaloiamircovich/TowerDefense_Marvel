@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { buildBossCountdownState, buildBossHudState, buildBossMilestoneState, buildCombatPressureState, buildCounterCoverageModel, buildEnemyIntel, buildEnemyTraitPreview, buildHeroCombatIdentity, buildLeakIntel, buildPanelNavigationMarkup, buildPressureActionState, buildRosterWaveFitView, buildShopItemInsight, buildShopSetProgress, buildSpawnQueueState, buildStatusLegendModel, buildStealthCoverageState, buildTacticalContributionModel, buildTargetingControlState, buildWaveCounterBrief, buildWaveDamageCheckMeter, buildWaveLaunchState, buildWavePrepActionControl, buildWavePreparationPlan, buildWaveReportActionState, buildWaveReportGrade, buildWaveReportLesson, buildWaveReportState, evaluateHeroWaveFit, formatHudResource, getNextTargetingPriority, UIManager } from '../src/systems/UIManager.js';
+import { CombatPressurePanel } from '../src/ui/CombatPressurePanel.js';
 import { calculateHeroLevelCost, getHeroDamageAtLevel } from '../src/utils/HeroLevel.js';
 
 test('buildWaveLaunchState muestra riesgo critico en el CTA', () => {
@@ -1061,6 +1062,56 @@ test('renderCombatPressurePanel etiqueta acciones de emergencia con tooltips', (
 
         assert.match(container.innerHTML, /id="pressure-upgrade" class="btn-mode-action" type="button" aria-label="Mejorar Iron Man por 120 creditos\. Respuesta recomendada para proteger la base\." title="Mejorar Iron Man por 120 creditos\. Respuesta recomendada para proteger la base\." data-tooltip="Mejorar Iron Man por 120 creditos\. Respuesta recomendada para proteger la base\."/);
         assert.match(container.innerHTML, /id="pressure-pause" class="btn-mode-action" type="button" aria-label="Activar pausa tactica por presion de ruta" title="Activar pausa tactica por presion de ruta" data-tooltip="Activar pausa tactica por presion de ruta"/);
+    } finally {
+        globalThis.document = previousDocument;
+    }
+});
+
+test('CombatPressurePanel escapa textos dinamicos de presion', () => {
+    const previousDocument = globalThis.document;
+    const container = createDomStub();
+    globalThis.document = {
+        getElementById(id) {
+            return id === 'combat-pressure' ? container : null;
+        }
+    };
+    const ui = {
+        combatPressureSignature: '',
+        game: { heroes: [], resourceManager: { credits: 0 } },
+        calculateLevelCost: () => 120,
+        quickUpgradeHeroById: () => false,
+        setManualPause: () => {}
+    };
+    const panel = new CombatPressurePanel(ui, {
+        buildCombatPressureState: () => ({
+            id: 'warning" onclick="alert(1)',
+            label: '<img src=x onerror=alert(1)>',
+            advice: 'Pausa <script>alert(1)</script>',
+            progress: '90<script>',
+            activeCount: '<b>3</b>',
+            dangerCount: '<img src=x>',
+            leadEnemyName: 'Runner <script>',
+            signature: 'malicious'
+        }),
+        buildPressureActionState: () => ({
+            type: 'hint" onclick="alert(1)',
+            label: 'Faltan <b>$100</b>',
+            reason: 'Ahorra <img src=x>',
+            signature: 'hint'
+        })
+    });
+
+    try {
+        panel.render([], [], true);
+
+        assert.equal(container.className, 'combat-pressure pressure-warning-onclick-alert-1');
+        assert.doesNotMatch(container.innerHTML, /<img\s/i);
+        assert.doesNotMatch(container.innerHTML, /<script/i);
+        assert.doesNotMatch(container.innerHTML, /onclick=/i);
+        assert.match(container.innerHTML, /&lt;img src=x onerror=alert\(1\)&gt;/);
+        assert.match(container.innerHTML, /Ahorra &lt;img src=x&gt;/);
+        assert.match(container.innerHTML, /style="width:0%"/);
+        assert.match(container.innerHTML, /pressure-action-hint-onclick-alert-1/);
     } finally {
         globalThis.document = previousDocument;
     }

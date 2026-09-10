@@ -7,6 +7,22 @@ function escapeHtml(value = '') {
         .replaceAll("'", '&#39;');
 }
 
+function normalizeClassToken(value = '', fallback = 'neutral') {
+    const token = String(value || '')
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9-]+/g, '-')
+        .replace(/-+/g, '-')
+        .replace(/^-|-$/g, '');
+    return token && /^[a-z][a-z0-9-]*$/.test(token) ? token : fallback;
+}
+
+function clampPercent(value = 0) {
+    const numeric = Number(value);
+    if (!Number.isFinite(numeric)) return 0;
+    return Math.max(0, Math.min(100, Math.round(numeric)));
+}
+
 export class CombatPressurePanel {
     constructor(ui, builders = {}) {
         this.ui = ui;
@@ -34,28 +50,31 @@ export class CombatPressurePanel {
             return state;
         }
 
-        container.className = `combat-pressure pressure-${state.id}`;
+        const stateClass = normalizeClassToken(state.id, 'clear');
+        const progress = clampPercent(state.progress);
+        container.className = `combat-pressure pressure-${stateClass}`;
         container.setAttribute('aria-label', `${state.label}. ${state.advice}`);
         const pressureActionLabel = action?.type === 'upgrade'
             ? `${action.label} por ${action.cost} creditos. ${action.reason}`
             : '';
         const pressurePauseLabel = 'Activar pausa tactica por presion de ruta';
+        const actionClass = normalizeClassToken(action?.type, 'hint');
         container.innerHTML = `
             <div class="pressure-copy">
-                <strong>${state.label}</strong>
-                <span>${state.advice}</span>
+                <strong>${escapeHtml(state.label)}</strong>
+                <span>${escapeHtml(state.advice)}</span>
             </div>
-            <div class="pressure-meter" aria-hidden="true"><i style="width:${state.progress}%"></i></div>
+            <div class="pressure-meter" aria-hidden="true"><i style="width:${progress}%"></i></div>
             <div class="pressure-meta">
-                <span>${state.activeCount} activos</span>
-                <span>${state.leadEnemyName || 'Ruta'} ${state.progress}%</span>
-                ${state.dangerCount ? `<b>${state.dangerCount} en base</b>` : ''}
+                <span>${escapeHtml(state.activeCount)} activos</span>
+                <span>${escapeHtml(state.leadEnemyName || 'Ruta')} ${escapeHtml(progress)}%</span>
+                ${state.dangerCount ? `<b>${escapeHtml(state.dangerCount)} en base</b>` : ''}
             </div>
-            ${action ? `<div class="pressure-action pressure-action-${action.type}">
-                <span>${action.reason}</span>
+            ${action ? `<div class="pressure-action pressure-action-${actionClass}">
+                <span>${escapeHtml(action.reason)}</span>
                 ${action.type === 'upgrade'
                     ? `<button id="pressure-upgrade" class="btn-mode-action" type="button" aria-label="${escapeHtml(pressureActionLabel)}" title="${escapeHtml(pressureActionLabel)}" data-tooltip="${escapeHtml(pressureActionLabel)}">${escapeHtml(action.label)} $${escapeHtml(action.cost)}</button>`
-                    : `<small>${action.label}</small>`}
+                    : `<small>${escapeHtml(action.label)}</small>`}
             </div>` : ''}
             ${state.id === 'warning' || state.id === 'critical' ? `<button id="pressure-pause" class="btn-mode-action" type="button" aria-label="${escapeHtml(pressurePauseLabel)}" title="${escapeHtml(pressurePauseLabel)}" data-tooltip="${escapeHtml(pressurePauseLabel)}">Pausa táctica</button>` : ''}
         `;
