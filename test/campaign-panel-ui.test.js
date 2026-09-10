@@ -45,6 +45,7 @@ test('CampaignPanel compacta operaciones y resume desbloqueos por estrellas', ()
     assert.match(ui.panelContent.innerHTML, /map-card--compact/);
     assert.match(ui.panelContent.innerHTML, /data-unlock-state="unlocked" aria-label="Base de los Vengadores. Desbloqueado"/);
     assert.match(ui.panelContent.innerHTML, /class="btn-start-mode btn-primary ghost" type="button" data-mode="survival" aria-label="Jugar modo Supervivencia" title="Jugar modo Supervivencia" data-tooltip="Jugar modo Supervivencia"/);
+    assert.match(ui.panelContent.innerHTML, /Récord 1\.3M · oleada 45/);
     assert.match(ui.panelContent.innerHTML, /class="btn-load-map btn-primary ghost" type="button" data-index="0" aria-label="Jugar Base de los Vengadores" title="Jugar Base de los Vengadores" data-tooltip="Jugar Base de los Vengadores" aria-disabled="false"/);
     assert.match(ui.panelContent.innerHTML, /data-unlock-state="locked" aria-label="Reino de Wakanda. Bloqueado, requiere 50 estrellas"/);
     assert.match(ui.panelContent.innerHTML, /type="button" data-index="2" aria-label="Bloqueado. Requiere 50 estrellas" title="Bloqueado. Requiere 50 estrellas" data-tooltip="Bloqueado. Requiere 50 estrellas" aria-disabled="true" disabled/);
@@ -84,7 +85,7 @@ function createCampaignUi({ stars = 0 } = {}) {
             modeSystem: { start: () => false },
             progression: {
                 getTotalStars: () => stars,
-                getModeRecord: () => ({ bestScore: 0, bestWave: 0 }),
+                getModeRecord: () => ({ bestScore: 1285000, bestWave: 45 }),
                 getMapProgress: (levelId) => ({
                     bestWave: levelId === 'level_1' ? 25 : 0,
                     stars: levelId === 'level_1' ? 25 : 0,

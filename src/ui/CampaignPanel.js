@@ -1,5 +1,19 @@
 import { GAME_MODES } from '../systems/GameModeSystem.js';
 import { getFixedDifficultyKey, getLevelUnlockRequirement, isLevelUnlockedByStars } from '../utils/LevelProgression.js';
+import { formatHudResource } from './HudState.js';
+
+function formatCampaignNumber(value = 0) {
+    return Math.round(Number(value) || 0).toLocaleString('es-AR');
+}
+
+function formatCampaignScore(value = 0) {
+    const score = Math.max(0, Number(value) || 0);
+    return score >= 10000 ? formatHudResource(score) : formatCampaignNumber(score);
+}
+
+function formatCampaignCurrency(value = 0) {
+    return `$${formatCampaignScore(value)}`;
+}
 
 export class CampaignPanel {
     constructor(ui) {
@@ -70,7 +84,7 @@ export class CampaignPanel {
         const actionLabel = `Jugar modo ${mode.name}`;
         return `<article class="mode-card">
             <i class="fas ${mode.icon}"></i>
-            <div><strong>${mode.name}</strong><span>${mode.description}</span><small>Récord ${record.bestScore} · oleada ${record.bestWave}</small></div>
+            <div><strong>${mode.name}</strong><span>${mode.description}</span><small>Récord ${formatCampaignScore(record.bestScore)} · oleada ${formatCampaignNumber(record.bestWave)}</small></div>
             <button class="btn-start-mode btn-primary ghost" type="button" data-mode="${mode.id}" aria-label="${actionLabel}" title="${actionLabel}" data-tooltip="${actionLabel}">Jugar</button>
         </article>`;
     }
@@ -88,12 +102,12 @@ export class CampaignPanel {
                 <div class="briefing-sigil" aria-hidden="true"><i class="fas ${mode.icon}"></i></div>
             </div>
             <div class="briefing-signal">
-                <span><i class="fas fa-trophy"></i><small>Récord</small><b>${snapshot.best}</b></span>
-                <span><i class="fas fa-wave-square"></i><small>Oleada</small><b>${snapshot.wave || 0}</b></span>
-                <span><i class="fas fa-star"></i><small>Puntos</small><b>${snapshot.score || 0}</b></span>
+                <span><i class="fas fa-trophy"></i><small>Récord</small><b>${formatCampaignScore(snapshot.best)}</b></span>
+                <span><i class="fas fa-wave-square"></i><small>Oleada</small><b>${formatCampaignNumber(snapshot.wave || 0)}</b></span>
+                <span><i class="fas fa-star"></i><small>Puntos</small><b>${formatCampaignScore(snapshot.score)}</b></span>
             </div>
             <div class="briefing-mechanic"><b>Reglas independientes</b><span>La puntuación, oleada y resultado se guardan fuera de la campaña.</span></div>
-            <div class="briefing-objectives"><div><span>Objetivo</span><small>${snapshot.detail}</small><b>Récord ${snapshot.best}</b></div></div>
+            <div class="briefing-objectives"><div><span>Objetivo</span><small>${snapshot.detail}</small><b>Récord ${formatCampaignScore(snapshot.best)}</b></div></div>
             <button class="btn-primary" id="deploy-mode" type="button" aria-label="${actionLabel}" title="${actionLabel}" data-tooltip="${actionLabel}">DESPLEGAR EQUIPO</button>
         </section>`;
         document.getElementById('deploy-mode')?.addEventListener('click', () => this.ui.closePanel());
@@ -129,7 +143,7 @@ export class CampaignPanel {
                 <span class="${unlocked ? 'map-unlocked' : 'map-locked'}">${unlocked ? 'Desbloqueado' : `Requiere ${requirement} estrellas`}</span>
             </div>
             ${unlocked ? '' : this.renderMapUnlockProgress(unlockProgress)}
-            <div class="challenge-row map-challenge-row"><span class="${progress.challenges.includes('cazajefes') ? 'done' : ''}">Cazajefes</span>${(level.mission?.objectives || []).map((objective) => `<span class="${progress.missionObjectives.includes(objective.id) ? 'done' : ''}">${objective.label} · $${objective.reward}</span>`).join('')}</div>
+            <div class="challenge-row map-challenge-row"><span class="${progress.challenges.includes('cazajefes') ? 'done' : ''}">Cazajefes</span>${(level.mission?.objectives || []).map((objective) => `<span class="${progress.missionObjectives.includes(objective.id) ? 'done' : ''}">${objective.label} · ${formatCampaignCurrency(objective.reward)}</span>`).join('')}</div>
         </article>`;
     }
 
@@ -189,7 +203,7 @@ export class CampaignPanel {
                     <div class="briefing-mechanic"><b>${mission.mechanic?.label || 'Defensa táctica'}</b><span>${mission.mechanic?.description || ''}</span></div>
                 </div>
                 <div class="briefing-objectives">
-                    ${(mission.objectives || []).map((objective) => `<div><span>${objective.label}</span><small>${objective.description}</small><b>+$${objective.reward}</b></div>`).join('')}
+                    ${(mission.objectives || []).map((objective) => `<div><span>${objective.label}</span><small>${objective.description}</small><b>+${formatCampaignCurrency(objective.reward)}</b></div>`).join('')}
                 </div>
                 <button class="btn-primary" id="deploy-mission" type="button" aria-label="${actionLabel}" title="${actionLabel}" data-tooltip="${actionLabel}">DESPLEGAR EQUIPO</button>
             </section>
