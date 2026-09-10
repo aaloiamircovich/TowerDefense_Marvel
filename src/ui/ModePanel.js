@@ -1,4 +1,5 @@
 import { getRarityClass, normalizeRarity } from '../utils/Rarity.js';
+import { formatHudResource } from './HudState.js';
 
 function escapeHtml(value = '') {
     return String(value)
@@ -13,6 +14,11 @@ function formatNumber(value = 0) {
     return Math.round(Number(value) || 0).toLocaleString('es-AR');
 }
 
+function formatModeScore(value = 0) {
+    const score = Math.max(0, Number(value) || 0);
+    return score >= 10000 ? formatHudResource(score) : formatNumber(score);
+}
+
 const DRAFT_METRIC_LABELS = {
     damage: { label: 'Daño', icon: 'fa-bolt' },
     control: { label: 'Control', icon: 'fa-hand' },
@@ -25,7 +31,7 @@ export function buildModeStatusView(snapshot = null) {
     const detail = snapshot.streakDetail || snapshot.detail || '';
     return {
         detail,
-        html: `<div><strong>${escapeHtml(snapshot.name)}</strong><span>${escapeHtml(detail)}</span></div><b>${Math.round(snapshot.score || 0)} pts</b>${snapshot.canExtract ? '<button id="extract-mode" class="btn-mode-action" type="button" aria-label="Extraer recompensa del modo" title="Extraer recompensa del modo" data-tooltip="Extraer recompensa del modo">Extraer</button>' : ''}`
+        html: `<div><strong>${escapeHtml(snapshot.name)}</strong><span>${escapeHtml(detail)}</span></div><b>${formatModeScore(snapshot.score)} pts</b>${snapshot.canExtract ? '<button id="extract-mode" class="btn-mode-action" type="button" aria-label="Extraer recompensa del modo" title="Extraer recompensa del modo" data-tooltip="Extraer recompensa del modo">Extraer</button>' : ''}`
     };
 }
 
@@ -130,9 +136,9 @@ export class ModePanel {
                     </div>
                 </div>
                 <div class="end-state-readout">
-                    <span><i class="fas fa-chart-line"></i><small>Puntos</small><b>${formatNumber(snapshot.score)}</b></span>
+                    <span><i class="fas fa-chart-line"></i><small>Puntos</small><b>${formatModeScore(snapshot.score)}</b></span>
                     <span><i class="fas fa-signal"></i><small>Oleada</small><b>${formatNumber(snapshot.wave || 1)}</b></span>
-                    <span><i class="fas fa-trophy"></i><small>Record</small><b>${formatNumber(snapshot.best)}</b></span>
+                    <span><i class="fas fa-trophy"></i><small>Record</small><b>${formatModeScore(snapshot.best)}</b></span>
                 </div>
                 ${this.ui.renderMissionSummary(this.ui.game.progression?.state.lastMissionSummary)}
                 ${this.renderModeResultCoach(snapshot)}
@@ -153,7 +159,7 @@ export class ModePanel {
         const remaining = Math.max(0, best - score);
         const wave = Math.max(1, Math.round(Number(snapshot.wave) || 1));
         const cards = [
-            { icon: 'fa-trophy', label: 'Record', value: remaining ? `${formatNumber(remaining)} pts faltantes` : 'Marca superada' },
+            { icon: 'fa-trophy', label: 'Record', value: remaining ? `${formatModeScore(remaining)} pts faltantes` : 'Marca superada' },
             { icon: 'fa-signal', label: 'Siguiente', value: `Preparar oleada ${formatNumber(wave + 1)}` },
             { icon: 'fa-map', label: 'Salida', value: 'Volver a modos' }
         ];

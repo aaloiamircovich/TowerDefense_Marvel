@@ -17,7 +17,7 @@ test('buildModeStatusView prioriza detalle de racha y acciones disponibles', () 
     });
 
     assert.equal(view.detail, 'Oleadas superadas x3');
-    assert.match(view.html, /1240 pts/);
+    assert.match(view.html, /1\.240 pts/);
     assert.match(view.html, /id="extract-mode" class="btn-mode-action" type="button" aria-label="Extraer recompensa del modo" title="Extraer recompensa del modo" data-tooltip="Extraer recompensa del modo"/);
     assert.doesNotMatch(view.html, /repair-mode|Recuperar \+2/);
 });
@@ -31,6 +31,16 @@ test('buildModeStatusView escapa texto dinamico de modo', () => {
 
     assert.match(view.html, /&lt;script&gt;/);
     assert.match(view.html, /&lt;b&gt;detalle&lt;\/b&gt;/);
+});
+
+test('buildModeStatusView compacta puntajes grandes de modo', () => {
+    const view = buildModeStatusView({
+        name: 'Boss Rush',
+        detail: 'Racha final',
+        score: 1285000
+    });
+
+    assert.match(view.html, /1\.3M pts/);
 });
 
 test('ModePanel renderiza draft heroico con rareza, sprite y metricas', () => {
@@ -116,17 +126,17 @@ test('ModePanel renderiza resultado especial con lectura tactica compacta', () =
 
     try {
         new ModePanel(ui).showResult('Extraccion completada', {
-            score: 1240,
+            score: 1240000,
             wave: 9,
-            best: 2000,
+            best: 2000000,
             detail: 'Operacion cerrada'
         });
 
         assert.match(ui.panelContent.innerHTML, /MODO ESPECIAL/);
         assert.match(ui.panelContent.innerHTML, /end-state-readout/);
-        assert.match(ui.panelContent.innerHTML, /1\.240/);
+        assert.match(ui.panelContent.innerHTML, /1\.2M/);
         assert.match(ui.panelContent.innerHTML, /Lectura de modo/);
-        assert.match(ui.panelContent.innerHTML, /760 pts faltantes/);
+        assert.match(ui.panelContent.innerHTML, /760k pts faltantes/);
         assert.match(ui.panelContent.innerHTML, /Preparar oleada 10/);
         assert.match(ui.panelContent.innerHTML, /id="mode-result-map" type="button" aria-label="Volver a modos" title="Volver a modos" data-tooltip="Volver a modos"/);
         assert.ok(calls.includes('summary:Storm'));
