@@ -1,27 +1,4 @@
-function escapeHtml(value = '') {
-    return String(value)
-        .replaceAll('&', '&amp;')
-        .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;')
-        .replaceAll('"', '&quot;')
-        .replaceAll("'", '&#39;');
-}
-
-function normalizeClassToken(value = '', fallback = 'neutral') {
-    const token = String(value || '')
-        .trim()
-        .toLowerCase()
-        .replace(/[^a-z0-9-]+/g, '-')
-        .replace(/-+/g, '-')
-        .replace(/^-|-$/g, '');
-    return token && /^[a-z][a-z0-9-]*$/.test(token) ? token : fallback;
-}
-
-function clampPercent(value = 0) {
-    const numeric = Number(value);
-    if (!Number.isFinite(numeric)) return 0;
-    return Math.max(0, Math.min(100, Math.round(numeric)));
-}
+import { clampPercent, escapeHtml, normalizeClassToken } from './HtmlSanitizer.js';
 
 export class CombatPressurePanel {
     constructor(ui, builders = {}) {

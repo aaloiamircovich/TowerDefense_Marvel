@@ -2,22 +2,7 @@ import { APP_VERSION, FAN_PROJECT_NOTICE } from '../config/AppConfig.js';
 import { MASTERY_CHALLENGES } from '../systems/MasteryCodexSystem.js';
 import { ACHIEVEMENT_CATALOG } from '../systems/ProgressionManager.js';
 import { CAMPAIGN_MAX_WAVES, getLevelUnlockRequirement, isLevelUnlockedByStars } from '../utils/LevelProgression.js';
-
-function escapeHtml(value = '') {
-    return String(value)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
-}
-
-function normalizeIconClass(value = '', fallback = 'fa-circle-info') {
-    const tokens = String(value || '')
-        .split(/\s+/)
-        .filter((token) => /^(fa[srb]?|fa-[a-z0-9-]+)$/i.test(token));
-    return tokens.length ? tokens.join(' ') : fallback;
-}
+import { escapeHtml, normalizeIconClass } from './HtmlSanitizer.js';
 
 export class ProfilePanel {
     constructor(ui) {
