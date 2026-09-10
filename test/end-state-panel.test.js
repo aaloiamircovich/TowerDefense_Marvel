@@ -158,12 +158,21 @@ test('EndStatePanel escapa textos dinamicos del resumen final', () => {
         wave: 4,
         summary: { bestHero: 'Hulk <smash>' }
     });
+    const readoutHtml = panel.renderRunReadout([{
+        icon: 'fa-star" onclick="bad',
+        label: 'Mapa <b>',
+        value: '<script>1</script>'
+    }]);
 
     assert.match(summaryHtml, /Destacado: Iron &lt;Man&gt;/);
     assert.match(summaryHtml, /MVP táctico: Widow &lt;script&gt;/);
     assert.doesNotMatch(summaryHtml, /<script>|<Man>/);
     assert.match(coachHtml, /Mejorar Hulk &lt;smash&gt;/);
     assert.doesNotMatch(coachHtml, /<smash>/);
+    assert.match(readoutHtml, /fa-circle-info/);
+    assert.match(readoutHtml, /Mapa &lt;b&gt;/);
+    assert.match(readoutHtml, /&lt;script&gt;1&lt;\/script&gt;/);
+    assert.doesNotMatch(readoutHtml, /onclick|<script>/);
 });
 
 function createUiStub(calls) {

@@ -4,15 +4,7 @@ import {
     buildProgressCarryoverModel,
     formatEndStateNumber
 } from './EndStateState.js';
-
-function escapeHtml(value = '') {
-    return String(value)
-        .replaceAll('&', '&amp;')
-        .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;')
-        .replaceAll('"', '&quot;')
-        .replaceAll("'", '&#039;');
-}
+import { escapeHtml, normalizeClassToken, normalizeIconClass } from './HtmlSanitizer.js';
 
 export class EndStatePanel {
     constructor(ui) {
@@ -119,7 +111,7 @@ export class EndStatePanel {
             <div class="end-state-readout">
                 ${visibleItems.map((item) => `
                     <span>
-                        <i class="fas ${escapeHtml(item.icon || 'fa-circle-info')}"></i>
+                        <i class="fas ${normalizeIconClass(item.icon)}"></i>
                         <small>${escapeHtml(item.label)}</small>
                         <b>${escapeHtml(item.value)}</b>
                     </span>
@@ -168,7 +160,7 @@ export class EndStatePanel {
                 <div>
                     ${model.rows.map((row) => `
                         <span>
-                            <i class="fas ${escapeHtml(row.icon)}"></i>
+                            <i class="fas ${normalizeIconClass(row.icon)}"></i>
                             <small>${escapeHtml(row.label)}</small>
                             <b>${escapeHtml(row.value)}</b>
                             <em>${escapeHtml(row.hint)}</em>
@@ -206,7 +198,7 @@ export class EndStatePanel {
                 <div class="mission-summary-grid">
                     ${model.rows.map((row) => `
                         <span class="mission-summary-card">
-                            <i class="fas ${escapeHtml(row.icon)}"></i>
+                            <i class="fas ${normalizeIconClass(row.icon)}"></i>
                             <small>${escapeHtml(row.label)}</small>
                             <b>${escapeHtml(row.value)}</b>
                         </span>
@@ -219,12 +211,12 @@ export class EndStatePanel {
     renderOutcomeCoach(type, context = {}) {
         const model = buildOutcomeCoachModel(type, context);
         return `
-            <div class="end-state-coach ${escapeHtml(model.tone)}">
+            <div class="end-state-coach ${normalizeClassToken(model.tone, 'neutral')}">
                 <strong>${escapeHtml(model.title)}</strong>
                 <div>
                     ${model.cards.map((card) => `
                         <span>
-                            <i class="fas ${escapeHtml(card.icon)}"></i>
+                            <i class="fas ${normalizeIconClass(card.icon)}"></i>
                             <small>${escapeHtml(card.label)}</small>
                             <b>${escapeHtml(card.value)}</b>
                         </span>
