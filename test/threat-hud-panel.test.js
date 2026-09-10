@@ -63,3 +63,31 @@ test('ThreatHudPanel renderiza cola de refuerzos con ETA y peligro', () => {
         globalThis.document = previousDocument;
     }
 });
+
+test('ThreatHudPanel compacta refuerzos grandes y escapa nombres dinamicos', () => {
+    const previousDocument = globalThis.document;
+    const spawnQueue = createElementStub();
+    globalThis.document = { getElementById: (id) => id === 'spawn-queue' ? spawnQueue : null };
+    const panel = new ThreatHudPanel({
+        buildBossHudState,
+        buildSpawnQueueState: () => ({
+            name: 'Drone <script>',
+            eta: 2.4,
+            remaining: 1250,
+            danger: 'critical danger" bad'
+        })
+    });
+
+    try {
+        const state = panel.updateSpawnQueue([], 0, true);
+
+        assert.equal(state.name, 'Drone <script>');
+        assert.equal(spawnQueue.className, 'spawn-queue critical-danger-bad');
+        assert.match(spawnQueue.innerHTML, /Drone &lt;script&gt;/);
+        assert.match(spawnQueue.innerHTML, /2\.4s \| 1\.3k pendientes/);
+        assert.doesNotMatch(spawnQueue.innerHTML, /<script>/);
+        assert.equal(spawnQueue.attributes['aria-label'], 'Proximo refuerzo Drone <script> en 2.4 segundos. Quedan 1250.');
+    } finally {
+        globalThis.document = previousDocument;
+    }
+});

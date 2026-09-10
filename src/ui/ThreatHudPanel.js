@@ -7,6 +7,20 @@ function escapeHtml(value = '') {
         .replaceAll("'", '&#39;');
 }
 
+function normalizeClassToken(value = '', fallback = 'normal') {
+    const token = String(value || '')
+        .toLowerCase()
+        .replace(/[^a-z0-9-]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+    return token || fallback;
+}
+
+function formatCompactCount(value = 0) {
+    const amount = Math.max(0, Math.floor(Number(value) || 0));
+    if (amount >= 1000) return `${Math.round(amount / 100) / 10}k`.replace('.0k', 'k');
+    return `${amount}`;
+}
+
 export class ThreatHudPanel {
     constructor(builders = {}) {
         this.buildBossHudState = builders.buildBossHudState || (() => null);
@@ -49,12 +63,14 @@ export class ThreatHudPanel {
             return null;
         }
 
-        container.className = `spawn-queue ${state.danger}`;
+        const dangerClass = normalizeClassToken(state.danger);
+        const remainingLabel = formatCompactCount(state.remaining);
+        container.className = `spawn-queue ${dangerClass}`;
         container.setAttribute('aria-label', `Proximo refuerzo ${state.name} en ${state.eta} segundos. Quedan ${state.remaining}.`);
         container.innerHTML = `
             <span>Refuerzos</span>
             <strong>${escapeHtml(state.name)}</strong>
-            <b>${state.eta}s | ${state.remaining} pendientes</b>
+            <b>${escapeHtml(state.eta)}s | ${remainingLabel} pendientes</b>
         `;
         return state;
     }
