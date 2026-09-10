@@ -1,14 +1,6 @@
 import { getRarityClass, normalizeRarity } from '../utils/Rarity.js';
 import { getAllowedTerrainLabels } from '../utils/TerrainRules.js';
-
-function escapeHtml(value = '') {
-    return String(value)
-        .replaceAll('&', '&amp;')
-        .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;')
-        .replaceAll('"', '&quot;')
-        .replaceAll("'", '&#039;');
-}
+import { escapeHtml, normalizeClassToken, normalizeIconClass } from './HtmlSanitizer.js';
 
 const METRIC_LABELS = {
     damage: { label: 'Daño', icon: 'fa-bolt' },
@@ -54,7 +46,7 @@ export class StarterPanel {
 
     renderCard(hero, starters = []) {
         const rarity = normalizeRarity(hero.rarity);
-        const rarityClass = getRarityClass(rarity);
+        const rarityClass = normalizeClassToken(getRarityClass(rarity), 'rarity-common');
         const highlights = this.getStarterHighlights(hero, starters);
         const metrics = this.getMetrics(hero);
         const specs = this.getStarterSpecs(hero);
@@ -70,16 +62,16 @@ export class StarterPanel {
                 <div class="starter-card-copy">
                     <strong>${escapeHtml(hero.name)}</strong>
                     <span class="starter-rarity-line">
-                        <b class="rarity-badge ${rarityClass}">${rarity}</b>
+                        <b class="rarity-badge ${rarityClass}">${escapeHtml(rarity)}</b>
                         <small>${escapeHtml(hero.category || 'Héroe')}</small>
                     </span>
-                    ${highlights.length ? `<div class="starter-highlight-row">${highlights.map((highlight) => `<span><i class="fas ${highlight.icon}"></i>${escapeHtml(highlight.label)}</span>`).join('')}</div>` : ''}
+                    ${highlights.length ? `<div class="starter-highlight-row">${highlights.map((highlight) => `<span><i class="fas ${normalizeIconClass(highlight.icon)}"></i>${escapeHtml(highlight.label)}</span>`).join('')}</div>` : ''}
                     <em>${escapeHtml(this.getNicheText(hero))}</em>
                 </div>
                 <div class="starter-spec-strip" aria-label="${escapeHtml(hero.name)} datos base: ${escapeHtml(specSummary)}">
                     ${specs.map((spec) => `
                         <span>
-                            <i class="fas ${spec.icon}"></i>
+                            <i class="fas ${normalizeIconClass(spec.icon)}"></i>
                             <b>${escapeHtml(spec.value)}</b>
                             <small>${escapeHtml(spec.label)}</small>
                         </span>
@@ -88,9 +80,9 @@ export class StarterPanel {
                 <div class="starter-stat-strip" aria-label="${escapeHtml(hero.name)}: ${escapeHtml(metricSummary)}">
                     ${metrics.map((metric) => `
                         <span>
-                            <i class="fas ${metric.icon}"></i>
-                            <b>${metric.value}</b>
-                            <small>${metric.label}</small>
+                            <i class="fas ${normalizeIconClass(metric.icon)}"></i>
+                            <b>${escapeHtml(metric.value)}</b>
+                            <small>${escapeHtml(metric.label)}</small>
                         </span>
                     `).join('')}
                 </div>
@@ -111,9 +103,9 @@ export class StarterPanel {
                 <span><i class="fas fa-users"></i><b>${starters.length}</b><small>Opciones</small></span>
                 ${leaders.map((entry) => `
                     <span>
-                        <i class="fas ${entry.icon}"></i>
+                        <i class="fas ${normalizeIconClass(entry.icon)}"></i>
                         <b>${escapeHtml(entry.hero?.name || 'Equipo')}</b>
-                        <small>${entry.label} ${entry.value}</small>
+                        <small>${escapeHtml(entry.label)} ${escapeHtml(entry.value)}</small>
                     </span>
                 `).join('')}
             </div>

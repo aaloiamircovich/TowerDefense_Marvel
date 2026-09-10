@@ -255,6 +255,10 @@ test('ShopPanel recluta heroe, actualiza costo y permite tienda de skins vacia',
     assert.match(panelContent.innerHTML, /skins-shop-panel/);
     assert.match(panelContent.innerHTML, /Sin skins disponibles/);
     assert.doesNotMatch(panelContent.innerHTML, /Próximamente/);
+
+    new SkinShopPanel({ panelContent }).render('<script>Skins</script>');
+    assert.match(panelContent.innerHTML, /&lt;script&gt;Skins&lt;\/script&gt;/);
+    assert.doesNotMatch(panelContent.innerHTML, /<script>Skins<\/script>/);
 });
 
 test('ShopPanel reutiliza la misma secuencia visual de caja al animar', async () => {

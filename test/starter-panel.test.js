@@ -120,6 +120,47 @@ test('StarterPanel renderiza cartas tacticas y selecciona heroe inicial', () => 
     }
 });
 
+test('StarterPanel escapa datos dinamicos de heroes iniciales', () => {
+    const panelContent = {
+        innerHTML: '',
+        querySelector() {
+            return null;
+        },
+        querySelectorAll() {
+            return [];
+        }
+    };
+    const ui = {
+        panelContent,
+        game: { pause() {} },
+        showPanelOverlay() {},
+        renderSprite() {
+            return '<span class="sprite-safe"></span>';
+        },
+        getHeroDisplaySprite() {
+            return 'safe.png';
+        }
+    };
+
+    new StarterPanel(ui).render([{
+        id: 'widow" onclick="bad',
+        name: '<img src=x onerror=bad()>',
+        category: '<b>Urbano</b>',
+        rarity: 'Common',
+        damage: 18,
+        range: 130,
+        fireRate: 1.8,
+        allowedTerrains: [1],
+        niche: '<script>zona</script>',
+        teamMetrics: { damage: 2, control: 3, support: 1, detection: 4 }
+    }], () => {});
+
+    assert.match(panelContent.innerHTML, /&lt;img src=x onerror=bad\(\)&gt;/);
+    assert.match(panelContent.innerHTML, /widow&quot; onclick=&quot;bad/);
+    assert.match(panelContent.innerHTML, /&lt;script&gt;zona&lt;\/script&gt;/);
+    assert.doesNotMatch(panelContent.innerHTML, /<script>|<img src=x onerror=bad\(\)>/);
+});
+
 function createCardStub(id) {
     return {
         dataset: { id },

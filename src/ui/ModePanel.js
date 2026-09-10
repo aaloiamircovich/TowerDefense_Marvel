@@ -1,14 +1,6 @@
 import { getRarityClass, normalizeRarity } from '../utils/Rarity.js';
 import { formatHudResource } from './HudState.js';
-
-function escapeHtml(value = '') {
-    return String(value)
-        .replaceAll('&', '&amp;')
-        .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;')
-        .replaceAll('"', '&quot;')
-        .replaceAll("'", '&#39;');
-}
+import { escapeHtml, normalizeClassToken, normalizeIconClass } from './HtmlSanitizer.js';
 
 function formatNumber(value = 0) {
     return Math.round(Number(value) || 0).toLocaleString('es-AR');
@@ -76,15 +68,15 @@ export class ModePanel {
 
     renderDraftCard(hero, index = 0) {
         const rarity = normalizeRarity(hero.rarity);
-        const rarityClass = getRarityClass(rarity);
+        const rarityClass = normalizeClassToken(getRarityClass(rarity), 'rarity-common');
         const metrics = this.getDraftMetrics(hero);
         const metricSummary = metrics.map((metric) => `${metric.label} ${metric.value}`).join(', ');
         const draftLabel = `Elegir ${hero.name} como refuerzo ${index + 1}. Rareza ${rarity}. ${metricSummary}`;
         return `
-            <button class="draft-card ${rarityClass}" type="button" data-draft="${escapeHtml(hero.id)}" data-rarity="${rarity}" aria-label="${escapeHtml(draftLabel)}" title="${escapeHtml(draftLabel)}" data-tooltip="${escapeHtml(draftLabel)}">
+            <button class="draft-card ${rarityClass}" type="button" data-draft="${escapeHtml(hero.id)}" data-rarity="${escapeHtml(rarity)}" aria-label="${escapeHtml(draftLabel)}" title="${escapeHtml(draftLabel)}" data-tooltip="${escapeHtml(draftLabel)}">
                 <div class="draft-card-top">
                     <span class="draft-index">0${index + 1}</span>
-                    <b class="rarity-badge ${rarityClass}">${rarity}</b>
+                    <b class="rarity-badge ${rarityClass}">${escapeHtml(rarity)}</b>
                 </div>
                 <div class="draft-sprite-frame">
                     ${this.ui.renderSprite(this.ui.getHeroDisplaySprite(hero), hero.name)}
@@ -96,9 +88,9 @@ export class ModePanel {
                 <div class="draft-stat-strip">
                     ${metrics.map((metric) => `
                         <span>
-                            <i class="fas ${metric.icon}"></i>
-                            <b>${metric.value}</b>
-                            <small>${metric.label}</small>
+                            <i class="fas ${normalizeIconClass(metric.icon)}"></i>
+                            <b>${escapeHtml(metric.value)}</b>
+                            <small>${escapeHtml(metric.label)}</small>
                         </span>
                     `).join('')}
                 </div>
@@ -169,7 +161,7 @@ export class ModePanel {
                 <div>
                     ${cards.map((card) => `
                         <span>
-                            <i class="fas ${card.icon}"></i>
+                            <i class="fas ${normalizeIconClass(card.icon)}"></i>
                             <small>${escapeHtml(card.label)}</small>
                             <b>${escapeHtml(card.value)}</b>
                         </span>

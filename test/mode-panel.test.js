@@ -95,6 +95,43 @@ test('ModePanel renderiza draft heroico con rareza, sprite y metricas', () => {
     assert.deepEqual(choices, ['storm']);
 });
 
+test('ModePanel escapa datos dinamicos del draft heroico', () => {
+    const draftButton = createButtonStub();
+    draftButton.dataset = { draft: 'bad" id="x' };
+    const ui = {
+        panelContent: {
+            innerHTML: '',
+            querySelectorAll() {
+                return [draftButton];
+            },
+            querySelector() {
+                return draftButton;
+            }
+        },
+        showPanelOverlay() {},
+        renderSprite() {
+            return '<span class="sprite-safe"></span>';
+        },
+        getHeroDisplaySprite() {
+            return 'safe.png';
+        }
+    };
+
+    new ModePanel(ui).showDraftChoice([{
+        id: 'bad" id="x',
+        name: '<img src=x onerror=bad()>',
+        rarity: 'Epic',
+        category: '<b>Mutante</b>',
+        niche: '<script>nicho</script>',
+        teamMetrics: { damage: 3, control: 5, support: 1, detection: 0 }
+    }], () => {});
+
+    assert.match(ui.panelContent.innerHTML, /bad&quot; id=&quot;x/);
+    assert.match(ui.panelContent.innerHTML, /&lt;img src=x onerror=bad\(\)&gt;/);
+    assert.match(ui.panelContent.innerHTML, /&lt;script&gt;nicho&lt;\/script&gt;/);
+    assert.doesNotMatch(ui.panelContent.innerHTML, /<script>|<img src=x onerror=bad\(\)>/);
+});
+
 test('ModePanel renderiza resultado especial con lectura tactica compacta', () => {
     const previousDocument = globalThis.document;
     const resultButton = createButtonStub();
