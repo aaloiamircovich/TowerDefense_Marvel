@@ -3,6 +3,7 @@ import { EVOLUTION_CATALOG } from '../systems/EvolutionSystem.js';
 import { buildVillainCodexModel } from '../systems/VillainCodexSystem.js';
 import { HERO_RARITIES, getRarityClass, normalizeRarity } from '../utils/Rarity.js';
 import { resolveEvolutionVisualContract } from '../utils/HeroVisuals.js';
+import { clampPercent, escapeHtml, normalizeClassToken, normalizeCssColor, normalizeIconClass } from './HtmlSanitizer.js';
 import { buildItemEquipDeltaRows, formatItemDeltaLabel, renderItemDeltaRows } from './InventoryPanel.js';
 import {
     HERO_TACTIC_FILTERS,
@@ -55,8 +56,8 @@ export class TeamBuilderPanel {
 
         this.ui.panelContent.innerHTML = `
             <div class="panel-title-row">
-                <h2>${title}</h2>
-                <strong>${game.activeTeam.length}/6 activos</strong>
+                <h2>${this.escapeHtml(title)}</h2>
+                <strong>${this.escapeHtml(game.activeTeam.length)}/6 activos</strong>
             </div>
             ${this.renderCollectionCommandHeader({ readyHeroes, filteredHeroes, unlockedIds, snapshot })}
             ${this.renderCollectionTabs()}
@@ -70,7 +71,7 @@ export class TeamBuilderPanel {
                 ${this.renderMapTeamLoadoutControls()}
                 <div class="team-metrics">
                     ${Object.entries(METRIC_LABELS).map(([key, label]) => `
-                        <div class="team-metric"><span>${label}</span><div><i style="width:${snapshot.metrics[key]}%"></i></div><b>${snapshot.metrics[key]}</b></div>
+                        <div class="team-metric"><span>${this.escapeHtml(label)}</span><div><i style="width:${clampPercent(snapshot.metrics[key])}%"></i></div><b>${this.escapeHtml(clampPercent(snapshot.metrics[key]))}</b></div>
                     `).join('')}
                 </div>
                 ${this.renderTeamReadinessAlerts(snapshot, game.activeTeam)}
@@ -93,16 +94,16 @@ export class TeamBuilderPanel {
 
     renderTeamReadinessAlerts(snapshot, team = []) {
         const alerts = buildTeamReadinessAlerts(snapshot, team);
-        const chips = alerts.map((alert) => '<span class="team-readiness-chip ' + this.escapeAttribute(alert.tone) + '" title="' + this.escapeAttribute(alert.detail) + '"><i class="fas ' + this.escapeAttribute(alert.icon) + '"></i><b>' + this.escapeHtml(alert.label) + '</b><small>' + this.escapeHtml(alert.detail) + '</small></span>').join('');
+        const chips = alerts.map((alert) => '<span class="team-readiness-chip ' + normalizeClassToken(alert.tone, 'neutral') + '" title="' + this.escapeAttribute(alert.detail) + '"><i class="fas ' + normalizeIconClass(alert.icon) + '"></i><b>' + this.escapeHtml(alert.label) + '</b><small>' + this.escapeHtml(alert.detail) + '</small></span>').join('');
         return '<div class="team-readiness-strip" aria-label="Lectura tactica del equipo">' + chips + '</div>';
     }
 
     renderTeamSlot(hero, index) {
         if (!hero) return `<div class="team-slot-empty" aria-label="Espacio ${index + 1} libre"><span>${index + 1}</span><i class="fas fa-plus"></i></div>`;
         return `
-            <button class="team-slot-filled remove-team-hero" type="button" data-id="${hero.id}" aria-label="Quitar a ${hero.name}" title="Quitar del equipo" data-tooltip="Quitar del equipo">
+            <button class="team-slot-filled remove-team-hero" type="button" data-id="${this.escapeAttribute(hero.id)}" aria-label="${this.escapeAttribute(`Quitar a ${hero.name}`)}" title="Quitar del equipo" data-tooltip="Quitar del equipo">
                 ${this.ui.renderSprite(this.getCollectionSprite(hero), hero.name)}
-                <span>${hero.name}</span>
+                <span>${this.escapeHtml(hero.name)}</span>
                 <i class="fas fa-xmark"></i>
             </button>
         `;
@@ -165,14 +166,16 @@ export class TeamBuilderPanel {
             <div class="synergy-overview">
                 ${snapshot.families.filter((family) => family.count > 0).map((family) => {
                     const rarity = normalizeRarity(family.definition.rarity);
-                    const rarityClass = getRarityClass(rarity);
+                    const rarityClass = normalizeClassToken(getRarityClass(rarity), 'rarity-common');
+                    const progressLabel = family.nextTier ? `${family.count}/${family.nextTier.count}` : `${family.count}/${family.activeTier?.count || 0}`;
+                    const activeLabel = family.activeTier ? ` · ${family.activeTier.label}` : '';
                     return `
-                    <span class="synergy-chip ${rarityClass} ${family.activeTier ? 'active' : ''}" style="--synergy-color:${family.definition.color}">
-                        <b>${family.tag}</b> ${family.nextTier ? `${family.count}/${family.nextTier.count}` : `${family.count}/${family.activeTier?.count || 0}`}${family.activeTier ? ` · ${family.activeTier.label}` : ''} <i>${rarity}</i>
+                    <span class="synergy-chip ${rarityClass} ${family.activeTier ? 'active' : ''}" style="--synergy-color:${normalizeCssColor(family.definition.color)}">
+                        <b>${this.escapeHtml(family.tag)}</b> ${this.escapeHtml(progressLabel)}${this.escapeHtml(activeLabel)} <i>${this.escapeHtml(rarity)}</i>
                     </span>
                 `;
                 }).join('')}
-                ${snapshot.pairs.filter((pair) => pair.active).map((pair) => `<span class="synergy-chip pair active"><b>${pair.label}</b></span>`).join('')}
+                ${snapshot.pairs.filter((pair) => pair.active).map((pair) => `<span class="synergy-chip pair active"><b>${this.escapeHtml(pair.label)}</b></span>`).join('')}
             </div>
         `;
     }
@@ -187,7 +190,7 @@ export class TeamBuilderPanel {
         return `
             <div class="allegiance-quick-summary">
                 ${highlights.map((group) => `
-                    <span class="${group.rarityClass} ${group.state}" style="--synergy-color:${group.color}">
+                    <span class="${normalizeClassToken(group.rarityClass, 'rarity-common')} ${normalizeClassToken(group.state, 'idle')}" style="--synergy-color:${normalizeCssColor(group.color)}">
                         <b>${this.escapeHtml(group.label)}</b>
                         <small>${this.escapeHtml(group.progressLabel)} ${group.state === 'active' ? 'activo' : 'a 1'}</small>
                     </span>
@@ -203,17 +206,17 @@ export class TeamBuilderPanel {
         const missingLabel = group.missingNames.length ? group.missingNames.join(', ') : 'Completa';
         const stateLabel = group.activeTier ? group.activeTier.label : group.needed === 1 ? 'A un heroe' : `${group.needed} faltan`;
         return `
-            <article class="allegiance-card ${group.state} ${group.rarityClass}" data-rarity="${group.rarity}" style="--synergy-color:${group.color}">
+            <article class="allegiance-card ${normalizeClassToken(group.state, 'idle')} ${normalizeClassToken(group.rarityClass, 'rarity-common')}" data-rarity="${this.escapeAttribute(group.rarity)}" style="--synergy-color:${normalizeCssColor(group.color)}">
                 <div>
-                    <span>${group.progressLabel}</span>
-                    <strong>${group.label}</strong>
+                    <span>${this.escapeHtml(group.progressLabel)}</span>
+                    <strong>${this.escapeHtml(group.label)}</strong>
                 </div>
-                <b class="rarity-badge ${group.rarityClass}">${group.rarity}</b>
-                <p>${group.description}</p>
-                <small>${tier?.label || 'Sin umbral'} - ${formatEffectSummary(tier?.effects || {})}</small>
-                <em><b>Necesitas:</b> ${memberLabel}</em>
-                <em><b>En equipo:</b> ${selectedLabel}</em>
-                <em><b>${group.needed > 0 ? 'Faltan' : 'Estado'}:</b> ${group.needed > 0 ? missingLabel : stateLabel}</em>
+                <b class="rarity-badge ${normalizeClassToken(group.rarityClass, 'rarity-common')}">${this.escapeHtml(group.rarity)}</b>
+                <p>${this.escapeHtml(group.description)}</p>
+                <small>${this.escapeHtml(tier?.label || 'Sin umbral')} - ${this.escapeHtml(formatEffectSummary(tier?.effects || {}))}</small>
+                <em><b>Necesitas:</b> ${this.escapeHtml(memberLabel)}</em>
+                <em><b>En equipo:</b> ${this.escapeHtml(selectedLabel)}</em>
+                <em><b>${group.needed > 0 ? 'Faltan' : 'Estado'}:</b> ${this.escapeHtml(group.needed > 0 ? missingLabel : stateLabel)}</em>
             </article>
         `;
     }
@@ -232,8 +235,8 @@ export class TeamBuilderPanel {
             <section class="collection-command-header" aria-label="Resumen de coleccion">
                 <div class="collection-command-copy">
                     <span class="briefing-kicker">ARCHIVO DE EQUIPO</span>
-                    <strong>${this.getViewLabel()}</strong>
-                    <small>${modeText}</small>
+                    <strong>${this.escapeHtml(this.getViewLabel())}</strong>
+                    <small>${this.escapeHtml(modeText)}</small>
                     <div class="collection-filter-pills">
                         ${filterLabels.map((label) => `<span>${this.escapeHtml(label)}</span>`).join('')}
                     </div>
@@ -257,14 +260,14 @@ export class TeamBuilderPanel {
             ? 'bonus listo'
             : `${recommendation.neededAfter} faltan luego`;
         return `
-            <div class="collection-synergy-recommendation ${recommendation.rarityClass}" style="--synergy-color:${recommendation.color || 'var(--level-accent)'}" aria-label="Recomendacion de agrupacion: ${this.escapeAttribute(actionLabel)}">
+            <div class="collection-synergy-recommendation ${normalizeClassToken(recommendation.rarityClass, 'rarity-common')}" style="--synergy-color:${normalizeCssColor(recommendation.color)}" aria-label="Recomendacion de agrupacion: ${this.escapeAttribute(actionLabel)}">
                 <i class="fas fa-people-arrows"></i>
                 <div>
                     <span>${this.escapeHtml(recommendation.action)} · ${this.escapeHtml(recommendation.progressLabel)}</span>
                     <strong>${this.escapeHtml(recommendation.heroName)} → ${this.escapeHtml(recommendation.groupLabel)}</strong>
                     <small>${this.escapeHtml(recommendation.effectLabel || afterLabel)} · ${this.escapeHtml(afterLabel)}</small>
                 </div>
-                <b class="rarity-badge ${recommendation.rarityClass}">${this.escapeHtml(recommendation.rarity)}</b>
+                <b class="rarity-badge ${normalizeClassToken(recommendation.rarityClass, 'rarity-common')}">${this.escapeHtml(recommendation.rarity)}</b>
                 <button class="btn-primary ghost synergy-recommendation-action ${recommendation.unlocked ? 'btn-equip' : ''}" type="button" data-id="${this.escapeAttribute(recommendation.heroId)}" aria-label="${this.escapeAttribute(actionLabel)}" title="${this.escapeAttribute(actionLabel)}" data-tooltip="${this.escapeAttribute(actionLabel)}" aria-disabled="${!recommendation.unlocked}" ${recommendation.unlocked ? '' : 'disabled'}>
                     ${recommendation.unlocked ? 'Añadir' : 'Por reclutar'}
                 </button>
@@ -794,14 +797,10 @@ export class TeamBuilderPanel {
     }
 
     escapeAttribute(value = '') {
-        return String(value)
-            .replaceAll('&', '&amp;')
-            .replaceAll('"', '&quot;')
-            .replaceAll('<', '&lt;')
-            .replaceAll('>', '&gt;');
+        return escapeHtml(value);
     }
 
     escapeHtml(value = '') {
-        return this.escapeAttribute(value);
+        return escapeHtml(value);
     }
 }

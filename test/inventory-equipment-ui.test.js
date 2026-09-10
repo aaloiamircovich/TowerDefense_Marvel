@@ -287,6 +287,39 @@ test('coleccion anuncia estado y accion principal al armar equipo', () => {
     assert.match(lockedHtml, /role="listitem" aria-label="Thor\. Rareza [^\.]+\. bloqueado\."/);
     assert.match(lockedHtml, /aria-label="Thor bloqueado, pendiente de reclutar" title="Thor bloqueado, pendiente de reclutar" data-tooltip="Thor bloqueado, pendiente de reclutar" aria-pressed="false" aria-disabled="true" disabled/);
 });
+
+test('coleccion escapa slots y agrupaciones dinamicas', () => {
+    const ui = createUiStub();
+    ui.renderSprite = () => '<span class="sprite-safe"></span>';
+    const panel = new TeamBuilderPanel(ui);
+    const slotHtml = panel.renderTeamSlot({ id: 'hero" onclick="bad', name: '<Hero>', visual: {} }, 0);
+    const groupHtml = panel.renderSynergyGroup({
+        state: 'active" onclick="bad',
+        rarityClass: 'rarity-secret" onclick="bad',
+        rarity: 'Secret"><script>',
+        color: 'url(javascript:bad)',
+        progressLabel: '<1/2>',
+        label: '<Grupo>',
+        description: '<Desc>',
+        memberNames: ['<A>'],
+        selectedNames: ['<B>'],
+        missingNames: ['<C>'],
+        needed: 1,
+        activeTier: null,
+        nextTier: { label: '<Tier>', effects: { damagePct: 0.1 } }
+    });
+
+    assert.match(slotHtml, /data-id="hero&quot; onclick=&quot;bad"/);
+    assert.match(slotHtml, /aria-label="Quitar a &lt;Hero&gt;"/);
+    assert.match(slotHtml, /<span>&lt;Hero&gt;<\/span>/);
+    assert.match(groupHtml, /allegiance-card active-onclick-bad rarity-secret-onclick-bad/);
+    assert.match(groupHtml, /style="--synergy-color:var\(--level-accent\)"/);
+    assert.match(groupHtml, /&lt;Grupo&gt;/);
+    assert.match(groupHtml, /&lt;Desc&gt;/);
+    assert.match(groupHtml, /Necesitas:<\/b> &lt;A&gt;/);
+    assert.match(groupHtml, /&lt;Tier&gt;/);
+    assert.doesNotMatch(`${slotHtml}${groupHtml}`, /onclick="bad|<Hero>|<Grupo>|<Desc>|<script>|javascript:bad/);
+});
 test('coleccion muestra preset de equipo por mapa', () => {
     const ui = createUiStub();
     ui.inventoryPanel.pendingEquipItemId = null;
