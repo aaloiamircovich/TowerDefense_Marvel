@@ -1,11 +1,4 @@
-function escapeHtml(value = '') {
-    return String(value)
-        .replaceAll('&', '&amp;')
-        .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;')
-        .replaceAll('"', '&quot;')
-        .replaceAll("'", '&#39;');
-}
+import { escapeHtml, normalizeClassToken } from './HtmlSanitizer.js';
 
 function setHudResourceElement(element, value = 0, formatHudResource) {
     if (!element) return;
@@ -80,9 +73,10 @@ export class TopHudPanel {
         if (!button) return null;
         if (summary) this.ui.nextWaveSummary = summary;
         const state = this.buildWaveLaunchState(enabled, summary || this.ui.nextWaveSummary);
+        const tierClass = normalizeClassToken(state.tier, 'low');
         button.disabled = !enabled;
-        button.className = `btn-primary next-wave-cta threat-${state.tier}`;
-        button.dataset.threatTier = state.tier;
+        button.className = `btn-primary next-wave-cta threat-${tierClass}`;
+        button.dataset.threatTier = tierClass;
         button.dataset.tooltip = state.tooltip;
         button.title = state.tooltip;
         button.setAttribute('aria-label', state.ariaLabel);
@@ -124,7 +118,8 @@ export class TopHudPanel {
     updateBossCountdown(wave = 1) {
         if (!this.ui.bossCountdownEl) return null;
         const state = this.buildBossCountdownState(wave, this.ui.game.waveManager?.maxWaves);
-        this.ui.bossCountdownEl.className = `status-item boss-countdown boss-countdown-${state.tone}`;
+        const toneClass = normalizeClassToken(state.tone, 'normal');
+        this.ui.bossCountdownEl.className = `status-item boss-countdown boss-countdown-${toneClass}`;
         this.ui.bossCountdownEl.setAttribute('aria-label', state.ariaLabel);
         this.ui.bossCountdownEl.innerHTML = `<i class="fas fa-skull"></i><span>${escapeHtml(state.label)}</span><b>${escapeHtml(state.detail)}</b>`;
         return state;

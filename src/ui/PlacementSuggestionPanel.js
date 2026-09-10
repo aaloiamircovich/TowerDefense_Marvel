@@ -1,19 +1,4 @@
-function escapeHtml(value = '') {
-    return String(value)
-        .replaceAll('&', '&amp;')
-        .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;')
-        .replaceAll('"', '&quot;')
-        .replaceAll("'", '&#39;');
-}
-
-function normalizeClassToken(value = '', fallback = 'solid') {
-    const token = String(value || '')
-        .toLowerCase()
-        .replace(/[^a-z0-9-]+/g, '-')
-        .replace(/^-+|-+$/g, '');
-    return token || fallback;
-}
+import { escapeHtml, normalizeClassToken } from './HtmlSanitizer.js';
 
 export class PlacementSuggestionPanel {
     constructor(ui) {
@@ -36,7 +21,7 @@ export class PlacementSuggestionPanel {
         }
 
         const suggestionLabel = `${state.label}. ${state.detail}`;
-        const qualityClass = normalizeClassToken(state.qualityId);
+        const qualityClass = normalizeClassToken(state.qualityId, 'solid');
         button.className = `suggested-placement-action ${qualityClass}`;
         button.setAttribute('aria-label', suggestionLabel);
         button.title = suggestionLabel;

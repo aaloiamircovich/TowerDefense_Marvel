@@ -1,19 +1,4 @@
-function escapeHtml(value = '') {
-    return String(value)
-        .replaceAll('&', '&amp;')
-        .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;')
-        .replaceAll('"', '&quot;')
-        .replaceAll("'", '&#39;');
-}
-
-function normalizeClassToken(value = '', fallback = 'normal') {
-    const token = String(value || '')
-        .toLowerCase()
-        .replace(/[^a-z0-9-]+/g, '-')
-        .replace(/^-+|-+$/g, '');
-    return token || fallback;
-}
+import { clampPercent, escapeHtml, normalizeClassToken } from './HtmlSanitizer.js';
 
 function formatCompactCount(value = 0) {
     const amount = Math.max(0, Math.floor(Number(value) || 0));
@@ -37,6 +22,7 @@ export class ThreatHudPanel {
             return null;
         }
 
+        const hpPct = clampPercent(state.hpPct);
         container.className = `boss-hud ${state.critical ? 'critical' : ''} ${state.isFinalBoss ? 'final-boss' : ''}`;
         container.setAttribute('aria-label', `${state.name}. ${state.phase}. Salud ${state.hpPct} por ciento.`);
         container.innerHTML = `
@@ -44,10 +30,10 @@ export class ThreatHudPanel {
                 <span>${state.isFinalBoss ? 'Jefe final' : 'Jefe activo'}</span>
                 <strong>${escapeHtml(state.name)}</strong>
             </div>
-            <div class="boss-hud-meter" aria-hidden="true"><i style="width:${state.hpPct}%"></i></div>
+            <div class="boss-hud-meter" aria-hidden="true"><i style="width:${hpPct}%"></i></div>
             <div class="boss-hud-meta">
                 <span>${escapeHtml(state.phase)}</span>
-                <b>${state.hpPct}%</b>
+                <b>${escapeHtml(hpPct)}%</b>
             </div>
         `;
         return state;
@@ -63,7 +49,7 @@ export class ThreatHudPanel {
             return null;
         }
 
-        const dangerClass = normalizeClassToken(state.danger);
+        const dangerClass = normalizeClassToken(state.danger, 'normal');
         const remainingLabel = formatCompactCount(state.remaining);
         container.className = `spawn-queue ${dangerClass}`;
         container.setAttribute('aria-label', `Proximo refuerzo ${state.name} en ${state.eta} segundos. Quedan ${state.remaining}.`);
