@@ -163,3 +163,105 @@ test('ProfilePanel navega tabs con teclado', () => {
     assert.ok(calls.includes('render:Perfil:history'));
     assert.ok(calls.includes('focus:history'));
 });
+
+test('ProfilePanel escapa textos dinamicos del perfil', () => {
+    const panelContent = {
+        innerHTML: '',
+        querySelector: () => null,
+        querySelectorAll: () => []
+    };
+    const progression = {
+        state: {
+            mapProgress: {},
+            statistics: { missions: 0, victories: 0, waves: 0, enemiesDefeated: 0, damageDealt: 0 },
+            achievements: []
+        },
+        getCodexSnapshot: () => ({
+            heroes: { found: 1, total: 1 },
+            enemies: { found: 0, total: 1 },
+            items: { found: 0, total: 1 },
+            factions: { found: 0, total: 1 },
+            mechanics: { found: 0, total: 1 }
+        }),
+        getWeeklyContractSnapshot: () => ({
+            completed: 0,
+            total: 1,
+            streak: 0,
+            bestStreak: 0,
+            perfectWeeks: 0,
+            contracts: [
+                {
+                    title: '<img src=x onerror=alert(1)>',
+                    group: 'Semanal<script>',
+                    goal: 'Completa <b>oleadas</b>',
+                    reward: '500"><script>'
+                }
+            ]
+        }),
+        getContractEmblemSnapshot: () => ({
+            unlocked: 0,
+            total: 1,
+            emblems: [
+                {
+                    label: '<script>emblema()</script>',
+                    description: 'Descripcion <img src=x>',
+                    icon: 'fa-medal" onclick="alert(1)',
+                    progress: 0,
+                    required: 1,
+                    unlocked: false
+                }
+            ]
+        }),
+        getSynergyChallengeSnapshot: () => ({
+            completed: 0,
+            total: 1,
+            challenges: [
+                {
+                    title: 'Grupo <img src=x>',
+                    type: 'family',
+                    goal: 'Activa <script>bad()</script>',
+                    reward: '700<script>',
+                    completed: false,
+                    active: false
+                }
+            ]
+        }),
+        getCredits: () => '1200<script>',
+        getTotalStars: () => 0,
+        getHeroMastery: () => ({ completed: [] }),
+        exportBuildCode: () => 'BUILD'
+    };
+    const ui = {
+        panelContent,
+        showToast: () => {},
+        game: {
+            progression,
+            levelsData: [{ id: 'level_1', name: '<img src=x onerror=alert(1)>' }],
+            waveManager: { maxWaves: 100 },
+            stars: 0,
+            unlockedHeroes: [{ id: 'hero_1', name: '<script>Hero</script>' }],
+            activeTeam: [],
+            currentLevel: { theme: { label: 'Mapa <script>', brief: 'Brief <img src=x>' } },
+            teamSynergy: { getSnapshot: () => ({ families: [], pairs: [], distinctTags: 0 }) },
+            replaySystem: { exportReplayCode: () => 'REPLAY' }
+        }
+    };
+
+    const panel = new ProfilePanel(ui);
+    panel.render('<img src=x onerror=alert(1)>');
+    assert.doesNotMatch(panelContent.innerHTML, /<img\s/i);
+    assert.doesNotMatch(panelContent.innerHTML, /<script/i);
+    assert.match(panelContent.innerHTML, /&lt;img src=x onerror=alert\(1\)&gt;/);
+    assert.match(panelContent.innerHTML, /Mapa &lt;script&gt;/);
+
+    panel.render('Perfil', 'contracts');
+    assert.doesNotMatch(panelContent.innerHTML, /<img\s/i);
+    assert.doesNotMatch(panelContent.innerHTML, /<script/i);
+    assert.doesNotMatch(panelContent.innerHTML, /onclick=/i);
+    assert.match(panelContent.innerHTML, /&lt;b&gt;oleadas&lt;\/b&gt;/);
+    assert.match(panelContent.innerHTML, /class="fas fa-circle-info"/);
+
+    panel.render('Perfil', 'codex');
+    assert.doesNotMatch(panelContent.innerHTML, /<script/i);
+    assert.match(panelContent.innerHTML, /&lt;script&gt;Hero&lt;\/script&gt;/);
+});

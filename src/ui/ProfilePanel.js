@@ -3,6 +3,22 @@ import { MASTERY_CHALLENGES } from '../systems/MasteryCodexSystem.js';
 import { ACHIEVEMENT_CATALOG } from '../systems/ProgressionManager.js';
 import { CAMPAIGN_MAX_WAVES, getLevelUnlockRequirement, isLevelUnlockedByStars } from '../utils/LevelProgression.js';
 
+function escapeHtml(value = '') {
+    return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
+function normalizeIconClass(value = '', fallback = 'fa-circle-info') {
+    const tokens = String(value || '')
+        .split(/\s+/)
+        .filter((token) => /^(fa[srb]?|fa-[a-z0-9-]+)$/i.test(token));
+    return tokens.length ? tokens.join(' ') : fallback;
+}
+
 export class ProfilePanel {
     constructor(ui) {
         this.ui = ui;
@@ -49,7 +65,7 @@ export class ProfilePanel {
             total: total.total + Number(value.total || 0)
         }), { found: 0, total: 0 });
         const codexSummary = Object.entries(codex)
-            .map(([key, value]) => `<span><b>${value.found}/${value.total}</b>${({ heroes: 'Heroes', enemies: 'Enemigos', items: 'Objetos', factions: 'Facciones', mechanics: 'Mecanicas' })[key]}</span>`)
+            .map(([key, value]) => `<span><b>${escapeHtml(value.found)}/${escapeHtml(value.total)}</b>${escapeHtml(({ heroes: 'Heroes', enemies: 'Enemigos', items: 'Objetos', factions: 'Facciones', mechanics: 'Mecanicas' })[key] || key)}</span>`)
             .join('');
         const tabs = [
             { id: 'summary', label: 'Resumen', icon: 'fa-chart-pie', badge: `${completion}%`, badgeLabel: `${completion}% completado` },
@@ -61,7 +77,7 @@ export class ProfilePanel {
             summary: `
                 <section class="profile-summary-grid">
                     <article class="profile-meta-section profile-summary-panel">
-                        <h3>Maestria heroica <span>${masteryCompleted}/${masteryTotal || 0}</span></h3>
+                        <h3>Maestria heroica <span>${escapeHtml(masteryCompleted)}/${escapeHtml(masteryTotal || 0)}</span></h3>
                         <div class="profile-mini-masteries">
                             ${masteryPreview || '<p>Recluta un heroe para iniciar desafios.</p>'}
                         </div>
@@ -76,19 +92,19 @@ export class ProfilePanel {
             `,
             contracts: `
                 <section class="profile-meta-section">
-                    <h3>Contratos semanales <span>${weekly.completed}/${weekly.total} · racha ${weekly.streak}</span></h3>
+                    <h3>Contratos semanales <span>${escapeHtml(weekly.completed)}/${escapeHtml(weekly.total)} · racha ${escapeHtml(weekly.streak)}</span></h3>
                     <div class="weekly-streak-strip">
-                        <span><b>${weekly.streak}</b>Actual</span>
-                        <span><b>${weekly.bestStreak}</b>Mejor racha</span>
-                        <span><b>${weekly.perfectWeeks}</b>Semanas completas</span>
+                        <span><b>${escapeHtml(weekly.streak)}</b>Actual</span>
+                        <span><b>${escapeHtml(weekly.bestStreak)}</b>Mejor racha</span>
+                        <span><b>${escapeHtml(weekly.perfectWeeks)}</b>Semanas completas</span>
                     </div>
                     <div class="weekly-contract-list">${weekly.contracts.map((contract) => this.renderContract(contract)).join('')}</div>
                 </section>
                 <section class="profile-meta-section">
-                    <h3>Emblemas de contrato <span>${contractEmblems.unlocked}/${contractEmblems.total}</span></h3>
+                    <h3>Emblemas de contrato <span>${escapeHtml(contractEmblems.unlocked)}/${escapeHtml(contractEmblems.total)}</span></h3>
                     <div class="contract-emblem-list">${contractEmblems.emblems.map((emblem) => this.renderContractEmblem(emblem)).join('')}</div>
                 </section>
-                <section class="profile-meta-section"><h3>Retos de agrupacion <span>${synergyChallenges.completed}/${synergyChallenges.total}</span></h3><div class="weekly-contract-list synergy-challenge-list">${synergyChallenges.challenges.slice(0, 8).map((challenge) => this.renderSynergyChallenge(challenge)).join('')}</div></section>
+                <section class="profile-meta-section"><h3>Retos de agrupacion <span>${escapeHtml(synergyChallenges.completed)}/${escapeHtml(synergyChallenges.total)}</span></h3><div class="weekly-contract-list synergy-challenge-list">${synergyChallenges.challenges.slice(0, 8).map((challenge) => this.renderSynergyChallenge(challenge)).join('')}</div></section>
             `,
             codex: `
                 <section class="profile-meta-section"><h3>Codice descubierto</h3><div class="codex-summary">${codexSummary}</div></section>
@@ -96,7 +112,7 @@ export class ProfilePanel {
                 <section class="profile-meta-section"><h3>Logros</h3><div class="achievement-list">${Object.entries(ACHIEVEMENT_CATALOG).map(([id, achievement]) => this.renderAchievement(id, achievement, progression.state.achievements.includes(id))).join('')}</div></section>
             `,
             history: `
-                <section class="profile-meta-section"><h3>Historial</h3><div class="codex-summary"><span><b>${statistics.missions}</b>Misiones</span><span><b>${statistics.victories}</b>Victorias</span><span><b>${statistics.waves}</b>Oleadas</span><span><b>${statistics.enemiesDefeated}</b>Enemigos</span><span><b>${statistics.damageDealt}</b>Dano</span></div></section>
+                <section class="profile-meta-section"><h3>Historial</h3><div class="codex-summary"><span><b>${escapeHtml(statistics.missions)}</b>Misiones</span><span><b>${escapeHtml(statistics.victories)}</b>Victorias</span><span><b>${escapeHtml(statistics.waves)}</b>Oleadas</span><span><b>${escapeHtml(statistics.enemiesDefeated)}</b>Enemigos</span><span><b>${escapeHtml(statistics.damageDealt)}</b>Dano</span></div></section>
                 <section class="profile-meta-section"><h3>Codigos compartibles</h3><div class="build-code-panel"><div><button class="btn-primary ghost" id="copy-build-code" type="button" aria-label="Copiar codigo de build" title="Copiar codigo de build" data-tooltip="Copiar build al portapapeles"><i class="fas fa-share-nodes"></i> Copiar build</button><button class="btn-primary ghost" id="copy-replay-code" type="button" aria-label="Copiar codigo de replay" title="Copiar codigo de replay" data-tooltip="Copiar replay al portapapeles"><i class="fas fa-film"></i> Copiar replay</button></div><textarea id="build-code-output" readonly rows="2" aria-label="Codigo compartible"></textarea></div></section>
             `
         };
@@ -105,25 +121,25 @@ export class ProfilePanel {
             <section class="profile-command-header">
                 <div>
                     <span class="briefing-kicker">ARCHIVO DE MANDO</span>
-                    <h2>${title}</h2>
+                    <h2>${escapeHtml(title)}</h2>
                     <p>Progreso global, contratos, códice y rendimiento operativo de la campaña.</p>
                     <div class="profile-next-unlock" style="--profile-next-progress:${nextUnlock.progress}%">
                         <span><i class="fas fa-route"></i> ${nextUnlock.complete ? 'Ruta completa' : 'Proxima operacion'}</span>
-                        <strong>${nextUnlock.name}</strong>
-                        <small>${nextUnlock.detail}</small>
+                        <strong>${escapeHtml(nextUnlock.name)}</strong>
+                        <small>${escapeHtml(nextUnlock.detail)}</small>
                         <em aria-hidden="true"></em>
                     </div>
                 </div>
                 <div class="profile-command-meter" aria-label="Completitud ${completion}%">
-                    <b>${completion}%</b>
+                    <b>${escapeHtml(completion)}%</b>
                     <span>completado</span>
                 </div>
             </section>
             <div class="profile-grid profile-grid--primary">
-                <div class="detail-card profile-stat-card"><h3>Progreso</h3><p><span>Mejores oleadas</span><strong>${bestWaves}</strong></p><p><span>Estrellas</span><strong>${totalStars}</strong></p><p><span>Desafios</span><strong>${challenges}/${game.levelsData.length * 2}</strong></p></div>
-                <div class="detail-card profile-stat-card"><h3>Plantilla</h3><p><span>Heroes</span><strong>${game.unlockedHeroes.length}</strong></p><p><span>Equipo activo</span><strong>${game.activeTeam.length}/6</strong></p></div>
-                <div class="detail-card profile-stat-card"><h3>Composicion</h3><p><span>Sinergias</span><strong>${activeSynergies}</strong></p><p><span>Familias</span><strong>${team.distinctTags || 0}</strong></p><p><span>Despliegue</span><strong>Libre</strong></p></div>
-                <div class="detail-card profile-stat-card"><h3>Economia</h3><p><span>Creditos</span><strong>$${progression.getCredits()}</strong></p></div>
+                <div class="detail-card profile-stat-card"><h3>Progreso</h3><p><span>Mejores oleadas</span><strong>${escapeHtml(bestWaves)}</strong></p><p><span>Estrellas</span><strong>${escapeHtml(totalStars)}</strong></p><p><span>Desafios</span><strong>${escapeHtml(challenges)}/${escapeHtml(game.levelsData.length * 2)}</strong></p></div>
+                <div class="detail-card profile-stat-card"><h3>Plantilla</h3><p><span>Heroes</span><strong>${escapeHtml(game.unlockedHeroes.length)}</strong></p><p><span>Equipo activo</span><strong>${escapeHtml(game.activeTeam.length)}/6</strong></p></div>
+                <div class="detail-card profile-stat-card"><h3>Composicion</h3><p><span>Sinergias</span><strong>${escapeHtml(activeSynergies)}</strong></p><p><span>Familias</span><strong>${escapeHtml(team.distinctTags || 0)}</strong></p><p><span>Despliegue</span><strong>Libre</strong></p></div>
+                <div class="detail-card profile-stat-card"><h3>Economia</h3><p><span>Creditos</span><strong>$${escapeHtml(progression.getCredits())}</strong></p></div>
             </div>
             <details class="profile-ops-details">
                 <summary>
@@ -131,17 +147,20 @@ export class ProfilePanel {
                     <b>2 paneles</b>
                 </summary>
                 <div class="profile-grid profile-grid--secondary">
-                    <div class="detail-card"><h3>Zona Marvel</h3><p><span>Mapa</span><strong>${game.currentLevel?.theme?.label || game.currentLevel?.name || 'Mapa'}</strong></p><p><span>Ambiente</span><strong>${game.currentLevel?.theme?.brief || 'Defensa tactica'}</strong></p></div>
-                    <div class="detail-card"><h3>Rendimiento</h3><p><span>Frame p95</span><strong>${(performance.p95Ms || 0).toFixed(1)} ms</strong></p><p><span>Memoria pico</span><strong>${(performance.peakMemoryMb || 0).toFixed(1)} MB</strong></p><p><span>Pico de entidades</span><strong>${performance.peakEntities || 0}</strong></p><p><span>Proyectiles reciclados</span><strong>${pool.reused || 0}</strong></p></div>
+                    <div class="detail-card"><h3>Zona Marvel</h3><p><span>Mapa</span><strong>${escapeHtml(game.currentLevel?.theme?.label || game.currentLevel?.name || 'Mapa')}</strong></p><p><span>Ambiente</span><strong>${escapeHtml(game.currentLevel?.theme?.brief || 'Defensa tactica')}</strong></p></div>
+                    <div class="detail-card"><h3>Rendimiento</h3><p><span>Frame p95</span><strong>${escapeHtml((performance.p95Ms || 0).toFixed(1))} ms</strong></p><p><span>Memoria pico</span><strong>${escapeHtml((performance.peakMemoryMb || 0).toFixed(1))} MB</strong></p><p><span>Pico de entidades</span><strong>${escapeHtml(performance.peakEntities || 0)}</strong></p><p><span>Proyectiles reciclados</span><strong>${escapeHtml(pool.reused || 0)}</strong></p></div>
                 </div>
             </details>
             <nav class="profile-tabs" role="tablist" aria-label="Secciones de perfil">
-                ${tabs.map((tab) => `<button id="profile-tab-${tab.id}" class="profile-tab ${this.activeView === tab.id ? 'active' : ''}" data-profile-view="${tab.id}" role="tab" aria-selected="${this.activeView === tab.id}" aria-controls="profile-tab-panel" tabindex="${this.activeView === tab.id ? '0' : '-1'}" aria-label="${tab.label}: ${tab.badgeLabel}" title="${tab.label}: ${tab.badgeLabel}" data-tooltip="${tab.label}: ${tab.badgeLabel}" type="button"><i class="fas ${tab.icon}"></i><span>${tab.label}</span><b class="profile-tab-badge">${tab.badge}</b></button>`).join('')}
+                ${tabs.map((tab) => {
+                    const tabLabel = `${tab.label}: ${tab.badgeLabel}`;
+                    return `<button id="profile-tab-${escapeHtml(tab.id)}" class="profile-tab ${this.activeView === tab.id ? 'active' : ''}" data-profile-view="${escapeHtml(tab.id)}" role="tab" aria-selected="${this.activeView === tab.id}" aria-controls="profile-tab-panel" tabindex="${this.activeView === tab.id ? '0' : '-1'}" aria-label="${escapeHtml(tabLabel)}" title="${escapeHtml(tabLabel)}" data-tooltip="${escapeHtml(tabLabel)}" type="button"><i class="fas ${normalizeIconClass(tab.icon)}"></i><span>${escapeHtml(tab.label)}</span><b class="profile-tab-badge">${escapeHtml(tab.badge)}</b></button>`;
+                }).join('')}
             </nav>
-            <div id="profile-tab-panel" class="profile-tab-panel profile-view-${this.activeView}" role="tabpanel" aria-labelledby="profile-tab-${this.activeView}">
+            <div id="profile-tab-panel" class="profile-tab-panel profile-view-${escapeHtml(this.activeView)}" role="tabpanel" aria-labelledby="profile-tab-${escapeHtml(this.activeView)}">
                 ${sections[this.activeView]}
             </div>
-            <div class="release-notice"><strong>Super Hero TD v${APP_VERSION}</strong><span>${FAN_PROJECT_NOTICE}</span></div>
+            <div class="release-notice"><strong>Super Hero TD v${escapeHtml(APP_VERSION)}</strong><span>${escapeHtml(FAN_PROJECT_NOTICE)}</span></div>
         `;
         this.bindListeners();
     }
@@ -174,17 +193,17 @@ export class ProfilePanel {
 
     renderMasteryRow(entry) {
         const challengeLabels = MASTERY_CHALLENGES
-            .map((challenge) => `${entry.completed.includes(challenge.id) ? 'OK' : '--'} ${challenge.name}`)
+            .map((challenge) => `${entry.completed.includes(challenge.id) ? 'OK' : '--'} ${escapeHtml(challenge.name)}`)
             .join(' | ');
-        return `<div class="mastery-row"><span>${entry.hero.name}</span><strong>${entry.completed.length}/${entry.total}</strong><small>${challengeLabels}</small></div>`;
+        return `<div class="mastery-row"><span>${escapeHtml(entry.hero.name)}</span><strong>${escapeHtml(entry.completed.length)}/${escapeHtml(entry.total)}</strong><small>${challengeLabels}</small></div>`;
     }
 
     renderMasteryPreview(entry) {
         const progress = entry.total ? Math.round((entry.completed.length / entry.total) * 100) : 0;
         return `
             <span class="profile-mastery-chip" style="--mastery-progress:${progress}%">
-                <b>${entry.hero.name}</b>
-                <small>${entry.completed.length}/${entry.total} desafios</small>
+                <b>${escapeHtml(entry.hero.name)}</b>
+                <small>${escapeHtml(entry.completed.length)}/${escapeHtml(entry.total)} desafios</small>
                 <i aria-hidden="true"></i>
             </span>
         `;
@@ -193,8 +212,8 @@ export class ProfilePanel {
     renderContract(contract) {
         return `
             <article class="${contract.completed ? 'completed' : ''}">
-                <div><strong>${contract.title}</strong><small>${contract.group} | +$${contract.reward}</small></div>
-                <p>${contract.goal}</p>
+                <div><strong>${escapeHtml(contract.title)}</strong><small>${escapeHtml(contract.group)} | +$${escapeHtml(contract.reward)}</small></div>
+                <p>${escapeHtml(contract.goal)}</p>
                 <b>${contract.completed ? 'Cobrado' : 'Pendiente'}</b>
             </article>
         `;
@@ -203,8 +222,8 @@ export class ProfilePanel {
     renderSynergyChallenge(challenge) {
         return `
             <article class="${challenge.completed ? 'completed' : ''} ${challenge.active ? 'active' : ''}">
-                <div><strong>${challenge.title}</strong><small>${challenge.type === 'family' ? 'Agrupacion' : 'Pareja'} | +$${challenge.reward}</small></div>
-                <p>${challenge.goal}</p>
+                <div><strong>${escapeHtml(challenge.title)}</strong><small>${challenge.type === 'family' ? 'Agrupacion' : 'Pareja'} | +$${escapeHtml(challenge.reward)}</small></div>
+                <p>${escapeHtml(challenge.goal)}</p>
                 <b>${challenge.completed ? 'Cobrado' : challenge.active ? 'Activo' : 'Pendiente'}</b>
             </article>
         `;
@@ -213,18 +232,18 @@ export class ProfilePanel {
     renderContractEmblem(emblem) {
         return `
             <article class="contract-emblem-card ${emblem.unlocked ? 'unlocked' : ''}">
-                <i class="fas ${emblem.icon}" aria-hidden="true"></i>
+                <i class="fas ${normalizeIconClass(emblem.icon)}" aria-hidden="true"></i>
                 <div>
-                    <strong>${emblem.label}</strong>
-                    <p>${emblem.description}</p>
+                    <strong>${escapeHtml(emblem.label)}</strong>
+                    <p>${escapeHtml(emblem.description)}</p>
                 </div>
-                <b>${emblem.unlocked ? 'Desbloqueado' : `${emblem.progress}/${emblem.required}`}</b>
+                <b>${emblem.unlocked ? 'Desbloqueado' : `${escapeHtml(emblem.progress)}/${escapeHtml(emblem.required)}`}</b>
             </article>
         `;
     }
 
     renderAchievement(id, achievement, unlocked) {
-        return `<span class="${unlocked ? 'unlocked' : ''}" title="${achievement.description}" data-achievement="${id}">${unlocked ? 'OK' : '--'} ${achievement.label}</span>`;
+        return `<span class="${unlocked ? 'unlocked' : ''}" title="${escapeHtml(achievement.description)}" data-achievement="${escapeHtml(id)}">${unlocked ? 'OK' : '--'} ${escapeHtml(achievement.label)}</span>`;
     }
 
     switchProfileView(view = 'summary', focusTab = false) {
