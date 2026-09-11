@@ -17,6 +17,9 @@ test('dialog keyboard skips collapsed controls and recovers missing focus', (t) 
     const controls = [first, control('collapsed', { closest: () => ({}) }),
         control('disabled', { matches: () => true }),
         control('unrendered', { getClientRects: () => [] }),
+        control('closed-details', { parentElement: {
+            tagName: 'DETAILS', open: false, querySelector: () => ({ contains: () => false })
+        } }),
         control('negative', { tabIndex: -1 }), last];
     const previousDocument = globalThis.document;
     const previousWindow = globalThis.window;

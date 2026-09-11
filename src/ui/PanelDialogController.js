@@ -1,5 +1,13 @@
 import { getPanelTitle, isPanelNavigationType } from './PanelNavigation.js';
 
+function isInCollapsedSection(element) {
+    for (let parent = element.parentElement; parent; parent = parent.parentElement) {
+        if (parent.tagName === 'DETAILS' && !parent.open
+            && !parent.querySelector(':scope > summary')?.contains(element)) return true;
+    }
+    return false;
+}
+
 export class PanelDialogController {
     constructor(ui, builders = {}) {
         this.ui = ui;
@@ -78,6 +86,7 @@ export class PanelDialogController {
             .filter((element) => element.tabIndex >= 0
                 && !element.matches(':disabled')
                 && !element.closest('[hidden], [inert], .hidden, [aria-hidden="true"]')
+                && !isInCollapsedSection(element)
                 && element.getClientRects().length > 0
                 && window.getComputedStyle(element).visibility === 'visible');
     }

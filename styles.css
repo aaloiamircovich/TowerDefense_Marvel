@@ -8887,7 +8887,9 @@ select {
 #ui-tooltip {
     position: fixed;
     z-index: 300;
-    max-width: 240px;
+    max-width: min(240px, calc(100vw - 16px));
+    box-sizing: border-box;
+    overflow-wrap: anywhere;
     padding: 7px 9px;
     border: 1px solid var(--level-accent);
     border-radius: 6px;
