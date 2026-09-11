@@ -18,12 +18,18 @@ export class PanelDialogController {
 
     openPanel(type) {
         this.ui.tooltipController.hide();
-        this.ui.lastFocusedElement = document.activeElement;
+        if (this.ui.overlay.classList.contains('hidden')) {
+            this.ui.lastFocusedElement = document.activeElement;
+        }
         this.ui.game.pause();
         this.ui.showPanelOverlay(true);
         this.ui.game.audio?.play('ui');
         this.ui.renderPanel(type);
-        window.requestAnimationFrame(() => document.getElementById('close-panel-btn')?.focus());
+        window.requestAnimationFrame(() => {
+            if (this.ui.overlay.classList.contains('hidden')) return;
+            const first = this.getFocusableElements()[0];
+            (first || document.getElementById('panel-container'))?.focus();
+        });
     }
 
     closePanel() {
@@ -67,6 +73,15 @@ export class PanelDialogController {
         this.ui.closePanel();
     }
 
+    getFocusableElements() {
+        return [...this.ui.overlay.querySelectorAll('a[href], button, select, input, textarea, summary, [tabindex]')]
+            .filter((element) => element.tabIndex >= 0
+                && !element.matches(':disabled')
+                && !element.closest('[hidden], [inert], .hidden, [aria-hidden="true"]')
+                && element.getClientRects().length > 0
+                && window.getComputedStyle(element).visibility === 'visible');
+    }
+
     handleDialogKeydown(event) {
         if (this.ui.overlay.classList.contains('hidden')) return;
         if (event.key === 'Escape' && !document.getElementById('close-panel-btn')?.classList.contains('hidden')) {
@@ -75,12 +90,18 @@ export class PanelDialogController {
             return;
         }
         if (event.key !== 'Tab') return;
-        const focusable = [...this.ui.overlay.querySelectorAll('button:not([disabled]), select, input, [tabindex="0"]')]
-            .filter((element) => !element.classList.contains('hidden'));
-        if (focusable.length === 0) return;
+        const focusable = this.getFocusableElements();
+        if (focusable.length === 0) {
+            event.preventDefault();
+            document.getElementById('panel-container')?.focus();
+            return;
+        }
         const first = focusable[0];
         const last = focusable.at(-1);
-        if (event.shiftKey && document.activeElement === first) {
+        if (!focusable.includes(document.activeElement)) {
+            event.preventDefault();
+            (event.shiftKey ? last : first).focus();
+        } else if (event.shiftKey && document.activeElement === first) {
             event.preventDefault();
             last.focus();
         } else if (!event.shiftKey && document.activeElement === last) {
