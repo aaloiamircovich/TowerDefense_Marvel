@@ -17,6 +17,7 @@ try {
     await waitForServer(port);
     browser = await chromium.launch({ headless: true });
     const page = await browser.newPage({ viewport: { width: 1280, height: 720 } });
+    await page.route('https://**/*', (route) => route.abort());
 
     page.on('console', (message) => {
         if (message.type() !== 'error') return;
@@ -165,6 +166,17 @@ async function runLayoutSmoke(page, failures, viewport) {
     const layout = await page.evaluate(collectLayoutSmokeState);
     appendLayoutFailures(failures, viewport.label, layout);
 
+    await page.locator('#collection-ownership-select').selectOption('owned');
+    if (await page.locator('.panel-modal-nav').count() !== 1) failures.push('coleccion pierde navegacion al filtrar');
+    if (await page.locator('.collection-card').count() !== 1) failures.push('filtro de heroes obtenidos incorrecto');
+    await page.locator('.collection-team-details > summary').click();
+    await page.locator('#collection-sort-select').selectOption('za');
+    if (!(await page.locator('.collection-team-details').evaluate((element) => element.open))) {
+        failures.push('coleccion pierde el estado expandido al filtrar');
+    }
+    await page.locator('.collection-team-details > summary').click();
+    await page.locator('#collection-clear-filters').click();
+
     await page.locator('#close-panel-btn').click();
     await page.waitForFunction(() => document.querySelector('#panel-overlay')?.classList.contains('hidden'), null, { timeout: 5000 });
     return layout;
@@ -221,6 +233,8 @@ function collectLayoutSmokeState() {
         modalWidth: modal ? Math.round(modal.width) : 0,
         modalHeight: modal ? Math.round(modal.height) : 0,
         cardCount: document.querySelectorAll('.collection-card').length,
+        firstHeroTop: document.querySelector('.collection-card')?.getBoundingClientRect().top ?? Infinity,
+        iconsReady: document.fonts.check('900 16px "Font Awesome 6 Free"'),
         outOfBounds,
         badCards
     };
@@ -230,6 +244,8 @@ function appendLayoutFailures(failures, label, layout) {
     if (layout.documentOverflow > 6) failures.push(`${label}: documento desborda ${layout.documentOverflow}px`);
     if (layout.outOfBounds.length) failures.push(`${label}: ${layout.outOfBounds.join(' | ')}`);
     if (layout.cardCount <= 0) failures.push(`${label}: coleccion sin tarjetas visibles`);
+    if (layout.firstHeroTop > layout.viewportHeight - 120) failures.push(`${label}: heroes fuera de la primera pantalla`);
+    if (!layout.iconsReady) failures.push(`${label}: iconos locales sin cargar`);
     if (layout.badCards.length) failures.push(`${label}: tarjetas fuera de viewport ${layout.badCards.map((card) => card.text).join(' | ')}`);
 }
 async function getFreePort() {

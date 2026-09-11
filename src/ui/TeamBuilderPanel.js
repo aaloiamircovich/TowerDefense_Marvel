@@ -37,6 +37,7 @@ export class TeamBuilderPanel {
         this.ownershipFilter = 'all';
         this.tacticalFilter = 'all';
         this.synergyExpanded = false;
+        this.teamDetailsExpanded = false;
         this.viewMode = 'heroes';
     }
 
@@ -45,6 +46,8 @@ export class TeamBuilderPanel {
     }
 
     render(title = 'Equipo') {
+        const previousDetails = this.ui.panelContent.querySelector?.('.collection-team-details');
+        if (previousDetails) this.teamDetailsExpanded = previousDetails.open;
         const game = this.ui.game;
         const unlockedIds = new Set(game.progression.state.unlockedHeroIds);
         const pendingItem = this.getPendingInventoryItem();
@@ -59,7 +62,7 @@ export class TeamBuilderPanel {
                 <h2>${this.escapeHtml(title)}</h2>
                 <strong>${this.escapeHtml(game.activeTeam.length)}/6 activos</strong>
             </div>
-            ${this.renderCollectionCommandHeader({ readyHeroes, filteredHeroes, unlockedIds, snapshot })}
+            ${this.viewMode !== 'heroes' ? this.renderCollectionCommandHeader({ readyHeroes, filteredHeroes, unlockedIds, snapshot }) : ''}
             ${this.renderCollectionTabs()}
 
             ${this.viewMode === 'heroes' ? `<section id="collection-panel-heroes" class="collection-tab-panel" role="tabpanel" aria-labelledby="collection-tab-heroes">
@@ -68,6 +71,9 @@ export class TeamBuilderPanel {
                 <div class="team-slot-strip">
                     ${Array.from({ length: 6 }, (_, index) => this.renderTeamSlot(game.activeTeam[index], index)).join('')}
                 </div>
+                <details class="collection-team-details" ${this.teamDetailsExpanded ? 'open' : ''}>
+                <summary><span><i class="fas fa-chart-simple" aria-hidden="true"></i> Equipo y agrupaciones</span><span>${unlockedIds.size}/${readyHeroes.length} heroes <i class="fas fa-chevron-down" aria-hidden="true"></i></span></summary>
+                ${this.renderCollectionCommandHeader({ readyHeroes, filteredHeroes, unlockedIds, snapshot })}
                 ${this.renderMapTeamLoadoutControls()}
                 <div class="team-metrics">
                     ${Object.entries(METRIC_LABELS).map(([key, label]) => `
@@ -76,6 +82,7 @@ export class TeamBuilderPanel {
                 </div>
                 ${this.renderTeamReadinessAlerts(snapshot, game.activeTeam)}
                 ${this.renderSynergyMenu(snapshot, readyHeroes, unlockedIds)}
+                </details>
                 </section>
 
                 ${this.renderCollectionFilters(filteredHeroes.length, readyHeroes.length)}
@@ -90,6 +97,7 @@ export class TeamBuilderPanel {
         `;
 
         this.bindListeners();
+        this.ui.renderPanelNavigation?.('collection');
     }
 
     renderTeamReadinessAlerts(snapshot, team = []) {
@@ -427,7 +435,7 @@ export class TeamBuilderPanel {
     renderCollectionFilters(visibleCount, totalCount) {
         const hasActiveFilters = this.hasActiveHeroFilters();
         return `
-            <section class="collection-toolbar" aria-label="Filtros de coleccion">
+            <section class="collection-toolbar collection-toolbar-compact" aria-label="Filtros de coleccion">
                 <label class="collection-search">
                     <i class="fas fa-search"></i>
                     <input id="collection-search-input" type="search" value="${this.escapeAttribute(this.searchQuery)}" placeholder="Buscar heroe, rol o grupo" autocomplete="off" aria-label="Buscar heroe, rol o grupo">
@@ -456,7 +464,6 @@ export class TeamBuilderPanel {
                         ${HERO_TACTIC_FILTERS.map((filter) => `<option value="${this.escapeAttribute(filter.id)}" ${this.tacticalFilter === filter.id ? 'selected' : ''}>${this.escapeHtml(filter.label)}</option>`).join('')}
                     </select>
                 </label>
-                ${this.renderTacticQuickFilters()}
                 <div class="collection-rarity-filters" aria-label="Filtrar por rareza">
                     ${['all', ...HERO_RARITIES].map((rarity) => {
                         const active = this.rarityFilter === rarity;
@@ -696,6 +703,10 @@ export class TeamBuilderPanel {
             });
         });
         if (this.viewMode !== 'heroes') return;
+        const teamDetails = this.ui.panelContent.querySelector('.collection-team-details');
+        teamDetails?.addEventListener('toggle', () => {
+            if (teamDetails.isConnected) this.teamDetailsExpanded = teamDetails.open;
+        });
         this.ui.panelContent.querySelector('#collection-search-input')?.addEventListener('input', (event) => {
             this.searchQuery = event.target.value;
             this.render('Constructor de equipo');

@@ -585,10 +585,10 @@ test('coleccion filtra heroes obtenidos, faltantes y favoritos', () => {
     assert.match(filtersHtml, /aria-label="Filtrar heroes por estado de obtencion"/);
     assert.match(filtersHtml, /<option value="favorites" selected>Favoritos<\/option>/);
     assert.match(filtersHtml, /aria-label="Filtrar heroes por respuesta tactica"/);
-    assert.match(filtersHtml, /team-tactic-chipbar/);
-    assert.match(filtersHtml, /data-tactic="all" aria-pressed="true"/);
-    assert.match(filtersHtml, /data-tactic="dps"/);
-    assert.match(filtersHtml, /data-tactic="support"/);
+    assert.doesNotMatch(filtersHtml, /team-tactic-chipbar/);
+    assert.match(filtersHtml, /<option value="all" selected>/);
+    assert.match(filtersHtml, /<option value="dps"/);
+    assert.match(filtersHtml, /<option value="support"/);
     assert.match(filtersHtml, /class="rarity-filter\s+active" type="button" data-rarity="all" aria-pressed="true" aria-label="Filtrar rareza Todas"/);
     assert.match(filtersHtml, /title="Filtrar rareza Todas" data-tooltip="Filtrar rareza Todas"/);
 });
@@ -633,7 +633,7 @@ test('coleccion filtra heroes por terreno y respuesta tactica', () => {
     assert.match(panel.renderCollectionFilters(3, 6), /collection-tactical-select/);
     assert.match(panel.renderCollectionFilters(3, 6), /aria-label="Filtrar heroes por respuesta tactica"/);
     assert.match(panel.renderCollectionFilters(3, 6), /<option value="detection" selected>Detección<\/option>/);
-    assert.match(panel.renderCollectionFilters(3, 6), /team-tactic-chip active" type="button" data-tactic="detection" aria-pressed="true"/);
+    assert.doesNotMatch(panel.renderCollectionFilters(3, 6), /data-tactic=/);
     assert.deepEqual(panel.getActiveFilterLabels(), ['Tactica: Detección']);
 
     panel.resetHeroFilters();

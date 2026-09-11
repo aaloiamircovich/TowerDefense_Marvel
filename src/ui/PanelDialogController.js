@@ -33,6 +33,7 @@ export class PanelDialogController {
         this.ui.showPanelOverlay(true);
         this.ui.game.audio?.play('ui');
         this.ui.renderPanel(type);
+        if (this.ui.panelContent) this.ui.panelContent.scrollTop = 0;
         window.requestAnimationFrame(() => {
             if (this.ui.overlay.classList.contains('hidden')) return;
             const first = this.getFocusableElements()[0];

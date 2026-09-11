@@ -27,6 +27,6 @@ test('pantalla inicial adelanta recursos criticos de arranque', () => {
     const index = read('index.html');
 
     assert.match(index, /rel="modulepreload" href="src\/main\.js"/);
-    assert.match(index, /rel="preconnect" href="https:\/\/cdnjs\.cloudflare\.com" crossorigin/);
-    assert.match(index, /rel="dns-prefetch" href="https:\/\/cdnjs\.cloudflare\.com"/);
+    assert.match(index, /href="assets\/vendor\/fontawesome\/css\/all.min.css"/);
+    assert.doesNotMatch(index, /cdnjs\.cloudflare\.com/);
 });

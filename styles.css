@@ -12783,3 +12783,196 @@ button:disabled,
         max-width: min(180px, calc(100% - 24px));
     }
 }
+
+/* Collection keeps the roster visible; team analysis is available on demand. */
+#collection-panel-heroes .team-builder-summary {
+    gap: 8px;
+    margin: 10px 0;
+    padding: 0;
+    border: 0;
+}
+
+.collection-team-details > summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 38px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    list-style: none;
+    font-size: 12px;
+    color: var(--muted);
+}
+
+.collection-team-details > summary span {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.collection-team-details[open] > summary .fa-chevron-down {
+    transform: rotate(180deg);
+}
+
+.collection-team-details > .collection-command-header {
+    border: 0;
+    border-radius: 0;
+    background: none;
+    padding: 12px 0;
+    margin: 0;
+}
+
+.collection-team-details > .team-metrics,
+.collection-team-details > .team-readiness-strip,
+.collection-team-details > .synergy-menu {
+    margin-top: 12px;
+}
+
+.collection-toolbar.collection-toolbar-compact {
+    grid-template-columns: minmax(160px, 1fr) repeat(3, minmax(100px, 130px)) 36px auto;
+    gap: 8px;
+    padding: 10px 0;
+    margin: 0 0 12px;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    align-items: end;
+}
+
+.collection-toolbar-compact .collection-rarity-filters {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    min-width: 0;
+    flex-wrap: wrap;
+}
+
+.collection-toolbar-compact > strong {
+    align-self: center;
+    font-size: 11px;
+}
+
+@media (max-width: 700px) {
+    .collection-toolbar.collection-toolbar-compact {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .collection-toolbar-compact .collection-search {
+        grid-column: 1 / -1;
+    }
+
+    .collection-toolbar-compact .collection-rarity-filters {
+        grid-column: 1 / -1;
+        grid-row: auto;
+    }
+
+    .collection-toolbar-compact .collection-sort select {
+        padding: 0 4px;
+        font-size: 12px;
+    }
+
+    .collection-toolbar-compact .rarity-filter {
+        padding: 5px 7px;
+        font-size: 10px;
+    }
+
+    .collection-team-details > summary {
+        font-size: 11px;
+        gap: 6px;
+    }
+
+    #panel-container:has(#collection-panel-heroes) {
+        width: 100%;
+        max-height: calc(100dvh - 16px);
+        padding: 0;
+    }
+
+    #panel-overlay:has(#collection-panel-heroes) {
+        padding: 8px;
+    }
+
+    #panel-content:has(#collection-panel-heroes) {
+        padding: 12px;
+        max-height: calc(100dvh - 20px);
+    }
+
+    #panel-content:has(#collection-panel-heroes) > .panel-title-row h2 {
+        font-size: 18px;
+        margin: 12px 0;
+    }
+
+    #panel-content:has(#collection-panel-heroes) .collection-tabs {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 4px;
+    }
+
+    #panel-content:has(#collection-panel-heroes) .collection-view-tab {
+        padding: 8px 4px;
+        font-size: 11px;
+        min-width: 0;
+    }
+
+    #collection-panel-heroes .team-slot-strip {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 4px;
+    }
+
+    #collection-panel-heroes .team-slot-filled {
+        grid-template-columns: 26px minmax(0, 1fr) 12px;
+        gap: 3px;
+        padding: 4px;
+    }
+
+    #collection-panel-heroes .team-slot-filled img {
+        width: 26px;
+        height: 26px;
+    }
+
+    #collection-panel-heroes .team-collection-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+    }
+
+    #collection-panel-heroes .collection-card {
+        padding: 8px;
+        min-width: 0;
+    }
+
+    #collection-panel-heroes .collection-card h3 {
+        font-size: 13px;
+        overflow-wrap: anywhere;
+    }
+
+    #collection-panel-heroes .collection-actions {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 4px;
+        width: 100%;
+    }
+
+    #collection-panel-heroes .collection-actions > .btn-primary {
+        grid-column: 1 / -1;
+        width: 100%;
+        min-width: 0;
+        white-space: normal;
+        font-size: 11px;
+    }
+
+    #collection-panel-heroes .hero-tactic-badges {
+        display: flex;
+        flex-wrap: wrap;
+        max-width: 100%;
+    }
+
+    #collection-panel-heroes .hero-tactic-badges > span {
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    #collection-panel-heroes .evolution-requirement {
+        white-space: normal;
+        font-size: 10px;
+    }
+}
