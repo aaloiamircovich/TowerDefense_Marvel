@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { getSupportedLocales, translate } from '../src/utils/I18n.js';
+import { MUSIC_TRACKS } from '../src/audio/AudioManager.js';
 import { SettingsPanel } from '../src/ui/SettingsPanel.js';
 
 test('I18n expone idiomas soportados y fallback seguro', () => {
@@ -105,6 +106,72 @@ test('SettingsPanel usa el locale guardado para renderizar textos reales', () =>
         assert.match(panelContent.html, /id="enable-admin-mode" type="button" aria-label="Enable admin" title="Enable admin" data-tooltip="Enable admin"/);
         assert.match(panelContent.html, /id="clear-run" type="button" aria-label="Restart level"/);
     } finally {
+        globalThis.document = previousDocument;
+    }
+});
+
+test('SettingsPanel escapa tracks, titulos y keybindings dinamicos', () => {
+    const previousDocument = globalThis.document;
+    const maliciousTrack = { id: 'track" onclick="bad', title: '<Track>', src: '' };
+    MUSIC_TRACKS.push(maliciousTrack);
+    globalThis.document = { getElementById: () => null };
+
+    const panelContent = {
+        html: '',
+        set innerHTML(value) { this.html = value; },
+        get innerHTML() { return this.html; },
+        querySelectorAll: () => []
+    };
+    const panel = new SettingsPanel({
+        panelContent,
+        game: {
+            progression: {
+                state: {
+                    version: 1,
+                    settings: {
+                        ranges: true,
+                        grid: false,
+                        combatText: true,
+                        audio: true,
+                        highContrast: false,
+                        reduceMotion: false,
+                        pixelArtCrisp: true,
+                        reducedVfx: false,
+                        simplifiedUi: false,
+                        showFps: false,
+                        masterVolume: 2,
+                        musicVolume: 0.45,
+                        sfxVolume: 0.75,
+                        uiScale: 'normal',
+                        locale: 'es',
+                        musicTrackId: maliciousTrack.id,
+                        musicLoop: false,
+                        adminMode: false,
+                        keyBindings: {
+                            pause: 'p',
+                            speed: 'f',
+                            nextWave: 'n" autofocus onfocus="bad',
+                            cancel: 'Escape',
+                            targeting: 't',
+                            upgrade: 'u'
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    try {
+        panel.render('<Ajustes>');
+
+        assert.match(panelContent.html, /<h2>&lt;Ajustes&gt;<\/h2>/);
+        assert.match(panelContent.html, /data-settings-summary="currentTrack">&lt;Track&gt;<\/b>/);
+        assert.match(panelContent.html, /<option value="track&quot; onclick=&quot;bad" selected>&lt;Track&gt;<\/option>/);
+        assert.match(panelContent.html, /value="n&quot; autofocus onfocus=&quot;bad" aria-label="Iniciar oleada"/);
+        assert.match(panelContent.html, /data-setting="masterVolume" data-bus="master" aria-label="Volumen general"><output>100%<\/output>/);
+        assert.doesNotMatch(panelContent.html, /<Ajustes>|<Track>|onclick="bad|onfocus="bad/);
+    } finally {
+        MUSIC_TRACKS.pop();
         globalThis.document = previousDocument;
     }
 });

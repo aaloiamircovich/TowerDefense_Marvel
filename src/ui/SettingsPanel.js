@@ -1,5 +1,6 @@
 import { getSupportedLocales, translate } from '../utils/I18n.js';
 import { MUSIC_TRACKS } from '../audio/AudioManager.js';
+import { clampPercent, escapeHtml, normalizeClassToken, normalizeIconClass } from './HtmlSanitizer.js';
 
 const BOOLEAN_SETTINGS = [
     ['ranges', 'toggle-ranges', 'showRanges'],
@@ -38,7 +39,7 @@ export class SettingsPanel {
 
     buildSummaryState(settings, locale, t) {
         const enabledOptions = BOOLEAN_SETTINGS.filter(([key]) => settings[key]).length;
-        const masterVolume = Math.round((settings.masterVolume ?? 0) * 100);
+        const masterVolume = clampPercent((settings.masterVolume ?? 0) * 100);
         const currentTrack = MUSIC_TRACKS.find((track) => track.id === settings.musicTrackId)?.title || MUSIC_TRACKS[0]?.title || '-';
         const statusChips = [
             { key: 'locale', icon: 'fa-language', label: t('language'), value: locale.toUpperCase(), tone: 'neutral' },
@@ -81,84 +82,94 @@ export class SettingsPanel {
         const t = (key) => translate(key, locale);
         const panelTitle = title === 'Ajustes' ? t('settings') : title;
         const summary = this.buildSummaryState(settings, locale, t);
+        const copy = (key) => escapeHtml(t(key));
+        const volumePercent = (key) => clampPercent((settings[key] ?? 0) * 100);
+        const localeCode = escapeHtml(locale.toUpperCase());
+        const uiScaleLabel = escapeHtml(t(settings.uiScale || 'normal'));
 
         this.ui.panelContent.innerHTML = `
             <section class="settings-command-header">
                 <div>
-                    <span class="briefing-kicker">${t('settings')}</span>
-                    <h2>${panelTitle}</h2>
-                    <p>${t('settingsBrief')}</p>
+                    <span class="briefing-kicker">${copy('settings')}</span>
+                    <h2>${escapeHtml(panelTitle)}</h2>
+                    <p>${copy('settingsBrief')}</p>
                 </div>
                 <div class="settings-readout">
-                    <span><small>${t('activeOptions')}</small><b data-settings-summary="activeOptions">${summary.enabledOptions}/${BOOLEAN_SETTINGS.length}</b></span>
-                    <span><small>${t('masterAudio')}</small><b data-settings-summary="masterVolume">${summary.masterVolume}%</b></span>
-                    <span><small>${t('currentTrack')}</small><b data-settings-summary="currentTrack">${summary.currentTrack}</b></span>
+                    <span><small>${copy('activeOptions')}</small><b data-settings-summary="activeOptions">${escapeHtml(summary.enabledOptions)}/${escapeHtml(BOOLEAN_SETTINGS.length)}</b></span>
+                    <span><small>${copy('masterAudio')}</small><b data-settings-summary="masterVolume">${escapeHtml(summary.masterVolume)}%</b></span>
+                    <span><small>${copy('currentTrack')}</small><b data-settings-summary="currentTrack">${escapeHtml(summary.currentTrack)}</b></span>
                 </div>
-                <div class="settings-status-strip" aria-label="${t('settings')}">
-                    ${summary.statusChips.map((chip) => `<span class="settings-status-chip ${chip.tone}" data-settings-status-chip="${chip.key}"><i class="fas ${chip.icon}"></i><small>${chip.label}</small><b data-settings-status="${chip.key}">${chip.value}</b></span>`).join('')}
+                <div class="settings-status-strip" aria-label="${copy('settings')}">
+                    ${summary.statusChips.map((chip) => `<span class="settings-status-chip ${normalizeClassToken(chip.tone, 'neutral')}" data-settings-status-chip="${escapeHtml(normalizeClassToken(chip.key, 'status'))}"><i class="fas ${normalizeIconClass(chip.icon)}"></i><small>${escapeHtml(chip.label)}</small><b data-settings-status="${escapeHtml(normalizeClassToken(chip.key, 'status'))}">${escapeHtml(chip.value)}</b></span>`).join('')}
                 </div>
             </section>
             <div class="settings-layout settings-layout--compact">
                 <section class="settings-section settings-section--toggles">
-                    <h3>${t('gameplayAccessibility')}</h3>
+                    <h3>${copy('gameplayAccessibility')}</h3>
                     <div class="settings-grid settings-grid--compact">
-                        ${BOOLEAN_SETTINGS.map(([key, id, labelKey]) => `<label class="setting-toggle"><input type="checkbox" id="${id}" data-setting="${key}" aria-label="${t(labelKey)}" ${settings[key] ? 'checked' : ''}><span>${t(labelKey)}</span></label>`).join('')}
+                        ${BOOLEAN_SETTINGS.map(([key, id, labelKey]) => `<label class="setting-toggle"><input type="checkbox" id="${escapeHtml(id)}" data-setting="${escapeHtml(key)}" aria-label="${copy(labelKey)}" ${settings[key] ? 'checked' : ''}><span>${copy(labelKey)}</span></label>`).join('')}
                     </div>
                 </section>
                 <section class="settings-section">
-                    <h3>${t('audioMix')}</h3>
+                    <h3>${copy('audioMix')}</h3>
                     <div class="audio-mixer">
-                        ${VOLUME_SETTINGS.map(([key, bus, labelKey]) => `<label class="volume-control"><span>${t(labelKey)}</span><input type="range" min="0" max="100" value="${Math.round(settings[key] * 100)}" data-setting="${key}" data-bus="${bus}" aria-label="${t(labelKey)}"><output>${Math.round(settings[key] * 100)}%</output></label>`).join('')}
+                        ${VOLUME_SETTINGS.map(([key, bus, labelKey]) => `<label class="volume-control"><span>${copy(labelKey)}</span><input type="range" min="0" max="100" value="${volumePercent(key)}" data-setting="${escapeHtml(key)}" data-bus="${escapeHtml(bus)}" aria-label="${copy(labelKey)}"><output>${volumePercent(key)}%</output></label>`).join('')}
                     </div>
                     <div class="music-picker">
-                        <label><span>${t('musicTrack')}</span><select id="music-track-select" aria-label="${t('musicTrack')}">${MUSIC_TRACKS.map((track) => `<option value="${track.id}" ${settings.musicTrackId === track.id ? 'selected' : ''}>${track.title}</option>`).join('')}</select></label>
-                        <label class="setting-toggle"><input type="checkbox" id="toggle-music-loop" aria-label="${t('musicLoop')}" ${settings.musicLoop ? 'checked' : ''}><span>${t('musicLoop')}</span></label>
+                        <label><span>${copy('musicTrack')}</span><select id="music-track-select" aria-label="${copy('musicTrack')}">${MUSIC_TRACKS.map((track) => `<option value="${escapeHtml(track.id)}" ${settings.musicTrackId === track.id ? 'selected' : ''}>${escapeHtml(track.title)}</option>`).join('')}</select></label>
+                        <label class="setting-toggle"><input type="checkbox" id="toggle-music-loop" aria-label="${copy('musicLoop')}" ${settings.musicLoop ? 'checked' : ''}><span>${copy('musicLoop')}</span></label>
                     </div>
                 </section>
                 <details class="settings-details" data-settings-group="controls">
-                    <summary><span><i class="fas fa-keyboard"></i><b>${t('controls')}</b></span><small>${KEY_BINDINGS.length}</small></summary>
+                    <summary><span><i class="fas fa-keyboard"></i><b>${copy('controls')}</b></span><small>${escapeHtml(KEY_BINDINGS.length)}</small></summary>
                     <div class="settings-details-body">
-                        <div class="key-binding-grid">${KEY_BINDINGS.map(([key, labelKey]) => `<label><span>${t(labelKey)}</span><input data-key-binding="${key}" maxlength="12" value="${settings.keyBindings[key]}" aria-label="${t(labelKey)}"></label>`).join('')}</div>
-                        <small>${t('controllerHint')}</small>
+                        <div class="key-binding-grid">${KEY_BINDINGS.map(([key, labelKey]) => `<label><span>${copy(labelKey)}</span><input data-key-binding="${escapeHtml(key)}" maxlength="12" value="${escapeHtml(settings.keyBindings[key])}" aria-label="${copy(labelKey)}"></label>`).join('')}</div>
+                        <small>${copy('controllerHint')}</small>
                     </div>
                 </details>
                 <details class="settings-details" data-settings-group="interface">
-                    <summary><span><i class="fas fa-language"></i><b>${t('language')} / ${t('uiSize')}</b></span><small>${locale.toUpperCase()} | ${t(settings.uiScale || 'normal')}</small></summary>
+                    <summary><span><i class="fas fa-language"></i><b>${copy('language')} / ${copy('uiSize')}</b></span><small>${localeCode} | ${uiScaleLabel}</small></summary>
                     <div class="settings-details-body settings-split-controls">
                         <div>
-                            <span>${t('language')}</span>
-                            <div class="ui-scale-switch" role="group" aria-label="${t('language')}">
-                                ${getSupportedLocales().map((supportedLocale) => `<button data-locale="${supportedLocale}" class="${settings.locale === supportedLocale ? 'active' : ''}" type="button" aria-pressed="${settings.locale === supportedLocale}" aria-label="${t('language')} ${supportedLocale.toUpperCase()}" title="${t('language')} ${supportedLocale.toUpperCase()}" data-tooltip="${t('language')} ${supportedLocale.toUpperCase()}">${supportedLocale.toUpperCase()}</button>`).join('')}
+                            <span>${copy('language')}</span>
+                            <div class="ui-scale-switch" role="group" aria-label="${copy('language')}">
+                                ${getSupportedLocales().map((supportedLocale) => {
+                                    const languageLabel = `${t('language')} ${supportedLocale.toUpperCase()}`;
+                                    return `<button data-locale="${escapeHtml(supportedLocale)}" class="${settings.locale === supportedLocale ? 'active' : ''}" type="button" aria-pressed="${settings.locale === supportedLocale}" aria-label="${escapeHtml(languageLabel)}" title="${escapeHtml(languageLabel)}" data-tooltip="${escapeHtml(languageLabel)}">${escapeHtml(supportedLocale.toUpperCase())}</button>`;
+                                }).join('')}
                             </div>
                         </div>
                         <div>
-                            <span>${t('uiSize')}</span>
-                            <div class="ui-scale-switch" role="group" aria-label="${t('uiSize')}">
-                                ${UI_SCALES.map(([value, labelKey]) => `<button data-scale="${value}" class="${settings.uiScale === value ? 'active' : ''}" type="button" aria-pressed="${settings.uiScale === value}" aria-label="${t('uiSize')} ${t(labelKey)}" title="${t('uiSize')} ${t(labelKey)}" data-tooltip="${t('uiSize')} ${t(labelKey)}">${t(labelKey)}</button>`).join('')}
+                            <span>${copy('uiSize')}</span>
+                            <div class="ui-scale-switch" role="group" aria-label="${copy('uiSize')}">
+                                ${UI_SCALES.map(([value, labelKey]) => {
+                                    const scaleLabel = `${t('uiSize')} ${t(labelKey)}`;
+                                    return `<button data-scale="${escapeHtml(value)}" class="${settings.uiScale === value ? 'active' : ''}" type="button" aria-pressed="${settings.uiScale === value}" aria-label="${escapeHtml(scaleLabel)}" title="${escapeHtml(scaleLabel)}" data-tooltip="${escapeHtml(scaleLabel)}">${copy(labelKey)}</button>`;
+                                }).join('')}
                             </div>
                         </div>
                     </div>
                 </details>
                 <details class="settings-details" data-settings-group="save">
-                    <summary><span><i class="fas fa-save"></i><b>${t('saveData')}</b></span><small>4</small></summary>
-                    <div class="settings-details-body settings-actions"><button class="btn-primary ghost" id="export-save" type="button" aria-label="${t('export')}" title="${t('export')}" data-tooltip="${t('export')}"><i class="fas fa-download"></i> ${t('export')}</button><button class="btn-primary ghost" id="import-save" type="button" aria-label="${t('import')}" title="${t('import')}" data-tooltip="${t('import')}"><i class="fas fa-upload"></i> ${t('import')}</button><button class="btn-primary ghost" id="export-replay" type="button" aria-label="${t('replay')}" title="${t('replay')}" data-tooltip="${t('replay')}"><i class="fas fa-film"></i> ${t('replay')}</button><button class="btn-primary danger" id="reset-all-game" type="button" aria-label="${t('resetAllGame')}" title="${t('resetAllGame')}" data-tooltip="${t('resetAllGame')}"><i class="fas fa-trash"></i> ${t('resetAllGame')}</button><input id="import-save-file" type="file" accept="application/json,.json" hidden></div>
+                    <summary><span><i class="fas fa-save"></i><b>${copy('saveData')}</b></span><small>4</small></summary>
+                    <div class="settings-details-body settings-actions"><button class="btn-primary ghost" id="export-save" type="button" aria-label="${copy('export')}" title="${copy('export')}" data-tooltip="${copy('export')}"><i class="fas fa-download"></i> ${copy('export')}</button><button class="btn-primary ghost" id="import-save" type="button" aria-label="${copy('import')}" title="${copy('import')}" data-tooltip="${copy('import')}"><i class="fas fa-upload"></i> ${copy('import')}</button><button class="btn-primary ghost" id="export-replay" type="button" aria-label="${copy('replay')}" title="${copy('replay')}" data-tooltip="${copy('replay')}"><i class="fas fa-film"></i> ${copy('replay')}</button><button class="btn-primary danger" id="reset-all-game" type="button" aria-label="${copy('resetAllGame')}" title="${copy('resetAllGame')}" data-tooltip="${copy('resetAllGame')}"><i class="fas fa-trash"></i> ${copy('resetAllGame')}</button><input id="import-save-file" type="file" accept="application/json,.json" hidden></div>
                 </details>
                 <details class="settings-details admin-settings ${settings.adminMode ? 'admin-active' : ''}" data-settings-group="admin" ${settings.adminMode ? 'open' : ''}>
-                    <summary><span><i class="fas fa-toolbox"></i><b>${t('advancedTools')}</b></span><small>${settings.adminMode ? t('adminMode') : t('disabled')}</small></summary>
+                    <summary><span><i class="fas fa-toolbox"></i><b>${copy('advancedTools')}</b></span><small>${settings.adminMode ? copy('adminMode') : copy('disabled')}</small></summary>
                     <div class="settings-details-body">
-                        <p>${settings.adminMode ? t('adminModeActive') : t('adminModeHint')}</p>
+                        <p>${settings.adminMode ? copy('adminModeActive') : copy('adminModeHint')}</p>
                         <div class="settings-actions">
                         ${settings.adminMode
-                            ? `<button class="btn-primary danger" id="disable-admin-mode" type="button" aria-label="${t('disableAdmin')}" title="${t('disableAdmin')}" data-tooltip="${t('disableAdmin')}"><i class="fas fa-lock"></i> ${t('disableAdmin')}</button>`
-                            : `<input id="admin-password" type="password" inputmode="numeric" maxlength="8" placeholder="${t('adminPassword')}" aria-label="${t('adminPassword')}"><button class="btn-primary ghost" id="enable-admin-mode" type="button" aria-label="${t('enableAdmin')}" title="${t('enableAdmin')}" data-tooltip="${t('enableAdmin')}"><i class="fas fa-unlock"></i> ${t('enableAdmin')}</button>`}
+                            ? `<button class="btn-primary danger" id="disable-admin-mode" type="button" aria-label="${copy('disableAdmin')}" title="${copy('disableAdmin')}" data-tooltip="${copy('disableAdmin')}"><i class="fas fa-lock"></i> ${copy('disableAdmin')}</button>`
+                            : `<input id="admin-password" type="password" inputmode="numeric" maxlength="8" placeholder="${copy('adminPassword')}" aria-label="${copy('adminPassword')}"><button class="btn-primary ghost" id="enable-admin-mode" type="button" aria-label="${copy('enableAdmin')}" title="${copy('enableAdmin')}" data-tooltip="${copy('enableAdmin')}"><i class="fas fa-unlock"></i> ${copy('enableAdmin')}</button>`}
                         </div>
                     </div>
                 </details>
                 <details class="settings-details" data-settings-group="run">
-                    <summary><span><i class="fas fa-rotate-left"></i><b>${t('restartLevel')}</b></span><small>2</small></summary>
+                    <summary><span><i class="fas fa-rotate-left"></i><b>${copy('restartLevel')}</b></span><small>2</small></summary>
                     <div class="settings-details-body settings-actions settings-actions--inline">
-                    <button class="btn-primary ghost" id="reset-placement" type="button" aria-label="${t('cancelPlacement')}" title="${t('cancelPlacement')}" data-tooltip="${t('cancelPlacement')}"><i class="fas fa-ban"></i> ${t('cancelPlacement')}</button>
-                    <button class="btn-primary danger" id="clear-run" type="button" aria-label="${t('restartLevel')}" title="${t('restartLevel')}" data-tooltip="${t('restartLevel')}"><i class="fas fa-rotate-left"></i> ${t('restartLevel')}</button>
+                    <button class="btn-primary ghost" id="reset-placement" type="button" aria-label="${copy('cancelPlacement')}" title="${copy('cancelPlacement')}" data-tooltip="${copy('cancelPlacement')}"><i class="fas fa-ban"></i> ${copy('cancelPlacement')}</button>
+                    <button class="btn-primary danger" id="clear-run" type="button" aria-label="${copy('restartLevel')}" title="${copy('restartLevel')}" data-tooltip="${copy('restartLevel')}"><i class="fas fa-rotate-left"></i> ${copy('restartLevel')}</button>
                     </div>
                 </details>
             </div>
