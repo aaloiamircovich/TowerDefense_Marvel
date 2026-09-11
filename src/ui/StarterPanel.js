@@ -15,6 +15,7 @@ export class StarterPanel {
     }
 
     render(starters, onSelect) {
+        const safeStarters = Array.isArray(starters) ? starters.filter((hero) => hero?.id) : [];
         this.ui.game.pause();
         this.ui.showPanelOverlay(false);
 
@@ -25,16 +26,16 @@ export class StarterPanel {
                     <h2>Elige tu héroe inicial</h2>
                     <p>Tu primera defensa define el ritmo de las primeras oleadas.</p>
                 </div>
-                ${this.renderStarterSummary(starters)}
+                ${this.renderStarterSummary(safeStarters)}
                 <div class="starter-grid">
-                    ${starters.map((hero) => this.renderCard(hero, starters)).join('')}
+                    ${safeStarters.length ? safeStarters.map((hero) => this.renderCard(hero, safeStarters)).join('') : '<p class="empty-copy">Sin héroes iniciales disponibles.</p>'}
                 </div>
             </section>
         `;
 
         this.ui.panelContent.querySelectorAll('.starter-card').forEach((card) => {
             card.addEventListener('click', () => {
-                const selected = starters.find((hero) => hero.id === card.dataset.id);
+                const selected = safeStarters.find((hero) => hero.id === card.dataset.id);
                 if (!selected) return;
                 document.getElementById('close-panel-btn')?.classList.remove('hidden');
                 this.ui.closePanel();
@@ -55,7 +56,7 @@ export class StarterPanel {
         const highlightSummary = highlights.length ? `. ${highlights.map((highlight) => highlight.label).join(', ')}` : '';
         const cardLabel = `Elegir ${hero.name}. Rareza ${rarity}. ${hero.category || 'Heroe'}. ${this.getNicheText(hero)}. ${metricSummary}. ${specSummary}${highlightSummary}`;
         return `
-            <button class="starter-card starter-card-upgraded ${rarityClass}" type="button" data-id="${escapeHtml(hero.id)}" data-testid="starter-${escapeHtml(hero.id)}" data-rarity="${rarity}" aria-label="${escapeHtml(cardLabel)}" title="${escapeHtml(cardLabel)}" data-tooltip="${escapeHtml(cardLabel)}">
+            <button class="starter-card starter-card-upgraded ${rarityClass}" type="button" data-id="${escapeHtml(hero.id)}" data-testid="starter-${escapeHtml(hero.id)}" data-rarity="${escapeHtml(rarity)}" aria-label="${escapeHtml(cardLabel)}" title="${escapeHtml(cardLabel)}" data-tooltip="${escapeHtml(cardLabel)}">
                 <div class="starter-sprite-frame">
                     ${this.ui.renderSprite(this.ui.getHeroDisplaySprite(hero), hero.name)}
                 </div>
@@ -91,6 +92,14 @@ export class StarterPanel {
     }
 
     renderStarterSummary(starters) {
+        if (!starters.length) {
+            return `
+                <div class="starter-summary-strip" aria-label="Comparativa de heroes iniciales">
+                    <span><i class="fas fa-users"></i><b>0</b><small>Opciones</small></span>
+                </div>
+            `;
+        }
+
         const leaders = Object.entries(METRIC_LABELS).map(([key, meta]) => {
             const leader = starters.reduce((best, hero) => {
                 const value = this.getMetricValue(hero, key);
@@ -100,7 +109,7 @@ export class StarterPanel {
         });
         return `
             <div class="starter-summary-strip" aria-label="Comparativa de heroes iniciales">
-                <span><i class="fas fa-users"></i><b>${starters.length}</b><small>Opciones</small></span>
+                <span><i class="fas fa-users"></i><b>${escapeHtml(starters.length)}</b><small>Opciones</small></span>
                 ${leaders.map((entry) => `
                     <span>
                         <i class="fas ${normalizeIconClass(entry.icon)}"></i>

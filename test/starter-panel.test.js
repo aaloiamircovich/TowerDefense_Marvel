@@ -161,6 +161,35 @@ test('StarterPanel escapa datos dinamicos de heroes iniciales', () => {
     assert.doesNotMatch(panelContent.innerHTML, /<script>|<img src=x onerror=bad\(\)>/);
 });
 
+test('StarterPanel ignora entradas invalidas y muestra estado vacio', () => {
+    const panelContent = {
+        innerHTML: '',
+        querySelector() {
+            return null;
+        },
+        querySelectorAll() {
+            return [];
+        }
+    };
+    const ui = {
+        panelContent,
+        game: { pause() {} },
+        showPanelOverlay() {},
+        renderSprite() {
+            return '<span class="sprite-safe"></span>';
+        },
+        getHeroDisplaySprite() {
+            return 'safe.png';
+        }
+    };
+
+    new StarterPanel(ui).render([null, {}, { name: 'Sin id' }], () => {});
+
+    assert.match(panelContent.innerHTML, /<b>0<\/b><small>Opciones<\/small>/);
+    assert.match(panelContent.innerHTML, /Sin héroes iniciales disponibles/);
+    assert.doesNotMatch(panelContent.innerHTML, /starter-card-upgraded/);
+});
+
 function createCardStub(id) {
     return {
         dataset: { id },
