@@ -29,3 +29,24 @@ test('MissionStatusPanel renderiza objetivos y escapa texto dinamico', () => {
         globalThis.document = previousDocument;
     }
 });
+
+test('MissionStatusPanel tolera snapshots parciales', () => {
+    const previousDocument = globalThis.document;
+    const container = { innerHTML: '' };
+    globalThis.document = { getElementById: (id) => id === 'mission-status' ? container : null };
+    const panel = new MissionStatusPanel();
+
+    try {
+        assert.doesNotThrow(() => panel.update({
+            blackout: '2.2',
+            objectives: 'bad'
+        }));
+
+        assert.match(container.innerHTML, /Operacion tactica/);
+        assert.match(container.innerHTML, /Corte: 3s/);
+        assert.match(container.innerHTML, /mission-objectives-mini/);
+        assert.doesNotMatch(container.innerHTML, /undefined|bad/);
+    } finally {
+        globalThis.document = previousDocument;
+    }
+});
