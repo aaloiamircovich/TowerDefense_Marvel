@@ -220,8 +220,8 @@ test('WaveReportPanel mantiene compacto el desglose salvo dano serio a base', ()
     const minorLeakHtml = panel.renderDetailDrawer({
         ...buildReportState(),
         leaks: 2,
-        leakIntel: {
-            label: 'Lectura de base',
+        baseIntegrityIntel: {
+            label: 'Integridad de base',
             items: [{ tone: 'boss', name: 'Ultron', detail: 'Llego a la base' }],
             overflow: 0
         }
@@ -229,8 +229,8 @@ test('WaveReportPanel mantiene compacto el desglose salvo dano serio a base', ()
     const seriousLeakHtml = panel.renderDetailDrawer({
         ...buildReportState(),
         leaks: 3,
-        leakIntel: {
-            label: 'Lectura de base',
+        baseIntegrityIntel: {
+            label: 'Integridad de base',
             items: [{ tone: 'boss', name: 'Ultron', detail: 'Llego a la base' }],
             overflow: 0
         }
@@ -260,7 +260,7 @@ test('WaveReportPanel normaliza clases dinamicas e iconos del informe', () => {
         { type: 'saving" onclick="bad', label: '<Accion>' }
     );
     const lessonHtml = panel.renderLesson({
-        tone: 'leak" onclick="bad',
+        tone: 'damage" onclick="bad',
         label: '<Leccion>',
         detail: '<Detalle>'
     });
@@ -279,7 +279,7 @@ test('WaveReportPanel normaliza clases dinamicas e iconos del informe', () => {
 
     assert.match(quicklineHtml, /quickline-saving-onclick-bad/);
     assert.match(quicklineHtml, /&lt;Accion&gt;/);
-    assert.match(lessonHtml, /lesson-leak-onclick-bad/);
+    assert.match(lessonHtml, /lesson-damage-onclick-bad/);
     assert.match(lessonHtml, /&lt;Leccion&gt;/);
     assert.match(contributionHtml, /Valor tactico &lt;9&gt;/);
     assert.match(contributionHtml, /class="control-onclick-bad"/);
@@ -326,7 +326,7 @@ function buildReportState() {
         bestHeroDamage: 1200,
         grade: { tone: 'strong', detail: 'Buen control', medal: 'A', score: 90, label: 'Control superior' },
         lesson: { tone: 'economy', label: 'Economia estable', detail: 'Ahorra' },
-        leakIntel: { label: 'Base intacta', items: [], overflow: 0 },
+        baseIntegrityIntel: { label: 'Base intacta', items: [], overflow: 0 },
         tacticalContribution: { active: false, score: 0, metrics: [], heroes: [] },
         comparison: { active: false, label: '', tone: 'same', metrics: [] }
     };

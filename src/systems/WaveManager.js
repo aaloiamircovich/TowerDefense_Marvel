@@ -935,6 +935,7 @@ export class WaveManager {
                     .slice(0, 3)
             },
             pressure: leaks > 0 ? 'thin' : 'stable',
+            baseDamageEvents: this.waveLeakEvents.slice(-4),
             leakEvents: this.waveLeakEvents.slice(-4)
         };
     }

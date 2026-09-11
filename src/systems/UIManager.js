@@ -47,7 +47,7 @@ import {
     buildWavePreparationPlan
 } from '../ui/WaveTacticsState.js';
 import {
-    buildLeakIntel,
+    buildBaseIntegrityIntel,
     buildTacticalContributionModel,
     buildWaveReportActionState,
     buildWaveReportGrade,
@@ -80,7 +80,7 @@ export {
     TACTICAL_COUNTER_LEGEND
 } from '../ui/WaveTacticsState.js';
 export {
-    buildLeakIntel,
+    buildBaseIntegrityIntel,
     buildTacticalContributionModel,
     buildWaveReportActionState,
     buildWaveReportGrade,

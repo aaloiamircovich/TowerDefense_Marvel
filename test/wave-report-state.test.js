@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
-    buildLeakIntel,
+    buildBaseIntegrityIntel,
     buildTacticalContributionModel,
     buildWaveReportActionState,
     buildWaveReportComparison,
@@ -26,7 +26,7 @@ test('WaveReportState resume oleada limpia con lectura economica', () => {
     assert.equal(state.tone, 'clean');
     assert.equal(state.label, 'Oleada asegurada');
     assert.equal(state.grade.medal, 'S');
-    assert.equal(state.leakIntel.label, 'Base intacta');
+    assert.equal(state.baseIntegrityIntel.label, 'Base intacta');
     assert.match(state.lesson.detail, /ahorrar|tienda|power spike/);
 });
 
@@ -43,7 +43,7 @@ test('WaveReportState compara la oleada contra la anterior', () => {
     assert.equal(comparison.active, true);
     assert.equal(comparison.label, 'vs oleada 7');
     assert.equal(comparison.tone, 'up');
-    assert.deepEqual(comparison.metrics.map((metric) => metric.id), ['kills', 'damage', 'credits', 'leaks']);
+    assert.deepEqual(comparison.metrics.map((metric) => metric.id), ['kills', 'damage', 'credits', 'baseDamage']);
     assert.equal(comparison.metrics[0].value, '+3 KO');
     assert.equal(comparison.metrics[1].value, '+650');
     assert.equal(comparison.metrics[2].value, '+$80');
@@ -53,7 +53,7 @@ test('WaveReportState compara la oleada contra la anterior', () => {
     assert.equal(buildWaveReportComparison({ wave: 8 }, { wave: 8 }).active, false);
 });
 
-test('WaveReportState convierte fugas en alerta y lectura de enemigo', () => {
+test('WaveReportState convierte dano a base en alerta y lectura de enemigo', () => {
     const state = buildWaveReportState({
         leaks: 2,
         kills: 5,
@@ -66,9 +66,9 @@ test('WaveReportState convierte fugas en alerta y lectura de enemigo', () => {
         ]
     });
 
-    assert.equal(state.tone, 'leak');
-    assert.equal(state.leakIntel.items[0].name, 'Ninja de La Mano');
-    assert.match(state.leakIntel.items[0].detail, /98% ruta/);
+    assert.equal(state.tone, 'damage');
+    assert.equal(state.baseIntegrityIntel.items[0].name, 'Ninja de La Mano');
+    assert.match(state.baseIntegrityIntel.items[0].detail, /98% ruta/);
     assert.equal(buildWaveReportLesson({ leaks: 3 }).tone, 'breach');
     assert.equal(buildWaveReportGrade({ leaks: 3 }).tone, 'critical');
 });
@@ -115,5 +115,5 @@ test('WaveReportState recomienda mejorar o ahorrar para el MVP', () => {
     assert.equal(saving.type, 'saving');
     assert.equal(saving.missing, 260);
     assert.equal(buildWaveReportActionState({ bestHero: 'Sin MVP' }, heroes, 500), null);
-    assert.equal(buildLeakIntel([], 0).label, 'Base intacta');
+    assert.equal(buildBaseIntegrityIntel([], 0).label, 'Base intacta');
 });

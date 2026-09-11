@@ -422,7 +422,7 @@ test('WaveManager emite informe tactico con deltas de la oleada', () => {
     assert.ok(reports[0].credits >= 188);
 });
 
-test('WaveManager registra fugas con counter y progreso de ruta', () => {
+test('WaveManager registra dano a base con counter y progreso de ruta', () => {
     const reports = [];
     const game = createGame('new-york', [], [
         deployedHero({ id: 'iron_man', name: 'Iron Man', damage: 58, fireRate: 1.4, range: 180, level: 2 })
@@ -452,10 +452,11 @@ test('WaveManager registra fugas con counter y progreso de ruta', () => {
     manager.enemiesQueue = [];
     manager.finishWave();
 
+    assert.equal(reports[0].baseDamageEvents.length, 1);
+    assert.equal(reports[0].baseDamageEvents[0].counter, 'Deteccion');
+    assert.equal(reports[0].baseDamageEvents[0].segmentPct, 90);
+    assert.deepEqual(reports[0].baseDamageEvents[0].traits, ['Sigilo', 'Rapido']);
     assert.equal(reports[0].leakEvents.length, 1);
-    assert.equal(reports[0].leakEvents[0].counter, 'Deteccion');
-    assert.equal(reports[0].leakEvents[0].segmentPct, 90);
-    assert.deepEqual(reports[0].leakEvents[0].traits, ['Sigilo', 'Rapido']);
 });
 
 test('WaveManager paga solo recompensa base al cerrar una oleada sin danos', () => {
@@ -485,7 +486,7 @@ test('WaveManager paga solo recompensa base al cerrar una oleada sin danos', () 
     assert.equal(game.resourceManager.credits, 300 + 188);
 });
 
-test('WaveManager no altera la recompensa base cuando hubo fugas', () => {
+test('WaveManager no altera la recompensa base cuando hubo dano a base', () => {
     const reports = [];
     const game = createGame('new-york', [], [
         deployedHero({ id: 'iron_man', name: 'Iron Man', damage: 58, fireRate: 1.4, range: 180, level: 2 })

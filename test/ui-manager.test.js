@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildBossCountdownState, buildBossHudState, buildBossMilestoneState, buildCombatPressureState, buildCounterCoverageModel, buildEnemyIntel, buildEnemyTraitPreview, buildHeroCombatIdentity, buildLeakIntel, buildPanelNavigationMarkup, buildPressureActionState, buildRosterWaveFitView, buildShopItemInsight, buildShopSetProgress, buildSpawnQueueState, buildStatusLegendModel, buildStealthCoverageState, buildTacticalContributionModel, buildTargetingControlState, buildWaveCounterBrief, buildWaveDamageCheckMeter, buildWaveLaunchState, buildWavePrepActionControl, buildWavePreparationPlan, buildWaveReportActionState, buildWaveReportGrade, buildWaveReportLesson, buildWaveReportState, evaluateHeroWaveFit, formatHudResource, getNextTargetingPriority, UIManager } from '../src/systems/UIManager.js';
+import { buildBaseIntegrityIntel, buildBossCountdownState, buildBossHudState, buildBossMilestoneState, buildCombatPressureState, buildCounterCoverageModel, buildEnemyIntel, buildEnemyTraitPreview, buildHeroCombatIdentity, buildPanelNavigationMarkup, buildPressureActionState, buildRosterWaveFitView, buildShopItemInsight, buildShopSetProgress, buildSpawnQueueState, buildStatusLegendModel, buildStealthCoverageState, buildTacticalContributionModel, buildTargetingControlState, buildWaveCounterBrief, buildWaveDamageCheckMeter, buildWaveLaunchState, buildWavePrepActionControl, buildWavePreparationPlan, buildWaveReportActionState, buildWaveReportGrade, buildWaveReportLesson, buildWaveReportState, evaluateHeroWaveFit, formatHudResource, getNextTargetingPriority, UIManager } from '../src/systems/UIManager.js';
 import { CombatPressurePanel } from '../src/ui/CombatPressurePanel.js';
 import { WavePreviewPanel } from '../src/ui/WavePreviewPanel.js';
 import { calculateHeroLevelCost, getHeroDamageAtLevel } from '../src/utils/HeroLevel.js';
@@ -296,12 +296,12 @@ test('buildStealthCoverageState distingue detector listo, disponible y faltante'
     assert.match(missing.detail, /No hay detector/);
 });
 
-test('buildLeakIntel resume enemigo filtrado y counter recomendado', () => {
-    const intel = buildLeakIntel([
+test('buildBaseIntegrityIntel resume dano a base y counter recomendado', () => {
+    const intel = buildBaseIntegrityIntel([
         { name: 'Ninja de La Mano', counter: 'Deteccion', lifeLoss: 1, segmentPct: 98, traits: ['Sigilo'] }
     ]);
 
-    assert.equal(intel.label, 'Lectura de base');
+    assert.equal(intel.label, 'Integridad de base');
     assert.equal(intel.items[0].name, 'Ninja de La Mano');
     assert.equal(intel.items[0].counter, 'Deteccion');
     assert.match(intel.items[0].detail, /98% ruta/);

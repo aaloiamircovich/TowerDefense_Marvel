@@ -1,33 +1,33 @@
-export function buildLeakIntel(events = [], fallbackLeaks = 0) {
+export function buildBaseIntegrityIntel(events = [], fallbackDamage = 0) {
     const cleanEvents = (events || [])
         .filter(Boolean)
         .map((event) => {
             const segment = Number.isFinite(Number(event.segmentPct)) ? Math.max(0, Math.min(100, Math.round(Number(event.segmentPct)))) : null;
             const lifeLoss = Math.max(0, Number(event.lifeLoss || 0));
-            const counter = event.counter || 'Cubre la base';
+            const counter = event.counter || 'Refuerza tramo final';
             const name = event.name || 'Enemigo';
             const lossCopy = lifeLoss > 0 ? `-${lifeLoss} vida` : 'sin dano';
             return {
                 name,
                 counter,
-                tone: lifeLoss >= 3 ? 'boss' : 'leak',
+                tone: lifeLoss >= 3 ? 'boss' : 'damage',
                 detail: `${counter} | ${segment ?? 100}% ruta | ${lossCopy}`,
                 traits: (event.traits || []).filter(Boolean).slice(0, 3)
             };
         });
 
-    if (!cleanEvents.length && fallbackLeaks > 0) {
+    if (!cleanEvents.length && fallbackDamage > 0) {
         cleanEvents.push({
             name: 'Daño a la base',
-            counter: 'Cubre la base',
-            tone: fallbackLeaks >= 3 ? 'boss' : 'leak',
-            detail: `${fallbackLeaks} vida perdida; falta detalle de enemigo.`,
+            counter: 'Refuerza tramo final',
+            tone: fallbackDamage >= 3 ? 'boss' : 'damage',
+            detail: `${fallbackDamage} vida perdida; falta detalle de enemigo.`,
             traits: []
         });
     }
 
     return {
-        label: cleanEvents.length ? 'Lectura de base' : 'Base intacta',
+        label: cleanEvents.length ? 'Integridad de base' : 'Base intacta',
         items: cleanEvents.slice(0, 3),
         overflow: Math.max(0, cleanEvents.length - 3)
     };
@@ -80,7 +80,7 @@ export function buildWaveReportLesson(report = {}) {
     }
     if (leaks > 0) {
         return {
-            tone: 'leak',
+            tone: 'damage',
             label: 'Refuerzo final',
             detail: 'Una mejora en el ultimo tramo puede frenar enemigos antes de la base.'
         };
@@ -176,7 +176,7 @@ export function buildWaveReportComparison(report = {}, previousReport = null) {
         compareWaveMetric('kills', 'Bajas', report.kills, previousReport.kills, { suffix: ' KO', higherIsBetter: true }),
         compareWaveMetric('damage', 'Dano', report.damage, previousReport.damage, { higherIsBetter: true }),
         compareWaveMetric('credits', 'Creditos', report.credits, previousReport.credits, { currency: true, higherIsBetter: true }),
-        compareWaveMetric('leaks', 'Base', report.leaks, previousReport.leaks, { suffix: ' vida', higherIsBetter: false })
+        compareWaveMetric('baseDamage', 'Base', report.leaks, previousReport.leaks, { suffix: ' vida', higherIsBetter: false })
     ];
     const ups = metrics.filter((metric) => metric.tone === 'up').length;
     const downs = metrics.filter((metric) => metric.tone === 'down').length;
@@ -204,7 +204,7 @@ export function buildWaveReportState(report = {}, previousReport = null) {
     let advice = 'Defensa estable: puedes ahorrar o acelerar la siguiente oleada.';
 
     if (leaks > 0) {
-        tone = leaks >= 3 ? 'breach' : 'leak';
+        tone = leaks >= 3 ? 'breach' : 'damage';
         label = leaks >= 3 ? 'Base en riesgo' : 'Daño contenido';
         advice = leaks >= 3
             ? 'Refuerza la base y prioriza control antes de iniciar.'
@@ -242,7 +242,7 @@ export function buildWaveReportState(report = {}, previousReport = null) {
         bestHeroDamage: Math.round(Math.max(0, Number(report.bestHeroDamage || 0))),
         lesson: buildWaveReportLesson(report),
         grade: buildWaveReportGrade(report),
-        leakIntel: buildLeakIntel(report.leakEvents || [], leaks),
+        baseIntegrityIntel: buildBaseIntegrityIntel(report.baseDamageEvents || report.leakEvents || [], leaks),
         tacticalContribution: buildTacticalContributionModel(report.tactical || {}),
         comparison: buildWaveReportComparison(report, previousReport || report.previousReport || null)
     };

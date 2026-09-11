@@ -124,7 +124,7 @@ export class WaveReportPanel {
             this.renderComparison(state.comparison),
             this.renderTacticalContribution(state.tacticalContribution),
             this.renderLesson(state.lesson),
-            this.renderLeakIntel(state.leakIntel)
+            this.renderBaseIntegrityIntel(state.baseIntegrityIntel)
         ].filter(Boolean);
         if (!sections.length) return '';
         const shouldOpen = Number(state.leaks || 0) >= 3;
@@ -203,15 +203,15 @@ export class WaveReportPanel {
         </div>`;
     }
 
-    renderLeakIntel(leakIntel) {
-        if (!leakIntel?.items?.length) return '';
-        return `<div class="wave-leak-intel" aria-label="${escapeHtml(leakIntel.label)}">
-            <strong><i class="fas fa-route"></i> ${escapeHtml(leakIntel.label)}</strong>
-            ${leakIntel.items.map((item) => `<span class="${normalizeClassToken(item.tone, 'neutral')}">
+    renderBaseIntegrityIntel(baseIntegrityIntel) {
+        if (!baseIntegrityIntel?.items?.length) return '';
+        return `<div class="wave-base-intel" aria-label="${escapeHtml(baseIntegrityIntel.label)}">
+            <strong><i class="fas fa-shield-heart"></i> ${escapeHtml(baseIntegrityIntel.label)}</strong>
+            ${baseIntegrityIntel.items.map((item) => `<span class="${normalizeClassToken(item.tone, 'neutral')}">
                 <b>${escapeHtml(item.name)}</b>
                 <small>${escapeHtml(item.detail)}</small>
             </span>`).join('')}
-            ${leakIntel.overflow > 0 ? `<em>+${escapeHtml(leakIntel.overflow)} mas</em>` : ''}
+            ${baseIntegrityIntel.overflow > 0 ? `<em>+${escapeHtml(baseIntegrityIntel.overflow)} mas</em>` : ''}
         </div>`;
     }
 
