@@ -132,6 +132,32 @@ test('ModePanel escapa datos dinamicos del draft heroico', () => {
     assert.doesNotMatch(ui.panelContent.innerHTML, /<script>|<img src=x onerror=bad\(\)>/);
 });
 
+test('ModePanel ignora refuerzos invalidos y muestra draft vacio', () => {
+    const ui = {
+        panelContent: {
+            innerHTML: '',
+            querySelectorAll() {
+                return [];
+            },
+            querySelector() {
+                return null;
+            }
+        },
+        showPanelOverlay() {},
+        renderSprite() {
+            return '<span class="sprite-safe"></span>';
+        },
+        getHeroDisplaySprite() {
+            return 'safe.png';
+        }
+    };
+
+    new ModePanel(ui).showDraftChoice([null, {}, { name: 'Sin id' }], () => {});
+
+    assert.match(ui.panelContent.innerHTML, /Sin refuerzos disponibles/);
+    assert.doesNotMatch(ui.panelContent.innerHTML, /draft-card/);
+});
+
 test('ModePanel renderiza resultado especial con lectura tactica compacta', () => {
     const previousDocument = globalThis.document;
     const resultButton = createButtonStub();

@@ -49,6 +49,7 @@ export class ModePanel {
     }
 
     showDraftChoice(heroes, onChoose) {
+        const safeHeroes = Array.isArray(heroes) ? heroes.filter((hero) => hero?.id) : [];
         this.ui.showPanelOverlay(false);
         this.ui.panelContent.innerHTML = `
             <section class="draft-choice draft-choice-upgraded">
@@ -58,7 +59,7 @@ export class ModePanel {
                     <p>Sumá una pieza al escuadrón: priorizá cobertura, rareza o la respuesta que te falte.</p>
                 </div>
                 <div class="draft-choice-grid">
-                    ${heroes.map((hero, index) => this.renderDraftCard(hero, index)).join('')}
+                    ${safeHeroes.length ? safeHeroes.map((hero, index) => this.renderDraftCard(hero, index)).join('') : '<p class="empty-copy">Sin refuerzos disponibles.</p>'}
                 </div>
             </section>
         `;
