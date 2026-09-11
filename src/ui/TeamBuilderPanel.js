@@ -358,7 +358,7 @@ export class TeamBuilderPanel {
                     ${this.ui.renderSprite(item.icon, item.name)}
                     <div>
                         <span class="briefing-kicker">EQUIPAR OBJETO</span>
-                        <strong>${item.name}</strong>
+                        <strong>${this.escapeHtml(item.name)}</strong>
                         <small>Elegí un héroe de la colección para asignarlo.</small>
                     </div>
                 </div>
@@ -380,8 +380,8 @@ export class TeamBuilderPanel {
             <div class="collection-tabs" role="tablist" aria-label="Secciones de coleccion">
                 ${tabs.map(([view, icon, label]) => {
                     const active = this.viewMode === view;
-                    return `<button id="collection-tab-${view}" class="collection-view-tab ${active ? 'active' : ''}" data-view="${view}" type="button" role="tab" aria-selected="${active}" aria-controls="collection-panel-${view}" tabindex="${active ? '0' : '-1'}" aria-label="${label}" title="${label}" data-tooltip="${label}">
-                        <i class="fas ${icon}"></i> ${label}
+                    return `<button id="collection-tab-${this.escapeAttribute(view)}" class="collection-view-tab ${active ? 'active' : ''}" data-view="${this.escapeAttribute(view)}" type="button" role="tab" aria-selected="${active}" aria-controls="collection-panel-${this.escapeAttribute(view)}" tabindex="${active ? '0' : '-1'}" aria-label="${this.escapeAttribute(label)}" title="${this.escapeAttribute(label)}" data-tooltip="${this.escapeAttribute(label)}">
+                        <i class="fas ${normalizeIconClass(icon)}"></i> ${this.escapeHtml(label)}
                     </button>`;
                 }).join('')}
             </div>
@@ -453,7 +453,7 @@ export class TeamBuilderPanel {
                 <label class="collection-sort">
                     <span>Tactica</span>
                     <select id="collection-tactical-select" aria-label="Filtrar heroes por respuesta tactica">
-                        ${HERO_TACTIC_FILTERS.map((filter) => `<option value="${filter.id}" ${this.tacticalFilter === filter.id ? 'selected' : ''}>${filter.label}</option>`).join('')}
+                        ${HERO_TACTIC_FILTERS.map((filter) => `<option value="${this.escapeAttribute(filter.id)}" ${this.tacticalFilter === filter.id ? 'selected' : ''}>${this.escapeHtml(filter.label)}</option>`).join('')}
                     </select>
                 </label>
                 ${this.renderTacticQuickFilters()}
@@ -461,8 +461,9 @@ export class TeamBuilderPanel {
                     ${['all', ...HERO_RARITIES].map((rarity) => {
                         const active = this.rarityFilter === rarity;
                         const label = rarity === 'all' ? 'Todas' : rarity;
-                        const rarityClass = rarity === 'all' ? '' : getRarityClass(rarity);
-                        return `<button class="rarity-filter ${rarityClass} ${active ? 'active' : ''}" type="button" data-rarity="${rarity}" aria-pressed="${active}" aria-label="Filtrar rareza ${label}" title="Filtrar rareza ${label}" data-tooltip="Filtrar rareza ${label}">${label}</button>`;
+                        const rarityClass = rarity === 'all' ? '' : normalizeClassToken(getRarityClass(rarity), 'rarity-common');
+                        const filterLabel = `Filtrar rareza ${label}`;
+                        return `<button class="rarity-filter ${rarityClass} ${active ? 'active' : ''}" type="button" data-rarity="${this.escapeAttribute(rarity)}" aria-pressed="${active}" aria-label="${this.escapeAttribute(filterLabel)}" title="${this.escapeAttribute(filterLabel)}" data-tooltip="${this.escapeAttribute(filterLabel)}">${this.escapeHtml(label)}</button>`;
                     }).join('')}
                 </div>
                 <button id="collection-clear-filters" class="collection-clear-filters icon-command" type="button" ${hasActiveFilters ? '' : 'disabled'} title="Limpiar filtros" aria-label="Limpiar filtros" data-tooltip="Limpiar filtros">
@@ -480,7 +481,7 @@ export class TeamBuilderPanel {
                     const active = this.tacticalFilter === filter.id;
                     const label = filter.id === 'all' ? 'Ver todos los heroes' : `Filtrar ${filter.label}`;
                     return `<button class="team-tactic-chip ${active ? 'active' : ''}" type="button" data-tactic="${this.escapeAttribute(filter.id)}" aria-pressed="${active}" aria-label="${this.escapeAttribute(label)}" title="${this.escapeAttribute(label)}" data-tooltip="${this.escapeAttribute(label)}">
-                        <i class="fas ${this.escapeAttribute(filter.icon)}"></i>
+                        <i class="fas ${normalizeIconClass(filter.icon)}"></i>
                         <span>${this.escapeHtml(filter.label)}</span>
                     </button>`;
                 }).join('')}
@@ -496,7 +497,7 @@ export class TeamBuilderPanel {
         const evolution = hero.evolutionId ? game.progression.getHeroEvolution(hero.id) : null;
         const availableEvolution = hero.evolutionId ? EVOLUTION_CATALOG[hero.evolutionId] : null;
         const rarity = normalizeRarity(hero.rarity);
-        const rarityClass = getRarityClass(rarity);
+        const rarityClass = normalizeClassToken(getRarityClass(rarity), 'rarity-common');
         const favorite = game.progression.isHeroFavorite?.(hero.id)
             || game.progression.state.favoriteHeroIds?.includes(hero.id)
             || false;
@@ -530,32 +531,32 @@ export class TeamBuilderPanel {
         const tacticBadges = getHeroTacticBadges(hero);
         const tacticBadgeLabels = tacticBadges.map((badge) => badge.label).join(', ');
         return `
-            <article class="collection-card team-hero-card ${rarityClass} ${unlocked ? '' : 'locked'} ${equipped ? 'equipped' : ''} ${favorite ? 'favorite' : ''} ${pendingItem ? 'item-target-mode' : ''}" data-rarity="${rarity}" role="listitem" aria-label="${this.escapeAttribute(cardAriaLabel)}">
-                ${equippedItem ? `<span class="hero-item-corner" title="${equippedItem.name} equipado">${this.ui.renderSprite(equippedItem.icon, equippedItem.name)}</span>` : ''}
+            <article class="collection-card team-hero-card ${rarityClass} ${unlocked ? '' : 'locked'} ${equipped ? 'equipped' : ''} ${favorite ? 'favorite' : ''} ${pendingItem ? 'item-target-mode' : ''}" data-rarity="${this.escapeAttribute(rarity)}" role="listitem" aria-label="${this.escapeAttribute(cardAriaLabel)}">
+                ${equippedItem ? `<span class="hero-item-corner" title="${this.escapeAttribute(`${equippedItem.name} equipado`)}">${this.ui.renderSprite(equippedItem.icon, equippedItem.name)}</span>` : ''}
                 ${this.ui.renderSprite(this.getCollectionSprite(hero), hero.name)}
-                <h3>${hero.name}</h3>
-                ${evolution ? `<strong class="evolution-badge" style="--evolution-color:${evolution.color}">${evolution.name}</strong>` : ''}
-                <small><b class="rarity-badge ${rarityClass}">${rarity}</b></small>
+                <h3>${this.escapeHtml(hero.name)}</h3>
+                ${evolution ? `<strong class="evolution-badge" style="--evolution-color:${normalizeCssColor(evolution.color)}">${this.escapeHtml(evolution.name)}</strong>` : ''}
+                <small><b class="rarity-badge ${rarityClass}">${this.escapeHtml(rarity)}</b></small>
                 ${tacticBadges.length ? `<div class="hero-tactic-badges" aria-label="Respuestas tacticas: ${this.escapeAttribute(tacticBadgeLabels)}">
-                    ${tacticBadges.map((badge) => `<span data-tactic="${this.escapeAttribute(badge.id)}" title="${this.escapeAttribute(badge.label)}" data-tooltip="${this.escapeAttribute(badge.label)}"><i class="fas ${this.escapeAttribute(badge.icon)}"></i><em>${this.escapeHtml(badge.label)}</em></span>`).join('')}
+                    ${tacticBadges.map((badge) => `<span data-tactic="${this.escapeAttribute(badge.id)}" title="${this.escapeAttribute(badge.label)}" data-tooltip="${this.escapeAttribute(badge.label)}"><i class="fas ${normalizeIconClass(badge.icon)}"></i><em>${this.escapeHtml(badge.label)}</em></span>`).join('')}
                 </div>` : ''}
                 <div class="collection-actions">
-                    <button class="btn-favorite-hero icon-command ${favorite ? 'active' : ''}" type="button" data-id="${hero.id}" aria-label="${this.escapeAttribute(favoriteLabel)}" title="${this.escapeAttribute(favoriteLabel)}" data-tooltip="${this.escapeAttribute(favoriteLabel)}" aria-pressed="${favorite}">
+                    <button class="btn-favorite-hero icon-command ${favorite ? 'active' : ''}" type="button" data-id="${this.escapeAttribute(hero.id)}" aria-label="${this.escapeAttribute(favoriteLabel)}" title="${this.escapeAttribute(favoriteLabel)}" data-tooltip="${this.escapeAttribute(favoriteLabel)}" aria-pressed="${favorite}">
                         <i class="fas fa-star"></i>
                     </button>
-                    <button class="btn-preview-hero icon-command" type="button" data-id="${hero.id}" aria-label="${this.escapeAttribute(previewLabel)}" title="Ver ficha" data-tooltip="Ver ficha"><i class="fas fa-eye"></i></button>
+                    <button class="btn-preview-hero icon-command" type="button" data-id="${this.escapeAttribute(hero.id)}" aria-label="${this.escapeAttribute(previewLabel)}" title="Ver ficha" data-tooltip="Ver ficha"><i class="fas fa-eye"></i></button>
                     ${pendingItem ? `
-                        <button class="${unlocked && !alreadyHasPendingItem ? 'btn-assign-item' : ''} btn-primary ${alreadyHasPendingItem ? 'ghost' : ''}" type="button" data-id="${hero.id}" aria-label="${this.escapeAttribute(equipActionLabel)}" title="${this.escapeAttribute(equipActionLabel)}" data-tooltip="${this.escapeAttribute(equipActionLabel)}" aria-disabled="${unlocked && !alreadyHasPendingItem ? 'false' : 'true'}" ${unlocked && !alreadyHasPendingItem ? '' : 'disabled'}>
+                        <button class="${unlocked && !alreadyHasPendingItem ? 'btn-assign-item' : ''} btn-primary ${alreadyHasPendingItem ? 'ghost' : ''}" type="button" data-id="${this.escapeAttribute(hero.id)}" aria-label="${this.escapeAttribute(equipActionLabel)}" title="${this.escapeAttribute(equipActionLabel)}" data-tooltip="${this.escapeAttribute(equipActionLabel)}" aria-disabled="${unlocked && !alreadyHasPendingItem ? 'false' : 'true'}" ${unlocked && !alreadyHasPendingItem ? '' : 'disabled'}>
                             ${unlocked ? (alreadyHasPendingItem ? 'Ya equipado' : (equippedItem ? 'Reemplazar' : 'Equipar')) : 'Por reclutar'}
                         </button>
                     ` : `
-                        <button class="${unlocked ? 'btn-equip' : ''} btn-primary ${equipped ? 'danger' : 'ghost'}" type="button" data-id="${hero.id}" aria-label="${this.escapeAttribute(equipActionLabel)}" title="${this.escapeAttribute(equipActionLabel)}" data-tooltip="${this.escapeAttribute(equipActionLabel)}" aria-pressed="${equipped}" aria-disabled="${!unlocked}" ${unlocked ? '' : 'disabled'}>
+                        <button class="${unlocked ? 'btn-equip' : ''} btn-primary ${equipped ? 'danger' : 'ghost'}" type="button" data-id="${this.escapeAttribute(hero.id)}" aria-label="${this.escapeAttribute(equipActionLabel)}" title="${this.escapeAttribute(equipActionLabel)}" data-tooltip="${this.escapeAttribute(equipActionLabel)}" aria-pressed="${equipped}" aria-disabled="${!unlocked}" ${unlocked ? '' : 'disabled'}>
                             ${unlocked ? (equipped ? 'Quitar' : 'Añadir') : 'Por reclutar'}
                         </button>
                     `}
                 </div>
                 ${itemDeltaPreview}
-                ${availableEvolution ? `<small class="evolution-requirement">${evolution ? 'Evolucion activa' : `Evoluciona al nivel ${availableEvolution.requiredLevel}`}</small>` : ''}
+                ${availableEvolution ? `<small class="evolution-requirement">${this.escapeHtml(evolution ? 'Evolucion activa' : `Evoluciona al nivel ${availableEvolution.requiredLevel}`)}</small>` : ''}
             </article>
         `;
     }
@@ -585,16 +586,18 @@ export class TeamBuilderPanel {
         const sprite = entry.sprite
             ? this.ui.renderSprite(entry.sprite, entry.name)
             : '<div class="villain-silhouette"><i class="fas fa-question"></i></div>';
+        const threat = Math.max(0, Math.min(5, Math.round(Number(entry.threat) || 0)));
+        const traits = Array.isArray(entry.traits) ? entry.traits : [];
         return `
             <article class="villain-card villain-card--compact ${entry.unlocked ? 'unlocked' : 'locked'} ${entry.isBoss ? 'boss' : ''}">
                 ${sprite}
                 <div>
-                    <h3>${entry.name}</h3>
-                    <small>${entry.category} · ${entry.role}</small>
-                    <span>${entry.faction}</span>
+                    <h3>${this.escapeHtml(entry.name)}</h3>
+                    <small>${this.escapeHtml(entry.category)} · ${this.escapeHtml(entry.role)}</small>
+                    <span>${this.escapeHtml(entry.faction)}</span>
                 </div>
-                <b>${entry.unlocked ? '◆'.repeat(entry.threat) : '?????'}</b>
-                <div class="hero-tag-list">${entry.traits.map((trait) => `<span>${trait}</span>`).join('')}</div>
+                <b>${entry.unlocked ? '◆'.repeat(threat) : '?????'}</b>
+                <div class="hero-tag-list">${traits.map((trait) => `<span>${this.escapeHtml(trait)}</span>`).join('')}</div>
             </article>
         `;
     }
@@ -631,15 +634,15 @@ export class TeamBuilderPanel {
                         <article class="villain-card villain-card--compact unlocked evolution-card">
                             ${this.ui.renderSprite(sprite, evolution.name)}
                             <div>
-                                <h3>${hero.name}</h3>
-                                <small>Nivel ${evolution.requiredLevel} · ${evolution.name}</small>
-                                <span>${transforms ? `Signature: ${transforms}` : 'Evolucion por nivel'}</span>
+                                <h3>${this.escapeHtml(hero.name)}</h3>
+                                <small>Nivel ${this.escapeHtml(evolution.requiredLevel)} · ${this.escapeHtml(evolution.name)}</small>
+                                <span>${this.escapeHtml(transforms ? `Signature: ${transforms}` : 'Evolucion por nivel')}</span>
                             </div>
                             <b><i class="fas fa-dna"></i></b>
                             <div class="hero-tag-list">
-                                <span>Daño +${Math.round((evolution.stats.damage || 0) * 100)}%</span>
-                                <span>Cadencia +${Math.round((evolution.stats.fireRate || 0) * 100)}%</span>
-                                <span>Alcance +${Math.round((evolution.stats.range || 0) * 100)}%</span>
+                                <span>Daño +${this.escapeHtml(Math.round((Number(evolution.stats.damage) || 0) * 100))}%</span>
+                                <span>Cadencia +${this.escapeHtml(Math.round((Number(evolution.stats.fireRate) || 0) * 100))}%</span>
+                                <span>Alcance +${this.escapeHtml(Math.round((Number(evolution.stats.range) || 0) * 100))}%</span>
                             </div>
                         </article>
                     `;
@@ -653,21 +656,25 @@ export class TeamBuilderPanel {
             <section class="villain-codex-header codex-command-header">
                 <div>
                     <span class="briefing-kicker">ARCHIVO HEROICO</span>
-                    <h3>${title}</h3>
-                    <p>${description}</p>
+                    <h3>${this.escapeHtml(title)}</h3>
+                    <p>${this.escapeHtml(description)}</p>
                 </div>
                 <div class="codex-readout">
-                    ${stats.map((stat) => `<span><i class="fas ${stat.icon}"></i><small>${stat.label}</small><b>${stat.value}</b></span>`).join('')}
+                    ${stats.map((stat) => `<span><i class="fas ${normalizeIconClass(stat.icon)}"></i><small>${this.escapeHtml(stat.label)}</small><b>${this.escapeHtml(stat.value)}</b></span>`).join('')}
                 </div>
             </section>
         `;
     }
 
     switchCollectionView(view = 'heroes', focusTab = false) {
-        this.viewMode = view || 'heroes';
+        this.viewMode = this.normalizeCollectionView(view);
         this.render('Constructor de equipo');
         if (!focusTab) return;
-        this.ui.panelContent.querySelector?.(`[data-view="${this.viewMode}"]`)?.focus?.();
+        this.ui.panelContent.querySelector?.(`[data-view="${this.escapeAttribute(this.viewMode)}"]`)?.focus?.();
+    }
+
+    normalizeCollectionView(view = 'heroes') {
+        return ['heroes', 'villains', 'evolutions'].includes(view) ? view : 'heroes';
     }
 
     bindListeners() {

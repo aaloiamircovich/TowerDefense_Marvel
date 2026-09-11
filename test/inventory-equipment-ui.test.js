@@ -320,6 +320,71 @@ test('coleccion escapa slots y agrupaciones dinamicas', () => {
     assert.match(groupHtml, /&lt;Tier&gt;/);
     assert.doesNotMatch(`${slotHtml}${groupHtml}`, /onclick="bad|<Hero>|<Grupo>|<Desc>|<script>|javascript:bad/);
 });
+
+test('coleccion escapa tarjetas de heroes y codices dinamicos', () => {
+    const ui = createUiStub();
+    ui.renderSprite = () => '<span class="sprite-safe"></span>';
+    ui.inventoryPanel.pendingEquipItemId = null;
+    ui.game.heroDatabase = { ...data.heroes };
+    ui.game.itemDatabase = {
+        ...data.items,
+        bad_item: {
+            id: 'bad_item',
+            name: '<Item>',
+            rarity: 'Secret',
+            slot: 'weapon',
+            icon: 'assets/items/bad.png',
+            stats: {}
+        }
+    };
+    const hero = {
+        ...data.heroes.iron_man,
+        id: 'hero_bad" onclick="bad',
+        name: '<Hero>',
+        rarity: 'Epic',
+        evolutionId: 'bad_evolution'
+    };
+    ui.game.progression.state.equippedItems[hero.id] = { weapon: 'bad_item' };
+    ui.game.progression.getHeroEvolution = () => ({ name: '<Evo>', color: 'url(javascript:bad)' });
+    const panel = new TeamBuilderPanel(ui);
+
+    const pendingBannerHtml = panel.renderPendingItemBanner(ui.game.itemDatabase.bad_item);
+    const heroHtml = panel.renderHeroCard(hero, true);
+    const villainHtml = panel.renderVillainCard({
+        unlocked: true,
+        isBoss: true,
+        sprite: null,
+        name: '<Villano>',
+        category: '<Categoria>',
+        role: '<Rol>',
+        faction: '<Faccion>',
+        threat: 99,
+        traits: ['<Trait>']
+    });
+    const codexHeaderHtml = panel.renderCodexHeader({
+        title: '<Titulo>',
+        description: '<Descripcion>',
+        stats: [{ icon: 'fa-eye" onclick="bad', label: '<Dato>', value: '<Valor>' }]
+    });
+
+    assert.match(pendingBannerHtml, /<strong>&lt;Item&gt;<\/strong>/);
+    assert.match(heroHtml, /data-id="hero_bad&quot; onclick=&quot;bad"/);
+    assert.match(heroHtml, /aria-label="&lt;Hero&gt;\. Rareza Epic\. desbloqueado\."/);
+    assert.match(heroHtml, /title="&lt;Item&gt; equipado"/);
+    assert.match(heroHtml, /style="--evolution-color:var\(--level-accent\)"/);
+    assert.match(heroHtml, /&lt;Evo&gt;/);
+    assert.match(villainHtml, /&lt;Villano&gt;/);
+    assert.match(villainHtml, /&lt;Categoria&gt; · &lt;Rol&gt;/);
+    assert.match(villainHtml, /&lt;Faccion&gt;/);
+    assert.match(villainHtml, /&lt;Trait&gt;/);
+    assert.match(codexHeaderHtml, /fa-circle-info/);
+    assert.match(codexHeaderHtml, /&lt;Titulo&gt;/);
+    assert.match(codexHeaderHtml, /&lt;Descripcion&gt;/);
+    assert.match(codexHeaderHtml, /&lt;Dato&gt;/);
+    assert.match(codexHeaderHtml, /&lt;Valor&gt;/);
+    assert.doesNotMatch(`${pendingBannerHtml}${heroHtml}${villainHtml}${codexHeaderHtml}`, /onclick="bad|<Hero>|<Item>|<Evo>|<Villano>|<Trait>|javascript:bad/);
+});
+
 test('coleccion muestra preset de equipo por mapa', () => {
     const ui = createUiStub();
     ui.inventoryPanel.pendingEquipItemId = null;
