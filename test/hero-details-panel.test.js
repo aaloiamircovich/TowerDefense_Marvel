@@ -52,6 +52,74 @@ test('HeroDetailsPanel muestra preview numerico de mejora con signos', () => {
     assert.match(html, /Aura \+2\.5%/);
 });
 
+test('HeroDetailsPanel tolera modelos parciales de detalles', () => {
+    const previousDocument = globalThis.document;
+    globalThis.document = { getElementById: () => null };
+    const hero = {
+        id: 'partial',
+        name: 'Partial',
+        damage: 10,
+        range: 100,
+        fireRate: 1,
+        config: {
+            id: 'partial',
+            name: 'Partial',
+            rarity: 'Common',
+            tags: 'no-array',
+            formationRole: 'support'
+        },
+        items: 'bad',
+        abilitySystem: {
+            getControlState: () => ({ label: 'Modo', value: 'a', options: null })
+        }
+    };
+    const ui = {
+        game: {
+            heroes: null,
+            progression: {
+                state: { equippedItems: {}, unlockedHeroIds: ['partial'] },
+                getHeroBonuses: () => ({})
+            },
+            itemDatabase: {},
+            waveManager: {}
+        },
+        nextWaveSummary: null,
+        panelContent: {
+            innerHTML: '',
+            querySelectorAll: () => [],
+            querySelector: () => null
+        },
+        inventoryPanel: {},
+        getHeroLevel: () => 1,
+        getHeroUpgradeCost: () => 10,
+        getHeroLevelPreviewLabel: () => '',
+        getHeroLevelPreviewRows: () => null,
+        formatSignedPreviewValue: (value) => `+${value}`,
+        getTerrainText: () => 'Pasto',
+        getMissionCredits: () => 0,
+        getHeroDisplaySprite: () => null,
+        renderSprite: () => '<span class="sprite-fallback">?</span>',
+        bindHeroDetailTabs: () => {},
+        renderPanel: () => {}
+    };
+    const panel = new HeroDetailsPanel(ui, {
+        targetingPriorities: [null],
+        buildHeroCombatIdentity: () => null
+    });
+
+    try {
+        assert.equal(panel.renderHeroLevelPreview(hero, 1), '');
+        assert.doesNotThrow(() => panel.renderHeroQuickIdentityStrip(hero));
+        assert.doesNotThrow(() => panel.render(hero));
+        assert.match(ui.panelContent.innerHTML, /hero-detail/);
+        assert.doesNotMatch(ui.panelContent.innerHTML, /no-array/);
+        assert.doesNotMatch(ui.panelContent.innerHTML, /kit-mode-btn/);
+        assert.match(ui.panelContent.innerHTML, /targeting-select/);
+    } finally {
+        globalThis.document = previousDocument;
+    }
+});
+
 test('HeroDetailsPanel muestra familia del objeto equipado en tab de equipamiento', () => {
     const previousDocument = globalThis.document;
     const ui = {

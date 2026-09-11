@@ -12,7 +12,10 @@ export class HeroDetailsPanel {
         this.evaluateHeroWaveFit = builders.evaluateHeroWaveFit || (() => null);
         this.buildRosterWaveFitView = builders.buildRosterWaveFitView || (() => null);
         this.buildHeroCombatIdentity = builders.buildHeroCombatIdentity || (() => []);
-        this.targetingPriorities = builders.targetingPriorities || TARGETING_PRIORITIES;
+        const configuredPriorities = Array.isArray(builders.targetingPriorities)
+            ? builders.targetingPriorities.filter(Boolean)
+            : [];
+        this.targetingPriorities = configuredPriorities.length ? configuredPriorities : TARGETING_PRIORITIES;
     }
 
     render(hero, detailView = 'summary') {
@@ -31,8 +34,9 @@ export class HeroDetailsPanel {
         const critChance = Math.round(effectiveStats?.critChance || (hero.critChance || config.critChance || 5) + (bonuses.critChance || 0));
         const terrains = this.ui.getTerrainText(hero.allowedTerrains || config.allowedTerrains || [1]);
         const equippedSlots = this.ui.game.progression?.state?.equippedItems?.[config.id] || {};
-        const items = hero.items?.length
-            ? hero.items
+        const heroItems = Array.isArray(hero.items) ? hero.items : [];
+        const items = heroItems.length
+            ? heroItems
             : Object.values(equippedSlots).map((itemId) => this.ui.game.itemDatabase?.[itemId]).filter(Boolean);
         const equippedItem = items[0] || null;
         const equippedSlot = Object.keys(equippedSlots)[0] || equippedItem?.slot || null;
@@ -41,9 +45,10 @@ export class HeroDetailsPanel {
         const kitControl = hero.abilitySystem?.getControlState?.() || null;
         const isUnlocked = this.ui.game.progression?.state?.unlockedHeroIds?.includes(config.id) ?? true;
         const rarity = normalizeRarity(config.rarity);
-        const rarityClass = getRarityClass(rarity);
-        const identityTags = [...new Set([...(config.tags || [])].filter(Boolean))];
-        const isDeployed = this.ui.game.heroes?.includes(hero);
+        const rarityClass = normalizeClassToken(getRarityClass(rarity), 'rarity-common');
+        const identityTags = [...new Set((Array.isArray(config.tags) ? config.tags : []).filter(Boolean))];
+        const deployedHeroes = Array.isArray(this.ui.game.heroes) ? this.ui.game.heroes : [];
+        const isDeployed = deployedHeroes.includes(hero);
         const repositionPermission = isDeployed ? this.ui.game.tacticalActions?.canReposition(hero) : null;
         const sellPermission = isDeployed ? this.ui.game.tacticalActions?.canSell(hero) : null;
         const isMaxLevel = level >= HERO_MAX_LEVEL;
@@ -78,6 +83,7 @@ export class HeroDetailsPanel {
             upgradeCost: this.ui.getHeroUpgradeCost(hero, 1)
         });
         const { activeDetailView, compactStats, detailTabs, upgradeBadge } = detailViewModel;
+        const kitOptions = Array.isArray(kitControl?.options) ? kitControl.options.filter((option) => option?.id) : [];
         const upgradeControls = isUnlocked ? `<div class="upgrade-list hero-upgrade-grid" aria-label="Mejoras de nivel">
             ${[1, 5, 10].map((amount) => {
                 const cost = this.ui.getHeroUpgradeCost(hero, amount);
@@ -178,7 +184,7 @@ export class HeroDetailsPanel {
                     <div class="kit-mode-control" role="group" aria-label="${escapeHtml(kitControl.label)}">
                         <span>${escapeHtml(kitControl.label)}</span>
                         <div>
-                            ${kitControl.options.map((option) => `<button class="kit-mode-btn ${option.id === kitControl.value ? 'active' : ''}" type="button" data-mode="${escapeHtml(option.id)}" aria-pressed="${option.id === kitControl.value}" aria-label="${escapeHtml(`${kitControl.label}: ${option.label}`)}" title="${escapeHtml(`${kitControl.label}: ${option.label}`)}" data-tooltip="${escapeHtml(`${kitControl.label}: ${option.label}`)}">${escapeHtml(option.label)}</button>`).join('')}
+                            ${kitOptions.map((option) => `<button class="kit-mode-btn ${option.id === kitControl.value ? 'active' : ''}" type="button" data-mode="${escapeHtml(option.id)}" aria-pressed="${option.id === kitControl.value}" aria-label="${escapeHtml(`${kitControl.label}: ${option.label}`)}" title="${escapeHtml(`${kitControl.label}: ${option.label}`)}" data-tooltip="${escapeHtml(`${kitControl.label}: ${option.label}`)}">${escapeHtml(option.label)}</button>`).join('')}
                         </div>
                     </div>
                 ` : ''}
@@ -274,7 +280,8 @@ export class HeroDetailsPanel {
     }
 
     renderHeroCombatIdentity(hero) {
-        const chips = this.buildHeroCombatIdentity(hero);
+        const builtChips = this.buildHeroCombatIdentity(hero);
+        const chips = Array.isArray(builtChips) ? builtChips : [];
         return `
             <div class="hero-combat-identity" aria-label="Identidad tactica de combate">
                 ${chips.map((chip) => `
@@ -289,7 +296,8 @@ export class HeroDetailsPanel {
     }
 
     renderHeroQuickIdentityStrip(hero) {
-        const chips = this.buildHeroCombatIdentity(hero);
+        const builtChips = this.buildHeroCombatIdentity(hero);
+        const chips = Array.isArray(builtChips) ? builtChips : [];
         return `
             <div class="hero-detail-quick-strip" aria-label="Resumen tactico del heroe">
                 ${chips.map((chip) => {
@@ -325,6 +333,7 @@ export class HeroDetailsPanel {
 
     renderHeroLevelPreview(unit, amount = 1) {
         const rows = this.ui.getHeroLevelPreviewRows(unit, amount);
+        if (!Array.isArray(rows)) return '';
         if (!rows.length) return '';
         return `
             <span class="upgrade-preview" aria-hidden="true">
