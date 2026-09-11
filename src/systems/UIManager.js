@@ -470,6 +470,8 @@ export class UIManager {
         const isEnemy = isEnemyFlag || (unit.hp !== undefined && unit.takeDamage !== undefined);
         if (isEnemy) {
             this.getEnemyInfoPanel().render(unit);
+            this.openPanel('radar');
+            this.radarPanel.focusEnemyDetails();
             return;
         }
 

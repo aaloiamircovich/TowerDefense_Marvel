@@ -113,6 +113,7 @@ try {
     if (summary.enemyIntelControlsOverlap > 2) failures.push(`preview de oleada invade controles: ${summary.enemyIntelControlsOverlap}px`);
 
     const desktopSummary = await runLayoutSmoke(page, failures, { label: 'desktop', width: 1366, height: 768 });
+    await runEnemyInspectionSmoke(page, failures);
     const mobileSummary = await runLayoutSmoke(page, failures, { label: 'mobile', width: 390, height: 844 });
     if (pageErrors.length) failures.push(`page errors: ${pageErrors.join(' | ')}`);
     if (consoleErrors.length) failures.push(`console errors: ${consoleErrors.join(' | ')}`);
@@ -127,6 +128,28 @@ try {
 } finally {
     await browser?.close().catch(() => {});
     server.kill();
+}
+
+async function runEnemyInspectionSmoke(page, failures) {
+    const card = page.locator('#wave-preview .wave-enemy-card').first();
+    const name = await card.locator('strong').innerText();
+    await card.click();
+    const section = page.locator('#panel-content .radar-section-enemy-info-panel');
+    await section.locator('#en-info-name').waitFor({ state: 'visible', timeout: 5000 });
+    await page.waitForFunction(() => document.activeElement?.matches('.radar-section-enemy-info-panel > summary'));
+    const inspection = await page.evaluate(() => ({
+        paused: !window.__SUPER_HERO_TD_GAME__.isRunning,
+        name: document.querySelector('#panel-content #en-info-name')?.textContent,
+        open: document.querySelector('#panel-content .radar-section-enemy-info-panel')?.open
+    }));
+    if (!inspection.paused || !inspection.open || inspection.name !== name.toUpperCase()) {
+        failures.push(`inspeccion enemiga incorrecta: ${JSON.stringify(inspection)}`);
+    }
+    await page.keyboard.press('Escape');
+    await page.waitForFunction(() => document.querySelector('#panel-overlay').classList.contains('hidden'));
+    if (!(await card.evaluate((element) => document.activeElement === element))) {
+        failures.push('inspeccion enemiga no devuelve el foco a la carta');
+    }
 }
 
 async function runLayoutSmoke(page, failures, viewport) {

@@ -1413,6 +1413,21 @@ test('UIManager alterna el boton activo del hub para cerrar paneles', () => {
     }
 });
 
+test('UIManager abre el radar en la ficha del enemigo seleccionado', () => {
+    const calls = [];
+    const enemy = { name: 'Loki', hp: 420 };
+    const ui = Object.create(UIManager.prototype);
+    ui.tooltipController = { hide: () => calls.push('hide-tooltip') };
+    ui.getEnemyInfoPanel = () => ({ render: (unit) => {
+        assert.equal(unit, enemy);
+        calls.push('render-enemy');
+    } });
+    ui.openPanel = (type) => calls.push(`open:${type}`);
+    ui.radarPanel = { focusEnemyDetails: () => calls.push('focus-enemy') };
+    ui.inspectUnit(enemy, true);
+    assert.deepEqual(calls, ['hide-tooltip', 'render-enemy', 'open:radar', 'focus-enemy']);
+});
+
 test('UIManager restaura foco solo si el elemento sigue conectado', () => {
     const previousDocument = globalThis.document;
     globalThis.document = {

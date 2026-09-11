@@ -130,6 +130,17 @@ export class RadarPanel {
         this.bindActions();
     }
 
+    focusEnemyDetails() {
+        const section = this.ui.panelContent.querySelector('.radar-section-enemy-info-panel');
+        if (!section) return;
+        section.open = true;
+        window.requestAnimationFrame(() => {
+            if (!section.isConnected || this.ui.activePanelType !== 'radar') return;
+            section.scrollIntoView({ block: 'nearest' });
+            section.querySelector('summary')?.focus({ preventScroll: true });
+        });
+    }
+
     buildSectionModel(definition) {
         const source = document.getElementById(definition.id);
         const hidden = source?.classList.contains('hidden');
