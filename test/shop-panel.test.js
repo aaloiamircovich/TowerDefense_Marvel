@@ -172,6 +172,64 @@ test('ShopPanel renderiza tienda progresiva y delega compra de objetos', () => {
     assert.ok(calls.includes('toast:success:Lentes E.D.I.T.H. comprado'));
 });
 
+test('ShopPanel escapa datos dinamicos de tienda y reveal de caja', () => {
+    const panelContent = createPanelContentStub({
+        '#gacha-btn': createButtonStub({}),
+        '.btn-buy-item': []
+    });
+    const calls = [];
+    const ui = createShopUi(panelContent, calls);
+    const item = {
+        id: 'item" onclick="bad',
+        name: '<Item>',
+        rarity: 'Secret',
+        slot: 'weapon"><script>',
+        set: 'mal',
+        desc: '<Desc>',
+        price: 250,
+        tier: 1,
+        effects: { detectStealth: true },
+        icon: '<img onerror=bad>'
+    };
+    ui.renderSprite = () => '<span class="sprite-safe"></span>';
+    ui.game.itemDatabase = { [item.id]: item };
+    ui.game.shopSystem.getRotation = () => [{ item, purchased: false }];
+    ui.game.shopSystem.getProgressiveQueue = () => [item, item];
+    ui.game.progression.getCredits = () => 500;
+
+    const panel = new ShopPanel(ui, {
+        buildShopItemInsight: () => ({ tone: 'good" onclick="bad', label: '<Insight>', reasons: ['<Reason>'] }),
+        buildShopSetProgress: () => ({ status: 'ready" onclick="bad', ariaLabel: '<SetLabel>', label: '<Set>', detail: '<Detail>' })
+    });
+    panel.buildGachaRevealSequence = (hero) => [hero];
+
+    panel.render('<Tienda>');
+
+    assert.match(panelContent.innerHTML, /<h2>&lt;Tienda&gt;<\/h2>/);
+    assert.match(panelContent.innerHTML, /data-id="item&quot; onclick=&quot;bad"/);
+    assert.match(panelContent.innerHTML, /&lt;Item&gt;/);
+    assert.match(panelContent.innerHTML, /&lt;Desc&gt;/);
+    assert.match(panelContent.innerHTML, /shop-insight good-onclick-bad/);
+    assert.match(panelContent.innerHTML, /shop-set-progress ready-onclick-bad/);
+    assert.doesNotMatch(panelContent.innerHTML, /onclick="bad|<Tienda>|<Item>|<Desc>|<Insight>|<Reason>|<Set>|<Detail>|<script>/);
+
+    const revealHtml = panel.renderGachaReveal({
+        hero: { id: 'hero_bad', name: '<Hero>', rarity: 'Mythic', visual: { idle: 'hero.png' } },
+        guaranteed: true
+    });
+
+    assert.match(revealHtml, /data-final-rarity="Mythic"/);
+    assert.match(revealHtml, /&lt;Hero&gt;/);
+    assert.doesNotMatch(revealHtml, /<Hero>/);
+});
+
+test('ShopPanel limita el medidor de compra a porcentajes validos', () => {
+    const panel = new ShopPanel(createShopUi(createPanelContentStub({}), []));
+
+    assert.match(panel.renderAffordabilityMeter({ canAfford: true, progress: 999, current: 9, max: 5, label: '<Listo>' }), /width:100%/);
+    assert.match(panel.renderAffordabilityMeter({ canAfford: false, progress: -50, current: -9, max: 5, label: '<Falta>' }), /width:0%/);
+});
+
 test('ShopPanel muestra creditos faltantes sin esperar al error de compra', () => {
     const panelContent = createPanelContentStub({
         '.btn-buy-item': []

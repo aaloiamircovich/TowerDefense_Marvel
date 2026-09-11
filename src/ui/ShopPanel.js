@@ -4,16 +4,8 @@ import { ITEM_SIGNATURES } from '../systems/ItemSignatureSystem.js';
 import { HERO_BOX_COST_GROWTH, HERO_RARITY_WEIGHTS, getHeroBoxCost } from '../systems/ShopSystem.js';
 import { HERO_RARITIES, getRarityClass, normalizeRarity } from '../utils/Rarity.js';
 import { buildItemEffectPills } from './InventoryPanel.js';
+import { clampPercent, escapeHtml, normalizeClassToken } from './HtmlSanitizer.js';
 import { getItemFamilyName } from './ItemPresentation.js';
-
-function escapeHtml(value = '') {
-    return String(value)
-        .replaceAll('&', '&amp;')
-        .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;')
-        .replaceAll('"', '&quot;')
-        .replaceAll("'", '&#039;');
-}
 
 export function buildShopAffordabilityState(credits = 0, cost = 0, adminMode = false) {
     const normalizedCost = Math.max(0, Math.ceil(Number(cost) || 0));
@@ -45,7 +37,7 @@ export function buildShopAffordabilityState(credits = 0, cost = 0, adminMode = f
     const missing = Math.max(0, normalizedCost - normalizedCredits);
     return {
         canAfford: missing <= 0,
-        progress: Math.max(0, Math.min(100, Math.round((current / normalizedCost) * 100))),
+        progress: clampPercent((current / normalizedCost) * 100),
         missing,
         current,
         max: normalizedCost,
@@ -161,13 +153,13 @@ export class ShopPanel {
 
         this.ui.panelContent.innerHTML = `
             <section class="shop-command-header">
-                <div class="panel-title-row shop-title-row"><h2>${title}</h2><strong>${fundsText} creditos</strong></div>
+                <div class="panel-title-row shop-title-row"><h2>${escapeHtml(title)}</h2><strong>${escapeHtml(fundsText)} creditos</strong></div>
                 <div class="shop-economy-readout">
-                    <span><small>Creditos</small><b data-shop-readout="credits">${fundsText}</b></span>
-                    <span><small>Caja</small><b data-shop-readout="box-cost">$${recruitCost}</b></span>
-                    <span><small>Garantia</small><b data-shop-readout="pity">${pityValue}/4</b></span>
-                    <span><small>Arsenal</small><b>${rotation.length}/3</b></span>
-                    <span><small>Siguiente</small><b>+$${nextRecruitCost - recruitCost}</b></span>
+                    <span><small>Creditos</small><b data-shop-readout="credits">${escapeHtml(fundsText)}</b></span>
+                    <span><small>Caja</small><b data-shop-readout="box-cost">$${escapeHtml(recruitCost)}</b></span>
+                    <span><small>Garantia</small><b data-shop-readout="pity">${escapeHtml(pityValue)}/4</b></span>
+                    <span><small>Arsenal</small><b>${escapeHtml(rotation.length)}/3</b></span>
+                    <span><small>Siguiente</small><b>+$${escapeHtml(nextRecruitCost - recruitCost)}</b></span>
                 </div>
             </section>
             <section class="shop-recruit-strip">
@@ -178,7 +170,7 @@ export class ShopPanel {
                 </div>
                 ${this.renderRecruitDetails(pityValue, odds)}
                 <div class="shop-buy-stack">
-                    <button class="btn-primary" id="gacha-btn" type="button" data-affordability="${canRecruit ? 'ready' : 'locked'}" aria-label="${escapeHtml(recruitAriaLabel)}" title="${escapeHtml(recruitAriaLabel)}" data-tooltip="${escapeHtml(recruitAriaLabel)}" aria-disabled="${!canRecruit}" ${canRecruit ? '' : 'disabled'}>${recruitButtonText}</button>
+                    <button class="btn-primary" id="gacha-btn" type="button" data-affordability="${canRecruit ? 'ready' : 'locked'}" aria-label="${escapeHtml(recruitAriaLabel)}" title="${escapeHtml(recruitAriaLabel)}" data-tooltip="${escapeHtml(recruitAriaLabel)}" aria-disabled="${!canRecruit}" ${canRecruit ? '' : 'disabled'}>${escapeHtml(recruitButtonText)}</button>
                     ${this.renderAffordabilityMeter(recruitAffordability, 'Progreso para caja')}
                 </div>
             </section>
@@ -190,7 +182,7 @@ export class ShopPanel {
                 </div>
                 <div class="shop-heading-meta">
                     ${this.renderNextQueuePreview(nextQueueItem)}
-                    <strong>${rotation.length}/3 visibles</strong>
+                    <strong>${escapeHtml(rotation.length)}/3 visibles</strong>
                 </div>
             </section>
             <div class="shop-grid shop-grid--compact">
@@ -244,12 +236,12 @@ export class ShopPanel {
     }
 
     renderAffordabilityMeter(state, label = 'Progreso de compra') {
-        const progress = Math.max(0, Math.min(100, Math.round(Number(state?.progress) || 0)));
+        const progress = clampPercent(state?.progress);
         const max = Math.max(1, Math.ceil(Number(state?.max) || 1));
         const current = Math.max(0, Math.min(max, Math.ceil(Number(state?.current) || 0)));
         const tone = state?.canAfford ? 'ready' : 'locked';
         const text = state?.label || 'Sin datos';
-        return `<div class="shop-afford-meter ${tone}" role="meter" aria-label="${escapeHtml(label)}: ${escapeHtml(text)}" aria-valuemin="0" aria-valuemax="${max}" aria-valuenow="${current}"><span style="width:${progress}%"></span><small>${escapeHtml(text)}</small></div>`;
+        return `<div class="shop-afford-meter ${normalizeClassToken(tone, 'locked')}" role="meter" aria-label="${escapeHtml(label)}: ${escapeHtml(text)}" aria-valuemin="0" aria-valuemax="${escapeHtml(max)}" aria-valuenow="${escapeHtml(current)}"><span style="width:${progress}%"></span><small>${escapeHtml(text)}</small></div>`;
     }
 
     renderHeroBoxOdds(model) {
@@ -262,7 +254,7 @@ export class ShopPanel {
                 <strong>${escapeHtml(label)}</strong>
                 <div>
                     ${model.entries.map((entry) => {
-                        const rarityClass = getRarityClass(entry.rarity);
+                        const rarityClass = normalizeClassToken(getRarityClass(entry.rarity), 'rarity-common');
                         const tooltip = `${entry.rarity}: ${entry.label}, ${entry.count} heroes posibles`;
                         return `<span class="${rarityClass}" title="${escapeHtml(tooltip)}" data-tooltip="${escapeHtml(tooltip)}"><b>${escapeHtml(entry.rarity)}</b><small>${escapeHtml(entry.label)}</small></span>`;
                     }).join('')}
@@ -277,10 +269,10 @@ export class ShopPanel {
         }
 
         const rarity = normalizeRarity(item.rarity);
-        const rarityClass = getRarityClass(rarity);
+        const rarityClass = normalizeClassToken(getRarityClass(rarity), 'rarity-common');
         const price = Number(item.price || 0);
         const label = `Proximo al comprar: ${item.name} por ${price} creditos`;
-        return `<span class="shop-next-preview ${rarityClass}" aria-label="${escapeHtml(label)}"><i class="fas fa-arrow-right"></i><small>En cola</small><b>${escapeHtml(item.name)}</b><em>$${price}</em></span>`;
+        return `<span class="shop-next-preview ${rarityClass}" aria-label="${escapeHtml(label)}"><i class="fas fa-arrow-right"></i><small>En cola</small><b>${escapeHtml(item.name)}</b><em>$${escapeHtml(price)}</em></span>`;
     }
     renderItem(item, purchased = false) {
         if (!item) return '<div class="shop-card empty-copy">Agotado</div>';
@@ -292,9 +284,11 @@ export class ShopPanel {
         const canBuy = !purchased && affordability.canAfford;
         const missing = affordability.missing;
         const rarity = normalizeRarity(item.rarity);
-        const rarityClass = getRarityClass(rarity);
+        const rarityClass = normalizeClassToken(getRarityClass(rarity), 'rarity-common');
         const summary = this.ui.nextWaveSummary || (!this.ui.game.waveManager?.isWaveActive ? this.ui.game.waveManager?.buildPreparedSummary?.() : null);
-        const insight = this.buildShopItemInsight(item, summary);
+        const insight = this.buildShopItemInsight(item, summary) || {};
+        const insightLabel = insight.label || 'Uso flexible';
+        const insightReasons = Array.isArray(insight.reasons) ? insight.reasons : [];
         const signatureHint = buildItemSignatureHint(item, this.ui.game.heroDatabase || {});
         const setProgress = this.buildShopSetProgress(
             item,
@@ -309,11 +303,11 @@ export class ShopPanel {
                 ? `Comprar ${item.name} por ${price} creditos`
                 : `No alcanza para comprar ${item.name}. Faltan ${missing} creditos`;
         return `
-            <div class="shop-card shop-card--compact ${rarityClass} ${purchased ? 'purchased' : ''} ${canBuy ? 'can-buy' : 'locked'}" data-rarity="${rarity}" data-affordability="${canBuy ? 'ready' : 'locked'}" aria-label="${escapeHtml(buyAriaLabel)}">
-                <div class="item-badge rarity-badge ${rarityClass}">${rarity}</div>
+            <div class="shop-card shop-card--compact ${rarityClass} ${purchased ? 'purchased' : ''} ${canBuy ? 'can-buy' : 'locked'}" data-rarity="${escapeHtml(rarity)}" data-affordability="${canBuy ? 'ready' : 'locked'}" aria-label="${escapeHtml(buyAriaLabel)}">
+                <div class="item-badge rarity-badge ${rarityClass}">${escapeHtml(rarity)}</div>
                 <div class="shop-item-heading">
                     ${this.ui.renderSprite(item.icon, item.name)}
-                    <div><small>${SLOT_LABELS[item.slot]} · Familia ${getItemFamilyName(item)}</small><h4>${item.name}</h4></div>
+                    <div><small>${escapeHtml(SLOT_LABELS[item.slot] || item.slot || 'Objeto')} · Familia ${escapeHtml(getItemFamilyName(item))}</small><h4>${escapeHtml(item.name)}</h4></div>
                 </div>
                 ${signatureHint ? `<div class="shop-signature-hint" aria-label="Objeto firma para ${escapeHtml(signatureHint.fullDetail)}" title="Objeto firma para ${escapeHtml(signatureHint.fullDetail)}" data-tooltip="Objeto firma para ${escapeHtml(signatureHint.fullDetail)}">
                     <i class="fas fa-file-signature"></i>
@@ -323,18 +317,18 @@ export class ShopPanel {
                 <details class="shop-card-details">
                     <summary>
                         <span><i class="fas fa-circle-info"></i><b>Detalles</b></span>
-                        <small>${effectPills.length} efectos</small>
+                        <small>${escapeHtml(effectPills.length)} efectos</small>
                     </summary>
                     <div class="shop-card-details-body">
-                        <p>${item.desc}</p>
+                        <p>${escapeHtml(item.desc)}</p>
                         <div class="shop-effect-pills item-effect-pills" aria-label="Efectos principales">
-                            ${effectPills.map((pill) => `<span class="${pill.tone}"><b>${pill.label}</b><small>${pill.value}</small></span>`).join('')}
+                            ${effectPills.map((pill) => `<span class="${normalizeClassToken(pill.tone, 'neutral')}"><b>${escapeHtml(pill.label)}</b><small>${escapeHtml(pill.value)}</small></span>`).join('')}
                         </div>
-                        <div class="shop-insight ${insight.tone}" aria-label="Recomendado por ${escapeHtml(insight.reasons.join(', '))}">
-                            <strong>${escapeHtml(insight.label)}</strong>
-                            <span>${insight.reasons.map(escapeHtml).join(' | ')}</span>
+                        <div class="shop-insight ${normalizeClassToken(insight.tone, 'neutral')}" aria-label="Recomendado por ${escapeHtml(insightReasons.join(', '))}">
+                            <strong>${escapeHtml(insightLabel)}</strong>
+                            <span>${insightReasons.map(escapeHtml).join(' | ')}</span>
                         </div>
-                        ${setProgress ? `<div class="shop-set-progress ${setProgress.status}" aria-label="${escapeHtml(setProgress.ariaLabel)}">
+                        ${setProgress ? `<div class="shop-set-progress ${normalizeClassToken(setProgress.status, 'neutral')}" aria-label="${escapeHtml(setProgress.ariaLabel)}">
                             <strong>${escapeHtml(setProgress.label)}</strong>
                             <span>${escapeHtml(setProgress.detail)}</span>
                         </div>` : ''}
@@ -342,8 +336,8 @@ export class ShopPanel {
                 </details>
                 <div class="shop-card-footer">
                     ${this.renderAffordabilityMeter(affordability, `Progreso para comprar ${item.name}`)}
-                    <small>${purchased ? 'Adquirido' : canBuy ? `Copias: ${owned}` : `Faltan $${missing}`}</small>
-                    <button class="btn-buy-item btn-primary ghost" type="button" data-id="${item.id}" aria-label="${escapeHtml(buyAriaLabel)}" title="${escapeHtml(buyAriaLabel)}" data-tooltip="${escapeHtml(buyAriaLabel)}" aria-disabled="${purchased || !canBuy}" ${purchased || !canBuy ? 'disabled' : ''}>${purchased ? 'ADQUIRIDO' : canBuy ? `$${price}` : 'BLOQUEADO'}</button>
+                    <small>${escapeHtml(purchased ? 'Adquirido' : canBuy ? `Copias: ${owned}` : `Faltan $${missing}`)}</small>
+                    <button class="btn-buy-item btn-primary ghost" type="button" data-id="${escapeHtml(item.id)}" aria-label="${escapeHtml(buyAriaLabel)}" title="${escapeHtml(buyAriaLabel)}" data-tooltip="${escapeHtml(buyAriaLabel)}" aria-disabled="${purchased || !canBuy}" ${purchased || !canBuy ? 'disabled' : ''}>${escapeHtml(purchased ? 'ADQUIRIDO' : canBuy ? `$${price}` : 'BLOQUEADO')}</button>
                 </div>
             </div>
         `;
@@ -372,14 +366,14 @@ export class ShopPanel {
     renderGachaReveal(result) {
         const hero = result.hero;
         const rarity = normalizeRarity(hero.rarity);
-        const rarityClass = getRarityClass(rarity);
+        const rarityClass = normalizeClassToken(getRarityClass(rarity), 'rarity-common');
         const sequence = this.buildGachaRevealSequence(hero);
         this.pendingGachaRevealSequence = sequence;
         const firstPreview = sequence[0] || hero;
         const firstRarity = normalizeRarity(firstPreview.rarity);
-        const firstRarityClass = getRarityClass(firstRarity);
+        const firstRarityClass = normalizeClassToken(getRarityClass(firstRarity), 'rarity-common');
         return `
-            <div class="gacha-reveal ${firstRarityClass}" data-final-rarity-class="${rarityClass}" data-rarity="${firstRarity}" data-final-rarity="${rarity}">
+            <div class="gacha-reveal ${firstRarityClass}" data-final-rarity-class="${rarityClass}" data-rarity="${escapeHtml(firstRarity)}" data-final-rarity="${escapeHtml(rarity)}">
                 <div class="gacha-aura"></div>
                 <div class="gacha-case">
                     <i class="fas fa-box-open"></i>
@@ -390,8 +384,8 @@ export class ShopPanel {
                     <div class="gacha-roll-sprite">${this.ui.renderSprite(this.ui.getHeroDisplaySprite(firstPreview), firstPreview.name)}</div>
                 </div>
                 <div class="gacha-final">
-                    <span class="rarity-badge ${rarityClass}">${rarity}</span>
-                    <strong>${hero.name}</strong>
+                    <span class="rarity-badge ${rarityClass}">${escapeHtml(rarity)}</span>
+                    <strong>${escapeHtml(hero.name)}</strong>
                     <small>${result.guaranteed ? 'Garantia activada' : 'Nuevo recluta'}</small>
                 </div>
             </div>
@@ -417,7 +411,7 @@ export class ShopPanel {
 
         const applyEntry = (entry) => {
             const rarity = normalizeRarity(entry.rarity);
-            const rarityClass = getRarityClass(rarity);
+            const rarityClass = normalizeClassToken(getRarityClass(rarity), 'rarity-common');
             reveal.classList.remove('rarity-common', 'rarity-rare', 'rarity-epic', 'rarity-legendary', 'rarity-mythic', 'rarity-secret');
             reveal.classList.add(rarityClass);
             reveal.dataset.rarity = rarity;
