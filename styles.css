@@ -12784,6 +12784,80 @@ button:disabled,
     }
 }
 
+.hero-detail { grid-template-columns: 190px minmax(0, 1fr); gap: 14px; }
+.hero-detail .hero-portrait,
+.hero-detail .hero-summary-card,
+.hero-detail .hero-detail-subpanel,
+.hero-detail .hero-tab-equipment,
+.hero-detail .hero-identity-card {
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+}
+.hero-detail .hero-portrait { justify-content: flex-start; box-shadow: none; overflow: visible; }
+.hero-detail .hero-portrait::before,
+.hero-detail .hero-portrait::after,
+.hero-detail .hero-detail-subpanel::before { display: none; }
+.hero-detail .hero-detail-subpanel { box-shadow: none; overflow: visible; }
+.hero-detail .hero-tab-upgrade .upgrade-preview {
+    position: static;
+    display: grid;
+    min-width: 0;
+    max-width: 100%;
+    padding: 4px 0 0;
+    transform: none;
+    border: 0;
+    box-shadow: none;
+    background: none;
+    font-size: 10px;
+    white-space: normal;
+}
+.hero-detail .detail-stack { padding-top: 26px; }
+.hero-detail .hero-summary-card,
+.hero-detail .hero-detail-tab-panel { gap: 10px; }
+.hero-detail .hero-stat-strip span { padding: 6px; }
+.hero-detail .hero-stat-strip .stat-delta { font-size: 10px; text-transform: none; }
+.hero-detail .hero-stat-strip .positive { color: #46d369; }
+.hero-detail .hero-stat-strip .negative { color: #ff6577; }
+.hero-detail .hero-identity-card { display: flex; flex-wrap: wrap; align-items: center; }
+.hero-detail .hero-identity-card > span { display: flex; gap: 6px; align-items: baseline; }
+.hero-detail .hero-ability-compact { padding: 8px 0; border: 0; background: none; }
+.hero-targeting-help { grid-column: 1 / -1; color: var(--muted); font-size: 11px; }
+.hero-targeting-help > summary { cursor: pointer; padding: 6px 0; }
+.hero-targeting-help .targeting-priority-legend { margin-top: 6px; }
+
+@media (max-width: 700px) {
+    #panel-overlay:has(.hero-detail) { padding: 8px; }
+    #panel-container:has(.hero-detail) { width: 100%; max-height: calc(100dvh - 16px); }
+    #panel-content:has(.hero-detail) { padding: 12px; max-height: calc(100dvh - 20px); }
+    .hero-detail { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+    .hero-detail .detail-stack { padding-top: 0; }
+    .hero-detail .hero-portrait {
+        display: grid;
+        grid-template-columns: 80px minmax(0, 1fr);
+        gap: 8px 12px;
+        padding-right: 36px;
+        padding-top: 4px;
+    }
+    .hero-detail .portrait-frame { grid-column: 1; grid-row: 1 / 3; width: 80px; height: 88px; }
+    .hero-detail .portrait-frame img { max-width: 76px; max-height: 84px; }
+    .hero-detail .hero-portrait-header { grid-column: 2; grid-template-columns: minmax(0, 1fr); gap: 4px; }
+    .hero-detail .hero-portrait-header h2 { font-size: 16px; }
+    .hero-detail .hero-portrait-header .rarity-badge { justify-self: start; }
+    .hero-detail .hero-portrait-header small { display: none; }
+    .hero-detail .hero-level-readout { grid-column: 2; gap: 6px; }
+    .hero-detail .hero-level-readout span { padding: 4px; }
+    .hero-detail .tactical-actions { grid-column: 1 / -1; margin: 0; }
+    .hero-detail .hero-stat-strip { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; }
+    .hero-detail .hero-stat-strip > span > small { font-size: 9px; }
+    .hero-detail .hero-stat-strip strong { font-size: 12px; }
+    .hero-detail .hero-detail-tab { grid-template-columns: minmax(0, 1fr); gap: 4px; padding: 5px 2px; }
+    .hero-detail .hero-detail-tab i,
+    .hero-detail .hero-detail-tab > span { justify-self: center; }
+    .hero-detail .hero-detail-tab > span { font-size: 9px; }
+}
+
 .shop-panel .shop-command-header {
     display: block;
     padding: 0 0 10px;

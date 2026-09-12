@@ -14,9 +14,9 @@ export function formatHeroDetailMetric(value = 0) {
 
 export function formatStatDelta(current, base, suffix = '', decimals = 0) {
     const difference = Number(current) - Number(base);
-    if (Math.abs(difference) < 0.001) return '';
+    if (!Number.isFinite(difference) || Math.abs(difference) < 0.001) return null;
     const value = Math.abs(difference).toFixed(decimals);
-    return `<small class="stat-delta ${difference < 0 ? 'negative' : ''}">${difference > 0 ? '+' : '-'}${value}${suffix}</small>`;
+    return { text: `${difference > 0 ? '+' : '-'}${value}${suffix}`, negative: difference < 0 };
 }
 
 export function normalizeHeroDetailView(detailView = 'summary') {
@@ -48,7 +48,7 @@ export function buildHeroDetailViewModel({
     const isMaxLevel = Number(level) >= Number(maxLevel);
     const summaryBadge = isAuraOnly && scaledAura?.type
         ? `${supportAuraLabel} +${Math.round(Number(scaledAura.power || 0) * 100)}%`
-        : `DPS ${formatHeroDetailMetric(Number(damage || 0) * Number(normalizedFireRate || 0))}`;
+        : `DPS ${formatHeroDetailMetric(Number(damage || 0) * Number(fireRate || 0))}`;
     const upgradeBadge = isMaxLevel ? 'MAX' : `$${upgradeCost}`;
     const equipmentBadge = equippedItem ? 'Equipado' : 'Libre';
     const combatBadge = `${formatHeroDetailMetric(combat.kills || 0)} bajas`;
@@ -60,10 +60,10 @@ export function buildHeroDetailViewModel({
         equipmentBadge,
         combatBadge,
         compactStats: [
-            ['Daño', `${Math.round(Number(damage) || 0)}${formatStatDeltaFn(Math.round(Number(damage) || 0), baseDamage)}`],
-            ['Recarga', `${normalizedFireRate}/s${formatStatDeltaFn(Number(normalizedFireRate), baseFireRate, '', 1)}`],
-            ['Crítico', `${Math.round(Number(critChance) || 0)}%${formatStatDeltaFn(Math.round(Number(critChance) || 0), baseCritChance, '%')}`],
-            ['Alcance', `${Math.round(Number(range) || 0)}${formatStatDeltaFn(Math.round(Number(range) || 0), baseRange)}`]
+            ['Daño', `${Math.round(Number(damage) || 0)}`, formatStatDeltaFn(Math.round(Number(damage) || 0), baseDamage)],
+            ['Cadencia', `${normalizedFireRate}/s`, formatStatDeltaFn(Number(fireRate), baseFireRate, '/s', 1)],
+            ['Crítico', `${Math.round(Number(critChance) || 0)}%`, formatStatDeltaFn(Math.round(Number(critChance) || 0), baseCritChance, '%')],
+            ['Alcance', `${Math.round(Number(range) || 0)}`, formatStatDeltaFn(Math.round(Number(range) || 0), baseRange)]
         ],
         detailTabs: HERO_DETAIL_TABS.map((tab) => ({
             ...tab,

@@ -118,6 +118,7 @@ try {
     const mobileSummary = await runLayoutSmoke(page, failures, { label: 'mobile', width: 390, height: 844 });
     await runInventorySmoke(page, failures);
     await runShopSmoke(page, failures);
+    await runHeroDetailsSmoke(page, failures);
     if (pageErrors.length) failures.push(`page errors: ${pageErrors.join(' | ')}`);
     if (consoleErrors.length) failures.push(`console errors: ${consoleErrors.join(' | ')}`);
 
@@ -131,6 +132,38 @@ try {
 } finally {
     await browser?.close().catch(() => {});
     server.kill();
+}
+
+async function runHeroDetailsSmoke(page, failures) {
+    for (const width of [1366, 390]) {
+        await page.setViewportSize({ width, height: width === 390 ? 844 : 768 });
+        const before = await page.evaluate(() => {
+            const game = window.__SUPER_HERO_TD_GAME__;
+            game.progression.setCredits(10000, false);
+            const hero = game.heroes[0];
+            return { level: game.progression.getHeroLevel(hero.id), cost: game.uiManager.getHeroUpgradeCost(hero, 1) };
+        });
+        await page.locator('.stats-btn').first().click();
+        for (const view of ['summary', 'equipment', 'combat', 'upgrade']) {
+            await page.locator(`.hero-detail-tab[data-view="${view}"]`).click();
+            const overflow = await page.locator('.hero-detail').evaluate((panel) => panel.scrollWidth - panel.clientWidth);
+            if (overflow > 2) failures.push(`ficha ${view} desborda ${overflow}px en ${width}px`);
+        }
+        const upgrade = page.locator('.modal-btn-upgrade[data-amt="1"]');
+        if (!(await upgrade.locator('.upgrade-preview').isVisible())) failures.push('mejora sin comparacion visible');
+        const box = await upgrade.boundingBox();
+        if (!box || box.y + box.height > (width === 390 ? 844 : 768)) failures.push(`mejora fuera de pantalla en ${width}px`);
+        await upgrade.click();
+        const after = await page.evaluate(() => {
+            const game = window.__SUPER_HERO_TD_GAME__;
+            return { level: game.progression.getHeroLevel(game.heroes[0].id), credits: game.progression.getCredits() };
+        });
+        if (after.level !== before.level + 1 || after.credits !== 10000 - before.cost) failures.push('mejora no aplica nivel o precio esperado');
+        if (await page.locator('.hero-detail-tab.active').getAttribute('data-view') !== 'upgrade') failures.push('mejora vuelve a resumen');
+        if (!(await page.locator('.modal-btn-upgrade[data-amt="1"]').evaluate((button) => button === document.activeElement))) failures.push('mejora pierde foco');
+        if ((await page.locator('.hero-stat-strip').innerText()).includes('<small')) failures.push('estadisticas muestran HTML literal');
+        await page.locator('#close-panel-btn').click();
+    }
 }
 
 async function runShopSmoke(page, failures) {

@@ -24,14 +24,14 @@ export class HeroDetailsPanel {
         const level = this.ui.getHeroLevel(hero);
         const bonuses = this.ui.game.progression?.getHeroBonuses(config.id) || {};
         const effectiveStats = hero.getEffectiveStats?.();
-        const baseDamage = Math.round(hero.damage || config.damage || 0);
-        const baseRange = Math.round(hero.range || config.range || 0);
-        const baseFireRate = Number(hero.fireRate || config.fireRate || 1);
-        const baseCritChance = Math.round(hero.critChance || config.critChance || 5);
-        const damage = Math.round(effectiveStats?.damage || (hero.damage || config.damage || 0) * (1 + (bonuses.damage || 0)));
-        const range = Math.round(effectiveStats?.range || (hero.range || config.range || 0) * (1 + (bonuses.range || 0)));
-        const fireRate = Number(effectiveStats?.fireRate || (hero.fireRate || config.fireRate || 1) * (1 + (bonuses.fireRate || 0))).toFixed(1);
-        const critChance = Math.round(effectiveStats?.critChance || (hero.critChance || config.critChance || 5) + (bonuses.critChance || 0));
+        const baseDamage = Math.round(hero.damage ?? config.damage ?? 0);
+        const baseRange = Math.round(hero.range ?? config.range ?? 0);
+        const baseFireRate = Number(hero.fireRate ?? config.fireRate ?? 1);
+        const baseCritChance = Math.round(hero.critChance ?? config.critChance ?? 5);
+        const damage = Math.round(effectiveStats?.damage ?? (hero.damage ?? config.damage ?? 0) * (1 + (bonuses.damage || 0)));
+        const range = Math.round(effectiveStats?.range ?? (hero.range ?? config.range ?? 0) * (1 + (bonuses.range || 0)));
+        const fireRate = Number(effectiveStats?.fireRate ?? (hero.fireRate ?? config.fireRate ?? 1) * (1 + (bonuses.fireRate || 0)));
+        const critChance = Math.round(effectiveStats?.critChance ?? (hero.critChance ?? config.critChance ?? 5) + (bonuses.critChance || 0));
         const terrains = this.ui.getTerrainText(hero.allowedTerrains || config.allowedTerrains || [1]);
         const equippedSlots = this.ui.game.progression?.state?.equippedItems?.[config.id] || {};
         const heroItems = Array.isArray(hero.items) ? hero.items : [];
@@ -140,7 +140,6 @@ export class HeroDetailsPanel {
             detailBody = `
                 <div class="hero-identity-card">
                     <span><small>Tipo</small><strong>${escapeHtml(config.category || 'Heroe')}</strong></span>
-                    <span><small>Rareza</small><b class="rarity-badge ${rarityClass}">${escapeHtml(rarity)}</b></span>
                     ${identityTags.length ? `<div class="hero-tag-list">${identityTags.map((tag) => `<span>${escapeHtml(tag)}</span>`).join('')}</div>` : ''}
                 </div>
 
@@ -151,6 +150,8 @@ export class HeroDetailsPanel {
                     </div>
                     ${config.niche ? `<b>${escapeHtml(config.niche)}</b>` : ''}
                 </div>
+
+                ${this.renderHeroQuickIdentityStrip(hero)}
 
                 ${waveFitView ? `
                     <div class="hero-wave-fit-compact ${normalizeClassToken(waveFitView.id, 'neutral')}" aria-label="${escapeHtml(waveFitView.ariaLabel)}">
@@ -171,7 +172,7 @@ export class HeroDetailsPanel {
                             ${this.targetingPriorities.map((priority) => `<option value="${escapeHtml(priority)}" ${currentTargeting === priority ? 'selected' : ''}>${escapeHtml(priority)}</option>`).join('')}
                         </select>
                     </label>
-                    ${this.renderTargetingPriorityLegend(currentTargeting)}
+                    <details class="hero-targeting-help"><summary>Prioridades de ataque</summary>${this.renderTargetingPriorityLegend(currentTargeting)}</details>
                 </div>
 
                 ${abilityState ? `
@@ -217,10 +218,9 @@ export class HeroDetailsPanel {
                 <section class="detail-stack">
                     <div class="hero-summary-card">
                         <div class="hero-stat-strip">
-                            ${compactStats.map(([label, value]) => `<span><small>${escapeHtml(label)}</small><strong>${escapeHtml(value)}</strong></span>`).join('')}
+                            ${compactStats.map(([label, value, delta]) => `<span><small>${escapeHtml(label)}</small><strong>${escapeHtml(value)}${delta ? `<small class="stat-delta ${delta.negative ? 'negative' : 'positive'}">${escapeHtml(delta.text)}</small>` : ''}</strong></span>`).join('')}
                         </div>
 
-                        ${activeDetailView === 'summary' ? this.renderHeroQuickIdentityStrip(hero) : ''}
 
                         <div class="hero-detail-tabs" role="tablist" aria-label="Detalle de heroe">
                             ${detailTabs.map((tab) => {
@@ -246,6 +246,7 @@ export class HeroDetailsPanel {
         this.ui.panelContent.querySelectorAll('.modal-btn-upgrade').forEach((button) => {
             button.addEventListener('click', () => {
                 this.ui.processUpgrade(hero, Number(button.dataset.amt));
+                this.ui.panelContent.querySelector?.(`.modal-btn-upgrade[data-amt="${Number(button.dataset.amt)}"]:not(:disabled)`)?.focus?.({ preventScroll: true });
             });
         });
 

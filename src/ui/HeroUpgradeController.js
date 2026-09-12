@@ -116,7 +116,10 @@ export class HeroUpgradeController {
             this.ui.game.stars
         );
         this.ui.game.waveManager?.refreshWaveIntel?.();
-        if (unit && !this.ui.overlay?.classList.contains('hidden')) this.ui.renderHeroDetails(unit);
+        if (unit && !this.ui.overlay?.classList.contains('hidden')) {
+            const view = this.ui.panelContent?.querySelector?.('.hero-detail-tab.active')?.dataset?.view || 'summary';
+            this.ui.renderHeroDetails(unit, view);
+        }
     }
 
     processUpgrade(unit, amount) {

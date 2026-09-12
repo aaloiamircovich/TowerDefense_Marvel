@@ -17,22 +17,18 @@ test('buildHeroDetailViewModel arma badges y estadisticas compactas', () => {
         baseRange: 150,
         combat: { kills: 1250 },
         equippedItem: { id: 'arc_reactor' },
-        upgradeCost: 320,
-        formatStatDelta: (value, base, suffix = '', precision = 0) => {
-            if (value === base) return '';
-            return ` <${(value - base).toFixed(precision)}${suffix}>`;
-        }
+        upgradeCost: 320
     });
 
     assert.equal(model.activeDetailView, 'equipment');
     assert.deepEqual(model.compactStats, [
-        ['Daño', '42 <2>'],
-        ['Recarga', '1.3/s <0.3>'],
-        ['Crítico', '8% <3%>'],
-        ['Alcance', '155 <5>']
+        ['Daño', '42', { text: '+2', negative: false }],
+        ['Cadencia', '1.3/s', { text: '+0.3/s', negative: false }],
+        ['Crítico', '8%', { text: '+3%', negative: false }],
+        ['Alcance', '155', { text: '+5', negative: false }]
     ]);
     assert.deepEqual(model.detailTabs.map((tab) => [tab.id, tab.badge]), [
-        ['summary', 'DPS 55'],
+        ['summary', 'DPS 53'],
         ['upgrade', '$320'],
         ['equipment', 'Equipado'],
         ['combat', '1.3k bajas']
@@ -62,7 +58,8 @@ test('helpers de detalle normalizan vista metricas y deltas', () => {
     assert.equal(formatHeroDetailMetric(999), '999');
     assert.equal(formatHeroDetailMetric(12500), '13k');
     assert.equal(formatHeroDetailMetric(1250000), '1.3M');
-    assert.equal(formatStatDelta(42, 40), '<small class="stat-delta ">+2</small>');
-    assert.equal(formatStatDelta(0.8, 1, '/s', 1), '<small class="stat-delta negative">-0.2/s</small>');
-    assert.equal(formatStatDelta(10, 10), '');
+    assert.deepEqual(formatStatDelta(42, 40), { text: '+2', negative: false });
+    assert.deepEqual(formatStatDelta(0.8, 1, '/s', 1), { text: '-0.2/s', negative: true });
+    assert.equal(formatStatDelta(10, 10), null);
+    assert.equal(formatStatDelta(NaN, 10), null);
 });

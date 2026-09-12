@@ -115,6 +115,13 @@ test('HeroDetailsPanel tolera modelos parciales de detalles', () => {
         assert.doesNotMatch(ui.panelContent.innerHTML, /no-array/);
         assert.doesNotMatch(ui.panelContent.innerHTML, /kit-mode-btn/);
         assert.match(ui.panelContent.innerHTML, /targeting-select/);
+        hero.getEffectiveStats = () => ({ damage: 15, range: 90, fireRate: 0, critChance: 0 });
+        panel.render(hero);
+        assert.match(ui.panelContent.innerHTML, /class="stat-delta positive">\+5<\/small>/);
+        assert.match(ui.panelContent.innerHTML, /class="stat-delta negative">-10<\/small>/);
+        assert.match(ui.panelContent.innerHTML, /<strong>0\.0\/s/);
+        assert.match(ui.panelContent.innerHTML, /<strong>0%/);
+        assert.doesNotMatch(ui.panelContent.innerHTML, /&lt;small class=/);
     } finally {
         globalThis.document = previousDocument;
     }
