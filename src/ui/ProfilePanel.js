@@ -85,16 +85,16 @@ export class ProfilePanel {
                     </div>
                     <div class="weekly-contract-list">${weekly.contracts.map((contract) => this.renderContract(contract)).join('')}</div>
                 </section>
-                <section class="profile-meta-section">
-                    <h3>Emblemas de contrato <span>${escapeHtml(contractEmblems.unlocked)}/${escapeHtml(contractEmblems.total)}</span></h3>
+                <details class="profile-meta-section profile-disclosure">
+                    <summary>Emblemas de contrato <span>${escapeHtml(contractEmblems.unlocked)}/${escapeHtml(contractEmblems.total)}</span></summary>
                     <div class="contract-emblem-list">${contractEmblems.emblems.map((emblem) => this.renderContractEmblem(emblem)).join('')}</div>
-                </section>
-                <section class="profile-meta-section"><h3>Retos de agrupacion <span>${escapeHtml(synergyChallenges.completed)}/${escapeHtml(synergyChallenges.total)}</span></h3><div class="weekly-contract-list synergy-challenge-list">${synergyChallenges.challenges.slice(0, 8).map((challenge) => this.renderSynergyChallenge(challenge)).join('')}</div></section>
+                </details>
+                <details class="profile-meta-section profile-disclosure"><summary>Retos de agrupacion <span>${escapeHtml(synergyChallenges.completed)}/${escapeHtml(synergyChallenges.total)}</span></summary><div class="weekly-contract-list synergy-challenge-list">${synergyChallenges.challenges.map((challenge) => this.renderSynergyChallenge(challenge)).join('')}</div></details>
             `,
             codex: `
                 <section class="profile-meta-section"><h3>Codice descubierto</h3><div class="codex-summary">${codexSummary}</div></section>
-                <section class="profile-meta-section"><h3>Maestria heroica</h3>${masteryRows || '<p>Recluta un heroe para iniciar desafios.</p>'}</section>
-                <section class="profile-meta-section"><h3>Logros</h3><div class="achievement-list">${Object.entries(ACHIEVEMENT_CATALOG).map(([id, achievement]) => this.renderAchievement(id, achievement, progression.state.achievements.includes(id))).join('')}</div></section>
+                <details class="profile-meta-section profile-disclosure"><summary>Maestria heroica <span>${escapeHtml(masteryCompleted)}/${escapeHtml(masteryTotal)}</span></summary>${masteryRows || '<p>Recluta un heroe para iniciar desafios.</p>'}</details>
+                <details class="profile-meta-section profile-disclosure"><summary>Logros <span>${escapeHtml(progression.state.achievements.length)}/${Object.keys(ACHIEVEMENT_CATALOG).length}</span></summary><div class="achievement-list">${Object.entries(ACHIEVEMENT_CATALOG).map(([id, achievement]) => this.renderAchievement(id, achievement, progression.state.achievements.includes(id))).join('')}</div></details>
             `,
             history: `
                 <section class="profile-meta-section"><h3>Historial</h3><div class="codex-summary"><span><b>${escapeHtml(statistics.missions)}</b>Misiones</span><span><b>${escapeHtml(statistics.victories)}</b>Victorias</span><span><b>${escapeHtml(statistics.waves)}</b>Oleadas</span><span><b>${escapeHtml(statistics.enemiesDefeated)}</b>Enemigos</span><span><b>${escapeHtml(statistics.damageDealt)}</b>Dano</span></div></section>
@@ -103,11 +103,10 @@ export class ProfilePanel {
         };
 
         panelContent.innerHTML = `
+            <section class="profile-panel">
             <section class="profile-command-header">
                 <div>
-                    <span class="briefing-kicker">ARCHIVO DE MANDO</span>
                     <h2>${escapeHtml(title)}</h2>
-                    <p>Progreso global, contratos, códice y rendimiento operativo de la campaña.</p>
                     <div class="profile-next-unlock" style="--profile-next-progress:${nextUnlock.progress}%">
                         <span><i class="fas fa-route"></i> ${nextUnlock.complete ? 'Ruta completa' : 'Proxima operacion'}</span>
                         <strong>${escapeHtml(nextUnlock.name)}</strong>
@@ -120,6 +119,14 @@ export class ProfilePanel {
                     <span>completado</span>
                 </div>
             </section>
+            <nav class="profile-tabs" role="tablist" aria-label="Secciones de perfil">
+                ${tabs.map((tab) => {
+                    const tabLabel = `${tab.label}: ${tab.badgeLabel}`;
+                    return `<button id="profile-tab-${escapeHtml(tab.id)}" class="profile-tab ${this.activeView === tab.id ? 'active' : ''}" data-profile-view="${escapeHtml(tab.id)}" role="tab" aria-selected="${this.activeView === tab.id}" aria-controls="profile-tab-panel" tabindex="${this.activeView === tab.id ? '0' : '-1'}" aria-label="${escapeHtml(tabLabel)}" title="${escapeHtml(tabLabel)}" data-tooltip="${escapeHtml(tabLabel)}" type="button"><i class="fas ${normalizeIconClass(tab.icon)}"></i><span>${escapeHtml(tab.label)}</span><b class="profile-tab-badge">${escapeHtml(tab.badge)}</b></button>`;
+                }).join('')}
+            </nav>
+            <div id="profile-tab-panel" class="profile-tab-panel profile-view-${escapeHtml(this.activeView)}" role="tabpanel" aria-labelledby="profile-tab-${escapeHtml(this.activeView)}">
+            ${this.activeView === 'summary' ? `
             <div class="profile-grid profile-grid--primary">
                 <div class="detail-card profile-stat-card"><h3>Progreso</h3><p><span>Mejores oleadas</span><strong>${escapeHtml(bestWaves)}</strong></p><p><span>Estrellas</span><strong>${escapeHtml(totalStars)}</strong></p><p><span>Desafios</span><strong>${escapeHtml(challenges)}/${escapeHtml(game.levelsData.length * 2)}</strong></p></div>
                 <div class="detail-card profile-stat-card"><h3>Plantilla</h3><p><span>Heroes</span><strong>${escapeHtml(game.unlockedHeroes.length)}</strong></p><p><span>Equipo activo</span><strong>${escapeHtml(game.activeTeam.length)}/6</strong></p></div>
@@ -136,18 +143,14 @@ export class ProfilePanel {
                     <div class="detail-card"><h3>Rendimiento</h3><p><span>Frame p95</span><strong>${escapeHtml((performance.p95Ms || 0).toFixed(1))} ms</strong></p><p><span>Memoria pico</span><strong>${escapeHtml((performance.peakMemoryMb || 0).toFixed(1))} MB</strong></p><p><span>Pico de entidades</span><strong>${escapeHtml(performance.peakEntities || 0)}</strong></p><p><span>Proyectiles reciclados</span><strong>${escapeHtml(pool.reused || 0)}</strong></p></div>
                 </div>
             </details>
-            <nav class="profile-tabs" role="tablist" aria-label="Secciones de perfil">
-                ${tabs.map((tab) => {
-                    const tabLabel = `${tab.label}: ${tab.badgeLabel}`;
-                    return `<button id="profile-tab-${escapeHtml(tab.id)}" class="profile-tab ${this.activeView === tab.id ? 'active' : ''}" data-profile-view="${escapeHtml(tab.id)}" role="tab" aria-selected="${this.activeView === tab.id}" aria-controls="profile-tab-panel" tabindex="${this.activeView === tab.id ? '0' : '-1'}" aria-label="${escapeHtml(tabLabel)}" title="${escapeHtml(tabLabel)}" data-tooltip="${escapeHtml(tabLabel)}" type="button"><i class="fas ${normalizeIconClass(tab.icon)}"></i><span>${escapeHtml(tab.label)}</span><b class="profile-tab-badge">${escapeHtml(tab.badge)}</b></button>`;
-                }).join('')}
-            </nav>
-            <div id="profile-tab-panel" class="profile-tab-panel profile-view-${escapeHtml(this.activeView)}" role="tabpanel" aria-labelledby="profile-tab-${escapeHtml(this.activeView)}">
+            ` : ''}
                 ${sections[this.activeView]}
             </div>
             <div class="release-notice"><strong>Super Hero TD v${escapeHtml(APP_VERSION)}</strong><span>${escapeHtml(FAN_PROJECT_NOTICE)}</span></div>
+            </section>
         `;
         this.bindListeners();
+        this.ui.renderPanelNavigation?.('profile');
     }
 
     getTotalStars(game, progression) {
@@ -234,6 +237,7 @@ export class ProfilePanel {
     switchProfileView(view = 'summary', focusTab = false) {
         const nextView = ['summary', 'contracts', 'codex', 'history'].includes(view) ? view : 'summary';
         this.render(this.title, nextView);
+        this.ui.panelContent.scrollTop = 0;
         if (!focusTab) return;
         this.ui.panelContent.querySelector?.(`.profile-tab[data-profile-view="${nextView}"]`)?.focus?.();
     }
@@ -241,7 +245,7 @@ export class ProfilePanel {
     bindProfileTabs() {
         const tabs = [...this.ui.panelContent.querySelectorAll('.profile-tab')];
         tabs.forEach((button, index) => {
-            button.addEventListener('click', () => this.switchProfileView(button.dataset.profileView || 'summary'));
+            button.addEventListener('click', () => this.switchProfileView(button.dataset.profileView || 'summary', true));
             button.addEventListener('keydown', (event) => {
                 const keyOffset = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[event.key];
                 const isEdgeKey = event.key === 'Home' || event.key === 'End';
@@ -260,7 +264,7 @@ export class ProfilePanel {
     bindListeners() {
         this.bindProfileTabs();
         this.ui.panelContent.querySelectorAll('.profile-open-tab').forEach((button) => {
-            button.addEventListener('click', () => this.switchProfileView(button.dataset.profileView || 'summary'));
+            button.addEventListener('click', () => this.switchProfileView(button.dataset.profileView || 'summary', true));
         });
         const button = this.ui.panelContent.querySelector('#copy-build-code');
         const replayButton = this.ui.panelContent.querySelector('#copy-replay-code');

@@ -119,6 +119,7 @@ try {
     await runInventorySmoke(page, failures);
     await runShopSmoke(page, failures);
     await runHeroDetailsSmoke(page, failures);
+    await runProfileSmoke(page, failures);
     if (pageErrors.length) failures.push(`page errors: ${pageErrors.join(' | ')}`);
     if (consoleErrors.length) failures.push(`console errors: ${consoleErrors.join(' | ')}`);
 
@@ -132,6 +133,34 @@ try {
 } finally {
     await browser?.close().catch(() => {});
     server.kill();
+}
+
+async function runProfileSmoke(page, failures) {
+    for (const width of [1366, 390]) {
+        await page.setViewportSize({ width, height: width === 390 ? 844 : 768 });
+        await page.locator('[data-panel="profile"]').click();
+        for (const view of ['summary', 'contracts', 'codex', 'history']) {
+            await page.locator(`.profile-tab[data-profile-view="${view}"]`).click();
+            const tabs = await page.locator('.profile-tabs').boundingBox();
+            if (!tabs || tabs.y + tabs.height > 430) failures.push(`pestanas del perfil demasiado abajo en ${width}px`);
+            if (await page.locator('.panel-modal-nav').count() !== 1) failures.push('perfil pierde navegacion al cambiar vista');
+            if (!(await page.locator('.profile-tab.active').evaluate((tab) => tab === document.activeElement))) failures.push('perfil pierde foco al cambiar vista');
+            if (view !== 'summary' && await page.locator('.profile-grid--primary').count()) failures.push('perfil repite resumen en otras vistas');
+            const overflow = await page.locator('.profile-panel').evaluate((panel) => panel.scrollWidth - panel.clientWidth);
+            if (overflow > 2) failures.push(`perfil ${view} desborda ${overflow}px en ${width}px`);
+            if (view === 'codex') {
+                const mastery = page.locator('.profile-disclosure').first();
+                if (await mastery.locator('.mastery-row').first().isVisible()) failures.push('maestrias no empiezan cerradas');
+                await mastery.locator('summary').click();
+                if (!(await mastery.locator('.mastery-row').first().isVisible())) failures.push('maestrias no se expanden');
+                await mastery.locator('summary').click();
+                if (await mastery.locator('.mastery-row').first().isVisible()) failures.push('maestrias no se contraen');
+            }
+        }
+        await page.locator('.profile-tab.active').press('Home');
+        if (await page.locator('.profile-tab.active').getAttribute('data-profile-view') !== 'summary') failures.push('perfil no navega con teclado');
+        await page.locator('#close-panel-btn').click();
+    }
 }
 
 async function runHeroDetailsSmoke(page, failures) {

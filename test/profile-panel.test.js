@@ -44,7 +44,7 @@ test('ProfilePanel muestra racha y emblemas de contrato', () => {
                 }
             ]
         }),
-        getSynergyChallengeSnapshot: () => ({ completed: 0, total: 0, challenges: [] }),
+        getSynergyChallengeSnapshot: () => ({ completed: 0, total: 10, challenges: Array.from({ length: 10 }, (_, index) => ({ title: `Reto ${index + 1}`, goal: 'Completar agrupacion', type: 'family', reward: 100 })) }),
         getCredits: () => 1200,
         getTotalStars: () => 25,
         getHeroMastery: (heroId) => ({ completed: heroId === 'hero_1' ? ['waves', 'kills'] : [] }),
@@ -54,8 +54,10 @@ test('ProfilePanel muestra racha y emblemas de contrato', () => {
         id: `hero_${index + 1}`,
         name: `Hero ${index + 1}`
     }));
+    const navigation = [];
     const ui = {
         panelContent,
+        renderPanelNavigation: (type) => navigation.push(type),
         showToast: () => {},
         game: {
             progression,
@@ -107,9 +109,12 @@ test('ProfilePanel muestra racha y emblemas de contrato', () => {
     assert.match(panelContent.innerHTML, /data-tooltip="Abrir codice descubierto"/);
     assert.doesNotMatch(panelContent.innerHTML, /Hero 8/);
     assert.doesNotMatch(panelContent.innerHTML, /Contratos semanales/);
+    assert.ok(panelContent.innerHTML.indexOf('class="profile-tabs"') < panelContent.innerHTML.indexOf('profile-grid--primary'));
 
     panel.render('Perfil', 'codex');
     assert.match(panelContent.innerHTML, /Hero 8/);
+    assert.doesNotMatch(panelContent.innerHTML, /profile-grid--primary/);
+    assert.match(panelContent.innerHTML, /<details class="profile-meta-section profile-disclosure"><summary>Maestria heroica/);
 
     panel.render('Perfil', 'contracts');
     assert.match(panelContent.innerHTML, /Contratos semanales/);
@@ -117,10 +122,13 @@ test('ProfilePanel muestra racha y emblemas de contrato', () => {
     assert.match(panelContent.innerHTML, /Emblemas de contrato/);
     assert.match(panelContent.innerHTML, /Operador semanal/);
     assert.match(panelContent.innerHTML, /Retos de agrupacion/);
+    assert.match(panelContent.innerHTML, /Reto 10/);
+    assert.doesNotMatch(panelContent.innerHTML, /profile-ops-details/);
 
     panel.render('Perfil', 'history');
     assert.match(panelContent.innerHTML, /id="copy-build-code" type="button" aria-label="Copiar codigo de build" title="Copiar codigo de build" data-tooltip="Copiar build al portapapeles"/);
     assert.match(panelContent.innerHTML, /id="copy-replay-code" type="button" aria-label="Copiar codigo de replay" title="Copiar codigo de replay" data-tooltip="Copiar replay al portapapeles"/);
+    assert.deepEqual(navigation, ['profile', 'profile', 'profile', 'profile']);
 });
 test('ProfilePanel navega tabs con teclado', () => {
     const calls = [];
