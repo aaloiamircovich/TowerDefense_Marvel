@@ -117,6 +117,7 @@ try {
     await runEnemyInspectionSmoke(page, failures);
     const mobileSummary = await runLayoutSmoke(page, failures, { label: 'mobile', width: 390, height: 844 });
     await runInventorySmoke(page, failures);
+    await runShopSmoke(page, failures);
     if (pageErrors.length) failures.push(`page errors: ${pageErrors.join(' | ')}`);
     if (consoleErrors.length) failures.push(`console errors: ${consoleErrors.join(' | ')}`);
 
@@ -130,6 +131,51 @@ try {
 } finally {
     await browser?.close().catch(() => {});
     server.kill();
+}
+
+async function runShopSmoke(page, failures) {
+    for (const width of [1366, 390]) {
+        await page.setViewportSize({ width, height: width === 390 ? 844 : 768 });
+        await page.evaluate(() => {
+            const game = window.__SUPER_HERO_TD_GAME__;
+            game.progression.state.ownedItemIds = [];
+            game.progression.state.equippedItems = {};
+            game.progression.state.shop.heroBoxCost = 500;
+            game.progression.state.shop.heroPity = 0;
+            game.progression.setCredits(1100, false);
+        });
+        await page.locator('[data-panel="shop"]').click();
+        const firstCard = await page.locator('.shop-card').first().boundingBox();
+        if (!firstCard || firstCard.y > 530) failures.push(`tienda oculta objetos en ${width}px`);
+        const firstBuy = page.locator('.btn-buy-item').first();
+        const itemId = await firstBuy.getAttribute('data-id');
+        const expected = await page.evaluate((id) => {
+            const game = window.__SUPER_HERO_TD_GAME__;
+            return { credits: 1100 - game.itemDatabase[id].price, next: game.shopSystem.getProgressiveQueue()[3].id };
+        }, itemId);
+        await firstBuy.click();
+        if (await page.locator('.panel-modal-nav').count() !== 1) failures.push('tienda pierde navegacion al comprar');
+        if (await page.locator('.shop-card').count() !== 3) failures.push('tienda no conserva tres ofertas');
+        if (!(await page.locator(`.btn-buy-item[data-id="${expected.next}"]`).count())) failures.push('compra no avanza la cola');
+        const actual = await page.evaluate((id) => {
+            const g = window.__SUPER_HERO_TD_GAME__;
+            return { credits: g.progression.getCredits(), owned: g.progression.hasItem(id) };
+        }, itemId);
+        if (!actual.owned || actual.credits !== expected.credits) failures.push('compra no aplica precio o propiedad');
+        await page.locator('#gacha-btn').click();
+        const staleOffers = await page.locator('.btn-buy-item').evaluateAll((buttons) => {
+            const g = window.__SUPER_HERO_TD_GAME__;
+            return buttons.some((b) => b.disabled !== (g.progression.getCredits() < g.itemDatabase[b.dataset.id].price));
+        });
+        if (staleOffers) failures.push('reclutar deja ofertas con saldo viejo');
+        if ((await page.getByTestId('toast').textContent()).includes('se unio a la plantilla')) failures.push('toast revela heroe antes de la animacion');
+        await page.locator('.gacha-skip-btn').click();
+        await page.locator('.gacha-reveal.is-final').waitFor();
+        if (!(await page.locator('[data-shop-readout="box-cost"]').textContent()).includes('560')) failures.push('caja no actualiza precio');
+        const overflow = await page.locator('.shop-panel').evaluate((panel) => panel.scrollWidth - panel.clientWidth);
+        if (overflow > 2) failures.push(`tienda desborda ${overflow}px en ${width}px`);
+        await page.locator('#close-panel-btn').click();
+    }
 }
 
 async function runInventorySmoke(page, failures) {

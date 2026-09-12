@@ -138,7 +138,7 @@ test('ShopPanel renderiza tienda progresiva y delega compra de objetos', () => {
     assert.match(panelContent.innerHTML, /\+\$60/);
     assert.match(panelContent.innerHTML, /shop-recruit-strip/);
     assert.match(panelContent.innerHTML, /shop-recruit-details/);
-    assert.match(panelContent.innerHTML, /Garantía y odds/);
+    assert.match(panelContent.innerHTML, /Probabilidades/);
     assert.match(panelContent.innerHTML, /Costo \+12% por apertura/);
     assert.match(panelContent.innerHTML, /Garantía de rareza 0 de 4/);
     assert.match(panelContent.innerHTML, /pity-pips/);
@@ -170,6 +170,7 @@ test('ShopPanel renderiza tienda progresiva y delega compra de objetos', () => {
 
     assert.ok(calls.includes('purchase:lentes_edith'));
     assert.ok(calls.includes('toast:success:Lentes E.D.I.T.H. comprado'));
+    assert.equal(calls.filter((call) => call === 'navigation:shop').length, 2);
 });
 
 test('ShopPanel escapa datos dinamicos de tienda y reveal de caja', () => {
@@ -247,7 +248,7 @@ test('ShopPanel muestra creditos faltantes sin esperar al error de compra', () =
     assert.match(panelContent.innerHTML, /data-affordability="locked"/);
     assert.match(panelContent.innerHTML, /shop-afford-meter locked/);
     assert.match(panelContent.innerHTML, /role="meter" aria-label="Progreso para caja: \$400 faltan" aria-valuemin="0" aria-valuemax="500" aria-valuenow="100"/);
-    assert.match(panelContent.innerHTML, /BLOQUEADO/);
+    assert.match(panelContent.innerHTML, /disabled>\$500<\/button>/);
     assert.match(panelContent.innerHTML, /aria-label="No alcanza para comprar Lentes E\.D\.I\.T\.H\.\. Faltan 400 creditos" title="No alcanza para comprar Lentes E\.D\.I\.T\.H\.\. Faltan 400 creditos" data-tooltip="No alcanza para comprar Lentes E\.D\.I\.T\.H\.\. Faltan 400 creditos" aria-disabled="true" disabled/);
 });
 
@@ -285,10 +286,14 @@ test('ShopPanel recluta heroe, actualiza costo y permite tienda de skins vacia',
     };
 
     const panel = new ShopPanel(ui);
-    panel.startGachaRevealAnimation = (_result, onComplete) => onComplete();
+    let completeReveal;
+    panel.startGachaRevealAnimation = (_result, onComplete) => { completeReveal = onComplete; };
 
     panel.render('Tienda');
     gachaButton.listeners.click();
+    assert.ok(!calls.some((call) => call.includes('toast:success:Spider-Man')));
+    completeReveal();
+    assert.ok(calls.includes('toast:success:Spider-Man se unio a la plantilla'));
 
     assert.match(resultNode.innerHTML, /gacha-reveal/);
     assert.match(resultNode.innerHTML, /Spider-Man/);
@@ -387,6 +392,7 @@ function createShopUi(panelContent, calls) {
     return {
         panelContent,
         nextWaveSummary: null,
+        renderPanelNavigation(type) { calls.push(`navigation:${type}`); },
         game: {
             activeTeam: [],
             heroDatabase: {

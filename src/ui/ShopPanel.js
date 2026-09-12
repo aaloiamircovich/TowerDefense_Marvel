@@ -152,6 +152,7 @@ export class ShopPanel {
                 : `No alcanza para reclutar. Faltan ${recruitMissing} creditos`;
 
         this.ui.panelContent.innerHTML = `
+            <section class="shop-panel">
             <section class="shop-command-header">
                 <div class="panel-title-row shop-title-row"><h2>${escapeHtml(title)}</h2><strong>${escapeHtml(fundsText)} creditos</strong></div>
                 <div class="shop-economy-readout">
@@ -159,14 +160,14 @@ export class ShopPanel {
                     <span><small>Caja</small><b data-shop-readout="box-cost">$${escapeHtml(recruitCost)}</b></span>
                     <span><small>Garantia</small><b data-shop-readout="pity">${escapeHtml(pityValue)}/4</b></span>
                     <span><small>Arsenal</small><b>${escapeHtml(rotation.length)}/3</b></span>
-                    <span><small>Siguiente</small><b>+$${escapeHtml(nextRecruitCost - recruitCost)}</b></span>
+                    <span><small>Siguiente</small><b data-shop-readout="next-increase">+$${escapeHtml(nextRecruitCost - recruitCost)}</b></span>
                 </div>
             </section>
             <section class="shop-recruit-strip">
                 <div class="shop-recruit-copy">
                     <span class="briefing-kicker">CAJA DE RECLUTAMIENTO</span>
                     <strong>Héroe aleatorio sin duplicados</strong>
-                    <small>La quinta apertura común garantiza Rare o superior. Costo +${Math.round((HERO_BOX_COST_GROWTH - 1) * 100)}% por apertura.</small>
+                    <small>Costo +${Math.round((HERO_BOX_COST_GROWTH - 1) * 100)}% por apertura.</small>
                 </div>
                 ${this.renderRecruitDetails(pityValue, odds)}
                 <div class="shop-buy-stack">
@@ -178,7 +179,6 @@ export class ShopPanel {
             <section class="shop-section-heading">
                 <div>
                     <h3>Arsenal progresivo</h3>
-                    <p class="empty-copy">Siempre ves los 3 objetos mas basicos disponibles; al comprar uno entra el siguiente.</p>
                 </div>
                 <div class="shop-heading-meta">
                     ${this.renderNextQueuePreview(nextQueueItem)}
@@ -188,12 +188,26 @@ export class ShopPanel {
             <div class="shop-grid shop-grid--compact">
                 ${rotation.map((slot) => this.renderItem(slot.item, slot.purchased)).join('') || '<p class="empty-copy">Arsenal completado.</p>'}
             </div>
+            </section>
         `;
 
         this.queryPanel('#gacha-btn')?.addEventListener('click', () => this.handleGacha());
+        this.bindItemPurchases();
+        this.ui.renderPanelNavigation?.('shop');
+    }
+
+    bindItemPurchases() {
         this.ui.panelContent.querySelectorAll('.btn-buy-item').forEach((button) => {
             button.addEventListener('click', () => this.buyItem(button.dataset.id));
         });
+    }
+
+    refreshItemOffers() {
+        const grid = this.queryPanel('.shop-grid');
+        if (!grid) return;
+        grid.innerHTML = this.ui.game.shopSystem.getRotation()
+            .map((slot) => this.renderItem(slot.item, slot.purchased)).join('') || '<p class="empty-copy">Arsenal completado.</p>';
+        this.bindItemPurchases();
     }
 
     renderRecruitDetails(pityValue = 0, odds = {}) {
@@ -210,10 +224,11 @@ export class ShopPanel {
         return `
             <details class="shop-recruit-details" ${odds?.guaranteedActive ? 'open' : ''}>
                 <summary>
-                    <span><i class="fas fa-satellite-dish"></i><b>Garantía y odds</b></span>
+                    <span><i class="fas fa-satellite-dish"></i><b>Probabilidades</b></span>
                     <small>${escapeHtml(stateLabel)} · ${escapeHtml(detailCount)}</small>
                 </summary>
                 <div class="shop-recruit-details-body">
+                    <p>Tras cuatro reclutas Common consecutivos, el siguiente sera Rare o superior si queda alguno disponible.</p>
                     ${this.renderPityTrack(value, odds?.guaranteedActive)}
                     ${this.renderHeroBoxOdds(odds)}
                 </div>
@@ -337,7 +352,7 @@ export class ShopPanel {
                 <div class="shop-card-footer">
                     ${this.renderAffordabilityMeter(affordability, `Progreso para comprar ${item.name}`)}
                     <small>${escapeHtml(purchased ? 'Adquirido' : canBuy ? `Copias: ${owned}` : `Faltan $${missing}`)}</small>
-                    <button class="btn-buy-item btn-primary ghost" type="button" data-id="${escapeHtml(item.id)}" aria-label="${escapeHtml(buyAriaLabel)}" title="${escapeHtml(buyAriaLabel)}" data-tooltip="${escapeHtml(buyAriaLabel)}" aria-disabled="${purchased || !canBuy}" ${purchased || !canBuy ? 'disabled' : ''}>${escapeHtml(purchased ? 'ADQUIRIDO' : canBuy ? `$${price}` : 'BLOQUEADO')}</button>
+                    <button class="btn-buy-item btn-primary ghost" type="button" data-id="${escapeHtml(item.id)}" aria-label="${escapeHtml(buyAriaLabel)}" title="${escapeHtml(buyAriaLabel)}" data-tooltip="${escapeHtml(buyAriaLabel)}" aria-disabled="${purchased || !canBuy}" ${purchased || !canBuy ? 'disabled' : ''}>${escapeHtml(purchased ? 'ADQUIRIDO' : `$${price}`)}</button>
                 </div>
             </div>
         `;
@@ -475,8 +490,8 @@ export class ShopPanel {
         if (button) button.disabled = true;
         if (resultNode) resultNode.innerHTML = this.renderGachaReveal(result);
 
-        this.ui.showToast(`${result.hero.name} se unio a la plantilla`, 'success');
         this.ui.renderHeroRoster(this.ui.game.activeTeam, (hero) => this.ui.game.inputManager.setPlacementMode(hero));
+        this.refreshItemOffers();
 
         const fundsLabel = this.ui.panelContent.querySelector('.panel-title-row strong');
         if (fundsLabel) {
@@ -496,9 +511,18 @@ export class ShopPanel {
         if (pityReadout) pityReadout.textContent = `${pityValue}/4`;
 
         this.startGachaRevealAnimation(result, () => {
+            if (this.queryPanel('#gacha-res') !== resultNode) return;
+            this.ui.showToast(`${result.hero.name} se unio a la plantilla`, 'success');
             const nextPool = Object.values(this.ui.game.heroDatabase || {})
                 .filter((hero) => hero.visual)
                 .filter((hero) => !this.ui.game.progression.state.unlockedHeroIds.includes(hero.id));
+            const details = this.queryPanel('.shop-recruit-details');
+            if (details) {
+                const wasOpen = details.open;
+                details.outerHTML = this.renderRecruitDetails(pityValue, buildHeroBoxOdds(nextPool, pityValue));
+                const updatedDetails = this.queryPanel('.shop-recruit-details');
+                if (updatedDetails && wasOpen) updatedDetails.open = true;
+            }
             if (button) {
                 const nextCost = getHeroBoxCost(this.ui.game.progression.state.shop);
                 const adminMode = Boolean(this.ui.game.progression.state.settings.adminMode);
@@ -524,6 +548,8 @@ export class ShopPanel {
                 button.setAttribute?.('aria-disabled', String(!canRecruit));
                 const boxReadout = this.ui.panelContent.querySelector('[data-shop-readout="box-cost"]');
                 if (boxReadout) boxReadout.textContent = nextPool.length === 0 ? 'Completa' : `$${nextCost}`;
+                const increaseReadout = this.queryPanel('[data-shop-readout="next-increase"]');
+                if (increaseReadout) increaseReadout.textContent = nextPool.length === 0 ? '-' : `+$${Math.ceil(nextCost * HERO_BOX_COST_GROWTH) - nextCost}`;
                 const recruitMeter = this.ui.panelContent.querySelector('.shop-buy-stack .shop-afford-meter');
                 if (recruitMeter) {
                     const meterState = nextPool.length === 0

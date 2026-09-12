@@ -12784,6 +12784,71 @@ button:disabled,
     }
 }
 
+.shop-panel .shop-command-header {
+    display: block;
+    padding: 0 0 10px;
+    border: 0;
+    border-bottom: 1px solid var(--border);
+    border-radius: 0;
+    background: none;
+}
+
+.shop-panel .shop-economy-readout {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 18px;
+    margin-top: 12px;
+}
+
+.shop-panel .shop-economy-readout span {
+    display: flex;
+    gap: 6px;
+    align-items: baseline;
+    min-height: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+}
+
+.shop-panel .shop-economy-readout span:first-child { display: none; }
+.shop-panel .shop-recruit-strip {
+    padding: 8px 0 12px;
+    border: 0;
+    border-bottom: 1px solid var(--border);
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+}
+
+.shop-panel .shop-recruit-details-body > p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.4;
+}
+
+.shop-panel .shop-section-heading { margin: 12px 0; }
+.shop-panel .shop-section-heading h3 { font-size: 16px; }
+.shop-panel .shop-card { min-width: 0; }
+.shop-panel .shop-item-heading { min-width: 0; }
+.shop-panel .shop-item-heading > div { min-width: 0; }
+.shop-panel .shop-item-heading h4 { overflow-wrap: anywhere; }
+.shop-panel .shop-card-details-body p { display: block; overflow: visible; }
+
+@media (max-width: 700px) {
+    #panel-overlay:has(.shop-panel) { padding: 8px; }
+    #panel-container:has(.shop-panel) { width: 100%; max-height: calc(100dvh - 16px); }
+    #panel-content:has(.shop-panel) { padding: 12px; max-height: calc(100dvh - 20px); }
+    .shop-panel .shop-title-row h2 { font-size: 20px; }
+    .shop-panel .shop-title-row strong { font-size: 12px; }
+    .shop-panel .shop-recruit-strip { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+    .shop-panel .shop-buy-stack { grid-row: 2; }
+    .shop-panel .shop-section-heading { display: block; }
+    .shop-panel .shop-heading-meta { justify-content: space-between; flex-wrap: wrap; margin-top: 6px; }
+    .shop-panel .shop-grid--compact { grid-template-columns: minmax(0, 1fr); }
+    .shop-panel .shop-card--compact { gap: 6px; padding: 10px; }
+}
+
 .inventory-panel .inventory-command-header--compact {
     display: block;
     margin: 0 0 12px;
