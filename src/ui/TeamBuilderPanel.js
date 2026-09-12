@@ -361,13 +361,12 @@ export class TeamBuilderPanel {
 
     renderPendingItemBanner(item) {
         return `
-            <div class="pending-item-banner">
+            <div class="pending-item-banner" tabindex="-1" aria-label="Equipar ${this.escapeAttribute(item.name)}">
                 <div class="pending-item-preview">
                     ${this.ui.renderSprite(item.icon, item.name)}
                     <div>
                         <span class="briefing-kicker">EQUIPAR OBJETO</span>
                         <strong>${this.escapeHtml(item.name)}</strong>
-                        <small>Elegí un héroe de la colección para asignarlo.</small>
                     </div>
                 </div>
                 <div class="pending-item-actions">
@@ -775,6 +774,10 @@ export class TeamBuilderPanel {
             if (!pendingItem) return;
             const hero = game.heroDatabase[button.dataset.id];
             const ok = game.progression.equipItem(hero.id, pendingItem.id);
+            if (!ok) {
+                this.ui.showToast('No se pudo equipar el objeto', 'warning');
+                return;
+            }
             this.ui.inventoryPanel.pendingEquipItemId = null;
             this.ui.renderHeroRoster(game.activeTeam, (entry) => game.inputManager.setPlacementMode(entry));
             this.ui.showToast(ok ? `${pendingItem.name} equipado en ${hero.name}` : 'No se pudo equipar el objeto', ok ? 'success' : 'warning');

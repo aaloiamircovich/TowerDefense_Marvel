@@ -116,6 +116,7 @@ try {
     const desktopSummary = await runLayoutSmoke(page, failures, { label: 'desktop', width: 1366, height: 768 });
     await runEnemyInspectionSmoke(page, failures);
     const mobileSummary = await runLayoutSmoke(page, failures, { label: 'mobile', width: 390, height: 844 });
+    await runInventorySmoke(page, failures);
     if (pageErrors.length) failures.push(`page errors: ${pageErrors.join(' | ')}`);
     if (consoleErrors.length) failures.push(`console errors: ${consoleErrors.join(' | ')}`);
 
@@ -129,6 +130,52 @@ try {
 } finally {
     await browser?.close().catch(() => {});
     server.kill();
+}
+
+async function runInventorySmoke(page, failures) {
+    await page.locator('[data-panel="inventory"]').click();
+    await page.locator('#inventory-empty-action').click();
+    if (!(await page.locator('.shop-card').count())) failures.push('inventario vacio no abre la tienda');
+    await page.locator('#close-panel-btn').click();
+
+    for (const width of [1366, 390]) {
+        await page.setViewportSize({ width, height: width === 390 ? 844 : 768 });
+        await page.evaluate(() => {
+            const game = window.__SUPER_HERO_TD_GAME__;
+            game.progression.state.ownedItemIds = Object.keys(game.itemDatabase).slice(0, 8);
+            game.progression.state.equippedItems = {};
+            game.uiManager.teamBuilderPanel.ownershipFilter = 'missing';
+            game.uiManager.teamBuilderPanel.rarityFilter = 'Secret';
+        });
+        await page.locator('[data-panel="inventory"]').click();
+        await page.locator('.inventory-advanced-filters > summary').click();
+        await page.locator('.inventory-rarity-filter[data-rarity="Common"]').click();
+        if (!(await page.locator('.inventory-advanced-filters').evaluate((element) => element.open))) {
+            failures.push('inventario pierde expansion de filtros');
+        }
+        if (await page.locator('.panel-modal-nav').count() !== 1) failures.push('inventario pierde navegacion al filtrar');
+        await page.locator('.inventory-rarity-filter[data-rarity="Secret"]').click();
+        await page.locator('#inventory-empty-action').click();
+        await page.locator('.inventory-advanced-filters > summary').click();
+        const card = page.locator('.inventory-object-card').first();
+        const cardBox = await card.boundingBox();
+        if (!cardBox || cardBox.y > 400) failures.push(`objetos demasiado abajo en ${width}px`);
+        const itemId = await card.getAttribute('data-item-id');
+        await card.click();
+        if (await page.locator('.collection-card').count() !== 1) failures.push('equipamiento conserva filtros que ocultan heroes obtenidos');
+        await page.locator('.btn-assign-item').click();
+        const equipped = await page.evaluate((id) => {
+            const game = window.__SUPER_HERO_TD_GAME__;
+            return Object.values(game.progression.state.equippedItems[game.activeTeam[0].id] || {}).includes(id);
+        }, itemId);
+        if (!equipped || !(await page.locator('.hero-item-corner').count())) failures.push('objeto no equipado o sin insignia en heroe');
+        await page.locator('#close-panel-btn').click();
+        await page.locator('[data-panel="inventory"]').click();
+        if (!(await page.locator(`[data-item-id="${itemId}"] .item-owner-corner`).count())) failures.push('objeto sin insignia del heroe');
+        const overflow = await page.locator('.inventory-panel').evaluate((panel) => panel.scrollWidth - panel.clientWidth);
+        if (overflow > 2) failures.push(`inventario desborda ${overflow}px en ${width}px`);
+        await page.locator('#close-panel-btn').click();
+    }
 }
 
 async function runEnemyInspectionSmoke(page, failures) {

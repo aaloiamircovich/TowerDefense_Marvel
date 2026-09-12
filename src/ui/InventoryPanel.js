@@ -191,6 +191,7 @@ export class InventoryPanel {
         this.statusFilter = 'all';
         this.rarityFilter = 'all';
         this.effectFilter = 'all';
+        this.advancedExpanded = false;
     }
 
     hasActiveInventoryFilters() {
@@ -233,6 +234,8 @@ export class InventoryPanel {
     }
 
     render(title = 'Inventario') {
+        const previousFilters = this.ui.panelContent.querySelector?.('.inventory-advanced-filters');
+        if (previousFilters) this.advancedExpanded = previousFilters.open;
         const game = this.ui.game;
         const allEntries = this.getInventoryEntries();
         const entries = allEntries.filter((entry) => this.passesInventoryFilters(entry));
@@ -250,16 +253,12 @@ export class InventoryPanel {
         const advancedSummary = advancedCount > 0 ? advancedLabels.join(' | ') : 'Sin filtros avanzados';
 
         this.ui.panelContent.innerHTML = `
+            <section class="inventory-panel">
             <div class="panel-title-row">
                 <h2>${escapeHtml(title)}</h2>
                 <strong><i class="fas fa-gem"></i> 1 objeto por heroe</strong>
             </div>
             <section class="inventory-command-header inventory-command-header--compact">
-                <div>
-                    <span class="briefing-kicker">ARSENAL HEROICO</span>
-                    <h3>Objetos</h3>
-                    <p>Click en un objeto para elegir a qué héroe equiparlo.</p>
-                </div>
                 <div class="inventory-command-stack">
                     <div class="inventory-loadout-readout">
                         <span><b>${allEntries.length}</b><small>tipos</small></span>
@@ -274,7 +273,7 @@ export class InventoryPanel {
                 </div>
             </section>
 
-            <section class="inventory-filters inventory-filters--compact" aria-label="Filtros de inventario">
+            <section class="inventory-filters inventory-filters--compact" aria-label="Filtros de inventario" ${allEntries.length ? '' : 'hidden'}>
                 <div class="inventory-status-filters" aria-label="Filtrar por estado">
                     ${statusOptions.map(([status, label]) => {
                         const active = this.statusFilter === status;
@@ -282,7 +281,7 @@ export class InventoryPanel {
                         return `<button class="status-filter ${active ? 'active' : ''}" type="button" data-status="${escapeHtml(status)}" aria-pressed="${active}" aria-label="${escapeHtml(filterLabel)}" title="${escapeHtml(filterLabel)}" data-tooltip="${escapeHtml(filterLabel)}">${escapeHtml(label)}</button>`;
                     }).join('')}
                 </div>
-                <details class="inventory-advanced-filters" data-advanced-count="${advancedCount}">
+                <details class="inventory-advanced-filters" data-advanced-count="${advancedCount}" ${this.advancedExpanded ? 'open' : ''}>
                     <summary><span><i class="fas fa-sliders"></i><b>Filtros avanzados</b></span><small>${escapeHtml(advancedSummary)}</small></summary>
                     <div class="inventory-advanced-filter-body">
                         <div class="inventory-filter-group">
@@ -333,11 +332,21 @@ export class InventoryPanel {
             </section>
 
             <div class="inventory-grid inventory-grid-v2">
-                ${entries.length ? entries.map((entry) => this.renderItemCard(entry)).join('') : '<p class="empty-copy">No hay objetos con estos filtros.</p>'}
+                ${entries.length ? entries.map((entry) => this.renderItemCard(entry)).join('') : this.renderEmptyState(allEntries.length > 0)}
             </div>
+            </section>
         `;
 
         this.bindListeners();
+        this.ui.renderPanelNavigation?.('inventory');
+    }
+
+    renderEmptyState(hasItems) {
+        return `<div class="inventory-empty-state">
+            <i class="fas ${hasItems ? 'fa-filter' : 'fa-box-open'}" aria-hidden="true"></i>
+            <h3>${hasItems ? 'Sin coincidencias' : 'Tu inventario esta vacio'}</h3>
+            <button id="inventory-empty-action" class="btn-primary" type="button" data-tooltip="${hasItems ? 'Limpiar filtros' : 'Ir a la tienda'}">${hasItems ? 'Limpiar filtros' : 'Ir a la tienda'}</button>
+        </div>`;
     }
 
     getInventoryEntries() {
@@ -429,7 +438,7 @@ export class InventoryPanel {
                 <div class="item-sprite-frame">${this.ui.renderSprite(item.icon, item.name)}</div>
                 <h3>${escapeHtml(item.name)}</h3>
                 <small>${escapeHtml(SLOT_LABELS[item.slot] || item.slot)} | <b class="rarity-badge ${rarityClass}">${escapeHtml(rarity)}</b> | Familia ${escapeHtml(getItemFamilyName(item))}</small>
-                <p>${escapeHtml(item.desc)}</p>
+                <p title="${escapeAttribute(item.desc)}">${escapeHtml(item.desc)}</p>
                 <div class="item-effect-pills" aria-label="Efectos principales">
                     ${effectPills.map((pill) => `<span class="${normalizeClassToken(pill.tone, 'neutral')}"><b>${escapeHtml(pill.label)}</b><small>${escapeHtml(pill.value)}</small></span>`).join('')}
                 </div>
@@ -465,6 +474,18 @@ export class InventoryPanel {
 
     bindListeners() {
         const game = this.ui.game;
+        const advanced = this.ui.panelContent.querySelector('.inventory-advanced-filters');
+        advanced?.addEventListener('toggle', () => {
+            if (advanced.isConnected) this.advancedExpanded = advanced.open;
+        });
+        this.ui.panelContent.querySelector('#inventory-empty-action')?.addEventListener('click', () => {
+            if (!this.getInventoryEntries().length) {
+                this.ui.openPanel('shop');
+                return;
+            }
+            this.resetInventoryFilters();
+            this.render();
+        });
         this.ui.panelContent.querySelectorAll('.tier-filter').forEach((button) => button.addEventListener('click', () => {
             this.tierFilter = Number(button.dataset.tier);
             this.render();
@@ -494,13 +515,17 @@ export class InventoryPanel {
             if (!item) return;
             this.pendingEquipItemId = item.id;
             this.ui.teamBuilderPanel.viewMode = 'heroes';
-            this.ui.teamBuilderPanel.searchQuery = '';
-            this.ui.showToast(`Elegí un héroe para ${item.name}`, 'info');
+            this.ui.teamBuilderPanel.resetHeroFilters();
+            this.ui.teamBuilderPanel.ownershipFilter = 'owned';
+            this.ui.teamBuilderPanel.teamDetailsExpanded = false;
             this.ui.renderPanel('collection');
+            this.ui.panelContent.scrollTop = 0;
+            this.ui.panelContent.querySelector('.pending-item-banner')?.focus({ preventScroll: true });
         };
         this.ui.panelContent.querySelectorAll('.inventory-object-card').forEach((card) => {
             card.addEventListener('click', () => chooseItem(card.dataset.itemId));
             card.addEventListener('keydown', (event) => {
+                if (event.target !== card) return;
                 if (!['Enter', ' '].includes(event.key)) return;
                 event.preventDefault();
                 chooseItem(card.dataset.itemId);

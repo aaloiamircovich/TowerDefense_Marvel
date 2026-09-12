@@ -12784,6 +12784,132 @@ button:disabled,
     }
 }
 
+.inventory-panel .inventory-command-header--compact {
+    display: block;
+    margin: 0 0 12px;
+    padding: 10px 0;
+    border: 0;
+    border-bottom: 1px solid var(--border);
+    border-radius: 0;
+    background: none;
+}
+
+.inventory-panel .inventory-command-stack {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.inventory-panel .inventory-loadout-readout span {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    min-height: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+}
+
+.inventory-panel .inventory-loadout-readout {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.inventory-panel .inventory-loadout-readout b {
+    font-size: 16px;
+}
+
+.inventory-panel .inventory-filters[hidden] { display: none; }
+
+.inventory-panel .inventory-filters--compact {
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+}
+
+.inventory-panel .inventory-grid-v2 {
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr));
+    gap: 12px;
+}
+
+.inventory-panel .inventory-object-card {
+    min-width: 0;
+    padding: 10px;
+    gap: 6px;
+    align-content: start;
+}
+
+.inventory-panel .item-sprite-frame {
+    width: 80px;
+    height: 80px;
+    margin-top: 6px;
+}
+
+.inventory-panel .item-sprite-frame img {
+    width: 64px;
+    height: 64px;
+}
+
+.inventory-panel .inventory-object-card > h3 {
+    min-height: 34px;
+    font-size: 13px;
+    overflow-wrap: anywhere;
+}
+
+.inventory-panel .inventory-object-card > p {
+    min-height: 28px;
+    -webkit-line-clamp: 2;
+}
+
+.inventory-panel .item-card-actions .btn-primary {
+    width: 100%;
+    min-width: 0;
+    padding: 7px;
+    font-size: 12px;
+}
+
+.inventory-empty-state {
+    grid-column: 1 / -1;
+    display: grid;
+    justify-items: center;
+    gap: 14px;
+    padding: 36px 12px;
+}
+
+.inventory-empty-state > i { font-size: 32px; color: var(--muted); }
+.inventory-empty-state h3 { margin: 0; font-size: 18px; }
+
+#collection-panel-heroes .pending-item-banner {
+    grid-template-columns: minmax(0, 1fr) auto;
+    padding: 8px;
+    gap: 8px;
+}
+
+#collection-panel-heroes .pending-item-preview { min-width: 0; }
+#collection-panel-heroes .pending-item-preview img { width: 40px; height: 40px; }
+#collection-panel-heroes .pending-item-actions { display: flex; gap: 6px; }
+#collection-panel-heroes .pending-item-actions .btn-primary { min-height: 32px; padding: 6px 8px; font-size: 11px; }
+
+@media (max-width: 700px) {
+    #panel-overlay:has(.inventory-panel) { padding: 8px; }
+    #panel-container:has(.inventory-panel) { width: 100%; max-height: calc(100dvh - 16px); }
+    #panel-content:has(.inventory-panel) { padding: 12px; max-height: calc(100dvh - 20px); }
+    .inventory-panel .panel-title-row h2 { font-size: 20px; }
+    .inventory-panel .panel-title-row > strong { font-size: 10px; }
+    .inventory-panel .inventory-grid-v2 { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+    .inventory-panel .inventory-filters--compact { grid-template-columns: minmax(0, 1fr) 38px; }
+    .inventory-panel .inventory-status-filters { grid-column: 1 / -1; }
+    .inventory-panel .inventory-filter-count { grid-column: 1 / -1; }
+    .inventory-panel .item-effect-pills { flex-wrap: wrap; }
+    .inventory-panel .inventory-object-card > small { overflow-wrap: anywhere; }
+    #collection-panel-heroes .pending-item-banner { grid-template-columns: minmax(0, 1fr); }
+    #collection-panel-heroes .pending-item-actions { justify-content: flex-end; }
+}
+
 /* Collection keeps the roster visible; team analysis is available on demand. */
 #collection-panel-heroes .team-builder-summary {
     gap: 8px;
