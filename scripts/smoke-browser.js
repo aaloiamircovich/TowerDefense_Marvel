@@ -27,11 +27,6 @@ try {
     });
     page.on('pageerror', (error) => pageErrors.push(error.message));
 
-    await page.addInitScript(() => {
-        localStorage.clear();
-        sessionStorage.clear();
-    });
-
     await page.goto(`http://127.0.0.1:${port}/`, { waitUntil: 'domcontentloaded' });
     await page.getByTestId('start-loading').waitFor({ state: 'hidden', timeout: 20000 });
 
@@ -122,6 +117,7 @@ try {
     await runProfileSmoke(page, failures);
     await runSettingsSmoke(page, failures);
     await runRadarCampaignSmoke(page, failures);
+    await runFinalJourneySmoke(page, failures);
     if (pageErrors.length) failures.push(`page errors: ${pageErrors.join(' | ')}`);
     if (consoleErrors.length) failures.push(`console errors: ${consoleErrors.join(' | ')}`);
 
@@ -135,6 +131,57 @@ try {
 } finally {
     await browser?.close().catch(() => {});
     server.kill();
+}
+
+async function runFinalJourneySmoke(page, failures) {
+    for (const width of [1366, 390]) {
+        await page.setViewportSize({ width, height: width === 390 ? 844 : 768 });
+        await page.locator('[data-panel="profile"]').click();
+        for (const type of ['radar', 'collection', 'inventory', 'shop', 'skins', 'map', 'settings', 'profile']) {
+            await page.locator(`[data-panel-nav="${type}"]`).click();
+            if (await page.locator('.panel-modal-nav').count() !== 1) failures.push(`navegacion duplicada o ausente en ${type}`);
+            if (await page.evaluate(() => window.__SUPER_HERO_TD_GAME__.isRunning)) failures.push(`${type} pierde pausa durante navegacion`);
+            const overflow = await page.locator('#panel-content').evaluate((el) => el.scrollWidth - el.clientWidth);
+            if (overflow > 2) failures.push(`${type} desborda ${overflow}px en recorrido ${width}px`);
+        }
+        await page.keyboard.press('Escape');
+        if (!(await page.locator('[data-panel="profile"]').evaluate((button) => button === document.activeElement))) failures.push('recorrido de menus no devuelve foco al cerrar');
+    }
+    await page.locator('[data-panel="settings"]').click();
+    await page.evaluate(() => window.__SUPER_HERO_TD_GAME__.progression.save());
+    const before = await page.evaluate(readPersistentSmokeState);
+    if (!before.unlockedHeroIds.length || !before.ownedItemIds.length || !Object.keys(before.heroUpgrades).length) failures.push('fixture de recarga sin heroes, objetos o mejoras');
+    await page.reload({ waitUntil: 'domcontentloaded' });
+    await page.getByTestId('start-loading').waitFor({ state: 'hidden', timeout: 20000 });
+    await page.locator('#start-play-btn').click();
+    if (!(await page.locator('#start-continue-btn').isEnabled())) throw new Error('Partida guardada no disponible tras recarga');
+    await page.locator('#start-continue-btn').click();
+    await page.locator('[data-testid^="hero-place-"]').first().waitFor({ state: 'visible' });
+    const after = await page.evaluate(readPersistentSmokeState);
+    for (const key of Object.keys(before)) {
+        if (JSON.stringify(before[key]) !== JSON.stringify(after[key])) failures.push(`recarga altera ${key}`);
+    }
+    await page.locator('[data-panel="settings"]').click();
+    if (await page.locator('input[data-setting="masterVolume"]').inputValue() !== '99' || !(await page.locator('#toggle-music-loop').isChecked())) failures.push('ajustes no refleja preferencias tras recarga');
+    await page.locator('#close-panel-btn').click();
+}
+
+function readPersistentSmokeState() {
+    const game = window.__SUPER_HERO_TD_GAME__;
+    const state = game.progression.state;
+    return {
+        credits: game.progression.getCredits(),
+        stars: game.progression.getTotalStars(),
+        unlockedHeroIds: state.unlockedHeroIds,
+        activeTeamIds: state.activeTeamIds,
+        ownedItemIds: state.ownedItemIds,
+        equippedItems: state.equippedItems,
+        heroUpgrades: state.heroUpgrades,
+        mapProgress: state.mapProgress,
+        lastLevelId: state.lastLevelId,
+        settings: state.settings,
+        shop: state.shop
+    };
 }
 
 async function runRadarCampaignSmoke(page, failures) {
