@@ -121,6 +121,7 @@ try {
     await runHeroDetailsSmoke(page, failures);
     await runProfileSmoke(page, failures);
     await runSettingsSmoke(page, failures);
+    await runRadarCampaignSmoke(page, failures);
     if (pageErrors.length) failures.push(`page errors: ${pageErrors.join(' | ')}`);
     if (consoleErrors.length) failures.push(`console errors: ${consoleErrors.join(' | ')}`);
 
@@ -134,6 +135,48 @@ try {
 } finally {
     await browser?.close().catch(() => {});
     server.kill();
+}
+
+async function runRadarCampaignSmoke(page, failures) {
+    for (const width of [1366, 390]) {
+        await page.setViewportSize({ width, height: width === 390 ? 844 : 768 });
+        await page.locator('[data-panel="radar"]').click();
+        const intel = page.locator('.radar-section-wave-intel');
+        if (!(await intel.evaluate((section) => section.open))) await intel.locator(':scope > summary').click();
+        const analysis = page.locator('.radar-analysis');
+        if (!(await analysis.evaluate((section) => section.open))) await analysis.locator(':scope > summary').click();
+        await page.evaluate(() => window.__SUPER_HERO_TD_GAME__.uiManager.renderRadarPanel());
+        if (!(await analysis.evaluate((section) => section.open))) failures.push('radar pierde evaluacion expandida');
+        if (await page.locator('.panel-modal-nav').count() !== 1) failures.push('radar pierde navegacion al refrescar');
+        await analysis.locator(':scope > summary').click();
+        if (await analysis.locator('.wave-threat').isVisible()) failures.push('evaluacion minimizada sigue visible');
+        if (await page.locator('.radar-panel').evaluate((el) => el.scrollWidth - el.clientWidth) > 2) failures.push(`radar desborda en ${width}px`);
+        await page.locator('[data-panel-nav="map"]').click();
+        const mapCard = page.locator('.map-card').first();
+        const cardBox = await mapCard.boundingBox();
+        if (!cardBox || cardBox.y > 400) failures.push(`mapas demasiado abajo en ${width}px`);
+        if (await mapCard.locator('.map-brief').isVisible()) failures.push('mapa muestra detalles minimizados');
+        await mapCard.locator('summary').click();
+        if (!(await mapCard.locator('.map-brief').isVisible())) failures.push('mapa no expande detalles');
+        await mapCard.locator('summary').click();
+        const locked = page.locator('.map-card[data-unlock-state="locked"] .btn-load-map');
+        if (!(await locked.count()) || await locked.evaluateAll((buttons) => buttons.some((button) => !button.disabled))) failures.push('mapas bloqueados permiten jugar');
+        if (await page.locator('.campaign-panel').evaluate((el) => el.scrollWidth - el.clientWidth) > 2) failures.push(`mapas desbordan en ${width}px`);
+        await mapCard.locator('.btn-load-map').click();
+        if (await page.locator('.panel-modal-nav').count() !== 1) failures.push('briefing pierde navegacion');
+        if (!(await page.locator('#deploy-mission').evaluate((button) => button === document.activeElement))) failures.push('briefing no enfoca despliegue');
+        if (await page.evaluate(() => window.__SUPER_HERO_TD_GAME__.isRunning)) failures.push('mapa no mantiene pausa');
+        await page.locator('.briefing-back').click();
+        if (!(await page.locator('.map-card.active .btn-load-map').evaluate((button) => button === document.activeElement))) failures.push('volver a mapas pierde foco');
+        await page.locator('.mode-section > summary').click();
+        await page.locator('.btn-start-mode').first().click();
+        if (await page.locator('.panel-modal-nav').count() !== 1) failures.push('modo pierde navegacion');
+        if (!(await page.locator('.briefing-back').isVisible())) failures.push('modo sin regreso a mapas');
+        await page.locator('#deploy-mode').click();
+        await page.locator('[data-panel="map"]').click();
+        await page.locator('.map-card .btn-load-map').first().click();
+        await page.locator('#deploy-mission').click();
+    }
 }
 
 async function runSettingsSmoke(page, failures) {

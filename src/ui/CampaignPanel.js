@@ -26,12 +26,12 @@ export class CampaignPanel {
         const summary = this.buildCampaignSummary();
         const nextProgress = clampPercent(summary.nextProgress);
         panelContent.innerHTML = `
+            <section class="campaign-panel">
             <h2>${escapeHtml(title)}</h2>
             <section class="campaign-ops-strip">
                 <div class="campaign-ops-copy">
-                    <span class="briefing-kicker">CAMPAÑA</span>
+                    <span class="briefing-kicker">Mapa actual</span>
                     <strong>${escapeHtml(summary.currentName)}</strong>
-                    <small>${escapeHtml(summary.nextUnlock)}</small>
                 </div>
                 <div class="campaign-unlock-track" role="meter" aria-label="Progreso hacia ${escapeHtml(summary.nextMapName)}: ${nextProgress}%" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${nextProgress}" style="--campaign-unlock-progress:${nextProgress}%">
                     <div>
@@ -45,8 +45,14 @@ export class CampaignPanel {
                     <span><b>${formatCampaignNumber(summary.totalStars)}</b><small>estrellas</small></span>
                     <span><b>${summary.unlockedCount}/${summary.totalMaps}</b><small>mapas</small></span>
                 </div>
-                ${this.renderCampaignMilestones(summary.milestones)}
             </section>
+            <div class="map-list">
+                ${game.levelsData.map((level, index) => this.renderMapCard(level, index)).join('')}
+            </div>
+            <details class="campaign-route">
+                <summary>Ruta de desbloqueo</summary>
+                ${this.renderCampaignMilestones(summary.milestones)}
+            </details>
             <details class="mode-section mode-section--collapsible">
                 <summary>
                     <span><strong>Modos de juego</strong><small>Progreso y rankings separados de campaña</small></span>
@@ -54,10 +60,7 @@ export class CampaignPanel {
                 </summary>
                 <div class="mode-list">${Object.values(GAME_MODES).map((mode) => this.renderModeCard(mode)).join('')}</div>
             </details>
-            <div class="section-heading campaign-map-heading"><strong>Operaciones</strong><span>Desbloqueo por estrellas de campaña</span></div>
-            <div class="map-list">
-                ${game.levelsData.map((level, index) => this.renderMapCard(level, index)).join('')}
-            </div>
+            </section>
         `;
 
         panelContent.querySelectorAll('.btn-start-mode').forEach((button) => button.addEventListener('click', () => {
@@ -79,6 +82,7 @@ export class CampaignPanel {
                 this.renderBriefing(level);
             });
         });
+        this.ui.renderPanelNavigation?.('map');
     }
 
     renderModeCard(mode) {
@@ -113,6 +117,7 @@ export class CampaignPanel {
             <button class="btn-primary" id="deploy-mode" type="button" aria-label="${escapeHtml(actionLabel)}" title="${escapeHtml(actionLabel)}" data-tooltip="${escapeHtml(actionLabel)}">DESPLEGAR EQUIPO</button>
         </section>`;
         document.getElementById('deploy-mode')?.addEventListener('click', () => this.ui.closePanel());
+        this.finishBriefing('deploy-mode');
     }
 
     renderMapCard(level, index) {
@@ -126,10 +131,11 @@ export class CampaignPanel {
         const totalStars = this.getTotalStars();
         const unlockProgress = this.buildMapUnlockProgress(index, totalStars);
         const actionLabel = unlocked ? `Jugar ${level.name}` : `Bloqueado. Requiere ${requirement} estrellas`;
+        const stateLabel = this.ui.game.currentLevel?.id === level.id ? 'Actual' : unlocked ? 'Disponible' : 'Bloqueado';
         return `<article class="map-card map-card--compact ${themeClass} ${this.ui.game.currentLevel?.id === level.id ? 'active' : ''} ${unlocked ? '' : 'locked'}" data-unlock-state="${unlocked ? 'unlocked' : 'locked'}" aria-label="${escapeHtml(`${level.name}. ${unlocked ? 'Desbloqueado' : `Bloqueado, requiere ${requirement} estrellas`}`)}">
             <div class="map-card-heading">
                 <div>
-                    <span class="map-index">Mapa ${mapNumber}</span>
+                    <span class="map-index">Mapa ${mapNumber} <span class="map-state">${stateLabel}</span></span>
                     <strong>${escapeHtml(level.name)}</strong>
                 </div>
                 <button class="btn-load-map btn-primary ghost" type="button" data-index="${index}" aria-label="${escapeHtml(actionLabel)}" title="${escapeHtml(actionLabel)}" data-tooltip="${escapeHtml(actionLabel)}" aria-disabled="${!unlocked}" ${unlocked ? '' : 'disabled'}>${unlocked ? 'Jugar' : 'Bloqueado'}</button>
@@ -139,13 +145,15 @@ export class CampaignPanel {
                 <span><small>Estrellas</small><b>${formatCampaignNumber(progress.stars || 0)}</b></span>
                 <span><small>Dificultad</small><b>${escapeHtml(level.difficulty)}</b></span>
             </div>
+            ${unlocked ? '' : this.renderMapUnlockProgress(unlockProgress)}
+            <details class="map-card-details">
+            <summary>Detalles y retos</summary>
             <p class="map-brief">${escapeHtml(level.theme?.brief || level.description)}</p>
             <div class="map-unlock-row map-card-meta">
                 <span class="map-difficulty ${fixedDifficulty}">${escapeHtml(mechanic.label || 'Defensa táctica')}</span>
-                <span class="${unlocked ? 'map-unlocked' : 'map-locked'}">${unlocked ? 'Desbloqueado' : `Requiere ${requirement} estrellas`}</span>
             </div>
-            ${unlocked ? '' : this.renderMapUnlockProgress(unlockProgress)}
             <div class="challenge-row map-challenge-row"><span class="${progress.challenges.includes('cazajefes') ? 'done' : ''}">Cazajefes</span>${(level.mission?.objectives || []).map((objective) => `<span class="${progress.missionObjectives.includes(objective.id) ? 'done' : ''}">${escapeHtml(objective.label)} · ${formatCampaignCurrency(objective.reward)}</span>`).join('')}</div>
+            </details>
         </article>`;
     }
 
@@ -211,6 +219,19 @@ export class CampaignPanel {
             </section>
         `;
         document.getElementById('deploy-mission')?.addEventListener('click', () => this.ui.closePanel());
+        this.finishBriefing('deploy-mission');
+    }
+
+    finishBriefing(actionId) {
+        this.ui.panelContent.querySelector?.('.mission-briefing')?.insertAdjacentHTML('afterbegin', '<button class="icon-command briefing-back" type="button" aria-label="Volver a mapas" title="Volver a mapas" data-tooltip="Volver a mapas"><i class="fas fa-arrow-left" aria-hidden="true"></i></button>');
+        this.ui.panelContent.querySelector?.('.briefing-back')?.addEventListener('click', () => {
+            this.render();
+            this.ui.panelContent.scrollTop = 0;
+            this.ui.panelContent.querySelector?.('.map-card.active .btn-load-map')?.focus?.({ preventScroll: true });
+        });
+        this.ui.renderPanelNavigation?.('map');
+        this.ui.panelContent.scrollTop = 0;
+        this.ui.panelContent.querySelector?.(`#${actionId}`)?.focus?.({ preventScroll: true });
     }
 
     getThemeClass(level) {

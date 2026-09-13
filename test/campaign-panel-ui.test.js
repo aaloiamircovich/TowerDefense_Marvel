@@ -57,6 +57,11 @@ test('CampaignPanel compacta operaciones y resume desbloqueos por estrellas', ()
     assert.match(ui.panelContent.innerHTML, /25\/50/);
     assert.match(ui.panelContent.innerHTML, /Mapa 01/);
     assert.match(ui.panelContent.innerHTML, /Acceso principal/);
+    assert.match(ui.panelContent.innerHTML, /map-state">Actual/);
+    assert.match(ui.panelContent.innerHTML, /map-state">Disponible/);
+    assert.match(ui.panelContent.innerHTML, /<details class="map-card-details">/);
+    assert.match(ui.panelContent.innerHTML, /<details class="campaign-route">/);
+    assert.ok(ui.panelContent.innerHTML.indexOf('class="map-list"') < ui.panelContent.innerHTML.indexOf('class="mode-section'));
     assert.doesNotMatch(ui.panelContent.innerHTML, /Sin daños|sin_danos/);
 
     assert.deepEqual(panel.buildMapUnlockProgress(2, 38), {
@@ -65,6 +70,32 @@ test('CampaignPanel compacta operaciones y resume desbloqueos por estrellas', ()
         remaining: 12,
         percent: 76
     });
+});
+
+test('CampaignPanel respeta umbrales y conserva navegacion en los briefings', () => {
+    for (const [stars, expected] of [[0, 1], [24, 1], [25, 2], [49, 2], [50, 3]]) {
+        const panel = new CampaignPanel(createCampaignUi({ stars }));
+        assert.equal(panel.buildCampaignSummary().unlockedCount, expected);
+    }
+    const previousDocument = globalThis.document;
+    globalThis.document = { getElementById: () => null };
+    const ui = createCampaignUi();
+    const navigation = [];
+    ui.renderPanelNavigation = (type) => navigation.push(type);
+    ui.game.modeSystem.getSnapshot = () => ({ best: 0, detail: 'Objetivo' });
+    try {
+        const panel = new CampaignPanel(ui);
+        panel.render();
+        ui.panelContent.scrollTop = 300;
+        panel.renderBriefing(levels[0]);
+        assert.equal(ui.panelContent.scrollTop, 0);
+        ui.panelContent.scrollTop = 300;
+        panel.renderModeBriefing({ id: 'survival', name: 'Supervivencia', description: '', icon: 'fa-shield' });
+        assert.equal(ui.panelContent.scrollTop, 0);
+        assert.deepEqual(navigation, ['map', 'map', 'map']);
+    } finally {
+        globalThis.document = previousDocument;
+    }
 });
 
 test('CampaignPanel escapa textos dinamicos de modos y mapas', () => {

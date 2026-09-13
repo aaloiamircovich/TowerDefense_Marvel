@@ -66,6 +66,9 @@ test('RadarPanel centraliza secciones tacticas y delega acciones interactivas', 
         renderHeroRoster(team) {
             calls.push(`roster:${team.length}`);
         },
+        renderPanelNavigation(type) {
+            calls.push(`nav:${type}`);
+        },
         calculateLevelCost(level, amount) {
             calls.push(`cost:${level}:${amount}`);
             return 320;
@@ -117,6 +120,36 @@ test('RadarPanel centraliza secciones tacticas y delega acciones interactivas', 
         assert.ok(calls.includes('branch:ambush'));
         assert.ok(calls.includes('roster:1'));
         assert.ok(calls.includes('upgrade:captain_america'));
+        assert.equal(calls.filter((call) => call === 'nav:radar').length, 4);
+    } finally {
+        globalThis.document = previousDocument;
+    }
+});
+
+test('RadarPanel conserva secciones y foco durante una accion de mejora', () => {
+    const previousDocument = globalThis.document;
+    const sources = createRadarSources();
+    const button = createButtonStub({ prepAction: 'upgrade', heroId: 'spider_man' });
+    let focused = false;
+    button.focus = () => { focused = true; };
+    const section = { className: 'radar-section radar-section-wave-intel active', open: false };
+    const analysis = { className: 'radar-analysis', open: true };
+    const root = createPanelContentStub({
+        'details.radar-section, details.radar-analysis': [section, analysis],
+        button: [button],
+        '[data-prep-action]': [button]
+    });
+    root.scrollTop = 180;
+    root.contains = () => true;
+    globalThis.document = { activeElement: button, getElementById: (id) => sources[id] };
+    try {
+        const panel = new RadarPanel({ panelContent: root, game: {}, quickUpgradeHeroById: () => true });
+        panel.render();
+        button.listeners.click();
+        assert.equal(section.open, false);
+        assert.equal(analysis.open, true);
+        assert.equal(root.scrollTop, 180);
+        assert.equal(focused, true);
     } finally {
         globalThis.document = previousDocument;
     }

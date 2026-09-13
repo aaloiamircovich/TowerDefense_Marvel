@@ -85,9 +85,20 @@ export class RadarPanel {
         this.ui = ui;
         this.buildWaveReportState = builders.buildWaveReportState;
         this.buildWaveReportActionState = builders.buildWaveReportActionState;
+        this.sectionStates = new Map();
     }
 
     render(title = 'Radar tactico') {
+        const root = this.ui.panelContent;
+        const scrollTop = root.scrollTop || 0;
+        const focused = root.contains?.(document.activeElement) ? document.activeElement : null;
+        const focusId = focused?.id;
+        const focusData = ['prepAction', 'branch'].find((key) => focused?.dataset?.[key]);
+        const focusValue = focusData ? focused.dataset[focusData] : null;
+        const heroId = focused?.dataset?.heroId;
+        root.querySelectorAll('details.radar-section, details.radar-analysis').forEach((section) => {
+            this.sectionStates.set(section.className, section.open);
+        });
         const wave = this.ui.game.waveManager?.currentWave || 1;
         const map = this.ui.game.currentLevel?.theme?.label || this.ui.game.currentLevel?.name || 'Mapa';
         const sectionModels = RADAR_SECTION_DEFINITIONS.map((definition) => this.buildSectionModel(definition));
@@ -106,9 +117,7 @@ export class RadarPanel {
             <section class="radar-panel">
                 <div class="radar-hero radar-hero-upgraded">
                     <div class="radar-hero-copy">
-                        <span class="briefing-kicker">CONSOLA DE RADAR</span>
                         <h2>${escapeHtml(title)}</h2>
-                        <p>Prioridades de combate, reportes de oleada y alertas activas del mapa.</p>
                     </div>
                     <div class="radar-readout">
                         <span><small>Mapa</small><b>${escapeHtml(map)}</b></span>
@@ -118,7 +127,6 @@ export class RadarPanel {
                 </div>
                 <div class="radar-priority-strip">
                     <span><small>Prioridad</small><b>${escapeHtml(priorityTitle)}</b></span>
-                    <span><small>Canales</small><b>${activeSections.length ? 'Lectura activa' : 'Sin alertas'}</b></span>
                 </div>
                 <div class="radar-grid">
                     ${sections}
@@ -127,7 +135,33 @@ export class RadarPanel {
                 </div>
             </section>
         `;
+        this.groupWaveAnalysis();
         this.bindActions();
+        root.querySelectorAll('details.radar-section, details.radar-analysis').forEach((section) => {
+            if (this.sectionStates.has(section.className)) section.open = this.sectionStates.get(section.className);
+        });
+        this.ui.renderPanelNavigation?.('radar');
+        if (focusId || focusData) {
+            [...root.querySelectorAll('button')].find((button) => focusId
+                ? button.id === focusId
+                : button.dataset?.[focusData] === focusValue && button.dataset?.heroId === heroId)
+                ?.focus?.({ preventScroll: true });
+        }
+        root.scrollTop = scrollTop;
+    }
+
+    groupWaveAnalysis() {
+        const body = this.ui.panelContent.querySelector('.radar-section-wave-intel .radar-section-body');
+        if (!body) return;
+        const entries = body.querySelectorAll('.wave-threat, .wave-readiness, .wave-status-legend, .wave-counter-coverage, .wave-timeline');
+        if (!entries.length) return;
+        const details = document.createElement('details');
+        details.className = 'radar-analysis';
+        const summary = document.createElement('summary');
+        summary.textContent = 'Evaluacion y cobertura';
+        details.append(summary);
+        entries.forEach((entry) => details.append(entry));
+        body.append(details);
     }
 
     focusEnemyDetails() {
