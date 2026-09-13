@@ -120,6 +120,7 @@ try {
     await runShopSmoke(page, failures);
     await runHeroDetailsSmoke(page, failures);
     await runProfileSmoke(page, failures);
+    await runSettingsSmoke(page, failures);
     if (pageErrors.length) failures.push(`page errors: ${pageErrors.join(' | ')}`);
     if (consoleErrors.length) failures.push(`console errors: ${consoleErrors.join(' | ')}`);
 
@@ -133,6 +134,46 @@ try {
 } finally {
     await browser?.close().catch(() => {});
     server.kill();
+}
+
+async function runSettingsSmoke(page, failures) {
+    for (const width of [1366, 390]) {
+        await page.setViewportSize({ width, height: width === 390 ? 844 : 768 });
+        await page.locator('[data-panel="settings"]').click();
+        await page.locator('#toggle-audio').setChecked(false);
+        const grid = page.locator('#toggle-grid');
+        await grid.click();
+        if (!(await grid.evaluate((input) => input === document.activeElement))) failures.push('ajuste pierde foco al alternar');
+        const interfaceGroup = page.locator('[data-settings-group="interface"]');
+        if (!(await interfaceGroup.evaluate((group) => group.open))) await interfaceGroup.locator('summary').click();
+        for (const locale of ['en', 'es']) {
+            await page.locator(`[data-locale="${locale}"]`).click();
+            if (!(await interfaceGroup.evaluate((group) => group.open))) failures.push('idioma cierra seccion de ajustes');
+            if (!(await page.locator(`[data-locale="${locale}"]`).evaluate((button) => button === document.activeElement))) failures.push('idioma pierde foco');
+            if (await page.locator('.panel-modal-nav').count() !== 1) failures.push('ajustes pierde navegacion');
+        }
+        for (const scale of ['compact', 'normal']) {
+            await page.locator(`[data-scale="${scale}"]`).click();
+            if (!(await interfaceGroup.evaluate((group) => group.open))) failures.push('tamano cierra seccion de ajustes');
+        }
+        const volume = page.locator('input[data-setting="masterVolume"]');
+        await volume.press('End');
+        await volume.press('ArrowLeft');
+        await page.locator('#toggle-music-loop').setChecked(true);
+        await page.locator('#music-track-select').selectOption({ index: 1 });
+        const saved = await page.evaluate(() => {
+            const state = JSON.parse(localStorage.getItem('tower-defense-marvel-save'));
+            return state.settings;
+        });
+        const track = await page.locator('#music-track-select').inputValue();
+        if (saved.masterVolume !== 0.99 || !saved.musicLoop || saved.musicTrackId !== track || saved.locale !== 'es' || saved.uiScale !== 'normal') failures.push('ajustes no persiste cambios');
+        const overflow = await page.locator('.settings-panel').evaluate((panel) => panel.scrollWidth - panel.clientWidth);
+        if (overflow > 2) failures.push(`ajustes desborda ${overflow}px en ${width}px`);
+        await page.locator('#close-panel-btn').click();
+        await page.locator('[data-panel="settings"]').click();
+        if (await volume.inputValue() !== '99' || !(await page.locator('#toggle-music-loop').isChecked())) failures.push('ajustes pierde valores al reabrir');
+        await page.locator('#close-panel-btn').click();
+    }
 }
 
 async function runProfileSmoke(page, failures) {

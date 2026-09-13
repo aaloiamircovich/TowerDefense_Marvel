@@ -227,9 +227,11 @@ test('SettingsPanel refresca el resumen al cambiar toggles', () => {
             upgrade: 'u'
         }
     };
+    const optionsReadout = { textContent: '' };
     const panelContent = {
         html: '',
         renders: 0,
+        querySelector: (selector) => selector === '[data-settings-summary="activeOptions"]' ? optionsReadout : null,
         set innerHTML(value) { this.html = value; this.renders += 1; },
         get innerHTML() { return this.html; },
         querySelectorAll(selector) {
@@ -257,9 +259,10 @@ test('SettingsPanel refresca el resumen al cambiar toggles', () => {
         listeners.change();
 
         assert.ok(calls.includes('setting:simplifiedUi:true'));
-        assert.ok(calls.includes('toast:info:Simplified interface: activado'));
+        assert.ok(calls.includes('toast:info:Simplified interface: Enabled'));
         assert.equal(settings.simplifiedUi, true);
-        assert.equal(panelContent.renders, 2);
+        assert.equal(panelContent.renders, 1);
+        assert.equal(optionsReadout.textContent, '5/10');
         assert.match(panelContent.html, /Active options/);
     } finally {
         globalThis.document = previousDocument;

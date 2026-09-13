@@ -35,6 +35,7 @@ const UI_SCALES = [['compact', 'compact'], ['normal', 'normal'], ['large', 'larg
 export class SettingsPanel {
     constructor(ui) {
         this.ui = ui;
+        this.groupStates = new Map();
     }
 
     buildSummaryState(settings, locale, t) {
@@ -77,6 +78,16 @@ export class SettingsPanel {
     }
 
     render(title = 'Ajustes') {
+        const root = this.ui.panelContent;
+        const scrollTop = root.scrollTop || 0;
+        const active = globalThis.document?.activeElement;
+        const focused = root.contains?.(active) ? active : null;
+        const focusId = focused?.id;
+        const focusData = ['scale', 'locale', 'keyBinding'].find((key) => focused?.dataset?.[key]);
+        const focusValue = focusData ? focused.dataset[focusData] : null;
+        root.querySelectorAll('details[data-settings-group]').forEach((details) => {
+            this.groupStates.set(details.dataset.settingsGroup, details.open);
+        });
         const settings = this.ui.game.progression.state.settings;
         const locale = settings.locale || 'es';
         const t = (key) => translate(key, locale);
@@ -88,11 +99,10 @@ export class SettingsPanel {
         const uiScaleLabel = escapeHtml(t(settings.uiScale || 'normal'));
 
         this.ui.panelContent.innerHTML = `
+            <section class="settings-panel">
             <section class="settings-command-header">
                 <div>
-                    <span class="briefing-kicker">${copy('settings')}</span>
                     <h2>${escapeHtml(panelTitle)}</h2>
-                    <p>${copy('settingsBrief')}</p>
                 </div>
                 <div class="settings-readout">
                     <span><small>${copy('activeOptions')}</small><b data-settings-summary="activeOptions">${escapeHtml(summary.enabledOptions)}/${escapeHtml(BOOLEAN_SETTINGS.length)}</b></span>
@@ -107,11 +117,12 @@ export class SettingsPanel {
                 <section class="settings-section settings-section--toggles">
                     <h3>${copy('gameplayAccessibility')}</h3>
                     <div class="settings-grid settings-grid--compact">
-                        ${BOOLEAN_SETTINGS.map(([key, id, labelKey]) => `<label class="setting-toggle"><input type="checkbox" id="${escapeHtml(id)}" data-setting="${escapeHtml(key)}" aria-label="${copy(labelKey)}" ${settings[key] ? 'checked' : ''}><span>${copy(labelKey)}</span></label>`).join('')}
+                        ${BOOLEAN_SETTINGS.filter(([key]) => key !== 'audio').map(([key, id, labelKey]) => `<label class="setting-toggle"><input type="checkbox" id="${escapeHtml(id)}" data-setting="${escapeHtml(key)}" aria-label="${copy(labelKey)}" ${settings[key] ? 'checked' : ''}><span>${copy(labelKey)}</span></label>`).join('')}
                     </div>
                 </section>
                 <section class="settings-section">
                     <h3>${copy('audioMix')}</h3>
+                    <label class="setting-toggle"><input type="checkbox" id="toggle-audio" data-setting="audio" aria-label="${copy('gameAudio')}" ${settings.audio ? 'checked' : ''}><span>${copy('gameAudio')}</span></label>
                     <div class="audio-mixer">
                         ${VOLUME_SETTINGS.map(([key, bus, labelKey]) => `<label class="volume-control"><span>${copy(labelKey)}</span><input type="range" min="0" max="100" value="${volumePercent(key)}" data-setting="${escapeHtml(key)}" data-bus="${escapeHtml(bus)}" aria-label="${copy(labelKey)}"><output>${volumePercent(key)}%</output></label>`).join('')}
                     </div>
@@ -173,8 +184,23 @@ export class SettingsPanel {
                     </div>
                 </details>
             </div>
+            </section>
         `;
         this.bind();
+        root.querySelectorAll('details[data-settings-group]').forEach((details) => {
+            const key = details.dataset.settingsGroup;
+            if (this.groupStates.has(key)) details.open = this.groupStates.get(key);
+            details.addEventListener('toggle', () => {
+                if (details.isConnected) this.groupStates.set(key, details.open);
+            });
+        });
+        this.ui.renderPanelNavigation?.('settings');
+        if (focusId || focusData) {
+            [...root.querySelectorAll('button, input, select')]
+                .find((node) => focusId ? node.id === focusId : node.dataset?.[focusData] === focusValue)
+                ?.focus?.({ preventScroll: true });
+        }
+        root.scrollTop = scrollTop;
     }
 
     bind() {
@@ -185,8 +211,8 @@ export class SettingsPanel {
             input.addEventListener('change', () => {
                 const label = input.nextElementSibling.textContent;
                 game.progression.updateSetting(input.dataset.setting, input.checked);
-                this.ui.showToast(`${label}: ${input.checked ? 'activado' : 'desactivado'}`, 'info');
-                this.render();
+                this.ui.showToast(`${label}: ${input.checked ? t('enabled') : t('disabled')}`, 'info');
+                this.refreshSummary();
             });
         });
         this.ui.panelContent.querySelectorAll('.volume-control input').forEach((input) => {
