@@ -314,7 +314,7 @@ export class Hero {
     recordKill(resourceManager, target = null) {
         this.combatStats.kills++;
         this.killCount++;
-        this.abilitySystem.onKill();
+        this.abilitySystem.onKill(target);
         resolveSignatureOnKill(this, target);
     }
 

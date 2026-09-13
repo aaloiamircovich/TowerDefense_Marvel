@@ -67,11 +67,11 @@ los valores finales se fijan despues de las pruebas de fase 1.
 | `valkyrie` | Valkyrie (Rare) | Sangrado casi nulo y critico propio. | Carga preparada desde terreno alto con retorno; bonificacion de terreno real y sin invadir colocaciones bloqueadas. |
 | `rogue` | Rogue (Epic) | Slow y marca; sin absorcion real. | Robar temporalmente un rasgo permitido al blanco para potenciarse; lista acotada, nunca robar pasivas de boss. |
 | `beast` | Beast (Epic) | Un rebote y slow. | Combo acrobatico entre dos enemigos distintos; pierde eficiencia contra blanco aislado, sin mover unidades aliadas. |
-| `x_23` | X-23 (Epic) | Bleed casi nulo y probabilidad critica; no supercritico propio. | Caza quirurgica: remate supercritico tras acumular cortes; capacidad limitada y distinta del frenesi de Wolverine. |
-| `drax` | Drax (Rare) | Sangrado casi nulo. | Duelo literal: dano sostenido creciente sobre el mismo elite, con techo y reinicio al cambiar; malo contra oleadas dispersas. |
+| `x_23` | X-23 (Epic) | F1/lote 1: sangrado 25% dano efectivo/s y probabilidad critica; no supercritico propio. | Caza quirurgica: remate supercritico tras acumular cortes; capacidad limitada y distinta del frenesi de Wolverine. |
+| `drax` | Drax (Rare) | F1/lote 1: sangrado 20% dano efectivo/s. | Duelo literal: dano sostenido creciente sobre el mismo elite, con techo y reinicio al cambiar; malo contra oleadas dispersas. |
 | `lady_sif` | Lady Sif (Rare) | Ruptura y critico propio incondicional. | Desafio asgardiano: critico condicionado al blindaje roto de un elite; sin buff externo ni ejecucion instantanea. |
 | `white_tiger` | White Tiger (Rare) | Marca y critico propio incondicional. | Amuleto: consume su marca para un salto de remate; enfriamiento, no duplicar marcas indefinidamente. |
-| `tigra` | Tigra (Rare) | Sangrado casi nulo y critico. | Garras contra enemigos controlados; bono condicionado a slow/web, sin generar por si sola todo el combo. |
+| `tigra` | Tigra (Rare) | F1/lote 1: sangrado 20% dano efectivo/s y critico. | Garras contra enemigos controlados; bono condicionado a slow/web, sin generar por si sola todo el combo. |
 | `angela` | Angela (Epic) | Penetracion, rebote y critico. | Caza de elite aislado: secuencia precisa y finalizador; pierde su ventaja cuando el blanco tiene escolta. |
 | `deadpool` | Deadpool (Epic) | Bleed plano bajo, critico y cadencia estatica. | Ciclo pistolas/katanas con fase de recarga previsible; caos visual contenido y ninguna curacion a base. |
 | `devil_dinosaur` | Devil Dinosaur (Rare) | Splash y stun probabilistico. | Pisada cargada y mordida al centro del grupo; exige acumulacion de enemigos y tiene recuperacion larga. |
@@ -139,7 +139,7 @@ los valores finales se fijan despues de las pruebas de fase 1.
 | `magneto` | Magneto (Mythic) | Splash, penetracion y ruptura. | Fragmentos al romper barreras alimentan una descarga magnetica; fuerte contra blindados, limitado contra blancos sin armadura. |
 | `adam_warlock` | Adam Warlock (Mythic) | Rebotes y modificadores propios; sin capullo de kit. | Capullo que carga fuera de accion y emerge con una descarga; sin resucitar heroes ni curar corazones. |
 | `ms_marvel` | Ms. Marvel (Rare) | Un rebote y penetracion. | Cadena fotonica que prepara un impacto final en el ultimo blanco; validar identidad del roster antes de cambiar nombre o arte. |
-| `sentry` | Sentry (Mythic) | Splash amplio y burn casi nulo. | Energia solar acumulada con descarga y agotamiento; The Void solo segun evolucion existente, no modo libre temprano. |
+| `sentry` | Sentry (Mythic) | F1/lote 1: splash amplio y quemadura 30% dano efectivo/s. | Energia solar acumulada con descarga y agotamiento; The Void solo segun evolucion existente, no modo libre temprano. |
 | `beta_ray_bill` | Beta Ray Bill (Legendary) | Tres rebotes y stun. | Stormbreaker regresa al objetivo inicial con un impacto concentrado; menos control de grupo que Thor. |
 | `yondu` | Yondu (Common) | Cruz y dos rebotes decrecientes. | Una flecha persistente recorre objetivos distintos y vuelve; limite de recorrido, no generar proyectiles ilimitados. |
 

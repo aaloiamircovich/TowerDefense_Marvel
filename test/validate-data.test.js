@@ -97,6 +97,17 @@ test('validate-data bloquea campos y valores invalidos en especiales de heroes',
     assert.match(result.stderr, /heroes\.loki\.special\.projectileColor debe ser color hex/);
 });
 
+test('validate-data valida unidades explicitas solo para dano persistente', () => {
+    const workspace = createDataWorkspace((data) => {
+        data.heroes.sentry.special.attackEffects[0].damageBasis = 'unknown';
+        data.heroes.x_23.special.attackEffects[0].type = 'slow';
+    });
+    const result = runValidator(workspace);
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr, /heroes\.sentry\.special\.attackEffects\.0\.damageBasis/);
+    assert.match(result.stderr, /heroes\.x_23\.special\.attackEffects\.0\.damageBasis/);
+});
+
 test('validate-data bloquea curacion de base en efectos de heroes', () => {
     const workspace = createDataWorkspace((data) => {
         data.heroes.loki.special.attackEffects = [{ type: 'heal', chance: 1, duration: 1, power: 1 }];

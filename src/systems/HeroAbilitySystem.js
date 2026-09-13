@@ -7,6 +7,7 @@ import { MutantKitSystem } from './MutantKitSystem.js';
 import { getLineEndpoint, getLineTargets } from '../utils/LineTargeting.js';
 import { applyCooldownReductions } from '../utils/AbilityModifiers.js';
 import { getScaledSupportAura } from '../utils/HeroLevel.js';
+import { getHeroRangePattern, isPointInRangePattern } from '../utils/RangePattern.js';
 
 const ACTIVE_COOLDOWNS = {
     thor: 11,
@@ -32,11 +33,11 @@ export class HeroAbilitySystem {
         this.mutantKit.update(dt, enemies, stats, projectiles);
         if (this.cooldownRemaining > 0) return;
 
-        const targets = this.getTargetsInRange(enemies, stats.range);
+        const targets = this.getTargetsInRange(enemies, stats.range, stats);
         if (this.hero.id === 'thor' && targets.length >= 2) {
             this.activateThorStorm(targets, stats);
         } else if (this.hero.id === 'doctor_strange' && targets.length >= 1) {
-            this.activateTemporalField(targets);
+            this.activateTemporalField(targets, stats);
         }
     }
 
@@ -49,15 +50,14 @@ export class HeroAbilitySystem {
 
         if (this.hero.id === 'iron_man') {
             this.hero.game.audio?.play('repulsor');
-            const arcInterval = this.hero.game.progression?.getHeroEvolution?.(this.hero.id)?.id === 'iron_man_extremis' ? 2 : 3;
-            if (this.attackCount % arcInterval === 0) this.activateArcOverload(target, stats);
+            if (this.attackCount % this.getArcInterval() === 0) this.activateArcOverload(target, stats);
         }
 
         if (this.hero.id === 'spiderman') this.hero.game.audio?.play('web');
         if (this.hero.id === 'capitan_america') this.hero.game.audio?.play('shield');
 
         if (this.hero.id === 'doctor_strange' && this.attackCount % 2 === 0) {
-            this.duplicateThroughPortal(target, projectileConfig, projectiles);
+            this.duplicateThroughPortal(target, projectileConfig, projectiles, stats);
         }
     }
 
@@ -116,7 +116,7 @@ export class HeroAbilitySystem {
         this.cooldownRemaining = this.getCooldown();
     }
 
-    activateTemporalField(targets) {
+    activateTemporalField(targets, stats = this.hero.getEffectiveStats()) {
         targets.forEach((enemy) => enemy.applyStatus?.({
             type: 'slow',
             duration: 3,
@@ -125,7 +125,7 @@ export class HeroAbilitySystem {
 
         this.hero.game.vfx?.addRing(this.hero.x, this.hero.y, {
             color: '#f5a623',
-            radius: this.hero.range,
+            radius: stats.range,
             duration: 0.65
         });
         this.hero.game.audio?.play('portal');
@@ -133,10 +133,11 @@ export class HeroAbilitySystem {
         this.cooldownRemaining = this.getCooldown();
     }
 
-    duplicateThroughPortal(primaryTarget, projectileConfig, projectiles) {
-        const candidates = this.getTargetsInRange(this.hero.game.enemies, this.hero.range)
-            .filter((enemy) => enemy !== primaryTarget);
-        const target = candidates[0] || primaryTarget;
+    duplicateThroughPortal(primaryTarget, projectileConfig, projectiles, stats = this.hero.getEffectiveStats()) {
+        const candidates = this.getTargetsInRange(this.hero.game.enemies, stats.range, stats);
+        const target = candidates.find((enemy) => enemy !== primaryTarget)
+            || candidates.find((enemy) => enemy === primaryTarget);
+        if (!target) return;
         const angle = Math.atan2(target.y - this.hero.y, target.x - this.hero.x);
         const portalX = this.hero.x + Math.cos(angle) * 26;
         const portalY = this.hero.y + Math.sin(angle) * 26;
@@ -154,9 +155,15 @@ export class HeroAbilitySystem {
         this.hero.recordAbility();
     }
 
-    getTargetsInRange(enemies, range) {
+    getTargetsInRange(enemies, range, stats = this.hero.getEffectiveStats()) {
+        const pattern = getHeroRangePattern(this.hero);
         return enemies.filter((enemy) => enemy.isAlive
-            && Math.hypot(enemy.x - this.hero.x, enemy.y - this.hero.y) <= range);
+            && (!enemy.stealth || stats.canSeeStealth)
+            && isPointInRangePattern(this.hero, enemy, range, pattern));
+    }
+
+    getArcInterval() {
+        return this.hero.game.progression?.getHeroEvolution?.(this.hero.id)?.id === 'iron_man_extremis' ? 2 : 3;
     }
 
     getCooldown() {
@@ -181,11 +188,13 @@ export class HeroAbilitySystem {
             return { label: `${labels[aura.type] || 'Aura'} +${Math.round((aura.power || 0) * 100)}%`, progress: null, ready: true };
         }
         if (this.hero.id === 'iron_man') {
-            const charge = this.attackCount % 3;
-            return { label: `Carga ARC ${charge}/3`, progress: charge / 3, ready: charge === 2 };
+            const interval = this.getArcInterval();
+            const charge = this.attackCount % interval;
+            return { label: `Carga ARC ${charge}/${interval}`, progress: charge / interval, ready: charge === interval - 1 };
         }
         if (this.hero.id === 'spiderman') {
-            return { label: '3 redes inmovilizan', progress: null, ready: true };
+            const threshold = this.hero.game.progression?.getHeroEvolution?.(this.hero.id)?.id === 'iron_spider' ? 2 : 3;
+            return { label: `${threshold} redes inmovilizan`, progress: null, ready: true };
         }
         if (ACTIVE_COOLDOWNS[this.hero.id]) {
             const cooldown = this.getCooldown();

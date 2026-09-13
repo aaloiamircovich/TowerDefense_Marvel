@@ -1,5 +1,6 @@
 import { EnemyBehaviorSystem } from '../systems/EnemyBehaviorSystem.js';
 import { SpriteAnimator } from '../rendering/SpriteAnimator.js';
+import { DOT_TYPES, resolveStatusDamage } from '../utils/StatusDamage.js';
 
 let enemyUid = 0;
 const imageCache = new Map();
@@ -180,7 +181,7 @@ export class Enemy {
             ? 0
             : Math.max(0, Math.min(baseArmor - armorBreak, 0.85)) * (1 - penetration);
         const resistance = Math.max(0, Math.min(0.8, this.resistances[options.attackerType] || 0));
-        const finalDamage = Math.max(1, amount * (1 - resistance) * (1 - armorRatio));
+        const finalDamage = Math.max(options.fractional ? 0 : 1, amount * (1 - resistance) * (1 - armorRatio));
         const barrierResult = this.behavior.absorbDamage(finalDamage);
         const appliedDamage = Math.min(this.hp, barrierResult.remaining);
         this.hp -= appliedDamage;
@@ -199,6 +200,8 @@ export class Enemy {
 
     applyStatus(effect, source = null) {
         const { type, duration = 1, power = 0.5 } = effect;
+        const dot = DOT_TYPES.has(type) ? resolveStatusDamage(effect, this, source) : null;
+        if (DOT_TYPES.has(type) && !dot) return false;
         if (type === 'slow' && this.config.immuneToSlow) return false;
         if (type === 'stun' && this.config.immuneToStun) return false;
         if (type === 'knockback') {
@@ -233,11 +236,18 @@ export class Enemy {
         const existing = this.debuffs.find((debuff) => debuff.type === type);
         if (existing) {
             existing.duration = Math.max(existing.duration, adjustedDuration);
-            existing.power = Math.max(existing.power, power);
-            if (type === 'poison') existing.stacks = Math.min(12, (existing.stacks || 1) + Number(effect.stacks || 1));
-            existing.source = source || existing.source;
+            if (dot) {
+                // Compare resolved DPS, not coefficients from different damage bases.
+                if (dot.damagePerSecond >= existing.damagePerSecond) {
+                    Object.assign(existing, dot, { power, source, explicitDamageBasis: Boolean(effect.damageBasis) });
+                }
+                if (type === 'poison') existing.stacks = Math.min(12, (existing.stacks || 1) + Number(effect.stacks || 1));
+            } else {
+                existing.power = Math.max(existing.power, power);
+                existing.source = source || existing.source;
+            }
         } else {
-            this.debuffs.push({ type, duration: adjustedDuration, power, source, tickTimer: 0, stacks: type === 'poison' ? Number(effect.stacks || 1) : 1 });
+            this.debuffs.push({ type, duration: adjustedDuration, power, source, tickTimer: 0, stacks: type === 'poison' ? Math.min(12, Math.max(1, Number(effect.stacks || 1))) : 1, ...dot, explicitDamageBasis: Boolean(effect.damageBasis) });
         }
         source?.recordStatusApplied?.({ ...effect, duration: adjustedDuration }, this);
         return true;
@@ -250,14 +260,12 @@ export class Enemy {
                 debuff.tickTimer += Math.min(dt, debuff.duration);
                 while (debuff.tickTimer >= interval && this.isAlive) {
                     const stackCount = Math.max(1, Number(debuff.stacks || 1));
-                    const damage = debuff.type === 'poison' || debuff.type === 'curse'
-                        ? this.maxHp * debuff.power * stackCount * interval
-                        : debuff.power * interval;
-                    const result = this.takeDamage(damage, { ignoreArmor: true });
+                    const damage = debuff.damagePerSecond * stackCount * interval;
+                    const result = this.takeDamage(damage, { ignoreArmor: true, fractional: debuff.explicitDamageBasis });
                     debuff.source?.recordDamage?.(result.damage);
                     if (result.killed && !this.killCredited) {
                         this.killCredited = true;
-                        debuff.source?.recordKill?.(debuff.source?.game?.resourceManager);
+                        debuff.source?.recordKill?.(debuff.source?.game?.resourceManager, this);
                     }
                     debuff.tickTimer -= interval;
                 }

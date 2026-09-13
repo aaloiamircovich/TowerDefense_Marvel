@@ -136,6 +136,58 @@ test('Doctor Strange duplica cada segundo proyectil', () => {
     assert.equal(hero.combatStats.abilityActivations, 1);
 });
 
+test('Strange respeta punto ciego, sigilo y alcance efectivo en campo y portales', () => {
+    const game = createGame();
+    const hero = new Hero({ ...createHeroConfig('doctor_strange'), rangePattern: 'ring' }, 0, 0, game);
+    const [inner, visible, hidden, buffRange] = [10, 110, 120, 230].map((x) => createEnemy(x, 0));
+    hidden.stealth = true;
+    game.enemies = [inner, visible, hidden, buffRange];
+    const stats = { ...hero.getEffectiveStats(), range: 250, canSeeStealth: false };
+    assert.deepEqual(hero.abilitySystem.getTargetsInRange(game.enemies, stats.range, stats), [visible, buffRange]);
+    hero.abilitySystem.update(0.1, game.enemies, stats, []);
+    assert.equal(inner.debuffs.length, 0);
+    assert.equal(hidden.debuffs.length, 0);
+    assert.equal(buffRange.debuffs[0].type, 'slow');
+    const projectiles = [];
+    hero.abilitySystem.duplicateThroughPortal(visible, { damage: 10, radius: 5 }, projectiles, stats);
+    assert.equal(projectiles[0].target, buffRange);
+    assert.ok(hero.abilitySystem.getTargetsInRange(game.enemies, stats.range, { ...stats, canSeeStealth: true }).includes(hidden));
+});
+
+test('portal no duplica hacia un objetivo muerto si no quedan candidatos validos', () => {
+    const game = createGame();
+    const hero = new Hero(createHeroConfig('doctor_strange'), 0, 0, game);
+    const target = createEnemy(100, 0);
+    target.isAlive = false;
+    game.enemies = [target];
+    const projectiles = [];
+    hero.abilitySystem.duplicateThroughPortal(target, { damage: 10, radius: 5 }, projectiles);
+    assert.equal(projectiles.length, 0);
+    assert.equal(hero.combatStats.abilityActivations, 0);
+});
+
+test('Thor no activa tormenta usando enemigos que no puede detectar', () => {
+    const game = createGame();
+    const hero = new Hero(createHeroConfig('thor'), 0, 0, game);
+    const targets = [createEnemy(50, 0), createEnemy(100, 0)];
+    targets[1].stealth = true;
+    hero.abilitySystem.update(0.1, targets, hero.getEffectiveStats(), []);
+    assert.equal(hero.combatStats.abilityActivations, 0);
+    assert.equal(targets[1].hp, 100);
+});
+
+test('indicadores ARC y redes siguen los umbrales de evolucion', () => {
+    const game = createGame();
+    const ironMan = new Hero(createHeroConfig('iron_man'), 0, 0, game);
+    const spider = new Hero(createHeroConfig('spiderman'), 0, 0, game);
+    ironMan.abilitySystem.attackCount = 1;
+    assert.equal(ironMan.abilitySystem.getDisplayState().label, 'Carga ARC 1/3');
+    assert.equal(spider.abilitySystem.getDisplayState().label, '3 redes inmovilizan');
+    game.progression = { getHeroEvolution: (id) => ({ id: id === 'iron_man' ? 'iron_man_extremis' : 'iron_spider' }) };
+    assert.deepEqual(ironMan.abilitySystem.getDisplayState(), { label: 'Carga ARC 1/2', progress: 0.5, ready: true });
+    assert.equal(spider.abilitySystem.getDisplayState().label, '2 redes inmovilizan');
+});
+
 function createHeroConfig(id) {
     return {
         id,

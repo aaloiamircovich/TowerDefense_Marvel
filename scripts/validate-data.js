@@ -6,6 +6,7 @@ import { buildBootstrapSource, readProjectData } from './lib/project-data.js';
 import { DEFAULT_EVOLUTION_LEVEL, EVOLUTION_CATALOG } from '../src/systems/EvolutionSystem.js';
 import { SYNERGY_DEFINITIONS } from '../src/systems/TeamSynergySystem.js';
 import { TERRAIN } from '../src/utils/TerrainRules.js';
+import { DAMAGE_BASES, DOT_TYPES } from '../src/utils/StatusDamage.js';
 
 const root = process.cwd();
 const strictAssets = process.argv.includes('--strict-assets');
@@ -36,7 +37,7 @@ function validateHeroes(heroes) {
     const allowedRangePatterns = new Set(['circle', 'cross', 'x', 'ring']);
     const allowedSpecialKeys = new Set(['statModifiers', 'attackEffects', 'projectileProfile', 'visualStyle', 'projectileColor', 'supportAura', 'economyOnHit']);
     const allowedSpecialStatKeys = new Set(['allowWater', 'cooldown', 'critChance', 'damagePct', 'detectStealth', 'fireRatePct', 'rangePct']);
-    const allowedAttackEffectKeys = new Set(['chance', 'duration', 'power', 'type']);
+    const allowedAttackEffectKeys = new Set(['chance', 'duration', 'power', 'type', 'damageBasis']);
     const allowedAttackEffectTypes = new Set(['armorBreak', 'bleed', 'burn', 'curse', 'mark', 'poison', 'slow', 'stun', 'web']);
     const allowedProjectileProfileKeys = new Set(['armorPenetration', 'chainCount', 'chainFactor', 'chainRange', 'splashFactor', 'splashRadius', 'propagationCount', 'propagationFactor', 'propagationRadius']);
     const allowedSupportAuraKeys = new Set(['detectStealth', 'label', 'power', 'range', 'type']);
@@ -182,6 +183,9 @@ function validateHeroSpecial(heroId, special, schema, hero = {}) {
             if (!isUnitNumber(effect.chance)) errors.push(`${label}.chance debe estar entre 0 y 1`);
             requireNonNegativeNumber(effect.duration, `${label}.duration`);
             requireNonNegativeNumber(effect.power, `${label}.power`);
+            if (effect.damageBasis !== undefined && (!DAMAGE_BASES.has(effect.damageBasis) || !DOT_TYPES.has(effect.type))) {
+                errors.push(`${label}.damageBasis debe ser flat, attackDamage o maxHealth y solo aplica a dano persistente`);
+            }
         });
     }
 

@@ -7346,7 +7346,7 @@
     "fireRate": 0.95,
     "canSeeStealth": true,
     "ability": "PODER DE UN MILLON DE SOLES",
-    "abilityDesc": "Energia cosmica extrema con salpicadura amplia y quemadura persistente contra jefes.",
+    "abilityDesc": "Salpicadura amplia. 45% de aplicar quemadura durante 4.2 s: 30% de su dano efectivo por segundo, sin acumularse.",
     "niche": "mythic de area y quemadura",
     "sprite": "assets/images/heroes/sentry/portrait.png",
     "visual": {
@@ -7409,7 +7409,8 @@
         {
           "type": "burn",
           "duration": 4.2,
-          "power": 0.006,
+          "power": 0.3,
+          "damageBasis": "attackDamage",
           "chance": 0.45
         }
       ],
@@ -7429,7 +7430,7 @@
     "fireRate": 1.35,
     "canSeeStealth": false,
     "ability": "GARRAS DE CLON",
-    "abilityDesc": "Corta rapido a enemigos cercanos, causando sangrado acumulado y golpes supercriticos.",
+    "abilityDesc": "42% de aplicar sangrado durante 3.8 s: 25% de su dano efectivo por segundo, sin acumularse. +8 puntos de probabilidad critica.",
     "niche": "duelista epica de sangrado",
     "sprite": "assets/images/heroes/x_23/portrait.png",
     "visual": {
@@ -7487,7 +7488,8 @@
         {
           "type": "bleed",
           "duration": 3.8,
-          "power": 0.005,
+          "power": 0.25,
+          "damageBasis": "attackDamage",
           "chance": 0.42
         }
       ],
@@ -7594,7 +7596,7 @@
     "fireRate": 1.15,
     "canSeeStealth": false,
     "ability": "CUCHILLAS LITERALES",
-    "abilityDesc": "Dano cercano confiable con sangrado contra objetivos de mucha vida.",
+    "abilityDesc": "34% de aplicar sangrado durante 3.2 s: 20% de su dano efectivo por segundo, sin acumularse.",
     "niche": "raro cuerpo a cuerpo anti jefe",
     "sprite": "assets/images/heroes/drax/portrait.png",
     "visual": {
@@ -7651,7 +7653,8 @@
         {
           "type": "bleed",
           "duration": 3.2,
-          "power": 0.0042,
+          "power": 0.2,
+          "damageBasis": "attackDamage",
           "chance": 0.34
         }
       ],
@@ -7997,7 +8000,7 @@
     "fireRate": 1.5,
     "canSeeStealth": false,
     "ability": "CAZADORA FELINA",
-    "abilityDesc": "Rasguños rapidos aplican sangrado y castigan grupos ya ralentizados.",
+    "abilityDesc": "36% de aplicar sangrado durante 3 s: 20% de su dano efectivo por segundo, sin acumularse. +5 puntos de probabilidad critica.",
     "niche": "rara bestial de sangrado",
     "sprite": "assets/images/heroes/tigra/portrait.png",
     "visual": {
@@ -8054,7 +8057,8 @@
         {
           "type": "bleed",
           "duration": 3,
-          "power": 0.004,
+          "power": 0.2,
+          "damageBasis": "attackDamage",
           "chance": 0.36
         }
       ],

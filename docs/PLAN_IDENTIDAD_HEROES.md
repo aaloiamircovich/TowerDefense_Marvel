@@ -1,7 +1,9 @@
 # Identidad y habilidades de los 105 heroes
 
 Fecha: 2026-09-13. Base revisada: commit 553ad63.
-Estado: AUDITORIA Y PROPUESTA. Ninguna mecanica o estadistica modificada.
+Estado: FASE 1 EN CURSO. Primer lote implementado; fases 2 a 10 pendientes.
+Los hallazgos de auditoria describen el baseline; ver avances abajo para las
+correcciones ya realizadas. No equivale a completar el rediseño de los 105 kits.
 
 Esta es una pasada nueva, independiente del cierre de interfaz. El objetivo
 no es subir el poder de todos: es que elegir, ubicar y combinar cada heroe
@@ -138,7 +140,7 @@ que reciben los aliados. Revisar ambos caminos antes de sumar mas efectos.
 
 ## Diez fases de implementacion
 
-Todas PENDIENTES. El orden de los lotes de heroes figura en la matriz anexa.
+Fase 1 EN CURSO; fases 2 a 10 PENDIENTES. El orden figura en la matriz anexa.
 Las fases 3 a 7 se entregan en lotes de hasta 4 heroes para poder probarlos;
 un lote no equivale a completar toda la fase. No prometer diez commits exactos.
 
@@ -182,6 +184,62 @@ un lote no equivale a completar toda la fase. No prometer diez commits exactos.
 ## Entregables y siguiente paso
 
 Ver MATRIZ_IDENTIDAD_HEROES.md para los 105 diagnosticos/propuestas individuales.
-Primera implementacion recomendada: fase 1, empezando por DoT y contratos de
-blancos. No mezclar esas correcciones con aumentar estadisticas de todo el roster.
-No se cambia la progresion actual hasta medir el baseline y aprobar el lote.
+Continuar fase 1 con el inventario de efectos restantes y las excepciones de
+objetivos secundarios. No mezclar esas correcciones con aumentar estadisticas
+de todo el roster. La progresion, rarezas, sprites y mapas no cambian en este lote.
+
+## Fase 1: primer lote, 2026-09-13
+
+Implementado:
+
+- Contrato damageBasis: flat = dano/segundo; attackDamage = fraccion del dano
+  efectivo del heroe/segundo; maxHealth = fraccion de salud maxima/segundo.
+  El valor se captura al aplicar el estado; un buff posterior no altera el
+  estado existente. Solo una nueva aplicacion puede sustituirlo.
+- Compatibilidad: burn/bleed sin unidad siguen planos; poison/curse sin unidad
+  siguen usando salud maxima. No convertir los objetos heredados en porcentajes.
+  El minimo de 1 por tick se conserva en estados heredados; los explicitos
+  admiten dano fraccionario y cero. Valores negativos/no finitos se rechazan.
+- Sentry: quemadura de 30% del dano efectivo/s. X-23: sangrado de 25%/s.
+  Drax y Tigra: sangrado de 20%/s. Conservan probabilidad, duracion, dano base,
+  rareza, alcance y cadencia. Las descripciones ahora indican el efecto real.
+- Quemadura/sangrado no acumulan: se conserva el DPS mas fuerte y su fuente;
+  repetir refresca la duracion maxima restante sin sumarla. Veneno conserva
+  su bolsa compartida de hasta 12 stacks y atribucion a la fuente mas fuerte.
+  No se afirma que sea todavia un sistema individual de stacks por atacante.
+- Las bajas por estado pasan la victima al heroe; Hero transmite esa victima
+  a los kits. Una aplicacion debil no se apropia del dano ni de la baja fuerte.
+- Campo temporal y portal de Strange respetan anillo, sigilo y alcance
+  efectivo. El portal no dispara sobre un muerto sin alternativas validas.
+  Tormenta de Thor cuenta solo objetivos que puede detectar.
+- Indicadores de Extremis e Iron Spider usan sus umbrales reales de 2 ataques
+  o redes; las versiones base conservan 3.
+
+Comparacion de DPS del estado activo, sin objetos, auras ni evolucion por objeto:
+
+| Heroe | Nivel 1 | Nivel 30 | Nivel 50 | Nivel 100 |
+| --- | ---: | ---: | ---: | ---: |
+| Sentry | 21.9 | 117.9 | 267.6 | 657 |
+| X-23 | 11.25 | 60.5 | 122.75 | 270 |
+| Drax | 9 | 48.4 | 92.4 | 189 |
+| Tigra | 6.2 | 33.4 | 63.6 | 130.2 |
+
+Antes, todos daban 2 de dano durante el primer segundo por el minimo de tick.
+La tabla NO es DPS total de combate ni incluye la probabilidad de aplicacion;
+no garantiza vencer un jefe. Se usa el escalado real de HeroLevel por rareza.
+Los ticks siguen siendo de 0.5 s (burn) y 0.4 s (bleed), con la resistencia de
+estado existente acortando duracion. No se cobra un tick parcial al expirar.
+Un jefe de 100.000 o 1.000.000 HP recibe el mismo dano de estos cuatro estados.
+
+Validacion focalizada: 37 pruebas aprobadas (habilidades, contratos DoT y datos).
+Incluye niveles 1/30/50/100, distintas salud maxima, snapshot, refresco, fuentes,
+unidades invalidas, fracciones, limite de veneno, sigilo y punto ciego.
+Validacion completa: npm run check aprobado, 734 tests, simulaciones de economia
+y campana, auditoria de datos/accesibilidad/lanzamiento y smoke de navegador
+desktop 1366x768 y mobile 390x844 sin overflow. Benchmark: tick p95 0.096 ms
+con 150 enemigos, 300 proyectiles y 120 VFX; no es una medicion de FPS en movil.
+
+Pendiente para cerrar fase 1: migrar otros DoT y objetos con evidencia, declarar
+alcance/sigilo de splash, rebotes, rayos y propagacion en los cuatro kits;
+probar contagio, autoria y acumulaciones en equipos mixtos. Los futuros kits
+de duelo, remate y energia solar de la matriz siguen siendo propuestas.
