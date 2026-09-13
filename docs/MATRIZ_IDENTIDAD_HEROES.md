@@ -43,7 +43,7 @@ los valores finales se fijan despues de las pruebas de fase 1.
 | `yelena_belova` | Yelena Belova (Common) | Veneno y marca probabilisticos. | Contrato de caza: concentra ataques sobre el marcado, transfiere marca tras baja; no inhibe soportes como Widow. |
 | `nebula` | Nebula (Rare) | Ruptura y deteccion, sin filtro tecnologico. | Adaptacion cibernetica: gana penetracion al insistir en el mismo blanco; bonificacion tecnologica explicita y limitada. |
 | `peni_parker` | Peni Parker (Rare) | Redes por impacto y deteccion; sin mina propia. | Una mina de red preparada en el camino dentro de cobertura; enfriamiento tras activarse y limpieza al retirarla. |
-| `howard_the_duck` | Howard the Duck (Common) | Burn casi nulo y slow independientes. | Bolsa de trucos sin repeticion inmediata: alternar dos utilidades legibles; azar acotado, sin picos de economia. |
+| `howard_the_duck` | Howard the Duck (Common) | F1/lote 2: quemadura 12% dano efectivo/s y slow independiente. | Bolsa de trucos sin repeticion inmediata: alternar dos utilidades legibles; azar acotado, sin picos de economia. |
 
 ## Fase 4: combate cercano y combos
 
@@ -58,13 +58,13 @@ los valores finales se fijan despues de las pruebas de fase 1.
 | `she_hulk` | She-Hulk (Rare) | Marcas, retroceso e impacto cada 3 ataques. | Objecion al elite delantero: golpe preparado que interrumpe una accion; resistencia de jefe y sin taunt ficticio. |
 | `iron_fist` | Iron Fist (Epic) | Critico propio y stun probabilistico. | Carga de chi para un golpe concentrado; descanso entre golpes y sin area masiva. |
 | `jessica_jones` | Jessica Jones (Common) | Golpe lento y chance de stun. | Ultima linea: impacto extra al enemigo mas avanzado; condicion explicita de progreso por ruta, no de coordenada de base. |
-| `elektra` | Elektra (Rare) | Critico propio y bleed plano pequeno. | Remate a un objetivo ya sangrante; consume preparacion, sin cadena de ejecuciones de bosses. |
+| `elektra` | Elektra (Rare) | F1/lote 2: sangrado 22% dano efectivo/s y critico propio. | Remate a un objetivo ya sangrante; consume preparacion, sin cadena de ejecuciones de bosses. |
 | `okoye` | Okoye (Common) | Critico propio y ruptura. | Estocadas sucesivas de guardia: ruptura fiable tras varios golpes; exige sostener la primera linea. |
 | `mbaku` | M'Baku (Common) | Ruptura probabilistica. | Desafio al tanque: derribar una porcion de barrera con golpe lento; inferior contra unidades blandas. |
 | `red_guardian` | Red Guardian (Common) | Un rebote y stun sin filtro elite. | Escudo de intercepcion: segundo impacto frena al avanzado; pocos blancos y stun con condicion visible. |
 | `korg` | Korg (Common) | Splash corto y slow. | Pisoton de proximidad al entrar varios enemigos; poco alcance y enfriamiento, no detector ni penetracion universal. |
 | `echo` | Echo (Common) | Marca y critico propio, no copia. | Aprendizaje de la presa: mejora su siguiente combo tras repetir patron; no copiar cualquier habilidad aliada ni buffs de equipo. |
-| `valkyrie` | Valkyrie (Rare) | Sangrado casi nulo y critico propio. | Carga preparada desde terreno alto con retorno; bonificacion de terreno real y sin invadir colocaciones bloqueadas. |
+| `valkyrie` | Valkyrie (Rare) | F1/lote 2: sangrado 20% dano efectivo/s y critico propio. | Carga preparada desde terreno alto con retorno; bonificacion de terreno real y sin invadir colocaciones bloqueadas. |
 | `rogue` | Rogue (Epic) | Slow y marca; sin absorcion real. | Robar temporalmente un rasgo permitido al blanco para potenciarse; lista acotada, nunca robar pasivas de boss. |
 | `beast` | Beast (Epic) | Un rebote y slow. | Combo acrobatico entre dos enemigos distintos; pierde eficiencia contra blanco aislado, sin mover unidades aliadas. |
 | `x_23` | X-23 (Epic) | F1/lote 1: sangrado 25% dano efectivo/s y probabilidad critica; no supercritico propio. | Caza quirurgica: remate supercritico tras acumular cortes; capacidad limitada y distinta del frenesi de Wolverine. |
@@ -73,7 +73,7 @@ los valores finales se fijan despues de las pruebas de fase 1.
 | `white_tiger` | White Tiger (Rare) | Marca y critico propio incondicional. | Amuleto: consume su marca para un salto de remate; enfriamiento, no duplicar marcas indefinidamente. |
 | `tigra` | Tigra (Rare) | F1/lote 1: sangrado 20% dano efectivo/s y critico. | Garras contra enemigos controlados; bono condicionado a slow/web, sin generar por si sola todo el combo. |
 | `angela` | Angela (Epic) | Penetracion, rebote y critico. | Caza de elite aislado: secuencia precisa y finalizador; pierde su ventaja cuando el blanco tiene escolta. |
-| `deadpool` | Deadpool (Epic) | Bleed plano bajo, critico y cadencia estatica. | Ciclo pistolas/katanas con fase de recarga previsible; caos visual contenido y ninguna curacion a base. |
+| `deadpool` | Deadpool (Epic) | F1/lote 2: sangrado 20% dano efectivo/s, critico y cadencia estatica. | Ciclo pistolas/katanas con fase de recarga previsible; caos visual contenido y ninguna curacion a base. |
 | `devil_dinosaur` | Devil Dinosaur (Rare) | Splash y stun probabilistico. | Pisada cargada y mordida al centro del grupo; exige acumulacion de enemigos y tiene recuperacion larga. |
 
 ## Fase 5: control, deteccion y terreno

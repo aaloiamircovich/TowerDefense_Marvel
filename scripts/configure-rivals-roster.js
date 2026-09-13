@@ -129,8 +129,8 @@ const rivalsHeroes = {
         visualStyle: 'energy',
         projectileColor: '#facc15'
     }),
-    deadpool: contract('Deadpool', 'Urbano', 'Legendary', 390, 34, 155, 2.05, false, 'MERCENARIO REGENERATIVO', 'Doble cadencia, sangrado y criticos caoticos para sostener oleadas densas.', 'DPS urbano con sangrado', ['Callejero', 'Espias', 'Rivales'], 'vanguard', [5, 3, 3, 3], {
-        attackEffects: [{ type: 'bleed', duration: 2.4, power: 0.2, chance: 0.38 }],
+    deadpool: contract('Deadpool', 'Urbano', 'Legendary', 390, 34, 155, 2.05, false, 'MERCENARIO REGENERATIVO', '38% de aplicar sangrado durante 2.4 s: 20% de su dano efectivo por segundo, sin acumularse. +6 puntos de probabilidad critica y +6% de cadencia.', 'DPS urbano con sangrado', ['Callejero', 'Espias', 'Rivales'], 'vanguard', [5, 3, 3, 3], {
+        attackEffects: [{ type: 'bleed', duration: 2.4, power: 0.2, damageBasis: 'attackDamage', chance: 0.38 }],
         statModifiers: { critChance: 6, fireRatePct: 0.06 },
         visualStyle: 'ballistic',
         projectileColor: '#ef4444'

@@ -1,7 +1,7 @@
 # Identidad y habilidades de los 105 heroes
 
 Fecha: 2026-09-13. Base revisada: commit 553ad63.
-Estado: FASE 1 EN CURSO. Primer lote implementado; fases 2 a 10 pendientes.
+Estado: FASE 1 EN CURSO. Dos lotes implementados; fases 2 a 10 pendientes.
 Los hallazgos de auditoria describen el baseline; ver avances abajo para las
 correcciones ya realizadas. No equivale a completar el rediseño de los 105 kits.
 
@@ -243,3 +243,40 @@ Pendiente para cerrar fase 1: migrar otros DoT y objetos con evidencia, declarar
 alcance/sigilo de splash, rebotes, rayos y propagacion en los cuatro kits;
 probar contagio, autoria y acumulaciones en equipos mixtos. Los futuros kits
 de duelo, remate y energia solar de la matriz siguen siendo propuestas.
+
+## Fase 1: segundo lote, 2026-09-13
+
+Corregidos Howard, Valkyrie, Elektra y Deadpool: sus quemaduras/sangrados usan
+damageBasis=attackDamage. Se conservan probabilidades, duraciones y stats base;
+los textos ya no prometen una prioridad, bono de terreno o doble cadencia
+inexistentes. Howard mantiene tiradas separadas de quemadura y slow.
+Se actualizaron tambien las definiciones generadoras de Elektra y Deadpool,
+sin ejecutar la reconstruccion del roster que cambiaria datos ajenos al lote.
+
+| Heroe | Poder DoT por segundo | Nivel 1 | Nivel 30 | Nivel 50 | Nivel 100 |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Howard | 12% dano efectivo | 2.4 | 12.84 | 23.04 | 43.2 |
+| Valkyrie | 20% dano efectivo | 8.4 | 45.2 | 86.2 | 176.4 |
+| Elektra | 22% dano efectivo | 5.06 | 27.06 | 51.92 | 106.26 |
+| Deadpool | 20% dano efectivo | 5.2 | 28 | 56.8 | 124.8 |
+
+Antes, los cuatro hacian 2 de dano en el primer segundo por el minimo de tick.
+Las cifras nuevas son DPS del estado activo, no dano total ni DPS esperado
+incluyendo probabilidad; sin objetos, buffs ni transformaciones por objeto.
+No se cambio la progresion ni se completaron sus futuras firmas individuales.
+
+Corregido el limite de probabilidad en CombatSystem: random debe ser menor
+que chance; chance=0 no puede activar un efecto con random=0.
+Explosion y rebote mantienen solo dano secundario; propagacion transmite
+estados con tiradas independientes, centrada en el impacto y sin recursion.
+El contrato detallado y sus excepciones estan en CONTRATO_IMPACTOS_SECUNDARIOS.md.
+
+Validacion focalizada: 39 pruebas aprobadas. Cuatro casos nuevos de escalado
+1/30/50/100 y nueve pruebas de impactos secundarios, sigilo/voladores incidentales,
+limites/radios, autoria, monedas, bajas, estados y probabilidad cero.
+Validacion completa: npm run check aprobado con 747 tests y simulaciones;
+benchmark p95 0.108 ms; smoke desktop/mobile sin overflow ni desvio de ruta.
+
+Pendiente de fase 1: Hela, los DoT planos mayores y los objetos termicos; reglas
+de rayos y ataques de los cuatro kits; acumulaciones mixtas y resistencias de
+jefes. Los ocho heroes corregidos hasta aqui no equivalen a ocho kits rediseñados.

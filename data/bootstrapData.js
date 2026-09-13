@@ -2931,7 +2931,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.9,
       "canSeeStealth": false,
       "ability": "SAI LETAL",
-      "abilityDesc": "Prioriza objetivos debiles con critico alto y sangrado tactico.",
+      "abilityDesc": "38% de aplicar sangrado durante 2.5 s: 22% de su dano efectivo por segundo, sin acumularse. +8 puntos de probabilidad critica.",
       "niche": "remate y criticos",
       "allowedTerrains": [
         1,
@@ -2957,6 +2957,7 @@ window.__MARVEL_TD_DATA__ = {
             "type": "bleed",
             "duration": 2.5,
             "power": 0.22,
+            "damageBasis": "attackDamage",
             "chance": 0.38
           }
         ],
@@ -5210,7 +5211,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 2.05,
       "canSeeStealth": false,
       "ability": "MERCENARIO REGENERATIVO",
-      "abilityDesc": "Doble cadencia, sangrado y criticos caoticos para sostener oleadas densas.",
+      "abilityDesc": "38% de aplicar sangrado durante 2.4 s: 20% de su dano efectivo por segundo, sin acumularse. +6 puntos de probabilidad critica y +6% de cadencia.",
       "niche": "DPS urbano con sangrado",
       "allowedTerrains": [
         1,
@@ -5233,6 +5234,7 @@ window.__MARVEL_TD_DATA__ = {
             "type": "bleed",
             "duration": 2.4,
             "power": 0.2,
+            "damageBasis": "attackDamage",
             "chance": 0.38
           }
         ],
@@ -6850,7 +6852,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.65,
       "canSeeStealth": false,
       "ability": "CAOS IMPROBABLE",
-      "abilityDesc": "Dispara artefactos absurdos que aplican quemadura ligera o ralentizacion aleatoria.",
+      "abilityDesc": "22% de quemar durante 2.5 s: 12% de su dano efectivo por segundo, sin acumularse. Por separado, 24% de ralentizar 18% durante 1.4 s.",
       "niche": "control barato irregular",
       "sprite": "assets/images/heroes/howard_the_duck/portrait.png",
       "visual": {
@@ -6908,7 +6910,8 @@ window.__MARVEL_TD_DATA__ = {
           {
             "type": "burn",
             "duration": 2.5,
-            "power": 0.003,
+            "power": 0.12,
+            "damageBasis": "attackDamage",
             "chance": 0.22
           },
           {
@@ -6934,7 +6937,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.05,
       "canSeeStealth": false,
       "ability": "CARGA DE VALKIRIA",
-      "abilityDesc": "Carga asgardiana que sangra objetivos duros y golpea mejor desde terreno alto.",
+      "abilityDesc": "32% de aplicar sangrado durante 3.4 s: 20% de su dano efectivo por segundo, sin acumularse. +5 puntos de probabilidad critica.",
       "niche": "rara anti jefe cuerpo a cuerpo",
       "sprite": "assets/images/heroes/valkyrie/portrait.png",
       "visual": {
@@ -6992,7 +6995,8 @@ window.__MARVEL_TD_DATA__ = {
           {
             "type": "bleed",
             "duration": 3.4,
-            "power": 0.004,
+            "power": 0.2,
+            "damageBasis": "attackDamage",
             "chance": 0.32
           }
         ],

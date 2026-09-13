@@ -153,7 +153,7 @@ export class CombatSystem {
 
     static applyEffects(effects = [], target, attacker) {
         effects.forEach((effect) => {
-            if (CombatSystem.random(attacker) > (effect.chance ?? 1)) return;
+            if (CombatSystem.random(attacker) >= (effect.chance ?? 1)) return;
             if (effect.type === 'heal') return;
 
             if (target.applyStatus) {
