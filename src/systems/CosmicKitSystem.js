@@ -46,7 +46,7 @@ export class CosmicKitSystem {
     onAttack(target, stats, projectileConfig, projectiles) {
         this.attackCount++;
         if (this.hero.id === 'captain_marvel') this.resource = Math.min(100, this.resource + 12);
-        if (this.hero.id === 'star_lord') this.fireSecondBlaster(target, projectileConfig, projectiles);
+        if (this.hero.id === 'star_lord') this.fireSecondBlaster(target, projectileConfig, projectiles, stats);
         if (this.hero.id === 'gamora') this.activateGamoraCombo(target, stats);
         if (this.hero.id === 'silver_surfer' && this.attackCount % 2 === 0) this.fireCosmicTrajectory(target, stats);
     }
@@ -73,7 +73,7 @@ export class CosmicKitSystem {
 
     getAttackEffects() {
         if (this.hero.id === 'star_lord' && this.mode === 'cryo') return [{ type: 'slow', duration: 2, power: 0.42, chance: 1 }];
-        if (this.hero.id === 'star_lord' && this.mode === 'incendiary') return [{ type: 'burn', duration: 3, power: 7, chance: 1 }];
+        if (this.hero.id === 'star_lord' && this.mode === 'incendiary') return [{ type: 'burn', duration: 3, power: 0.23, damageBasis: 'attackDamage', chance: 1 }];
         if (this.hero.id === 'silver_surfer' && this.mode === 'control') return [{ type: 'slow', duration: 1.8, power: 0.36, chance: 1 }];
         if (this.hero.id === 'silver_surfer' && this.mode === 'support') return [{ type: 'mark', duration: 2.8, power: 0.12, chance: 1 }];
         return [];
@@ -182,9 +182,9 @@ export class CosmicKitSystem {
         this.hero.recordAbility();
     }
 
-    fireSecondBlaster(primaryTarget, projectileConfig, projectiles) {
-        const target = (this.hero.game.enemies || [])
-            .filter((enemy) => enemy.isAlive && enemy !== primaryTarget && distance(enemy, this.hero) <= this.hero.range)
+    fireSecondBlaster(primaryTarget, projectileConfig, projectiles, stats = this.hero.getEffectiveStats()) {
+        const target = this.hero.abilitySystem.getTargetsInRange(this.hero.game.enemies || [], stats.range, stats)
+            .filter((enemy) => enemy !== primaryTarget)
             .sort((a, b) => b.distanceTravelled - a.distanceTravelled)[0];
         if (!target) return;
         const config = { ...projectileConfig, damage: projectileConfig.damage * 0.68 * this.getPowerScale(), radius: 4 };

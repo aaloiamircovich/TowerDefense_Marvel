@@ -108,10 +108,10 @@ export class StreetKitSystem {
         }
         if (this.hero.id === 'blade') {
             const elite = target?.isBoss || (target?.threat || 0) >= 4;
-            return [{ type: 'bleed', duration: elite ? 5 : 3.6, power: elite ? 10 : 7, chance: 1 }];
+            return [{ type: 'bleed', duration: elite ? 5 : 3.6, power: elite ? 0.3 : 0.21, damageBasis: 'attackDamage', chance: 1 }];
         }
         if (this.hero.id === 'ghost_rider') {
-            return [{ type: 'burn', duration: 4, power: 9, chance: 1 }];
+            return [{ type: 'burn', duration: 4, power: 0.135, damageBasis: 'attackDamage', chance: 1 }];
         }
         if (this.hero.id === 'luke_cage') {
             return [{ type: 'armorBreak', duration: 3.5, power: 0.28, chance: 0.7 }];

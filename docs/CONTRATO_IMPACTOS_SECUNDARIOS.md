@@ -46,6 +46,10 @@ que una tirada independiente tenga exito en otro destinatario.
 
 ## Pendiente
 
+Actualizacion lote 4: el segundo blaster de Star-Lord es un segundo ataque
+dirigido, no dano incidental. Excluye al blanco principal y respeta deteccion,
+alcance efectivo y patron geometrico. Mantiene la municion del disparo original.
+
 Declarar y probar las excepciones de rayos, ataques de los cuatro KitSystem,
 objetos y evoluciones. Evaluar si algun heroe necesita transmitir estados con
 su explosion/rebote como habilidad exclusiva; no activarlo globalmente. Los

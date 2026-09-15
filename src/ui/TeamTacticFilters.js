@@ -20,6 +20,8 @@ export const HERO_TACTIC_FILTERS = [
 ];
 
 const CONTROL_EFFECT_TYPES = new Set(['slow', 'stun', 'freeze', 'web', 'knockback']);
+// These heroes apply persistent damage from kits rather than hero data.
+const KIT_DOT_HERO_IDS = new Set(['blade', 'ghost_rider', 'star_lord']);
 const HERO_TACTIC_BADGE_IDS = ['aura', 'economy', 'detection', 'antiarmor', 'control', 'dot', 'area', 'boss', 'crit', 'support', 'dps', 'frontline', 'water', 'mountain'];
 const HERO_TACTIC_BADGE_LIMIT = 3;
 const FRONTLINE_TRAITS = ['asalto', 'cadena', 'cadenas', 'cercan', 'corta', 'corto', 'cuerpo a cuerpo', 'duelista', 'frente', 'golpe', 'tanque', 'vanguardia'];
@@ -118,7 +120,8 @@ export function heroMatchesTacticId(hero = {}, filter = 'all') {
             || traitText.includes('encadena'));
     }
     if (filter === 'dot') {
-        return Boolean(effects.some((effect) => ['burn', 'poison', 'curse', 'bleed'].includes(effect.type))
+        return Boolean(KIT_DOT_HERO_IDS.has(hero.id)
+            || effects.some((effect) => ['burn', 'poison', 'curse', 'bleed'].includes(effect.type))
             || traitText.includes('quemadura')
             || traitText.includes('veneno')
             || traitText.includes('toxina')

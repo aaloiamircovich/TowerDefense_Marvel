@@ -940,7 +940,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.6,
       "canSeeStealth": false,
       "ability": "BLÁSTERS ELEMENTALES",
-      "abilityDesc": "Dispara a dos blancos y alterna plasma perforante, munición criogénica o cargas incendiarias.",
+      "abilityDesc": "Dispara a dos blancos. Alterna plasma perforante, municion criogenica o fuego: 23% de su dano efectivo por segundo durante 3 s, sin acumularse.",
       "sprite": "assets/images/heroes/star_lord/portrait.png",
       "allowedTerrains": [
         1
@@ -1924,7 +1924,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.8,
       "canSeeStealth": true,
       "ability": "CAZADOR DAYWALKER",
-      "abilityDesc": "Aplica sangrado reforzado a elites. Sus armas preparadas aplican toxina anti monstruos acumulable.",
+      "abilityDesc": "Cada impacto sangra: 21% de su dano efectivo por segundo durante 3.6 s; contra jefes o amenaza 4+, 30% durante 5 s. No acumula sangrados. Conserva toxina acumulable.",
       "sprite": "assets/images/heroes/blade/portrait.png",
       "allowedTerrains": [
         1,
@@ -2001,7 +2001,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 0.95,
       "canSeeStealth": true,
       "ability": "ESPIRITU DE VENGANZA",
-      "abilityDesc": "Sus cadenas arrastran enemigos por la ruta y la Mirada de Penitencia castiga la vida perdida de los jefes. Sus cadenas tambien dejan fuego infernal persistente.",
+      "abilityDesc": "Cada impacto quema durante 4 s: 13.5% de su dano efectivo por segundo, sin acumularse. Sus cadenas arrastran por la ruta y Penitencia castiga la vida perdida de jefes.",
       "sprite": "assets/images/heroes/ghost_rider/portrait.png",
       "allowedTerrains": [
         1,
@@ -2055,14 +2055,7 @@ window.__MARVEL_TD_DATA__ = {
       },
       "terrainRole": "ground",
       "special": {
-        "attackEffects": [
-          {
-            "type": "burn",
-            "duration": 4.2,
-            "power": 9,
-            "chance": 0.4
-          }
-        ],
+        "attackEffects": [],
         "statModifiers": {}
       },
       "evolutionId": "ghost_rider_evolution"
@@ -4188,7 +4181,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 0.85,
       "canSeeStealth": false,
       "ability": "ESPINAS DE HEL",
-      "abilityDesc": "Lanzas necroticas perforan armadura y aplican sangrado persistente a jefes y tanques. Sus lanzas necroticas agregan maldicion contra jefes y tanques.",
+      "abilityDesc": "Perfora armadura y rebota. 42% de sangrar durante 3.2 s: 24% de su dano efectivo por segundo, sin acumularse. 48% de maldecir: 0.42% de salud maxima/s durante 4.5 s.",
       "niche": "artilleria mistica anti jefe",
       "allowedTerrains": [
         0,
@@ -4218,6 +4211,7 @@ window.__MARVEL_TD_DATA__ = {
             "type": "bleed",
             "duration": 3.2,
             "power": 0.24,
+            "damageBasis": "attackDamage",
             "chance": 0.42
           },
           {

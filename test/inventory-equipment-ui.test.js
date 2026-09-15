@@ -651,6 +651,13 @@ test('coleccion filtra heroes por terreno y respuesta tactica', () => {
     assert.equal(panel.tacticalFilter, 'all');
 });
 
+test('coleccion reconoce DoT de kits sin depender de la descripcion', () => {
+    for (const id of ['blade', 'ghost_rider', 'star_lord']) {
+        assert.equal(heroMatchesTacticId({ id }, 'dot'), true);
+    }
+    assert.equal(heroMatchesTacticId({ id: 'unknown' }, 'dot'), false);
+});
+
 test('coleccion filtra counters avanzados y busqueda sin acentos', () => {
     const ui = createUiStub();
     const panel = new TeamBuilderPanel(ui);

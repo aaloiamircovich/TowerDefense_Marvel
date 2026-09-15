@@ -105,8 +105,8 @@ los valores finales se fijan despues de las pruebas de fase 1.
 
 | ID | Heroe (rareza) | Actual | Firma propuesta y limite |
 | --- | --- | --- | --- |
-| `blade` | Blade (Epic) | Bleed mayor en elites, veneno y medidor por bajas. | Cazador de elites: sangrado escalado por poder y remate preparado; sustituir activacion vacia del contador, sin sanar base. |
-| `ghost_rider` | Ghost Rider (Legendary) | Burn, cadena con retroceso y penitencia. | Penitencia segun dano sufrido por el blanco, con techo especifico para bosses; no acumular retroceso infinito. |
+| `blade` | Blade (Epic) | F1/lote 4: sangrado 21% poder/s, 30% en elites; veneno y medidor por bajas. | Cazador de elites: sangrado escalado por poder y remate preparado; sustituir activacion vacia del contador, sin sanar base. |
+| `ghost_rider` | Ghost Rider (Legendary) | F1/lote 4: quemadura unica 13.5% poder/s, cadena y penitencia. | Penitencia segun dano sufrido por el blanco, con techo especifico para bosses; no acumular retroceso infinito. |
 | `scarlet_witch` | Scarlet Witch (Secret) | Marcas enlazadas, curse, propagacion y slow de zona. | Red de maldiciones que madura y detona de forma limitada; conservar rango de preparacion y debilidad ante aislamiento. |
 | `cloak` | Cloak (Rare) | Deteccion propia y slow; no revelado global. | Ventana oscura que revela dentro de una zona pequena; sin teleportar enemigos fuera de ruta. |
 | `dagger` | Dagger (Rare) | Marca y rebote; rebote no hereda marca hoy. | Dagas que consumen marcas para limpiar blancos consecutivos; sin curacion y sin depender obligatoriamente de Cloak. |
@@ -114,7 +114,7 @@ los valores finales se fijan despues de las pruebas de fase 1.
 | `black_cat` | Black Cat (Rare) | Critico alto y marca. | Mala suerte acumulada que garantiza un critico propio; no generacion de dinero que suplante a Domino. |
 | `elsa_bloodstone` | Elsa Bloodstone (Rare) | Penetracion, ruptura y poison. | Marca de caceria contra elite con veneno propio reforzado; lista de blancos explicita, no multiplicador a todos. |
 | `gambit` | Gambit (Epic) | Rebote y propagacion de dano simultaneos. | Cartas depositan carga y la ultima detona un grupo limitado; evitar que rebote y propagacion cobren doble sin presupuesto. |
-| `hela` | Hela (Legendary) | Penetracion, rebote, bleed y curse. | Necroespinas sobre bajas marcadas; limite de espinas por ventana, sin crecimiento ilimitado en oleadas largas. |
+| `hela` | Hela (Legendary) | F1/lote 4: sangrado 24% poder/s; conserva curse, penetracion y rebote. | Necroespinas sobre bajas marcadas; limite de espinas por ventana, sin crecimiento ilimitado en oleadas largas. |
 | `human_torch` | Human Torch (Epic) | Splash y burn plano. | Calor acumulado en zona con ignicion final; dano por poder declarado, eficacia baja contra corredores que salen pronto. |
 | `the_hood` | The Hood (Rare) | Marca, curse y deteccion propia. | Pacto: alternar preparacion de maldicion y cobro de dano; ventana de vulnerabilidad tactica, no buff permanente gratuito. |
 | `psylocke` | Psylocke (Epic) | Penetracion, ruptura y critico. | Corte psiquico preciso contra objetivo marcado; requiere preparar el remate, sin area amplia. |
@@ -130,7 +130,7 @@ los valores finales se fijan despues de las pruebas de fase 1.
 | `doctor_strange` | Doctor Strange (Legendary) | Anillo, duplicado cada 2 ataques y campo temporal. | Portal con destino y radio declarados; duplicacion limitada y punto ciego coherente, no ignorar reglas por accidente. |
 | `captain_marvel` | Captain Marvel (Legendary) | Energia binaria, vuelo temporal y rayo lineal. | Pasada binaria preparada que vuelve a su casilla; pobre giro contra grupos fuera de linea y enfriamiento real. |
 | `vision` | Vision (Legendary) | Dos densidades y rayo cada 3 ataques. | Elegir penetracion concentrada o cobertura en fase; incompatibilidad temporal de modos, sin reunir ambas ventajas. |
-| `star_lord` | Star-Lord (Rare) | Segundo blaster y tres municiones. | Dos blancos distintos con elementos complementarios; pierde parte de su dano ante boss aislado. |
+| `star_lord` | Star-Lord (Rare) | F1/lote 4: incendiaria 23% poder/s, segundo blaster con deteccion y alcance efectivos. | Dos blancos distintos con elementos complementarios; pierde parte de su dano ante boss aislado. |
 | `jean_grey` | Jean Grey (Mythic) | Carga Phoenix, telequinesis y retroceso. | Carga psiquica que culmina en ola Phoenix; presupuesto separado de control/dano y resistencia a empujes del boss. |
 | `cyclops` | Cyclops (Epic) | X, modos opticos y rayo extra. | Haz sostenido que premia alineacion precisa; perder carga al cambiar de linea y no rellenar toda la X con AoE. |
 | `silver_surfer` | Silver Surfer (Mythic) | X de largo alcance, tres modos y rayo periodico. | Trayectoria cosmica: cruza filas largas, mediocre junto a su origen o fuera de diagonales; excepciones de rango visibles. |

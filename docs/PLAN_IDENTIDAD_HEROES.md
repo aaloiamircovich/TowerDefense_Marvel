@@ -1,7 +1,7 @@
 # Identidad y habilidades de los 105 heroes
 
 Fecha: 2026-09-13. Base revisada: commit 553ad63.
-Estado: FASE 1 EN CURSO. Tres lotes implementados; fases 2 a 10 pendientes.
+Estado: FASE 1 EN CURSO. Cuatro lotes implementados; fases 2 a 10 pendientes.
 Los hallazgos de auditoria describen el baseline; ver avances abajo para las
 correcciones ya realizadas. No equivale a completar el rediseño de los 105 kits.
 
@@ -324,3 +324,66 @@ y capturas temporales del inventario para revision visual.
 Siguiente: Hela y los DoT planos de mayor valor (incluidos los kits); despues
 cerrar excepciones de rayos, acumulaciones mixtas y resistencias de jefes.
 Venenos y maldiciones porcentuales conservan sus valores en este lote.
+
+## Fase 1: cuarto lote, 2026-09-14; cierre 2026-09-15
+
+Migrados Hela, Blade, Ghost Rider y Star-Lord a unidades explicitas para sus
+sangrados/quemaduras. Sin cambios de rareza, dano base, cadencia, rango base,
+sprites, monedas, penitencia, retroceso o evolucion.
+
+| Heroe | Efecto | Poder/s | Duracion | Probabilidad |
+| --- | --- | ---: | ---: | ---: |
+| Hela | Sangrado | 24% dano efectivo | 3.2 s | 42% |
+| Blade | Sangrado normal | 21% dano efectivo | 3.6 s | 100% |
+| Blade | Sangrado contra jefe o amenaza 4+ | 30% dano efectivo | 5 s | 100% |
+| Ghost Rider | Quemadura | 13.5% dano efectivo | 4 s | 100% |
+| Star-Lord | Quemadura, modo incendiario | 23% dano efectivo | 3 s | 100% |
+
+La maldicion de Hela y el veneno de Blade conservan sus porcentajes de salud
+maxima. No confundirlos con el sangrado del mismo impacto: son estados distintos.
+Hela sigue teniendo 48% de aplicar curse de 0.42% salud maxima/s durante 4.5 s;
+Blade conserva poison de 0.38% salud maxima/s durante 3.8 s, chance 42%.
+
+Ghost Rider tenia fuego duplicado: el kit aplicaba 9 DPS durante 4 s y los
+datos repetian 9 DPS con chance 40% durante 4.2 s. Se retira la segunda entrada;
+ahora existe una sola quemadura garantizada de 4 s. Se elimina tambien esa
+prolongacion aleatoria de 0.2 s, sin sumar el fuego del objeto al del kit.
+
+Comparacion de DPS del estado activo, sin objetos ni buffs externos; Blade
+en variante elite. Los niveles usan HeroLevel y su rareza real:
+
+| Heroe | DPS previo | Nivel 1 nuevo | Nivel 30 | Nivel 50 | Nivel 100 |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Hela | minimo por tick | 16.56 | 89.04 | 191.52 | 447.12 |
+| Blade (elite) | 10 plano | 10.04 | 54.11 | 109.51 | 241.06 |
+| Ghost Rider | 9 plano | 9.18 | 49.41 | 106.25 | 247.86 |
+| Star-Lord | 7 plano | 6.9 | 37.03 | 70.84 | 144.9 |
+
+En el probe previo de un segundo, Hela hacia 2 y Blade elite 8 (dos ticks de
+0.4 s); las quemaduras hacian 9/7. La tabla es DPS del estado activo, no dano
+total ni dano esperado por segundo incluyendo fallos o periodos sin estado.
+
+Star-Lord: el segundo blaster elige un blanco distinto con el helper de alcance
+efectivo, patron geometrico y deteccion, en vez de ignorar sigilo y usar rango
+base. Es otro disparo dirigido, no un rebote incidental. Mantiene su factor
+de dano de proyectil y transmite la municion preparada, sin duplicar sobre un
+jefe aislado. Cambiar modo no convierte los estados/proyectiles existentes.
+
+El filtro Persistente reconoce los tres kits (Blade, Ghost Rider, Star-Lord)
+por ID, no solo buscando palabras en descripciones o efectos en JSON. Se
+conserva Ghost Rider en el filtro al quitar su entrada redundante en datos.
+El estimador heuristico de presupuesto conserva la utilidad de su quemadura
+de kit: quitar la entrada duplicada no significa perder el efecto. El check
+de rarezas vuelve a exigir cero cambios de dano base, sin relajar tolerancias.
+
+Validacion focalizada: 22 pruebas de kits/DoT; diez casos nuevos de escalado,
+elite, estados independientes, no duplicacion, cambio de modo, sigilo y rango.
+Se agrega una regresion de clasificacion independiente de las descripciones.
+Validacion completa: npm run check aprobado con 770 tests, simulaciones de
+economia/campana y check de rarezas. Benchmark p95 0.141 ms; smoke desktop
+1366x768 y mobile 390x844 sin overflow ni desvio de ruta. Comparados los 105
+registros contra HEAD: rareza, dano base, rango, cadencia y coste sin cambios.
+
+Pendiente de fase 1: quemaduras planas de Captain Marvel, War Machine y Human
+Torch; excepciones de rayos/otras habilidades; resistencias y acumulaciones
+mixtas. Los rediseños distintivos de fases 2 a 10 siguen pendientes.

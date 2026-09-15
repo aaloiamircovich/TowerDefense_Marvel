@@ -80,7 +80,9 @@ function getUtilityFactor(hero) {
     else if (hero.range <= 110) factor += 0.06;
     if (hero.rangePattern) factor -= 0.05;
 
-    const effects = hero.special?.attackEffects || [];
+    const effects = [...(hero.special?.attackEffects || [])];
+    // Ghost Rider's guaranteed burn lives in StreetKitSystem, not in hero data.
+    if (hero.id === 'ghost_rider' && !effects.some((effect) => effect.type === 'burn')) effects.push({ type: 'burn' });
     factor -= Math.min(0.18, effects.length * 0.045);
 
     const projectile = hero.special?.projectileProfile || {};

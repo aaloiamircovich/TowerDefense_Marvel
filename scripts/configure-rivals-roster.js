@@ -53,9 +53,9 @@ const rivalsHeroes = {
         visualStyle: 'energy',
         projectileColor: '#d86cff'
     }),
-    hela: contract('Hela', 'Mistico', 'Legendary', 620, 70, 180, 0.85, false, 'ESPINAS DE HEL', 'Lanzas necroticas perforan armadura y aplican sangrado persistente a jefes y tanques.', 'artilleria mistica anti jefe', ['Mistico', 'Oscuros', 'Rivales'], 'artillery', [5, 3, 2, 2], {
+    hela: contract('Hela', 'Mistico', 'Legendary', 620, 70, 180, 0.85, false, 'ESPINAS DE HEL', 'Perfora armadura y rebota. 42% de sangrar durante 3.2 s: 24% de su dano efectivo por segundo, sin acumularse. 48% de maldecir: 0.42% de salud maxima/s durante 4.5 s.', 'artilleria mistica anti jefe', ['Mistico', 'Oscuros', 'Rivales'], 'artillery', [5, 3, 2, 2], {
         projectileProfile: { armorPenetration: 0.32, chainCount: 1, chainRange: 90, chainFactor: 0.5 },
-        attackEffects: [{ type: 'bleed', duration: 3.2, power: 0.24, chance: 0.42 }],
+        attackEffects: [{ type: 'bleed', duration: 3.2, power: 0.24, damageBasis: 'attackDamage', chance: 0.42 }, { type: 'curse', duration: 4.5, power: 0.0042, chance: 0.48 }],
         visualStyle: 'mystic',
         projectileColor: '#69e58c'
     }),
