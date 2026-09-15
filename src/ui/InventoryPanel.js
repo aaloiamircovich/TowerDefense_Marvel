@@ -22,7 +22,7 @@ const ITEM_EFFECT_FILTERS = [
 ];
 
 const ITEM_EFFECT_GROUPS = {
-    damage: ['damagePct', 'critChance', 'critDamageBonus', 'consecutiveDamagePct', 'statusDamagePct', 'damageToControlledPct', 'damageToCursedPct', 'longRangeDamagePct'],
+    damage: ['damagePct', 'critChance', 'critDamageBonus', 'consecutiveDamagePct', 'statusDamagePct', 'damageToControlledPct', 'damageToCursedPct', 'longRangeDamagePct', 'burnAttackDamagePct', 'burnPower', 'poisonPower', 'cursePower', 'damageToBurnedPct'],
     cadence: ['fireRatePct'],
     range: ['rangePct'],
     control: ['slowPower', 'slowChance', 'stunChance', 'stunDuration', 'freezeChance', 'freezeDuration'],
@@ -56,7 +56,8 @@ const ITEM_EFFECT_LABELS = {
     stunChance: 'Aturdir',
     stunDuration: 'Duracion stun',
     burnChance: 'Quemar',
-    burnPower: 'Dano quemadura',
+    burnPower: 'Fuego (dano/s)',
+    burnAttackDamagePct: 'Fuego (poder/s)',
     poisonChance: 'Veneno',
     poisonPower: 'Dano veneno',
     poisonStacks: 'Cargas veneno',
@@ -91,7 +92,7 @@ const PERCENT_EFFECTS = new Set([
     'slowChance',
     'stunChance',
     'burnChance',
-    'burnPower',
+    'burnAttackDamagePct',
     'poisonChance',
     'poisonPower',
     'curseChance',

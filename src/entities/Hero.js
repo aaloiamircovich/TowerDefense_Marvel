@@ -257,7 +257,14 @@ export class Hero {
         const itemEffects = aggregateItemEffects(this.items);
         if (itemEffects.slowChance) effects.push({ type: 'slow', duration: 1.2, power: itemEffects.slowPower || 0.2, chance: itemEffects.slowChance });
         if (itemEffects.armorBreakChance) effects.push({ type: 'armorBreak', duration: 3, power: itemEffects.armorBreakPower || 0.15, chance: itemEffects.armorBreakChance });
-        if (itemEffects.burnChance) effects.push({ type: 'burn', duration: itemEffects.burnDuration || 4, power: itemEffects.burnPower || 0.018, chance: itemEffects.burnChance });
+        if (itemEffects.burnChance) {
+            const scalesWithAttack = itemEffects.burnAttackDamagePct !== undefined;
+            effects.push({
+                type: 'burn', duration: itemEffects.burnDuration ?? 4, chance: itemEffects.burnChance,
+                power: scalesWithAttack ? itemEffects.burnAttackDamagePct : (itemEffects.burnPower ?? 0.018),
+                ...(scalesWithAttack ? { damageBasis: 'attackDamage' } : {})
+            });
+        }
         if (itemEffects.poisonChance) effects.push({ type: 'poison', duration: itemEffects.poisonDuration || 4, power: itemEffects.poisonPower || 0.01, stacks: itemEffects.poisonStacks || 1, chance: itemEffects.poisonChance });
         if (itemEffects.curseChance) effects.push({ type: 'curse', duration: itemEffects.curseDuration || 4, power: itemEffects.cursePower || 0.01, chance: itemEffects.curseChance });
         if (itemEffects.stunChance) effects.push({ type: 'stun', duration: itemEffects.stunDuration || 0.25, power: 1, chance: itemEffects.stunChance });

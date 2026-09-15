@@ -28,7 +28,7 @@ const items = [
     item('aerodeslizador', 'AERODESLIZADOR PYM', 'Permite colocacion sobre agua y +4% alcance.', 520, 1, 'Common', 'armor', 'pym', { allowWater: true, rangePct: 0.04 }),
     item('botas_antigrav', 'BOTAS ANTIGRAV', 'Permite colocacion en montana y +5% alcance.', 600, 1, 'Common', 'armor', 'stark', { allowMountain: true, rangePct: 0.05 }),
     item('fertilizante_groot', 'ESPORAS DE GROOT', 'Permite colocacion en pasto y +5% dano.', 680, 1, 'Common', 'artifact', 'cosmic', { allowGrass: true, damagePct: 0.05 }),
-    item('emisor_termico', 'EMISOR TERMICO', '18% de aplicar quemadura corta por impacto.', 760, 1, 'Common', 'weapon', 'stark', { burnChance: 0.18, burnDuration: 3, burnPower: 0.012 }),
+    item('emisor_termico', 'EMISOR TERMICO', '18% de quemar durante 3 s: 12% del dano efectivo del heroe por segundo. No acumula quemaduras.', 760, 1, 'Common', 'weapon', 'stark', { burnChance: 0.18, burnDuration: 3, burnAttackDamagePct: 0.12 }),
     item('carga_viuda', 'CARGA WIDOW', '12% de aturdir brevemente y +4% cadencia.', 820, 1, 'Common', 'weapon', 'street', { stunChance: 0.12, stunDuration: 0.18, fireRatePct: 0.04 }),
 
     item('reactor_arc', 'REACTOR ARC', '+18% cadencia y +4% dano.', 950, 2, 'Rare', 'weapon', 'stark', { fireRatePct: 0.18, damagePct: 0.04 }),
@@ -57,7 +57,7 @@ const items = [
     item('armadura_war_machine', 'ARMADURA WAR MACHINE', 'Area pequena y 12% penetracion.', 3900, 3, 'Epic', 'armor', 'stark', { splashRadius: 38, splashFactor: 0.28, armorPenetration: 0.12 }),
     item('simbionte', 'SIMBIONTE VENOM', 'Dano acumulativo por foco y +8% contra enemigos controlados.', 4100, 3, 'Epic', 'armor', 'symbiote', { consecutiveDamagePct: 0.025, damageToControlledPct: 0.08 }),
 
-    item('protocolo_extremis', 'PROTOCOLO EXTREMIS', '+18% dano, quemadura estable y bonus si la base esta en peligro.', 5400, 4, 'Legendary', 'armor', 'stark', { damagePct: 0.18, burnChance: 0.25, burnDuration: 4, burnPower: 0.014, lowLifeDamagePct: 0.18 }),
+    item('protocolo_extremis', 'PROTOCOLO EXTREMIS', '+18% dano. 25% de quemar durante 4 s: 18% del dano efectivo del heroe por segundo, sin acumular. +18% dano con 10 vidas o menos.', 5400, 4, 'Legendary', 'armor', 'stark', { damagePct: 0.18, burnChance: 0.25, burnDuration: 4, burnAttackDamagePct: 0.18, lowLifeDamagePct: 0.18 }),
     item('ojo_agamotto', 'OJO DE AGAMOTTO', 'Detecta sigilo, +13% alcance y +8% dano por estado activo.', 5850, 4, 'Legendary', 'artifact', 'mystic', { detectStealth: true, rangePct: 0.13, statusDamagePct: 0.08, statusDamageCap: 0.32 }),
     item('capa_levitacion', 'CAPA DE LEVITACION', 'Permite agua y montana, con +12% alcance.', 6200, 4, 'Legendary', 'armor', 'mystic', { allowWater: true, allowMountain: true, rangePct: 0.12 }),
     item('prisma_luz_oscura', 'PRISMA LUZ OSCURA', 'Detecta sigilo, rebota y castiga enemigos malditos.', 6600, 4, 'Legendary', 'artifact', 'mystic', { detectStealth: true, chainCount: 1, chainRange: 90, chainFactor: 0.5, curseChance: 0.22, curseDuration: 4, cursePower: 0.012, damageToCursedPct: 0.18 }),
@@ -67,7 +67,7 @@ const items = [
     item('cetro_loki', 'CETRO DE LOKI', 'Maldice con frecuencia y propaga dano entre grupos.', 8200, 4, 'Legendary', 'weapon', 'asgard', { curseChance: 0.28, curseDuration: 5, cursePower: 0.013, statusDamagePct: 0.1, statusDamageCap: 0.35, chainCount: 1, chainRange: 80, chainFactor: 0.45 }),
 
     item('fragmento_carnage', 'FRAGMENTO CARNAGE', '+18% dano, +5% critico y veneno acumulable.', 11500, 5, 'Mythic', 'artifact', 'symbiote', { damagePct: 0.18, critChance: 5, poisonChance: 0.35, poisonDuration: 5, poisonPower: 0.01, poisonStacks: 2 }),
-    item('formula_phoenix', 'FORMULA PHOENIX', 'Quemadura fuerte, area y +25% contra enemigos quemados.', 13500, 5, 'Mythic', 'artifact', 'cosmic', { burnChance: 0.45, burnDuration: 5, burnPower: 0.02, damageToBurnedPct: 0.25, splashRadius: 44, splashFactor: 0.28 }),
+    item('formula_phoenix', 'FORMULA PHOENIX', '45% de quemar durante 5 s: 30% del dano efectivo del heroe por segundo, sin acumular. Area de dano y +25% contra enemigos quemados.', 13500, 5, 'Mythic', 'artifact', 'cosmic', { burnChance: 0.45, burnDuration: 5, burnAttackDamagePct: 0.3, damageToBurnedPct: 0.25, splashRadius: 44, splashFactor: 0.28 }),
     item('tabla_surfer', 'TABLA DEL SURFER', '+18% alcance, rebote y +18% dano a larga distancia.', 15000, 5, 'Mythic', 'armor', 'cosmic', { rangePct: 0.18, chainCount: 1, chainRange: 130, chainFactor: 0.5, longRangeDamagePct: 0.18, longRangeThreshold: 170 }),
     item('orbe_caos_wanda', 'ORBE DE CAOS', 'Alta probabilidad de maldicion y +12% dano por estado activo.', 17000, 5, 'Mythic', 'artifact', 'mystic', { curseChance: 0.4, curseDuration: 5, cursePower: 0.014, statusDamagePct: 0.12, statusDamageCap: 0.48 }),
     item('nanites_stark_prime', 'NANITES STARK PRIME', '+14% dano, +18% cadencia y deteccion de sigilo.', 19000, 5, 'Mythic', 'armor', 'stark', { damagePct: 0.14, fireRatePct: 0.18, detectStealth: true }),

@@ -53,6 +53,17 @@ function createUiStub() {
     };
 }
 
+test('inventario distingue quemadura por poder de quemadura plana y filtra dano persistente', () => {
+    const pills = buildItemEffectPills(data.items.emisor_termico, 10);
+    assert.ok(pills.some((pill) => pill.label === 'Fuego (poder/s)' && pill.value === '+12%'));
+    assert.ok(getItemEffectTags(data.items.emisor_termico).includes('damage'));
+    const delta = formatItemDeltaLabel(buildItemEquipDeltaRows(data.items.formula_phoenix, data.items.emisor_termico));
+    assert.match(delta, /Fuego \(poder\/s\) \+18%/);
+    const legacy = buildItemEffectPills({ effects: { burnPower: 12 } });
+    assert.equal(legacy[0].value, '+12');
+    assert.equal(legacy[0].label, 'Fuego (dano/s)');
+});
+
 test('inventario muestra objetos equipados con el sprite del heroe dueño', () => {
     const ui = createUiStub();
     const panel = new InventoryPanel(ui);

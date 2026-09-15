@@ -1,5 +1,7 @@
 import http from 'node:http';
 import net from 'node:net';
+import os from 'node:os';
+import path from 'node:path';
 import { spawn } from 'node:child_process';
 import { chromium } from 'playwright';
 
@@ -381,7 +383,7 @@ async function runInventorySmoke(page, failures) {
         await page.setViewportSize({ width, height: width === 390 ? 844 : 768 });
         await page.evaluate(() => {
             const game = window.__SUPER_HERO_TD_GAME__;
-            game.progression.state.ownedItemIds = Object.keys(game.itemDatabase).slice(0, 8);
+            game.progression.state.ownedItemIds = [...new Set([...Object.keys(game.itemDatabase).slice(0, 8), 'emisor_termico', 'protocolo_extremis', 'formula_phoenix'])];
             game.progression.state.equippedItems = {};
             game.uiManager.teamBuilderPanel.ownershipFilter = 'missing';
             game.uiManager.teamBuilderPanel.rarityFilter = 'Secret';
@@ -396,6 +398,19 @@ async function runInventorySmoke(page, failures) {
         await page.locator('.inventory-rarity-filter[data-rarity="Secret"]').click();
         await page.locator('#inventory-empty-action').click();
         await page.locator('.inventory-advanced-filters > summary').click();
+        for (const id of ['emisor_termico', 'protocolo_extremis', 'formula_phoenix']) {
+            const thermal = page.locator(`.inventory-object-card[data-item-id="${id}"]`);
+            if (!(await thermal.textContent()).includes('dano efectivo del heroe por segundo')) failures.push(`${id} no explica la unidad de quemadura`);
+            const clipped = await thermal.evaluate((node) => node.scrollWidth - node.clientWidth);
+            if (clipped > 2) failures.push(`${id} desborda ${clipped}px en ${width}px`);
+        }
+        const emitter = page.locator('.inventory-object-card[data-item-id="emisor_termico"]');
+        if (!(await emitter.locator('.item-effect-pills').textContent()).includes('poder/s')) failures.push('quemadura no muestra unidad en inventario');
+        const fireLabel = emitter.locator('.item-effect-pills b').filter({ hasText: 'Fuego (poder/s)' });
+        if (await fireLabel.evaluate((node) => node.scrollWidth > node.clientWidth + 1)) failures.push(`unidad de quemadura recortada en ${width}px`);
+        await emitter.scrollIntoViewIfNeeded();
+        await page.screenshot({ path: path.join(os.tmpdir(), `marvel-thermal-inventory-${width}.png`) });
+        await page.locator('.inventory-object-card').first().scrollIntoViewIfNeeded();
         const card = page.locator('.inventory-object-card').first();
         const cardBox = await card.boundingBox();
         if (!cardBox || cardBox.y > 400) failures.push(`objetos demasiado abajo en ${width}px`);

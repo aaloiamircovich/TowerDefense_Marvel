@@ -291,7 +291,7 @@ function validateItems(items) {
     const allowedItemKeys = new Set(['id', 'name', 'desc', 'price', 'tier', 'rarity', 'slot', 'set', 'effects', 'icon']);
     const allowedItemEffectKeys = new Set([
         'allowGrass', 'allowMountain', 'allowWater', 'armorBreakChance', 'armorBreakPower', 'armorDamagePct',
-        'armorPenetration', 'bossDamagePct', 'burnChance', 'burnDuration', 'burnPower', 'chainCount',
+        'armorPenetration', 'bossDamagePct', 'burnChance', 'burnDuration', 'burnPower', 'burnAttackDamagePct', 'chainCount',
         'chainFactor', 'chainRange', 'closeRangeDamagePenaltyPct', 'closeRangeThreshold', 'consecutiveDamagePct',
         'critChance', 'critDamageBonus', 'curseChance', 'curseDuration', 'cursePower', 'damagePct',
         'damageToBurnedPct', 'damageToControlledPct', 'damageToCursedPct', 'detectStealth', 'fireRatePct',
@@ -327,6 +327,10 @@ function validateItems(items) {
 }
 
 function validateItemEffects(itemId, effects, schema) {
+    if (effects.burnAttackDamagePct !== undefined) {
+        if (!isUnitNumber(effects.burnAttackDamagePct)) errors.push(`items.${itemId}.effects.burnAttackDamagePct debe estar entre 0 y 1`);
+        if (effects.burnPower !== undefined) errors.push(`items.${itemId}.effects no puede mezclar burnPower y burnAttackDamagePct`);
+    }
     for (const [key, value] of Object.entries(effects)) {
         const label = `items.${itemId}.effects.${key}`;
         if (schema.forbiddenBaseHealingItemKeys.has(key)) {

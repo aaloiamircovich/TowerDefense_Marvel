@@ -125,7 +125,7 @@
   "emisor_termico": {
     "id": "emisor_termico",
     "name": "EMISOR TERMICO",
-    "desc": "18% de aplicar quemadura corta por impacto.",
+    "desc": "18% de quemar durante 3 s: 12% del dano efectivo del heroe por segundo. No acumula quemaduras.",
     "icon": "assets/images/items/emisor_termico.png",
     "price": 760,
     "tier": 1,
@@ -134,7 +134,7 @@
     "effects": {
       "burnChance": 0.18,
       "burnDuration": 3,
-      "burnPower": 0.012
+      "burnAttackDamagePct": 0.12
     },
     "rarity": "Common"
   },
@@ -542,7 +542,7 @@
   "protocolo_extremis": {
     "id": "protocolo_extremis",
     "name": "PROTOCOLO EXTREMIS",
-    "desc": "+18% dano, quemadura estable y bonus si la base esta en peligro.",
+    "desc": "+18% dano. 25% de quemar durante 4 s: 18% del dano efectivo del heroe por segundo, sin acumular. +18% dano con 10 vidas o menos.",
     "icon": "assets/images/items/protocolo_extremis.png",
     "price": 5400,
     "tier": 4,
@@ -552,7 +552,7 @@
       "damagePct": 0.18,
       "burnChance": 0.25,
       "burnDuration": 4,
-      "burnPower": 0.014,
+      "burnAttackDamagePct": 0.18,
       "lowLifeDamagePct": 0.18
     },
     "rarity": "Legendary"
@@ -703,7 +703,7 @@
   "formula_phoenix": {
     "id": "formula_phoenix",
     "name": "FORMULA PHOENIX",
-    "desc": "Quemadura fuerte, area y +25% contra enemigos quemados.",
+    "desc": "45% de quemar durante 5 s: 30% del dano efectivo del heroe por segundo, sin acumular. Area de dano y +25% contra enemigos quemados.",
     "icon": "assets/images/items/formula_phoenix.png",
     "price": 13500,
     "tier": 5,
@@ -712,7 +712,7 @@
     "effects": {
       "burnChance": 0.45,
       "burnDuration": 5,
-      "burnPower": 0.02,
+      "burnAttackDamagePct": 0.3,
       "damageToBurnedPct": 0.25,
       "splashRadius": 44,
       "splashFactor": 0.28

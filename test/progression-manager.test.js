@@ -31,6 +31,24 @@ test('ProgressionManager migra un guardado antiguo', () => {
     assert.equal('tutorialHints' in manager.state.settings, false);
 });
 
+test('objetos termicos ya equipados recargan las estadisticas del catalogo actual', () => {
+    const storage = new MemoryStorage();
+    const oldData = structuredClone(data);
+    oldData.items.emisor_termico.effects = { burnChance: 0.18, burnDuration: 3, burnPower: 0.012 };
+    const first = new ProgressionManager(storage);
+    first.initialize(createGame(), oldData);
+    first.startProfile('spiderman');
+    first.addOwnedItem('emisor_termico');
+    first.equipItem('spiderman', 'emisor_termico');
+    const reopened = new ProgressionManager(storage);
+    reopened.initialize(createGame(), data);
+    const hero = { id: 'spiderman', items: [] };
+    reopened.applyEquippedItem(hero);
+    assert.equal(hero.items.length, 1);
+    assert.equal(hero.items[0].effects.burnAttackDamagePct, 0.12);
+    assert.equal(hero.items[0].effects.burnPower, undefined);
+});
+
 test('Migracion conserva un solo objeto equipado antiguo', () => {
     const storage = new MemoryStorage();
     storage.setItem(SAVE_KEY, JSON.stringify({

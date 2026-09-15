@@ -118,6 +118,19 @@ test('validate-data bloquea curacion de base en efectos de heroes', () => {
     assert.match(result.stderr, /heroes\.loki\.special\.attackEffects\.0\.type heal esta prohibido/);
 });
 
+test('validate-data rechaza quemaduras de objeto ambiguas o fuera de escala', () => {
+    const workspace = createDataWorkspace((data) => {
+        data.items.emisor_termico.effects.burnAttackDamagePct = -0.1;
+        data.items.protocolo_extremis.effects.burnAttackDamagePct = 1.1;
+        data.items.formula_phoenix.effects.burnPower = 12;
+    });
+    const result = runValidator(workspace);
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr, /emisor_termico.effects.burnAttackDamagePct debe estar entre 0 y 1/);
+    assert.match(result.stderr, /protocolo_extremis.effects.burnAttackDamagePct debe estar entre 0 y 1/);
+    assert.match(result.stderr, /formula_phoenix.effects no puede mezclar/);
+});
+
 test('validate-data bloquea curacion de base y efectos inventados en objetos', () => {
     const workspace = createDataWorkspace((data) => {
         data.items.reactor_arc.effects.heal = 1;

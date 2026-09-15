@@ -1,7 +1,7 @@
 # Identidad y habilidades de los 105 heroes
 
 Fecha: 2026-09-13. Base revisada: commit 553ad63.
-Estado: FASE 1 EN CURSO. Dos lotes implementados; fases 2 a 10 pendientes.
+Estado: FASE 1 EN CURSO. Tres lotes implementados; fases 2 a 10 pendientes.
 Los hallazgos de auditoria describen el baseline; ver avances abajo para las
 correcciones ya realizadas. No equivale a completar el rediseño de los 105 kits.
 
@@ -280,3 +280,47 @@ benchmark p95 0.108 ms; smoke desktop/mobile sin overflow ni desvio de ruta.
 Pendiente de fase 1: Hela, los DoT planos mayores y los objetos termicos; reglas
 de rayos y ataques de los cuatro kits; acumulaciones mixtas y resistencias de
 jefes. Los ocho heroes corregidos hasta aqui no equivalen a ocho kits rediseñados.
+
+## Fase 1: tercer lote, 2026-09-13; cierre 2026-09-14
+
+Migrados los tres objetos termicos del catalogo. Nuevo campo numerico
+burnAttackDamagePct, convertido en efecto burn con damageBasis=attackDamage.
+La agregacion sigue limitada a un objeto; no se amplia el sistema de slots.
+
+| Objeto | Rareza | Probabilidad | Duracion | Dano efectivo del heroe/s |
+| --- | --- | ---: | ---: | ---: |
+| Emisor termico | Common | 18% | 3 s | 12% |
+| Protocolo Extremis | Legendary | 25% | 4 s | 18% |
+| Formula Phoenix | Mythic | 45% | 5 s | 30% |
+
+Antes, los tres hacian 2 de dano en el primer segundo por el minimo de tick.
+Con 100 de dano efectivo del heroe, el estado activo ahora hace 12, 18 o 30
+por segundo, independientemente de la salud maxima del enemigo. Esto no es
+el DPS total ni incluye probabilidad/tiempo sin estado. Sin cambios de precio,
+rareza, duracion, probabilidad, efectos secundarios o sprites.
+
+- El dano se captura al aplicar; incluye una sola vez los buffs efectivos
+  (tambien el +18% de Extremis con 10 vidas o menos). No incluye el critico
+  del impacto ni multiplica nuevamente por el bono contra enemigos quemados.
+- Fuego del heroe y del objeto no se suman: queda el estado mas fuerte segun
+  el contrato del lote 1. Phoenix no propaga fuego con su splash de dano;
+  permanece el contrato de impactos secundarios del lote 2.
+- Los objetos ya equipados se resuelven por ID contra el catalogo actual al
+  cargar, probado con un guardado que usaba los valores anteriores. No hay
+  que recomprarlos. burnPower legacy sigue siendo dano plano; el validador
+  rechaza mezclar ambas unidades o coeficientes nuevos fuera de [0, 1].
+- El inventario distingue poder/s de dano plano/s, compara el porcentaje
+  al cambiar objeto e incluye estos objetos en el filtro de dano. Las fichas
+  y el generador de objetos describen el efecto real.
+- Los soportes puros no disparan por equipar un objeto termico. Sin curacion
+  de base, sin aplicar mas de un objeto, sin cambios en monedas de Domino.
+
+Validacion: npm run check aprobado, 759 tests; escalado en niveles 1/50/100
+y enemigos de 100.000/1.000.000 HP, buff de baja vida, quemaduras simultaneas,
+probabilidad/poder cero, compatibilidad, guardado y comparacion de inventario.
+Benchmark p95 0.092 ms. Smoke ampliado con los tres objetos en desktop/mobile
+y capturas temporales del inventario para revision visual.
+
+Siguiente: Hela y los DoT planos de mayor valor (incluidos los kits); despues
+cerrar excepciones de rayos, acumulaciones mixtas y resistencias de jefes.
+Venenos y maldiciones porcentuales conservan sus valores en este lote.
