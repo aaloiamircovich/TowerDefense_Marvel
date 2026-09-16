@@ -59,9 +59,9 @@ const rivalsHeroes = {
         visualStyle: 'mystic',
         projectileColor: '#69e58c'
     }),
-    human_torch: contract('Human Torch', 'Cosmico', 'Rare', 360, 36, 175, 1.65, false, 'NOVA FLAME', 'Flamas de area queman grupos y sostienen dano en curvas largas.', 'area aerea y quemadura', ['Cosmico', 'Rivales'], 'artillery', [4, 4, 2, 2], {
+    human_torch: contract('Human Torch', 'Cosmico', 'Rare', 360, 36, 175, 1.65, false, 'NOVA FLAME', 'Llamas con dano de area. 34% de quemar al objetivo principal durante 2.5 s: 37.5% de su dano efectivo por segundo, sin acumularse.', 'area aerea y quemadura', ['Cosmico', 'Rivales'], 'artillery', [4, 4, 2, 2], {
         projectileProfile: { splashRadius: 48, splashFactor: 0.32 },
-        attackEffects: [{ type: 'burn', duration: 2.5, power: 12, chance: 0.34 }],
+        attackEffects: [{ type: 'burn', duration: 2.5, power: 0.375, damageBasis: 'attackDamage', chance: 0.34 }],
         statModifiers: { rangePct: 0.04 },
         visualStyle: 'fire',
         projectileColor: '#ff7b3d'

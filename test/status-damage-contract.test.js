@@ -86,7 +86,7 @@ test('veneno conserva el limite compartido de doce acumulaciones', () => {
     assert.equal(target.hp, 988);
 });
 
-for (const id of ['sentry', 'x_23', 'drax', 'tigra', 'howard_the_duck', 'valkyrie', 'elektra', 'deadpool']) {
+for (const id of ['sentry', 'x_23', 'drax', 'tigra', 'howard_the_duck', 'valkyrie', 'elektra', 'deadpool', 'captain_marvel', 'war_machine', 'human_torch']) {
     test(`${id}: DoT real escala por nivel y no por salud del jefe`, () => {
         const results = [];
         for (const level of [1, 30, 50, 100]) {

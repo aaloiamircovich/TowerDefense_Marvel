@@ -33,7 +33,7 @@ los valores finales se fijan despues de las pruebas de fase 1.
 | `hawkeye` | Hawkeye (Common) | Cruz; tres tipos de flecha seleccionables. | Conservar carcaj: seleccion para oleada y un disparo preparado; cambio de municion no reinicia gratis la recarga. |
 | `falcon` | Falcon (Common) | Redwing a distancia, modo reconocimiento/asalto. | Reconocimiento que revela de verdad para aliados o ataque ligero; dron unico y cobertura temporal, sin slots extra. |
 | `winter_soldier` | Winter Soldier (Rare) | Modos perforante, electrico y explosivo. | Cargador de rafagas: especializar una rafaga y pagar recarga; distinguir de flecha individual de Hawkeye. |
-| `war_machine` | War Machine (Rare) | Cruz, splash, penetracion y burn. | Salva de misiles sobre zona fijada; fuerte contra densidad y flojo ante corredores que abandonan la zona. |
+| `war_machine` | War Machine (Rare) | F1/lote 5: cruz, splash, penetracion y quemadura 14% poder/s solo al principal. | Salva de misiles sobre zona fijada; fuerte contra densidad y flojo ante corredores que abandonan la zona. |
 | `punisher` | Punisher (Common) | Cruz, penetracion y splash pequeno. | Supresion al sostener el mismo blanco; perder preparacion al retarget, no area generalista. |
 | `shuri` | Shuri (Common) | Marca y deteccion propia. | Escaneo de barrera: marcar un escudo para romperlo coordinadamente; menos utilidad contra enemigos sin defensa. |
 | `rocket_raccoon` | Rocket Raccoon (Common) | Proyectil con splash, penetracion y deteccion; no torreta propia. | Una torreta temporal dependiente de su dueno; reparte presupuesto de dano y desaparece al retirarlo. |
@@ -115,7 +115,7 @@ los valores finales se fijan despues de las pruebas de fase 1.
 | `elsa_bloodstone` | Elsa Bloodstone (Rare) | Penetracion, ruptura y poison. | Marca de caceria contra elite con veneno propio reforzado; lista de blancos explicita, no multiplicador a todos. |
 | `gambit` | Gambit (Epic) | Rebote y propagacion de dano simultaneos. | Cartas depositan carga y la ultima detona un grupo limitado; evitar que rebote y propagacion cobren doble sin presupuesto. |
 | `hela` | Hela (Legendary) | F1/lote 4: sangrado 24% poder/s; conserva curse, penetracion y rebote. | Necroespinas sobre bajas marcadas; limite de espinas por ventana, sin crecimiento ilimitado en oleadas largas. |
-| `human_torch` | Human Torch (Epic) | Splash y burn plano. | Calor acumulado en zona con ignicion final; dano por poder declarado, eficacia baja contra corredores que salen pronto. |
+| `human_torch` | Human Torch (Epic) | F1/lote 5: splash y quemadura 37.5% poder/s solo al principal. | Calor acumulado en zona con ignicion final; dano por poder declarado, eficacia baja contra corredores que salen pronto. |
 | `the_hood` | The Hood (Rare) | Marca, curse y deteccion propia. | Pacto: alternar preparacion de maldicion y cobro de dano; ventana de vulnerabilidad tactica, no buff permanente gratuito. |
 | `psylocke` | Psylocke (Epic) | Penetracion, ruptura y critico. | Corte psiquico preciso contra objetivo marcado; requiere preparar el remate, sin area amplia. |
 | `venom` | Venom (Epic) | Splash, penetracion, slow y poison porcentual. | Biomasa: infeccion propia que gana valor al insistir y consume stacks para devorar; techo de jefe, distinto de X-23. |
@@ -128,7 +128,7 @@ los valores finales se fijan despues de las pruebas de fase 1.
 | --- | --- | --- | --- |
 | `thor` | Thor (Mythic) | Cadena y tormenta cada 11 s. | Conductividad entre enemigos cercanos: descarga madura al conectar suficientes; menos eficaz contra un blanco aislado. |
 | `doctor_strange` | Doctor Strange (Legendary) | Anillo, duplicado cada 2 ataques y campo temporal. | Portal con destino y radio declarados; duplicacion limitada y punto ciego coherente, no ignorar reglas por accidente. |
-| `captain_marvel` | Captain Marvel (Legendary) | Energia binaria, vuelo temporal y rayo lineal. | Pasada binaria preparada que vuelve a su casilla; pobre giro contra grupos fuera de linea y enfriamiento real. |
+| `captain_marvel` | Captain Marvel (Legendary) | F1/lote 5: quemadura 9.5% poder/s con energia capturada al aplicar; vuelo y rayo. | Pasada binaria preparada que vuelve a su casilla; pobre giro contra grupos fuera de linea y enfriamiento real. |
 | `vision` | Vision (Legendary) | Dos densidades y rayo cada 3 ataques. | Elegir penetracion concentrada o cobertura en fase; incompatibilidad temporal de modos, sin reunir ambas ventajas. |
 | `star_lord` | Star-Lord (Rare) | F1/lote 4: incendiaria 23% poder/s, segundo blaster con deteccion y alcance efectivos. | Dos blancos distintos con elementos complementarios; pierde parte de su dano ante boss aislado. |
 | `jean_grey` | Jean Grey (Mythic) | Carga Phoenix, telequinesis y retroceso. | Carga psiquica que culmina en ola Phoenix; presupuesto separado de control/dano y resistencia a empujes del boss. |

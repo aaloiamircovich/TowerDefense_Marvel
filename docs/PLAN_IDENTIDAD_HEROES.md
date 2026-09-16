@@ -1,7 +1,7 @@
 # Identidad y habilidades de los 105 heroes
 
 Fecha: 2026-09-13. Base revisada: commit 553ad63.
-Estado: FASE 1 EN CURSO. Cuatro lotes implementados; fases 2 a 10 pendientes.
+Estado: FASE 1 EN CURSO. Cinco lotes implementados; fases 2 a 10 pendientes.
 Los hallazgos de auditoria describen el baseline; ver avances abajo para las
 correcciones ya realizadas. No equivale a completar el rediseño de los 105 kits.
 
@@ -387,3 +387,45 @@ registros contra HEAD: rareza, dano base, rango, cadencia y coste sin cambios.
 Pendiente de fase 1: quemaduras planas de Captain Marvel, War Machine y Human
 Torch; excepciones de rayos/otras habilidades; resistencias y acumulaciones
 mixtas. Los rediseños distintivos de fases 2 a 10 siguen pendientes.
+
+## Fase 1: quinto lote, 2026-09-15
+
+Captain Marvel, War Machine y Human Torch dejan de usar quemadura plana.
+Ahora capturan el dano efectivo al aplicar el estado (damageBasis attackDamage),
+sin cambiarlo retroactivamente ni acumularlo con otras quemaduras. Se conservan
+probabilidades, duraciones y perfiles de explosion, ademas de rarezas, dano
+base, rango, cadencia, costes, sprites y evoluciones.
+
+| Heroe | Poder/s | Duracion | Probabilidad | DPS previo | DPS nivel 1 | Nivel 30 | Nivel 50 | Nivel 100 |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Captain Marvel | 9.5% | 3.6 s | 34% | 8 | 8.075 | 43.51 | 93.385 | 218.025 |
+| War Machine | 14% | 2.4 s | 18% | 5 | 4.9 | 26.32 | 50.26 | 102.9 |
+| Human Torch | 37.5% | 2.5 s | 34% | 12 | 12 | 64.5 | 130.875 | 288 |
+
+DPS del estado activo, sin objetos ni buffs externos; Captain Marvel sin
+energia. No representa el DPS total ni la probabilidad de mantener el estado.
+La energia binaria aumenta el dano capturado exactamente una vez. Ganar o
+gastar energia despues no modifica una quemadura ya aplicada.
+
+El dano de area de War Machine y Human Torch no transmite quemadura a los
+vecinos: solo el impacto principal puede quemar. Las descripciones lo aclaran.
+Una quemadura de objeto compite por DPS con la nativa; no se suman. Formula
+Phoenix gana frente a Captain Marvel/War Machine, mientras que Human Torch
+conserva su quemadura mas fuerte. Sin curacion de base.
+
+Pruebas focalizadas: 29 aprobadas, 13 nuevas. Cubren niveles 1/30/50/100,
+salud enemiga 100.000/1.000.000, energia 0/60/100, limites de probabilidad,
+explosion sin transmision, objetos y declaracion de unidades en el catalogo.
+Comparados los 105 heroes contra el commit anterior: cero cambios de rareza,
+dano base, alcance, cadencia o coste.
+
+Validacion completa: npm run check aprobado, 783 tests, simulaciones de economia
+y campana, check de rarezas, accesibilidad y lanzamiento sin errores. Benchmark
+p95 0.097 ms; smoke desktop 1366x768 y mobile 390x844 sin overflow ni desvio
+de ruta. Bootstrap regenerado desde el catalogo actualizado.
+
+Pendiente de fase 1: auditar DoT de ItemSignatureSystem y evoluciones (incluido
+el sangrado de X-23 y el helper burn), excepciones de rayos/otras habilidades,
+resistencias y acumulaciones mixtas. La comprobacion de unidades del catalogo
+no garantiza que todos los efectos generados por kits/signatures esten migrados.
+Los redisenos distintivos de fases 2 a 10 siguen pendientes.

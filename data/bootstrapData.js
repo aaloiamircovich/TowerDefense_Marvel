@@ -666,7 +666,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 0.75,
       "canSeeStealth": false,
       "ability": "ENERGÍA BINARIA",
-      "abilityDesc": "Carga energia al atacar y derrotar enemigos. Al superar 60 vuela a una posicion avanzada, atraviesa la linea enemiga y regresa a su puesto. Sus rafagas fotonicas priorizan dano sostenido y quemadura sobre DPS plano.",
+      "abilityDesc": "Carga energia al atacar y derrotar enemigos. Con 60 puede atravesar la linea y volver. 34% de quemar durante 3.6 s: 9.5% de su dano efectivo por segundo, sin acumularse.",
       "sprite": "assets/images/heroes/captain_marvel/portrait.png",
       "allowedTerrains": [
         0,
@@ -725,7 +725,8 @@ window.__MARVEL_TD_DATA__ = {
           {
             "type": "burn",
             "duration": 3.6,
-            "power": 8,
+            "power": 0.095,
+            "damageBasis": "attackDamage",
             "chance": 0.34
           }
         ],
@@ -2210,7 +2211,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.1,
       "canSeeStealth": false,
       "ability": "ARTILLERIA PESADA",
-      "abilityDesc": "Misiles de hombro: disparos con area moderada y penetracion parcial contra blindaje.",
+      "abilityDesc": "Misiles con dano de area y penetracion parcial. 18% de quemar al objetivo principal durante 2.4 s: 14% de su dano efectivo por segundo, sin acumularse.",
       "niche": "splash antiarmadura para grupos densos",
       "allowedTerrains": [
         3
@@ -2238,7 +2239,8 @@ window.__MARVEL_TD_DATA__ = {
           {
             "type": "burn",
             "duration": 2.4,
-            "power": 5,
+            "power": 0.14,
+            "damageBasis": "attackDamage",
             "chance": 0.18
           }
         ]
@@ -4274,7 +4276,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.65,
       "canSeeStealth": false,
       "ability": "NOVA FLAME",
-      "abilityDesc": "Flamas de area queman grupos y sostienen dano en curvas largas.",
+      "abilityDesc": "Llamas con dano de area. 34% de quemar al objetivo principal durante 2.5 s: 37.5% de su dano efectivo por segundo, sin acumularse.",
       "niche": "area aerea y quemadura",
       "allowedTerrains": [
         0,
@@ -4301,7 +4303,8 @@ window.__MARVEL_TD_DATA__ = {
           {
             "type": "burn",
             "duration": 2.5,
-            "power": 12,
+            "power": 0.375,
+            "damageBasis": "attackDamage",
             "chance": 0.34
           }
         ],
