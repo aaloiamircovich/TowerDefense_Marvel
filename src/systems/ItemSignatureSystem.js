@@ -55,11 +55,11 @@ export const ITEM_SIGNATURES = {
         luke_cage: pulse({ label: 'Impacto Perfecto', interval: 6, damageFactor: 1.05, splashRadius: 42, color: '#fca311', visualStyle: 'impact', effects: [stun(0.16)] })
     },
     traje_moleculas_inestables: {
-        human_torch: pulse({ label: 'Nova Flame', interval: 7, damageFactor: 1.0, splashRadius: 60, color: '#ff7b3d', visualStyle: 'fire', effects: [burn(0.018, 4)] }),
+        human_torch: pulse({ label: 'Nova Flame', interval: 7, damageFactor: 1.0, splashRadius: 60, color: '#ff7b3d', visualStyle: 'fire', effects: [burnFromAttack(0.45, 4)] }),
         invisible_woman: pulse({ label: 'Pulso Invisible', interval: 7, damageFactor: 0.82, splashRadius: 56, color: '#dff7ff', visualStyle: 'energy', effects: [slow(0.32, 1.4)] })
     },
     protocolo_danger_room: {
-        jubilee: pulse({ label: 'Ataque Perfecto', interval: 10, damageFactor: 0.88, splashRadius: 54, color: '#ff8cff', effects: [burn(0.012, 3)] }),
+        jubilee: pulse({ label: 'Ataque Perfecto', interval: 10, damageFactor: 0.88, splashRadius: 54, color: '#ff8cff', effects: [burnFromAttack(0.2, 3)] }),
         nightcrawler: multiStrike({ label: 'Bamf Assault', interval: 10, damageFactor: 0.62, maxTargets: 4, color: '#7c5cff', visualStyle: 'mystic' }),
         psylocke: pulse({ label: 'Corte Psiquico', interval: 10, damageFactor: 1.05, color: '#d946ef', visualStyle: 'blade', armorPenetration: 0.45 }),
         rogue: timedBuff({ label: 'Absorcion Rogue', interval: 10, duration: 3.2, damagePct: 0.18, fireRatePct: 0.12, color: '#86efac' }),
@@ -163,7 +163,7 @@ export const ITEM_SIGNATURES = {
         sentry: voidStrike({ label: 'The Void', interval: 24, damageFactor: 3, color: '#111827' })
     },
     formula_phoenix: {
-        jean_grey: pulse({ label: 'Dark Phoenix', interval: 8, damageFactor: 1.12, splashRadius: 76, color: '#ff3b3b', visualStyle: 'fire', effects: [burn(0.022, 5)] })
+        jean_grey: pulse({ label: 'Dark Phoenix', interval: 8, damageFactor: 1.12, splashRadius: 76, color: '#ff3b3b', visualStyle: 'fire', effects: [burnFromAttack(0.36, 5)] })
     },
     guantelete_infinito: {
         adam_warlock: pulse({ label: 'Avatar del Infinito', interval: 8, damageFactor: 1.16, chainCount: 2, chainRange: 125, splashRadius: 46, color: '#ffd166', visualStyle: 'cosmic' })
@@ -317,12 +317,13 @@ function triggerSignature(hero, target, stats, projectileConfig, projectiles, co
     }
     if (config.rotatingElement) {
         const variants = [
-            { color: '#ff7b3d', visualStyle: 'fire', effects: [burn(0.016, 4)], splashRadius: 48 },
+            { color: '#ff7b3d', visualStyle: 'fire', effects: [burnFromAttack(0.2, 4)], splashRadius: 48 },
             { color: '#93c5fd', visualStyle: 'ice', effects: [slow(0.48, 1.8), stun(0.14)], splashRadius: 44 },
             { color: '#ffe45e', visualStyle: 'lightning', chainCount: 2, chainRange: 110 }
         ];
-        const variant = variants[state.elementIndex % variants.length];
-        state.elementIndex = (state.elementIndex || 0) + 1;
+        const elementIndex = state.elementIndex ?? 0;
+        const variant = variants[elementIndex % variants.length];
+        state.elementIndex = elementIndex + 1;
         strikePulse(hero, target, stats, { ...config, ...variant, damageFactor: 0.88 }, projectiles);
         return;
     }
@@ -595,5 +596,5 @@ function voidStrike(config) { return { ...config, voidStrike: true }; }
 function slow(power, duration = 1.2) { return { type: 'slow', duration, power, chance: 1 }; }
 function stun(duration = 0.2) { return { type: 'stun', duration, power: 1, chance: 1 }; }
 function armorBreak(power, chance = 1) { return { type: 'armorBreak', duration: 3, power, chance }; }
-function burn(power, duration = 4) { return { type: 'burn', duration, power, chance: 1 }; }
+function burnFromAttack(power, duration = 4) { return { type: 'burn', duration, power, damageBasis: 'attackDamage', chance: 1 }; }
 function curse(power, duration = 4) { return { type: 'curse', duration, power, chance: 1 }; }

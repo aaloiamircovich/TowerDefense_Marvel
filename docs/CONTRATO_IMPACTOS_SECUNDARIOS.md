@@ -46,6 +46,16 @@ que una tirada independiente tenga exito en otro destinatario.
 
 ## Pendiente
 
+Actualizacion lote 6: los pulsos de ItemSignatureSystem son una excepcion
+existente al splash generico. Nova Flame (Human Torch), Ataque Perfecto
+(Jubilee), Dark Phoenix (Jean Grey) y fuego elemental (Crystal) transmiten
+quemadura a todos los vecinos del pulso. Se conserva su radio y dano directo;
+la quemadura captura el dano efectivo del heroe sin aplicar splashFactor.
+No hay recursion, ni procs de dinero/objetos por cada vecino. Estas firmas
+requieren evolucion por nivel y el objeto correspondiente en el primer slot.
+El fuego ordinario de Human Torch y Formula Phoenix sigue solo en el principal.
+Las quemaduras compiten por DPS, nunca se suman, tambien en estos pulsos.
+
 Actualizacion lote 4: el segundo blaster de Star-Lord es un segundo ataque
 dirigido, no dano incidental. Excluye al blanco principal y respeta deteccion,
 alcance efectivo y patron geometrico. Mantiene la municion del disparo original.

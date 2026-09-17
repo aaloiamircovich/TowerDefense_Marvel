@@ -13292,7 +13292,7 @@ window.__MARVEL_TD_DATA__ = {
     "formula_phoenix": {
       "id": "formula_phoenix",
       "name": "FORMULA PHOENIX",
-      "desc": "45% de quemar durante 5 s: 30% del dano efectivo del heroe por segundo, sin acumular. Area de dano y +25% contra enemigos quemados.",
+      "desc": "45% de quemar durante 5 s: 30% del dano efectivo del heroe por segundo, sin acumular. Area de dano y +25% contra enemigos quemados. Jean Grey evolucionada: Dark Phoenix cada 8 ataques, quema en area (36% poder/s, 5 s).",
       "icon": "assets/images/items/formula_phoenix.png",
       "price": 13500,
       "tier": 5,
@@ -13435,7 +13435,7 @@ window.__MARVEL_TD_DATA__ = {
     "cristal_terrigeno": {
       "id": "cristal_terrigeno",
       "name": "CRISTAL TERRIGENO",
-      "desc": "+10% dano, +8% alcance y escalado por estados. Activa sobrecargas Inhumanas.",
+      "desc": "+10% dano, +8% alcance y escalado por estados. Activa sobrecargas Inhumanas. Crystal evolucionada alterna fuego (20% poder/s, 4 s), hielo y rayos cada 7 ataques.",
       "icon": "assets/images/items/cristal_terrigeno.png",
       "price": 7600,
       "tier": 4,
@@ -13484,7 +13484,7 @@ window.__MARVEL_TD_DATA__ = {
     "traje_moleculas_inestables": {
       "id": "traje_moleculas_inestables",
       "name": "TRAJE DE MOLECULAS INESTABLES",
-      "desc": "+8% dano, +10% cadencia y +10% alcance.",
+      "desc": "+8% dano, +10% cadencia y +10% alcance. Human Torch evolucionado: Nova Flame cada 7 ataques, quema en area (45% poder/s, 4 s).",
       "icon": "assets/images/items/traje_moleculas_inestables.png",
       "price": 7800,
       "tier": 4,
@@ -13500,7 +13500,7 @@ window.__MARVEL_TD_DATA__ = {
     "protocolo_danger_room": {
       "id": "protocolo_danger_room",
       "name": "PROTOCOLO DANGER ROOM",
-      "desc": "+8% dano, +8% alcance y +6% critico.",
+      "desc": "+8% dano, +8% alcance y +6% critico. Jubilee evolucionada: pulso cada 10 ataques, quema en area (20% poder/s, 3 s).",
       "icon": "assets/images/items/protocolo_danger_room.png",
       "price": 8100,
       "tier": 4,

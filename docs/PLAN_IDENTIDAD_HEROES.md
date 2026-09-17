@@ -1,7 +1,7 @@
 # Identidad y habilidades de los 105 heroes
 
 Fecha: 2026-09-13. Base revisada: commit 553ad63.
-Estado: FASE 1 EN CURSO. Cinco lotes implementados; fases 2 a 10 pendientes.
+Estado: FASE 1 EN CURSO. Seis lotes implementados; fases 2 a 10 pendientes.
 Los hallazgos de auditoria describen el baseline; ver avances abajo para las
 correcciones ya realizadas. No equivale a completar el rediseño de los 105 kits.
 
@@ -429,3 +429,52 @@ el sangrado de X-23 y el helper burn), excepciones de rayos/otras habilidades,
 resistencias y acumulaciones mixtas. La comprobacion de unidades del catalogo
 no garantiza que todos los efectos generados por kits/signatures esten migrados.
 Los redisenos distintivos de fases 2 a 10 siguen pendientes.
+
+## Fase 1: sexto lote, 2026-09-15
+
+Revisadas cuatro quemaduras de firmas en ItemSignatureSystem: Human Torch,
+Jubilee, Jean Grey y Crystal. El probe previo con evolucion real a nivel 50
+confirmo 2 de dano en un segundo para las tres primeras (poder plano 0.018,
+0.012 y 0.022, atrapado en el minimo por tick). Crystal no aplicaba fuego en
+su primera firma: elementIndex undefined seleccionaba variants[NaN].
+
+| Heroe | Objeto requerido | Activacion | Quemadura | Duracion |
+| --- | --- | --- | --- | --- |
+| Human Torch | Traje de Moleculas Inestables | Cada 7 ataques | 45% poder/s en area | 4 s |
+| Jubilee | Protocolo Danger Room | Cada 10 ataques | 20% poder/s en area | 3 s |
+| Jean Grey | Formula Phoenix | Cada 8 ataques | 36% poder/s en area | 5 s |
+| Crystal | Cristal Terrigeno | Cada 7 ataques alterna fuego, hielo y rayos | Fuego 20% poder/s en area | 4 s |
+
+Todos requieren evolucion por nivel (50) y el objeto equipado. No basta
+poseerlo, ni colocarlo en un segundo slot invalido. Sin objeto se conserva
+la evolucion normal. Crystal empieza con fuego y repite el ciclo de tres
+elementos; su fuego vuelve cada 21 ataques. No se modifican hielo/rayos.
+
+La escala usa dano efectivo, no salud maxima ni dano del proyectil critico.
+Nova Flame supera ligeramente el fuego nativo (45% vs 37.5%); Dark Phoenix
+supera el fuego generico del objeto (36% vs 30%). No suman dos quemaduras.
+Jubilee y Crystal usan 20% por su menor especializacion en fuego. Son ajustes
+iniciales de presupuesto; no equivalen a validar todas las composiciones.
+Se conservan intervalos, radios, factores de impacto, duraciones, costes,
+stats del objeto, requisitos, sprites y estadisticas base de los 105 heroes.
+
+Los pulsos signature ya transmitian sus estados al area, a diferencia del
+splash ordinario. Se documenta y prueba esa excepcion sin activarla globalmente.
+Las descripciones de los cuatro objetos incluyen efecto e intervalo, sin
+agregar elementos nuevos a las tarjetas ni ampliar la interfaz.
+
+Regresiones nuevas: 15, mas las tres pruebas previas de signatures. Incluyen
+evolucion real 49/50/75/100, salud enemiga 100.000/1.000.000, area limitada,
+captura de buffs, mezcla con fuego nativo/objeto, ciclo completo de Crystal
+y activacion exacta desde Hero.shoot. Se mantiene la prueba del soporte puro
+Captain America con Mjolnir: no dispara ni cura la base.
+
+Validacion completa: npm run check aprobado con 798 tests, simulaciones de
+economia/campana y check de rarezas. Benchmark p95 0.097 ms; accesibilidad y
+lanzamiento sin errores, smoke desktop 1366x768 y mobile 390x844 sin overflow
+ni desvio de ruta. Comparacion estructural: catalogo de 105 heroes intacto,
+82 objetos sin cambios salvo las cuatro descripciones. Bootstrap regenerado.
+
+Pendiente: sangrado de la firma de X-23, otros contadores rotativos (Deadpool
+y Kate Bishop usan la misma inicializacion sospechosa), contratos de rayos,
+resistencias y acumulaciones mixtas. La fase 1 sigue abierta.

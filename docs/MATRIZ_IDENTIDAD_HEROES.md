@@ -88,7 +88,7 @@ los valores finales se fijan despues de las pruebas de fase 1.
 | `medusa` | Medusa (Common) | Rebote corto y slow solo por efecto de impacto. | Sujecion de pocos blancos conectados; repartir el control entre ellos, mala contra grupos enormes. |
 | `iceman` | Iceman (Legendary) | Splash con slow aplicado al blanco principal. | Escarcha acumulada que congela tras exposicion; reglas explicitas de area y resistencia posterior, distinto de Storm. |
 | `storm` | Storm (Legendary) | Anillo, clima seleccionable, zona y rayos. | Elegir zona de ventisca o tormenta con cooldown compartido; preservar punto ciego salvo excepcion anunciada. |
-| `crystal` | Crystal (Common) | Splash y slow; no alternancia elemental. | Ciclo corto de elementos con proximo efecto visible; cada fase hace una cosa, no todos los efectos por disparo. |
+| `crystal` | Crystal (Common) | F1/lote 6: con cristal y evolucion alterna fuego 20% poder/s, hielo y rayos cada 7 ataques, desde la primera activacion. | Ciclo corto de elementos con proximo efecto visible; cada fase hace una cosa, no todos los efectos por disparo. |
 | `namor` | Namor (Legendary) | Permiso de agua y penetracion. | Marea de asalto condicionada a estar sobre agua; tierra viable pero menos potente, sin mapa de agua obligatorio. |
 | `namora` | Namora (Common) | Agua, penetracion y ruptura. | Emboscada costera de primer impacto; preparacion entre presas, distinta del dano sostenido de Namor. |
 | `triton` | Triton (Common) | Agua, deteccion propia y slow. | Exploracion abisal: revela al equipo desde posicion acuatica; dano bajo y cobertura localizada. |
@@ -115,11 +115,11 @@ los valores finales se fijan despues de las pruebas de fase 1.
 | `elsa_bloodstone` | Elsa Bloodstone (Rare) | Penetracion, ruptura y poison. | Marca de caceria contra elite con veneno propio reforzado; lista de blancos explicita, no multiplicador a todos. |
 | `gambit` | Gambit (Epic) | Rebote y propagacion de dano simultaneos. | Cartas depositan carga y la ultima detona un grupo limitado; evitar que rebote y propagacion cobren doble sin presupuesto. |
 | `hela` | Hela (Legendary) | F1/lote 4: sangrado 24% poder/s; conserva curse, penetracion y rebote. | Necroespinas sobre bajas marcadas; limite de espinas por ventana, sin crecimiento ilimitado en oleadas largas. |
-| `human_torch` | Human Torch (Epic) | F1/lote 5: splash y quemadura 37.5% poder/s solo al principal. | Calor acumulado en zona con ignicion final; dano por poder declarado, eficacia baja contra corredores que salen pronto. |
+| `human_torch` | Human Torch (Epic) | F1/lotes 5-6: quemadura normal 37.5% poder/s al principal; con traje y evolucion, Nova Flame en area 45% poder/s cada 7 ataques. | Calor acumulado en zona con ignicion final; dano por poder declarado, eficacia baja contra corredores que salen pronto. |
 | `the_hood` | The Hood (Rare) | Marca, curse y deteccion propia. | Pacto: alternar preparacion de maldicion y cobro de dano; ventana de vulnerabilidad tactica, no buff permanente gratuito. |
 | `psylocke` | Psylocke (Epic) | Penetracion, ruptura y critico. | Corte psiquico preciso contra objetivo marcado; requiere preparar el remate, sin area amplia. |
 | `venom` | Venom (Epic) | Splash, penetracion, slow y poison porcentual. | Biomasa: infeccion propia que gana valor al insistir y consume stacks para devorar; techo de jefe, distinto de X-23. |
-| `jubilee` | Jubilee (Rare) | Splash y slow; no cadena pese al texto. | Destello preparado que interrumpe una habilidad enemiga; control breve sin copiar congelacion ni dano cosmico. |
+| `jubilee` | Jubilee (Rare) | F1/lote 6: con Danger Room y evolucion, pulso de fuego en area 20% poder/s cada 10 ataques; conserva splash/slow nativos. | Destello preparado que interrumpe una habilidad enemiga; control breve sin copiar congelacion ni dano cosmico. |
 | `loki` | Loki (Legendary) | Slow, marca, curse y propagacion; no clones. | Una ilusion con dano reducido que replica un hechizo permitido; cooldown compartido y cero recursion de procs/economia. |
 
 ## Fase 7: energia y alcance especial
@@ -131,7 +131,7 @@ los valores finales se fijan despues de las pruebas de fase 1.
 | `captain_marvel` | Captain Marvel (Legendary) | F1/lote 5: quemadura 9.5% poder/s con energia capturada al aplicar; vuelo y rayo. | Pasada binaria preparada que vuelve a su casilla; pobre giro contra grupos fuera de linea y enfriamiento real. |
 | `vision` | Vision (Legendary) | Dos densidades y rayo cada 3 ataques. | Elegir penetracion concentrada o cobertura en fase; incompatibilidad temporal de modos, sin reunir ambas ventajas. |
 | `star_lord` | Star-Lord (Rare) | F1/lote 4: incendiaria 23% poder/s, segundo blaster con deteccion y alcance efectivos. | Dos blancos distintos con elementos complementarios; pierde parte de su dano ante boss aislado. |
-| `jean_grey` | Jean Grey (Mythic) | Carga Phoenix, telequinesis y retroceso. | Carga psiquica que culmina en ola Phoenix; presupuesto separado de control/dano y resistencia a empujes del boss. |
+| `jean_grey` | Jean Grey (Mythic) | F1/lote 6: Dark Phoenix con formula y evolucion, quemadura en area 36% poder/s cada 8 ataques; conserva carga/retroceso. | Carga psiquica que culmina en ola Phoenix; presupuesto separado de control/dano y resistencia a empujes del boss. |
 | `cyclops` | Cyclops (Epic) | X, modos opticos y rayo extra. | Haz sostenido que premia alineacion precisa; perder carga al cambiar de linea y no rellenar toda la X con AoE. |
 | `silver_surfer` | Silver Surfer (Mythic) | X de largo alcance, tres modos y rayo periodico. | Trayectoria cosmica: cruza filas largas, mediocre junto a su origen o fuera de diagonales; excepciones de rango visibles. |
 | `nova` | Nova (Legendary) | Un rebote y penetracion; sin pulso cargado. | Carga Nova para un pulso de energia que se agota; ventana potente seguida de recarga, distinta de cadena permanente de Thor. |
