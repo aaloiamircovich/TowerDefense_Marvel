@@ -65,7 +65,7 @@ export const ITEM_SIGNATURES = {
         rogue: timedBuff({ label: 'Absorcion Rogue', interval: 10, duration: 3.2, damagePct: 0.18, fireRatePct: 0.12, color: '#86efac' }),
         beast: markDangerous({ label: 'Analisis Cientifico', damageBonus: 0.18, interval: 10 }),
         wolverine: timedBuff({ label: 'Berserker', interval: 10, duration: 3, fireRatePct: 0.2, critChance: 8, color: '#ffd166' }),
-        x_23: multiStrike({ label: 'Corte Multiple', interval: 10, damageFactor: 0.7, maxTargets: 3, color: '#ff476f', visualStyle: 'blade', effects: [{ type: 'bleed', duration: 4, power: 0.014, chance: 1 }] }),
+        x_23: multiStrike({ label: 'Corte Multiple', interval: 10, damageFactor: 0.7, maxTargets: 3, color: '#ff476f', visualStyle: 'blade', effects: [{ type: 'bleed', duration: 4, power: 0.3, damageBasis: 'attackDamage', chance: 1 }] }),
         cable: pulse({ label: 'Telekinetic Burst', interval: 10, damageFactor: 0.92, splashRadius: 58, color: '#93c5fd', visualStyle: 'mystic' })
     },
     comunicador_guardianes: {
@@ -333,8 +333,9 @@ function triggerSignature(hero, target, stats, projectileConfig, projectiles, co
             { damageFactor: 1.18, maxTargets: 1, color: '#ef4444', visualStyle: 'blade' },
             { damageFactor: 0.92, maxTargets: 2, splashRadius: 48, color: '#ffb347', visualStyle: 'explosive' }
         ];
-        const variant = variants[state.rotateIndex % variants.length];
-        state.rotateIndex = (state.rotateIndex || 0) + 1;
+        const rotateIndex = state.rotateIndex ?? 0;
+        const variant = variants[rotateIndex % variants.length];
+        state.rotateIndex = rotateIndex + 1;
         strikeMulti(hero, target, stats, { ...config, ...variant }, projectiles);
         return;
     }
@@ -344,8 +345,9 @@ function triggerSignature(hero, target, stats, projectileConfig, projectiles, co
             { damageFactor: 0.72, color: '#93c5fd', effects: [slow(0.48, 1.8)] },
             { damageFactor: 0.82, color: '#60a5fa', effects: [armorBreak(0.2, 1)] }
         ];
-        const variant = variants[state.arrowIndex % variants.length];
-        state.arrowIndex = (state.arrowIndex || 0) + 1;
+        const arrowIndex = state.arrowIndex ?? 0;
+        const variant = variants[arrowIndex % variants.length];
+        state.arrowIndex = arrowIndex + 1;
         strikePulse(hero, target, stats, { ...config, ...variant }, projectiles);
         return;
     }

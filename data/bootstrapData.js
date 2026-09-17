@@ -13500,7 +13500,7 @@ window.__MARVEL_TD_DATA__ = {
     "protocolo_danger_room": {
       "id": "protocolo_danger_room",
       "name": "PROTOCOLO DANGER ROOM",
-      "desc": "+8% dano, +8% alcance y +6% critico. Jubilee evolucionada: pulso cada 10 ataques, quema en area (20% poder/s, 3 s).",
+      "desc": "+8% dano, +8% alcance y +6% critico. Al evolucionar, cada 10 ataques: Jubilee quema en area (20% poder/s, 3 s); X-23 corta hasta 3 blancos con sangrado (30% poder/s, 4 s, sin acumular).",
       "icon": "assets/images/items/protocolo_danger_room.png",
       "price": 8100,
       "tier": 4,
@@ -13632,7 +13632,7 @@ window.__MARVEL_TD_DATA__ = {
     "arsenal_deadpool": {
       "id": "arsenal_deadpool",
       "name": "ARSENAL SIN FONDO",
-      "desc": "+14% cadencia, +6% critico y pequenas explosiones.",
+      "desc": "+14% cadencia, +6% critico y pequenas explosiones. Deadpool evolucionado alterna pistolas, katana y explosivos cada 3 ataques.",
       "icon": "assets/images/items/arsenal_deadpool.png",
       "price": 6900,
       "tier": 4,
@@ -13837,7 +13837,7 @@ window.__MARVEL_TD_DATA__ = {
     "carcaj_flechas_truco": {
       "id": "carcaj_flechas_truco",
       "name": "CARCAJ DE FLECHAS TRUCO",
-      "desc": "+6% critico, +10% alcance, slow y armor break.",
+      "desc": "+6% critico, +10% alcance, slow y armor break. Kate Bishop evolucionada alterna explosion, ralentizacion y rotura de armadura cada 4 ataques.",
       "icon": "assets/images/items/carcaj_flechas_truco.png",
       "price": 7100,
       "tier": 4,

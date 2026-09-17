@@ -38,7 +38,7 @@ los valores finales se fijan despues de las pruebas de fase 1.
 | `shuri` | Shuri (Common) | Marca y deteccion propia. | Escaneo de barrera: marcar un escudo para romperlo coordinadamente; menos utilidad contra enemigos sin defensa. |
 | `rocket_raccoon` | Rocket Raccoon (Common) | Proyectil con splash, penetracion y deteccion; no torreta propia. | Una torreta temporal dependiente de su dueno; reparte presupuesto de dano y desaparece al retirarlo. |
 | `cable` | Cable (Epic) | Cruz, penetracion, ruptura y deteccion. | Disparo precargado: gran impacto tras apuntar al mismo elite; poco valor contra enjambres rapidos. |
-| `kate_bishop` | Kate Bishop (Common) | Cruz, marca y deteccion propia. | Flecha baliza: revelar temporalmente una zona para el equipo; menos dano y municion compleja que Hawkeye. |
+| `kate_bishop` | Kate Bishop (Common) | F1/lote 7: con carcaj y evolucion, ciclo explosion/slow/armor break cada 4 ataques desde la primera activacion; cruz, marca y deteccion propias. | Flecha baliza: revelar temporalmente una zona para el equipo; menos dano y municion compleja que Hawkeye. |
 | `mockingbird` | Mockingbird (Common) | Stun y marca por probabilidad. | Doble baston: alternar golpe preparatorio y descarga garantizada; requiere permanecer sobre el objetivo. |
 | `yelena_belova` | Yelena Belova (Common) | Veneno y marca probabilisticos. | Contrato de caza: concentra ataques sobre el marcado, transfiere marca tras baja; no inhibe soportes como Widow. |
 | `nebula` | Nebula (Rare) | Ruptura y deteccion, sin filtro tecnologico. | Adaptacion cibernetica: gana penetracion al insistir en el mismo blanco; bonificacion tecnologica explicita y limitada. |
@@ -67,13 +67,13 @@ los valores finales se fijan despues de las pruebas de fase 1.
 | `valkyrie` | Valkyrie (Rare) | F1/lote 2: sangrado 20% dano efectivo/s y critico propio. | Carga preparada desde terreno alto con retorno; bonificacion de terreno real y sin invadir colocaciones bloqueadas. |
 | `rogue` | Rogue (Epic) | Slow y marca; sin absorcion real. | Robar temporalmente un rasgo permitido al blanco para potenciarse; lista acotada, nunca robar pasivas de boss. |
 | `beast` | Beast (Epic) | Un rebote y slow. | Combo acrobatico entre dos enemigos distintos; pierde eficiencia contra blanco aislado, sin mover unidades aliadas. |
-| `x_23` | X-23 (Epic) | F1/lote 1: sangrado 25% dano efectivo/s y probabilidad critica; no supercritico propio. | Caza quirurgica: remate supercritico tras acumular cortes; capacidad limitada y distinta del frenesi de Wolverine. |
+| `x_23` | X-23 (Epic) | F1/lotes 1 y 7: sangrado nativo 25% poder/s; con Danger Room y evolucion, Corte Multiple cada 10 ataques, hasta 3 blancos y sangrado 30% poder/s. | Caza quirurgica: remate supercritico tras acumular cortes; capacidad limitada y distinta del frenesi de Wolverine. |
 | `drax` | Drax (Rare) | F1/lote 1: sangrado 20% dano efectivo/s. | Duelo literal: dano sostenido creciente sobre el mismo elite, con techo y reinicio al cambiar; malo contra oleadas dispersas. |
 | `lady_sif` | Lady Sif (Rare) | Ruptura y critico propio incondicional. | Desafio asgardiano: critico condicionado al blindaje roto de un elite; sin buff externo ni ejecucion instantanea. |
 | `white_tiger` | White Tiger (Rare) | Marca y critico propio incondicional. | Amuleto: consume su marca para un salto de remate; enfriamiento, no duplicar marcas indefinidamente. |
 | `tigra` | Tigra (Rare) | F1/lote 1: sangrado 20% dano efectivo/s y critico. | Garras contra enemigos controlados; bono condicionado a slow/web, sin generar por si sola todo el combo. |
 | `angela` | Angela (Epic) | Penetracion, rebote y critico. | Caza de elite aislado: secuencia precisa y finalizador; pierde su ventaja cuando el blanco tiene escolta. |
-| `deadpool` | Deadpool (Epic) | F1/lote 2: sangrado 20% dano efectivo/s, critico y cadencia estatica. | Ciclo pistolas/katanas con fase de recarga previsible; caos visual contenido y ninguna curacion a base. |
+| `deadpool` | Deadpool (Epic) | F1/lotes 2 y 7: sangrado 20% poder/s; con arsenal y evolucion, ciclo pistolas/katana/explosivos cada 3 ataques desde la primera activacion. | Ciclo pistolas/katanas con fase de recarga previsible; caos visual contenido y ninguna curacion a base. |
 | `devil_dinosaur` | Devil Dinosaur (Rare) | Splash y stun probabilistico. | Pisada cargada y mordida al centro del grupo; exige acumulacion de enemigos y tiene recuperacion larga. |
 
 ## Fase 5: control, deteccion y terreno

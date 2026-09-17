@@ -1,7 +1,7 @@
 # Identidad y habilidades de los 105 heroes
 
 Fecha: 2026-09-13. Base revisada: commit 553ad63.
-Estado: FASE 1 EN CURSO. Seis lotes implementados; fases 2 a 10 pendientes.
+Estado: FASE 1 EN CURSO. Siete lotes implementados; fases 2 a 10 pendientes.
 Los hallazgos de auditoria describen el baseline; ver avances abajo para las
 correcciones ya realizadas. No equivale a completar el rediseño de los 105 kits.
 
@@ -478,3 +478,46 @@ ni desvio de ruta. Comparacion estructural: catalogo de 105 heroes intacto,
 Pendiente: sangrado de la firma de X-23, otros contadores rotativos (Deadpool
 y Kate Bishop usan la misma inicializacion sospechosa), contratos de rayos,
 resistencias y acumulaciones mixtas. La fase 1 sigue abierta.
+
+## Fase 1: septimo lote, 2026-09-16
+
+Corregidos Corte Multiple de X-23 y los ciclos de Arsenal sin Fondo (Deadpool)
+y Flechas Truco (Kate Bishop). Antes del cambio, cinco regresiones nuevas
+fallaban: sangrado plano sin escalado, incapaz de superar el sangrado nativo,
+Deadpool arrancando con proyectiles genericos y Kate omitiendo su explosion.
+
+- X-23 con Protocolo Danger Room: cada 10 ataques lanza hasta tres cortes a
+  blancos distintos. Cada uno conserva 70% del dano efectivo de impacto y
+  aplica sangrado garantizado de 30% del dano efectivo/s durante 4 segundos,
+  frente al 25% nativo. No se suman ambos: se conserva el DPS mas fuerte.
+  Antes, 0.014 plano caia en el minimo de dano por tick. No se convierte a
+  porcentaje de vida enemiga. Ante un jefe aislado solo hay un corte especial.
+- Deadpool con Arsenal sin Fondo: cada 3 ataques activa pistolas (72% dano,
+  hasta 2 blancos), katana (118%, un blanco) o explosivos (92%, hasta 2 blancos,
+  radio 48). Se conservan todos esos factores; se inicializa el contador para
+  empezar con pistolas en vez de un disparo generico al 50%.
+- Kate Bishop con Carcaj: cada 4 ataques activa explosion (90% dano, radio 48),
+  ralentizacion (72% dano, slow 48% por 1.8 s) o rotura de armadura (82% dano,
+  armorBreak 20% por 3 s). Se inicializa el contador: ya no empieza con un pulso
+  generico al 75% sin explosion. Cada ciclo vuelve correctamente al inicio.
+
+Todos requieren evolucion de nivel 50 y el objeto en el unico slot. Se
+actualizan las tres descripciones, sin modificar rarezas, costes, stats de
+objetos, atributos base, sprites, mapas ni requisitos de evolucion.
+
+Once regresiones nuevas; 29 pruebas focalizadas incluyendo lotes previos.
+Cubren nivel 49 bloqueado, evolucion/objeto, niveles 50/75/100, enemigos de
+100.000/1.000.000 HP, limite de blancos, jefe aislado, sigilo, alcance, mezcla
+de sangrados, captura de buffs y una sola baja por DoT sin curacion de base.
+Las pruebas de X-23 usan los proyectiles reales y su ruta de impacto. Los
+contadores de Deadpool se comprueban independientes entre instancias.
+
+Validacion completa: npm run check aprobado, 809 tests, simulaciones de
+economia/campana y check de rarezas. Benchmark p95 0.126 ms; accesibilidad y
+lanzamiento sin errores. Smoke desktop 1366x768 y mobile 390x844 sin overflow
+ni desvio de ruta. Catalogo de heroes intacto; 82 objetos sin cambios salvo
+las tres descripciones. Bootstrap regenerado.
+
+Pendiente de fase 1: contratos de rayos y seleccion secundaria en otras
+habilidades, resistencias y acumulaciones mixtas. El sangrado y los ciclos
+de este lote dejan de estar pendientes; fases 2 a 10 siguen sin completar.
