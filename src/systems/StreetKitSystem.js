@@ -72,13 +72,6 @@ export class StreetKitSystem {
             && candidate.abilitySystem?.streetKit?.radarTimer > 0);
         if (radarActive) stats.canSeeStealth = true;
 
-        const luke = heroes.find((candidate) => candidate.id === 'luke_cage'
-            && candidate !== this.hero && distance(candidate, this.hero) <= 135);
-        if (luke) {
-            stats.range *= 1.06;
-            stats.fireRate *= 1.08;
-        }
-
         if (this.hero.id === 'moon_knight') {
             if (this.moonPhase === 0) stats.range *= 1.22;
             if (this.moonPhase === 1) stats.damage *= 1.3;
@@ -163,7 +156,7 @@ export class StreetKitSystem {
         if (this.hero.id === 'moon_knight') return timerState(`Ciclo: ${MOON_PHASES[this.moonPhase].label}`, this.moonTimer / 10, this.moonPhase === 1);
         if (this.hero.id === 'blade') return timerState(`Sed de sangre ${this.bloodTally}/6`, this.bloodTally / 6, this.bloodTally >= 5);
         if (this.hero.id === 'ghost_rider') return timerState(this.cooldownRemaining <= 0 ? 'Penitencia lista' : `Penitencia ${this.cooldownRemaining.toFixed(1)} s`, this.cooldownRemaining <= 0 ? 1 : 1 - this.cooldownRemaining / 11, this.cooldownRemaining <= 0);
-        if (this.hero.id === 'luke_cage') return timerState(this.cooldownRemaining <= 0 ? 'Guardia urbana lista' : `Guardia urbana ${this.cooldownRemaining.toFixed(1)} s`, this.cooldownRemaining <= 0 ? 1 : 1 - this.cooldownRemaining / 10, this.cooldownRemaining <= 0);
+        if (this.hero.id === 'luke_cage') return { label: `Tenacidad: -${Math.round(this.hero.getStunResistance() * 100)}% aturdimiento`, progress: null, ready: true };
         if (this.hero.id === 'shang_chi') return staticState(`Anillos: ${this.getModeLabel()}`);
         if (this.hero.id === 'she_hulk') return staticState('Provocacion e impacto cada 3 golpes');
         return null;

@@ -366,8 +366,13 @@ export class Hero {
         });
     }
 
+    getStunResistance() {
+        return Math.min(0.8, Math.max(0, Number(this.config.special?.stunResistance) || 0));
+    }
+
     applyStun(duration = 1) {
-        this.stunTimer = Math.max(this.stunTimer, Math.max(0, duration));
+        const effectiveDuration = Math.max(0, duration) * (1 - this.getStunResistance());
+        this.stunTimer = Math.max(this.stunTimer, effectiveDuration);
         this.timer = 0;
     }
 

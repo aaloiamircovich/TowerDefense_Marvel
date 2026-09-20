@@ -11,7 +11,7 @@ const contracts = {
     moon_knight: { cost: 250, ability: 'CICLO DE KHONSHU', abilityDesc: 'Alterna luna creciente para alcance, luna llena para dano y menguante para cadencia y control.', niche: 'artilleria adaptable por ciclos', metrics: [4, 4, 2, 4] },
     blade: { cost: 330, ability: 'CAZADOR DAYWALKER', abilityDesc: 'Cada impacto sangra: 21% de su dano efectivo por segundo durante 3.6 s; contra jefes o amenaza 4+, 30% durante 5 s. No acumula sangrados. Conserva toxina acumulable.', niche: 'caza de elites, sangrado y desgaste', metrics: [5, 2, 3, 4] },
     ghost_rider: { cost: 520, ability: 'ESPIRITU DE VENGANZA', abilityDesc: 'Cada impacto quema durante 4 s: 13.5% de su dano efectivo por segundo, sin acumularse. Sus cadenas arrastran por la ruta y Penitencia castiga la vida perdida de jefes.', niche: 'control pesado y castigo de jefes', metrics: [5, 4, 1, 4] },
-    luke_cage: { cost: 210, ability: 'DEFENSOR INQUEBRANTABLE', abilityDesc: 'Protege aliados cercanos y sostiene la presión de grupos con golpes pesados.', niche: 'proteccion local y control cercano', metrics: [3, 4, 5, 1] },
+    luke_cage: { cost: 210, ability: 'DEFENSOR INQUEBRANTABLE', abilityDesc: 'Los aturdimientos que recibe duran 50% menos. Ataca y tiene 70% de reducir la armadura del objetivo durante 3.5 s antes de resistencias. No potencia aliados.', niche: 'tenacidad propia y ruptura de blindaje', metrics: [3, 4, 5, 1] },
     shang_chi: { cost: 410, ability: 'LEYENDA DE LOS DIEZ ANILLOS', abilityDesc: 'Configura sus anillos en orbita encadenada, rafaga de impacto o guardia de alta cadencia.', niche: 'patrones manuales de combo y control', metrics: [5, 4, 3, 1] },
     she_hulk: { cost: 350, ability: 'OBJECION DEFINITIVA', abilityDesc: 'Provoca a grupos marcandolos y encadena impactos que retroceden por el trazado sin abandonar la ruta.', niche: 'impacto de area, provocacion y retroceso', metrics: [5, 4, 2, 1] }
 };
@@ -33,6 +33,8 @@ for (const [id, contract] of Object.entries(contracts)) {
         }
     });
 }
+
+heroes.luke_cage.special = { ...heroes.luke_cage.special, stunResistance: 0.5 };
 
 fs.writeFileSync(heroFile, `${JSON.stringify(heroes, null, 2)}\n`, 'utf8');
 console.log('Expansion urbana configurada: 7 heroes completos');

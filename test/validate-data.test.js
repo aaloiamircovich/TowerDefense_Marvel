@@ -108,6 +108,19 @@ test('validate-data valida unidades explicitas solo para dano persistente', () =
     assert.match(result.stderr, /heroes\.x_23\.special\.attackEffects\.0\.damageBasis/);
 });
 
+test('validate-data limita tenacidad a numeros entre 0 y 80 por ciento', () => {
+    const workspace = createDataWorkspace((data) => {
+        data.heroes.luke_cage.special.stunResistance = 1;
+        data.heroes.loki.special.stunResistance = -0.1;
+        data.heroes.sentry.special.stunResistance = '0.5';
+    });
+    const result = runValidator(workspace);
+    assert.notEqual(result.status, 0);
+    for (const id of ['luke_cage', 'loki', 'sentry']) {
+        assert.ok(result.stderr.includes(`heroes.${id}.special.stunResistance debe estar entre 0 y 0.8`));
+    }
+});
+
 test('validate-data bloquea curacion de base en efectos de heroes', () => {
     const workspace = createDataWorkspace((data) => {
         data.heroes.loki.special.attackEffects = [{ type: 'heal', chance: 1, duration: 1, power: 1 }];

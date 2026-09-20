@@ -1082,7 +1082,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.9,
       "canSeeStealth": true,
       "ability": "ASESINA DE ÉLITE",
-      "abilityDesc": "Encadena ataques cercanos y ejecuta enemigos no jefes por debajo del 25% de salud.",
+      "abilityDesc": "Ejecuta enemigos no jefes al 25% de salud o menos, ignorando sus defensas. Si no ejecuta, golpea hasta dos enemigos cercanos al objetivo.",
       "sprite": "assets/images/heroes/gamora/portrait.png",
       "allowedTerrains": [
         1,
@@ -2072,7 +2072,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.4,
       "canSeeStealth": false,
       "ability": "DEFENSOR INQUEBRANTABLE",
-      "abilityDesc": "Protege aliados cercanos con presencia de calle y rompe armadura con golpes pesados.",
+      "abilityDesc": "Los aturdimientos que recibe duran 50% menos. Ataca y tiene 70% de reducir la armadura del objetivo durante 3.5 s antes de resistencias. No potencia aliados.",
       "sprite": "assets/images/heroes/luke_cage/portrait.png",
       "allowedTerrains": [
         1,
@@ -2089,7 +2089,10 @@ window.__MARVEL_TD_DATA__ = {
         "support": 5,
         "detection": 1
       },
-      "niche": "proteccion local y ruptura de blindaje",
+      "niche": "tenacidad propia y ruptura de blindaje",
+      "special": {
+        "stunResistance": 0.5
+      },
       "visual": {
         "portrait": "assets/images/heroes/luke_cage/portrait.png",
         "size": 96,
@@ -3679,7 +3682,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.35,
       "canSeeStealth": false,
       "ability": "ELEMENTOS DE ATTILAN",
-      "abilityDesc": "Alterna control elemental con area moderada para sostener curvas.",
+      "abilityDesc": "Proyectiles con dano de area y 45% de ralentizar solo al objetivo principal. Con evolucion y Cristal Terrigeno, alterna fuego, hielo y rayos cada siete ataques.",
       "niche": "control inhumano de area",
       "allowedTerrains": [
         0,
@@ -4872,7 +4875,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.45,
       "canSeeStealth": true,
       "ability": "DIAMANTE PSIQUICO",
-      "abilityDesc": "Control mental que marca elites, revela sigilo y aumenta el critico del frente.",
+      "abilityDesc": "Detecta sigilo para sus propios ataques. Puede marcar y ralentizar al objetivo principal, sea comun o jefe. +4 puntos de probabilidad critica propia; no potencia aliados.",
       "niche": "soporte mutante de control",
       "allowedTerrains": [
         1,
@@ -5882,7 +5885,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.65,
       "canSeeStealth": true,
       "ability": "ARSENAL GUARDIAN",
-      "abilityDesc": "Torretas portatiles con splash pequeno, deteccion y cadencia estable.",
+      "abilityDesc": "Dispara proyectiles explosivos con dano de area pequeno y 14% de penetracion de armadura. Detecta sigilo para sus propios ataques; no despliega torretas.",
       "niche": "artilleria tecnologica versatil",
       "allowedTerrains": [
         3
@@ -5961,7 +5964,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.85,
       "canSeeStealth": true,
       "ability": "SALTO BAMF",
-      "abilityDesc": "Teletransporta golpes entre objetivos cercanos, marca amenazas ocultas y deja una nube breve que ralentiza la ruta.",
+      "abilityDesc": "Sus ataques rebotan hasta dos veces entre enemigos cercanos. Detecta sigilo y puede marcar o ralentizar solo al objetivo principal; no crea nubes ni se teletransporta.",
       "niche": "movilidad mutante, deteccion y control corto",
       "allowedTerrains": [
         1,
@@ -6295,7 +6298,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.2,
       "canSeeStealth": false,
       "ability": "ESCUDO SOVIETICO",
-      "abilityDesc": "Lanza un escudo que rebota una vez y aturde brevemente si golpea a un elite.",
+      "abilityDesc": "Lanza un escudo que rebota una vez. Tiene 12% de aturdir al objetivo principal durante 0.25 s antes de resistencias, sea comun o jefe; el rebote solo hace dano.",
       "niche": "rebote defensivo economico",
       "sprite": "assets/images/heroes/red_guardian/portrait.png",
       "visual": {
@@ -6459,7 +6462,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.35,
       "canSeeStealth": true,
       "ability": "CYBER-SABOTAJE",
-      "abilityDesc": "Disparos ciberneticos detectan sigilo y reducen armadura de enemigos tecnologicos.",
+      "abilityDesc": "Detecta sigilo para sus propios ataques. Tiene 34% de reducir la armadura del objetivo principal durante 2.6 s antes de resistencias, sin restriccion de categoria.",
       "niche": "rara anti-sigilo y antiarmadura",
       "sprite": "assets/images/heroes/nebula/portrait.png",
       "visual": {
@@ -6769,7 +6772,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.45,
       "canSeeStealth": true,
       "ability": "MIMESIS PERFECTA",
-      "abilityDesc": "Replica patrones de combate, marca al objetivo y aumenta la probabilidad critica propia.",
+      "abilityDesc": "Tiene 32% de marcar al objetivo principal durante 2.2 s antes de resistencias. +4 puntos de probabilidad critica propia; no copia habilidades ni patrones aliados.",
       "niche": "duelista comun con marca",
       "sprite": "assets/images/heroes/echo/portrait.png",
       "visual": {

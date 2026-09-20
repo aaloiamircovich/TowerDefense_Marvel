@@ -1,7 +1,8 @@
 # Matriz individual de identidad
 
 Fecha: 2026-09-13. Roster: 105 heroes, data/heroes.json en 553ad63.
-PROPUESTAS, NO IMPLEMENTADAS. Complementa PLAN_IDENTIDAD_HEROES.md.
+La columna de propuestas sigue pendiente salvo avances marcados en Actual.
+Complementa PLAN_IDENTIDAD_HEROES.md y COBERTURA_CONTRATOS_HEROES.md.
 
 La columna actual resume mecanismos, no repite literalmente el texto de la
 habilidad. No incluye todos los multiplicadores de objetos/evoluciones.
@@ -22,7 +23,7 @@ los valores finales se fijan despues de las pruebas de fase 1.
 | `maria_hill` | Maria Hill (Common) | Aura de dano menor y deteccion. | Orden de prioridad: buff de dano condicionado al objetivo marcado; cobertura limitada frente al liderazgo continuo, sin atacar. |
 | `profesor_x` | Profesor X (Mythic) | Aura amplia de cadencia y deteccion. | Enlace mental: repartir un presupuesto de cadencia entre aliados enlazados; mas cobertura divide potencia, sin atacar. |
 | `domino` | Domino (Epic) | Poco dano y ceil(15% recompensa) por ataque. | Conservar su firma economica; contador de dinero generado y seleccion tactica. Ningun rebote, DoT o clon cobra otro 15%. |
-| `luke_cage` | Luke Cage (Common) | Ataca, rompe armadura y da buffs de alcance/cadencia. | Guardia de Harlem: retirar buffs aliados y convertirlos en tenacidad propia frente a stun; rompe tanques de cerca, sin curar. |
+| `luke_cage` | Luke Cage (Common) | F2/lote 1: atacante con ruptura; sin buff aliado. Tenacidad propia reduce stun recibido 50%, sin inmunidad ni curacion. | Guardia de Harlem implementada en su contrato inicial; comparar aporte en equipos y encuentros con stun. |
 
 ## Fase 3: tiradores y tecnologia
 

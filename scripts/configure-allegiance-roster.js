@@ -25,7 +25,7 @@ const allegianceHeroes = {
         visualStyle: 'sonic',
         projectileColor: '#38bdf8'
     }),
-    crystal: contract('Crystal', 'Cosmico', 'Rare', 330, 32, 175, 1.35, false, 'ELEMENTOS DE ATTILAN', 'Alterna control elemental con area moderada para sostener curvas.', 'control inhumano de area', ['Inhumanos', 'Cosmico'], 'support', [3, 5, 4, 2], {
+    crystal: contract('Crystal', 'Cosmico', 'Rare', 330, 32, 175, 1.35, false, 'ELEMENTOS DE ATTILAN', 'Proyectiles con dano de area y 45% de ralentizar solo al objetivo principal. Con evolucion y Cristal Terrigeno, alterna fuego, hielo y rayos cada siete ataques.', 'control inhumano de area', ['Inhumanos', 'Cosmico'], 'support', [3, 5, 4, 2], {
         projectileProfile: { splashRadius: 46, splashFactor: 0.28 },
         attackEffects: [{ type: 'slow', duration: 1.7, power: 0.36, chance: 0.45 }],
         statModifiers: { rangePct: 0.04 },

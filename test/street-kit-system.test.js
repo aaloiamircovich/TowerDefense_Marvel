@@ -55,7 +55,7 @@ test('Ghost Rider arrastra por la ruta y usa Penitencia solo contra jefes', () =
     assert.ok(boss.hp < beforePenance);
 });
 
-test('Luke Cage ya no intercepta fugas y conserva soporte cercano', () => {
+test('Luke Cage no intercepta fugas ni conserva buffs aliados', () => {
     const game = createGame();
     const hero = createHero('luke_cage', game, { range: 90 });
     const ally = createHero('ally', game, { range: 120, fireRate: 1.2 });
@@ -67,9 +67,9 @@ test('Luke Cage ya no intercepta fugas y conserva soporte cercano', () => {
     hero.abilitySystem.update(0.1, [enemy], hero.getEffectiveStats(), []);
     assert.equal(enemy.distanceTravelled, start);
     assert.equal(enemy.y, 0);
-    assert.ok(ally.getEffectiveStats().range > ally.range);
-    assert.ok(ally.getEffectiveStats().fireRate > ally.fireRate);
-    assert.equal(hero.abilitySystem.getDisplayState().label, 'Guardia urbana lista');
+    assert.equal(ally.getEffectiveStats().range, ally.range);
+    assert.equal(ally.getEffectiveStats().fireRate, ally.fireRate);
+    assert.equal(hero.abilitySystem.getDisplayState().progress, null);
 });
 
 test('Shang-Chi configura tres patrones de los Diez Anillos', () => {

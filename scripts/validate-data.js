@@ -35,7 +35,7 @@ function validateHeroes(heroes) {
     const knownIds = new Set(Object.keys(heroes));
     const allowedHeroKeys = new Set(['id', 'name', 'category', 'rarity', 'cost', 'damage', 'range', 'rangePattern', 'fireRate', 'canSeeStealth', 'ability', 'abilityDesc', 'niche', 'sprite', 'visual', 'allowedTerrains', 'tags', 'formationRole', 'teamMetrics', 'terrainRole', 'special', 'evolutionId']);
     const allowedRangePatterns = new Set(['circle', 'cross', 'x', 'ring']);
-    const allowedSpecialKeys = new Set(['statModifiers', 'attackEffects', 'projectileProfile', 'visualStyle', 'projectileColor', 'supportAura', 'economyOnHit']);
+    const allowedSpecialKeys = new Set(['statModifiers', 'attackEffects', 'projectileProfile', 'visualStyle', 'projectileColor', 'supportAura', 'economyOnHit', 'stunResistance']);
     const allowedSpecialStatKeys = new Set(['allowWater', 'cooldown', 'critChance', 'damagePct', 'detectStealth', 'fireRatePct', 'rangePct']);
     const allowedAttackEffectKeys = new Set(['chance', 'duration', 'power', 'type', 'damageBasis']);
     const allowedAttackEffectTypes = new Set(['armorBreak', 'bleed', 'burn', 'curse', 'mark', 'poison', 'slow', 'stun', 'web']);
@@ -156,6 +156,10 @@ function validateEvolutionCatalog() {
 
 function validateHeroSpecial(heroId, special, schema, hero = {}) {
     validateAllowedKeys(`heroes.${heroId}.special`, special, schema.allowedSpecialKeys);
+
+    if (special.stunResistance !== undefined && (!isUnitNumber(special.stunResistance) || special.stunResistance > 0.8)) {
+        errors.push(`heroes.${heroId}.special.stunResistance debe estar entre 0 y 0.8`);
+    }
 
     if (special.statModifiers) {
         validateAllowedKeys(`heroes.${heroId}.special.statModifiers`, special.statModifiers, schema.allowedSpecialStatKeys);

@@ -1,7 +1,8 @@
 # Identidad y habilidades de los 105 heroes
 
 Fecha: 2026-09-13. Base revisada: commit 553ad63.
-Estado: FASE 1 EN CURSO. Dieciseis lotes implementados; fases 2 a 10 pendientes.
+Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 INICIADA, primer lote (Luke).
+Fases 3 a 10 pendientes. La cobertura comun no certifica el balance individual.
 Los hallazgos de auditoria describen el baseline; ver avances abajo para las
 correcciones ya realizadas. No equivale a completar el rediseño de los 105 kits.
 
@@ -140,7 +141,10 @@ que reciben los aliados. Revisar ambos caminos antes de sumar mas efectos.
 
 ## Diez fases de implementacion
 
-Fase 1 EN CURSO; fases 2 a 10 PENDIENTES. El orden figura en la matriz anexa.
+Fase 1 EN CIERRE; fase 2 INICIADA; fases 3 a 10 PENDIENTES.
+El orden figura en la matriz anexa. El primer lote de fase 2 es independiente
+de la revision restante de textos individuales; ninguna de ambas se declara
+completada por este avance.
 Las fases 3 a 7 se entregan en lotes de hasta 4 heroes para poder probarlos;
 un lote no equivale a completar toda la fase. No prometer diez commits exactos.
 
@@ -863,3 +867,61 @@ Pendiente de fase 1: cierre cruzado de cobertura con la matriz de 105 heroes.
 El bypass de barreras fortalece estos remates frente a comunes protegidos;
 queda identificado para comparativas de equipos de fase 10. Las regresiones
 no equivalen a demostrar balance global ni a completar el rediseño del roster.
+
+## Fase 1: decimoseptimo lote, cobertura transversal
+
+211 pruebas nuevas en hero-roster-contract: dos por cada uno de los 105 IDs
+y una que cruza la matriz documental con catalogos. Sin duplicados, omisiones
+ni signatures apuntando a IDs inexistentes. Estadisticas, medidores, unidades
+DoT y seleccion primaria se verifican en niveles 1/49/50/51/99/100 y todos los
+modos disponibles; respeta evolucion al requisito de catalogo sin objeto.
+
+Cada heroe se ejecuta a nivel 1 y 100 durante 40 segundos de simulacion contra
+tres blancos estacionarios, con impactos inmediatos y probabilidades forzadas
+a favor de efectos. Los 96 atacantes disparan y danan; los nueve soportes no
+disparan, danan ni aplican estados ofensivos. Sin curacion de base ni NaN.
+No mide movimiento, tiempos de viaje, DPS comparable ni balance de campana.
+La documentacion de cobertura separa estas pruebas de los contratos especificos.
+
+Corregidas ocho fichas: Crystal declara requisito de evolucion/objeto para
+alternancia; Rocket no anuncia torretas; Echo no anuncia copia; Nightcrawler
+no anuncia salto ni nube; Emma distingue critico/deteccion propios de aura;
+Red Guardian no exige elite; Nebula no exige categoria tecnologica; Gamora
+explicita umbral inclusivo y defensas ignoradas. X-23 ya estaba corregida.
+Nueve pruebas adicionales verifican mecanismos y sincronizacion con los
+generadores existentes y bootstrap. No se ejecutaron generadores de roster
+que podrian restaurar rarezas o stats historicos; solo build:data.
+
+La cobertura comun de los 105 esta cerrada. Queda revisar la concordancia
+de otras fichas individuales (por ejemplo condiciones de elite, deteccion
+propia frente a revelado, y control principal frente a area). Por eso no se
+declara toda la fase 1 terminada ni se confunde con el rediseno de cada kit.
+
+## Fase 2: primer lote, Luke Cage
+
+Luke deja de conceder a aliados +6% alcance/+8% cadencia a 135 px desde
+StreetKitSystem. Sigue siendo atacante cercano y conserva ruptura de armadura
+(70%, poder 0.28, 3.5 s antes de resistencias), dano, cadencia, rareza y rango.
+Nueva tenacidad propia: special.stunResistance=0.5 reduce a la mitad el stun
+recibido, sin afectar aliados ni convertirse en aura. Fija en todos los niveles;
+no escala dano/rango/cadencia por esta pasiva ni concede inmunidad total.
+
+Hero.applyStun conserva maximo del tiempo pendiente y duracion entrante
+resistida, sin sumar ni acortar un stun mayor. El validador acepta solo numeros
+entre 0 y 0.8; runtime acota al mismo techo. Los demas heroes no cambian.
+La ficha y el indicador muestran tenacidad; se retira Guardia urbana lista,
+que anunciaba una activacion inexistente. Se preserva ausencia de interceptar
+fugas. El generador urbano y bootstrap reproducen el atributo y su texto.
+
+Seis tests nuevos cubren vecinos/copia, niveles 1/50/100, espera y recuperacion,
+ruptura despues del stun, reaplicacion, indicadores y fase real de boss.
+Los primeros cinco fallaban antes de implementar. Se actualizo la prueba
+heredada que exigia el buff retirado y se agrego una regresion de schema.
+Pendiente de fase 2: nueve soportes, acumulacion de auras, evolucion de buffs,
+Domino y economia heredada de Shang-Chi. No se afirma que Luke y los soportes
+ya esten equilibrados: retirar su buff afecta equipos que lo aprovechaban.
+
+Validacion conjunta de estos dos lotes: npm run check aprobado con 1.204 tests;
+economia, rarezas y escenarios estimados de campana aprobados. Benchmark p95
+0.425 ms. Accesibilidad y lanzamiento sin errores. Smoke desktop 1366x768 y
+mobile 390x844 sin overflow ni desvio de ruta. Sin sprites o mapas modificados.

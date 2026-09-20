@@ -105,7 +105,7 @@ const rivalsHeroes = {
         visualStyle: 'impact',
         projectileColor: '#ef4444'
     }),
-    emma_frost: contract('Emma Frost', 'Mutante', 'Legendary', 470, 34, 180, 1.45, true, 'DIAMANTE PSIQUICO', 'Control mental que marca elites, revela sigilo y aumenta el critico del frente.', 'soporte mutante de control', ['Mutantes', 'X-Men', 'Rivales'], 'support', [3, 5, 5, 5], {
+    emma_frost: contract('Emma Frost', 'Mutante', 'Legendary', 470, 34, 180, 1.45, true, 'DIAMANTE PSIQUICO', 'Detecta sigilo para sus propios ataques. Puede marcar y ralentizar al objetivo principal, sea comun o jefe. +4 puntos de probabilidad critica propia; no potencia aliados.', 'soporte mutante de control', ['Mutantes', 'X-Men', 'Rivales'], 'support', [3, 5, 5, 5], {
         attackEffects: [{ type: 'mark', duration: 2.8, power: 0.17, chance: 0.42 }, { type: 'slow', duration: 1.6, power: 0.28, chance: 0.28 }],
         statModifiers: { detectStealth: true, critChance: 4, rangePct: 0.05 },
         visualStyle: 'ice',
@@ -178,7 +178,7 @@ const rivalsHeroes = {
         visualStyle: 'impact',
         projectileColor: '#5be7ff'
     }),
-    rocket_raccoon: contract('Rocket Raccoon', 'Tecnologico', 'Rare', 335, 36, 185, 1.65, true, 'ARSENAL GUARDIAN', 'Torretas portatiles con splash pequeno, deteccion y cadencia estable.', 'artilleria tecnologica versatil', ['Guardianes', 'Tecnologia', 'Rivales'], 'artillery', [4, 4, 3, 5], {
+    rocket_raccoon: contract('Rocket Raccoon', 'Tecnologico', 'Rare', 335, 36, 185, 1.65, true, 'ARSENAL GUARDIAN', 'Dispara proyectiles explosivos con dano de area pequeno y 14% de penetracion de armadura. Detecta sigilo para sus propios ataques; no despliega torretas.', 'artilleria tecnologica versatil', ['Guardianes', 'Tecnologia', 'Rivales'], 'artillery', [4, 4, 3, 5], {
         projectileProfile: { splashRadius: 44, splashFactor: 0.3, armorPenetration: 0.14 },
         statModifiers: { detectStealth: true, fireRatePct: 0.05 },
         visualStyle: 'explosive',
