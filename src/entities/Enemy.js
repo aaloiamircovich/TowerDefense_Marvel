@@ -1,6 +1,7 @@
 import { EnemyBehaviorSystem } from '../systems/EnemyBehaviorSystem.js';
 import { SpriteAnimator } from '../rendering/SpriteAnimator.js';
 import { DOT_TYPES, resolveStatusDamage } from '../utils/StatusDamage.js';
+import { addPoisonStacks, updatePoisonStacks } from '../systems/PoisonStatus.js';
 
 let enemyUid = 0;
 const imageCache = new Map();
@@ -214,6 +215,18 @@ export class Enemy {
         const specificResistance = this.config.statusResistances?.[type] || 0;
         const adjustedDuration = duration * Math.max(0.2, 1 - this.statusResistance - specificResistance);
 
+        if (type === 'poison') {
+            if (!this.isAlive) return false;
+            const existing = this.debuffs.find((debuff) => debuff.type === 'poison');
+            const status = existing || { type: 'poison', applications: [], stacks: 0, duration: 0 };
+            const accepted = addPoisonStacks(status, effect, dot, source, adjustedDuration, (layer, elapsed) => this.applyDotTick(layer, elapsed));
+            if (accepted) {
+                if (!existing) this.debuffs.push(status);
+                source?.recordStatusApplied?.({ ...effect, duration: adjustedDuration }, this);
+            }
+            return accepted;
+        }
+
         if (type === 'web') {
             const web = this.debuffs.find((debuff) => debuff.type === 'web');
             if (web) {
@@ -241,13 +254,12 @@ export class Enemy {
                 if (dot.damagePerSecond >= existing.damagePerSecond) {
                     Object.assign(existing, dot, { power, source, explicitDamageBasis: Boolean(effect.damageBasis) });
                 }
-                if (type === 'poison') existing.stacks = Math.min(12, (existing.stacks || 1) + Number(effect.stacks || 1));
             } else {
                 existing.power = Math.max(existing.power, power);
                 existing.source = source || existing.source;
             }
         } else {
-            this.debuffs.push({ type, duration: adjustedDuration, power, source, tickTimer: 0, stacks: type === 'poison' ? Math.min(12, Math.max(1, Number(effect.stacks || 1))) : 1, ...dot, explicitDamageBasis: Boolean(effect.damageBasis) });
+            this.debuffs.push({ type, duration: adjustedDuration, power, source, tickTimer: 0, stacks: 1, ...dot, explicitDamageBasis: Boolean(effect.damageBasis) });
         }
         source?.recordStatusApplied?.({ ...effect, duration: adjustedDuration }, this);
         return true;
@@ -262,11 +274,16 @@ export class Enemy {
             this.killCredited = true;
             debuff.source?.recordKill?.(debuff.source?.game?.resourceManager, this);
         }
+        return this.isAlive;
     }
 
     updateDebuffs(dt) {
         this.debuffs.forEach((debuff) => {
-            if ((debuff.type === 'burn' || debuff.type === 'bleed' || debuff.type === 'poison' || debuff.type === 'curse') && this.isAlive) {
+            if (debuff.type === 'poison' && this.isAlive) {
+                updatePoisonStacks(debuff, dt, (layer, elapsed) => this.applyDotTick(layer, elapsed));
+                return;
+            }
+            if ((debuff.type === 'burn' || debuff.type === 'bleed' || debuff.type === 'curse') && this.isAlive) {
                 const interval = debuff.type === 'bleed' ? 0.4 : 0.5;
                 debuff.tickTimer += Math.min(dt, Math.max(0, debuff.duration));
                 while (debuff.tickTimer >= interval && this.isAlive) {

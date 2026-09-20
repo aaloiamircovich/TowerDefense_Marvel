@@ -103,7 +103,7 @@ test('refrescar estado no liquida el residuo antes de expirar ni suma fuentes', 
 });
 
 test('estados legacy conservan ticks completos sin fraccion ni cambio de minimo', () => {
-    for (const [type, power, expected] of [['burn', 10, 5], ['bleed', 10, 4], ['poison', 0.001, 5], ['curse', 0.001, 5]]) {
+    for (const [type, power, expected] of [['burn', 10, 5], ['bleed', 10, 4], ['curse', 0.001, 5]]) {
         const target = makeEnemy();
         target.applyStatus({ type, duration: 0.65, power });
         target.updateDebuffs(1);

@@ -18,6 +18,11 @@ const enemies = Array.from({ length: 150 }, (_, index) => new Enemy({
 }, path, game));
 game.enemies = enemies;
 
+enemies.forEach((enemy, index) => {
+    enemy.applyStatus({ type: 'poison', power: 1, damageBasis: 'flat', duration: 30, stacks: 12 });
+    enemy.updateDebuffs((index % 30) / 60);
+});
+
 const projectilePool = new ObjectPool(() => new Projectile(0, 0, null), (projectile) => projectile.deactivate(), 512);
 const projectiles = Array.from({ length: 300 }, (_, index) => projectilePool.acquire((projectile) => projectile.reset(
     400,
@@ -45,7 +50,7 @@ const average = samples.reduce((total, value) => total + value, 0) / samples.len
 const p95 = samples[Math.floor(samples.length * 0.95)];
 const poolStats = projectilePool.getStats();
 
-console.log('Benchmark 150 enemigos / 300 proyectiles / 120 VFX');
+console.log('Benchmark 150 enemigos con 12 venenos / 300 proyectiles / 120 VFX');
 console.log(`Tick promedio: ${average.toFixed(3)} ms`);
 console.log(`Tick p95: ${p95.toFixed(3)} ms (objetivo < ${TARGET_FRAME_MS.toFixed(2)} ms)`);
 console.log(`Pool de proyectiles: ${poolStats.created} creados, ${poolStats.reused} reutilizados`);

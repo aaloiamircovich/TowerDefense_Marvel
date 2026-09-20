@@ -39,12 +39,28 @@ que una tirada independiente tenga exito en otro destinatario.
 - Combinar explosion, rebote y propagacion permite dano de los tres canales
   al mismo vecino, como antes. No transmite tres veces el veneno: solo el canal
   de propagacion aplica estados secundarios. El principal queda excluido.
-- Los estados nunca curan la base. La autoria de DoT queda en la fuente del
-  DPS mas fuerte; un contagio debil puede refrescar sin apropiarse de su baja.
-- Veneno mantiene su bolsa de 12 stacks compartidos; no es todavia un modelo
-  de acumulaciones independientes por heroe. Ver pendiente en el plan.
+- Los estados nunca curan la base. Burn, bleed y curse conservan la autoria
+  de la fuente del DPS mas fuerte; un contagio debil puede refrescarlos sin
+  apropiarse de su baja. Veneno conserva la fuente de cada aplicacion.
+- Veneno tiene un limite compartido de 12 acumulaciones independientes: cada
+  una conserva DPS, fuente, duracion y reloj. El indicador sigue siendo unico;
+  no multiplica los bonus que cuentan tipos distintos de estados.
 
-## Pendiente
+## Actualizaciones y pendientes
+
+Actualizacion lote 10 (2026-09-20): venenos de 10 y 1 DPS suman 11, no 20.
+Cada aporte expira independientemente, incluso si procede del mismo heroe.
+Con doce activos, un aporte mas potente reemplaza al mas debil, liquidando
+el tiempo transcurrido pendiente a la fuente anterior. En empate se reemplaza
+el de menor duracion restante. Un aporte igual o mas debil solo refresca otro
+equivalente de su propia fuente, sin reiniciar su reloj; no prolonga los ajenos.
+El orden temporal de los ticks entre venenos conserva autoria con frames largos.
+
+Todo veneno, incluido el legacy sin damageBasis, ahora admite dano fraccionario
+y paga el residuo al expirar o ser reemplazado. El legacy sigue calculando su
+DPS sobre vida maxima; no cambia a dano de ataque. El minimo de un punto por
+tick ya no se aplica al veneno. Sus resistencias siguen acortando la duracion,
+no el DPS. No se alteran chances ni potencias de heroes, objetos o enemigos.
 
 Actualizacion lote 9: los DoT con damageBasis explicito aplican al expirar
 el dano proporcional del tiempo restante desde su ultimo tick. Mantienen
@@ -52,8 +68,9 @@ ticks de 0.5 s (burn/poison/curse) o 0.4 s (bleed) mientras estan activos.
 Esto evita que las resistencias conviertan un estado corto en cero dano.
 La duracion sigue siendo base * max(0.2, 1 - resistencia general - especifica);
 no se reduce el DPS una segunda vez. Barrera, atribucion y una sola baja
-se procesan igual en ticks completos y parciales. Estados legacy sin
-damageBasis conservan ticks completos y su minimo; no se migran aqui.
+se procesan igual en ticks completos y parciales. Burn, bleed y curse legacy
+sin damageBasis conservan ticks completos y su minimo. Veneno fue migrado
+posteriormente en lote 10, segun el contrato anterior.
 
 Actualizacion lote 8: la pasada de Captain Marvel fija un blanco con deteccion
 efectiva y alcance especial de 2.2 veces su rango. Sin blanco valido no gasta

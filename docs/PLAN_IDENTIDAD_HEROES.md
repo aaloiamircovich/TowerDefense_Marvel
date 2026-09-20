@@ -1,7 +1,7 @@
 # Identidad y habilidades de los 105 heroes
 
 Fecha: 2026-09-13. Base revisada: commit 553ad63.
-Estado: FASE 1 EN CURSO. Nueve lotes implementados; fases 2 a 10 pendientes.
+Estado: FASE 1 EN CURSO. Diez lotes implementados; fases 2 a 10 pendientes.
 Los hallazgos de auditoria describen el baseline; ver avances abajo para las
 correcciones ya realizadas. No equivale a completar el rediseño de los 105 kits.
 
@@ -597,3 +597,44 @@ segundo, no 11; ademas conserva autoria y duracion compartidas. Su migracion
 a contribuciones independientes requiere decidir reemplazo al llegar al cap
 y probar efectos sobre jefes; no se implementa en este lote. Otras selecciones
 autonomas de kits siguen pendientes. La fase 1 no esta terminada.
+
+## Fase 1: decimo lote, 2026-09-20
+
+Veneno migra de una bolsa que multiplicaba el mayor DPS por todos los stacks
+a un maximo compartido de doce contribuciones independientes. Cada aplicacion
+captura su DPS, fuente, duracion resistida y reloj; 10 + 1 DPS ahora suman 11,
+no 20. Aplicaciones de la misma fuente tambien expiran por separado. Los
+ticks se resuelven en orden temporal entre venenos para conservar la autoria
+de la baja incluso con frames largos. No cambia el orden entre otros estados.
+
+Al llegar a doce, un veneno mas potente reemplaza al mas debil (en empate,
+al de menor duracion restante), pagando antes su tiempo pendiente a su autor.
+Un golpe igual o menor solo puede refrescar una contribucion equivalente de
+su propia fuente, sin reiniciar el reloj. Otra fuente no prolonga ni se apropia
+de esos stacks. Una baja durante el reemplazo detiene nuevas aplicaciones.
+
+Esta migracion incluye el veneno legacy sin damageBasis: sigue usando porcentaje
+de vida maxima, pero ahora admite dano fraccionario y liquida el tiempo final,
+igual que el explicito. Se elimina el minimo de un punto por tick para veneno;
+evita inflar doce aportes pequenos y permite que venenos cortos danen a jefes.
+Burn, bleed y curse sin unidad conservan su contrato anterior. No se modifican
+potencias, chances, duraciones base ni resistencias de los catalogos.
+
+El indicador visual sigue siendo un solo estado con contador de stacks, y los
+objetos que cuentan estados distintos no cuentan cada acumulacion como otro
+estado. No hay curacion de base, ni cambios de sprites, mapas o datos.
+
+14 regresiones nuevas; 51 pruebas focalizadas. Incluyen dano y autoria por
+fuente, expiracion, limite, reemplazo, refresh, dano fraccionario, captura de
+buffs, una sola baja y los efectos reales de Black Widow, Blade, Elsa Bloodstone,
+Venom y Yelena contra Ultron Prime y Thanos, con distintos pasos de simulacion.
+
+Validacion completa: npm run check aprobado, 853 tests, simulaciones existentes
+de economia/campana y check de rarezas. Benchmark ampliado a 150 enemigos con
+12 venenos cada uno, 300 proyectiles y 120 VFX: promedio 0.161 ms, p95 0.321 ms
+(limite 16.67 ms). Accesibilidad y lanzamiento sin errores; smoke desktop
+1366x768 y mobile 390x844 sin overflow ni desvio de ruta. Las simulaciones de
+campana son estimaciones, no demuestran por si solas balance integral de DoT.
+
+La acumulacion mixta de veneno deja de estar pendiente. Quedan otras selecciones
+autonomas y excepciones de kits en fase 1; fases 2 a 10 siguen pendientes.
