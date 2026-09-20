@@ -217,9 +217,9 @@ export class CosmicKitSystem {
     }
 
     activateGamoraCombo(target, stats) {
+        if (!target?.isAlive) return;
         const ratio = target.hp / target.maxHp;
-        if (ratio <= 0.25 && !target.isBoss) {
-            CombatSystem.applyDamage({ attackerType: this.hero.category, damage: target.hp + 1, armorPenetration: 1 }, target, this.hero, this.hero.game.resourceManager, 1);
+        if (ratio <= 0.25 && CombatSystem.executeNonBoss(target, this.hero, this.hero.game.resourceManager).killed) {
             this.hero.recordAbility();
             this.hero.game.audio?.play('cosmicBlade');
             return;

@@ -1,7 +1,7 @@
 # Identidad y habilidades de los 105 heroes
 
 Fecha: 2026-09-13. Base revisada: commit 553ad63.
-Estado: FASE 1 EN CURSO. Quince lotes implementados; fases 2 a 10 pendientes.
+Estado: FASE 1 EN CURSO. Dieciseis lotes implementados; fases 2 a 10 pendientes.
 Los hallazgos de auditoria describen el baseline; ver avances abajo para las
 correcciones ya realizadas. No equivale a completar el rediseño de los 105 kits.
 
@@ -825,3 +825,41 @@ HP con armadura 85 y 2.000 HP con barrera inicial 5.000. Ambos conservan la
 exclusion de ejecucion de jefes. Hace falta fijar y probar si sus remates deben
 ser ejecuciones garantizadas o dano sujeto a defensas, sin inflar dano a bosses.
 Quedan esas excepciones y el cierre de cobertura antes de terminar fase 1.
+
+## Fase 1: decimosexto lote, 2026-09-20
+
+Fijado contrato de ejecucion para Gamora y The Void: ya no se intenta matar
+con HP+1 sujeto a defensas. CombatSystem.executeNonBoss elimina la vida
+restante de un enemigo comun vivo, sin multiplicadores de tipo/mark ni
+reducciones de armadura/resistencia ni absorcion de barrera. El registro
+cuenta solo esos HP, no la barrera intacta del cadaver ni dano infinito.
+Comparte autoria, textos y VFX con el dano ordinario. GameLoop conserva el
+pago normal de recompensa una vez; no se agregan procs monetarios ni curacion.
+
+Gamora mantiene umbral inclusivo de 25%, disponible sin evolucion ni objeto,
+y conserva combo incidental hasta dos vecinos cuando no ejecuta. No anuncia
+habilidades sobre muertos. The Void mantiene un proc cada 24 ataques y exige
+nivel 100 de Sentry y EL VACIO en el primer slot. Ejecuta comunes incluso con
+vida completa; contra jefes conserva dano efectivo x3 con 65% penetracion,
+sujeto a tipos, armadura, resistencia, marcas y barrera como antes.
+
+La exclusion central cubre isBoss, isFinalBoss e isMiniBoss, tanto runtime
+como config. Se corrigio la omision de isFinalBoss aislado en Gamora y la de
+isMiniBoss aislado en ambos; no se cambia la generacion de oleadas. Un boss
+puede morir por dano suficiente de The Void, nunca por ejecucion de sus HP.
+
+27 regresiones nuevas. En los primeros 23 casos, 17 fallaban antes del cambio;
+se agregaron cuatro de recompensa GameLoop, flags runtime/entradas invalidas
+y muerte ordinaria de boss. Incluyen umbral, ciclo, nivel/objeto, defensas
+combinadas, mark, autoria, dano real y proyectil en vuelo despues del remate.
+Sin cambios de datos, bootstrap, sprites, mapas ni valores de economia.
+
+Validacion completa: npm run check aprobado con 977 tests, simulaciones de
+economia/campana y check de rarezas. Benchmark p95 0.429 ms; accesibilidad y
+lanzamiento sin errores. Smoke desktop 1366x768 y mobile 390x844 sin overflow
+ni desvio de ruta.
+
+Pendiente de fase 1: cierre cruzado de cobertura con la matriz de 105 heroes.
+El bypass de barreras fortalece estos remates frente a comunes protegidos;
+queda identificado para comparativas de equipos de fase 10. Las regresiones
+no equivalen a demostrar balance global ni a completar el rediseño del roster.

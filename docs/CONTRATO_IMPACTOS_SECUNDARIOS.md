@@ -48,6 +48,17 @@ que una tirada independiente tenga exito en otro destinatario.
 
 ## Actualizaciones y pendientes
 
+Actualizacion lote 16 (2026-09-20): ejecucion no es un impacto de HP+1.
+Gamora ejecuta comunes al 25% de HP o menos; The Void cada 24 ataques con
+Sentry nivel 100 y EL VACIO. Ignoran barreras, armadura, resistencias, tipo
+y mark para quitar exactamente la vida restante, sin contar barrera como
+dano. No activan procs por impacto ni duplican autoria/recompensa por el
+proyectil ya en vuelo. GameLoop sigue pagando la muerte una vez.
+isBoss/isFinalBoss/isMiniBoss en runtime o config impiden ejecucion. The Void
+conserva contra ellos dano x3 y 65% penetracion sometido a defensas normales;
+Gamora conserva su combo incidental cuando no puede ejecutar. No se cambian
+seleccion primaria, rangos ni intervalos. Las habilidades omiten cadaveres.
+
 Actualizacion lote 15 (2026-09-20): las marcas signature separan la duracion
 del bonus personal del estado mark compartido. Ambas usan la misma formula
 de resistencia de Enemy.getStatusDuration; otra fuente no puede prolongar

@@ -51,7 +51,7 @@ los valores finales se fijan despues de las pruebas de fase 1.
 | --- | --- | --- | --- |
 | `hulk` | Hulk (Mythic) | F1/lote 11: salto fija detectable a 2.25x rango; area/stun incidental. Conserva furia por ataques y vidas perdidas. | Aplastamiento cargado por presion cercana; no premiar perder vidas como via principal. Descarga fuerte y pausa larga. |
 | `wolverine` | Wolverine (Epic) | F1/lotes 11/13: salto detectable 3x, regreso 0.8 s; Berserker signature acelera y da critico por 3 s reales. | Perseguir una presa alimenta frenesi; pierde parte al cambiar objetivo, retorno seguro, sin curacion de base. |
-| `gamora` | Gamora (Common) | Combo secundario y ejecucion de no jefes bajo 25%. | Ejecucion precisa de debilitados; definir barreras y tipo de dano para que el umbral sea fiable, sin ejecutar bosses. |
+| `gamora` | Gamora (Common) | F1/lote 16: combo secundario y ejecucion garantizada de comunes al 25% o menos, ignorando defensas; excluye todos los jefes. | Ejecucion precisa de debilitados; medir aporte real contra comunes protegidos sin ejecutar bosses. |
 | `ant_man` | Ant-Man (Common) | Diminuto rapido o gigante con splash/retroceso. | Ventanas Pym: diminuto prepara y gigante consume carga; no cambiar forma para eludir cooldown ni mover fuera de ruta. |
 | `shang_chi` | Shang-Chi (Epic) | Tres modos de anillos; moneda heredada en guardia. | Combo de anillos con finalizadores distintos; sustituir moneda por preparacion de combo, no aura aliada atacante. |
 | `moon_knight` | Moon Knight (Epic) | Ciclo automatico alcance/dano/cadencia y retorno. | Ciclo lunar previsible que cambia prioridades, no selector manual prometido; debilidad distinta en cada fase. |
@@ -139,7 +139,7 @@ los valores finales se fijan despues de las pruebas de fase 1.
 | `magneto` | Magneto (Mythic) | Splash, penetracion y ruptura. | Fragmentos al romper barreras alimentan una descarga magnetica; fuerte contra blindados, limitado contra blancos sin armadura. |
 | `adam_warlock` | Adam Warlock (Mythic) | Rebotes y modificadores propios; sin capullo de kit. | Capullo que carga fuera de accion y emerge con una descarga; sin resucitar heroes ni curar corazones. |
 | `ms_marvel` | Ms. Marvel (Rare) | Un rebote y penetracion. | Cadena fotonica que prepara un impacto final en el ultimo blanco; validar identidad del roster antes de cambiar nombre o arte. |
-| `sentry` | Sentry (Mythic) | F1/lote 1: splash amplio y quemadura 30% dano efectivo/s. | Energia solar acumulada con descarga y agotamiento; The Void solo segun evolucion existente, no modo libre temprano. |
+| `sentry` | Sentry (Mythic) | F1/lotes 1 y 16: splash y quemadura 30% dano efectivo/s; The Void nivel 100 con objeto ejecuta comunes cada 24 ataques, bosses reciben x3 sujeto a defensas. | Energia solar acumulada con descarga y agotamiento; The Void solo segun evolucion existente, no modo libre temprano. |
 | `beta_ray_bill` | Beta Ray Bill (Legendary) | Tres rebotes y stun. | Stormbreaker regresa al objetivo inicial con un impacto concentrado; menos control de grupo que Thor. |
 | `yondu` | Yondu (Common) | Cruz y dos rebotes decrecientes. | Una flecha persistente recorre objetivos distintos y vuelve; limite de recorrido, no generar proyectiles ilimitados. |
 

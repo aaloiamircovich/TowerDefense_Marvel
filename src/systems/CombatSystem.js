@@ -89,11 +89,30 @@ export class CombatSystem {
             attackerType: projectile.attackerType
         });
 
+        CombatSystem.recordDamageResult(projectile, target, attacker, resourceManager, result, factor);
+        return result;
+    }
+
+    static executeNonBoss(target, attacker, resourceManager, color) {
+        if (!target?.isAlive || !Number.isFinite(target.hp) || target.hp <= 0
+            || target.isBoss || target.isFinalBoss || target.isMiniBoss
+            || target.config?.isBoss || target.config?.isFinalBoss || target.config?.isMiniBoss) {
+            return { damage: 0, killed: false };
+        }
+
+        // Execution bypasses defenses; only remaining health counts as damage.
+        const result = { damage: target.hp, killed: true };
+        target.hp = 0;
+        target.isAlive = false;
+        CombatSystem.recordDamageResult({ attackerType: attacker?.category, color }, target, attacker, resourceManager, result);
+        return result;
+    }
+
+    static recordDamageResult(projectile, target, attacker, resourceManager, result, factor = 1) {
         CombatSystem.addDamageText(projectile, target, attacker, result);
         CombatSystem.addImpactVfx(projectile, target, attacker, result, factor);
         attacker?.recordDamage?.(result.damage);
         if (result.killed) CombatSystem.creditKill(target, attacker, resourceManager);
-        return result;
     }
 
     static buildImpactVfxState(projectile = {}, result = {}, factor = 1) {

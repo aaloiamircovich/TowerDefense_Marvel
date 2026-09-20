@@ -447,10 +447,12 @@ function strikeMulti(hero, target, stats, config, projectiles) {
 }
 
 function strikeVoid(hero, target, stats, config) {
-    const damage = target.isBoss || target.isFinalBoss
-        ? stats.damage * (config.damageFactor || 3)
-        : Math.max(stats.damage * 4, target.hp + 1);
-    CombatSystem.applyDamage({ attackerType: hero.category, damage, color: config.color, armorPenetration: 0.65 }, target, hero, hero.game?.resourceManager, 1);
+    if (!target?.isAlive) return;
+    const result = CombatSystem.executeNonBoss(target, hero, hero.game?.resourceManager, config.color);
+    if (!result.killed) {
+        const damage = stats.damage * (config.damageFactor || 3);
+        CombatSystem.applyDamage({ attackerType: hero.category, damage, color: config.color, armorPenetration: 0.65 }, target, hero, hero.game?.resourceManager, 1);
+    }
     hero.game?.vfx?.addBurst?.(target.x, target.y, { color: '#111827', radius: 74, duration: 0.42 });
     announce(hero, target, config);
 }
