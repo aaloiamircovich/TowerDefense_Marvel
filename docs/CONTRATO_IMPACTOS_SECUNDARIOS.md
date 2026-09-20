@@ -48,6 +48,22 @@ que una tirada independiente tenga exito en otro destinatario.
 
 ## Actualizaciones y pendientes
 
+Actualizacion lote 11 (2026-09-20): Hulk, Wolverine, Storm y Ghost Rider usan
+la seleccion compartida para fijar el blanco de sus habilidades autonomas:
+vivo, detectable con stats efectivos y dentro del patron del heroe. Mantienen
+prioridad por avance y los alcances especiales: Hulk 2.25x, Wolverine 3x,
+Storm 1x, Penitencia 1.3x; esta ultima solo elige jefes. Los limites son
+inclusivos. Sin blanco valido no gastan recurso ni inician cooldown.
+
+Storm no centra tormentas en el punto ciego del anillo. Una zona ya creada
+conserva su centro y radio 72, y puede afectar incidentalmente a ocultos,
+voladores y enemigos en el punto ciego sin revelarlos. Ventisca aplica slow;
+electricidad conserva su limite de cuatro victimas por tick. El impacto de
+Hulk conserva radio 72 y dano/stun incidentales fuera de su alcance de fijacion.
+No se filtran esas victimas como si fueran nuevos blancos principales.
+Wolverine y Ghost Rider conservan su deteccion innata; no se nerfea ese atributo.
+Las pruebas sin deteccion de ambos comprueban el contrato, no su estado base.
+
 Actualizacion lote 10 (2026-09-20): venenos de 10 y 1 DPS suman 11, no 20.
 Cada aporte expira independientemente, incluso si procede del mismo heroe.
 Con doce activos, un aporte mas potente reemplaza al mas debil, liquidando

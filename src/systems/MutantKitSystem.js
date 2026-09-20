@@ -209,7 +209,7 @@ export class MutantKitSystem {
         }
         const resources = this.hero.game.resourceManager;
         if (this.resource < 55 || this.cooldownRemaining > 0) return;
-        const target = enemies.filter((enemy) => enemy.isAlive && distance(enemy, this.hero) <= stats.range * 3)
+        const target = this.hero.abilitySystem.getTargetsInRange(enemies, stats.range * 3, stats)
             .sort((a, b) => b.distanceTravelled - a.distanceTravelled)[0];
         if (!target) return;
         this.jumpOrigin = { x: this.hero.x, y: this.hero.y };
@@ -253,7 +253,7 @@ export class MutantKitSystem {
             if (this.weatherZone.duration <= 0) this.weatherZone = null;
         }
         if (this.weatherZone || this.cooldownRemaining > 0) return;
-        const target = enemies.filter((enemy) => enemy.isAlive && distance(enemy, this.hero) <= stats.range)
+        const target = this.hero.abilitySystem.getTargetsInRange(enemies, stats.range, stats)
             .sort((a, b) => b.distanceTravelled - a.distanceTravelled)[0];
         if (!target) return;
         this.weatherZone = { x: target.x, y: target.y, radius: 72, duration: 4.2, tick: 0 };

@@ -240,7 +240,8 @@ export class StreetKitSystem {
 
     updatePenance(enemies, stats) {
         if (this.cooldownRemaining > 0) return;
-        const boss = enemies.filter((enemy) => enemy.isAlive && enemy.isBoss && distance(enemy, this.hero) <= stats.range * 1.3)
+        const boss = this.hero.abilitySystem.getTargetsInRange(enemies, stats.range * 1.3, stats)
+            .filter((enemy) => enemy.isBoss)
             .sort((a, b) => b.distanceTravelled - a.distanceTravelled)[0];
         if (!boss) return;
         const missingHealth = 1 - boss.hp / boss.maxHp;

@@ -190,8 +190,7 @@ export class AvengerKitSystem {
         if (lives < this.lastLives) this.resource = Math.min(100, this.resource + (this.lastLives - lives) * 35);
         this.lastLives = lives;
         if (this.resource < 50 || this.cooldownRemaining > 0) return;
-        const target = enemies
-            .filter((enemy) => enemy.isAlive && distance(enemy, this.hero) <= stats.range * 2.25)
+        const target = this.hero.abilitySystem.getTargetsInRange(enemies, stats.range * 2.25, stats)
             .sort((a, b) => b.distanceTravelled - a.distanceTravelled)[0];
         if (!target) return;
 

@@ -49,8 +49,8 @@ los valores finales se fijan despues de las pruebas de fase 1.
 
 | ID | Heroe (rareza) | Actual | Firma propuesta y limite |
 | --- | --- | --- | --- |
-| `hulk` | Hulk (Mythic) | Furia, salto de area y stun; carga por perder vidas. | Aplastamiento cargado por presion cercana; no premiar perder vidas como via principal. Descarga fuerte y pausa larga. |
-| `wolverine` | Wolverine (Epic) | Frenesi, cadencia y salto al avanzado. | Perseguir una presa alimenta frenesi; pierde parte al cambiar objetivo, retorno seguro, sin curacion de base. |
+| `hulk` | Hulk (Mythic) | F1/lote 11: salto fija detectable a 2.25x rango; area/stun incidental. Conserva furia por ataques y vidas perdidas. | Aplastamiento cargado por presion cercana; no premiar perder vidas como via principal. Descarga fuerte y pausa larga. |
+| `wolverine` | Wolverine (Epic) | F1/lote 11: salto al avanzado detectable a 3x rango, regreso en 0.8 s; conserva deteccion innata y frenesi. | Perseguir una presa alimenta frenesi; pierde parte al cambiar objetivo, retorno seguro, sin curacion de base. |
 | `gamora` | Gamora (Common) | Combo secundario y ejecucion de no jefes bajo 25%. | Ejecucion precisa de debilitados; definir barreras y tipo de dano para que el umbral sea fiable, sin ejecutar bosses. |
 | `ant_man` | Ant-Man (Common) | Diminuto rapido o gigante con splash/retroceso. | Ventanas Pym: diminuto prepara y gigante consume carga; no cambiar forma para eludir cooldown ni mover fuera de ruta. |
 | `shang_chi` | Shang-Chi (Epic) | Tres modos de anillos; moneda heredada en guardia. | Combo de anillos con finalizadores distintos; sustituir moneda por preparacion de combo, no aura aliada atacante. |
@@ -87,7 +87,7 @@ los valores finales se fijan despues de las pruebas de fase 1.
 | `quake` | Quake (Common) | Slow y ruptura por probabilidad. | Onda sismica sobre terrestres de una linea; no afectar a voladores, ni desplazar fuera del camino. |
 | `medusa` | Medusa (Common) | Rebote corto y slow solo por efecto de impacto. | Sujecion de pocos blancos conectados; repartir el control entre ellos, mala contra grupos enormes. |
 | `iceman` | Iceman (Legendary) | Splash con slow aplicado al blanco principal. | Escarcha acumulada que congela tras exposicion; reglas explicitas de area y resistencia posterior, distinto de Storm. |
-| `storm` | Storm (Legendary) | Anillo, clima seleccionable, zona y rayos. | Elegir zona de ventisca o tormenta con cooldown compartido; preservar punto ciego salvo excepcion anunciada. |
+| `storm` | Storm (Legendary) | F1/lote 11: zona se centra en detectable dentro del anillo; el clima ya creado afecta vecinos incidentalmente sin revelar. | Elegir zona de ventisca o tormenta con cooldown compartido; preservar punto ciego salvo excepcion anunciada. |
 | `crystal` | Crystal (Common) | F1/lote 6: con cristal y evolucion alterna fuego 20% poder/s, hielo y rayos cada 7 ataques, desde la primera activacion. | Ciclo corto de elementos con proximo efecto visible; cada fase hace una cosa, no todos los efectos por disparo. |
 | `namor` | Namor (Legendary) | Permiso de agua y penetracion. | Marea de asalto condicionada a estar sobre agua; tierra viable pero menos potente, sin mapa de agua obligatorio. |
 | `namora` | Namora (Common) | Agua, penetracion y ruptura. | Emboscada costera de primer impacto; preparacion entre presas, distinta del dano sostenido de Namor. |
@@ -106,7 +106,7 @@ los valores finales se fijan despues de las pruebas de fase 1.
 | ID | Heroe (rareza) | Actual | Firma propuesta y limite |
 | --- | --- | --- | --- |
 | `blade` | Blade (Epic) | F1/lote 4: sangrado 21% poder/s, 30% en elites; veneno y medidor por bajas. | Cazador de elites: sangrado escalado por poder y remate preparado; sustituir activacion vacia del contador, sin sanar base. |
-| `ghost_rider` | Ghost Rider (Legendary) | F1/lote 4: quemadura unica 13.5% poder/s, cadena y penitencia. | Penitencia segun dano sufrido por el blanco, con techo especifico para bosses; no acumular retroceso infinito. |
+| `ghost_rider` | Ghost Rider (Legendary) | F1/lotes 4/11: quemadura unica 13.5% poder/s; Penitencia fija jefe detectable a 1.3x rango. Conserva deteccion innata y cadena. | Penitencia segun dano sufrido por el blanco, con techo especifico para bosses; no acumular retroceso infinito. |
 | `scarlet_witch` | Scarlet Witch (Secret) | Marcas enlazadas, curse, propagacion y slow de zona. | Red de maldiciones que madura y detona de forma limitada; conservar rango de preparacion y debilidad ante aislamiento. |
 | `cloak` | Cloak (Rare) | Deteccion propia y slow; no revelado global. | Ventana oscura que revela dentro de una zona pequena; sin teleportar enemigos fuera de ruta. |
 | `dagger` | Dagger (Rare) | Marca y rebote; rebote no hereda marca hoy. | Dagas que consumen marcas para limpiar blancos consecutivos; sin curacion y sin depender obligatoriamente de Cloak. |

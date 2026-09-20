@@ -1,7 +1,7 @@
 # Identidad y habilidades de los 105 heroes
 
 Fecha: 2026-09-13. Base revisada: commit 553ad63.
-Estado: FASE 1 EN CURSO. Diez lotes implementados; fases 2 a 10 pendientes.
+Estado: FASE 1 EN CURSO. Once lotes implementados; fases 2 a 10 pendientes.
 Los hallazgos de auditoria describen el baseline; ver avances abajo para las
 correcciones ya realizadas. No equivale a completar el rediseño de los 105 kits.
 
@@ -638,3 +638,40 @@ campana son estimaciones, no demuestran por si solas balance integral de DoT.
 
 La acumulacion mixta de veneno deja de estar pendiente. Quedan otras selecciones
 autonomas y excepciones de kits en fase 1; fases 2 a 10 siguen pendientes.
+
+## Fase 1: undecimo lote, 2026-09-20
+
+Cuatro fijaciones autonomas pasan por getTargetsInRange, que exige vida,
+deteccion efectiva y patron geometrico. Mantienen prioridad por avance y
+alcances especiales: salto gamma de Hulk 2.25x, Wolverine 3x, zona climatica
+de Storm 1x y Penitencia de Ghost Rider 1.3x (solo jefes).
+
+Fallos reales corregidos: Hulk sin deteccion podia anclar su area a un oculto;
+Storm podia centrar clima en ocultos y dentro del punto ciego de su anillo.
+Wolverine y Ghost Rider conservan deteccion innata: sus pruebas sin deteccion
+validan el contrato del helper, no implican que antes carecieran de ella.
+La deteccion aliada efectiva de Falcon permite fijar ocultos correctamente.
+
+Sin candidato valido no se gastan recursos ni inicia cooldown. Se conservan
+costes de furia/frenesi, dano, escalado, cooldowns, regreso de Wolverine,
+condicion de jefe y formula de Penitencia. No cambia el dano incidental:
+Hulk mantiene radio 72 con stun; la zona existente de Storm permanece fija y
+puede afectar ocultos, voladores y punto ciego sin revelarlos. El anillo limita
+su centro, no recorta la zona ya creada. Sin cambios de catalogos ni bootstrap,
+sprites, mapas, curacion, rarezas, economia o habilidades de soporte.
+
+23 regresiones nuevas, 11 fallaban antes del arreglo. Las 59 focalizadas
+cubren ocultos, muertos, prioridad por avance, limites inclusivos de rango,
+punto ciego, voladores, cooldown, deteccion aliada, efectos incidentales,
+regreso del salto, objetivos no-jefes y limite/formula de Penitencia.
+
+Validacion completa: npm run check aprobado con 876 tests; simulaciones de
+economia/campana y check de rarezas sin ajustes. Benchmark p95 0.388 ms con
+150 enemigos y doce venenos por enemigo; accesibilidad y lanzamiento sin
+errores. Smoke desktop 1366x768 y mobile 390x844 aprobado sin overflow ni
+desvio de ruta. Estas comprobaciones no prueban balance integral de los kits.
+
+Pendiente de fase 1: revisar contratos de pulsos autonomos (Phoenix/Hex),
+reconocimiento de Redwing y zonas de raices, y las excepciones de objetos
+que aun no tengan cobertura especifica. No equivale al rediseno de estos
+cuatro heroes: sus nuevas firmas siguen en las fases correspondientes.
