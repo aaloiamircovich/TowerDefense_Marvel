@@ -46,6 +46,15 @@ que una tirada independiente tenga exito en otro destinatario.
 
 ## Pendiente
 
+Actualizacion lote 9: los DoT con damageBasis explicito aplican al expirar
+el dano proporcional del tiempo restante desde su ultimo tick. Mantienen
+ticks de 0.5 s (burn/poison/curse) o 0.4 s (bleed) mientras estan activos.
+Esto evita que las resistencias conviertan un estado corto en cero dano.
+La duracion sigue siendo base * max(0.2, 1 - resistencia general - especifica);
+no se reduce el DPS una segunda vez. Barrera, atribucion y una sola baja
+se procesan igual en ticks completos y parciales. Estados legacy sin
+damageBasis conservan ticks completos y su minimo; no se migran aqui.
+
 Actualizacion lote 8: la pasada de Captain Marvel fija un blanco con deteccion
 efectiva y alcance especial de 2.2 veces su rango. Sin blanco valido no gasta
 60 de energia ni inicia cooldown. Una vez orientada, su linea conserva dano

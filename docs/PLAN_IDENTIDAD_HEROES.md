@@ -1,7 +1,7 @@
 # Identidad y habilidades de los 105 heroes
 
 Fecha: 2026-09-13. Base revisada: commit 553ad63.
-Estado: FASE 1 EN CURSO. Ocho lotes implementados; fases 2 a 10 pendientes.
+Estado: FASE 1 EN CURSO. Nueve lotes implementados; fases 2 a 10 pendientes.
 Los hallazgos de auditoria describen el baseline; ver avances abajo para las
 correcciones ya realizadas. No equivale a completar el rediseño de los 105 kits.
 
@@ -559,3 +559,41 @@ ni desvio de ruta. Catalogos, stats, sprites y mapas no modificados.
 
 Pendiente de fase 1: otras selecciones autonomas y excepciones de kits,
 resistencias y acumulaciones mixtas. Fases 2 a 10 siguen pendientes.
+
+## Fase 1: noveno lote, 2026-09-19
+
+Corregido el tiempo de DoT descartado al expirar. Las resistencias de Thanos
+reducen la quemadura de War Machine de 2.4 a 0.48 segundos; el tick ocurre
+cada 0.5, por lo que una aplicacion aislada antes no causaba dano. Ahora
+liquida el tiempo restante proporcionalmente: nivel 1, 4.9 DPS * 0.48 s =
+2.352 de dano. El jefe conserva exactamente su resistencia.
+
+El motor comparte la aplicacion de ticks completos y finales, incluida
+barrera, ignorar armadura, registro de dano y autoria de una sola baja.
+Solo estados con damageBasis explicito reciben el tick parcial al expirar.
+Los legacy sin unidad (incluidos venenos/maldiciones aun no migrados)
+conservan su minimo y ticks completos; no se les aumenta dano silenciosamente.
+Mientras dura el estado no se altera la frecuencia de sus ticks. Refrescarlo
+no anticipa el pago del residuo ni suma dos fuentes de quemadura/sangrado.
+
+Se mantienen inmunidades y resistencia de duracion con piso de 20%, sin
+aplicar otro descuento al DPS. Los catalogos de heroes, enemigos, objetos y
+evoluciones no cambian; tampoco sprites, mapas, monedas ni curacion de base.
+
+18 pruebas nuevas, 14 reproducian el problema antes del cambio. Las 64
+focalizadas incluyen los cuatro tipos de DoT explicito, pasos de simulacion
+desde 1/60 s a 3 s, expiracion/refresh, cero dano, barrera, una sola baja,
+resistencias reales de Loki/Ultron Prime/Thanos con War Machine y X-23,
+inmunidades de Thanos y limite compartido de doce venenos.
+
+Validacion completa: npm run check aprobado, 839 tests, simulaciones de
+economia/campana y check de rarezas. Benchmark p95 0.088 ms; accesibilidad y
+lanzamiento sin errores, smoke desktop 1366x768 y mobile 390x844 sin overflow
+ni desvio de ruta. Sin cambios de datos ni regeneracion de bootstrap necesaria.
+
+Pendiente confirmado: la bolsa actual de veneno multiplica el DPS mas fuerte
+por todos los stacks. Un probe con fuentes de 10 y 1 DPS inflige 20 en un
+segundo, no 11; ademas conserva autoria y duracion compartidas. Su migracion
+a contribuciones independientes requiere decidir reemplazo al llegar al cap
+y probar efectos sobre jefes; no se implementa en este lote. Otras selecciones
+autonomas de kits siguen pendientes. La fase 1 no esta terminada.

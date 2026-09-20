@@ -253,21 +253,30 @@ export class Enemy {
         return true;
     }
 
+    applyDotTick(debuff, elapsed) {
+        const stackCount = Math.max(1, Number(debuff.stacks || 1));
+        const damage = debuff.damagePerSecond * stackCount * elapsed;
+        const result = this.takeDamage(damage, { ignoreArmor: true, fractional: debuff.explicitDamageBasis });
+        debuff.source?.recordDamage?.(result.damage);
+        if (result.killed && !this.killCredited) {
+            this.killCredited = true;
+            debuff.source?.recordKill?.(debuff.source?.game?.resourceManager, this);
+        }
+    }
+
     updateDebuffs(dt) {
         this.debuffs.forEach((debuff) => {
             if ((debuff.type === 'burn' || debuff.type === 'bleed' || debuff.type === 'poison' || debuff.type === 'curse') && this.isAlive) {
                 const interval = debuff.type === 'bleed' ? 0.4 : 0.5;
-                debuff.tickTimer += Math.min(dt, debuff.duration);
+                debuff.tickTimer += Math.min(dt, Math.max(0, debuff.duration));
                 while (debuff.tickTimer >= interval && this.isAlive) {
-                    const stackCount = Math.max(1, Number(debuff.stacks || 1));
-                    const damage = debuff.damagePerSecond * stackCount * interval;
-                    const result = this.takeDamage(damage, { ignoreArmor: true, fractional: debuff.explicitDamageBasis });
-                    debuff.source?.recordDamage?.(result.damage);
-                    if (result.killed && !this.killCredited) {
-                        this.killCredited = true;
-                        debuff.source?.recordKill?.(debuff.source?.game?.resourceManager, this);
-                    }
+                    this.applyDotTick(debuff, interval);
                     debuff.tickTimer -= interval;
+                }
+                // Explicit DPS must include the remaining time, even when resistance makes it shorter than a tick.
+                if (debuff.explicitDamageBasis && debuff.duration <= dt && debuff.tickTimer > 0 && this.isAlive) {
+                    this.applyDotTick(debuff, debuff.tickTimer);
+                    debuff.tickTimer = 0;
                 }
             }
             debuff.duration -= dt;
