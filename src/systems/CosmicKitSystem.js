@@ -165,14 +165,16 @@ export class CosmicKitSystem {
             return;
         }
         if (this.resource < 60 || this.cooldownRemaining > 0) return;
-        const target = enemies.filter((enemy) => enemy.isAlive && distance(enemy, this.hero) <= stats.range * 2.2)
+        const length = stats.range * 2.2;
+        const target = this.hero.abilitySystem.getTargetsInRange(enemies, length, stats)
             .sort((a, b) => b.distanceTravelled - a.distanceTravelled)[0];
         if (!target) return;
         this.flightOrigin = { x: this.hero.x, y: this.hero.y };
         const endpoint = { x: target.x, y: target.y - 34 };
-        const victims = getLineTargets(this.hero, target, enemies, stats.range * 2.2, 26);
+        const beamEndpoint = getLineEndpoint(this.hero, target, length);
+        const victims = getLineTargets(this.hero, target, enemies, length, 26);
         victims.forEach((enemy) => CombatSystem.applyDamage({ attackerType: this.hero.category, damage: stats.damage * 0.85 * this.getPowerScale(), armorPenetration: 0.35 }, enemy, this.hero, this.hero.game.resourceManager, 1));
-        this.hero.game.vfx?.addBeam(this.hero, endpoint, { color: '#ffd45f', width: 13, duration: 0.3 });
+        this.hero.game.vfx?.addBeam(this.hero, beamEndpoint, { color: '#ffd45f', width: 13, duration: 0.3 });
         this.hero.x = endpoint.x;
         this.hero.y = endpoint.y;
         this.flightTimer = 1.25;

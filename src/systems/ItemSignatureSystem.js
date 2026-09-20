@@ -1,6 +1,6 @@
 import { Projectile } from '../entities/Projectile.js';
 import { CombatSystem } from './CombatSystem.js';
-import { getLineTargets } from '../utils/LineTargeting.js';
+import { getLineEndpoint, getLineTargets } from '../utils/LineTargeting.js';
 import { isPointInRangePattern, getHeroRangePattern } from '../utils/RangePattern.js';
 
 const DEFAULT_MARK_DURATION = 2.2;
@@ -407,7 +407,9 @@ function strikePulse(hero, target, stats, config) {
 }
 
 function strikeLine(hero, target, stats, config) {
-    const targets = getLineTargets(hero, target, hero.game?.enemies || [], config.lineRange || stats.range * 1.25, config.lineWidth || 30);
+    const length = config.lineRange || stats.range * 1.25;
+    const endpoint = getLineEndpoint(hero, target, length);
+    const targets = getLineTargets(hero, target, hero.game?.enemies || [], length, config.lineWidth || 30);
     const projectile = {
         attackerType: hero.category,
         damage: stats.damage * (config.damageFactor || 0.7),
@@ -418,7 +420,6 @@ function strikeLine(hero, target, stats, config) {
         CombatSystem.applyDamage(projectile, enemy, hero, hero.game?.resourceManager, 1);
         applyEffects(config.effects, enemy, hero);
     });
-    const endpoint = targets.at(-1) || target;
     hero.game?.vfx?.addBeam?.(hero, endpoint, { color: config.color || '#ffd166', width: config.lineWidth || 20, duration: 0.24 });
     announce(hero, target, config);
 }

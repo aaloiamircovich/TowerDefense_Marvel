@@ -1,7 +1,7 @@
 # Identidad y habilidades de los 105 heroes
 
 Fecha: 2026-09-13. Base revisada: commit 553ad63.
-Estado: FASE 1 EN CURSO. Siete lotes implementados; fases 2 a 10 pendientes.
+Estado: FASE 1 EN CURSO. Ocho lotes implementados; fases 2 a 10 pendientes.
 Los hallazgos de auditoria describen el baseline; ver avances abajo para las
 correcciones ya realizadas. No equivale a completar el rediseño de los 105 kits.
 
@@ -521,3 +521,41 @@ las tres descripciones. Bootstrap regenerado.
 Pendiente de fase 1: contratos de rayos y seleccion secundaria en otras
 habilidades, resistencias y acumulaciones mixtas. El sangrado y los ciclos
 de este lote dejan de estar pendientes; fases 2 a 10 siguen sin completar.
+
+## Fase 1: octavo lote, 2026-09-19
+
+Confirmado primero el despliegue pendiente abc4db7: codigo y datos publicos
+de Railway coinciden con el commit de X-23/Deadpool/Kate Bishop.
+
+Captain Marvel elegia objetivos de su pasada solo por distancia, ignorando
+sigilo. Ahora usa el helper de seleccion con deteccion efectiva, conservando
+su alcance especial 2.2x. Sin blanco detectable no consume energia ni cooldown;
+con deteccion puede apuntar a ocultos. Las victimas incidentales en la linea
+siguen recibiendo dano aunque sean invisibles, sin que eso las revele.
+
+Su rayo visual terminaba en el destino del vuelo (objetivo, 34 px arriba),
+mientras el dano seguia una recta mas larga. Ahora el endpoint visual se
+calcula con la misma direccion y longitud del dano. El vuelo conserva su
+destino, 1.25 segundos y regreso al origen; coste 60, cooldown, dano,
+penetracion y ancho de impacto quedan sin cambios.
+
+La ruta compartida strikeLine de objetos usaba targets.at(-1) como extremo
+visual: dependia del orden de enemigos, no del alcance real. Se corrige a
+endpoint geometrico para los siete consumidores: Quake, Nebula, Ms. Marvel,
+Squirrel Girl, Yondu, Silver Surfer y Ant-Man. Es una correccion compartida
+de representacion, no un rediseño de siete kits. No cambian intervalos,
+longitudes, dano ni estados aplicados por esos rayos.
+
+Doce pruebas nuevas; nueve fallaban antes del arreglo. Las 23 focalizadas
+incluyen deteccion, consumo de energia, vuelo/regreso, cooldown, alcance
+especial, dano incidental, todos los consumidores de strikeLine, enemigos
+detras/fuera de ancho/fuera de longitud y ejes vertical/horizontal/diagonal.
+La geometria mantiene limites inclusivos y el tratamiento de origen coincidente.
+
+Validacion completa: npm run check aprobado con 821 tests, simulaciones de
+economia/campana y check de rarezas. Benchmark p95 0.098 ms; accesibilidad y
+lanzamiento sin errores, smoke desktop 1366x768 y mobile 390x844 sin overflow
+ni desvio de ruta. Catalogos, stats, sprites y mapas no modificados.
+
+Pendiente de fase 1: otras selecciones autonomas y excepciones de kits,
+resistencias y acumulaciones mixtas. Fases 2 a 10 siguen pendientes.

@@ -46,6 +46,20 @@ que una tirada independiente tenga exito en otro destinatario.
 
 ## Pendiente
 
+Actualizacion lote 8: la pasada de Captain Marvel fija un blanco con deteccion
+efectiva y alcance especial de 2.2 veces su rango. Sin blanco valido no gasta
+60 de energia ni inicia cooldown. Una vez orientada, su linea conserva dano
+incidental contra todos los vivos alineados, incluso ocultos, sin revelarlos.
+Conserva ancho lateral 26, factor 0.85, penetracion 35%, vuelo de 1.25 s y
+regreso al origen. El dibujo del rayo sigue la linea de dano completa, separado
+del destino del vuelo (posicion del objetivo con desplazamiento vertical).
+
+Los siete ataques lineales de objetos (Quake, Nebula, Ms. Marvel, Squirrel
+Girl, Yondu, Silver Surfer y Ant-Man) dibujan el endpoint geometrico completo,
+no el ultimo enemigo segun el orden de la lista. Se prueban los limites de
+longitud/ancho y el dano incidental a ocultos; los factores, efectos por
+victima, requisitos e intervalos no cambian. No equivale a deteccion compartida.
+
 Actualizacion lote 6: los pulsos de ItemSignatureSystem son una excepcion
 existente al splash generico. Nova Flame (Human Torch), Ataque Perfecto
 (Jubilee), Dark Phoenix (Jean Grey) y fuego elemental (Crystal) transmiten

@@ -128,7 +128,7 @@ los valores finales se fijan despues de las pruebas de fase 1.
 | --- | --- | --- | --- |
 | `thor` | Thor (Mythic) | Cadena y tormenta cada 11 s. | Conductividad entre enemigos cercanos: descarga madura al conectar suficientes; menos eficaz contra un blanco aislado. |
 | `doctor_strange` | Doctor Strange (Legendary) | Anillo, duplicado cada 2 ataques y campo temporal. | Portal con destino y radio declarados; duplicacion limitada y punto ciego coherente, no ignorar reglas por accidente. |
-| `captain_marvel` | Captain Marvel (Legendary) | F1/lote 5: quemadura 9.5% poder/s con energia capturada al aplicar; vuelo y rayo. | Pasada binaria preparada que vuelve a su casilla; pobre giro contra grupos fuera de linea y enfriamiento real. |
+| `captain_marvel` | Captain Marvel (Legendary) | F1/lotes 5 y 8: quemadura 9.5% poder/s; pasada con deteccion efectiva, alcance 2.2x, regreso al origen y rayo de longitud correcta. | Pasada binaria preparada que vuelve a su casilla; pobre giro contra grupos fuera de linea y enfriamiento real. |
 | `vision` | Vision (Legendary) | Dos densidades y rayo cada 3 ataques. | Elegir penetracion concentrada o cobertura en fase; incompatibilidad temporal de modos, sin reunir ambas ventajas. |
 | `star_lord` | Star-Lord (Rare) | F1/lote 4: incendiaria 23% poder/s, segundo blaster con deteccion y alcance efectivos. | Dos blancos distintos con elementos complementarios; pierde parte de su dano ante boss aislado. |
 | `jean_grey` | Jean Grey (Mythic) | F1/lote 6: Dark Phoenix con formula y evolucion, quemadura en area 36% poder/s cada 8 ataques; conserva carga/retroceso. | Carga psiquica que culmina en ola Phoenix; presupuesto separado de control/dano y resistencia a empujes del boss. |
