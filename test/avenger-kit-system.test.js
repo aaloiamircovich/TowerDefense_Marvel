@@ -82,7 +82,7 @@ test('Vision alterna densidad y atraviesa enemigos alineados', () => {
     assert.equal(hero.combatStats.abilityActivations, 1);
 });
 
-test('Redwing revela sigilo y marca objetivos en reconocimiento', () => {
+test('Redwing comparte deteccion cercana y marca objetivos en reconocimiento', () => {
     const game = createGame();
     const falcon = createHero('falcon', game, { damage: 18, range: 120, fireRate: 2, category: 'Tecnológico' });
     const ally = createHero('iron_man', game, { damage: 20, range: 120, fireRate: 1, category: 'Tecnológico' });

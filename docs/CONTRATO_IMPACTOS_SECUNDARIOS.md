@@ -48,6 +48,30 @@ que una tirada independiente tenga exito en otro destinatario.
 
 ## Actualizaciones y pendientes
 
+Actualizacion lote 12 (2026-09-20): las raices de Groot fijan un enemigo vivo
+y detectable mediante getTargetsInRange, con alcance especial 1.35x y prioridad
+por avance. Sin blanco no crean zona ni gastan cooldown. Una zona existente
+mantiene su centro, radio 48, duracion 3.2 s y slow 68%/0.4 s incidental para
+vecinos, incluso ocultos y voladores, sin revelar, danar ni desplazar. No se
+recorta por el alcance del heroe despues de crearla; cooldown 10 s sin cambios.
+
+Redwing conserva su reconocimiento circular 1.85x (factor 0.38, cada 2.4 s)
+y asalto 1.45x (factor 0.72, cada 1.65 s). Recon prioriza ocultos/soportes/
+invocadores, desempata por avance y marca 16% durante 3.2 s; asalto prioriza
+avance. Falcon conserva deteccion innata. La marca no elimina sigilo. Su modo
+recon comparte deteccion a heroes a 165 px: deja de hacerlo durante stun,
+en asalto, fuera de radio o al retirarse. No borra deteccion innata ni la de
+otra fuente activa. El texto de Falcon ahora describe ese contrato real.
+
+Phoenix y Hex NO son fijaciones de objetivo: son pulsos circulares centrados
+en el heroe. Se conserva su alcance incidental a ocultos, voladores y puntos
+que un patron normal no cubriria, sin revelarlos. Phoenix exige 100 de carga,
+radio 1.2x, cooldown 12 s, factor 0.95 (1.25 evolucion Phoenix), penetracion
+35% (50% evolucion), retroceso 48 para soldados y 20 para jefes terrestres;
+no empuja voladores. Hex usa radio 1.25x, cooldown 9 s y slow 58% por 3.2 s
+antes de resistencias. Ninguno consume su activacion con solo muertos o
+enemigos fuera del radio. Estos pulsos no se migran al helper de fijacion.
+
 Actualizacion lote 11 (2026-09-20): Hulk, Wolverine, Storm y Ghost Rider usan
 la seleccion compartida para fijar el blanco de sus habilidades autonomas:
 vivo, detectable con stats efectivos y dentro del patron del heroe. Mantienen

@@ -1,7 +1,7 @@
 # Identidad y habilidades de los 105 heroes
 
 Fecha: 2026-09-13. Base revisada: commit 553ad63.
-Estado: FASE 1 EN CURSO. Once lotes implementados; fases 2 a 10 pendientes.
+Estado: FASE 1 EN CURSO. Doce lotes implementados; fases 2 a 10 pendientes.
 Los hallazgos de auditoria describen el baseline; ver avances abajo para las
 correcciones ya realizadas. No equivale a completar el rediseño de los 105 kits.
 
@@ -675,3 +675,40 @@ Pendiente de fase 1: revisar contratos de pulsos autonomos (Phoenix/Hex),
 reconocimiento de Redwing y zonas de raices, y las excepciones de objetos
 que aun no tengan cobertura especifica. No equivale al rediseno de estos
 cuatro heroes: sus nuevas firmas siguen en las fases correspondientes.
+
+## Fase 1: duodecimo lote, 2026-09-20
+
+Groot usa seleccion compartida para centrar raices sobre un enemigo vivo y
+detectable dentro de 1.35x su alcance. Antes podia activarlas sobre un oculto
+sin deteccion. No cambia la zona posterior: radio 48, 3.2 s, slow 68%/0.4 s,
+cooldown 10 s, centro fijo y efecto incidental sin desplazar ni revelar.
+
+Corregida la deteccion compartida de Falcon que seguia activa durante stun.
+Recon la concede solo mientras esta desplegado, activo y a 165 px del aliado;
+asalto no la concede. Se preserva la deteccion innata y otras fuentes activas.
+La marca de Redwing no elimina sigilo: se corrige esa promesa en la descripcion
+del catalogo y su script generador, sin cambiar sus factores, intervalos,
+prioridades o alcances de modo. Bootstrap regenerado con el texto nuevo.
+
+Declaradas y probadas dos excepciones existentes, sin alterar sus kits:
+Phoenix y Hex son pulsos centrados en el heroe, no ataques que fijan blanco.
+Conservan radio circular incidental, incluidos ocultos/voladores y puntos que
+el patron normal no cubriria, sin revelar. Phoenix respeta carga, evolucion,
+cooldown y retroceso reducido para jefes; no empuja voladores. Hex conserva
+slow y resistencia de duracion. Sin enemigos vivos en radio no se consumen.
+
+16 pruebas nuevas, tres reproducian los fallos antes de corregirlos; 60
+focalizadas aprobadas. Cubren limites, sigilo, zona estacionaria, modos de
+Redwing, presencia/stun, deteccion ajena, pulsos vacios, carga insuficiente,
+formula de Phoenix normal/evolucion y resistencia de Hex. El caso de dos
+Falcon es una prueba de robustez de la busqueda de auras, no habilita duplicados.
+
+Validacion completa: npm run check aprobado con 892 tests, simulaciones de
+economia/campana y check de rarezas sin ajustes; benchmark p95 0.319 ms.
+Accesibilidad y lanzamiento sin errores; smoke desktop 1366x768 y mobile
+390x844 sin overflow ni desvio de ruta. El unico cambio de catalogo es el
+texto descriptivo y de nicho de Falcon, tambien actualizado en su generador.
+
+No se cambian sprites, mapas, rarezas, economia, stats base ni curacion de base.
+Quedan por revisar excepciones de objetos sin contrato especifico y cierre
+de la matriz de fase 1. El rediseno de identidades sigue en fases 2 a 10.

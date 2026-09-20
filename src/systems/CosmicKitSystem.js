@@ -204,7 +204,7 @@ export class CosmicKitSystem {
             if (this.rootWall.duration <= 0) this.rootWall = null;
         }
         if (!this.rootWall && this.cooldownRemaining <= 0) {
-            const target = enemies.filter((enemy) => enemy.isAlive && distance(enemy, this.hero) <= stats.range * 1.35)
+            const target = this.hero.abilitySystem.getTargetsInRange(enemies, stats.range * 1.35, stats)
                 .sort((a, b) => b.distanceTravelled - a.distanceTravelled)[0];
             if (target) {
                 this.rootWall = { x: target.x, y: target.y, radius: 48, duration: 3.2 };

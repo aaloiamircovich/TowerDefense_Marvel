@@ -31,7 +31,7 @@ los valores finales se fijan despues de las pruebas de fase 1.
 | `iron_man` | Iron Man (Legendary) | Laser cada 3 ataques; Extremis cada 2. | Carga ARC visible y alineacion rentable; calor limita descargas seguidas, no detector/area universal. |
 | `black_widow` | Black Widow (Common) | Ruptura, veneno y descarga cada 4 ataques. | Sabotaje a soportes: inhibicion breve de su funcion especial; recortar procs redundantes y limitar efecto en jefes. |
 | `hawkeye` | Hawkeye (Common) | Cruz; tres tipos de flecha seleccionables. | Conservar carcaj: seleccion para oleada y un disparo preparado; cambio de municion no reinicia gratis la recarga. |
-| `falcon` | Falcon (Common) | Redwing a distancia, modo reconocimiento/asalto. | Reconocimiento que revela de verdad para aliados o ataque ligero; dron unico y cobertura temporal, sin slots extra. |
+| `falcon` | Falcon (Common) | F1/lote 12: Redwing marca sin quitar sigilo; recon comparte deteccion a 165 px, suspendida por stun. Asalto sin deteccion compartida. | Reconocimiento que revela de verdad para aliados o ataque ligero; dron unico y cobertura temporal, sin slots extra. |
 | `winter_soldier` | Winter Soldier (Rare) | Modos perforante, electrico y explosivo. | Cargador de rafagas: especializar una rafaga y pagar recarga; distinguir de flecha individual de Hawkeye. |
 | `war_machine` | War Machine (Rare) | F1/lote 5: cruz, splash, penetracion y quemadura 14% poder/s solo al principal. | Salva de misiles sobre zona fijada; fuerte contra densidad y flojo ante corredores que abandonan la zona. |
 | `punisher` | Punisher (Common) | Cruz, penetracion y splash pequeno. | Supresion al sostener el mismo blanco; perder preparacion al retarget, no area generalista. |
@@ -82,7 +82,7 @@ los valores finales se fijan despues de las pruebas de fase 1.
 | --- | --- | --- | --- |
 | `spiderman` | Spider-Man (Epic) | Redes acumuladas, inmovilizacion y deteccion propia. | Tejido progresivo sobre un blanco; umbral visible y ventana de resistencia tras inmovilizar, sin stun perpetuo. |
 | `miles_morales` | Miles Morales (Epic) | Redes y stun probabilisticos. | Cargar bioelectricidad en blancos enredados y descargar en grupo; menos control constante que Peter. |
-| `groot` | Groot (Common) | Zona de raices periodica y slows por impacto. | Raices estacionarias en curva: control de zona persistente, sin bloquear ruta; enemigo que sale recupera velocidad. |
+| `groot` | Groot (Common) | F1/lote 12: raices fijan detectable a 1.35x; zona estacionaria de radio 48 con slow incidental, sin mover enemigos. | Raices estacionarias en curva: control de zona persistente, sin bloquear ruta; enemigo que sale recupera velocidad. |
 | `daredevil` | Daredevil (Epic) | Pulso global de deteccion y contraataque cada 4. | Lectura anticipada: ventanas claras de revelado; dano modesto, sin volver permanente la vision de todo el equipo. |
 | `quake` | Quake (Common) | Slow y ruptura por probabilidad. | Onda sismica sobre terrestres de una linea; no afectar a voladores, ni desplazar fuera del camino. |
 | `medusa` | Medusa (Common) | Rebote corto y slow solo por efecto de impacto. | Sujecion de pocos blancos conectados; repartir el control entre ellos, mala contra grupos enormes. |
@@ -107,7 +107,7 @@ los valores finales se fijan despues de las pruebas de fase 1.
 | --- | --- | --- | --- |
 | `blade` | Blade (Epic) | F1/lote 4: sangrado 21% poder/s, 30% en elites; veneno y medidor por bajas. | Cazador de elites: sangrado escalado por poder y remate preparado; sustituir activacion vacia del contador, sin sanar base. |
 | `ghost_rider` | Ghost Rider (Legendary) | F1/lotes 4/11: quemadura unica 13.5% poder/s; Penitencia fija jefe detectable a 1.3x rango. Conserva deteccion innata y cadena. | Penitencia segun dano sufrido por el blanco, con techo especifico para bosses; no acumular retroceso infinito. |
-| `scarlet_witch` | Scarlet Witch (Secret) | Marcas enlazadas, curse, propagacion y slow de zona. | Red de maldiciones que madura y detona de forma limitada; conservar rango de preparacion y debilidad ante aislamiento. |
+| `scarlet_witch` | Scarlet Witch (Secret) | F1/lote 12: Hex conserva pulso circular incidental 1.25x, slow resistible; marcas, curse y propagacion sin cambios. | Red de maldiciones que madura y detona de forma limitada; conservar rango de preparacion y debilidad ante aislamiento. |
 | `cloak` | Cloak (Rare) | Deteccion propia y slow; no revelado global. | Ventana oscura que revela dentro de una zona pequena; sin teleportar enemigos fuera de ruta. |
 | `dagger` | Dagger (Rare) | Marca y rebote; rebote no hereda marca hoy. | Dagas que consumen marcas para limpiar blancos consecutivos; sin curacion y sin depender obligatoriamente de Cloak. |
 | `magik` | Magik (Epic) | Penetracion, rebote, ruptura y curse. | Corte dimensional contra enemigos malditos con retorno; reducir redundancia de efectos, no copiar portal de Strange. |
@@ -131,7 +131,7 @@ los valores finales se fijan despues de las pruebas de fase 1.
 | `captain_marvel` | Captain Marvel (Legendary) | F1/lotes 5 y 8: quemadura 9.5% poder/s; pasada con deteccion efectiva, alcance 2.2x, regreso al origen y rayo de longitud correcta. | Pasada binaria preparada que vuelve a su casilla; pobre giro contra grupos fuera de linea y enfriamiento real. |
 | `vision` | Vision (Legendary) | Dos densidades y rayo cada 3 ataques. | Elegir penetracion concentrada o cobertura en fase; incompatibilidad temporal de modos, sin reunir ambas ventajas. |
 | `star_lord` | Star-Lord (Rare) | F1/lote 4: incendiaria 23% poder/s, segundo blaster con deteccion y alcance efectivos. | Dos blancos distintos con elementos complementarios; pierde parte de su dano ante boss aislado. |
-| `jean_grey` | Jean Grey (Mythic) | F1/lote 6: Dark Phoenix con formula y evolucion, quemadura en area 36% poder/s cada 8 ataques; conserva carga/retroceso. | Carga psiquica que culmina en ola Phoenix; presupuesto separado de control/dano y resistencia a empujes del boss. |
+| `jean_grey` | Jean Grey (Mythic) | F1/lotes 6/12: Dark Phoenix conserva burn 36% poder/s cada 8 ataques; pulso cargado radial 1.2x incidental y retroceso menor para jefes. | Carga psiquica que culmina en ola Phoenix; presupuesto separado de control/dano y resistencia a empujes del boss. |
 | `cyclops` | Cyclops (Epic) | X, modos opticos y rayo extra. | Haz sostenido que premia alineacion precisa; perder carga al cambiar de linea y no rellenar toda la X con AoE. |
 | `silver_surfer` | Silver Surfer (Mythic) | X de largo alcance, tres modos y rayo periodico. | Trayectoria cosmica: cruza filas largas, mediocre junto a su origen o fuera de diagonales; excepciones de rango visibles. |
 | `nova` | Nova (Legendary) | Un rebote y penetracion; sin pulso cargado. | Carga Nova para un pulso de energia que se agota; ventana potente seguida de recarga, distinta de cadena permanente de Thor. |

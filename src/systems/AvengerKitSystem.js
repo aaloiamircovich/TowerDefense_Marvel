@@ -84,6 +84,7 @@ export class AvengerKitSystem {
         const allies = this.hero.game?.heroes || [];
 
         const reconFalcon = allies.find((candidate) => candidate.id === 'falcon'
+            && !(candidate.stunTimer > 0)
             && candidate.abilitySystem?.getCombatMode?.() === 'recon'
             && Math.hypot(candidate.x - this.hero.x, candidate.y - this.hero.y) <= 165);
         if (reconFalcon) stats.canSeeStealth = true;

@@ -39,8 +39,8 @@ const contracts = {
     falcon: {
         cost: 210,
         ability: 'REDWING',
-        abilityDesc: 'Ordena a Redwing explorar para revelar y marcar amenazas o atacar con mayor frecuencia. El dron opera fuera del alcance normal de Falcon.',
-        niche: 'reconocimiento global, marcado y apoyo aéreo'
+        abilityDesc: 'Redwing marca amenazas en reconocimiento y comparte deteccion con aliados a 165 px mientras Falcon no este aturdido. En asalto golpea mas fuerte y seguido, sin compartir deteccion. El dron opera fuera de su alcance normal; la marca no elimina el sigilo.',
+        niche: 'reconocimiento cercano, marcado y apoyo aéreo'
     }
 };
 
