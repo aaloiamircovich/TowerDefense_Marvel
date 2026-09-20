@@ -199,6 +199,11 @@ export class Enemy {
         return this.applyStatus({ type, duration, power });
     }
 
+    getStatusDuration(type, duration) {
+        const specificResistance = this.config.statusResistances?.[type] || 0;
+        return duration * Math.max(0.2, 1 - this.statusResistance - specificResistance);
+    }
+
     applyStatus(effect, source = null) {
         const { type, duration = 1, power = 0.5 } = effect;
         const dot = DOT_TYPES.has(type) ? resolveStatusDamage(effect, this, source) : null;
@@ -212,8 +217,7 @@ export class Enemy {
             return true;
         }
 
-        const specificResistance = this.config.statusResistances?.[type] || 0;
-        const adjustedDuration = duration * Math.max(0.2, 1 - this.statusResistance - specificResistance);
+        const adjustedDuration = this.getStatusDuration(type, duration);
 
         if (type === 'poison') {
             if (!this.isAlive) return false;

@@ -203,11 +203,11 @@ export function buildSignatureAttackContext(hero, target, stats) {
     if (config.focusRamp) nextStats.damage *= 1 + getFocusStacks(hero, target, state, config) * (config.damagePct || 0);
     if (config.markDangerous) {
         updateDangerMark(hero, config, state, nextStats.range);
-        if (state.markedUid && getTargetId(target) === state.markedUid) nextStats.damage *= 1 + (config.damageBonus || 0.15);
+        if (hasActiveSignatureMark(target, state.markedUid, state.markedRemaining)) nextStats.damage *= 1 + (config.damageBonus || 0.15);
     }
     if (config.huntMark) {
-        const targetId = getTargetId(target);
-        if (state.huntedUid === targetId) nextStats.damage *= 1 + (config.damageBonus || 0.3);
+        prepareHuntTarget(state, target);
+        if (hasActiveSignatureMark(target, state.huntedUid, state.huntedRemaining)) nextStats.damage *= 1 + (config.damageBonus || 0.3);
     }
 
     return { item, config, state, stats: nextStats };
@@ -236,6 +236,7 @@ export function resolveSignatureAfterAttack(hero, target, stats, projectileConfi
     if (state.count < (config.interval || Infinity)) return;
     state.count = 0;
 
+    if (config.markDangerous) return;
     triggerSignature(hero, target, stats, projectileConfig, projectiles, config, state);
 }
 
@@ -486,24 +487,38 @@ function updateDangerMark(hero, config, state, range) {
     if (state.count && config.interval && state.count % config.interval !== 0) return;
     const target = getTargetsInRange(hero, range)
         .sort((a, b) => Number(b.isBoss) - Number(a.isBoss) || (b.threat || 1) - (a.threat || 1) || b.hp - a.hp)[0];
-    if (!target) return;
+    state.markedUid = null;
+    state.markedRemaining = 0;
+    if (!target?.applyStatus?.({ type: 'mark', duration: DEFAULT_MARK_DURATION, power: config.damageBonus || 0.15, chance: 1 }, hero)) return;
     state.markedUid = getTargetId(target);
-    target.stealth = false;
-    target.applyStatus?.({ type: 'mark', duration: DEFAULT_MARK_DURATION, power: config.damageBonus || 0.15, chance: 1 }, hero);
+    state.markedRemaining = target.getStatusDuration?.('mark', DEFAULT_MARK_DURATION) ?? DEFAULT_MARK_DURATION;
     hero.game?.vfx?.addRing?.(target.x, target.y, { color: '#40c9ff', radius: 20, duration: 0.26 });
 }
 
 function updateHuntMark(hero, target, state, config) {
-    const targetId = getTargetId(target);
-    if (state.huntTarget !== targetId) {
-        state.huntTarget = targetId;
-        state.huntHits = 0;
-    }
+    prepareHuntTarget(state, target);
+    if (!target?.isAlive) return;
     state.huntHits++;
     if (state.huntHits >= (config.threshold || 4)) {
-        state.huntedUid = targetId;
-        target.applyStatus?.({ type: 'mark', duration: 5, power: config.damageBonus || 0.3, chance: 1 }, hero);
+        if (!target.applyStatus?.({ type: 'mark', duration: 5, power: config.damageBonus || 0.3, chance: 1 }, hero)) return;
+        state.huntedUid = getTargetId(target);
+        state.huntedRemaining = target.getStatusDuration?.('mark', 5) ?? 5;
         hero.game?.vfx?.addRing?.(target.x, target.y, { color: '#ff3b5f', radius: 28, duration: 0.32 });
+    }
+}
+
+function hasActiveSignatureMark(target, uid, remaining) {
+    return Boolean(target?.isAlive && uid && getTargetId(target) === uid && remaining > 0
+        && target.debuffs?.some((effect) => effect.type === 'mark' && effect.duration > 0));
+}
+
+function prepareHuntTarget(state, target) {
+    if (state.huntTarget !== getTargetId(target) || !target?.isAlive
+        || (state.huntedUid && !hasActiveSignatureMark(target, state.huntedUid, state.huntedRemaining))) {
+        state.huntTarget = target?.isAlive ? getTargetId(target) : null;
+        state.huntHits = 0;
+        state.huntedUid = null;
+        state.huntedRemaining = 0;
     }
 }
 
@@ -531,6 +546,22 @@ export function updateSignatureTimers(hero, dt) {
     if (!Number.isFinite(dt) || dt <= 0) return;
     // Unequipped items also age while the hero is deployed; reequipping cannot bank a buff.
     for (const state of Object.values(hero.signatureState || {})) {
+        if (state.markedRemaining > 0) {
+            state.markedRemaining = Math.max(0, state.markedRemaining - dt);
+            if (state.markedRemaining < 1e-9) {
+                state.markedRemaining = 0;
+                state.markedUid = null;
+            }
+        }
+        if (state.huntedRemaining > 0) {
+            state.huntedRemaining = Math.max(0, state.huntedRemaining - dt);
+            if (state.huntedRemaining < 1e-9) {
+                state.huntedRemaining = 0;
+                state.huntedUid = null;
+                state.huntTarget = null;
+                state.huntHits = 0;
+            }
+        }
         if (state.timedBuff?.remaining > 0) {
             state.timedBuff.remaining = Math.max(0, state.timedBuff.remaining - dt);
             if (state.timedBuff.remaining < 1e-9) state.timedBuff.remaining = 0;

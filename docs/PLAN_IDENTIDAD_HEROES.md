@@ -1,7 +1,7 @@
 # Identidad y habilidades de los 105 heroes
 
 Fecha: 2026-09-13. Base revisada: commit 553ad63.
-Estado: FASE 1 EN CURSO. Catorce lotes implementados; fases 2 a 10 pendientes.
+Estado: FASE 1 EN CURSO. Quince lotes implementados; fases 2 a 10 pendientes.
 Los hallazgos de auditoria describen el baseline; ver avances abajo para las
 correcciones ya realizadas. No equivale a completar el rediseño de los 105 kits.
 
@@ -785,3 +785,43 @@ ni desvio de ruta.
 
 Pendiente de fase 1: marcas signature y excepciones de ejecucion, junto al
 cierre de cobertura de la matriz. Este lote no declara la fase terminada.
+
+## Fase 1: decimoquinto lote, 2026-09-20
+
+Corregidos bonus personales de marcas que dependian solo de un UID guardado,
+sin comprobar caducidad ni estado del blanco. Beast y Elsa ahora exigen mark
+activo, enemigo vivo y ventana personal vigente. La duracion resistida se
+calcula con Enemy.getStatusDuration, extraido de la formula existente sin
+cambiar sus valores ni su piso de 20%. Una marca ajena no extiende esa ventana.
+
+Elsa prepara Bloodstone con cuatro ataques consecutivos a la misma presa.
+Cambiar de objetivo o caducar la ventaja reinicia preparacion: volver al
+enemigo anterior no recupera inmediatamente el bonus. El cuarto aplica marca
+y el quinto puede aprovechar +32%. Continuar refresca la ventana de 5 s antes
+de resistencias, sin multiplicar bonos. El mark compartido del blanco anterior
+no se borra al cambiar; solamente se pierde el bonus personal. No marca muertos.
+
+Beast conserva seleccion por jefe/amenaza/vida y analisis inicial y cada diez
+ataques. Su bonus de 18% queda limitado a 2.2 s resistibles. Se elimina el pulso
+generico del 75% que su configuracion de analisis recibia por el caso por defecto.
+El Localizador ya no borra sigilo permanentemente al marcar: Mockingbird puede
+detectar gracias al objeto, pero no revela globalmente para aliados sin detector.
+Nick Fury y Maria Hill conservan aura pura; no se activan ataques para sus firmas.
+
+15 regresiones nuevas; ocho fallos reproducidos antes de editar el motor.
+Incluyen niveles 49/50, primer slot, caducidad, cambio de presa, refresh, marcas
+mezcladas, duracion resistida, muerte antes de proc, pulso accidental, sigilo,
+prioridad y soportes sin disparos. Sin modificaciones de datos ni bootstrap.
+
+Validacion completa: npm run check aprobado con 950 tests; simulaciones de
+economia/campana y check de rarezas sin ajustes. Benchmark p95 0.474 ms;
+accesibilidad y lanzamiento sin errores. Smoke desktop 1366x768 y mobile
+390x844 sin overflow ni desvio de ruta.
+
+Probe pendiente de ejecuciones (sin cambiar esas mecanicas en este lote):
+enemigo con 10.000 HP maximos y 2.000 actuales, categoria neutral. Gamora mata
+normal/blindado pero la barrera absorbe su remate; Sentry/The Void deja 594.2975
+HP con armadura 85 y 2.000 HP con barrera inicial 5.000. Ambos conservan la
+exclusion de ejecucion de jefes. Hace falta fijar y probar si sus remates deben
+ser ejecuciones garantizadas o dano sujeto a defensas, sin inflar dano a bosses.
+Quedan esas excepciones y el cierre de cobertura antes de terminar fase 1.

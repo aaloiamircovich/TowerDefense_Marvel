@@ -48,6 +48,28 @@ que una tirada independiente tenga exito en otro destinatario.
 
 ## Actualizaciones y pendientes
 
+Actualizacion lote 15 (2026-09-20): las marcas signature separan la duracion
+del bonus personal del estado mark compartido. Ambas usan la misma formula
+de resistencia de Enemy.getStatusDuration; otra fuente no puede prolongar
+la ventana personal. El bonus requiere enemigo vivo, identidad correcta,
+tiempo propio restante y un mark activo. Caduca con el reloj de simulacion.
+Los porcentajes existentes del bonus personal y de vulnerabilidad mark se
+mantienen como canales distintos; no se suman todas las marcas del enemigo.
+
+Elsa con Bloodstone marca tras cuatro ataques a la misma presa; el cuarto
+todavia no recibe el bonus personal. Desde el siguiente, +32% mientras dure
+su ventana de 5 s antes de resistencias. Continuar atacando refresca esa
+ventana; caducidad o cambio de presa exige preparar cuatro ataques otra vez.
+Cambiar no borra el mark del enemigo anterior, pero si la ventaja personal.
+Un enemigo muerto antes del cuarto proc no recibe marca ni conserva progreso.
+
+Beast analiza al primer ataque y luego cada diez: mark y bonus personal 18%
+durante 2.2 s antes de resistencias. Ya no genera el pulso generico al 75%
+que recibia accidentalmente al caer en triggerSignature sin perfil ofensivo.
+Mockingbird con Localizador conserva deteccion propia y mark/bonus 15%, pero
+no asigna stealth=false: marcar no es un revelado global permanente. Nick Fury
+y Maria Hill siguen siendo soportes puros, sin activar signatures por ataques.
+
 Actualizacion lote 14 (2026-09-20): strikeMulti ya no recupera al blanco
 original si no quedan destinatarios validos. Aplica a Punisher, War Machine,
 Nightcrawler, X-23, Gamora, Deadpool y Redwing MK II de Falcon. Son disparos
