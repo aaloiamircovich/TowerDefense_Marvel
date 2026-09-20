@@ -48,6 +48,28 @@ que una tirada independiente tenga exito en otro destinatario.
 
 ## Actualizaciones y pendientes
 
+Actualizacion lote 13 (2026-09-20): los buffs temporales signature usan dt de
+simulacion desde Hero.update, no descuentan una unidad por ataque. Pausar o
+terminar la partida congela ese reloj; x2/x4 lo aceleran con el juego. El stun
+no conserva tiempo del buff. Los estados de objetos desequipados tambien
+envejecen mientras el heroe sigue desplegado, sin bonificar sus stats.
+
+Cada diez ataques, evolucion de nivel y objeto equipado habilitan: Rogue
+3.2 s (+18% dano, +12% cadencia); Wolverine 3 s (+20% cadencia, +8 puntos de
+critico); Peni Parker 3.2 s (+28% cadencia); Vision 3.2 s (+24% cadencia,
+25% penetracion); Winter Soldier 3.2 s (+26% cadencia, 22% penetracion).
+Son valores preexistentes, ahora conectados a stats efectivos y proyectiles.
+El disparo que los activa no recibe retroactivamente el buff. Se aplican una
+sola vez; refrescar repone duracion, no acumula multiplicadores. La penetracion
+de proyectil suma perfil/objeto/buff con techo 85%; no cambia la de rayos
+especiales que declaran su propio valor.
+
+El enfoque signature se mantiene por ataques a la misma presa, con sus techos
+existentes: White Tiger/Tigra ocho stacks de 3.5%, caducidad 3 s; She-Hulk diez
+de 3%, caducidad 4 s. Cambiar de presa reinicia stacks. Cada ataque refresca
+el tiempo; el reloj ahora los elimina tras inactividad. Consultar stats no
+consume tiempo, agrega stacks ni activa ataques.
+
 Actualizacion lote 12 (2026-09-20): las raices de Groot fijan un enemigo vivo
 y detectable mediante getTargetsInRange, con alcance especial 1.35x y prioridad
 por avance. Sin blanco no crean zona ni gastan cooldown. Una zona existente

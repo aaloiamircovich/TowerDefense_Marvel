@@ -1,7 +1,7 @@
 # Identidad y habilidades de los 105 heroes
 
 Fecha: 2026-09-13. Base revisada: commit 553ad63.
-Estado: FASE 1 EN CURSO. Doce lotes implementados; fases 2 a 10 pendientes.
+Estado: FASE 1 EN CURSO. Trece lotes implementados; fases 2 a 10 pendientes.
 Los hallazgos de auditoria describen el baseline; ver avances abajo para las
 correcciones ya realizadas. No equivale a completar el rediseño de los 105 kits.
 
@@ -712,3 +712,43 @@ texto descriptivo y de nicho de Falcon, tambien actualizado en su generador.
 No se cambian sprites, mapas, rarezas, economia, stats base ni curacion de base.
 Quedan por revisar excepciones de objetos sin contrato especifico y cierre
 de la matriz de fase 1. El rediseno de identidades sigue en fases 2 a 10.
+
+## Fase 1: decimotercer lote, 2026-09-20
+
+La revision de objetos encontro tres fallos conectados: los buffs de 3/3.2 s
+se descontaban por ataque, su cadencia solo llegaba al contexto del disparo
+(no al temporizador que decide disparar) y su penetracion nunca se incorporaba
+al proyectil. Corregidos en la ruta compartida, sin cambiar valores de datos.
+
+Hero.update avanza los temporizadores con dt antes de la salida por stun;
+Hero.getEffectiveStats aplica los bonos una sola vez, y el perfil del proyectil
+recibe la penetracion temporal con el techo existente de 85%. Se elimina la
+segunda aplicacion en el contexto del ataque. Los cinco consumidores son
+Rogue, Wolverine, Peni Parker, Vision y Winter Soldier. Conservan activacion
+cada diez ataques, requisitos de evolucion/objeto, porcentajes y duraciones.
+El ataque activador no recibe el bono retroactivamente. Refrescarlo repone
+tiempo, no duplica potencia. Sin el objeto equipado no se aplica el buff.
+
+El mismo reloj corrige la caducidad del enfoque de White Tiger, Tigra y
+She-Hulk: antes solo descontaba una unidad justo despues de refrescarse al
+atacar, y nunca expiraba esperando. Mantienen sus techos y cambio de presa;
+ahora caducan realmente tras 3/3/4 s sin ataques. Se prueban los ocho usuarios
+del reloj compartido; no son ocho redisenos individuales de personajes.
+
+24 regresiones nuevas, 18 reproducian fallos antes del cambio. Cobertura:
+niveles 49/50, requisito de objeto, stats/proyectil sin multiplicacion doble,
+disparos reales mas frecuentes, duracion con pasos distintos, pausa y x1/x2/x4
+mediante GameLoop.loop, stun, perdida/recuperacion de objeto, refresco, techo
+de penetracion y enfoque por presa. Los datos base, mapas y sprites no cambian;
+no se necesita regenerar bootstrap. Sin curacion, monedas ni ataques de soportes.
+
+Validacion completa: npm run check aprobado con 916 tests, simulaciones de
+economia/campana y check de rarezas sin ajustes. Benchmark p95 0.297 ms;
+accesibilidad y lanzamiento sin errores. Smoke desktop 1366x768 y mobile
+390x844 sin overflow ni desvio de ruta. Las simulaciones estimadas no incluyen
+todos los ciclos de buffs y no sustituyen las pruebas de disparos reales.
+
+Pendiente de fase 1: fijaciones secundarias/fallback de objetos, marcas y
+excepciones de ejecucion antes del cierre de la matriz. No se afirma balance
+integral por pasar las pruebas: cadencia y penetracion antes inactivas ahora
+aportan poder real y requieren comparativas de equipos en la fase 10.

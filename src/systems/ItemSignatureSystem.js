@@ -199,7 +199,6 @@ export function buildSignatureAttackContext(hero, target, stats) {
     const nextStats = { ...stats };
 
     if (!config) return { item, config: null, state, stats: nextStats };
-    applyTimedBuffStats(nextStats, state);
     if (config.probability) nextStats.critChance += Math.min(config.critCap || 25, state.critBonus || 0);
     if (config.focusRamp) nextStats.damage *= 1 + getFocusStacks(hero, target, state, config) * (config.damagePct || 0);
     if (config.markDangerous) {
@@ -218,7 +217,6 @@ export function resolveSignatureAfterAttack(hero, target, stats, projectileConfi
     const { config, state } = context;
     if (!config || !target) return;
 
-    decayTimedBuff(state);
     if (state.extraShots > 0) {
         state.extraShots--;
         spawnProjectile(hero, target, {
@@ -528,11 +526,19 @@ function applyTimedBuffStats(stats, state) {
     stats.armorPenetration = Math.min(0.85, (stats.armorPenetration || 0) + (buff.armorPenetration || 0));
 }
 
-function decayTimedBuff(state) {
-    if (state.timedBuff?.remaining) state.timedBuff.remaining = Math.max(0, state.timedBuff.remaining - 1);
-    if (state.focusTimer) {
-        state.focusTimer = Math.max(0, state.focusTimer - 1);
-        if (state.focusTimer <= 0) state.focusStacks = 0;
+export function updateSignatureTimers(hero, dt) {
+    if (!Number.isFinite(dt) || dt <= 0) return;
+    // Unequipped items also age while the hero is deployed; reequipping cannot bank a buff.
+    for (const state of Object.values(hero.signatureState || {})) {
+        if (state.timedBuff?.remaining > 0) {
+            state.timedBuff.remaining = Math.max(0, state.timedBuff.remaining - dt);
+            if (state.timedBuff.remaining < 1e-9) state.timedBuff.remaining = 0;
+        }
+        if (state.focusTimer > 0) {
+            state.focusTimer = Math.max(0, state.focusTimer - dt);
+            if (state.focusTimer < 1e-9) state.focusTimer = 0;
+            if (state.focusTimer === 0) state.focusStacks = 0;
+        }
     }
 }
 

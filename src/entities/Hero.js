@@ -4,7 +4,7 @@ import { SpriteAnimator } from '../rendering/SpriteAnimator.js';
 import { HeroAbilitySystem } from '../systems/HeroAbilitySystem.js';
 import { aggregateItemEffects } from '../systems/ItemEffectSystem.js';
 import { applyEvolutionStats } from '../systems/EvolutionSystem.js';
-import { buildSignatureAttackContext, renderSignatureVisuals, resolveSignatureAfterAttack, resolveSignatureOnKill } from '../systems/ItemSignatureSystem.js';
+import { applySignatureStats, buildSignatureAttackContext, renderSignatureVisuals, resolveSignatureAfterAttack, resolveSignatureOnKill, updateSignatureTimers } from '../systems/ItemSignatureSystem.js';
 import { getHeroRangePattern, isPointInRangePattern } from '../utils/RangePattern.js';
 import { getScaledSupportAura, normalizeHeroLevel } from '../utils/HeroLevel.js';
 import { TERRAIN } from '../utils/TerrainRules.js';
@@ -149,11 +149,12 @@ export class Hero {
 
         this.abilitySystem.applyStatModifiers(stats);
         this.applySupportAuras(stats);
-        return this.game.teamSynergy?.applyHeroStats(this, stats) || stats;
+        return applySignatureStats(this.game.teamSynergy?.applyHeroStats(this, stats) || stats, this);
     }
 
     update(dt, enemies, projectiles) {
         this.syncVisual();
+        updateSignatureTimers(this, dt);
         this.timer += dt;
         this.flashTimer = Math.max(0, this.flashTimer - dt);
         this.stunTimer = Math.max(0, this.stunTimer - dt);
@@ -235,7 +236,7 @@ export class Hero {
             critical: isCrit,
             attackerType: this.category,
             effects: this.getProjectileEffects(target),
-            ...this.getProjectileProfile(),
+            ...this.getProjectileProfile(attackStats),
             color: this.getProjectileColor(),
             radius: isCrit ? 7 : 5,
             visualStyle: this.getProjectileVisualStyle()
@@ -292,7 +293,7 @@ export class Hero {
         return Math.max(0.1, multiplier);
     }
 
-    getProjectileProfile() {
+    getProjectileProfile(stats = this.getEffectiveStats()) {
         const profiles = {
             capitan_america: { chainCount: 2, chainRange: 115, chainFactor: 0.6, returning: true },
             thor: { chainCount: 3, chainRange: 130, chainFactor: 0.7 },
@@ -310,7 +311,7 @@ export class Hero {
             propagationCount: base.propagationCount || 0,
             propagationRadius: base.propagationRadius || 90,
             propagationFactor: base.propagationFactor || 0.35,
-            armorPenetration: Math.min(0.85, (base.armorPenetration || 0) + (itemEffects.armorPenetration || 0))
+            armorPenetration: Math.min(0.85, (base.armorPenetration || 0) + (itemEffects.armorPenetration || 0) + (stats.armorPenetration || 0))
         };
     }
 

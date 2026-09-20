@@ -32,7 +32,7 @@ los valores finales se fijan despues de las pruebas de fase 1.
 | `black_widow` | Black Widow (Common) | Ruptura, veneno y descarga cada 4 ataques. | Sabotaje a soportes: inhibicion breve de su funcion especial; recortar procs redundantes y limitar efecto en jefes. |
 | `hawkeye` | Hawkeye (Common) | Cruz; tres tipos de flecha seleccionables. | Conservar carcaj: seleccion para oleada y un disparo preparado; cambio de municion no reinicia gratis la recarga. |
 | `falcon` | Falcon (Common) | F1/lote 12: Redwing marca sin quitar sigilo; recon comparte deteccion a 165 px, suspendida por stun. Asalto sin deteccion compartida. | Reconocimiento que revela de verdad para aliados o ataque ligero; dron unico y cobertura temporal, sin slots extra. |
-| `winter_soldier` | Winter Soldier (Rare) | Modos perforante, electrico y explosivo. | Cargador de rafagas: especializar una rafaga y pagar recarga; distinguir de flecha individual de Hawkeye. |
+| `winter_soldier` | Winter Soldier (Rare) | F1/lote 13: Overclock con cadencia y penetracion reales por 3.2 s; conserva tres municiones. | Cargador de rafagas: especializar una rafaga y pagar recarga; distinguir de flecha individual de Hawkeye. |
 | `war_machine` | War Machine (Rare) | F1/lote 5: cruz, splash, penetracion y quemadura 14% poder/s solo al principal. | Salva de misiles sobre zona fijada; fuerte contra densidad y flojo ante corredores que abandonan la zona. |
 | `punisher` | Punisher (Common) | Cruz, penetracion y splash pequeno. | Supresion al sostener el mismo blanco; perder preparacion al retarget, no area generalista. |
 | `shuri` | Shuri (Common) | Marca y deteccion propia. | Escaneo de barrera: marcar un escudo para romperlo coordinadamente; menos utilidad contra enemigos sin defensa. |
@@ -42,7 +42,7 @@ los valores finales se fijan despues de las pruebas de fase 1.
 | `mockingbird` | Mockingbird (Common) | Stun y marca por probabilidad. | Doble baston: alternar golpe preparatorio y descarga garantizada; requiere permanecer sobre el objetivo. |
 | `yelena_belova` | Yelena Belova (Common) | Veneno y marca probabilisticos. | Contrato de caza: concentra ataques sobre el marcado, transfiere marca tras baja; no inhibe soportes como Widow. |
 | `nebula` | Nebula (Rare) | Ruptura y deteccion, sin filtro tecnologico. | Adaptacion cibernetica: gana penetracion al insistir en el mismo blanco; bonificacion tecnologica explicita y limitada. |
-| `peni_parker` | Peni Parker (Rare) | Redes por impacto y deteccion; sin mina propia. | Una mina de red preparada en el camino dentro de cobertura; enfriamiento tras activarse y limpieza al retirarla. |
+| `peni_parker` | Peni Parker (Rare) | F1/lote 13: Overclock acelera disparos por 3.2 s; redes y deteccion sin mina propia. | Una mina de red preparada en el camino dentro de cobertura; enfriamiento tras activarse y limpieza al retirarla. |
 | `howard_the_duck` | Howard the Duck (Common) | F1/lote 2: quemadura 12% dano efectivo/s y slow independiente. | Bolsa de trucos sin repeticion inmediata: alternar dos utilidades legibles; azar acotado, sin picos de economia. |
 
 ## Fase 4: combate cercano y combos
@@ -50,12 +50,12 @@ los valores finales se fijan despues de las pruebas de fase 1.
 | ID | Heroe (rareza) | Actual | Firma propuesta y limite |
 | --- | --- | --- | --- |
 | `hulk` | Hulk (Mythic) | F1/lote 11: salto fija detectable a 2.25x rango; area/stun incidental. Conserva furia por ataques y vidas perdidas. | Aplastamiento cargado por presion cercana; no premiar perder vidas como via principal. Descarga fuerte y pausa larga. |
-| `wolverine` | Wolverine (Epic) | F1/lote 11: salto al avanzado detectable a 3x rango, regreso en 0.8 s; conserva deteccion innata y frenesi. | Perseguir una presa alimenta frenesi; pierde parte al cambiar objetivo, retorno seguro, sin curacion de base. |
+| `wolverine` | Wolverine (Epic) | F1/lotes 11/13: salto detectable 3x, regreso 0.8 s; Berserker signature acelera y da critico por 3 s reales. | Perseguir una presa alimenta frenesi; pierde parte al cambiar objetivo, retorno seguro, sin curacion de base. |
 | `gamora` | Gamora (Common) | Combo secundario y ejecucion de no jefes bajo 25%. | Ejecucion precisa de debilitados; definir barreras y tipo de dano para que el umbral sea fiable, sin ejecutar bosses. |
 | `ant_man` | Ant-Man (Common) | Diminuto rapido o gigante con splash/retroceso. | Ventanas Pym: diminuto prepara y gigante consume carga; no cambiar forma para eludir cooldown ni mover fuera de ruta. |
 | `shang_chi` | Shang-Chi (Epic) | Tres modos de anillos; moneda heredada en guardia. | Combo de anillos con finalizadores distintos; sustituir moneda por preparacion de combo, no aura aliada atacante. |
 | `moon_knight` | Moon Knight (Epic) | Ciclo automatico alcance/dano/cadencia y retorno. | Ciclo lunar previsible que cambia prioridades, no selector manual prometido; debilidad distinta en cada fase. |
-| `she_hulk` | She-Hulk (Rare) | Marcas, retroceso e impacto cada 3 ataques. | Objecion al elite delantero: golpe preparado que interrumpe una accion; resistencia de jefe y sin taunt ficticio. |
+| `she_hulk` | She-Hulk (Rare) | F1/lote 13: enfoque signature hasta diez stacks de 3%, caduca tras 4 s sin atacar; conserva impacto y retroceso. | Objecion al elite delantero: golpe preparado que interrumpe una accion; resistencia de jefe y sin taunt ficticio. |
 | `iron_fist` | Iron Fist (Epic) | Critico propio y stun probabilistico. | Carga de chi para un golpe concentrado; descanso entre golpes y sin area masiva. |
 | `jessica_jones` | Jessica Jones (Common) | Golpe lento y chance de stun. | Ultima linea: impacto extra al enemigo mas avanzado; condicion explicita de progreso por ruta, no de coordenada de base. |
 | `elektra` | Elektra (Rare) | F1/lote 2: sangrado 22% dano efectivo/s y critico propio. | Remate a un objetivo ya sangrante; consume preparacion, sin cadena de ejecuciones de bosses. |
@@ -65,13 +65,13 @@ los valores finales se fijan despues de las pruebas de fase 1.
 | `korg` | Korg (Common) | Splash corto y slow. | Pisoton de proximidad al entrar varios enemigos; poco alcance y enfriamiento, no detector ni penetracion universal. |
 | `echo` | Echo (Common) | Marca y critico propio, no copia. | Aprendizaje de la presa: mejora su siguiente combo tras repetir patron; no copiar cualquier habilidad aliada ni buffs de equipo. |
 | `valkyrie` | Valkyrie (Rare) | F1/lote 2: sangrado 20% dano efectivo/s y critico propio. | Carga preparada desde terreno alto con retorno; bonificacion de terreno real y sin invadir colocaciones bloqueadas. |
-| `rogue` | Rogue (Epic) | Slow y marca; sin absorcion real. | Robar temporalmente un rasgo permitido al blanco para potenciarse; lista acotada, nunca robar pasivas de boss. |
+| `rogue` | Rogue (Epic) | F1/lote 13: buff signature de dano/cadencia dura 3.2 s reales; no roba rasgos del enemigo. | Robar temporalmente un rasgo permitido al blanco para potenciarse; lista acotada, nunca robar pasivas de boss. |
 | `beast` | Beast (Epic) | Un rebote y slow. | Combo acrobatico entre dos enemigos distintos; pierde eficiencia contra blanco aislado, sin mover unidades aliadas. |
 | `x_23` | X-23 (Epic) | F1/lotes 1 y 7: sangrado nativo 25% poder/s; con Danger Room y evolucion, Corte Multiple cada 10 ataques, hasta 3 blancos y sangrado 30% poder/s. | Caza quirurgica: remate supercritico tras acumular cortes; capacidad limitada y distinta del frenesi de Wolverine. |
 | `drax` | Drax (Rare) | F1/lote 1: sangrado 20% dano efectivo/s. | Duelo literal: dano sostenido creciente sobre el mismo elite, con techo y reinicio al cambiar; malo contra oleadas dispersas. |
 | `lady_sif` | Lady Sif (Rare) | Ruptura y critico propio incondicional. | Desafio asgardiano: critico condicionado al blindaje roto de un elite; sin buff externo ni ejecucion instantanea. |
-| `white_tiger` | White Tiger (Rare) | Marca y critico propio incondicional. | Amuleto: consume su marca para un salto de remate; enfriamiento, no duplicar marcas indefinidamente. |
-| `tigra` | Tigra (Rare) | F1/lote 1: sangrado 20% dano efectivo/s y critico. | Garras contra enemigos controlados; bono condicionado a slow/web, sin generar por si sola todo el combo. |
+| `white_tiger` | White Tiger (Rare) | F1/lote 13: enfoque signature hasta ocho stacks de 3.5%, caduca tras 3 s sin atacar; conserva marca y critico. | Amuleto: consume su marca para un salto de remate; enfriamiento, no duplicar marcas indefinidamente. |
+| `tigra` | Tigra (Rare) | F1/lotes 1/13: bleed 20% poder/s; enfoque signature ocho stacks de 3.5% caduca en 3 s sin atacar. | Garras contra enemigos controlados; bono condicionado a slow/web, sin generar por si sola todo el combo. |
 | `angela` | Angela (Epic) | Penetracion, rebote y critico. | Caza de elite aislado: secuencia precisa y finalizador; pierde su ventaja cuando el blanco tiene escolta. |
 | `deadpool` | Deadpool (Epic) | F1/lotes 2 y 7: sangrado 20% poder/s; con arsenal y evolucion, ciclo pistolas/katana/explosivos cada 3 ataques desde la primera activacion. | Ciclo pistolas/katanas con fase de recarga previsible; caos visual contenido y ninguna curacion a base. |
 | `devil_dinosaur` | Devil Dinosaur (Rare) | Splash y stun probabilistico. | Pisada cargada y mordida al centro del grupo; exige acumulacion de enemigos y tiene recuperacion larga. |
@@ -129,7 +129,7 @@ los valores finales se fijan despues de las pruebas de fase 1.
 | `thor` | Thor (Mythic) | Cadena y tormenta cada 11 s. | Conductividad entre enemigos cercanos: descarga madura al conectar suficientes; menos eficaz contra un blanco aislado. |
 | `doctor_strange` | Doctor Strange (Legendary) | Anillo, duplicado cada 2 ataques y campo temporal. | Portal con destino y radio declarados; duplicacion limitada y punto ciego coherente, no ignorar reglas por accidente. |
 | `captain_marvel` | Captain Marvel (Legendary) | F1/lotes 5 y 8: quemadura 9.5% poder/s; pasada con deteccion efectiva, alcance 2.2x, regreso al origen y rayo de longitud correcta. | Pasada binaria preparada que vuelve a su casilla; pobre giro contra grupos fuera de linea y enfriamiento real. |
-| `vision` | Vision (Legendary) | Dos densidades y rayo cada 3 ataques. | Elegir penetracion concentrada o cobertura en fase; incompatibilidad temporal de modos, sin reunir ambas ventajas. |
+| `vision` | Vision (Legendary) | F1/lote 13: Overclock con cadencia y penetracion de proyectil por 3.2 s; conserva densidades y rayo. | Elegir penetracion concentrada o cobertura en fase; incompatibilidad temporal de modos, sin reunir ambas ventajas. |
 | `star_lord` | Star-Lord (Rare) | F1/lote 4: incendiaria 23% poder/s, segundo blaster con deteccion y alcance efectivos. | Dos blancos distintos con elementos complementarios; pierde parte de su dano ante boss aislado. |
 | `jean_grey` | Jean Grey (Mythic) | F1/lotes 6/12: Dark Phoenix conserva burn 36% poder/s cada 8 ataques; pulso cargado radial 1.2x incidental y retroceso menor para jefes. | Carga psiquica que culmina en ola Phoenix; presupuesto separado de control/dano y resistencia a empujes del boss. |
 | `cyclops` | Cyclops (Epic) | X, modos opticos y rayo extra. | Haz sostenido que premia alineacion precisa; perder carga al cambiar de linea y no rellenar toda la X con AoE. |
