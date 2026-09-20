@@ -426,8 +426,8 @@ function strikeMulti(hero, target, stats, config, projectiles) {
     const targets = getTargetsInRange(hero, stats.range)
         .sort((a, b) => Number(b.isBoss) - Number(a.isBoss) || (b.threat || 1) - (a.threat || 1) || distance(a, target) - distance(b, target))
         .slice(0, config.maxTargets || 2);
-    const selected = targets.length ? targets : [target];
-    selected.forEach((enemy, index) => {
+    if (!targets.length) return;
+    targets.forEach((enemy, index) => {
         const projectileConfig = {
             attacker: hero,
             damage: stats.damage * (config.damageFactor || 0.5),
@@ -463,7 +463,8 @@ function resolveProbability(hero, target, stats, projectileConfig, projectiles, 
     state.critBonus = 0;
     applyEffects(config.onCritEffects, target, hero);
     if (config.onCritExtraHit) {
-        const next = getTargetsInRange(hero, stats.range).find((enemy) => enemy !== target) || target;
+        const candidates = getTargetsInRange(hero, stats.range);
+        const next = candidates.find((enemy) => enemy !== target) || candidates.find((enemy) => enemy === target);
         spawnProjectile(hero, next, {
             ...projectileConfig,
             damage: stats.damage * config.onCritExtraHit,

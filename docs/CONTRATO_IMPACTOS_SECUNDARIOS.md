@@ -48,6 +48,20 @@ que una tirada independiente tenga exito en otro destinatario.
 
 ## Actualizaciones y pendientes
 
+Actualizacion lote 14 (2026-09-20): strikeMulti ya no recupera al blanco
+original si no quedan destinatarios validos. Aplica a Punisher, War Machine,
+Nightcrawler, X-23, Gamora, Deadpool y Redwing MK II de Falcon. Son disparos
+dirigidos: cada destinatario debe estar vivo, detectable y dentro del patron
+y alcance efectivos. Sin ninguno no se crea proyectil ni se anuncia una
+habilidad vacia. El contador y los ciclos avanzan como antes, sin guardar una
+activacion extra para el ataque siguiente. No altera limites ni prioridades.
+
+El proyectil adicional del critico signature de Domino prefiere otro blanco
+valido; puede repetir el original solo si sigue siendo valido. Si no hay
+ninguno se omite ese proyectil, sin anular el bono monetario existente del
+critico (12%). Su ingreso base sigue siendo 15% por ataque, no por proyectil
+adicional ni por victima. No cambia splash/chain incidental tras un impacto.
+
 Actualizacion lote 13 (2026-09-20): los buffs temporales signature usan dt de
 simulacion desde Hero.update, no descuentan una unidad por ataque. Pausar o
 terminar la partida congela ese reloj; x2/x4 lo aceleran con el juego. El stun

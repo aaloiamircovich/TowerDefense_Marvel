@@ -1,7 +1,7 @@
 # Identidad y habilidades de los 105 heroes
 
 Fecha: 2026-09-13. Base revisada: commit 553ad63.
-Estado: FASE 1 EN CURSO. Trece lotes implementados; fases 2 a 10 pendientes.
+Estado: FASE 1 EN CURSO. Catorce lotes implementados; fases 2 a 10 pendientes.
 Los hallazgos de auditoria describen el baseline; ver avances abajo para las
 correcciones ya realizadas. No equivale a completar el rediseño de los 105 kits.
 
@@ -752,3 +752,36 @@ Pendiente de fase 1: fijaciones secundarias/fallback de objetos, marcas y
 excepciones de ejecucion antes del cierre de la matriz. No se afirma balance
 integral por pasar las pruebas: cadencia y penetracion antes inactivas ahora
 aportan poder real y requieren comparativas de equipos en la fase 10.
+
+## Fase 1: decimocuarto lote, 2026-09-20
+
+Publicado y verificado en Railway el lote anterior c55582f antes de continuar.
+El selector secundario de strikeMulti filtraba correctamente, pero si quedaba
+vacio recuperaba al blanco original sin validar alcance, geometria o sigilo.
+Ahora omite la salva y el anuncio si no hay destinatarios validos. Cubre los
+siete consumidores de esa ruta: Punisher, War Machine, Nightcrawler, X-23,
+Gamora, Deadpool y Falcon con Redwing MK II. No se retocan sus stats ni kits.
+
+Corregido el mismo retorno incondicional en el disparo critico de Domino.
+Conserva preferencia por otro blanco valido y repeticion del original cuando
+es valido y esta aislado. Sin blanco omite el proyectil, no el bono monetario
+del critico signature. El 15% base por ataque y el 12% adicional del objeto
+en critico mantienen sus rutas y no se duplican por disparo extra.
+
+No se cambia el conteo de ataques ni se reserva una activacion no ejecutada.
+Se mantienen prioridades, limite y unicidad de blancos, requisitos de objeto
+y evolucion. El caso real de Gamora cubre matar al unico enemigo con su
+ejecucion ordinaria antes del proc: ya no cuenta una segunda habilidad vacia.
+
+19 regresiones nuevas, 11 fallaban antes del arreglo; 57 focalizadas aprobadas.
+Cubren todos los consumidores, alcance, cruz de Punisher, sigilo de X-23,
+prioridad de jefe, monedas de Domino y ejecucion previa de Gamora. Sin cambios
+de datos, bootstrap, sprites, mapas, rarezas o valores de economia.
+
+Validacion completa: npm run check aprobado con 935 tests, simulaciones de
+economia/campana y check de rarezas; benchmark p95 0.287 ms. Accesibilidad y
+lanzamiento sin errores. Smoke desktop 1366x768 y mobile 390x844 sin overflow
+ni desvio de ruta.
+
+Pendiente de fase 1: marcas signature y excepciones de ejecucion, junto al
+cierre de cobertura de la matriz. Este lote no declara la fase terminada.
