@@ -9,6 +9,7 @@ import { getHeroRangePattern, isPointInRangePattern } from '../utils/RangePatter
 import { getScaledSupportAura, normalizeHeroLevel } from '../utils/HeroLevel.js';
 import { TERRAIN } from '../utils/TerrainRules.js';
 import { resolveHeroVisual } from '../utils/HeroVisuals.js';
+import { getEffectiveSupportAura, recordSupportAttack, updateSupportAura } from '../systems/SupportAuraSystem.js';
 
 export const SUPPORT_AURA_VISUALS = {
     damage: { color: '#fca311' },
@@ -155,6 +156,7 @@ export class Hero {
     update(dt, enemies, projectiles) {
         this.syncVisual();
         updateSignatureTimers(this, dt);
+        updateSupportAura(this, dt);
         this.timer += dt;
         this.flashTimer = Math.max(0, this.flashTimer - dt);
         this.stunTimer = Math.max(0, this.stunTimer - dt);
@@ -206,6 +208,7 @@ export class Hero {
     }
 
     shoot(target, stats, projectiles) {
+        if (this.isSupportAuraOnly()) return;
         this.animator?.faceVector(target.x - this.x, target.y - this.y);
         this.animator?.playAttack();
 
@@ -245,6 +248,7 @@ export class Hero {
         else projectiles.push(new Projectile(this.x, this.y, target, projectileConfig));
         this.abilitySystem.onAttack(target, attackStats, projectileConfig, projectiles);
         resolveSignatureAfterAttack(this, target, attackStats, projectileConfig, projectiles, { ...signatureContext, isCrit });
+        recordSupportAttack(this);
     }
 
     getProjectileEffects(target = null) {
@@ -334,11 +338,7 @@ export class Hero {
         const allies = this.game?.heroes || [];
         for (const ally of allies) {
             if (ally === this || ally.stunTimer > 0) continue;
-            const aura = getScaledSupportAura(
-                ally.config?.special?.supportAura,
-                ally.level || ally.config?.level || 1,
-                ally.config?.rarity || ally.rarity
-            );
+            const aura = getEffectiveSupportAura(ally);
             if (!aura?.type) continue;
             const radius = Math.max(0, Number(aura.range || ally.range || 0));
             if (Math.hypot(ally.x - this.x, ally.y - this.y) > radius) continue;

@@ -1,3 +1,5 @@
+import { resetSupportAura } from './SupportAuraSystem.js';
+
 export class TacticalActionSystem {
     constructor(game) {
         this.game = game;
@@ -37,6 +39,7 @@ export class TacticalActionSystem {
 
         const index = this.game.heroes.indexOf(hero);
         this.game.heroes.splice(index, 1);
+        resetSupportAura(hero);
         if (this.game.selectedUnit === hero) this.game.selectedUnit = null;
         return { ok: true, refund: 0 };
     }

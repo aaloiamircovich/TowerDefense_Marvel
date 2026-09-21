@@ -35,6 +35,7 @@ Cada escenario comienza sin enemigos para comprobar ausencia de disparos.
 | Fichas corregidas | hero-description-contract |
 | Soportes y economia | support-economy-system; ampliacion individual pendiente |
 | Luke sin aura y tenacidad propia | luke-tenacity-contract, street-kit-system, validate-data |
+| Liderazgo y Red de Vibranium | damage-support-contract: tiempos, radio, retiro, stun, escalado, preview y comparativa estacionaria de 60 s |
 
 Los nombres corresponden a archivos `.test.js`. Las pruebas focalizadas
 son necesarias: pasar el recorrido comun no demuestra que cada condicion
@@ -44,8 +45,9 @@ anunciada en una ficha este implementada.
 
 - Concordancia textual individual pendiente en el cierre de fase 1: condiciones
   de elite, revelado frente a deteccion propia y estados principales frente a area.
-- Fase 2 iniciada con Luke; aun faltan diferencias reales de los nueve soportes,
-  acumulacion de auras y economia. No se cambio el 15% por ataque de Domino.
+- Fase 2 avanzo con Luke, Capitan America y Black Panther. Faltan siete soportes,
+  politica global de acumulacion, evolucion del buff y economia. No se cambio
+  el 15% por ataque de Domino.
 - Fases 3-7: propuestas de firma en la matriz; minas, clones y torretas no existen
   por mencionarlas en un documento. Deben implementarse y probarse en su lote.
 - Fase 8: todos los cruces de evolucion/signature sobre los kits nuevos.

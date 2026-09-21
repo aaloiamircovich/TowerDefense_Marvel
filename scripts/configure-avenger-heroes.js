@@ -27,8 +27,8 @@ const contracts = {
     black_panther: {
         cost: 320,
         ability: 'CARGA DE VIBRANIUM',
-        abilityDesc: 'Acumula energía cinética al insistir sobre un blanco y contraataca al primero que entra en su guardia. Al máximo libera un pulso y fortalece aliados cercanos.',
-        niche: 'duelista cercano, contraataque y aura de equipo'
+        abilityDesc: 'No ataca. Aura corta de dano alto. Tras preparar la red 9 s, seis ataques principales de aliados dentro del radio aumentan su bonus de aura un 50% durante 3 s. Recarga de 9 s desde la activacion. Moverlo o recolocarlo reinicia la red; aturdido no potencia ni carga.',
+        niche: 'aura corta con sobrecarga por ataques aliados'
     },
     vision: {
         cost: 520,

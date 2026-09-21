@@ -143,7 +143,7 @@
     "fireRate": 1,
     "canSeeStealth": false,
     "ability": "MANDO AVENGER",
-    "abilityDesc": "No ataca. Inspira a aliados cercanos con un aura amplia de dano moderado.",
+    "abilityDesc": "No ataca. Aumenta el dano aliado de forma constante en un radio amplio, sin cargas ni ventanas de activacion. El bonus y su cobertura crecen con el nivel; se suspenden mientras esta aturdido.",
     "niche": "aura amplia de dano estable",
     "sprite": "assets/images/heroes/capitan_america/portrait.png",
     "visual": {
@@ -503,13 +503,13 @@
     "fireRate": 1,
     "canSeeStealth": true,
     "ability": "RED DE VIBRANIUM",
-    "abilityDesc": "No ataca. Concentra tecnologia de Wakanda en un aura corta de dano alto.",
+    "abilityDesc": "No ataca. Aura corta de dano alto. Tras preparar la red 9 s, seis ataques principales de aliados dentro del radio aumentan su bonus de aura un 50% durante 3 s. Recarga de 9 s desde la activacion. Moverlo o recolocarlo reinicia la red; aturdido no potencia ni carga.",
     "sprite": "assets/images/heroes/black_panther/portrait.png",
     "allowedTerrains": [
       1,
       3
     ],
-    "niche": "aura corta de dano potente",
+    "niche": "aura corta con sobrecarga por ataques aliados",
     "visual": {
       "portrait": "assets/images/heroes/black_panther/portrait.png",
       "size": 96,

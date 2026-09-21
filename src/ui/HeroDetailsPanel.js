@@ -5,6 +5,7 @@ import { TARGETING_PRIORITIES, TARGETING_PRIORITY_COPY } from '../utils/Targetin
 import { buildHeroDetailViewModel } from './HeroDetailViewModel.js';
 import { clampPercent, escapeHtml, normalizeClassToken, normalizeIconClass } from './HtmlSanitizer.js';
 import { getItemFamilyName } from './ItemPresentation.js';
+import { getEffectiveSupportAura } from '../systems/SupportAuraSystem.js';
 
 export class HeroDetailsPanel {
     constructor(ui, builders = {}) {
@@ -56,7 +57,7 @@ export class HeroDetailsPanel {
         const waveSummary = this.ui.nextWaveSummary || (!this.ui.game.waveManager?.isWaveActive ? this.ui.game.waveManager?.buildPreparedSummary?.() : null);
         const waveFitView = this.buildRosterWaveFitView(this.evaluateHeroWaveFit(hero, waveSummary, this.ui.getMissionCredits()));
         const supportAura = config.special?.supportAura || config.supportAura || null;
-        const scaledAura = getScaledSupportAura(supportAura, level, rarity);
+        const scaledAura = isDeployed ? getEffectiveSupportAura(hero) : getScaledSupportAura(supportAura, level, rarity);
         const supportAuraLabel = {
             damage: 'Daño',
             fireRate: 'Cad.',

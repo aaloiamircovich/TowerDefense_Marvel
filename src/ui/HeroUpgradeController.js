@@ -5,6 +5,7 @@ import {
     getScaledSupportAura,
     normalizeHeroLevel
 } from '../utils/HeroLevel.js';
+import { getSupportAuraPowerMultiplier } from '../systems/SupportAuraSystem.js';
 
 export class HeroUpgradeController {
     constructor(ui) {
@@ -48,7 +49,8 @@ export class HeroUpgradeController {
         const aura = targetData.special?.supportAura || databaseHero.special?.supportAura || targetData.supportAura || databaseHero.supportAura;
         const currentAura = getScaledSupportAura(aura, currentLevel, rarity);
         const nextAura = getScaledSupportAura(aura, currentLevel + steps, rarity);
-        const auraDelta = Number(nextAura?.power || 0) - Number(currentAura?.power || 0);
+        const auraMultiplier = this.ui.game.heroes?.includes(unit) ? getSupportAuraPowerMultiplier(unit) : 1;
+        const auraDelta = (Number(nextAura?.power || 0) - Number(currentAura?.power || 0)) * auraMultiplier;
         if (auraDelta) rows.push({ label: 'Aura', value: auraDelta * 100, suffix: '%', precision: 1 });
         const auraRangeDelta = Number(nextAura?.range || 0) - Number(currentAura?.range || 0);
         if (auraRangeDelta) rows.push({ label: 'Radio', value: auraRangeDelta });

@@ -13,8 +13,8 @@ los valores finales se fijan despues de las pruebas de fase 1.
 
 | ID | Heroe (rareza) | Actual | Firma propuesta y limite |
 | --- | --- | --- | --- |
-| `capitan_america` | Capitan America (Epic) | Aura de dano amplia. | Liderazgo estable: dano uniforme para formaciones separadas; menor pico que Panther, sin atacar. |
-| `black_panther` | Black Panther (Epic) | Aura de dano corta; kit cinetico atacante inactivo. | Red de vibranium: potenciar una agrupacion compacta; sobrecarga breve por acciones aliadas con techo, sin dano propio. |
+| `capitan_america` | Capitan America (Epic) | F2/lote 2: aura amplia constante, conservada y probada contra cobertura corta de Panther; no ataca ni con Mjolnir. | Liderazgo estable verificado; falta comparar equipos y politica global de acumulacion. |
+| `black_panther` | Black Panther (Epic) | F2/lote 2: Red de Vibranium, seis ataques principales aliados elevan potencia de aura x1.5 por 3 s; preparacion/recarga 9 s, sin dano propio. | Sobrecarga para formacion compacta implementada; medir equipos y evolucion del buff, sin reactivar kit atacante. |
 | `nick_fury` | Nick Fury (Rare) | Aura amplia de cadencia. | Orden sostenida: cadencia fiable sobre muchas posiciones; menos potencia que el enlace corto, sin atacar. |
 | `wasp` | Wasp (Common) | Aura corta de cadencia alta. | Enlace Pym: pulso potente para vecinos inmediatos; ventana de descanso y radio corto, sin atacar. |
 | `invisible_woman` | Invisible Woman (Legendary) | Aura amplia de alcance y deteccion. | Campo de cobertura: ampliar y revelar en una zona amplia; no aumentar dano ni cadencia, sin atacar. |

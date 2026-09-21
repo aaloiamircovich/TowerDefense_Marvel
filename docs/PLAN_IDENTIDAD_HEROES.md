@@ -1,7 +1,7 @@
 # Identidad y habilidades de los 105 heroes
 
 Fecha: 2026-09-13. Base revisada: commit 553ad63.
-Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 INICIADA, primer lote (Luke).
+Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 EN CURSO, dos lotes.
 Fases 3 a 10 pendientes. La cobertura comun no certifica el balance individual.
 Los hallazgos de auditoria describen el baseline; ver avances abajo para las
 correcciones ya realizadas. No equivale a completar el rediseño de los 105 kits.
@@ -925,3 +925,56 @@ Validacion conjunta de estos dos lotes: npm run check aprobado con 1.204 tests;
 economia, rarezas y escenarios estimados de campana aprobados. Benchmark p95
 0.425 ms. Accesibilidad y lanzamiento sin errores. Smoke desktop 1366x768 y
 mobile 390x844 sin overflow ni desvio de ruta. Sin sprites o mapas modificados.
+
+## Fase 2: segundo lote, soportes de dano
+
+Capitan America conserva liderazgo constante: aura base 10% a 255 px, sin
+cargas. Black Panther conserva 20% a 135 px e incorpora Red de Vibranium:
+preparacion de 9 s al desplegar; despues seis ataques principales aliados
+dentro del radio activan sobrecarga de 3 s. Multiplica la potencia del aura
+por 1.5 (20% pasa a 30%), no el dano total aliado por 1.5. Recarga 9 s desde
+la activacion; durante ella no se acumulan ataques ni se extiende la ventana.
+El sexto disparo usa el bonus anterior, el siguiente puede aprovechar el nuevo.
+
+Misma curva previa de nivel para potencia y radio: nivel 100 Epic da 16.5%
+estable al Capitan y Panther 33% base / 49.5% activo. La sobrecarga no amplia
+radio, no altera cadencia, no cura y no agrega proyectiles. La evolucion y
+los objetos no suman otro multiplicador al buff en este lote. Mjolnir no
+reactiva ataques del Capitan; Hero.shoot ahora tambien protege a soportes
+puros cuando se llama directamente, ademas del retorno existente en update.
+
+SupportAuraSystem comparte calculo efectivo, reloj, carga y lectura del estado.
+Solo Hero.shoot notifica ataques principales terminados; ni impactos, rebotes,
+segundo blaster, pulsos, estados ni procs signature generan cargas adicionales.
+El aliado debe estar desplegado, dentro del radio y no aturdido. La deteccion
+o el tipo del blanco no cambia esta regla. Domino mantiene 15% por ataque.
+
+Aturdir al soporte suspende aura y entrada de cargas, pero el reloj de la
+sobrecarga sigue avanzando: no puede congelarla para conservarla. La carga
+parcial ya obtenida no se borra por stun. Mover al soporte borra carga y
+sobrecarga y exige preparar otros 9 s; retirar limpia estado y recolocar
+tampoco recupera la ventana anterior. La colocacion sigue siendo gratuita.
+El aura base sigue disponible durante preparacion/recarga, salvo aturdimiento.
+
+La ficha muestra potencia actual y estado compacto; preview de subida refleja
+el multiplicador activo sin consumir tiempo ni carga. Indicador existente en
+el campo representa preparacion/carga/sobrecarga, sin nuevas tarjetas o sprites.
+Se actualizan descripciones, generador Avengers y bootstrap; no se ejecutan
+generadores antiguos que restaurarian stats o roles obsoletos.
+
+19 pruebas nuevas: limites de tiempo/radio, fuente principal, stun, movimiento,
+retiro, niveles 1/49/50/100, soporte puro con objeto/evolucion, combinacion con
+Capitan, dinero de Domino, lectura y preview sin efectos laterales. Comparativa
+de 60 s con ataques/impactos reales y blancos estacionarios: Panther supera
+al Capitan cerca, pero pierde en formacion separada; su promedio queda por
+debajo de un 30% permanente. No es una simulacion de ruta ni de equipos de seis.
+
+Pendiente de fase 2: siete soportes restantes (cadencia, alcance y Maria Hill),
+contrato global de acumulacion de auras, evolucion del buff y economia heredada.
+El producto de auras distintas se conserva; no se afirma balance final por
+pasar estos escenarios. Fase 1 aun tiene revision textual individual pendiente.
+
+Validacion: npm run check aprobado; suite final tras agregar la prueba de
+render con 1.223 tests aprobados. Economia, rarezas y escenarios estimados de
+campana sin fallos. Benchmark p95 0.378 ms. Accesibilidad y lanzamiento sin
+errores. Smoke desktop 1366x768 y mobile 390x844 sin overflow ni desvio de ruta.

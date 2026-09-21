@@ -8,6 +8,7 @@ import { getLineEndpoint, getLineTargets } from '../utils/LineTargeting.js';
 import { applyCooldownReductions } from '../utils/AbilityModifiers.js';
 import { getScaledSupportAura } from '../utils/HeroLevel.js';
 import { getHeroRangePattern, isPointInRangePattern } from '../utils/RangePattern.js';
+import { getSupportAuraDisplayState } from './SupportAuraSystem.js';
 
 const ACTIVE_COOLDOWNS = {
     thor: 11,
@@ -184,6 +185,8 @@ export class HeroAbilitySystem {
             this.hero.config?.rarity || this.hero.rarity
         );
         if (aura?.type) {
+            const networkState = getSupportAuraDisplayState(this.hero);
+            if (networkState) return networkState;
             const labels = { damage: 'Daño', fireRate: 'Cadencia', range: 'Alcance' };
             return { label: `${labels[aura.type] || 'Aura'} +${Math.round((aura.power || 0) * 100)}%`, progress: null, ready: true };
         }
