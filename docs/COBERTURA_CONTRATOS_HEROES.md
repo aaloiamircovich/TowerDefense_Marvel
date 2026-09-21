@@ -1,6 +1,6 @@
 # Cobertura de contratos de heroes
 
-Actualizado: 2026-09-20. Roster: 105. No es una certificacion de balance.
+Actualizado: 2026-09-21. Roster: 105. No es una certificacion de balance.
 
 ## Cobertura comun ejecutable
 
@@ -36,6 +36,7 @@ Cada escenario comienza sin enemigos para comprobar ausencia de disparos.
 | Soportes y economia | support-economy-system; ampliacion individual pendiente |
 | Luke sin aura y tenacidad propia | luke-tenacity-contract, street-kit-system, validate-data |
 | Liderazgo y Red de Vibranium | damage-support-contract: tiempos, radio, retiro, stun, escalado, preview y comparativa estacionaria de 60 s |
+| Orden sostenida, Enlace Pym y Enlace mental | cadence-support-contract: ciclos, reparto, deteccion, niveles, retiro, stun, preview negativo, fichas y comparativa estacionaria de 90 s |
 
 Los nombres corresponden a archivos `.test.js`. Las pruebas focalizadas
 son necesarias: pasar el recorrido comun no demuestra que cada condicion
@@ -45,7 +46,7 @@ anunciada en una ficha este implementada.
 
 - Concordancia textual individual pendiente en el cierre de fase 1: condiciones
   de elite, revelado frente a deteccion propia y estados principales frente a area.
-- Fase 2 avanzo con Luke, Capitan America y Black Panther. Faltan siete soportes,
+- Fase 2 avanzo con Luke, Capitan America, Black Panther, Fury, Wasp y Profesor X. Faltan cuatro soportes,
   politica global de acumulacion, evolucion del buff y economia. No se cambio
   el 15% por ataque de Domino.
 - Fases 3-7: propuestas de firma en la matriz; minas, clones y torretas no existen

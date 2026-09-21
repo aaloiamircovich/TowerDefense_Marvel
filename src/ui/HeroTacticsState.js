@@ -1,3 +1,5 @@
+import { getEffectiveSupportAura } from '../systems/SupportAuraSystem.js';
+
 const PIERCING_HERO_IDS = new Set(['iron_man', 'vision', 'hawkeye', 'winter_soldier', 'cyclops', 'silver_surfer']);
 
 const ATTACK_EFFECT_COPY = {
@@ -161,7 +163,7 @@ export function buildHeroCombatIdentity(hero = {}) {
     const special = config.special || {};
     const profile = special.projectileProfile || {};
     const effects = special.attackEffects || [];
-    const aura = special.supportAura || config.supportAura || null;
+    const aura = getEffectiveSupportAura(hero);
     const economy = special.economyOnHit || config.economyOnHit || null;
     const counters = [
         heroDetectsStealth(hero) ? 'Detección' : '',

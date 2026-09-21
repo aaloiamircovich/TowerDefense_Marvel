@@ -15,13 +15,13 @@ los valores finales se fijan despues de las pruebas de fase 1.
 | --- | --- | --- | --- |
 | `capitan_america` | Capitan America (Epic) | F2/lote 2: aura amplia constante, conservada y probada contra cobertura corta de Panther; no ataca ni con Mjolnir. | Liderazgo estable verificado; falta comparar equipos y politica global de acumulacion. |
 | `black_panther` | Black Panther (Epic) | F2/lote 2: Red de Vibranium, seis ataques principales aliados elevan potencia de aura x1.5 por 3 s; preparacion/recarga 9 s, sin dano propio. | Sobrecarga para formacion compacta implementada; medir equipos y evolucion del buff, sin reactivar kit atacante. |
-| `nick_fury` | Nick Fury (Rare) | Aura amplia de cadencia. | Orden sostenida: cadencia fiable sobre muchas posiciones; menos potencia que el enlace corto, sin atacar. |
-| `wasp` | Wasp (Common) | Aura corta de cadencia alta. | Enlace Pym: pulso potente para vecinos inmediatos; ventana de descanso y radio corto, sin atacar. |
+| `nick_fury` | Nick Fury (Rare) | F2/lote 3: Orden sostenida, +8% base a 265 px; estable, suspendida por stun, sin ataque ni deteccion aliada. | Cobertura constante verificada frente al pulso corto; falta comparar equipos completos y acumulacion global. |
+| `wasp` | Wasp (Common) | F2/lote 3: Enlace Pym, 6 s de preparacion/descanso y 3 s con +36% base a 125 px; mover o recolocar reinicia. | Pulso corto implementado, reloj avanza bajo stun; comparativa estacionaria no certifica control ni economia en rutas. |
 | `invisible_woman` | Invisible Woman (Legendary) | Aura amplia de alcance y deteccion. | Campo de cobertura: ampliar y revelar en una zona amplia; no aumentar dano ni cadencia, sin atacar. |
 | `mister_fantastic` | Mister Fantastic (Legendary) | Aura corta de alcance fuerte. | Geometria calculada: extender solo la dimension externa de los patrones; conservar hueco central del anillo, radio corto, sin atacar. |
 | `wong` | Wong (Common) | Aura de alcance menor y deteccion. | Sello de vigilancia: alcance modesto y pulsos de deteccion para vecinos; no deteccion continua global, sin atacar. |
 | `maria_hill` | Maria Hill (Common) | Aura de dano menor y deteccion. | Orden de prioridad: buff de dano condicionado al objetivo marcado; cobertura limitada frente al liderazgo continuo, sin atacar. |
-| `profesor_x` | Profesor X (Mythic) | Aura amplia de cadencia y deteccion. | Enlace mental: repartir un presupuesto de cadencia entre aliados enlazados; mas cobertura divide potencia, sin atacar. |
+| `profesor_x` | Profesor X (Mythic) | F2/lote 3: reparte 50 puntos base de cadencia entre atacantes a 245 px, tope +30% por aliado; deteccion solo enlazada, sin ataque. | Presupuesto y dilucion implementados; soportes/aturdidos excluidos. Escala con nivel; falta balance de formaciones en rutas. |
 | `domino` | Domino (Epic) | Poco dano y ceil(15% recompensa) por ataque. | Conservar su firma economica; contador de dinero generado y seleccion tactica. Ningun rebote, DoT o clon cobra otro 15%. |
 | `luke_cage` | Luke Cage (Common) | F2/lote 1: atacante con ruptura; sin buff aliado. Tenacidad propia reduce stun recibido 50%, sin inmunidad ni curacion. | Guardia de Harlem implementada en su contrato inicial; comparar aporte en equipos y encuentros con stun. |
 

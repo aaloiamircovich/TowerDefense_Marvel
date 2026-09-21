@@ -2297,7 +2297,7 @@
     "fireRate": 1,
     "canSeeStealth": true,
     "ability": "ORDEN DE FUEGO",
-    "abilityDesc": "No ataca. Coordina al equipo con un aura amplia de cadencia moderada.",
+    "abilityDesc": "No ataca. Orden sostenida: +8% de cadencia base a aliados dentro de 265 px, sin ciclos ni cargas. La potencia y el radio mejoran con su nivel. El aura se suspende al quedar aturdido; no concede deteccion aliada.",
     "niche": "aura amplia de cadencia tactica",
     "allowedTerrains": [
       3
@@ -2372,8 +2372,8 @@
     "fireRate": 1,
     "canSeeStealth": true,
     "ability": "ENLACE PYM",
-    "abilityDesc": "No ataca. Acelera aliados en un aura corta con mucha cadencia.",
-    "niche": "aura corta de cadencia intensa",
+    "abilityDesc": "No ataca. Enlace Pym: prepara 6 s y concede +36% de cadencia base durante 3 s a aliados dentro de 125 px; repite el ciclo con 6 s sin bonus. Potencia y radio mejoran con su nivel. Aturdirla suspende el bonus, no el reloj. Moverla o recolocarla reinicia la preparacion.",
+    "niche": "pulso corto de cadencia con descanso",
     "allowedTerrains": [
       0,
       1,
@@ -8246,8 +8246,8 @@
     "fireRate": 1,
     "canSeeStealth": true,
     "ability": "MENTE OMEGA",
-    "abilityDesc": "No ataca. Amplifica la cadencia aliada en un radio amplio y revela presencias ocultas.",
-    "niche": "mythic soporte de cadencia global",
+    "abilityDesc": "No ataca. Enlace mental: reparte 50 puntos porcentuales base de cadencia entre los atacantes desplegados y no aturdidos dentro de 245 px, con tope de +30% por aliado. Les concede deteccion sin revelar globalmente enemigos. Potencia y radio mejoran con su nivel. Los soportes no consumen enlaces; aturdirlo suspende el aura.",
+    "niche": "cadencia compartida y deteccion por enlace",
     "sprite": "assets/images/heroes/profesor_x/portrait.png",
     "visual": {
       "portrait": "assets/images/heroes/profesor_x/portrait.png",

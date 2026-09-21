@@ -1,5 +1,5 @@
 import { SLOT_LABELS } from '../systems/ItemEffectSystem.js';
-import { HERO_MAX_LEVEL, getHeroLevelUpgradeSteps, getScaledSupportAura } from '../utils/HeroLevel.js';
+import { HERO_MAX_LEVEL, getHeroLevelUpgradeSteps } from '../utils/HeroLevel.js';
 import { getRarityClass, normalizeRarity } from '../utils/Rarity.js';
 import { TARGETING_PRIORITIES, TARGETING_PRIORITY_COPY } from '../utils/TargetingPriority.js';
 import { buildHeroDetailViewModel } from './HeroDetailViewModel.js';
@@ -56,8 +56,7 @@ export class HeroDetailsPanel {
         const currentTargeting = hero.targetingPriority || config.targetingPriority || this.targetingPriorities[0];
         const waveSummary = this.ui.nextWaveSummary || (!this.ui.game.waveManager?.isWaveActive ? this.ui.game.waveManager?.buildPreparedSummary?.() : null);
         const waveFitView = this.buildRosterWaveFitView(this.evaluateHeroWaveFit(hero, waveSummary, this.ui.getMissionCredits()));
-        const supportAura = config.special?.supportAura || config.supportAura || null;
-        const scaledAura = isDeployed ? getEffectiveSupportAura(hero) : getScaledSupportAura(supportAura, level, rarity);
+        const scaledAura = getEffectiveSupportAura(isDeployed ? hero : { config, id: config.id, level });
         const supportAuraLabel = {
             damage: 'Daño',
             fireRate: 'Cad.',

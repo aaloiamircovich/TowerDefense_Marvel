@@ -338,7 +338,7 @@ export class Hero {
         const allies = this.game?.heroes || [];
         for (const ally of allies) {
             if (ally === this || ally.stunTimer > 0) continue;
-            const aura = getEffectiveSupportAura(ally);
+            const aura = getEffectiveSupportAura(ally, { recipient: this });
             if (!aura?.type) continue;
             const radius = Math.max(0, Number(aura.range || ally.range || 0));
             if (Math.hypot(ally.x - this.x, ally.y - this.y) > radius) continue;

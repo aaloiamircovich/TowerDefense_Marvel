@@ -3,6 +3,7 @@ import { pathToFileURL } from 'node:url';
 import { WaveManager } from '../src/systems/WaveManager.js';
 import { getHeroDamageAtLevel, getScaledSupportAura } from '../src/utils/HeroLevel.js';
 import { TypeChart } from '../data/TypeChart.js';
+import { MENTAL_LINK, PYM_LINK } from '../src/systems/SupportAuraSystem.js';
 
 const enemies = JSON.parse(fs.readFileSync(new URL('../data/enemies.json', import.meta.url), 'utf8'));
 const heroes = JSON.parse(fs.readFileSync(new URL('../data/heroes.json', import.meta.url), 'utf8'));
@@ -200,11 +201,15 @@ function getPreparedBoss(levelId, wave) {
     return manager.preparedQueue.map((entry) => entry.config).find((config) => config?.isBoss);
 }
 
-function collectSupportMultipliers(team) {
+export function collectSupportMultipliers(team) {
+    const attackers = team.filter(([heroId]) => !heroes[heroId]?.special?.supportAura?.type).length;
     return team.reduce((multipliers, [heroId, level]) => {
         const hero = heroes[heroId];
         const aura = getScaledSupportAura(hero?.special?.supportAura, level, hero?.rarity);
         if (!aura?.type) return multipliers;
+        // Estimate full coverage and long-run pulse uptime; this is not a route simulation.
+        if (heroId === 'wasp') aura.power *= PYM_LINK.powerMultiplier * PYM_LINK.duration / (PYM_LINK.rest + PYM_LINK.duration);
+        if (heroId === 'profesor_x') aura.power *= attackers ? Math.min(MENTAL_LINK.perAllyMultiplier, MENTAL_LINK.budgetMultiplier / attackers) : 0;
         if (aura.type === 'damage') multipliers.damage += Number(aura.power || 0);
         if (aura.type === 'fireRate') multipliers.fireRate += Number(aura.power || 0);
         return multipliers;

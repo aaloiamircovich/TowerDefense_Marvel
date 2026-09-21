@@ -1,7 +1,7 @@
 # Identidad y habilidades de los 105 heroes
 
 Fecha: 2026-09-13. Base revisada: commit 553ad63.
-Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 EN CURSO, dos lotes.
+Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 EN CURSO, tres lotes.
 Fases 3 a 10 pendientes. La cobertura comun no certifica el balance individual.
 Los hallazgos de auditoria describen el baseline; ver avances abajo para las
 correcciones ya realizadas. No equivale a completar el rediseño de los 105 kits.
@@ -978,3 +978,67 @@ Validacion: npm run check aprobado; suite final tras agregar la prueba de
 render con 1.223 tests aprobados. Economia, rarezas y escenarios estimados de
 campana sin fallos. Benchmark p95 0.378 ms. Accesibilidad y lanzamiento sin
 errores. Smoke desktop 1366x768 y mobile 390x844 sin overflow ni desvio de ruta.
+
+## Fase 2: tercer lote, soportes de cadencia
+
+Nick Fury conserva +8% base a 265 px, estable y sin cargas. No concede a sus
+aliados su deteccion propia. Wasp pasa de +18% continuo a Enlace Pym: 6 s
+de preparacion/descanso, 3 s de pulso al doble de la potencia nominal (+36%
+base) a 125 px. Promedio temporal teorico +12%, no +36% permanente. Ambos
+conservan rareza, nivel, radio y curva de escalado existentes; nivel 100:
+Fury +12.4% a 284.875 px; Wasp +52.2% durante pulso a 132.5 px.
+
+El reloj de Wasp avanza aun aturdida; el bonus se suspende, no se aplaza ni
+se acumula. Mover o retirar/recolocar reinicia 6 s sin bonus; no cuesta dinero
+ni pierde niveles. El reloj puede avanzar sin enemigos o aliados, pero solo
+cuenta una activacion si al comenzar el pulso hay un atacante aliado no
+aturdido dentro del radio. Leer stats, indicador o dt cero no avanza reloj.
+
+Profesor X conserva 245 px y deteccion, pero ahora reparte un presupuesto:
+50 puntos porcentuales base de cadencia, tope +30% por atacante. Uno recibe
+30%, dos 25% cada uno, tres 16.667%, cuatro 12.5%, cinco 10%. Solo cuentan
+atacantes desplegados, no aturdidos y dentro del radio circular propio;
+ni soportes, ni banco, ni aliados fuera. No requiere estar disparando, para
+que perder momentaneamente un blanco no haga oscilar el enlace. No usa
+getEffectiveStats para contar enlaces ni amplia su radio por otras auras.
+
+Presupuesto y tope escalan con la curva Mythic existente: a nivel 100 son
+92.5 puntos y tope +55.5% por aliado, no un multiplicador nuevo de evolucion.
+Deteccion pertenece solo a atacantes enlazados; no borra stealth del enemigo.
+Mover, retirar o aturdir al soporte actualiza inmediatamente los enlaces.
+Aturdir un atacante libera su parte hasta que se recupere. Ninguno de los
+tres dispara, cura o genera dinero, ni con objetos o evolucion.
+
+Fichas desplegadas muestran bonus actual, pulso/espera y numero de enlaces.
+Inventario muestra el pico posible (Pym o un enlace concentrado), explicado
+en la habilidad. Preview de Wasp muestra mejora del siguiente Pulso aun en
+descanso; Profesor X recalcula enlaces con el radio del nivel siguiente.
+Si incorpora otro aliado y baja la potencia individual, muestra delta negativo
+con el formato rojo existente. No modifica nivel ni reloj para previsualizar.
+
+32 regresiones nuevas cubren los contratos, niveles 1/49/50/100, seis plazas,
+stun, movimiento, retiro, efectos de objetos, UI y recompensa de Domino.
+Comparativa real de Hero.update de 90 s con blancos estacionarios e impactos
+inmediatos: Wasp obtiene mas disparos cerca que Fury, pero menos fuera de su
+radio; Profesor X concentra mas beneficio individual con menos enlaces.
+No es prueba de rutas, enemigos moviles, control acumulado o equipos optimos.
+
+El estimador de campana ahora contempla el reparto mental y el promedio
+temporal de Pym, aun suponiendo cobertura completa. Con presupuesto inicial
+45, el caso W100 dio margen 1.029, inferior al minimo 1.03. Se eligieron 50
+puntos para conservar viabilidad del equipo de cinco atacantes: margen 1.045;
+W75 queda en 1.168. No se rebajaron los umbrales ni la salud de los bosses.
+No se cambia el producto runtime de auras distintas: politica global sigue
+pendiente. Tampoco se altera el 15% por ataque principal de Domino.
+
+Datos, bootstrap y contratos del generador de Fury/Wasp sincronizados, sin
+ejecutar generadores antiguos sobre el roster. Sin sprites, mapas, UI de
+tarjetas nuevas ni cambios a rarezas. Pendientes de fase 2: Invisible Woman,
+Mister Fantastic, Wong, Maria Hill, acumulacion global, evolucion del buff y
+economia heredada. Fase 1 aun tiene revision textual individual pendiente.
+
+La revision visual detecto que la etiqueta Rol aun usaba potencia nominal;
+ahora comparte el calculo efectivo con la ficha, incluido descanso/reparto.
+Capturas de los tres soportes a 1366x768 y 390x844 sin desborde horizontal.
+Validacion final: npm run check aprobado con 1.255 pruebas; simulaciones,
+rareza, accesibilidad, lanzamiento y smoke desktop/mobile sin errores.

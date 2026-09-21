@@ -2,10 +2,9 @@ import {
     calculateHeroLevelCost,
     getHeroDamageAtLevel,
     getHeroLevelUpgradeSteps,
-    getScaledSupportAura,
     normalizeHeroLevel
 } from '../utils/HeroLevel.js';
-import { getSupportAuraPowerMultiplier } from '../systems/SupportAuraSystem.js';
+import { getEffectiveSupportAura } from '../systems/SupportAuraSystem.js';
 
 export class HeroUpgradeController {
     constructor(ui) {
@@ -47,11 +46,13 @@ export class HeroUpgradeController {
         if (nextDamage !== currentDamage) rows.push({ label: 'Dano', value: nextDamage - currentDamage });
 
         const aura = targetData.special?.supportAura || databaseHero.special?.supportAura || targetData.supportAura || databaseHero.supportAura;
-        const currentAura = getScaledSupportAura(aura, currentLevel, rarity);
-        const nextAura = getScaledSupportAura(aura, currentLevel + steps, rarity);
-        const auraMultiplier = this.ui.game.heroes?.includes(unit) ? getSupportAuraPowerMultiplier(unit) : 1;
-        const auraDelta = (Number(nextAura?.power || 0) - Number(currentAura?.power || 0)) * auraMultiplier;
-        if (auraDelta) rows.push({ label: 'Aura', value: auraDelta * 100, suffix: '%', precision: 1 });
+        // Pym previews its next pulse; mental links also account for allies entering the new radius.
+        const previewHero = heroId !== 'wasp' && this.ui.game.heroes?.includes(unit) ? unit
+            : { id: heroId, config: { ...targetData, rarity, special: { ...targetData.special, supportAura: aura } } };
+        const currentAura = getEffectiveSupportAura(previewHero, { level: currentLevel });
+        const nextAura = getEffectiveSupportAura(previewHero, { level: currentLevel + steps });
+        const auraDelta = Number(nextAura?.power || 0) - Number(currentAura?.power || 0);
+        if (auraDelta) rows.push({ label: heroId === 'wasp' ? 'Pulso' : 'Aura', value: auraDelta * 100, suffix: '%', precision: 1 });
         const auraRangeDelta = Number(nextAura?.range || 0) - Number(currentAura?.range || 0);
         if (auraRangeDelta) rows.push({ label: 'Radio', value: auraRangeDelta });
 
