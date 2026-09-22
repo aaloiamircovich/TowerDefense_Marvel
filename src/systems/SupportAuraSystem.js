@@ -2,6 +2,7 @@ import { getScaledSupportAura } from '../utils/HeroLevel.js';
 
 export const VIBRANIUM_NETWORK = Object.freeze({ attacks: 6, duration: 3, cooldown: 9, powerMultiplier: 1.5 });
 export const PYM_LINK = Object.freeze({ rest: 6, duration: 3, powerMultiplier: 2 });
+export const SANCTUARY_PULSE = Object.freeze({ rest: 4, duration: 4 });
 export const MENTAL_LINK = Object.freeze({ budgetMultiplier: 10 / 3, perAllyMultiplier: 2 });
 
 export function resetSupportAura(hero) {
@@ -18,6 +19,16 @@ function auraConfig(hero) {
 
 function isCadenceSupport(hero, id) {
     return (hero.id || hero.config?.id) === id && auraConfig(hero)?.type === 'fireRate';
+}
+
+function isRangeSupport(hero, id) {
+    return (hero.id || hero.config?.id) === id && auraConfig(hero)?.type === 'range';
+}
+
+function timedPulse(hero) {
+    if (isCadenceSupport(hero, 'wasp')) return PYM_LINK;
+    if (isRangeSupport(hero, 'wong')) return SANCTUARY_PULSE;
+    return null;
 }
 
 function pulseState(hero) {
@@ -60,6 +71,11 @@ export function getEffectiveSupportAura(hero, { level = hero.level || hero.confi
     const aura = scaledAura(hero, level);
     if (recipient && isCadenceSupport(hero, 'profesor_x') && !getMentalLinks(hero, level).includes(recipient)) return null;
     if (aura) aura.power *= getSupportAuraPowerMultiplier(hero, level);
+    if (aura && isRangeSupport(hero, 'mister_fantastic')) aura.outerRangeOnly = true;
+    if (aura && isRangeSupport(hero, 'wong')) {
+        aura.detectStealth = !(hero.stunTimer > 0) && (!hero.game?.heroes?.includes(hero)
+            || pulseState(hero).elapsed >= SANCTUARY_PULSE.rest);
+    }
     return aura;
 }
 
@@ -79,12 +95,13 @@ export function getSupportAuraPowerMultiplier(hero, level = hero.level || hero.c
 
 export function updateSupportAura(hero, dt) {
     if (!Number.isFinite(dt) || dt <= 0) return;
-    if (isCadenceSupport(hero, 'wasp')) {
+    const pulse = timedPulse(hero);
+    if (pulse) {
         const state = pulseState(hero);
-        const cycle = PYM_LINK.rest + PYM_LINK.duration;
+        const cycle = pulse.rest + pulse.duration;
         const elapsed = state.elapsed + dt;
-        const pulses = Math.floor((elapsed + PYM_LINK.duration) / cycle)
-            - Math.floor((state.elapsed + PYM_LINK.duration) / cycle);
+        const pulses = Math.floor((elapsed + pulse.duration) / cycle)
+            - Math.floor((state.elapsed + pulse.duration) / cycle);
         state.elapsed = elapsed % cycle;
         if (pulses > 0 && !(hero.stunTimer > 0) && hero.combatStats) {
             const radius = scaledAura(hero).range;
@@ -119,6 +136,18 @@ export function recordSupportAttack(attacker) {
 }
 
 export function getSupportAuraDisplayState(hero) {
+    if (isRangeSupport(hero, 'invisible_woman') || isRangeSupport(hero, 'mister_fantastic')) {
+        const name = isRangeSupport(hero, 'mister_fantastic') ? 'Extension exterior' : 'Cobertura y deteccion';
+        return { label: hero.stunTimer > 0 ? 'Campo suspendido' : name, progress: null, ready: !(hero.stunTimer > 0) };
+    }
+    if (isRangeSupport(hero, 'wong')) {
+        const state = pulseState(hero);
+        if (hero.stunTimer > 0) return { label: 'Sello suspendido', progress: 0, ready: false };
+        const active = state.elapsed >= SANCTUARY_PULSE.rest;
+        const remaining = (active ? SANCTUARY_PULSE.rest + SANCTUARY_PULSE.duration : SANCTUARY_PULSE.rest) - state.elapsed;
+        return { label: `${active ? 'Deteccion' : 'Sello'}: ${remaining.toFixed(1)} s`,
+            progress: active ? remaining / SANCTUARY_PULSE.duration : state.elapsed / SANCTUARY_PULSE.rest, ready: active };
+    }
     if (isCadenceSupport(hero, 'nick_fury')) {
         const power = Math.round(getEffectiveSupportAura(hero).power * 100);
         return { label: hero.stunTimer > 0 ? 'Orden suspendida' : `Orden sostenida +${power}%`, progress: null, ready: !(hero.stunTimer > 0) };

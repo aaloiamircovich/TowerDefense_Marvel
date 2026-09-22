@@ -8,25 +8,26 @@ export function getHeroRangePattern(hero = {}) {
     return normalizeRangePattern(hero.rangePattern || hero.config?.rangePattern || hero.special?.rangePattern || hero.config?.special?.rangePattern);
 }
 
-export function isPointInRangePattern(origin = {}, point = {}, range = 0, pattern = 'circle') {
+export function isPointInRangePattern(origin = {}, point = {}, range = 0, pattern = 'circle', geometryScale = 1) {
     const dx = Number(point.x || 0) - Number(origin.x || 0);
     const dy = Number(point.y || 0) - Number(origin.y || 0);
     const distance = Math.hypot(dx, dy);
     const normalized = normalizeRangePattern(pattern);
     if (distance > range) return false;
+    const geometryRange = range * geometryScale;
 
     if (normalized === 'ring') {
-        const innerRadius = range * 0.38;
+        const innerRadius = geometryRange * 0.38;
         return distance >= innerRadius;
     }
 
     if (normalized === 'cross') {
-        const laneWidth = Math.max(18, range * 0.16);
+        const laneWidth = Math.max(18, geometryRange * 0.16);
         return Math.abs(dx) <= laneWidth || Math.abs(dy) <= laneWidth;
     }
 
     if (normalized === 'x') {
-        const laneWidth = Math.max(18, range * 0.16);
+        const laneWidth = Math.max(18, geometryRange * 0.16);
         return Math.abs(Math.abs(dx) - Math.abs(dy)) <= laneWidth;
     }
 

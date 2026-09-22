@@ -1,7 +1,7 @@
 # Identidad y habilidades de los 105 heroes
 
 Fecha: 2026-09-13. Base revisada: commit 553ad63.
-Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 EN CURSO, tres lotes.
+Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 EN CURSO, cuatro lotes.
 Fases 3 a 10 pendientes. La cobertura comun no certifica el balance individual.
 Los hallazgos de auditoria describen el baseline; ver avances abajo para las
 correcciones ya realizadas. No equivale a completar el rediseño de los 105 kits.
@@ -1042,3 +1042,64 @@ ahora comparte el calculo efectivo con la ficha, incluido descanso/reparto.
 Capturas de los tres soportes a 1366x768 y 390x844 sin desborde horizontal.
 Validacion final: npm run check aprobado con 1.255 pruebas; simulaciones,
 rareza, accesibilidad, lanzamiento y smoke desktop/mobile sin errores.
+
+## Fase 2: cuarto lote, soportes de alcance
+
+Invisible Woman conserva +8% base de alcance a 245 px y deteccion continua
+para aliados dentro del aura. No marca ni revela globalmente enemigos:
+la deteccion pertenece al aliado y se pierde al salir o aturdir al soporte.
+Mister Fantastic conserva +15% a 145 px sin deteccion. Su Geometria elastica
+solo extiende el borde exterior de circulo, anillo, cruz y X. Su multiplicador
+ya no agranda el hueco del anillo ni ensancha carriles. Los demas bonos de
+alcance mantienen sus reglas anteriores; no se congela toda la geometria.
+
+Wong conserva +4.5% base de alcance continuo a 205 px. Sello de vigilancia:
+4 s de preparacion/descanso, 4 s de deteccion para vecinos. No altera stealth
+del enemigo ni quita deteccion propia/de otros soportes cuando termina.
+Aturdirlo suspende aura y deteccion, pero el reloj sigue avanzando. Mover o
+retirar/recolocar reinicia la preparacion, conservando nivel y coste cero.
+Comparte el reloj de pulsos existente con Wasp, sin cambiar su ciclo 6/3.
+Solo cuenta activaciones cuando hay un atacante aliado no aturdido al iniciar.
+
+Las tres potencias y radios escalan con las curvas existentes, sin cambios
+de rareza, costes o multiplicadores de evolucion. Nivel 100: Sue +14% a
+270.725 px; Reed +26.25% a 160.225 px; Wong +6.525% a 217.3 px. El periodo
+del sello no se acelera. Ninguno ataca, cura o genera dinero. Una aura de
+alcance sobre otro soporte no aumenta el radio real de su propia aura.
+
+rangeGeometryScale distingue alcance externo y medidas internas. Lo usan
+seleccion primaria, intencion de objetivo, habilidades con patron, seleccion
+signature, cobertura de ruta y dibujo. No cambia splash/rebotes incidentales
+ni ataques con geometria propia declarada. El dibujo de cruz/X se recorta al
+radio circular; la X usa ancho perpendicular equivalente al predicado real.
+Doce comprobaciones de pixeles en navegador verifican hueco, carriles y borde.
+
+La previsualizacion de colocacion/recolocacion evalua las auras en la celda
+destino sin mover la instancia: salir de Reed no conserva su bonus en el
+fantasma ni al validar cobertura. Se preservan bloqueos por terreno, ocupacion
+y equipo; mayor alcance no habilita calles/flores. Para colocacion nueva se
+parte del rango del config como antes, ahora incluyendo las auras del destino;
+no se declara cerrada la simulacion previa de todos los objetos/evoluciones.
+
+Las fichas muestran cobertura, extension exterior o espera/deteccion. Las
+etiquetas de respuestas de soportes usan efectos reales, no palabras como
+"sin deteccion" o "aturdirlo", que antes anunciaban deteccion/control falsos.
+La revision de heuristicas generales del radar sigue pendiente en fase 1.
+No se agregan tarjetas, sprites, mapas ni restricciones de movimiento.
+
+35 pruebas nuevas en range-support-contract: geometria y fronteras, niveles
+1/49/50/100, combinacion con Sue/objeto, firma de Punisher, stun, movimiento,
+retiro, deteccion, colocacion, dibujo y fichas. Comparativa de 32 s con ataque
+real e impactos inmediatos sobre blancos estacionarios: Sue detecta siempre,
+Wong por ventanas y Reed no detecta. No prueba enemigos moviles ni toda la
+campana. Datos/bootstrap y generador Rivals de Sue/Reed sincronizados sin
+ejecutar generadores antiguos sobre el roster.
+
+Pendiente de fase 2: Maria Hill, acumulacion global, evolucion del buff y
+economia heredada. La mayor cobertura de Reed y menor continuidad de Wong
+necesitan comparativas de equipos/rutas en fase 10; no se afirma balance final.
+
+Validacion final: npm run check aprobado con 1.290 pruebas; economia,
+rareza, campana estimada, accesibilidad y lanzamiento sin errores. Smoke
+1366x768 y 390x844 sin desborde ni desvio de ruta. Fichas de los tres soportes
+capturadas en ambos tamanos, mas comprobacion de pixeles de anillo/cruz/X.

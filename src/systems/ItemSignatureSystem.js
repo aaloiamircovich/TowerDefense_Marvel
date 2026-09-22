@@ -587,10 +587,11 @@ function spawnProjectile(hero, target, config, projectiles = []) {
 }
 
 function getTargetsInRange(hero, range) {
-    const stats = { range: range || hero.range || 0 };
+    const stats = hero.getEffectiveStats?.() || {};
+    const reach = range || hero.range || 0;
     return (hero.game?.enemies || []).filter((enemy) => enemy.isAlive
-        && (!enemy.stealth || hero.getEffectiveStats?.().canSeeStealth)
-        && isPointInRangePattern(hero, enemy, stats.range, getHeroRangePattern(hero)));
+        && (!enemy.stealth || stats.canSeeStealth)
+        && isPointInRangePattern(hero, enemy, reach, getHeroRangePattern(hero), stats.rangeGeometryScale));
 }
 
 function announce(hero, target, config) {

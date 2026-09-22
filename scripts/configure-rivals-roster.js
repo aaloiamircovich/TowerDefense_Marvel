@@ -135,9 +135,8 @@ const rivalsHeroes = {
         visualStyle: 'ballistic',
         projectileColor: '#ef4444'
     }),
-    invisible_woman: contract('Invisible Woman', 'Tecnologico', 'Legendary', 430, 28, 185, 1.55, true, 'CAMPO INVISIBLE', 'Campos de fuerza revelan infiltrados, marcan elites y amplian cobertura segura.', 'soporte defensivo de rango', ['Tecnologia', 'Rivales'], 'support', [3, 4, 5, 5], {
-        attackEffects: [{ type: 'mark', duration: 2.6, power: 0.14, chance: 0.38 }],
-        statModifiers: { detectStealth: true, rangePct: 0.1 },
+    invisible_woman: contract('Invisible Woman', 'Tecnologico', 'Legendary', 660, 1, 245, 1, true, 'CAMPO DE COBERTURA', 'No ataca. Campo de cobertura: +8% de alcance base y deteccion continua a aliados dentro de 245 px. La deteccion pertenece al aliado, no revela globalmente enemigos. Potencia y radio mejoran con su nivel; aturdirla suspende ambos efectos.', 'aura amplia de alcance y deteccion', ['Tecnologia', 'Rivales'], 'support', [1, 4, 5, 5], {
+        supportAura: { type: 'range', power: 0.08, range: 245, label: 'Campo invisible', detectStealth: true },
         visualStyle: 'energy',
         projectileColor: '#a7f3ff'
     }),
@@ -172,9 +171,8 @@ const rivalsHeroes = {
         visualStyle: 'mystic',
         projectileColor: '#86efac'
     }),
-    mister_fantastic: contract('Mister Fantastic', 'Tecnologico', 'Legendary', 415, 35, 175, 1.45, false, 'ELASTICIDAD TACTICA', 'Golpes elasticos alcanzan curvas, rebotan una vez y rompen formaciones densas.', 'alcance flexible y rebote', ['Tecnologia', 'Rivales'], 'support', [4, 4, 5, 3], {
-        projectileProfile: { chainCount: 1, chainRange: 100, chainFactor: 0.55 },
-        statModifiers: { rangePct: 0.12 },
+    mister_fantastic: contract('Mister Fantastic', 'Tecnologico', 'Legendary', 620, 1, 145, 1, false, 'GEOMETRIA ELASTICA', 'No ataca. Geometria elastica: +15% de alcance base a aliados dentro de 145 px, sin deteccion. Su bonus extiende solo el borde exterior: no agranda el punto ciego del anillo ni el ancho de los carriles de cruz/X. Potencia y radio mejoran con su nivel; aturdirlo suspende el aura.', 'aura corta de alcance concentrado', ['Tecnologia', 'Rivales'], 'support', [1, 4, 5, 3], {
+        supportAura: { type: 'range', power: 0.15, range: 145, label: 'Calculo elastico' },
         visualStyle: 'impact',
         projectileColor: '#5be7ff'
     }),

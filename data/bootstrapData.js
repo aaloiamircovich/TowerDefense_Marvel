@@ -5294,7 +5294,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1,
       "canSeeStealth": true,
       "ability": "CAMPO DE COBERTURA",
-      "abilityDesc": "No ataca. Extiende ligeramente el alcance en un area amplia y ayuda a revelar sigilo.",
+      "abilityDesc": "No ataca. Campo de cobertura: +8% de alcance base y deteccion continua a aliados dentro de 245 px. La deteccion pertenece al aliado, no revela globalmente enemigos. Potencia y radio mejoran con su nivel; aturdirla suspende ambos efectos.",
       "niche": "aura amplia de alcance y deteccion",
       "allowedTerrains": [
         0,
@@ -5809,7 +5809,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1,
       "canSeeStealth": false,
       "ability": "GEOMETRIA ELASTICA",
-      "abilityDesc": "No ataca. Recalibra posiciones cercanas con un aumento fuerte de alcance en area corta.",
+      "abilityDesc": "No ataca. Geometria elastica: +15% de alcance base a aliados dentro de 145 px, sin deteccion. Su bonus extiende solo el borde exterior: no agranda el punto ciego del anillo ni el ancho de los carriles de cruz/X. Potencia y radio mejoran con su nivel; aturdirlo suspende el aura.",
       "niche": "aura corta de alcance concentrado",
       "allowedTerrains": [
         1,
@@ -6543,8 +6543,8 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1,
       "canSeeStealth": true,
       "ability": "SANTUARIO ACTIVO",
-      "abilityDesc": "No ataca. Proyecta un aura que aumenta el alcance de aliados cercanos y revela amenazas ocultas.",
-      "niche": "aura comun de alcance y deteccion",
+      "abilityDesc": "No ataca. Sello de vigilancia: +4.5% de alcance base constante a aliados dentro de 205 px. Prepara 4 s y concede deteccion durante 4 s; repite el ciclo sin revelar globalmente enemigos. Potencia y radio mejoran con su nivel. Aturdirlo suspende los efectos, no el reloj; moverlo o recolocarlo reinicia la preparacion.",
+      "niche": "alcance modesto y deteccion por ventanas",
       "sprite": "assets/images/heroes/wong/portrait.png",
       "visual": {
         "portrait": "assets/images/heroes/wong/portrait.png",

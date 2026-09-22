@@ -36,7 +36,7 @@ export function buildHeroTargetIntent(hero, enemies = [], stats = null) {
         targetName: target.name || target.config?.name || 'Enemigo',
         priority: hero.targetingPriority || hero.config?.targetingPriority || 'Primero',
         distance: Math.round(distance),
-        inRange: isPointInRangePattern(hero, target, Number(effectiveStats.range || hero.range || 0), getHeroRangePattern(hero)),
+        inRange: isPointInRangePattern(hero, target, Number(effectiveStats.range || hero.range || 0), getHeroRangePattern(hero), effectiveStats.rangeGeometryScale),
         danger: target.isBoss || threat >= 5 ? 'critical' : threat >= 4 ? 'high' : threat >= 3 ? 'guarded' : 'low',
         color: target.isBoss ? '#ffdf6f' : threat >= 4 ? '#ff7b3d' : '#40c9ff'
     };
@@ -104,7 +104,7 @@ export class Hero {
         this.legacyImage = getCachedImage(resolved.sprite);
     }
 
-    getEffectiveStats() {
+    getEffectiveStats(auraOrigin = this) {
         this.allowedTerrains = [...this.baseAllowedTerrains];
         const stats = {
             damage: this.damage,
@@ -149,7 +149,7 @@ export class Hero {
         }
 
         this.abilitySystem.applyStatModifiers(stats);
-        this.applySupportAuras(stats);
+        this.applySupportAuras(stats, auraOrigin);
         return applySignatureStats(this.game.teamSynergy?.applyHeroStats(this, stats) || stats, this);
     }
 
@@ -182,7 +182,7 @@ export class Hero {
         const inRange = enemies.filter((enemy) => {
             if (!enemy.isAlive) return false;
             if (enemy.stealth && !stats.canSeeStealth) return false;
-            return isPointInRangePattern(this, enemy, stats.range, this.rangePattern);
+            return isPointInRangePattern(this, enemy, stats.range, this.rangePattern, stats.rangeGeometryScale);
         });
 
         if (inRange.length === 0) return null;
@@ -334,18 +334,22 @@ export class Hero {
         return Boolean(this.config.special?.supportAura?.type);
     }
 
-    applySupportAuras(stats) {
+    applySupportAuras(stats, origin = this) {
         const allies = this.game?.heroes || [];
         for (const ally of allies) {
             if (ally === this || ally.stunTimer > 0) continue;
             const aura = getEffectiveSupportAura(ally, { recipient: this });
             if (!aura?.type) continue;
             const radius = Math.max(0, Number(aura.range || ally.range || 0));
-            if (Math.hypot(ally.x - this.x, ally.y - this.y) > radius) continue;
+            if (Math.hypot(ally.x - origin.x, ally.y - origin.y) > radius) continue;
             const power = Math.max(0, Number(aura.power || 0));
             if (aura.type === 'damage') stats.damage *= 1 + power;
             if (aura.type === 'fireRate') stats.fireRate *= 1 + power;
-            if (aura.type === 'range') stats.range *= 1 + power;
+            if (aura.type === 'range') {
+                stats.range *= 1 + power;
+                // Reed extends reach without moving the inner boundary or widening attack lanes.
+                if (aura.outerRangeOnly) stats.rangeGeometryScale = (stats.rangeGeometryScale || 1) / (1 + power);
+            }
             if (aura.detectStealth) stats.canSeeStealth = true;
         }
     }

@@ -160,7 +160,7 @@ export class HeroAbilitySystem {
         const pattern = getHeroRangePattern(this.hero);
         return enemies.filter((enemy) => enemy.isAlive
             && (!enemy.stealth || stats.canSeeStealth)
-            && isPointInRangePattern(this.hero, enemy, range, pattern));
+            && isPointInRangePattern(this.hero, enemy, range, pattern, stats.rangeGeometryScale));
     }
 
     getArcInterval() {

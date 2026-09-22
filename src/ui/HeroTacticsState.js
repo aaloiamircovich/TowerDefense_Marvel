@@ -165,13 +165,17 @@ export function buildHeroCombatIdentity(hero = {}) {
     const effects = special.attackEffects || [];
     const aura = getEffectiveSupportAura(hero);
     const economy = special.economyOnHit || config.economyOnHit || null;
-    const counters = [
+    const counters = (aura ? [
+        aura.detectStealth && !(hero.stunTimer > 0) ? 'Detección' : '',
+        aura.type === 'range' && !(hero.stunTimer > 0) ? 'Alcance' : '',
+        'Apoyo'
+    ] : [
         heroDetectsStealth(hero) ? 'Detección' : '',
         heroPiercesArmor(hero) ? 'Perforación' : '',
         heroControlsCrowd(hero) ? 'Control' : '',
         heroHasReach(hero) ? 'Alcance' : '',
         heroHasFocusDamage(hero) ? 'DPS' : ''
-    ].filter(Boolean);
+    ]).filter(Boolean);
 
     return [
         {

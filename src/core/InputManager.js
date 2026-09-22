@@ -5,6 +5,7 @@ import { getClosestPointOnPath } from '../utils/PathUtils.js';
 import { buildHeroTargetIntent } from '../entities/Hero.js';
 import { getHeroRangePattern, getRangePatternLabel, isPointInRangePattern } from '../utils/RangePattern.js';
 import { resolveHeroVisual } from '../utils/HeroVisuals.js';
+import { getEffectiveSupportAura } from '../systems/SupportAuraSystem.js';
 import {
     canPlaceOnTerrain,
     getAllowedTerrainLabels,
@@ -16,8 +17,8 @@ import {
     TERRAIN
 } from '../utils/TerrainRules.js';
 
-export function measurePathCoverage(origin, range, path = [], pattern = 'circle') {
-    if (pattern !== 'circle') return measurePatternPathCoverage(origin, range, path, pattern);
+export function measurePathCoverage(origin, range, path = [], pattern = 'circle', geometryScale = 1) {
+    if (pattern !== 'circle') return measurePatternPathCoverage(origin, range, path, pattern, geometryScale);
 
     const intervals = [];
     let coveredLength = 0;
@@ -64,7 +65,7 @@ export function measurePathCoverage(origin, range, path = [], pattern = 'circle'
     return { coveredLength, intervals, quality };
 }
 
-function measurePatternPathCoverage(origin, range, path = [], pattern = 'circle') {
+function measurePatternPathCoverage(origin, range, path = [], pattern = 'circle', geometryScale = 1) {
     const intervals = [];
     let coveredLength = 0;
     const step = 10;
@@ -82,7 +83,7 @@ function measurePatternPathCoverage(origin, range, path = [], pattern = 'circle'
         for (let sample = 0; sample <= samples; sample++) {
             const t = sample / samples;
             const point = { x: start.x + dx * t, y: start.y + dy * t };
-            const covered = isPointInRangePattern(origin, point, range, pattern);
+            const covered = isPointInRangePattern(origin, point, range, pattern, geometryScale);
 
             if (covered && open === null) open = t;
             if ((!covered || sample === samples) && open !== null) {
@@ -110,11 +111,23 @@ function measurePatternPathCoverage(origin, range, path = [], pattern = 'circle'
     return { coveredLength, intervals, quality };
 }
 
+export function getPlacementRangeStats(heroConfig, game, movingHero, center) {
+    if (movingHero?.getEffectiveStats) return movingHero.getEffectiveStats(center);
+    const stats = { range: heroConfig.range || 100, rangeGeometryScale: 1 };
+    for (const source of game.heroes || []) {
+        if (source.stunTimer > 0) continue;
+        const aura = getEffectiveSupportAura(source);
+        if (aura?.type !== 'range' || Math.hypot(source.x - center.x, source.y - center.y) > aura.range) continue;
+        stats.range *= 1 + aura.power;
+        if (aura.outerRangeOnly) stats.rangeGeometryScale /= 1 + aura.power;
+    }
+    return stats;
+}
+
 export function findBestPlacementCell(heroConfig, game, movingHero = null) {
     if (!heroConfig || !game?.terrainMap?.length || !game?.path?.length) return null;
 
     const gridSize = game.gridSize || 40;
-    const range = movingHero?.getEffectiveStats?.().range || heroConfig.range || 100;
     const pattern = getHeroRangePattern(movingHero || heroConfig);
     const allowedTerrains = heroConfig.allowedTerrains || [TERRAIN.grass];
     const qualityWeight = { excellent: 220, strong: 140, solid: 70, minimal: 0 };
@@ -137,9 +150,10 @@ export function findBestPlacementCell(heroConfig, game, movingHero = null) {
 
             const pathPoint = getClosestPointOnPath(center, game.path);
             const pathDistance = pathPoint?.distance ?? Infinity;
-            if (!isPointInRangePattern(center, pathPoint || {}, range, pattern)) continue;
+            const { range, rangeGeometryScale } = getPlacementRangeStats(heroConfig, game, movingHero, center);
+            if (!isPointInRangePattern(center, pathPoint || {}, range, pattern, rangeGeometryScale)) continue;
 
-            const coverage = measurePathCoverage(center, range, game.path, pattern);
+            const coverage = measurePathCoverage(center, range, game.path, pattern, rangeGeometryScale);
             if (coverage.coveredLength <= 0) continue;
 
             const score = coverage.coveredLength
@@ -177,12 +191,15 @@ export function buildPlacementSuggestionState(suggestion = null, heroConfig = nu
 
 export function buildHeroCoverageState(hero, path = []) {
     if (!hero) return null;
-    const range = hero.getEffectiveStats?.().range || hero.range || hero.config?.range || 100;
+    const stats = hero.getEffectiveStats?.();
+    const range = stats?.range || hero.range || hero.config?.range || 100;
+    const geometryScale = stats?.rangeGeometryScale || 1;
     const pattern = getHeroRangePattern(hero);
-    const coverage = measurePathCoverage({ x: hero.x || 0, y: hero.y || 0 }, range, path, pattern);
+    const coverage = measurePathCoverage({ x: hero.x || 0, y: hero.y || 0 }, range, path, pattern, geometryScale);
     return {
         range,
         pattern,
+        geometryScale,
         coverage,
         quality: coverage.quality,
         coveredLength: Math.round(coverage.coveredLength),
@@ -407,10 +424,10 @@ export class InputManager {
 
         const pathPoint = getClosestPointOnPath({ x: snapX, y: snapY }, this.game.path);
         const pathDistance = pathPoint?.distance ?? Infinity;
-        const range = this.movingHero?.getEffectiveStats?.().range || this.placingHero.range || 100;
+        const { range, rangeGeometryScale } = getPlacementRangeStats(this.placingHero, this.game, this.movingHero, { x: snapX, y: snapY });
         const pattern = getHeroRangePattern(this.movingHero || this.placingHero);
-        const coverage = measurePathCoverage({ x: snapX, y: snapY }, range, this.game.path, pattern);
-        if (!isPointInRangePattern({ x: snapX, y: snapY }, pathPoint || {}, range, pattern)) {
+        const coverage = measurePathCoverage({ x: snapX, y: snapY }, range, this.game.path, pattern, rangeGeometryScale);
+        if (!isPointInRangePattern({ x: snapX, y: snapY }, pathPoint || {}, range, pattern, rangeGeometryScale)) {
             return { valid: false, terrainType, placementTerrain, pathDistance, pathPoint, coverage, message: `Fuera de alcance: el camino está a ${Math.round(pathDistance)} px.` };
         }
 
@@ -512,11 +529,11 @@ export class InputManager {
         const py = y * this.game.gridSize;
         const centerX = px + this.game.gridSize / 2;
         const centerY = py + this.game.gridSize / 2;
-        const range = this.movingHero?.getEffectiveStats?.().range || this.placingHero.range || 100;
+        const { range, rangeGeometryScale } = getPlacementRangeStats(this.placingHero, this.game, this.movingHero, { x: centerX, y: centerY });
 
         ctx.save();
-        this.drawTerrainCompatibilityOverlay(ctx, range);
-        this.drawSuggestedPlacement(ctx, x, y, range);
+        this.drawTerrainCompatibilityOverlay(ctx);
+        this.drawSuggestedPlacement(ctx, x, y);
         ctx.globalAlpha = 0.5;
         ctx.fillStyle = validation.valid ? getTerrainPlacementTone(validation.terrainType) : '#e63946';
         ctx.fillRect(px, py, this.game.gridSize, this.game.gridSize);
@@ -526,7 +543,7 @@ export class InputManager {
         ctx.lineWidth = 2;
         ctx.strokeRect(px + 2, py + 2, this.game.gridSize - 4, this.game.gridSize - 4);
 
-        this.drawRangePattern(ctx, centerX, centerY, range, getHeroRangePattern(this.movingHero || this.placingHero), 'rgba(255, 255, 255, 0.45)');
+        this.drawRangePattern(ctx, centerX, centerY, range, getHeroRangePattern(this.movingHero || this.placingHero), 'rgba(255, 255, 255, 0.45)', false, rangeGeometryScale);
         this.drawCoveredPathSegments(ctx, validation.coverage, validation.valid);
         if (validation.pathPoint) {
             ctx.beginPath();
@@ -541,7 +558,7 @@ export class InputManager {
         ctx.restore();
     }
 
-    drawTerrainCompatibilityOverlay(ctx, range) {
+    drawTerrainCompatibilityOverlay(ctx) {
         if (!this.placingHero || !this.game.terrainMap?.length) return;
         const gridSize = this.game.gridSize;
         const rows = this.game.terrainMap.length;
@@ -554,7 +571,8 @@ export class InputManager {
                 if (!canPlaceOnTerrain(this.placingHero, terrainType)) continue;
                 const center = { x: x * gridSize + gridSize / 2, y: y * gridSize + gridSize / 2 };
                 const pathPoint = getClosestPointOnPath(center, this.game.path);
-                if (!isPointInRangePattern(center, pathPoint || {}, range, pattern)) continue;
+                const stats = getPlacementRangeStats(this.placingHero, this.game, this.movingHero, center);
+                if (!isPointInRangePattern(center, pathPoint || {}, stats.range, pattern, stats.rangeGeometryScale)) continue;
                 const color = getTerrainPlacementTone(terrainType);
                 const px = x * gridSize;
                 const py = y * gridSize;
@@ -569,7 +587,7 @@ export class InputManager {
         ctx.restore();
     }
 
-    drawSuggestedPlacement(ctx, currentGridX, currentGridY, range) {
+    drawSuggestedPlacement(ctx, currentGridX, currentGridY) {
         if (!this.suggestedPlacement || (this.suggestedPlacement.x === currentGridX && this.suggestedPlacement.y === currentGridY)) return;
         const px = this.suggestedPlacement.x * this.game.gridSize;
         const py = this.suggestedPlacement.y * this.game.gridSize;
@@ -579,7 +597,9 @@ export class InputManager {
         ctx.lineWidth = 3;
         ctx.setLineDash([8, 6]);
         ctx.strokeRect(px + 4, py + 4, this.game.gridSize - 8, this.game.gridSize - 8);
-        this.drawRangePattern(ctx, this.suggestedPlacement.centerX, this.suggestedPlacement.centerY, range, getHeroRangePattern(this.placingHero), 'rgba(252, 163, 17, 0.42)');
+        const center = { x: this.suggestedPlacement.centerX, y: this.suggestedPlacement.centerY };
+        const stats = getPlacementRangeStats(this.placingHero, this.game, this.movingHero, center);
+        this.drawRangePattern(ctx, center.x, center.y, stats.range, getHeroRangePattern(this.placingHero), 'rgba(252, 163, 17, 0.42)', false, stats.rangeGeometryScale);
         ctx.setLineDash([]);
         ctx.fillStyle = '#fca311';
         ctx.font = '800 10px Segoe UI, sans-serif';
@@ -627,7 +647,7 @@ export class InputManager {
         ctx.save();
         this.drawCoveredPathSegments(ctx, state.coverage, state.coveredLength > 0);
         this.drawTargetIntent(ctx, hero, targetIntent);
-        this.drawRangePattern(ctx, hero.x, hero.y, range, state.pattern, coverageColor, true);
+        this.drawRangePattern(ctx, hero.x, hero.y, range, state.pattern, coverageColor, true, state.geometryScale);
         ctx.fillStyle = coverageColor;
         ctx.font = '800 10px Segoe UI, sans-serif';
         ctx.textAlign = 'center';
@@ -635,14 +655,21 @@ export class InputManager {
         ctx.restore();
     }
 
-    drawRangePattern(ctx, x, y, range, pattern = 'circle', color = '#40c9ff', fill = false) {
+    drawRangePattern(ctx, x, y, range, pattern = 'circle', color = '#40c9ff', fill = false, geometryScale = 1) {
         ctx.save();
         ctx.strokeStyle = color;
         ctx.lineWidth = 2;
         ctx.fillStyle = fill ? 'rgba(64, 201, 255, 0.035)' : 'rgba(64, 201, 255, 0.02)';
+        const geometryRange = range * geometryScale;
+
+        if (pattern === 'cross' || pattern === 'x') {
+            ctx.beginPath();
+            ctx.arc(x, y, range, 0, Math.PI * 2);
+            ctx.clip();
+        }
 
         if (pattern === 'cross') {
-            const lane = Math.max(18, range * 0.16);
+            const lane = Math.max(18, geometryRange * 0.16);
             if (fill) {
                 ctx.fillRect(x - lane, y - range, lane * 2, range * 2);
                 ctx.fillRect(x - range, y - lane, range * 2, lane * 2);
@@ -654,7 +681,7 @@ export class InputManager {
         }
 
         if (pattern === 'x') {
-            const lane = Math.max(18, range * 0.16);
+            const lane = Math.max(18, geometryRange * 0.16) / Math.SQRT2;
             ctx.translate(x, y);
             ctx.rotate(Math.PI / 4);
             if (fill) {
@@ -670,7 +697,7 @@ export class InputManager {
         ctx.beginPath();
         ctx.arc(x, y, range, 0, Math.PI * 2);
         if (pattern === 'ring') {
-            const inner = range * 0.38;
+            const inner = geometryRange * 0.38;
             if (fill) {
                 ctx.moveTo(x + inner, y);
                 ctx.arc(x, y, inner, 0, Math.PI * 2, true);
