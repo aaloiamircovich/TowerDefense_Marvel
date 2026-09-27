@@ -17,6 +17,12 @@ victima marcada; Reed excluye su aporte de la geometria interna. Esta regla
 cierra la politica de acumulacion pendiente en las filas anteriores, no las
 comparativas de rutas/equipos ni la evolucion del buff.
 
+Regla comun F2/lote 7: los nueve soportes multiplican su potencia de aura por
+1.25 al nivel 50, sin bonus evolutivo de radio/ciclos ni ataques propios.
+Incluye presupuesto y tope de X, pulso de Wasp, red de Panther y condicion de
+Maria. Resuelve la evolucion del buff pendiente en estas filas; los cruces
+especificos con objetos y comparativas de rutas siguen pendientes.
+
 | ID | Heroe (rareza) | Actual | Firma propuesta y limite |
 | --- | --- | --- | --- |
 | `capitan_america` | Capitan America (Epic) | F2/lote 2: aura amplia constante, conservada y probada contra cobertura corta de Panther; no ataca ni con Mjolnir. | Liderazgo estable verificado; falta comparar equipos y politica global de acumulacion. |

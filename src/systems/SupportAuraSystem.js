@@ -1,4 +1,5 @@
 import { getScaledSupportAura } from '../utils/HeroLevel.js';
+import { getEvolutionForHero } from './EvolutionSystem.js';
 
 export const VIBRANIUM_NETWORK = Object.freeze({ attacks: 6, duration: 3, cooldown: 9, powerMultiplier: 1.5 });
 export const PYM_LINK = Object.freeze({ rest: 6, duration: 3, powerMultiplier: 2 });
@@ -45,13 +46,19 @@ function pulseState(hero) {
     return state;
 }
 
-function scaledAura(hero, level = hero.level || hero.config?.level || 1) {
-    return getScaledSupportAura(auraConfig(hero), level, hero.config?.rarity || hero.rarity);
+export function getEvolvedSupportAura(hero, level = hero.level || hero.config?.level || 1) {
+    const aura = getScaledSupportAura(auraConfig(hero), level, hero.config?.rarity || hero.rarity);
+    if (aura) {
+        // Resolve the requested level directly so previews do not use the saved current evolution.
+        const evolution = getEvolutionForHero(hero.config || hero, {}, { level });
+        aura.power *= 1 + (evolution?.supportAuraPower || 0);
+    }
+    return aura;
 }
 
 export function getMentalLinks(hero, level = hero.level || hero.config?.level || 1) {
     if (!isCadenceSupport(hero, 'profesor_x') || hero.stunTimer > 0 || !hero.game?.heroes?.includes(hero)) return [];
-    const radius = scaledAura(hero, level).range;
+    const radius = getEvolvedSupportAura(hero, level).range;
     // Count deployed attackers, not their effective stats: aura evaluation must not recurse.
     return hero.game.heroes.filter((ally) => ally !== hero && !auraConfig(ally)?.type && !(ally.stunTimer > 0)
         && Math.hypot(hero.x - ally.x, hero.y - ally.y) <= radius);
@@ -73,7 +80,7 @@ function networkState(hero) {
 }
 
 export function getEffectiveSupportAura(hero, { level = hero.level || hero.config?.level || 1, recipient = null } = {}) {
-    const aura = scaledAura(hero, level);
+    const aura = getEvolvedSupportAura(hero, level);
     if (recipient && isCadenceSupport(hero, 'profesor_x') && !getMentalLinks(hero, level).includes(recipient)) return null;
     if (aura) aura.power *= getSupportAuraPowerMultiplier(hero, level);
     if (aura && hasPriorityOrder(hero)) aura.targetCondition = 'mark';
@@ -148,7 +155,7 @@ export function updateSupportAura(hero, dt) {
             - Math.floor((state.elapsed + pulse.duration) / cycle);
         state.elapsed = elapsed % cycle;
         if (pulses > 0 && !(hero.stunTimer > 0) && hero.combatStats) {
-            const radius = scaledAura(hero).range;
+            const radius = getEvolvedSupportAura(hero).range;
             const hasRecipient = hero.game?.heroes?.some((ally) => ally !== hero && !auraConfig(ally)?.type
                 && !(ally.stunTimer > 0) && Math.hypot(hero.x - ally.x, hero.y - ally.y) <= radius);
             if (hasRecipient) hero.combatStats.abilityActivations += pulses;

@@ -223,7 +223,7 @@ for (const id of ['invisible_woman', 'mister_fantastic', 'wong']) {
             const f = setup(id, 'ring', level);
             const expected = getScaledSupportAura(heroes[id].special.supportAura, level, heroes[id].rarity);
             const stats = f.ally.getEffectiveStats();
-            close(stats.range, 200 * (1 + expected.power));
+            close(stats.range, 200 * (1 + expected.power * (level >= 50 ? 1.25 : 1)));
             close(getEffectiveSupportAura(f.support).range, expected.range);
             close(stats.range * (stats.rangeGeometryScale || 1), id === 'mister_fantastic' ? 200 : stats.range);
             const other = new Hero(heroes.mister_fantastic, 0, 0, f.game);

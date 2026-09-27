@@ -169,7 +169,7 @@ for (const level of [1, 49, 50, 100]) {
         f.tick(9);
         f.attack(6);
         const active = getEffectiveSupportAura(f.support);
-        close(active.power, base.power * 1.5);
+        close(active.power, base.power * 1.5 * (level >= 50 ? 1.25 : 1));
         close(active.range, base.range);
         assert.equal(f.support.config.special.supportAura.power, 0.2);
     });

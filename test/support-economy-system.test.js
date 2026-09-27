@@ -81,7 +81,7 @@ test('auras de soporte mejoran al subir nivel del heroe soporte', () => {
     const ally = new Hero(createHeroConfig('ally', { damage: 100 }), 100, 0, game);
     game.heroes = [captain, ally];
 
-    assert.equal(Math.round(ally.getEffectiveStats().damage), 117);
+    assert.equal(Math.round(ally.getEffectiveStats().damage), 121);
 });
 
 test('auras de soporte tienen pulso visual diferenciado por tipo', () => {

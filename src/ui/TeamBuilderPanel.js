@@ -646,9 +646,14 @@ export class TeamBuilderPanel {
                             </div>
                             <b><i class="fas fa-dna"></i></b>
                             <div class="hero-tag-list">
+                                ${hero.special?.supportAura?.type ? `
+                                <span>Potencia del aura +${this.escapeHtml(Math.round((evolution.supportAuraPower || 0) * 100))}%</span>
+                                <span>Radio y ciclos sin cambio</span>
+                                ` : `
                                 <span>Daño +${this.escapeHtml(Math.round((Number(evolution.stats.damage) || 0) * 100))}%</span>
                                 <span>Cadencia +${this.escapeHtml(Math.round((Number(evolution.stats.fireRate) || 0) * 100))}%</span>
                                 <span>Alcance +${this.escapeHtml(Math.round((Number(evolution.stats.range) || 0) * 100))}%</span>
+                                `}
                             </div>
                         </article>
                     `;

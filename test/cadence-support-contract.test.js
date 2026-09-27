@@ -202,11 +202,12 @@ for (const id of ['nick_fury', 'wasp', 'profesor_x']) {
             const base = getScaledSupportAura(heroes[id].special.supportAura, level, heroes[id].rarity);
             f.tick(6);
             const multiplier = id === 'nick_fury' ? 1 : 2;
-            close(getEffectiveSupportAura(f.support).power, base.power * multiplier);
+            const evolution = level >= 50 ? 1.25 : 1;
+            close(getEffectiveSupportAura(f.support).power, base.power * multiplier * evolution);
             close(getEffectiveSupportAura(f.support).range, base.range);
             f.addAlly(0, heroes.invisible_woman);
             close(getEffectiveSupportAura(f.support).range, base.range);
-            close(getEffectiveSupportAura(f.support).power, base.power * multiplier);
+            close(getEffectiveSupportAura(f.support).power, base.power * multiplier * evolution);
             f.ally.x = base.range + 0.01;
             close(f.ally.getEffectiveStats().fireRate, 1);
         });
@@ -235,11 +236,11 @@ test('combinar los tres suma las potencias activas sin productos ni recursiones'
     const fury = f.addAlly(0, { ...heroes.nick_fury, level: 100 });
     const wasp = f.addAlly(0, { ...heroes.wasp, level: 100 });
     wasp.update(6, f.game.enemies, f.game.projectiles);
-    const expected = 1 + 0.555 + 0.124 + 0.522;
+    const expected = 1 + (0.555 + 0.124 + 0.522) * 1.25;
     for (let i = 0; i < 50; i++) close(f.ally.getEffectiveStats().fireRate, expected);
     assert.equal(getMentalLinks(f.support).length, 1);
     wasp.update(3, f.game.enemies, f.game.projectiles);
-    close(f.ally.getEffectiveStats().fireRate, 1 + 0.555 + 0.124);
+    close(f.ally.getEffectiveStats().fireRate, 1 + (0.555 + 0.124) * 1.25);
     assert.equal(fury.combatStats.shots, 0);
 });
 

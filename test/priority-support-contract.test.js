@@ -158,11 +158,12 @@ for (const level of [1, 49, 50, 100]) {
         const f = setup(level);
         const base = getScaledSupportAura(heroes.maria_hill.special.supportAura, level, heroes.maria_hill.rarity);
         const effective = getEffectiveSupportAura(f.support);
-        close(effective.power, base.power * 2);
+        const evolution = level >= 50 ? 1.25 : 1;
+        close(effective.power, base.power * 2 * evolution);
         close(effective.range, base.range);
         assert.equal(effective.targetCondition, 'mark');
         f.mark();
-        close(f.hit().damage, 120 * (1 + base.power * 2));
+        close(f.hit().damage, 120 * (1 + base.power * 2 * evolution));
         close(f.ally.getEffectiveStats().damage, 100);
     });
 }

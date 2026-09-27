@@ -43,9 +43,8 @@ export class HeroUpgradeController {
         const currentDamage = getHeroDamageAtLevel(baseDamage, currentLevel, rarity);
         const nextDamage = getHeroDamageAtLevel(baseDamage, currentLevel + steps, rarity);
         const rows = [];
-        if (nextDamage !== currentDamage) rows.push({ label: 'Dano', value: nextDamage - currentDamage });
-
         const aura = targetData.special?.supportAura || databaseHero.special?.supportAura || targetData.supportAura || databaseHero.supportAura;
+        if (!aura?.type && nextDamage !== currentDamage) rows.push({ label: 'Dano', value: nextDamage - currentDamage });
         // Pym previews its next pulse; mental links also account for allies entering the new radius.
         const previewHero = heroId !== 'wasp' && this.ui.game.heroes?.includes(unit) ? unit
             : { id: heroId, config: { ...targetData, rarity, special: { ...targetData.special, supportAura: aura } } };

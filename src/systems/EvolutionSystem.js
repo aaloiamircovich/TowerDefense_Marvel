@@ -3,6 +3,8 @@ export const DEFAULT_EVOLUTION_LEVEL = 50;
 const DEFAULT_STATS = { damage: 0.24, fireRate: 0.06, range: 0.04, critChance: 4 };
 const HIGH_POWER_STATS = { damage: 0.3, fireRate: 0.08, range: 0.05, critChance: 5 };
 const SUPPORT_STATS = { damage: 0.16, fireRate: 0.04, range: 0.08, critChance: 3 };
+const PURE_SUPPORT_IDS = new Set(['capitan_america', 'black_panther', 'nick_fury', 'wasp',
+    'invisible_woman', 'mister_fantastic', 'wong', 'maria_hill', 'profesor_x']);
 
 const ROSTER_EVOLUTION_IDS = [
     'adam_warlock', 'angela', 'ant_man', 'black_bolt', 'black_cat', 'black_panther', 'black_widow',
@@ -150,11 +152,14 @@ function createEvolution(heroId, id, override = {}) {
         baseHeroId: heroId,
         name: override.name || `Evolucion ${formatHeroName(heroId)}`,
         shortName: override.shortName || 'Evolucion',
-        description: override.description || 'Evolucion por nivel: gran aumento de estadisticas base.',
+        description: override.description || (PURE_SUPPORT_IDS.has(heroId)
+            ? 'Evolucion por nivel: +25% a la potencia del aura. No aumenta su radio ni acelera sus ciclos; sigue sin atacar.'
+            : 'Evolucion por nivel: gran aumento de estadisticas base.'),
         color: override.color || '#40c9ff',
         requiredLevel: override.requiredLevel || DEFAULT_EVOLUTION_LEVEL,
         rarity: override.rarity || null,
         stats: override.stats || DEFAULT_STATS,
+        supportAuraPower: PURE_SUPPORT_IDS.has(heroId) ? 0.25 : 0,
         itemTransforms: override.transforms || [],
         canSeeStealth: Boolean(override.canSeeStealth)
     };

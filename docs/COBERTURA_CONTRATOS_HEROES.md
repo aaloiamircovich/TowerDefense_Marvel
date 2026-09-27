@@ -41,6 +41,8 @@ Cada escenario comienza sin enemigos para comprobar ausencia de disparos.
 | Orden de prioridad | priority-support-contract: marcas de kit/objeto, condicion por impacto/victima, vuelo, secundarios, retiro, stun, niveles, DoT, ejecucion, ingresos, UI y comparativa estacionaria de 20 s |
 | Acumulacion de auras | support-stacking-contract: suma por atributo, 126 equipos a tres niveles, orden, objetos, deteccion, geometria/preview y seis comparativas de 60 s contra baseline multiplicativo |
 
+| Evolucion de soportes | support-evolution-contract: 35 pruebas de nueve soportes, nivel 50, preview, pulsos, objetos, persistencia, radar, codex y estimador |
+
 Los nombres corresponden a archivos `.test.js`. Las pruebas focalizadas
 son necesarias: pasar el recorrido comun no demuestra que cada condicion
 anunciada en una ficha este implementada.
@@ -49,8 +51,8 @@ anunciada en una ficha este implementada.
 
 - Concordancia textual individual pendiente en el cierre de fase 1: condiciones
   de elite, revelado frente a deteccion propia y estados principales frente a area.
-- Fase 2 avanzo con Luke, los nueve soportes y acumulacion aditiva. Falta
-  evolucion del buff y economia. No se cambio
+- Fase 2 avanzo con Luke, los nueve soportes, acumulacion aditiva y evolucion del buff. Falta
+  economia heredada. No se cambio
   el 15% por ataque de Domino.
 - Fases 3-7: propuestas de firma en la matriz; minas, clones y torretas no existen
   por mencionarlas en un documento. Deben implementarse y probarse en su lote.

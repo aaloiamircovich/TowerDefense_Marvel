@@ -1,4 +1,4 @@
-import { getScaledSupportAura } from '../utils/HeroLevel.js';
+import { getEffectiveSupportAura } from './SupportAuraSystem.js';
 
 const SUPPORT_AURA_COPY = {
     damage: 'dano',
@@ -23,7 +23,7 @@ export function buildWaveDamageCheck({ heroes = [], waveModel = {}, waveSeconds 
         const fireRate = Math.max(0, Number(stats.fireRate || hero.fireRate || 0));
         const range = Math.max(0, Number(stats.range || hero.range || 100));
         const config = hero.config || hero;
-        const isPureAura = Boolean(config.special?.supportAura || hero.special?.supportAura) && damage <= 2;
+        const isPureAura = Boolean(config.special?.supportAura?.type || config.supportAura?.type);
         const detectsStealth = heroCanDetect(hero);
         const control = Number(config.teamMetrics?.control || hero.teamMetrics?.control || 0);
         const coverageFactor = Math.max(0.55, Math.min(1.12, range / 170));
@@ -80,10 +80,9 @@ export function buildWaveDamageCheck({ heroes = [], waveModel = {}, waveSeconds 
 
 function buildSupportContribution(hero = {}) {
     const config = hero.config || hero;
-    const aura = config.special?.supportAura || config.supportAura || hero.special?.supportAura || hero.supportAura;
-    const scaledAura = getScaledSupportAura(aura, hero.level || config.level || 1, hero.rarity || config.rarity || 'Common');
+    const scaledAura = getEffectiveSupportAura(hero);
     if (!scaledAura?.type) return null;
-    const typeLabel = SUPPORT_AURA_COPY[scaledAura.type] || 'aura';
+    const typeLabel = scaledAura.targetCondition === 'mark' ? 'contra marcados' : SUPPORT_AURA_COPY[scaledAura.type] || 'aura';
     const power = Math.max(0, Math.round(Number(scaledAura.power || 0) * 100));
     const range = Math.max(0, Math.round(Number(scaledAura.range || hero.range || config.range || 0)));
 

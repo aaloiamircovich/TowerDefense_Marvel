@@ -1,7 +1,7 @@
 # Identidad y habilidades de los 105 heroes
 
 Fecha: 2026-09-13. Base revisada: commit 553ad63.
-Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 EN CURSO, seis lotes.
+Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 EN CURSO, siete lotes.
 Fases 3 a 10 pendientes. La cobertura comun no certifica el balance individual.
 Los hallazgos de auditoria describen el baseline; ver avances abajo para las
 correcciones ya realizadas. No equivale a completar el rediseño de los 105 kits.
@@ -1220,3 +1220,36 @@ No se modifican sprites ni mapas. Siguiente lote: evolucion de soportes.
 Validacion final del lote: npm run check aprobado, 1.346 pruebas, simulaciones
 de economia/rareza/campana y controles de accesibilidad/lanzamiento sin errores.
 Benchmark p95 0.407 ms; smoke en 1366x768 y 390x844 sin desborde ni desvio de ruta.
+
+## Fase 2: septimo lote, evolucion de soportes
+
+Los nueve soportes puros reciben x1.25 a la potencia de su aura al nivel 50,
+una sola vez y sobre la curva por nivel/rareza. No son 25 puntos porcentuales.
+La evolucion no amplifica radio, deteccion, ciclos ni cargas; tampoco habilita
+ataques, curacion o efectos ofensivos de objetos. Los atacantes no cambian.
+
+Wasp mantiene cero durante descanso; Panther conserva seis ataques aliados
+y su preparacion; Profesor X aumenta tanto presupuesto como tope individual;
+Maria sigue exigiendo marca al impacto y no mejora DoT. Reed mantiene intacta
+la geometria interna. El bonus se deriva del nivel consultado, incluso al
+previsualizar 49->50, subir varios niveles o recargar un heroe retirado.
+No cambia el formato de guardado. Los objetos no agregan otro bonus de aura:
+las transformaciones especificas siguen pendientes para fase 8.
+
+Diccionario y preview muestran potencia del aura, no dano propio ficticio.
+El radar usa la potencia efectiva y excluye soportes del DPS aunque evolucion
+u objetos suban sus stats ofensivas heredadas. Quedan pendientes las heuristicas
+textuales de deteccion y la simplificacion completa de estadisticas en fase 9.
+
+35 pruebas nuevas: nueve contratos, niveles, pulsos, preview, objetos,
+persistencia, radar, diccionario y estimador. npm run check aprobado con 1.381
+pruebas; economia, rarezas, campana, accesibilidad y lanzamiento sin errores.
+Benchmark p95 0.352 ms; smoke 1366x768 y 390x844 sin overflow ni desvio de ruta.
+Los margenes estimados W50/W75/W100 son 1.383/1.289/1.086; W25 conserva tres
+intentos fallidos y cuarto preparado vencedor. No cambian salud ni umbrales.
+Estas estimaciones no sustituyen partidas ni comparativas con igual presupuesto.
+
+compare-support-stacking incluye ahora evolucion en ambas politicas. La tabla
+del lote 6 conserva su valor historico previo a este aumento.
+Siguiente lote: economia heredada de Shang-Chi y contrato monetario de Domino.
+Fase 2 sigue abierta; no se modificaron sprites ni mapas.

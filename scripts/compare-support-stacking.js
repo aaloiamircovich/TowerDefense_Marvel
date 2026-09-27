@@ -69,7 +69,7 @@ export function simulateSupportStacking(supportIds, { level = 100, legacy = fals
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
     console.log('6 plazas, 60 s, soportes nivel 100, atacantes normalizados 100 dano/1 ataque por segundo.');
-    console.log('Blanco estacionario marcado, cobertura completa, impactos inmediatos, sin objetos/evolucion.');
+    console.log('Blanco estacionario marcado, cobertura completa, impactos inmediatos, sin objetos; evolucion de aura incluida en ambas politicas.');
     console.log('Compara la politica, no presupuestos de campana ni equipos optimos.');
     for (const scenario of SUPPORT_STACKING_SCENARIOS) {
         const before = simulateSupportStacking(scenario.supports, { legacy: true });

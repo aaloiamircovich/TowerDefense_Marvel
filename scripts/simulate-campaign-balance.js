@@ -1,9 +1,9 @@
 import fs from 'node:fs';
 import { pathToFileURL } from 'node:url';
 import { WaveManager } from '../src/systems/WaveManager.js';
-import { getHeroDamageAtLevel, getScaledSupportAura } from '../src/utils/HeroLevel.js';
+import { getHeroDamageAtLevel } from '../src/utils/HeroLevel.js';
 import { TypeChart } from '../data/TypeChart.js';
-import { MENTAL_LINK, PYM_LINK } from '../src/systems/SupportAuraSystem.js';
+import { getEvolvedSupportAura, MENTAL_LINK, PYM_LINK } from '../src/systems/SupportAuraSystem.js';
 
 const enemies = JSON.parse(fs.readFileSync(new URL('../data/enemies.json', import.meta.url), 'utf8'));
 const heroes = JSON.parse(fs.readFileSync(new URL('../data/heroes.json', import.meta.url), 'utf8'));
@@ -205,7 +205,7 @@ export function collectSupportMultipliers(team) {
     const attackers = team.filter(([heroId]) => !heroes[heroId]?.special?.supportAura?.type).length;
     return team.reduce((multipliers, [heroId, level]) => {
         const hero = heroes[heroId];
-        const aura = getScaledSupportAura(hero?.special?.supportAura, level, hero?.rarity);
+        const aura = hero ? getEvolvedSupportAura(hero, level) : null;
         if (!aura?.type) return multipliers;
         // This estimator does not model mark uptime; Hill is not unconditional team damage.
         if (heroId === 'maria_hill') return multipliers;

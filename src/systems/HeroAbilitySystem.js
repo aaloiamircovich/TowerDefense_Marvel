@@ -6,9 +6,8 @@ import { StreetKitSystem } from './StreetKitSystem.js';
 import { MutantKitSystem } from './MutantKitSystem.js';
 import { getLineEndpoint, getLineTargets } from '../utils/LineTargeting.js';
 import { applyCooldownReductions } from '../utils/AbilityModifiers.js';
-import { getScaledSupportAura } from '../utils/HeroLevel.js';
 import { getHeroRangePattern, isPointInRangePattern } from '../utils/RangePattern.js';
-import { getSupportAuraDisplayState } from './SupportAuraSystem.js';
+import { getEffectiveSupportAura, getSupportAuraDisplayState } from './SupportAuraSystem.js';
 
 const ACTIVE_COOLDOWNS = {
     thor: 11,
@@ -179,11 +178,7 @@ export class HeroAbilitySystem {
     }
 
     getDisplayState() {
-        const aura = getScaledSupportAura(
-            this.hero.config?.special?.supportAura,
-            this.hero.level || this.hero.config?.level || 1,
-            this.hero.config?.rarity || this.hero.rarity
-        );
+        const aura = getEffectiveSupportAura(this.hero);
         if (aura?.type) {
             const networkState = getSupportAuraDisplayState(this.hero);
             if (networkState) return networkState;

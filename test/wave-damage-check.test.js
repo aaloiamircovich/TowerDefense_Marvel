@@ -16,7 +16,7 @@ test('buildWaveDamageCheck ignora auras puras como dano directo', () => {
     assert.ok(check.expectedDamage > 0);
     assert.deepEqual(check.contributors.map((entry) => entry.name), ['Iron Man']);
     assert.deepEqual(check.supports.map((entry) => entry.name), ['Capitan America']);
-    assert.equal(check.supports[0].label, '+17% dano');
+    assert.equal(check.supports[0].label, '+22% dano');
     assert.equal(check.supports[0].range, 270);
 });
 
