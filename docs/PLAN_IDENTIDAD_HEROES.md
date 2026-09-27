@@ -1147,7 +1147,14 @@ Datos y bootstrap sincronizados; no se tocan sprites ni mapas.
 Validacion: npm run check completo aprobado; despues de agregar tres casos
 de integracion/comparativa se repitio npm test, con 1.326 pruebas aprobadas.
 Benchmark p95 0.315 ms; smoke desktop/mobile sin desborde horizontal ni
-desvio de ruta. Publicacion y comprobacion del codigo servido en Railway.
+desvio de ruta. Commit 450791f subido a main en GitHub.
+
+Verificacion de publicacion 2026-09-27: el dominio publico de Railway devuelve
+HTTP 404, Application not found, incluso en la raiz. El panel autenticado
+muestra Trial expired y 0/4 servicios online en determined-art. No se puede
+confirmar este despliegue hasta que el propietario reactive la cuenta; no se
+contrato un plan ni se modificaron pagos. GitHub actualizado no equivale a
+despliegue publicado. Repetir la comparacion de archivos cuando vuelva online.
 
 Los nueve soportes ya tienen contrato individual en esta fase. Sigue pendiente
 la politica global de acumulacion, evolucion del buff y economia heredada.
