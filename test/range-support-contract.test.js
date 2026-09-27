@@ -119,13 +119,13 @@ for (const pattern of ['cross', 'x']) {
     });
 }
 
-test('Reed con Sue y objeto: solo excluye su propio multiplicador de la geometria interna', () => {
+test('Reed con Sue y objeto: suma auras y excluye solo su aporte de la geometria interna', () => {
     const f = setup('mister_fantastic', 'ring');
     f.ally.items = [{ id: 'range-test', effects: { rangePct: 0.2 } }];
     const sue = new Hero(heroes.invisible_woman, 0, 0, f.game);
     f.game.heroes.push(sue);
     const stats = f.ally.getEffectiveStats();
-    close(stats.range, 200 * 1.2 * 1.08 * 1.15);
+    close(stats.range, 200 * 1.2 * (1 + 0.08 + 0.15));
     close(stats.range * stats.rangeGeometryScale, 200 * 1.2 * 1.08);
     f.game.heroes.reverse();
     close(f.ally.getEffectiveStats().range, stats.range);
@@ -256,7 +256,7 @@ test('Sue mantiene deteccion durante descanso de Wong, sin convertirla en revela
     const sue = new Hero(heroes.invisible_woman, 0, 0, f.game);
     f.game.heroes.push(sue);
     const hidden = f.spawn(100, 0, { stealth: true });
-    close(f.ally.getEffectiveStats().range, 200 * 1.045 * 1.08);
+    close(f.ally.getEffectiveStats().range, 200 * (1 + 0.045 + 0.08));
     assert.equal(f.ally.getEffectiveStats().canSeeStealth, true);
     sue.applyStun(20);
     assert.equal(f.ally.getEffectiveStats().canSeeStealth, false);

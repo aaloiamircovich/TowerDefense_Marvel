@@ -9,7 +9,7 @@ import { getHeroRangePattern, isPointInRangePattern } from '../utils/RangePatter
 import { getScaledSupportAura, normalizeHeroLevel } from '../utils/HeroLevel.js';
 import { TERRAIN } from '../utils/TerrainRules.js';
 import { resolveHeroVisual } from '../utils/HeroVisuals.js';
-import { getEffectiveSupportAura, recordSupportAttack, updateSupportAura } from '../systems/SupportAuraSystem.js';
+import { applySupportAurasToStats, recordSupportAttack, updateSupportAura } from '../systems/SupportAuraSystem.js';
 
 export const SUPPORT_AURA_VISUALS = {
     damage: { color: '#fca311' },
@@ -335,23 +335,7 @@ export class Hero {
     }
 
     applySupportAuras(stats, origin = this) {
-        const allies = this.game?.heroes || [];
-        for (const ally of allies) {
-            if (ally === this || ally.stunTimer > 0) continue;
-            const aura = getEffectiveSupportAura(ally, { recipient: this });
-            if (!aura?.type) continue;
-            const radius = Math.max(0, Number(aura.range || ally.range || 0));
-            if (Math.hypot(ally.x - origin.x, ally.y - origin.y) > radius) continue;
-            const power = Math.max(0, Number(aura.power || 0));
-            if (aura.type === 'damage' && !aura.targetCondition) stats.damage *= 1 + power;
-            if (aura.type === 'fireRate') stats.fireRate *= 1 + power;
-            if (aura.type === 'range') {
-                stats.range *= 1 + power;
-                // Reed extends reach without moving the inner boundary or widening attack lanes.
-                if (aura.outerRangeOnly) stats.rangeGeometryScale = (stats.rangeGeometryScale || 1) / (1 + power);
-            }
-            if (aura.detectStealth) stats.canSeeStealth = true;
-        }
+        applySupportAurasToStats(stats, this, origin);
     }
 
     generateEconomyOnHit(target) {

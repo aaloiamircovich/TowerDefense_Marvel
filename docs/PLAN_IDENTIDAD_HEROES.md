@@ -1,7 +1,7 @@
 # Identidad y habilidades de los 105 heroes
 
 Fecha: 2026-09-13. Base revisada: commit 553ad63.
-Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 EN CURSO, cinco lotes.
+Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 EN CURSO, seis lotes.
 Fases 3 a 10 pendientes. La cobertura comun no certifica el balance individual.
 Los hallazgos de auditoria describen el baseline; ver avances abajo para las
 correcciones ya realizadas. No equivale a completar el rediseño de los 105 kits.
@@ -1160,3 +1160,63 @@ Los nueve soportes ya tienen contrato individual en esta fase. Sigue pendiente
 la politica global de acumulacion, evolucion del buff y economia heredada.
 Fase 2 sigue abierta; fase 1 mantiene pendientes textuales y fases 3-10 aun
 requieren su trabajo propio. Siguiente lote: acumulacion de auras en equipos.
+
+## Fase 2: sexto lote, acumulacion aditiva de auras
+
+Las auras incondicionales del mismo atributo ahora suman sus potencias en
+una sola capa, en lugar de multiplicarse entre si. +10% y +20% de dano dan
++30%, no +32%. Igual regla para cadencia y alcance, usando la potencia activa
+del pulso, red o reparto mental. Usar un soporte solo no cambia su beneficio.
+No se agregan topes ocultos ni se cambian niveles, costes o rarezas.
+
+Objetos, evolucion, kits propios y agrupaciones conservan sus capas actuales.
+Maria mantiene la excepcion documentada: su multiplicador contra una marca
+se resuelve por victima al impactar, separado de la suma de dano incondicional.
+Su bonificacion no se incorpora al dano base ni al DoT. La deteccion sigue
+siendo una union de fuentes; perder una no apaga las otras ni la propia.
+
+Hero y previsualizacion de colocacion comparten applySupportAurasToStats.
+En alcance se suma el aporte exterior de Reed, pero la geometria interna
+usa solo las otras auras: rango*(1+bonos normales)/(1+todos los bonos).
+Asi anillo/cruz/X conservan el contrato de Reed con Sue, Wong y objetos.
+Mover o aturdir una fuente, salir del radio o retirarla recalcula el resultado;
+ninguna aura aumenta el radio real o potencia de otra. No hay recursion.
+
+20 pruebas nuevas, mas actualizacion de expectativas multiplicativas de los
+cuatro lotes anteriores. Incluyen las 126 combinaciones de cinco soportes
+y un atacante en niveles 1, 50 y 100, inversion del orden de equipo, un solo
+soporte con cinco atacantes, estados, objetos, deteccion, geometria y preview.
+La suma continua de dano coincide con el estimador existente de campana.
+
+Comparativa reproducible: node scripts/compare-support-stacking.js.
+Motor real, seis plazas, 60 s, soportes nivel 100 y atacantes normalizados a
+100 de dano/1 ataque por segundo. Blanco estacionario marcado, cobertura
+completa e impactos inmediatos. Sin objetos/evoluciones, ruta ni presupuesto
+economico equivalente: no representa el balance final de la campana.
+
+| Equipo | Dano antes | Dano ahora | Diferencia |
+| --- | ---: | ---: | ---: |
+| Seis atacantes | 43200 | 43200 | 0% |
+| Capitan + Panther, cuatro atacantes | 46239 | 44442 | -3.89% |
+| Fury + Wasp + X, tres atacantes | 35280 | 33120 | -6.12% |
+| Sue + Reed + Wong, tres atacantes | 21600 | 21600 | 0% |
+| Cinco soportes de dano/cadencia, un atacante | 21890 | 19412 | -11.32% |
+| Capitan + Panther + Hill + Fury + Wasp, un atacante | 16130 | 15321 | -5.01% |
+
+El pico de cadencia con cinco soportes baja de x2.6602 a x2.201. Tres auras
+de alcance pasan de 306.63 a 293.55 px sobre base 200; el dano estacionario
+no cambia porque el blanco ya estaba dentro del radio. No se reduce salud
+enemiga ni se cambian umbrales de las pruebas para compensar la nueva regla.
+
+Railway reactivado por el propietario: antes de este lote se comprobaron
+HTTP 200 y coincidencia de SupportAuraSystem.js y heroes.json con Maria Hill.
+El bloqueo por prueba vencida registrado en el lote anterior ya no esta activo.
+
+Sigue pendiente en fase 2: evolucion de la potencia del buff y economia
+heredada. Fase 1 mantiene pendientes textuales; la evaluacion de rutas,
+equipos con presupuesto equivalente y control acumulado pertenece a fase 10.
+No se modifican sprites ni mapas. Siguiente lote: evolucion de soportes.
+
+Validacion final del lote: npm run check aprobado, 1.346 pruebas, simulaciones
+de economia/rareza/campana y controles de accesibilidad/lanzamiento sin errores.
+Benchmark p95 0.407 ms; smoke en 1366x768 y 390x844 sin desborde ni desvio de ruta.

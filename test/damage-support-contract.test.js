@@ -193,10 +193,10 @@ test('Captain America y Panther combinan sus auras existentes sin multiplicar re
     const f = setup();
     const captain = new Hero(heroes.capitan_america, 0, 0, f.game);
     f.game.heroes.push(captain);
-    close(f.ally.getEffectiveStats().damage, 132);
+    close(f.ally.getEffectiveStats().damage, 130);
     f.tick(9);
     f.attack(6);
-    close(f.ally.getEffectiveStats().damage, 143);
+    close(f.ally.getEffectiveStats().damage, 140);
     assert.equal(f.support.combatStats.abilityActivations, 1);
     assert.equal(captain.combatStats.abilityActivations, 0);
 });

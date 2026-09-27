@@ -230,16 +230,16 @@ test('soportes de cadencia: evolucion y objetos ofensivos no reactivan ataques, 
     }
 });
 
-test('combinar los tres no produce recursiones ni bucles de aumento: producto acotado al estado', () => {
+test('combinar los tres suma las potencias activas sin productos ni recursiones', () => {
     const f = setup('profesor_x', 100);
     const fury = f.addAlly(0, { ...heroes.nick_fury, level: 100 });
     const wasp = f.addAlly(0, { ...heroes.wasp, level: 100 });
     wasp.update(6, f.game.enemies, f.game.projectiles);
-    const expected = 1.555 * 1.124 * 1.522;
+    const expected = 1 + 0.555 + 0.124 + 0.522;
     for (let i = 0; i < 50; i++) close(f.ally.getEffectiveStats().fireRate, expected);
     assert.equal(getMentalLinks(f.support).length, 1);
     wasp.update(3, f.game.enemies, f.game.projectiles);
-    close(f.ally.getEffectiveStats().fireRate, 1.555 * 1.124);
+    close(f.ally.getEffectiveStats().fireRate, 1 + 0.555 + 0.124);
     assert.equal(fury.combatStats.shots, 0);
 });
 

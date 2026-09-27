@@ -11,6 +11,12 @@ los valores finales se fijan despues de las pruebas de fase 1.
 
 ## Fase 2: soportes, economia y excepcion de Luke
 
+Regla comun F2/lote 6: auras incondicionales del mismo atributo suman su
+potencia activa, no se multiplican entre si. Maria conserva su capa por
+victima marcada; Reed excluye su aporte de la geometria interna. Esta regla
+cierra la politica de acumulacion pendiente en las filas anteriores, no las
+comparativas de rutas/equipos ni la evolucion del buff.
+
 | ID | Heroe (rareza) | Actual | Firma propuesta y limite |
 | --- | --- | --- | --- |
 | `capitan_america` | Capitan America (Epic) | F2/lote 2: aura amplia constante, conservada y probada contra cobertura corta de Panther; no ataca ni con Mjolnir. | Liderazgo estable verificado; falta comparar equipos y politica global de acumulacion. |

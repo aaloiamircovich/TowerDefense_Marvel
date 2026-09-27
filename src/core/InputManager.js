@@ -5,7 +5,7 @@ import { getClosestPointOnPath } from '../utils/PathUtils.js';
 import { buildHeroTargetIntent } from '../entities/Hero.js';
 import { getHeroRangePattern, getRangePatternLabel, isPointInRangePattern } from '../utils/RangePattern.js';
 import { resolveHeroVisual } from '../utils/HeroVisuals.js';
-import { getEffectiveSupportAura } from '../systems/SupportAuraSystem.js';
+import { applySupportAurasToStats } from '../systems/SupportAuraSystem.js';
 import {
     canPlaceOnTerrain,
     getAllowedTerrainLabels,
@@ -114,14 +114,7 @@ function measurePatternPathCoverage(origin, range, path = [], pattern = 'circle'
 export function getPlacementRangeStats(heroConfig, game, movingHero, center) {
     if (movingHero?.getEffectiveStats) return movingHero.getEffectiveStats(center);
     const stats = { range: heroConfig.range || 100, rangeGeometryScale: 1 };
-    for (const source of game.heroes || []) {
-        if (source.stunTimer > 0) continue;
-        const aura = getEffectiveSupportAura(source);
-        if (aura?.type !== 'range' || Math.hypot(source.x - center.x, source.y - center.y) > aura.range) continue;
-        stats.range *= 1 + aura.power;
-        if (aura.outerRangeOnly) stats.rangeGeometryScale /= 1 + aura.power;
-    }
-    return stats;
+    return applySupportAurasToStats(stats, { config: heroConfig, game }, center);
 }
 
 export function findBestPlacementCell(heroConfig, game, movingHero = null) {

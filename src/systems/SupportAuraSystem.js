@@ -100,6 +100,30 @@ export function getSupportAuraPowerMultiplier(hero, level = hero.level || hero.c
         ? VIBRANIUM_NETWORK.powerMultiplier : 1;
 }
 
+export function applySupportAurasToStats(stats, recipient, origin = recipient) {
+    const bonuses = { damage: 0, fireRate: 0, range: 0 };
+    let outerRange = 0;
+    for (const source of recipient.game?.heroes || []) {
+        if (source === recipient || source.stunTimer > 0) continue;
+        const aura = getEffectiveSupportAura(source, { recipient });
+        if (!aura?.type || Math.hypot(source.x - origin.x, source.y - origin.y) > aura.range) continue;
+        const power = Math.max(0, Number(aura.power || 0));
+        if (!aura.targetCondition && Object.hasOwn(bonuses, aura.type)) bonuses[aura.type] += power;
+        if (aura.type === 'range' && aura.outerRangeOnly) outerRange += power;
+        if (aura.detectStealth) stats.canSeeStealth = true;
+    }
+    // Same-stat auras add; items, evolutions and target-conditional damage keep their own layer.
+    for (const key of Object.keys(bonuses)) {
+        if (typeof stats[key] === 'number') stats[key] *= 1 + bonuses[key];
+    }
+    if (outerRange > 0) {
+        // Reed changes only the outer boundary, even when other range auras also contribute.
+        stats.rangeGeometryScale = (stats.rangeGeometryScale || 1)
+            * (1 + bonuses.range - outerRange) / (1 + bonuses.range);
+    }
+    return stats;
+}
+
 export function getPriorityOrderDamageMultiplier(attacker, target) {
     const allies = attacker?.game?.heroes || [];
     if (!target?.isAlive || !target.debuffs?.some((effect) => effect.type === 'mark' && effect.duration > 0)

@@ -215,10 +215,10 @@ test('ejecucion acredita salud restante una vez, nunca +9% ni doble baja', () =>
 test('Capitan y Panther mantienen su bonus, orden solo se multiplica una vez al impactar', () => {
     const f = setup();
     f.game.heroes.push(new Hero(heroes.capitan_america, 0, 0, f.game), new Hero(heroes.black_panther, 0, 0, f.game));
-    close(f.ally.getEffectiveStats().damage, 132);
-    close(f.hit().damage, 132);
+    close(f.ally.getEffectiveStats().damage, 130);
+    close(f.hit().damage, 130);
     f.mark();
-    close(f.hit().damage, 132 * 1.2 * 1.09);
+    close(f.hit().damage, 130 * 1.2 * 1.09);
 });
 
 test('retirar/recolocar conserva nivel, no cuesta dinero y reactiva orden solo en radio', () => {
