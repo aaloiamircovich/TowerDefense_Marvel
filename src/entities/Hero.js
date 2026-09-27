@@ -219,6 +219,7 @@ export class Hero {
         let finalDamage = isCrit ? attackStats.damage * Math.max(1, attackStats.critDamage || 2) : attackStats.damage;
         this.combatStats.shots++;
         if (isCrit) this.combatStats.crits++;
+        // Native income belongs to this primary shot, never to secondary impacts or DoT.
         this.generateEconomyOnHit(target);
 
         const itemEffects = aggregateItemEffects(this.items);

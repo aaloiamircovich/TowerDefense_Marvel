@@ -40,8 +40,8 @@ Cada escenario comienza sin enemigos para comprobar ausencia de disparos.
 | Cobertura, Geometria elastica y Sello | range-support-contract: radio, geometria interna, deteccion, ciclos, retiro, stun, niveles, colocacion, dibujo, signature y comparativa estacionaria de 32 s |
 | Orden de prioridad | priority-support-contract: marcas de kit/objeto, condicion por impacto/victima, vuelo, secundarios, retiro, stun, niveles, DoT, ejecucion, ingresos, UI y comparativa estacionaria de 20 s |
 | Acumulacion de auras | support-stacking-contract: suma por atributo, 126 equipos a tres niveles, orden, objetos, deteccion, geometria/preview y seis comparativas de 60 s contra baseline multiplicativo |
-
 | Evolucion de soportes | support-evolution-contract: 35 pruebas de nueve soportes, nivel 50, preview, pulsos, objetos, persistencia, radar, codex y estimador |
+| Economia nativa | hero-income-contract: 25 pruebas de Domino, Shang-Chi, niveles, secundarios, DoT, proyectiles perdidos, control, retorno y objetos |
 
 Los nombres corresponden a archivos `.test.js`. Las pruebas focalizadas
 son necesarias: pasar el recorrido comun no demuestra que cada condicion
@@ -51,9 +51,9 @@ anunciada en una ficha este implementada.
 
 - Concordancia textual individual pendiente en el cierre de fase 1: condiciones
   de elite, revelado frente a deteccion propia y estados principales frente a area.
-- Fase 2 avanzo con Luke, los nueve soportes, acumulacion aditiva y evolucion del buff. Falta
-  economia heredada. No se cambio
-  el 15% por ataque de Domino.
+- Fase 2 implementada: Luke, nueve soportes, acumulacion aditiva, evolucion y
+  economia heredada. El 15% por disparo de Domino sigue intacto; la contabilidad
+  probada no reemplaza el balance de ingreso por partida de fase 10.
 - Fases 3-7: propuestas de firma en la matriz; minas, clones y torretas no existen
   por mencionarlas en un documento. Deben implementarse y probarse en su lote.
 - Fase 8: todos los cruces de evolucion/signature sobre los kits nuevos.

@@ -1,7 +1,7 @@
 # Identidad y habilidades de los 105 heroes
 
 Fecha: 2026-09-13. Base revisada: commit 553ad63.
-Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 EN CURSO, siete lotes.
+Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes.
 Fases 3 a 10 pendientes. La cobertura comun no certifica el balance individual.
 Los hallazgos de auditoria describen el baseline; ver avances abajo para las
 correcciones ya realizadas. No equivale a completar el rediseño de los 105 kits.
@@ -141,10 +141,9 @@ que reciben los aliados. Revisar ambos caminos antes de sumar mas efectos.
 
 ## Diez fases de implementacion
 
-Fase 1 EN CIERRE; fase 2 INICIADA; fases 3 a 10 PENDIENTES.
-El orden figura en la matriz anexa. El primer lote de fase 2 es independiente
-de la revision restante de textos individuales; ninguna de ambas se declara
-completada por este avance.
+Fase 1 EN CIERRE; fase 2 IMPLEMENTADA; fases 3 a 10 PENDIENTES.
+Fase 2 cumple sus contratos funcionales; no cierra la revision textual de fase 1,
+los cruces de objetos de fase 8 ni el balance integral de fase 10.
 Las fases 3 a 7 se entregan en lotes de hasta 4 heroes para poder probarlos;
 un lote no equivale a completar toda la fase. No prometer diez commits exactos.
 
@@ -1253,3 +1252,38 @@ compare-support-stacking incluye ahora evolucion en ambas politicas. La tabla
 del lote 6 conserva su valor historico previo a este aumento.
 Siguiente lote: economia heredada de Shang-Chi y contrato monetario de Domino.
 Fase 2 sigue abierta; no se modificaron sprites ni mapas.
+
+## Fase 2: octavo lote, economia y cierre funcional
+
+Shang-Chi deja de conceder dos monedas cada cuatro ataques en Guardia. Era
+un ingreso no anunciado en la ficha y ajeno a su identidad de combate.
+Conserva los tres modos y sus stats/perfiles; el combo propio propuesto queda
+para fase 4, sin inventar otro bonus ni un aura aliada en este cambio.
+
+Domino mantiene ceil(recompensa final del enemigo * 0.15) por disparo principal,
+antes del impacto, a todos los niveles. No se devuelve si el proyectil pierde
+su blanco; tampoco se cobra otra vez por impacto, retorno, splash, rebote,
+propagacion o DoT. Se preserva el redondeo a moneda entera y no se agrega
+tope por enemigo. Contra un blanco controlado, el total es disparos * pago.
+
+Contrato Stark y Moneda de Madripoor conservan su pago adicional por impacto,
+separado del 15% nativo. Matriz de Probabilidad evolucionada conserva su 12%
+adicional por critico: dos proyectiles siguen siendo un disparo y un proc.
+No se cambia ningun precio, recompensa, cadencia ni porcentaje de objetos.
+
+25 pruebas nuevas cubren niveles 1/49/50/100, modos, recompensas invalidas,
+secundarios, DoT, proyectil perdido, retorno, stun, falta de blanco y objetos.
+La prueba de 60 s con blanco controlado valida contabilidad, no simula una
+ruta ni demuestra que el ingreso por partida sea optimo. Farmear con control
+y la oportunidad de ocupar una plaza con Domino requieren fase 10.
+
+Con este lote se cumplen los contratos funcionales de fase 2: nueve soportes
+distintos sin ataques, Luke sin aura aliada, acumulacion/escalado/evolucion y
+economia nativa sin duplicados. Siguen pendientes textos individuales (fase 1),
+signatures de soporte (fase 8), lectura compacta (fase 9) y balance (fase 10).
+Siguiente fase: tiradores y tecnologia, empezando por Iron Man y Hawkeye.
+
+Validacion del cierre: npm run check aprobado, 1.406 pruebas; simulaciones de
+economia/rareza/campana y auditorias de accesibilidad/lanzamiento sin errores.
+Benchmark p95 0.323 ms; smoke desktop 1366x768 y mobile 390x844 sin overflow
+ni desvio de ruta. Evoluciones del lote 7 verificadas publicamente en Railway.

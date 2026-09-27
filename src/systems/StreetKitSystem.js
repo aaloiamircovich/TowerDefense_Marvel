@@ -50,10 +50,6 @@ export class StreetKitSystem {
         if (this.hero.id === 'daredevil' && this.attackCount % 4 === 0) this.counterDaredevil(target, stats);
         if (this.hero.id === 'ghost_rider' && this.attackCount % 5 === 0) this.pullWithChain(target);
         if (this.hero.id === 'she_hulk' && this.attackCount % 3 === 0) this.impactSheHulk(target, stats);
-        if (this.hero.id === 'shang_chi' && this.mode === 'guard' && this.attackCount % 4 === 0) {
-            this.hero.game.resourceManager?.addCredits?.(2);
-            this.hero.recordGold?.(2);
-        }
     }
 
     onKill(target) {
