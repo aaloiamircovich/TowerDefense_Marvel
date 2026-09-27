@@ -343,7 +343,7 @@ export class Hero {
             const radius = Math.max(0, Number(aura.range || ally.range || 0));
             if (Math.hypot(ally.x - origin.x, ally.y - origin.y) > radius) continue;
             const power = Math.max(0, Number(aura.power || 0));
-            if (aura.type === 'damage') stats.damage *= 1 + power;
+            if (aura.type === 'damage' && !aura.targetCondition) stats.damage *= 1 + power;
             if (aura.type === 'fireRate') stats.fireRate *= 1 + power;
             if (aura.type === 'range') {
                 stats.range *= 1 + power;

@@ -1,6 +1,7 @@
 import { TypeChart } from '../../data/TypeChart.js';
 
 import { aggregateItemEffects } from './ItemEffectSystem.js';
+import { getPriorityOrderDamageMultiplier } from './SupportAuraSystem.js';
 
 export class CombatSystem {
     static applyImpact(projectile, target, attacker, resourceManager) {
@@ -84,7 +85,8 @@ export class CombatSystem {
 
         const typeMultiplier = TypeChart[projectile.attackerType]?.[target.category] || 1;
         const markMultiplier = target.getDamageTakenMultiplier?.() || 1;
-        const result = target.takeDamage(projectile.damage * factor * typeMultiplier * markMultiplier, {
+        const orderMultiplier = getPriorityOrderDamageMultiplier(attacker, target);
+        const result = target.takeDamage(projectile.damage * factor * typeMultiplier * markMultiplier * orderMultiplier, {
             armorPenetration: projectile.armorPenetration || 0,
             attackerType: projectile.attackerType
         });

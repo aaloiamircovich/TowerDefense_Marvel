@@ -57,7 +57,7 @@ export class HeroDetailsPanel {
         const waveSummary = this.ui.nextWaveSummary || (!this.ui.game.waveManager?.isWaveActive ? this.ui.game.waveManager?.buildPreparedSummary?.() : null);
         const waveFitView = this.buildRosterWaveFitView(this.evaluateHeroWaveFit(hero, waveSummary, this.ui.getMissionCredits()));
         const scaledAura = getEffectiveSupportAura(isDeployed ? hero : { config, id: config.id, level });
-        const supportAuraLabel = {
+        const supportAuraLabel = scaledAura?.targetCondition === 'mark' ? 'Marcados' : {
             damage: 'Daño',
             fireRate: 'Cad.',
             range: 'Rango'

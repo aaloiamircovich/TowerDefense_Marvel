@@ -233,7 +233,7 @@ function getHeroImpactLabel(config = {}, profile = {}, effects = [], aura = null
 function getHeroCombatRoleLabel(config = {}, profile = {}, effects = [], aura = null, economy = null) {
     if (aura) {
         const power = Math.round(Number(aura.power || 0) * 100);
-        return `${SUPPORT_AURA_TYPE_COPY[aura.type] || 'aura'} +${power}%`;
+        return `${aura.targetCondition === 'mark' ? 'Marcados' : SUPPORT_AURA_TYPE_COPY[aura.type] || 'aura'} +${power}%`;
     }
     if (economy?.rewardPct) return `Créditos ${Math.round(Number(economy.rewardPct || 0) * 100)}%`;
     if (profile.splashRadius > 0 || profile.chainCount > 0 || profile.propagationCount > 0) return 'Grupos';

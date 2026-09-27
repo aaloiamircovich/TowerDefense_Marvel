@@ -52,7 +52,8 @@ export class HeroUpgradeController {
         const currentAura = getEffectiveSupportAura(previewHero, { level: currentLevel });
         const nextAura = getEffectiveSupportAura(previewHero, { level: currentLevel + steps });
         const auraDelta = Number(nextAura?.power || 0) - Number(currentAura?.power || 0);
-        if (auraDelta) rows.push({ label: heroId === 'wasp' ? 'Pulso' : 'Aura', value: auraDelta * 100, suffix: '%', precision: 1 });
+        const auraLabel = nextAura?.targetCondition === 'mark' ? 'Marcados' : heroId === 'wasp' ? 'Pulso' : 'Aura';
+        if (auraDelta) rows.push({ label: auraLabel, value: auraDelta * 100, suffix: '%', precision: 1 });
         const auraRangeDelta = Number(nextAura?.range || 0) - Number(currentAura?.range || 0);
         if (auraRangeDelta) rows.push({ label: 'Radio', value: auraRangeDelta });
 

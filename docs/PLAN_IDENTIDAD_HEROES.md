@@ -1,7 +1,7 @@
 # Identidad y habilidades de los 105 heroes
 
 Fecha: 2026-09-13. Base revisada: commit 553ad63.
-Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 EN CURSO, cuatro lotes.
+Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 EN CURSO, cinco lotes.
 Fases 3 a 10 pendientes. La cobertura comun no certifica el balance individual.
 Los hallazgos de auditoria describen el baseline; ver avances abajo para las
 correcciones ya realizadas. No equivale a completar el rediseño de los 105 kits.
@@ -1103,3 +1103,53 @@ Validacion final: npm run check aprobado con 1.290 pruebas; economia,
 rareza, campana estimada, accesibilidad y lanzamiento sin errores. Smoke
 1366x768 y 390x844 sin desborde ni desvio de ruta. Fichas de los tres soportes
 capturadas en ambos tamanos, mas comprobacion de pixeles de anillo/cruz/X.
+
+## Fase 2: quinto lote, Orden de prioridad de Maria Hill
+
+Maria Hill conserva deteccion para aliados a 225 px y no ataca ni aplica
+marcas. Su aura deja de dar dano incondicional: concede +9% base de dano
+directo solo contra una marca activa. La potencia nominal 4.5% se multiplica
+por dos en el contrato efectivo, con la curva Common existente. Nivel 100:
++13.05% a 238.5 px. No se cambian rareza, coste, salud enemiga ni evoluciones.
+
+La condicion se comprueba por victima al impactar, no al crear el proyectil.
+Aliado atacante y Maria deben seguir desplegados, no aturdidos y dentro del
+radio entre ambos. El blanco puede estar fuera del aura; se conserva el
+alcance del atacante. Retirar, mover o aturdir durante el vuelo puede quitar
+el bonus. Recolocar mantiene nivel y coste cero. Otros soportes no reciben
+potencia ofensiva ni se habilitan ataques por llevar objetos.
+
+Sirven marcas existentes de heroes u objetos: se probaron Scarlet Witch y
+la firma de Bloodstone, sin imponer una pareja concreta. La vulnerabilidad
+de la marca sigue siendo independiente y multiplicativa. Un golpe que aplica
+marca despues de su dano no recibe retroactivamente el bonus. Splash, rebote
+y propagacion consultan cada victima, sin heredar la marca del principal.
+No aumenta DoT, ejecuciones, curacion ni ingresos de Domino. La autoria del
+dano sigue siendo del atacante; el pasivo no suma activaciones ficticias.
+
+Ficha, rol y previsualizacion de nivel usan Marcados y la potencia efectiva;
+el indicador explica que requiere marca o esta suspendida. La ficha se reviso
+a 1366x768 y 390x844, sin desborde horizontal. La vista movil sigue usando
+scroll vertical. La simplificacion general de metricas ofensivas de soportes
+y prioridades de objetivo permanece en fase 9, no se da por resuelta aqui.
+
+36 pruebas nuevas en priority-support-contract: condiciones, fronteras,
+proyectiles en vuelo, secundarios, niveles 1/49/50/100, objetos, retiro, stun,
+ejecucion, DoT, recompensas, UI y estimador. Comparativa estacionaria de 20 s
+con impactos inmediatos: con atacante de dano 100, Hill da 100 sin marca y
+130.8 con marca de 20%; Capitan da 110 y 132 respectivamente. Esto comprueba
+el contrato, no demuestra el balance de equipos completos ni de rutas.
+
+El estimador de campana omite el bonus condicional de Hill al no modelar
+tiempo de marcas. No lo cuenta como dano constante ni se reajustan umbrales.
+Datos y bootstrap sincronizados; no se tocan sprites ni mapas.
+
+Validacion: npm run check completo aprobado; despues de agregar tres casos
+de integracion/comparativa se repitio npm test, con 1.326 pruebas aprobadas.
+Benchmark p95 0.315 ms; smoke desktop/mobile sin desborde horizontal ni
+desvio de ruta. Publicacion y comprobacion del codigo servido en Railway.
+
+Los nueve soportes ya tienen contrato individual en esta fase. Sigue pendiente
+la politica global de acumulacion, evolucion del buff y economia heredada.
+Fase 2 sigue abierta; fase 1 mantiene pendientes textuales y fases 3-10 aun
+requieren su trabajo propio. Siguiente lote: acumulacion de auras en equipos.

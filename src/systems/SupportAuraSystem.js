@@ -4,6 +4,7 @@ export const VIBRANIUM_NETWORK = Object.freeze({ attacks: 6, duration: 3, cooldo
 export const PYM_LINK = Object.freeze({ rest: 6, duration: 3, powerMultiplier: 2 });
 export const SANCTUARY_PULSE = Object.freeze({ rest: 4, duration: 4 });
 export const MENTAL_LINK = Object.freeze({ budgetMultiplier: 10 / 3, perAllyMultiplier: 2 });
+export const PRIORITY_ORDER = Object.freeze({ powerMultiplier: 2 });
 
 export function resetSupportAura(hero) {
     if (hero) {
@@ -23,6 +24,10 @@ function isCadenceSupport(hero, id) {
 
 function isRangeSupport(hero, id) {
     return (hero.id || hero.config?.id) === id && auraConfig(hero)?.type === 'range';
+}
+
+function hasPriorityOrder(hero) {
+    return (hero.id || hero.config?.id) === 'maria_hill' && auraConfig(hero)?.type === 'damage';
 }
 
 function timedPulse(hero) {
@@ -71,6 +76,7 @@ export function getEffectiveSupportAura(hero, { level = hero.level || hero.confi
     const aura = scaledAura(hero, level);
     if (recipient && isCadenceSupport(hero, 'profesor_x') && !getMentalLinks(hero, level).includes(recipient)) return null;
     if (aura) aura.power *= getSupportAuraPowerMultiplier(hero, level);
+    if (aura && hasPriorityOrder(hero)) aura.targetCondition = 'mark';
     if (aura && isRangeSupport(hero, 'mister_fantastic')) aura.outerRangeOnly = true;
     if (aura && isRangeSupport(hero, 'wong')) {
         aura.detectStealth = !(hero.stunTimer > 0) && (!hero.game?.heroes?.includes(hero)
@@ -80,6 +86,7 @@ export function getEffectiveSupportAura(hero, { level = hero.level || hero.confi
 }
 
 export function getSupportAuraPowerMultiplier(hero, level = hero.level || hero.config?.level || 1) {
+    if (hasPriorityOrder(hero)) return PRIORITY_ORDER.powerMultiplier;
     if (isCadenceSupport(hero, 'wasp')) {
         if (!hero.game?.heroes?.includes(hero)) return PYM_LINK.powerMultiplier;
         return !(hero.stunTimer > 0) && pulseState(hero).elapsed >= PYM_LINK.rest ? PYM_LINK.powerMultiplier : 0;
@@ -91,6 +98,19 @@ export function getSupportAuraPowerMultiplier(hero, level = hero.level || hero.c
     }
     return hasNetwork(hero) && networkState(hero).remaining > 0 && !(hero.stunTimer > 0)
         ? VIBRANIUM_NETWORK.powerMultiplier : 1;
+}
+
+export function getPriorityOrderDamageMultiplier(attacker, target) {
+    const allies = attacker?.game?.heroes || [];
+    if (!target?.isAlive || !target.debuffs?.some((effect) => effect.type === 'mark' && effect.duration > 0)
+        || !allies.includes(attacker) || auraConfig(attacker)?.type || attacker.stunTimer > 0) return 1;
+    let multiplier = 1;
+    for (const source of allies) {
+        if (source === attacker || !hasPriorityOrder(source) || source.stunTimer > 0) continue;
+        const aura = getEffectiveSupportAura(source);
+        if (Math.hypot(source.x - attacker.x, source.y - attacker.y) <= aura.range) multiplier *= 1 + aura.power;
+    }
+    return multiplier;
 }
 
 export function updateSupportAura(hero, dt) {
@@ -136,6 +156,9 @@ export function recordSupportAttack(attacker) {
 }
 
 export function getSupportAuraDisplayState(hero) {
+    if (hasPriorityOrder(hero)) {
+        return { label: hero.stunTimer > 0 ? 'Orden suspendida' : 'Orden: requiere marca', progress: null, ready: !(hero.stunTimer > 0) };
+    }
     if (isRangeSupport(hero, 'invisible_woman') || isRangeSupport(hero, 'mister_fantastic')) {
         const name = isRangeSupport(hero, 'mister_fantastic') ? 'Extension exterior' : 'Cobertura y deteccion';
         return { label: hero.stunTimer > 0 ? 'Campo suspendido' : name, progress: null, ready: !(hero.stunTimer > 0) };

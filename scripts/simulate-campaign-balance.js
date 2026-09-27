@@ -207,6 +207,8 @@ export function collectSupportMultipliers(team) {
         const hero = heroes[heroId];
         const aura = getScaledSupportAura(hero?.special?.supportAura, level, hero?.rarity);
         if (!aura?.type) return multipliers;
+        // This estimator does not model mark uptime; Hill is not unconditional team damage.
+        if (heroId === 'maria_hill') return multipliers;
         // Estimate full coverage and long-run pulse uptime; this is not a route simulation.
         if (heroId === 'wasp') aura.power *= PYM_LINK.powerMultiplier * PYM_LINK.duration / (PYM_LINK.rest + PYM_LINK.duration);
         if (heroId === 'profesor_x') aura.power *= attackers ? Math.min(MENTAL_LINK.perAllyMultiplier, MENTAL_LINK.budgetMultiplier / attackers) : 0;

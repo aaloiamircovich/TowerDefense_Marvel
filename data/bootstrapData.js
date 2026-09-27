@@ -6696,8 +6696,8 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1,
       "canSeeStealth": true,
       "ability": "COMANDO S.H.I.E.L.D.",
-      "abilityDesc": "No ataca. Coordina fuego aliado con un aura amplia de dano menor y lectura anti-sigilo.",
-      "niche": "aura comun de dano amplia",
+      "abilityDesc": "No ataca ni marca enemigos. Orden de prioridad: aliados dentro de 225 px detectan sigilo y hacen +9% de dano directo base contra blancos con una marca activa de otro heroe u objeto. Se comprueba por victima al impactar; requiere aliado y soporte desplegados, en radio y no aturdidos. No potencia dano periodico ni ejecuciones. Potencia y radio mejoran con su nivel.",
+      "niche": "deteccion y dano condicionado a marcas",
       "sprite": "assets/images/heroes/maria_hill/portrait.png",
       "visual": {
         "portrait": "assets/images/heroes/maria_hill/portrait.png",
