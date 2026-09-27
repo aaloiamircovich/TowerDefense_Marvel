@@ -10,7 +10,7 @@
     "fireRate": 1.5,
     "canSeeStealth": true,
     "ability": "SOBRECARGA ARC",
-    "abilityDesc": "Cada tercer ataque activa un láser ARC que atraviesa la línea de tiro, inflige 90% de daño adicional e ignora 35% de armadura.",
+    "abilityDesc": "Carga ARC en 3 disparos (2 con Extremis). Descarga un laser lineal de 90% de poder con 35% de penetracion; escala con potencia de habilidad. El reactor necesita 2 s al desplegar y entre descargas; acumula carga mientras enfria y dispara con el siguiente ataque. No golpea sigilo sin deteccion.",
     "niche": "daño lineal y antiarmadura",
     "sprite": "assets/images/heroes/iron_man/portrait.png",
     "visual": {
@@ -437,7 +437,7 @@
     "fireRate": 1.1,
     "canSeeStealth": true,
     "ability": "CARCAJ TÁCTICO",
-    "abilityDesc": "Cambia manualmente entre flechas explosivas de área, criogénicas de control y perforantes contra armadura.",
+    "abilityDesc": "Elige flechas explosivas, criogenicas o perforantes. Cada cuarto disparo causa +35% dano y refuerza la municion: explosion de 85 px, slow del 60% o penetracion del 80%. Cambiar de flecha conserva carga y recarga; no da disparos gratis.",
     "sprite": "assets/images/heroes/hawkeye/portrait.png",
     "allowedTerrains": [
       3

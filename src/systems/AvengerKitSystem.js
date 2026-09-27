@@ -56,7 +56,10 @@ export class AvengerKitSystem {
         this.attackCount++;
         if (this.hero.id === 'hulk') this.resource = Math.min(100, this.resource + 8);
         if (this.hero.id === 'black_widow') this.activateWidowKit(target, stats);
-        if (this.hero.id === 'hawkeye') this.hero.game.audio?.play('arrow');
+        if (this.hero.id === 'hawkeye') {
+            this.hero.game.audio?.play('arrow');
+            if (this.attackCount % 4 === 0) this.hero.recordAbility();
+        }
         if (this.hero.id === 'black_panther') this.chargeKineticEnergy(target);
         if (this.hero.id === 'vision' && this.attackCount % 3 === 0) this.fireDensityBeam(target, stats);
     }
@@ -99,20 +102,28 @@ export class AvengerKitSystem {
                 : [{ type: 'stun', duration: 0.35, power: 1, chance: 0.22 }];
         }
         if (this.hero.id === 'hawkeye' && this.mode === 'cryo') {
-            return [{ type: 'slow', duration: 2.4, power: 0.48, chance: 1 }];
+            return [{ type: 'slow', duration: 2.4, power: this.isArrowPrepared() ? 0.6 : 0.48, chance: 1 }];
         }
         return [];
     }
 
     getProjectileProfile() {
         if (this.hero.id === 'hawkeye') {
-            if (this.mode === 'explosive') return { splashRadius: 68, splashFactor: 0.58 };
-            if (this.mode === 'piercing') return { armorPenetration: 0.65 };
+            if (this.mode === 'explosive') return { splashRadius: this.isArrowPrepared() ? 85 : 68, splashFactor: 0.58 };
+            if (this.mode === 'piercing') return { armorPenetration: this.isArrowPrepared() ? 0.8 : 0.65 };
         }
         if (this.hero.id === 'vision') {
             return { armorPenetration: this.mode === 'dense' ? 0.55 : 0.25 };
         }
         return {};
+    }
+
+    isArrowPrepared() {
+        return this.hero.id === 'hawkeye' && this.attackCount % 4 === 3;
+    }
+
+    getAttackDamageMultiplier() {
+        return this.isArrowPrepared() ? 1.35 : 1;
     }
 
     getProjectileColor() {
@@ -140,7 +151,11 @@ export class AvengerKitSystem {
             const charge = this.attackCount % 4;
             return meterState(`Descarga Widow ${charge}/4`, charge * 25, charge === 3);
         }
-        if (this.hero.id === 'hawkeye') return staticState(`Flecha ${this.getModeLabel().toLowerCase()}`);
+        if (this.hero.id === 'hawkeye') return {
+            label: this.isArrowPrepared() ? `Flecha ${this.getModeLabel().toLowerCase()} preparada`
+                : `Carcaj ${this.attackCount % 4}/3 · ${this.getModeLabel()}`,
+            progress: (this.attackCount % 4) / 3, ready: this.isArrowPrepared()
+        };
         if (this.hero.id === 'black_panther') return meterState(`Energía cinética ${Math.round(this.resource)}/100`, this.resource);
         if (this.hero.id === 'vision') return staticState(`Densidad ${this.getModeLabel().toLowerCase()}`);
         if (this.hero.id === 'falcon') {

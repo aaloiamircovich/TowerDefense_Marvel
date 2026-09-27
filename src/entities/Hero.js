@@ -217,6 +217,7 @@ export class Hero {
         const roll = this.game?.random?.next?.() ?? Math.random();
         const isCrit = roll * 100 < attackStats.critChance;
         let finalDamage = isCrit ? attackStats.damage * Math.max(1, attackStats.critDamage || 2) : attackStats.damage;
+        finalDamage *= this.abilitySystem.getAttackDamageMultiplier();
         this.combatStats.shots++;
         if (isCrit) this.combatStats.crits++;
         // Native income belongs to this primary shot, never to secondary impacts or DoT.

@@ -1,7 +1,7 @@
 # Identidad y habilidades de los 105 heroes
 
 Fecha: 2026-09-13. Base revisada: commit 553ad63.
-Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes.
+Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes. FASE 3 EN CURSO, un lote.
 Fases 3 a 10 pendientes. La cobertura comun no certifica el balance individual.
 Los hallazgos de auditoria describen el baseline; ver avances abajo para las
 correcciones ya realizadas. No equivale a completar el rediseño de los 105 kits.
@@ -141,7 +141,7 @@ que reciben los aliados. Revisar ambos caminos antes de sumar mas efectos.
 
 ## Diez fases de implementacion
 
-Fase 1 EN CIERRE; fase 2 IMPLEMENTADA; fases 3 a 10 PENDIENTES.
+Fase 1 EN CIERRE; fase 2 IMPLEMENTADA; fase 3 EN CURSO; fases 4 a 10 PENDIENTES.
 Fase 2 cumple sus contratos funcionales; no cierra la revision textual de fase 1,
 los cruces de objetos de fase 8 ni el balance integral de fase 10.
 Las fases 3 a 7 se entregan en lotes de hasta 4 heroes para poder probarlos;
@@ -1287,3 +1287,47 @@ Validacion del cierre: npm run check aprobado, 1.406 pruebas; simulaciones de
 economia/rareza/campana y auditorias de accesibilidad/lanzamiento sin errores.
 Benchmark p95 0.323 ms; smoke desktop 1366x768 y mobile 390x844 sin overflow
 ni desvio de ruta. Evoluciones del lote 7 verificadas publicamente en Railway.
+
+## Fase 3: primer lote, reactor ARC y carcaj preparado
+
+Iron Man conserva laser lineal de 90% de poder por escala de habilidad,
+35% penetracion, extension de 1.2 veces alcance y semiancho de 24 px.
+Necesita tres disparos, dos con Extremis. Ahora el reactor enfria 2 s entre
+descargas y al desplegar. Durante ese tiempo acumula hasta una carga completa;
+al enfriarse espera el siguiente ataque, no dispara automaticamente ni apila
+varios laseres pendientes. Calor fijo, sin reduccion por nivel/objeto.
+Mover conserva carga/calor; redesplegar inicia de cero. Stun suspende el reloj
+como las otras habilidades ofensivas. La linea respeta deteccion de sigilo.
+No se cambian dano, cadencia base, rareza ni capacidad de deteccion propia.
+
+Hawkeye conserva tres municiones y patron cruz. Cada cuarto disparo principal
+causa +35% dano y refuerza solo la municion seleccionada: radio explosivo
+85 en vez de 68 px, slow 60% en vez de 48% (2.4 s), o penetracion 80% en vez
+de 65%. Despues vuelve a normal. La preparacion requiere tres disparos reales,
+no tiempo ni impactos secundarios. Cambiar municion conserva carga y timer;
+los proyectiles en vuelo conservan sus efectos. Retirar pierde la preparacion.
+No agrega stun, curacion, monedas ni una nueva habilidad de objeto. El Carcaj
+de Flechas Truco conserva su firma exclusiva de Kate, no se atribuye a Hawkeye.
+
+Indicadores de calor/carga y flecha preparada usan el panel de estadisticas
+existente; no se agregan counters a tarjetas del equipo. Descripciones en
+catalogo, generador de Hawkeye y bootstrap actualizadas. Sprites/mapas intactos.
+
+24 pruebas nuevas: niveles 1/49/50/51/99/100, calor, saturacion, no disparo al
+enfriar, alineacion, sigilo, retiro, stun, municion, proyectiles en vuelo,
+objetos, secundarios y dos comparativas de 60 s con motor real.
+Las comparativas normalizan dano/cadencia, no aplican evolucion ni objetos,
+usan blancos estacionarios e impactos inmediatos. ARC mantiene dano respecto
+al anterior con 1.5 ataques/s; a 8 ataques/s limita laseres a como maximo 30
+en 60 s frente a mas de 100. Hawkeye gana entre 7% y 10% de dano en esa prueba;
+explosiva gana a perforante contra grupo sin armadura. No certifica rutas,
+presupuesto equivalente, control acumulado ni el balance total de Extremis.
+
+Siguiente lote de fase 3: Black Widow y Shuri, sabotaje y escaneo de barreras.
+La fase sigue abierta: dos de dieciseis tiradores revisados.
+
+Validacion: npm run check aprobado, 1.430 pruebas; simulaciones y auditorias
+sin errores. Benchmark p95 0.361 ms; smoke 1366x768 y 390x844 sin overflow
+ni desvio de ruta. La prueba focalizada de secundarios se volvio a ejecutar
+tras reforzar sus aserciones. Los estimadores de campana no modelan estas
+habilidades disparo a disparo; para ese contraste se usan las pruebas de 60 s.

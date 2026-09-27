@@ -41,9 +41,9 @@ especificos con objetos y comparativas de rutas siguen pendientes.
 
 | ID | Heroe (rareza) | Actual | Firma propuesta y limite |
 | --- | --- | --- | --- |
-| `iron_man` | Iron Man (Legendary) | Laser cada 3 ataques; Extremis cada 2. | Carga ARC visible y alineacion rentable; calor limita descargas seguidas, no detector/area universal. |
+| `iron_man` | Iron Man (Legendary) | F3/lote 1: carga de 3 disparos (2 Extremis), reactor de 2 s, carga saturada conservada durante calor y laser solo en siguiente ataque. | Alineacion y limite termico probados; detecta segun stats. Comparar Extremis/equipos/rutas en fases 8/10. |
 | `black_widow` | Black Widow (Common) | Ruptura, veneno y descarga cada 4 ataques. | Sabotaje a soportes: inhibicion breve de su funcion especial; recortar procs redundantes y limitar efecto en jefes. |
-| `hawkeye` | Hawkeye (Common) | Cruz; tres tipos de flecha seleccionables. | Conservar carcaj: seleccion para oleada y un disparo preparado; cambio de municion no reinicia gratis la recarga. |
+| `hawkeye` | Hawkeye (Common) | F3/lote 1: tres municiones, cuarto disparo +35% dano y refuerzo exclusivo: area 85 px, slow 60% o penetracion 80%. | Preparacion conserva timer/carga al cambiar municion; sin efecto retroactivo sobre proyectiles. Comparar control y coste de plaza en rutas. |
 | `falcon` | Falcon (Common) | F1/lote 12: Redwing marca sin quitar sigilo; recon comparte deteccion a 165 px, suspendida por stun. Asalto sin deteccion compartida. | Reconocimiento que revela de verdad para aliados o ataque ligero; dron unico y cobertura temporal, sin slots extra. |
 | `winter_soldier` | Winter Soldier (Rare) | F1/lote 13: Overclock con cadencia y penetracion reales por 3.2 s; conserva tres municiones. | Cargador de rafagas: especializar una rafaga y pagar recarga; distinguir de flecha individual de Hawkeye. |
 | `war_machine` | War Machine (Rare) | F1/lote 5: cruz, splash, penetracion y quemadura 14% poder/s solo al principal. | Salva de misiles sobre zona fijada; fuerte contra densidad y flojo ante corredores que abandonan la zona. |

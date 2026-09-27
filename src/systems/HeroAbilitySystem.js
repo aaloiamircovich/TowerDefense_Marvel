@@ -14,10 +14,15 @@ const ACTIVE_COOLDOWNS = {
     doctor_strange: 9
 };
 
+export const ARC_COOLING_SECONDS = 2;
+
 export class HeroAbilitySystem {
     constructor(hero) {
         this.hero = hero;
         this.attackCount = 0;
+        this.arcCharge = 0;
+        // Re-deploying must not bypass the reactor's thermal limit.
+        this.arcCooling = hero.id === 'iron_man' ? ARC_COOLING_SECONDS : 0;
         this.cooldownRemaining = 0;
         this.avengerKit = new AvengerKitSystem(hero);
         this.cosmicKit = new CosmicKitSystem(hero);
@@ -26,6 +31,7 @@ export class HeroAbilitySystem {
     }
 
     update(dt, enemies, stats, projectiles) {
+        this.arcCooling = Math.max(0, this.arcCooling - dt);
         this.cooldownRemaining = Math.max(0, this.cooldownRemaining - dt);
         this.avengerKit.update(dt, enemies, stats, projectiles);
         this.cosmicKit.update(dt, enemies, stats, projectiles);
@@ -50,7 +56,12 @@ export class HeroAbilitySystem {
 
         if (this.hero.id === 'iron_man') {
             this.hero.game.audio?.play('repulsor');
-            if (this.attackCount % this.getArcInterval() === 0) this.activateArcOverload(target, stats);
+            this.arcCharge = Math.min(this.getArcInterval(), this.arcCharge + 1);
+            if (this.arcCharge >= this.getArcInterval() && this.arcCooling <= 1e-9
+                && this.activateArcOverload(target, stats)) {
+                this.arcCharge = 0;
+                this.arcCooling = ARC_COOLING_SECONDS;
+            }
         }
 
         if (this.hero.id === 'spiderman') this.hero.game.audio?.play('web');
@@ -77,14 +88,20 @@ export class HeroAbilitySystem {
         return this.mutantKit.applyStatModifiers(stats);
     }
 
+    getAttackDamageMultiplier() {
+        return this.avengerKit.getAttackDamageMultiplier();
+    }
+
     activateArcOverload(target, stats) {
+        if (!target?.isAlive || (target.stealth && !stats.canSeeStealth)) return false;
         const targets = getLineTargets(
             this.hero,
             target,
-            this.hero.game.enemies,
+            (this.hero.game.enemies || []).filter((enemy) => !enemy.stealth || stats.canSeeStealth),
             stats.range * 1.2,
             24
         );
+        if (!targets.length) return false;
         const endpoint = getLineEndpoint(this.hero, target, stats.range * 1.2);
         const damage = stats.damage * 0.9 * this.getPowerScale();
 
@@ -97,6 +114,7 @@ export class HeroAbilitySystem {
         this.hero.game.vfx?.addBeam(this.hero, endpoint, { color: '#42dcff', width: 12, duration: 0.24 });
         this.hero.game.audio?.play('arc');
         this.hero.recordAbility();
+        return true;
     }
 
     activateThorStorm(targets, stats) {
@@ -187,8 +205,12 @@ export class HeroAbilitySystem {
         }
         if (this.hero.id === 'iron_man') {
             const interval = this.getArcInterval();
-            const charge = this.attackCount % interval;
-            return { label: `Carga ARC ${charge}/${interval}`, progress: charge / interval, ready: charge === interval - 1 };
+            const charge = Math.min(interval, this.arcCharge);
+            if (this.arcCooling > 1e-9) return {
+                label: `ARC ${charge}/${interval} · Enfriando ${this.arcCooling.toFixed(1)} s`,
+                progress: 1 - this.arcCooling / ARC_COOLING_SECONDS, ready: false
+            };
+            return { label: `Carga ARC ${charge}/${interval}`, progress: charge / interval, ready: charge >= interval - 1 };
         }
         if (this.hero.id === 'spiderman') {
             const threshold = this.hero.game.progression?.getHeroEvolution?.(this.hero.id)?.id === 'iron_spider' ? 2 : 3;

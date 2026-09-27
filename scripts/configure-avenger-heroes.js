@@ -21,7 +21,7 @@ const contracts = {
     hawkeye: {
         cost: 180,
         ability: 'CARCAJ TÁCTICO',
-        abilityDesc: 'Cambia manualmente entre flechas explosivas de área, criogénicas de control y perforantes contra armadura.',
+        abilityDesc: 'Elige flechas explosivas, criogenicas o perforantes. Cada cuarto disparo causa +35% dano y refuerza la municion: explosion de 85 px, slow del 60% o penetracion del 80%. Cambiar de flecha conserva carga y recarga; no da disparos gratis.',
         niche: 'artillería adaptable de muy largo alcance'
     },
     black_panther: {

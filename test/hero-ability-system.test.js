@@ -55,6 +55,7 @@ test('Iron Man activa Sobrecarga ARC cada tres ataques', () => {
     const target = createEnemy(100, 0);
     game.enemies = [target];
     const hero = new Hero(createHeroConfig('iron_man'), 0, 0, game);
+    hero.abilitySystem.arcCooling = 0;
     game.heroes = [hero];
     const config = { damage: 10, attacker: hero, attackerType: 'Tecnológico', effects: [] };
 
@@ -68,10 +69,11 @@ test('Iron Man activa Sobrecarga ARC cada tres ataques', () => {
 
 test('Extremis activa Sobrecarga ARC cada dos ataques', () => {
     const game = createGame();
-    game.progression = { getHeroBonuses: () => ({}), getHeroEvolution: () => ({ id: 'iron_man_extremis', stats: { damage: 0.18, fireRate: 0.12, range: 0, critChance: 4 } }) };
+    game.progression = { getHeroBonuses: () => null, getHeroEvolution: () => ({ id: 'iron_man_extremis', stats: { damage: 0.18, fireRate: 0.12, range: 0, critChance: 4 } }) };
     const target = createEnemy(100, 0);
     game.enemies = [target];
     const hero = new Hero(createHeroConfig('iron_man'), 0, 0, game);
+    hero.abilitySystem.arcCooling = 0;
     game.heroes = [hero];
     const config = { damage: 10, attacker: hero, attackerType: 'Tecnologico', effects: [] };
 
@@ -180,7 +182,8 @@ test('indicadores ARC y redes siguen los umbrales de evolucion', () => {
     const game = createGame();
     const ironMan = new Hero(createHeroConfig('iron_man'), 0, 0, game);
     const spider = new Hero(createHeroConfig('spiderman'), 0, 0, game);
-    ironMan.abilitySystem.attackCount = 1;
+    ironMan.abilitySystem.arcCharge = 1;
+    ironMan.abilitySystem.arcCooling = 0;
     assert.equal(ironMan.abilitySystem.getDisplayState().label, 'Carga ARC 1/3');
     assert.equal(spider.abilitySystem.getDisplayState().label, '3 redes inmovilizan');
     game.progression = { getHeroEvolution: (id) => ({ id: id === 'iron_man' ? 'iron_man_extremis' : 'iron_spider' }) };
