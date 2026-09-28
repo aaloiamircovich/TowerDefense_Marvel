@@ -1,7 +1,7 @@
 # Identidad y habilidades de los 105 heroes
 
 Fecha: 2026-09-13. Base revisada: commit 553ad63.
-Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes. FASE 3 EN CURSO, un lote.
+Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes. FASE 3 EN CURSO, dos lotes.
 Fases 3 a 10 pendientes. La cobertura comun no certifica el balance individual.
 Los hallazgos de auditoria describen el baseline; ver avances abajo para las
 correcciones ya realizadas. No equivale a completar el rediseño de los 105 kits.
@@ -1331,3 +1331,54 @@ sin errores. Benchmark p95 0.361 ms; smoke 1366x768 y 390x844 sin overflow
 ni desvio de ruta. La prueba focalizada de secundarios se volvio a ejecutar
 tras reforzar sus aserciones. Los estimadores de campana no modelan estas
 habilidades disparo a disparo; para ese contraste se usan las pruebas de 60 s.
+
+## Fase 3: segundo lote, sabotaje Widow y escaneo Shuri
+
+Widow cambia control de movimiento por inhibicion de acciones: cada cuarto
+disparo emite una descarga inmediata de 55% de poder por escala de habilidad
+al principal y hasta tres secundarios a 125 px de este, visibles y dentro del
+alcance de Widow. Prioriza apoyos secundarios, no cambia la prioridad del
+ataque principal. Sustituye stun propio y marca general; conserva veneno y
+ruptura de armadura contra apoyos no jefes. Ahora el principal tambien recibe
+el dano de la descarga, compensando parte de la perdida de control.
+
+Sabotaje dura hasta 2 s, reducido por resistencia de estados. Suspende el
+reloj y ejecucion de curas, invocaciones y ordenes, no movimiento, regeneracion
+pasiva, barreras ni fases de jefe. Tras finalizar, cada enemigo tiene 3 s de
+inmunidad; ni otra fuente ni redesplegar Widow refrescan esa ventana. Un
+faseador con afijo comandante conserva su reloj/cambio de fase; solo pierde
+ordenes. Jefes, minijefes y finales son inmunes al sabotaje, no al dano.
+Los stuns de objetos permanecen como efectos separados, no se eliminan.
+
+Shuri reemplaza marca probabilistica de 15% por escaneo garantizado al impactar
+una barrera que sobreviva. Durante 3 s (con resistencias), impactos directos
+de cualquier aliado hacen +35% al escudo; incluye secundarios y habilidades,
+no DoT. No se acumula con copias y no satisface la marca de Maria Hill.
+Se calcula tras armadura/resistencias: barrera absorbe min(B, dano*1.35),
+vida recibe max(0, dano-absorbido/1.35). La vida nunca se multiplica por 1.35.
+Romper escudo elimina escaneo y no lo restaura una recarga; el primer golpe
+que aplica estado aun no recibe bonus. Retirar Shuri deja solo la duracion
+restante, sin efecto permanente. Jefes con barrera admiten el escaneo.
+
+Fichas, indicador existente, pips y catalogo/bootstrap reflejan los cambios.
+La lectura tactica no recomienda Widow para frenar corredores y reconoce
+escaneo contra barreras. No se hizo una reescritura global de heuristicas;
+quedan los pendientes textuales generales de fase 1. Sin sprites, mapas,
+costes, rarezas, buffs aliados o curacion de base nuevos.
+
+41 pruebas nuevas de niveles 1/49/50/51/99/100, acciones reales, inmunidad,
+resistencias, fases, blancos, retiro, objetos, dano de escudo/vida, DoT,
+secundarios, indicadores y lecturas tacticas. Dos comparativas controladas:
+60 s de disparos reales reducen acciones de soporte sin anularlas; 60 impactos
+normalizados muestran escaneo mejor que marca anterior contra barrera y peor
+contra vida, incluso concediendo uptime completo a la marca anterior.
+No equivalen a campana/rutas ni a comparativa con presupuesto equivalente;
+la perdida de stun/mark de Widow requiere seguimiento en fase 10.
+
+La fase 3 sigue abierta: cuatro de dieciseis heroes revisados.
+Siguiente lote: Winter Soldier y Punisher, rafagas y supresion sostenida.
+
+Validacion: npm run check aprobado; npm test repetido tras el caso adicional
+de faseador/comandante, 1.471 pruebas aprobadas. Benchmark p95 0.641 ms;
+smoke desktop 1366x768 y mobile 390x844 sin overflow ni desvio de ruta.
+Simulaciones economicas/campana y auditorias de accesibilidad/lanzamiento OK.

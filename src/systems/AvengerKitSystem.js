@@ -1,6 +1,7 @@
 import { CombatSystem } from './CombatSystem.js';
 import { getLineEndpoint, getLineTargets } from '../utils/LineTargeting.js';
 import { applyCooldownReductions } from '../utils/AbilityModifiers.js';
+import { isSabotageTarget, SABOTAGE_SECONDS } from './EnemyBehaviorSystem.js';
 
 const CONTROL_MODES = {
     hawkeye: {
@@ -96,10 +97,10 @@ export class AvengerKitSystem {
 
     getAttackEffects(target) {
         if (this.hero.id === 'black_widow') {
-            const support = ['support', 'summoner'].includes(target?.archetype);
+            const support = isSabotageTarget(target);
             return support
-                ? [{ type: 'armorBreak', duration: 4, power: 0.3, chance: 1 }, { type: 'mark', duration: 4, power: 0.18, chance: 1 }]
-                : [{ type: 'stun', duration: 0.35, power: 1, chance: 0.22 }];
+                ? [{ type: 'armorBreak', duration: 4, power: 0.3, chance: 1 }]
+                : [];
         }
         if (this.hero.id === 'hawkeye' && this.mode === 'cryo') {
             return [{ type: 'slow', duration: 2.4, power: this.isArrowPrepared() ? 0.6 : 0.48, chance: 1 }];
@@ -149,8 +150,9 @@ export class AvengerKitSystem {
         if (this.hero.id === 'hulk') return meterState(`Furia gamma ${Math.round(this.resource)}/100`, this.resource);
         if (this.hero.id === 'black_widow') {
             const charge = this.attackCount % 4;
-            return meterState(`Descarga Widow ${charge}/4`, charge * 25, charge === 3);
+            return meterState(`Sabotaje Widow ${charge}/4`, charge * 25, charge === 3);
         }
+        if (this.hero.id === 'shuri') return staticState('Escaneo: +35% contra barrera');
         if (this.hero.id === 'hawkeye') return {
             label: this.isArrowPrepared() ? `Flecha ${this.getModeLabel().toLowerCase()} preparada`
                 : `Carcaj ${this.attackCount % 4}/3 · ${this.getModeLabel()}`,
@@ -225,13 +227,16 @@ export class AvengerKitSystem {
 
     activateWidowKit(target, stats) {
         if (this.attackCount % 4 !== 0) return;
+        const valid = (enemy) => enemy?.isAlive && (!enemy.stealth || stats.canSeeStealth)
+            && distance(enemy, this.hero) <= stats.range;
+        if (!valid(target)) return;
         const candidates = (this.hero.game.enemies || [])
-            .filter((enemy) => enemy.isAlive && enemy !== target && distance(enemy, target) <= 125)
-            .sort((a, b) => Number(['support', 'summoner'].includes(b.archetype)) - Number(['support', 'summoner'].includes(a.archetype)))
+            .filter((enemy) => valid(enemy) && enemy !== target && distance(enemy, target) <= 125)
+            .sort((a, b) => Number(isSabotageTarget(b)) - Number(isSabotageTarget(a)))
             .slice(0, 3);
         [target, ...candidates].forEach((enemy, index) => {
-            if (index > 0) CombatSystem.applyDamage({ attackerType: this.hero.category, damage: stats.damage * 0.55 * this.getPowerScale() }, enemy, this.hero, this.hero.game.resourceManager, 1);
-            if (enemy.isAlive) enemy.applyStatus?.({ type: 'stun', duration: 0.55, power: 1 }, this.hero);
+            CombatSystem.applyDamage({ attackerType: this.hero.category, damage: stats.damage * 0.55 * this.getPowerScale() }, enemy, this.hero, this.hero.game.resourceManager, 1);
+            if (enemy.isAlive && isSabotageTarget(enemy)) enemy.applyStatus?.({ type: 'sabotage', duration: SABOTAGE_SECONDS, power: 1 }, this.hero);
             if (index > 0) this.hero.game.vfx?.addBeam(target, enemy, { color: '#6ee8ff', width: 3, duration: 0.18 });
         });
         this.hero.game.audio?.play('taser');

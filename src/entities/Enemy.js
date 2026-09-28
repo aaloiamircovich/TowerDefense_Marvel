@@ -1,4 +1,4 @@
-import { EnemyBehaviorSystem } from '../systems/EnemyBehaviorSystem.js';
+import { EnemyBehaviorSystem, SABOTAGE_SECONDS } from '../systems/EnemyBehaviorSystem.js';
 import { SpriteAnimator } from '../rendering/SpriteAnimator.js';
 import { DOT_TYPES, resolveStatusDamage } from '../utils/StatusDamage.js';
 import { addPoisonStacks, updatePoisonStacks } from '../systems/PoisonStatus.js';
@@ -15,6 +15,8 @@ const STATUS_VISUALS = {
     bleed: { color: '#e63946', symbol: 'B' },
     armorBreak: { color: '#b8b8b8', symbol: '-' },
     mark: { color: '#d86cff', symbol: '+' },
+    sabotage: { color: '#73e9ff', symbol: 'X' },
+    barrierScan: { color: '#9c7cff', symbol: 'B' },
     web: { color: '#f4f7ff', symbol: 'W' },
     haste: { color: '#46d369', symbol: '>' }
 };
@@ -183,7 +185,10 @@ export class Enemy {
             : Math.max(0, Math.min(baseArmor - armorBreak, 0.85)) * (1 - penetration);
         const resistance = Math.max(0, Math.min(0.8, this.resistances[options.attackerType] || 0));
         const finalDamage = Math.max(options.fractional ? 0 : 1, amount * (1 - resistance) * (1 - armorRatio));
-        const barrierResult = this.behavior.absorbDamage(finalDamage);
+        const barrierBonus = options.direct ? this.debuffs
+            .filter((status) => status.type === 'barrierScan' && status.duration > 0)
+            .reduce((strongest, status) => Math.max(strongest, status.power), 0) : 0;
+        const barrierResult = this.behavior.absorbDamage(finalDamage, 1 + barrierBonus);
         const appliedDamage = Math.min(this.hp, barrierResult.remaining);
         this.hp -= appliedDamage;
 
@@ -217,7 +222,9 @@ export class Enemy {
             return true;
         }
 
-        const adjustedDuration = this.getStatusDuration(type, duration);
+        const adjustedDuration = this.getStatusDuration(type, type === 'sabotage' ? Math.min(SABOTAGE_SECONDS, duration) : duration);
+        if (type === 'sabotage' && !this.behavior.applySabotage(adjustedDuration)) return false;
+        if (type === 'barrierScan' && (!this.isAlive || this.behavior.barrier <= 0)) return false;
 
         if (type === 'poison') {
             if (!this.isAlive) return false;

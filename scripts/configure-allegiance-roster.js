@@ -7,8 +7,8 @@ const heroes = JSON.parse(fs.readFileSync(heroesFile, 'utf8'));
 const directions = ['north', 'north-east', 'east', 'south-east', 'south', 'south-west', 'west', 'north-west'];
 
 const allegianceHeroes = {
-    shuri: contract('Shuri', 'Tecnologico', 'Legendary', 420, 38, 190, 1.45, true, 'GUANTELETES VIBRANIUM', 'Dispara rafagas de vibranium que marcan objetivos y amplifican el dano tactico.', 'soporte Wakanda con marca y tecnologia', ['Wakanda', 'Tecnologia'], 'support', [4, 3, 5, 5], {
-        attackEffects: [{ type: 'mark', duration: 2.6, power: 0.15, chance: 0.42 }],
+    shuri: contract('Shuri', 'Tecnologico', 'Legendary', 420, 38, 190, 1.45, true, 'GUANTELETES VIBRANIUM', 'Al impactar una barrera la escanea durante 3 s: los siguientes impactos directos de cualquier aliado causan +35% dano al escudo. No potencia vida ni dano persistente; el escaneo termina al romper la barrera. No aplica marca general.', 'especialista Wakanda contra barreras', ['Wakanda', 'Tecnologia'], 'support', [4, 3, 5, 5], {
+        attackEffects: [{ type: 'barrierScan', duration: 3, power: 0.35, chance: 1 }],
         statModifiers: { rangePct: 0.06, detectStealth: true },
         visualStyle: 'energy',
         projectileColor: '#9c7cff'

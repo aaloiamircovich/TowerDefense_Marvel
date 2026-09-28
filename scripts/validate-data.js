@@ -38,7 +38,7 @@ function validateHeroes(heroes) {
     const allowedSpecialKeys = new Set(['statModifiers', 'attackEffects', 'projectileProfile', 'visualStyle', 'projectileColor', 'supportAura', 'economyOnHit', 'stunResistance']);
     const allowedSpecialStatKeys = new Set(['allowWater', 'cooldown', 'critChance', 'damagePct', 'detectStealth', 'fireRatePct', 'rangePct']);
     const allowedAttackEffectKeys = new Set(['chance', 'duration', 'power', 'type', 'damageBasis']);
-    const allowedAttackEffectTypes = new Set(['armorBreak', 'bleed', 'burn', 'curse', 'mark', 'poison', 'slow', 'stun', 'web']);
+    const allowedAttackEffectTypes = new Set(['armorBreak', 'barrierScan', 'bleed', 'burn', 'curse', 'mark', 'poison', 'slow', 'stun', 'web']);
     const allowedProjectileProfileKeys = new Set(['armorPenetration', 'chainCount', 'chainFactor', 'chainRange', 'splashFactor', 'splashRadius', 'propagationCount', 'propagationFactor', 'propagationRadius']);
     const allowedSupportAuraKeys = new Set(['detectStealth', 'label', 'power', 'range', 'type']);
     const allowedSupportAuraTypes = new Set(['damage', 'fireRate', 'range']);

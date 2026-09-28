@@ -88,7 +88,8 @@ export class CombatSystem {
         const orderMultiplier = getPriorityOrderDamageMultiplier(attacker, target);
         const result = target.takeDamage(projectile.damage * factor * typeMultiplier * markMultiplier * orderMultiplier, {
             armorPenetration: projectile.armorPenetration || 0,
-            attackerType: projectile.attackerType
+            attackerType: projectile.attackerType,
+            direct: true
         });
 
         CombatSystem.recordDamageResult(projectile, target, attacker, resourceManager, result, factor);

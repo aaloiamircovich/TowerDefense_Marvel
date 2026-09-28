@@ -1,3 +1,12 @@
+export const SABOTAGE_SECONDS = 2;
+
+export function isSabotageTarget(enemy) {
+    if (!enemy || enemy.isBoss || enemy.isFinalBoss || enemy.isMiniBoss
+        || enemy.config?.isBoss || enemy.config?.isFinalBoss || enemy.config?.isMiniBoss) return false;
+    return ['support', 'summoner', 'commander'].includes(enemy.archetype)
+        || enemy.config?.affix?.id === 'commander';
+}
+
 export class EnemyBehaviorSystem {
     constructor(enemy, game = null) {
         this.enemy = enemy;
@@ -14,11 +23,17 @@ export class EnemyBehaviorSystem {
         this.pendingPhase = null;
         this.telegraphTimer = 0;
         this.temporaryStealth = 0;
+        this.sabotageRemaining = 0;
+        this.sabotageLockout = 0;
     }
 
     update(dt) {
         this.elapsed += dt;
-        this.actionTimer -= dt;
+        // A phaser can carry the commander affix; suppress orders, not its phase shift.
+        const blockedTime = this.archetype === 'phaser' ? 0 : Math.min(dt, this.sabotageRemaining);
+        this.sabotageRemaining = Math.max(0, this.sabotageRemaining - dt);
+        this.sabotageLockout = Math.max(0, this.sabotageLockout - dt);
+        this.actionTimer -= dt - blockedTime;
         this.barrierRechargeDelay = Math.max(0, this.barrierRechargeDelay - dt);
         const affix = this.enemy.config.affix?.id;
         if (affix === 'regenerator' && this.enemy.hp < this.enemy.maxHp) {
@@ -35,9 +50,11 @@ export class EnemyBehaviorSystem {
             this.game?.vfx?.addRing(this.enemy.x, this.enemy.y, { color: '#7be0ff', radius: 28, duration: 0.4 });
         }
 
-        if (this.archetype === 'support' && this.actionTimer <= 0) this.healAllies();
-        if (this.archetype === 'summoner' && this.actionTimer <= 0) this.summonReinforcement();
-        if ((this.archetype === 'commander' || affix === 'commander') && this.actionTimer <= 0) this.commandAllies();
+        if (this.sabotageRemaining <= 0) {
+            if (this.archetype === 'support' && this.actionTimer <= 0) this.healAllies();
+            if (this.archetype === 'summoner' && this.actionTimer <= 0) this.summonReinforcement();
+            if ((this.archetype === 'commander' || affix === 'commander') && this.actionTimer <= 0) this.commandAllies();
+        }
         if (this.archetype === 'phaser' && this.actionTimer <= 0) this.activatePhaseShift();
         if (this.enemy.isBoss || this.enemy.config.isMiniBoss) this.updateBossPhases(dt);
     }
@@ -49,15 +66,25 @@ export class EnemyBehaviorSystem {
         return runnerBurst * phaseBurst * unstableBurst * this.phaseSpeedMultiplier;
     }
 
-    absorbDamage(amount) {
+    applySabotage(duration) {
+        if (!this.enemy.isAlive || !isSabotageTarget(this.enemy) || this.sabotageLockout > 1e-9
+            || !Number.isFinite(duration) || duration <= 0) return false;
+        this.sabotageRemaining = Math.min(SABOTAGE_SECONDS, duration);
+        this.sabotageLockout = this.sabotageRemaining + 3;
+        return true;
+    }
+
+    absorbDamage(amount, multiplier = 1) {
         if (this.barrier <= 0) return { absorbed: 0, remaining: amount };
-        const absorbed = Math.min(this.barrier, amount);
+        const absorbed = Math.min(this.barrier, amount * multiplier);
         this.barrier -= absorbed;
         this.barrierRechargeDelay = 5;
         if (this.barrier === 0) {
+            this.enemy.debuffs = this.enemy.debuffs.filter((status) => status.type !== 'barrierScan');
             this.game?.vfx?.addBurst(this.enemy.x, this.enemy.y, { color: '#7be0ff', radius: 32, duration: 0.3 });
         }
-        return { absorbed, remaining: amount - absorbed };
+        // Shield amplification never multiplies the damage overflowing into health.
+        return { absorbed, remaining: Math.max(0, amount - absorbed / multiplier) };
     }
 
     healAllies() {

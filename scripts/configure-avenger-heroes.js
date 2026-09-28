@@ -15,7 +15,7 @@ const contracts = {
     black_widow: {
         cost: 190,
         ability: 'SABOTAJE WIDOW',
-        abilityDesc: 'Prioriza apoyos e invocadores con ruptura de armadura. Cada cuarto ataque libera una descarga que encadena y paraliza varios objetivos.',
+        abilityDesc: 'Cada cuarto disparo descarga 55% de poder por escala de habilidad sobre el blanco y hasta 3 cercanos visibles en alcance. Inhibe curas, invocaciones y ordenes hasta 2 s, con 3 s de inmunidad posterior; no inhibe jefes ni frena movimiento. Conserva ruptura de armadura contra apoyos y veneno, sin marca ni stun propios.',
         niche: 'anti-soporte, detección y control eléctrico'
     },
     hawkeye: {

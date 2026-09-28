@@ -43,6 +43,7 @@ Cada escenario comienza sin enemigos para comprobar ausencia de disparos.
 | Evolucion de soportes | support-evolution-contract: 35 pruebas de nueve soportes, nivel 50, preview, pulsos, objetos, persistencia, radar, codex y estimador |
 | Economia nativa | hero-income-contract: 25 pruebas de Domino, Shang-Chi, niveles, secundarios, DoT, proyectiles perdidos, control, retorno y objetos |
 | Reactor ARC y carcaj | arc-quiver-contract: 24 pruebas de calor, carga, niveles, alineacion, sigilo, municion preparada, cambios sin reset, vuelo, objetos y comparativas de 60 s |
+| Sabotaje y escaneo | sabotage-scan-contract: 41 pruebas de acciones enemigas, inmunidad, jefes, niveles, alcance, sigilo, barrera/vida, DoT, objetos, retiro, lectura y comparativas |
 
 Los nombres corresponden a archivos `.test.js`. Las pruebas focalizadas
 son necesarias: pasar el recorrido comun no demuestra que cada condicion
@@ -55,7 +56,7 @@ anunciada en una ficha este implementada.
 - Fase 2 implementada: Luke, nueve soportes, acumulacion aditiva, evolucion y
   economia heredada. El 15% por disparo de Domino sigue intacto; la contabilidad
   probada no reemplaza el balance de ingreso por partida de fase 10.
-- Fase 3 iniciada con Iron Man y Hawkeye; catorce tiradores pendientes.
+- Fase 3 iniciada con Iron Man, Hawkeye, Black Widow y Shuri; doce tiradores pendientes.
 - Fases 3-7: las demas propuestas de firma en la matriz; minas, clones y torretas no existen
   por mencionarlas en un documento. Deben implementarse y probarse en su lote.
 - Fase 8: todos los cruces de evolucion/signature sobre los kits nuevos.

@@ -28,11 +28,11 @@ test('Black Widow sabotea soportes y encadena cada cuarta descarga', () => {
     game.enemies = [support, second];
 
     const effects = hero.getProjectileEffects(support);
-    assert.deepEqual(effects.map((effect) => effect.type), ['armorBreak', 'mark']);
+    assert.deepEqual(effects.map((effect) => effect.type), ['armorBreak']);
     for (let index = 0; index < 4; index++) hero.abilitySystem.onAttack(support, hero.getEffectiveStats(), { damage: 20 }, []);
 
     assert.ok(second.hp < second.maxHp);
-    assert.ok(support.debuffs.some((effect) => effect.type === 'stun'));
+    assert.ok(support.debuffs.some((effect) => effect.type === 'sabotage'));
     assert.equal(hero.combatStats.abilityActivations, 1);
 });
 

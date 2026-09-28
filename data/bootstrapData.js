@@ -362,7 +362,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.8,
       "canSeeStealth": true,
       "ability": "SABOTAJE WIDOW",
-      "abilityDesc": "Prioriza apoyos e invocadores con ruptura de armadura. Cada cuarto ataque libera una descarga que encadena y paraliza varios objetivos. Sus toxinas tacticas agregan veneno acumulable contra elites.",
+      "abilityDesc": "Cada cuarto disparo descarga 55% de poder por escala de habilidad sobre el blanco y hasta 3 cercanos visibles en alcance. Inhibe curas, invocaciones y ordenes hasta 2 s, con 3 s de inmunidad posterior; no inhibe jefes ni frena movimiento. Conserva ruptura de armadura contra apoyos y veneno, sin marca ni stun propios.",
       "sprite": "assets/images/heroes/black_widow/portrait.png",
       "allowedTerrains": [
         1
@@ -3435,8 +3435,8 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.45,
       "canSeeStealth": true,
       "ability": "GUANTELETES VIBRANIUM",
-      "abilityDesc": "Dispara rafagas de vibranium que marcan objetivos y amplifican el dano tactico.",
-      "niche": "soporte Wakanda con marca y tecnologia",
+      "abilityDesc": "Al impactar una barrera la escanea durante 3 s: los siguientes impactos directos de cualquier aliado causan +35% dano al escudo. No potencia vida ni dano persistente; el escaneo termina al romper la barrera. No aplica marca general.",
+      "niche": "especialista Wakanda contra barreras",
       "allowedTerrains": [
         1
       ],
@@ -3454,10 +3454,10 @@ window.__MARVEL_TD_DATA__ = {
       "special": {
         "attackEffects": [
           {
-            "type": "mark",
-            "duration": 2.6,
-            "power": 0.15,
-            "chance": 0.42
+            "type": "barrierScan",
+            "duration": 3,
+            "power": 0.35,
+            "chance": 1
           }
         ],
         "statModifiers": {

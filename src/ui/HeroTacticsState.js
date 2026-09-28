@@ -12,6 +12,7 @@ const ATTACK_EFFECT_COPY = {
     burn: 'Quemadura',
     curse: 'Maldición',
     mark: 'Marca',
+    barrierScan: 'Escaneo de barrera',
     armorBreak: 'Armor break',
     bleed: 'Sangrado'
 };
@@ -52,9 +53,17 @@ export function evaluateHeroWaveFit(hero, summary = null, credits = 0) {
         || hasTextMatch(config, ['sigilo', 'deteccion', 'rastreo', 'edith']);
     const piercesArmor = PIERCING_HERO_IDS.has(config.id)
         || hasTextMatch(config, ['armadura', 'perfor', 'atraviesa', 'antiarmadura', 'laser']);
-    const controlsCrowd = Number(metrics.control || 0) >= 4
-        || hasTextMatch(config, ['ralent', 'inmovil', 'aturd', 'control', 'red']);
+    const controlsCrowd = heroControlsCrowd(hero);
     const hasReach = range >= 150;
+    if (config.id === 'black_widow' && ['support', 'summoner', 'commander'].some((role) => roles.has(role))) {
+        score += 4;
+        reasons.push('inhibe apoyos no jefes');
+    }
+    if ((config.special?.attackEffects || []).some((effect) => effect.type === 'barrierScan')
+        && (summary.barrierCount > 0 || roles.has('shield'))) {
+        score += 4;
+        reasons.push('debilita barreras');
+    }
     if ((summary.stealthCount > 0 || roles.has('stealth') || roles.has('phaser')) && detectsStealth) {
         score += 5;
         reasons.push('detecta sigilo');
@@ -130,6 +139,7 @@ export function heroPiercesArmor(hero = {}) {
 
 export function heroControlsCrowd(hero = {}) {
     const config = getHeroConfig(hero);
+    if ((config.id || hero.id) === 'black_widow') return false;
     return Number(config.teamMetrics?.control || hero.teamMetrics?.control || 0) >= 4
         || hasTextMatch(config, ['ralent', 'inmovil', 'aturd', 'control', 'red']);
 }
@@ -217,6 +227,7 @@ function getHeroRangePatternLabel(config = {}, profile = {}, aura = null) {
 function getHeroImpactLabel(config = {}, profile = {}, effects = [], aura = null, economy = null) {
     if (aura) return `Aura ${SUPPORT_AURA_TYPE_COPY[aura.type] || 'táctica'}`;
     const labels = [];
+    if (config.id === 'black_widow') labels.push('Sabotaje');
     if (profile.splashRadius > 0) labels.push('AoE');
     if (profile.chainCount > 0) labels.push('Rebote');
     if (profile.propagationCount > 0) labels.push('Propagación');
@@ -231,6 +242,8 @@ function getHeroImpactLabel(config = {}, profile = {}, effects = [], aura = null
 }
 
 function getHeroCombatRoleLabel(config = {}, profile = {}, effects = [], aura = null, economy = null) {
+    if (config.id === 'black_widow') return 'Sabotaje';
+    if (effects.some((effect) => effect.type === 'barrierScan')) return 'Barreras';
     if (aura) {
         const power = Math.round(Number(aura.power || 0) * 100);
         return `${aura.targetCondition === 'mark' ? 'Marcados' : SUPPORT_AURA_TYPE_COPY[aura.type] || 'aura'} +${power}%`;
