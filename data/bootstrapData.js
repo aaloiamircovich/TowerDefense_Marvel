@@ -1365,7 +1365,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.3,
       "canSeeStealth": true,
       "ability": "ARSENAL DEL SOLDADO",
-      "abilityDesc": "Selecciona munición perforante, eléctrica o explosiva para responder a armadura, control o grupos.",
+      "abilityDesc": "Rafaga de tres disparos: dos al 85% y un remate al 160% de dano. El remate potencia la municion: 85% perforacion, stun de 0.6 s o explosion de 90 px. Cambiar municion conserva el ciclo.",
       "sprite": "assets/images/heroes/winter_soldier/portrait.png",
       "allowedTerrains": [
         1,
@@ -2854,7 +2854,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.55,
       "canSeeStealth": false,
       "ability": "FUEGO SUPRESOR",
-      "abilityDesc": "Rafagas largas con municion perforante y splash minimo contra grupos.",
+      "abilityDesc": "Fuego sostenido: cada disparo al mismo enemigo prepara +8% de dano para el siguiente, hasta +32%. Se pierde al cambiar blanco, moverlo, aturdirlo o dejar de disparar 2 s. Conserva perforacion y splash minimo.",
       "niche": "DPS sostenido y perforacion",
       "allowedTerrains": [
         3

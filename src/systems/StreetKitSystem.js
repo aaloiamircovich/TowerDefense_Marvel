@@ -1,5 +1,6 @@
 import { CombatSystem } from './CombatSystem.js';
 import { applyCooldownReductions } from '../utils/AbilityModifiers.js';
+import { isPointInRangePattern } from '../utils/RangePattern.js';
 
 const STREET_CONTROLS = {
     shang_chi: {
@@ -32,6 +33,7 @@ export class StreetKitSystem {
         this.bloodTally = 0;
         this.lifeStealCooldown = 0;
         this.ringAngle = 0;
+        this.suppression = null;
     }
 
     update(dt, enemies, stats) {
@@ -39,6 +41,7 @@ export class StreetKitSystem {
         this.lifeStealCooldown = Math.max(0, this.lifeStealCooldown - dt);
         this.radarTimer = Math.max(0, this.radarTimer - dt);
         this.ringAngle = (this.ringAngle + dt * 2.8) % (Math.PI * 2);
+        if (this.hero.id === 'punisher' && !this.hasSuppressionTarget(this.suppression?.target)) this.suppression = null;
 
         if (this.hero.id === 'daredevil') this.updateDaredevil(dt);
         if (this.hero.id === 'moon_knight') this.updateMoonCycle(dt);
@@ -47,9 +50,28 @@ export class StreetKitSystem {
 
     onAttack(target, stats) {
         this.attackCount++;
+        if (this.hero.id === 'punisher') {
+            const stacks = this.hasSuppressionTarget(target) ? Math.min(4, this.suppression.stacks + 1) : 1;
+            this.suppression = { target, stacks, time: this.hero.visualTime, x: this.hero.x, y: this.hero.y };
+        }
         if (this.hero.id === 'daredevil' && this.attackCount % 4 === 0) this.counterDaredevil(target, stats);
         if (this.hero.id === 'ghost_rider' && this.attackCount % 5 === 0) this.pullWithChain(target);
         if (this.hero.id === 'she_hulk' && this.attackCount % 3 === 0) this.impactSheHulk(target, stats);
+    }
+
+    hasSuppressionTarget(target) {
+        const state = this.suppression;
+        if (!state || !target?.isAlive || state.target !== target || this.hero.stunTimer > 0
+            || this.hero.visualTime - state.time >= 2
+            || state.x !== this.hero.x || state.y !== this.hero.y) return false;
+        const stats = this.hero.getEffectiveStats();
+        return (!target.stealth || stats.canSeeStealth)
+            && isPointInRangePattern(this.hero, target, stats.range, this.hero.rangePattern, stats.rangeGeometryScale);
+    }
+
+    getAttackDamageMultiplier(target) {
+        return this.hero.id === 'punisher' && this.hasSuppressionTarget(target)
+            ? 1 + this.suppression.stacks * 0.08 : 1;
     }
 
     onKill(target) {
@@ -148,6 +170,10 @@ export class StreetKitSystem {
     }
 
     getDisplayState() {
+        if (this.hero.id === 'punisher') {
+            const stacks = this.hasSuppressionTarget(this.suppression?.target) ? this.suppression.stacks : 0;
+            return { label: `Fuego sostenido +${stacks * 8}%`, progress: stacks / 4, ready: stacks === 4 };
+        }
         if (this.hero.id === 'daredevil') return timerState(this.radarTimer > 0 ? 'Radar global activo' : 'Radar recargando', this.radarTimer > 0 ? this.radarTimer / 4.5 : 1 - this.radarPulseTimer / 12, this.radarTimer > 0);
         if (this.hero.id === 'moon_knight') return timerState(`Ciclo: ${MOON_PHASES[this.moonPhase].label}`, this.moonTimer / 10, this.moonPhase === 1);
         if (this.hero.id === 'blade') return timerState(`Sed de sangre ${this.bloodTally}/6`, this.bloodTally / 6, this.bloodTally >= 5);

@@ -68,7 +68,7 @@ for (const [id, itemId, duration, fireRate, damage, crit] of cases) {
         closeTo(context.stats.critChance, stats.critChance);
         const shots = [];
         f.hero.shoot(f.target, stats, shots);
-        closeTo(shots[0].damage, stats.damage);
+        closeTo(shots[0].damage, stats.damage * (id === 'winter_soldier' ? 0.85 : 1));
     });
 
     test(`${id}: dura segundos de simulacion, no ataques ni consultas`, () => {

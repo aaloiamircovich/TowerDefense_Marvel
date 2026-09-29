@@ -79,7 +79,10 @@ test('Ant-Man alterna formas diminuta y gigante con impacto seguro', () => {
 test('Winter Soldier selecciona tres tipos de municion', () => {
     const game = createGame(); const hero = createHero('winter_soldier', game); game.heroes = [hero];
     assert.equal(hero.abilitySystem.getProjectileProfile().armorPenetration, 0.65);
-    assert.equal(hero.abilitySystem.setCombatMode('shock'), true); assert.equal(hero.getProjectileEffects()[0].type, 'stun');
+    assert.equal(hero.abilitySystem.setCombatMode('shock'), true);
+    assert.equal(hero.getProjectileEffects().length, 0);
+    hero.abilitySystem.mutantKit.attackCount = 2;
+    assert.equal(hero.getProjectileEffects()[0].type, 'stun');
     assert.equal(hero.abilitySystem.setCombatMode('explosive'), true); assert.ok(hero.abilitySystem.getProjectileProfile().splashRadius > 0);
 });
 

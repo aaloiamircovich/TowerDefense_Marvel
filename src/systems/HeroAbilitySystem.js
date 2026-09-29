@@ -88,8 +88,10 @@ export class HeroAbilitySystem {
         return this.mutantKit.applyStatModifiers(stats);
     }
 
-    getAttackDamageMultiplier() {
-        return this.avengerKit.getAttackDamageMultiplier();
+    getAttackDamageMultiplier(target) {
+        return this.avengerKit.getAttackDamageMultiplier()
+            * this.mutantKit.getAttackDamageMultiplier()
+            * this.streetKit.getAttackDamageMultiplier(target);
     }
 
     activateArcOverload(target, stats) {

@@ -12,7 +12,7 @@ const contracts = {
     domino: { cost: 220, ability: 'SUERTE IMPOSIBLE', abilityDesc: 'Cada ataque genera créditos según la recompensa del enemigo y cada quinto disparo refuerza su crítico controlado.', niche: 'criticos previsibles y economia', metrics: [4, 3, 4, 5] },
     scarlet_witch: { cost: 650, ability: 'REALIDAD ENLAZADA', abilityDesc: 'Conecta maldiciones entre enemigos y altera temporalmente la velocidad de toda una sección de la oleada.', niche: 'maldiciones enlazadas y tiempo', metrics: [5, 5, 4, 4] },
     ant_man: { cost: 190, ability: 'ESCALA PYM', abilityDesc: 'Alterna manualmente forma diminuta de alta cadencia y forma gigante con impacto y retroceso de área.', niche: 'cambio de escala y respuesta flexible', metrics: [4, 4, 4, 4] },
-    winter_soldier: { cost: 270, ability: 'ARSENAL DEL SOLDADO', abilityDesc: 'Selecciona munición perforante, eléctrica o explosiva para responder a armadura, control o grupos.', niche: 'municion tactica y ruptura de armadura', metrics: [5, 4, 2, 4] }
+    winter_soldier: { cost: 270, ability: 'ARSENAL DEL SOLDADO', abilityDesc: 'Rafaga de tres disparos: dos al 85% y un remate al 160% de dano. El remate potencia la municion: 85% perforacion, stun de 0.6 s o explosion de 90 px. Cambiar municion conserva el ciclo.', niche: 'municion tactica y ruptura de armadura', metrics: [5, 4, 2, 4] }
 };
 
 for (const [id, contract] of Object.entries(contracts)) {

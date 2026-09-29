@@ -1,7 +1,7 @@
 # Identidad y habilidades de los 105 heroes
 
 Fecha: 2026-09-13. Base revisada: commit 553ad63.
-Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes. FASE 3 EN CURSO, dos lotes.
+Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes. FASE 3 EN CURSO, tres lotes.
 Fases 3 a 10 pendientes. La cobertura comun no certifica el balance individual.
 Los hallazgos de auditoria describen el baseline; ver avances abajo para las
 correcciones ya realizadas. No equivale a completar el rediseño de los 105 kits.
@@ -1382,3 +1382,36 @@ Validacion: npm run check aprobado; npm test repetido tras el caso adicional
 de faseador/comandante, 1.471 pruebas aprobadas. Benchmark p95 0.641 ms;
 smoke desktop 1366x768 y mobile 390x844 sin overflow ni desvio de ruta.
 Simulaciones economicas/campana y auditorias de accesibilidad/lanzamiento OK.
+
+## Fase 3: tercer lote, rafaga tactica y fuego sostenido
+
+Winter Soldier dispara un ciclo de tres ataques reales: 85%, 85%, 160% de
+dano efectivo. No crea proyectiles extra ni modifica la cadencia base. La
+preparacion se paga con dos impactos menores, no con una recarga temporal
+adicional. El remate perfora 85% (normales 65%), explota a 90 px (normales
+64) o aturde 0.6 s garantizados solo en electrica. Sustituye el stun aleatorio
+de 45% por golpe; conserva el modificador electrico existente de cadencia.
+Resistencias de jefes siguen aplicando. Cambiar municion no reinicia ciclo
+ni timer, no altera proyectiles en vuelo; retirar y redesplegar empieza de cero.
+
+Punisher prepara +8% de dano por disparo principal al mismo enemigo, hasta
++32% desde el quinto. Cambiar blanco, perder alcance/deteccion, muerte del
+blanco, moverlo, stun o 2 s sin disparar eliminan la preparacion. Solo disparos
+principales cargan; el splash pequeno hereda dano pero no genera cargas.
+La cruz, penetracion y splash existentes permanecen. No agrega slow ni stun:
+supresion aqui significa fuego sostenido, no control de movimiento.
+
+Los indicadores usan el panel existente, sin nuevas tarjetas. No se cambian
+sprites, rarezas, economia ni auras. Descripciones y generadores sincronizados.
+Comparativa controlada de 60 disparos sin defensas: Winter +10% de dano medio;
+Punisher +30.67% con blanco fijo, 0% cambiando en cada disparo. Es una medicion
+de proyectiles, no una simulacion de rutas, resistencias o presupuesto igual.
+La perdida de control aleatorio y el DPS sostenido requieren fase 10.
+
+La fase 3 sigue abierta: seis de dieciseis revisados. Siguiente lote: Falcon
+y War Machine, reconocimiento y salvas de zona.
+
+Validacion: 30 pruebas nuevas; npm run check aprobado y npm test final con
+1.501 aprobadas. Incluye 60 s de ataques contra blanco movil lento y cruces
+reales de diez disparos con Nucleo Adaptativo y Armadura War Machine.
+Benchmark p95 0.449 ms; smoke 1366x768 y 390x844 sin overflow ni desvio de ruta.

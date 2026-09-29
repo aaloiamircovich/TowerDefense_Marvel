@@ -44,6 +44,7 @@ export class MutantKitSystem {
 
     onAttack(target, stats) {
         this.attackCount++;
+        if (this.hero.id === 'winter_soldier' && this.attackCount % 3 === 0) this.hero.recordAbility();
         if (this.hero.id === 'wolverine') this.resource = Math.min(100, this.resource + 7);
         if (this.hero.id === 'jean_grey') {
             const phoenix = this.hero.game.progression?.getHeroEvolution?.(this.hero.id)?.id === 'phoenix';
@@ -100,8 +101,19 @@ export class MutantKitSystem {
         if (this.hero.id === 'jean_grey') return [{ type: 'slow', duration: 1.8, power: 0.34, chance: 0.7 }];
         if (this.hero.id === 'storm' && this.mode === 'blizzard') return [{ type: 'slow', duration: 2.2, power: 0.48, chance: 1 }];
         if (this.hero.id === 'scarlet_witch') return [{ type: 'mark', duration: 4, power: 0.2, chance: 1 }];
-        if (this.hero.id === 'winter_soldier' && this.mode === 'shock') return [{ type: 'stun', duration: 0.45, power: 1, chance: 0.45 }];
+        if (this.hero.id === 'winter_soldier' && this.mode === 'shock' && this.isSoldierFinisher()) {
+            return [{ type: 'stun', duration: 0.6, power: 1, chance: 1 }];
+        }
         return [];
+    }
+
+    isSoldierFinisher() {
+        return this.hero.id === 'winter_soldier' && this.attackCount % 3 === 2;
+    }
+
+    getAttackDamageMultiplier() {
+        if (this.hero.id !== 'winter_soldier') return 1;
+        return this.isSoldierFinisher() ? 1.6 : 0.85;
     }
 
     getProjectileProfile() {
@@ -114,8 +126,8 @@ export class MutantKitSystem {
         if (this.hero.id === 'scarlet_witch') return { chainCount: 2, chainRange: 140, chainFactor: 0.55 };
         if (this.hero.id === 'ant_man' && this.mode === 'giant') return { splashRadius: 70, splashFactor: 0.58, armorPenetration: 0.2 };
         if (this.hero.id === 'winter_soldier') {
-            if (this.mode === 'piercing') return { armorPenetration: 0.65 };
-            if (this.mode === 'explosive') return { splashRadius: 64, splashFactor: 0.56 };
+            if (this.mode === 'piercing') return { armorPenetration: this.isSoldierFinisher() ? 0.85 : 0.65 };
+            if (this.mode === 'explosive') return { splashRadius: this.isSoldierFinisher() ? 90 : 64, splashFactor: 0.56 };
         }
         return {};
     }
@@ -149,7 +161,10 @@ export class MutantKitSystem {
         if (this.hero.id === 'domino') return staticState('Economia: +15% recompensa');
         if (this.hero.id === 'scarlet_witch') return cooldownState('Alteracion temporal', this.cooldownRemaining, 9);
         if (this.hero.id === 'ant_man') return staticState(`Forma: ${this.getModeLabel()}`);
-        if (this.hero.id === 'winter_soldier') return staticState(`Municion: ${this.getModeLabel()}`);
+        if (this.hero.id === 'winter_soldier') return {
+            label: `Rafaga ${this.attackCount % 3}/2: ${this.getModeLabel()}`,
+            progress: (this.attackCount % 3) / 2, ready: this.isSoldierFinisher()
+        };
         return null;
     }
 
