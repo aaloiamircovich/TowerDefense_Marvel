@@ -6461,7 +6461,7 @@
     "fireRate": 1.35,
     "canSeeStealth": true,
     "ability": "CYBER-SABOTAJE",
-    "abilityDesc": "Detecta sigilo para sus propios ataques. Tiene 34% de reducir la armadura del objetivo principal durante 2.6 s antes de resistencias, sin restriccion de categoria.",
+    "abilityDesc": "Cada disparo al mismo blanco prepara +10 puntos de penetracion para el siguiente, hasta 50; contra Tecnologicos suma 10 mas tras el primero. Cambiar blanco, mover, stun o 2.5 s sin disparar reinician adaptacion. Detecta sigilo y conserva 34% de reducir la armadura del objetivo principal durante 2.6 s antes de resistencias, sin restriccion de categoria.",
     "niche": "rara anti-sigilo y antiarmadura",
     "sprite": "assets/images/heroes/nebula/portrait.png",
     "visual": {
@@ -7185,7 +7185,7 @@
     "fireRate": 0.95,
     "canSeeStealth": true,
     "ability": "FUSIL TEMPORAL",
-    "abilityDesc": "Disparo pesado de largo alcance que perfora armadura y detecta amenazas camufladas.",
+    "abilityDesc": "Tras mantener la mira 3 s sobre el mismo jefe o enemigo de amenaza 4+, su siguiente disparo causa +90% de dano y reinicia la carga. Cambiar blanco, perder alcance, mover o stun reinician la mira. Conserva penetracion, ruptura de armadura y deteccion propia.",
     "niche": "francotirador epico antiarmadura",
     "sprite": "assets/images/heroes/cable/portrait.png",
     "visual": {

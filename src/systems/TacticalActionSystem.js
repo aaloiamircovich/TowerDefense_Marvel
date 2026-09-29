@@ -40,6 +40,7 @@ export class TacticalActionSystem {
         const index = this.game.heroes.indexOf(hero);
         this.game.heroes.splice(index, 1);
         resetSupportAura(hero);
+        hero.abilitySystem?.focusKit?.reset();
         if (hero.abilitySystem?.streetKit) hero.abilitySystem.streetKit.suppression = null;
         if (hero.abilitySystem?.avengerKit) hero.abilitySystem.avengerKit.salvo = null;
         if (this.game.selectedUnit === hero) this.game.selectedUnit = null;

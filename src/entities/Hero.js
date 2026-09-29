@@ -155,6 +155,7 @@ export class Hero {
 
     update(dt, enemies, projectiles) {
         this.syncVisual();
+        this.abilitySystem.focusKit?.update(dt, enemies);
         if (this.stunTimer > 0 && this.id === 'punisher') this.abilitySystem.streetKit.suppression = null;
         if (this.stunTimer > 0 && this.id === 'war_machine') this.abilitySystem.avengerKit.salvo = null;
         updateSignatureTimers(this, dt);
@@ -243,7 +244,7 @@ export class Hero {
             critical: isCrit,
             attackerType: this.category,
             effects: this.getProjectileEffects(target),
-            ...this.getProjectileProfile(attackStats),
+            ...this.getProjectileProfile(attackStats, target),
             color: this.getProjectileColor(),
             radius: isCrit ? 7 : 5,
             visualStyle: this.getProjectileVisualStyle()
@@ -301,7 +302,7 @@ export class Hero {
         return Math.max(0.1, multiplier);
     }
 
-    getProjectileProfile(stats = this.getEffectiveStats()) {
+    getProjectileProfile(stats = this.getEffectiveStats(), target) {
         const profiles = {
             capitan_america: { chainCount: 2, chainRange: 115, chainFactor: 0.6, returning: true },
             thor: { chainCount: 3, chainRange: 130, chainFactor: 0.7 },
@@ -319,7 +320,8 @@ export class Hero {
             propagationCount: base.propagationCount || 0,
             propagationRadius: base.propagationRadius || 90,
             propagationFactor: base.propagationFactor || 0.35,
-            armorPenetration: Math.min(0.85, (base.armorPenetration || 0) + (itemEffects.armorPenetration || 0) + (stats.armorPenetration || 0))
+            armorPenetration: Math.min(0.85, (base.armorPenetration || 0) + (itemEffects.armorPenetration || 0) + (stats.armorPenetration || 0)
+                + (this.abilitySystem.focusKit?.penetration(target) || 0))
         };
     }
 

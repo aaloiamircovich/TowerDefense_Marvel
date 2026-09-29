@@ -1,7 +1,7 @@
 # Identidad y habilidades de los 105 heroes
 
 Fecha: 2026-09-13. Base revisada: commit 553ad63.
-Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes. FASE 3 EN CURSO, cuatro lotes.
+Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes. FASE 3 EN CURSO, cinco lotes.
 Fases 3 a 10 pendientes. La cobertura comun no certifica el balance individual.
 Los hallazgos de auditoria describen el baseline; ver avances abajo para las
 correcciones ya realizadas. No equivale a completar el rediseño de los 105 kits.
@@ -1450,3 +1450,33 @@ concentracion de fuego y adaptacion contra blancos resistentes.
 Validacion: npm run check aprobado, 1.525 pruebas; benchmark p95 0.465 ms.
 Smoke desktop 1366x768 y mobile 390x844 sin overflow ni desvio de ruta.
 Simulaciones y auditorias sin errores; no certifican balance de todos los mapas.
+
+## Fase 3: quinto lote, mira temporal y adaptacion cibernetica
+
+Cable prepara un remate tras 3 s sobre el mismo blanco seleccionado, vivo,
+detectado y dentro de su cruz. Solo jefes, minijefes, finales o amenaza >=4.
+Sigue disparando mientras apunta; siguiente disparo al 190% del dano efectivo
+consume carga. No aumenta cadencia ni acumula varios remates. Cambiar objetivo,
+mover, perder cobertura/deteccion, stun o retirar reinician la preparacion.
+Conserva penetracion 28%, ruptura y objeto; no cambia prioridades elegidas.
+
+Nebula prepara 10 puntos de penetracion por disparo previo al mismo enemigo,
+hasta 50 desde el sexto; tras el primero agrega otros 10 contra categoria
+Tecnologico (con/sin tilde). No agrega dano plano ni bonus a blancos sin
+armadura. Cambio de blanco, movimiento, stun, perdida de cobertura, retiro
+o 2.5 s sin atacar reinician adaptacion. Techo total con objetos 85%; la
+ruptura probabilistica y deteccion existentes permanecen. Lineas de objeto
+no generan cargas ni heredan esta penetracion adicional.
+
+Ambos usan seguimiento acotado de un blanco, sin listas crecientes ni nuevas
+entidades. Dano/penetracion se fijan al disparar: cambiar despues no modifica
+proyectiles en vuelo. Indicadores en panel existente, sin sprites/mapas nuevos.
+37 pruebas focalizadas: niveles 1/49/50/51/99/100, flags de jefe, cruz,
+reinicios, objetos, techo, vuelo y comparativa con/sin armadura. Cable en 60 s
+de combate contra blanco fijo dispara 55-58 veces y prepara 17-20 remates,
+sin aumentar cadencia. No equivale a balance por ruta/presupuesto; fase 10.
+
+Fase 3: diez de dieciseis revisados. Siguiente lote: Kate Bishop y Mockingbird.
+
+Validacion: npm run check aprobado con 1.562 pruebas. Benchmark p95 0.481 ms;
+smoke desktop 1366x768 y mobile 390x844 sin overflow ni desvio de ruta.

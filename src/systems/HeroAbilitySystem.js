@@ -4,6 +4,7 @@ import { AvengerKitSystem } from './AvengerKitSystem.js';
 import { CosmicKitSystem } from './CosmicKitSystem.js';
 import { StreetKitSystem } from './StreetKitSystem.js';
 import { MutantKitSystem } from './MutantKitSystem.js';
+import { TargetFocusSystem } from './TargetFocusSystem.js';
 import { getLineEndpoint, getLineTargets } from '../utils/LineTargeting.js';
 import { applyCooldownReductions } from '../utils/AbilityModifiers.js';
 import { getHeroRangePattern, isPointInRangePattern } from '../utils/RangePattern.js';
@@ -28,6 +29,7 @@ export class HeroAbilitySystem {
         this.cosmicKit = new CosmicKitSystem(hero);
         this.streetKit = new StreetKitSystem(hero);
         this.mutantKit = new MutantKitSystem(hero);
+        this.focusKit = ['cable', 'nebula'].includes(hero.id) ? new TargetFocusSystem(hero) : null;
     }
 
     update(dt, enemies, stats, projectiles) {
@@ -49,6 +51,7 @@ export class HeroAbilitySystem {
 
     onAttack(target, stats, projectileConfig, projectiles) {
         this.attackCount++;
+        this.focusKit?.onAttack(target);
         this.avengerKit.onAttack(target, stats, projectileConfig, projectiles);
         this.cosmicKit.onAttack(target, stats, projectileConfig, projectiles);
         this.streetKit.onAttack(target, stats, projectileConfig, projectiles);
@@ -91,7 +94,8 @@ export class HeroAbilitySystem {
     getAttackDamageMultiplier(target) {
         return this.avengerKit.getAttackDamageMultiplier()
             * this.mutantKit.getAttackDamageMultiplier()
-            * this.streetKit.getAttackDamageMultiplier(target);
+            * this.streetKit.getAttackDamageMultiplier(target)
+            * (this.focusKit?.damageMultiplier(target) || 1);
     }
 
     activateArcOverload(target, stats) {
@@ -198,6 +202,7 @@ export class HeroAbilitySystem {
     }
 
     getDisplayState() {
+        if (this.focusKit) return this.focusKit.getDisplayState();
         const aura = getEffectiveSupportAura(this.hero);
         if (aura?.type) {
             const networkState = getSupportAuraDisplayState(this.hero);
