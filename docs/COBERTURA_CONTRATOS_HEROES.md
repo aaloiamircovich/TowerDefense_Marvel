@@ -45,6 +45,7 @@ Cada escenario comienza sin enemigos para comprobar ausencia de disparos.
 | Reactor ARC y carcaj | arc-quiver-contract: 24 pruebas de calor, carga, niveles, alineacion, sigilo, municion preparada, cambios sin reset, vuelo, objetos y comparativas de 60 s |
 | Sabotaje y escaneo | sabotage-scan-contract: 41 pruebas de acciones enemigas, inmunidad, jefes, niveles, alcance, sigilo, barrera/vida, DoT, objetos, retiro, lectura y comparativas |
 | Rafaga y supresion | ballistic-identity-contract: niveles, ciclo, municiones, vuelo, rampa limitada, cambio de blanco, cruz, sigilo, stun, retiro y comparativa de 60 disparos |
+| Recon y salva | recon-salvo-contract: 24 pruebas de niveles, revelado/expiracion, resistencias, fijacion aliada, modos, zona fija, demora, limite, retiro, stun, telegrafo y objeto |
 
 Los nombres corresponden a archivos `.test.js`. Las pruebas focalizadas
 son necesarias: pasar el recorrido comun no demuestra que cada condicion
@@ -57,7 +58,7 @@ anunciada en una ficha este implementada.
 - Fase 2 implementada: Luke, nueve soportes, acumulacion aditiva, evolucion y
   economia heredada. El 15% por disparo de Domino sigue intacto; la contabilidad
   probada no reemplaza el balance de ingreso por partida de fase 10.
-- Fase 3: Iron Man, Hawkeye, Black Widow, Shuri, Winter Soldier y Punisher revisados; diez tiradores pendientes.
+- Fase 3: Iron Man, Hawkeye, Black Widow, Shuri, Winter Soldier, Punisher, Falcon y War Machine revisados; ocho tiradores pendientes.
 - Fases 3-7: las demas propuestas de firma en la matriz; minas, clones y torretas no existen
   por mencionarlas en un documento. Deben implementarse y probarse en su lote.
 - Fase 8: todos los cruces de evolucion/signature sobre los kits nuevos.

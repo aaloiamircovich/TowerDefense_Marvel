@@ -1,7 +1,7 @@
 # Identidad y habilidades de los 105 heroes
 
 Fecha: 2026-09-13. Base revisada: commit 553ad63.
-Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes. FASE 3 EN CURSO, tres lotes.
+Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes. FASE 3 EN CURSO, cuatro lotes.
 Fases 3 a 10 pendientes. La cobertura comun no certifica el balance individual.
 Los hallazgos de auditoria describen el baseline; ver avances abajo para las
 correcciones ya realizadas. No equivale a completar el rediseño de los 105 kits.
@@ -1415,3 +1415,38 @@ Validacion: 30 pruebas nuevas; npm run check aprobado y npm test final con
 1.501 aprobadas. Incluye 60 s de ataques contra blanco movil lento y cruces
 reales de diez disparos con Nucleo Adaptativo y Armadura War Machine.
 Benchmark p95 0.449 ms; smoke 1366x768 y 390x844 sin overflow ni desvio de ruta.
+
+## Fase 3: cuarto lote, identificacion Redwing y salva fijada
+
+Falcon conserva modos, dano, tiempos y deteccion compartida a 165 px. Redwing
+en reconocimiento agrega revelado de 2 s al objetivo identificado, ademas
+de la marca de 3.2 s. Ahora aliados fuera del aura pueden fijar a ESE enemigo
+si esta dentro de su propio alcance. El resto sigue oculto. Revelado respeta
+resistencias y no borra el sigilo nativo: al caducar reaparece si la fase o
+configuracion aun lo exige. Asalto conserva su contrato de dano, incluso a
+ocultos, pero no revela ni comparte deteccion. Cambiar modo no reinicia el
+cooldown. Retirar Falcon deja solo la duracion ya aplicada, no revelado eterno.
+
+War Machine fija una zona de 65 px cada sexto disparo principal, sin generar
+disparos extra. Tras 0.9 s impacta hasta cinco enemigos vivos y detectados,
+ordenados por cercania al centro. Dano por victima: 60% de ataque efectivo al
+preparar por escala de habilidad existente; penetracion 18%. La explosion
+puede alcanzar fuera de la cruz alrededor del punto fijado, pero no fija un
+blanco nuevo fuera de rango. Centro no sigue al enemigo; nuevos enemigos
+pueden entrar. Mover, retirar o stun cancelan la zona; solo una pendiente.
+Salva no aplica quemadura, control ni ingresos, ni activa firmas recursivas.
+Proyectil principal conserva splash/quemadura y la firma de objeto separada.
+
+Telegrafo de zona y pip R usan render existente, sin tocar sprites ni mapas.
+24 pruebas nuevas: niveles 1/49/50/51/99/100, expiracion, resistencia, modos,
+captura de objetivo aliado, demora, limite, sigilo, retiro, stun, movimiento,
+coordenadas del telegrafo y objeto evolucionado. Comparativa controlada: cinco
+blancos lentos reciben cinco veces el dano extra de uno; a 100 px/s salen
+antes del impacto y reciben cero. No equivale a balance de campana completa.
+
+Fase 3: ocho de dieciseis revisados. Siguiente lote: Cable y Nebula,
+concentracion de fuego y adaptacion contra blancos resistentes.
+
+Validacion: npm run check aprobado, 1.525 pruebas; benchmark p95 0.465 ms.
+Smoke desktop 1366x768 y mobile 390x844 sin overflow ni desvio de ruta.
+Simulaciones y auditorias sin errores; no certifican balance de todos los mapas.

@@ -39,7 +39,7 @@ const contracts = {
     falcon: {
         cost: 210,
         ability: 'REDWING',
-        abilityDesc: 'Redwing marca amenazas en reconocimiento y comparte deteccion con aliados a 165 px mientras Falcon no este aturdido. En asalto golpea mas fuerte y seguido, sin compartir deteccion. El dron opera fuera de su alcance normal; la marca no elimina el sigilo.',
+        abilityDesc: 'Redwing identifica una amenaza cada 2.4 s en reconocimiento: marca y revela durante 2 s para todos los aliados, sujeto a resistencias. Comparte deteccion a 165 px sin stun. Asalto golpea mas fuerte cada 1.65 s, sin revelar ni compartir deteccion. El dron opera fuera del alcance normal.',
         niche: 'reconocimiento cercano, marcado y apoyo aéreo'
     }
 };

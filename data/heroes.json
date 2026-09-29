@@ -1297,7 +1297,7 @@
     "fireRate": 1.8,
     "canSeeStealth": true,
     "ability": "REDWING",
-    "abilityDesc": "Redwing marca amenazas en reconocimiento y comparte deteccion con aliados a 165 px mientras Falcon no este aturdido. En asalto golpea mas fuerte y seguido, sin compartir deteccion. El dron opera fuera de su alcance normal; la marca no elimina el sigilo.",
+    "abilityDesc": "Redwing identifica una amenaza cada 2.4 s en reconocimiento: marca y revela durante 2 s para todos los aliados, sujeto a resistencias. Comparte deteccion a 165 px sin stun. Asalto golpea mas fuerte cada 1.65 s, sin revelar ni compartir deteccion. El dron opera fuera del alcance normal.",
     "sprite": "assets/images/heroes/falcon/portrait.png",
     "allowedTerrains": [
       0,
@@ -2213,7 +2213,7 @@
     "fireRate": 1.1,
     "canSeeStealth": false,
     "ability": "ARTILLERIA PESADA",
-    "abilityDesc": "Misiles con dano de area y penetracion parcial. 18% de quemar al objetivo principal durante 2.4 s: 14% de su dano efectivo por segundo, sin acumularse.",
+    "abilityDesc": "Cada 6 disparos fija una salva: tras 0.9 s inflige 60% de poder por escala de habilidad a hasta 5 enemigos detectados en 65 px. La zona no sigue al blanco; mover o aturdir cancela. Conserva area, penetracion y 18% de quemar al principal 2.4 s al 14% de dano efectivo/s.",
     "niche": "splash antiarmadura para grupos densos",
     "allowedTerrains": [
       3

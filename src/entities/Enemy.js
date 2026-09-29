@@ -17,6 +17,7 @@ const STATUS_VISUALS = {
     mark: { color: '#d86cff', symbol: '+' },
     sabotage: { color: '#73e9ff', symbol: 'X' },
     barrierScan: { color: '#9c7cff', symbol: 'B' },
+    reveal: { color: '#ff5d5d', symbol: 'R' },
     web: { color: '#f4f7ff', symbol: 'W' },
     haste: { color: '#46d369', symbol: '>' }
 };
@@ -198,6 +199,14 @@ export class Enemy {
         }
 
         return { damage: appliedDamage + barrierResult.absorbed, killed: !this.isAlive };
+    }
+
+    get stealth() {
+        return this.nativeStealth && !this.debuffs?.some((effect) => effect.type === 'reveal' && effect.duration > 0);
+    }
+
+    set stealth(value) {
+        this.nativeStealth = Boolean(value);
     }
 
     applyDebuff(type, duration = 1, power = 0.5) {

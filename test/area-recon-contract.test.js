@@ -106,7 +106,7 @@ for (const [mode, radius, factor, cooldown] of [['recon', 1.85, 0.38, 2.4], ['as
         closeTo(target.maxHp - target.hp, stats.damage * factor * kit.getPowerScale());
         closeTo(kit.cooldownRemaining, cooldown);
         assert.equal(target.debuffs.some((entry) => entry.type === 'mark'), mode === 'recon');
-        assert.equal(target.stealth, true);
+        assert.equal(target.stealth, mode !== 'recon');
         kit.update(0, game.enemies, stats);
         assert.equal(hero.combatStats.abilityActivations, 1);
     });
@@ -139,16 +139,16 @@ test('deteccion de Falcon termina al aturdirse y vuelve al recuperarse', () => {
     assert.equal(ally.getEffectiveStats().canSeeStealth, true);
 });
 
-test('deteccion compartida depende de radio 165, modo y presencia, no revela globalmente', () => {
+test('deteccion compartida depende de radio 165; Redwing revela solo al identificado', () => {
     const { hero: falcon, game, addHero, spawn } = setup('falcon');
     const near = addHero('hulk', 165);
     const far = addHero('hulk', 165.01);
     const hidden = spawn(180, { stealth: true });
     falcon.abilitySystem.update(0, game.enemies, falcon.getEffectiveStats(), []);
     assert.ok(hidden.debuffs.some((entry) => entry.type === 'mark'));
-    assert.equal(hidden.stealth, true);
+    assert.equal(hidden.stealth, false);
     assert.equal(near.getBestTarget([hidden], near.getEffectiveStats()), hidden);
-    assert.equal(far.getBestTarget([hidden], far.getEffectiveStats()), null);
+    assert.equal(far.getBestTarget([hidden], far.getEffectiveStats()), hidden);
     falcon.abilitySystem.setCombatMode('assault');
     assert.equal(near.getEffectiveStats().canSeeStealth, false);
     falcon.abilitySystem.setCombatMode('recon');

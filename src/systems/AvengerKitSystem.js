@@ -42,6 +42,7 @@ export class AvengerKitSystem {
         this.lastTargetId = null;
         this.redwingAngle = 0;
         this.counteredTargets = new Set();
+        this.salvo = null;
     }
 
     update(dt, enemies, stats) {
@@ -51,10 +52,16 @@ export class AvengerKitSystem {
         if (this.hero.id === 'hulk') this.updateHulk(enemies, stats);
         if (this.hero.id === 'black_panther') this.updateBlackPanther(enemies, stats);
         if (this.hero.id === 'falcon') this.updateRedwing(enemies, stats);
+        if (this.hero.id === 'war_machine') this.updateSalvo(enemies, stats);
     }
 
     onAttack(target, stats) {
         this.attackCount++;
+        if (this.hero.id === 'war_machine' && this.attackCount % 6 === 0 && !this.salvo) {
+            this.salvo = { x: target.x, y: target.y, originX: this.hero.x, originY: this.hero.y,
+                due: this.hero.visualTime + 0.9, damage: stats.damage * 0.6 * this.getPowerScale() };
+            this.hero.recordAbility();
+        }
         if (this.hero.id === 'hulk') this.resource = Math.min(100, this.resource + 8);
         if (this.hero.id === 'black_widow') this.activateWidowKit(target, stats);
         if (this.hero.id === 'hawkeye') {
@@ -147,6 +154,10 @@ export class AvengerKitSystem {
     }
 
     getDisplayState() {
+        if (this.hero.id === 'war_machine') return {
+            label: this.salvo ? 'Salva fijada' : `Salva ${this.attackCount % 6}/6`,
+            progress: this.salvo ? 1 : (this.attackCount % 6) / 6, ready: Boolean(this.salvo)
+        };
         if (this.hero.id === 'hulk') return meterState(`Furia gamma ${Math.round(this.resource)}/100`, this.resource);
         if (this.hero.id === 'black_widow') {
             const charge = this.attackCount % 4;
@@ -184,6 +195,16 @@ export class AvengerKitSystem {
     }
 
     render(ctx) {
+        if (this.hero.id === 'war_machine' && this.salvo) {
+            ctx.save();
+            ctx.strokeStyle = '#ffb347';
+            ctx.lineWidth = 2;
+            ctx.setLineDash([5, 5]);
+            ctx.beginPath();
+            ctx.arc(this.salvo.x, this.salvo.y, 65, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.restore();
+        }
         if (this.hero.id !== 'falcon') return;
         const distance = this.mode === 'recon' ? 28 : 22;
         const x = this.hero.x + Math.cos(this.redwingAngle) * distance;
@@ -293,7 +314,10 @@ export class AvengerKitSystem {
         if (!target) return;
         const factor = this.mode === 'recon' ? 0.38 : 0.72;
         CombatSystem.applyDamage({ attackerType: this.hero.category, damage: stats.damage * factor * this.getPowerScale(), armorPenetration: 0.25 }, target, this.hero, this.hero.game.resourceManager, 1);
-        if (target.isAlive && this.mode === 'recon') target.applyStatus?.({ type: 'mark', duration: 3.2, power: 0.16 }, this.hero);
+        if (target.isAlive && this.mode === 'recon') {
+            target.applyStatus?.({ type: 'mark', duration: 3.2, power: 0.16 }, this.hero);
+            target.applyStatus?.({ type: 'reveal', duration: 2, power: 1 }, this.hero);
+        }
         const drone = {
             x: this.hero.x + Math.cos(this.redwingAngle) * 28,
             y: this.hero.y + Math.sin(this.redwingAngle) * 15 - 7
@@ -302,6 +326,23 @@ export class AvengerKitSystem {
         this.hero.game.audio?.play('redwing');
         this.hero.recordAbility();
         this.cooldownRemaining = this.getCooldown(this.mode === 'recon' ? 2.4 : 1.65);
+    }
+
+    updateSalvo(enemies, stats) {
+        const zone = this.salvo;
+        if (!zone) return;
+        if (this.hero.x !== zone.originX || this.hero.y !== zone.originY || this.hero.stunTimer > 0) {
+            this.salvo = null;
+            return;
+        }
+        if (this.hero.visualTime < zone.due) return;
+        this.salvo = null;
+        const targets = enemies.filter((enemy) => enemy.isAlive
+            && (!enemy.stealth || stats.canSeeStealth) && distance(enemy, zone) <= 65)
+            .sort((a, b) => distance(a, zone) - distance(b, zone)).slice(0, 5);
+        for (const target of targets) CombatSystem.applyDamage({ attackerType: this.hero.category,
+            damage: zone.damage, armorPenetration: 0.18 }, target, this.hero, this.hero.game.resourceManager, 1);
+        this.hero.game.vfx?.addBurst(zone.x, zone.y, { radius: 65, color: '#ffb347' });
     }
 
     getModeLabel() {

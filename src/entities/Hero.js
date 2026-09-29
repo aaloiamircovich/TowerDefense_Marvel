@@ -156,6 +156,7 @@ export class Hero {
     update(dt, enemies, projectiles) {
         this.syncVisual();
         if (this.stunTimer > 0 && this.id === 'punisher') this.abilitySystem.streetKit.suppression = null;
+        if (this.stunTimer > 0 && this.id === 'war_machine') this.abilitySystem.avengerKit.salvo = null;
         updateSignatureTimers(this, dt);
         updateSupportAura(this, dt);
         this.timer += dt;
