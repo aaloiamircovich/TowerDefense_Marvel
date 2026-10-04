@@ -29,7 +29,7 @@ export class HeroAbilitySystem {
         this.cosmicKit = new CosmicKitSystem(hero);
         this.streetKit = new StreetKitSystem(hero);
         this.mutantKit = new MutantKitSystem(hero);
-        this.focusKit = ['cable', 'nebula'].includes(hero.id) ? new TargetFocusSystem(hero) : null;
+        this.focusKit = ['cable', 'nebula', 'mockingbird'].includes(hero.id) ? new TargetFocusSystem(hero) : null;
     }
 
     update(dt, enemies, stats, projectiles) {
@@ -77,6 +77,7 @@ export class HeroAbilitySystem {
 
     getAttackEffects(target) {
         const effects = [...this.avengerKit.getAttackEffects(target), ...this.cosmicKit.getAttackEffects(target), ...this.streetKit.getAttackEffects(target), ...this.mutantKit.getAttackEffects(target)];
+        effects.push(...(this.focusKit?.attackEffects(target) || []));
         if (this.hero.id === 'spiderman') {
             const evolved = this.hero.game.progression?.getHeroEvolution?.(this.hero.id)?.id === 'iron_spider';
             effects.push({ type: 'web', duration: evolved ? 3.2 : 2.6, power: evolved ? 0.28 : 0.2, chance: 1 });

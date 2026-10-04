@@ -3,6 +3,7 @@ import { isPointInRangePattern } from '../utils/RangePattern.js';
 export class TargetFocusSystem {
     constructor(hero) {
         this.hero = hero;
+        this.shockCooldown = 2;
         this.reset();
     }
 
@@ -31,11 +32,12 @@ export class TargetFocusSystem {
     }
 
     update(dt, enemies = this.hero.game.enemies || []) {
+        this.shockCooldown = Math.max(0, this.shockCooldown - dt);
         if (this.hero.stunTimer > 0 || this.x !== this.hero.x || this.y !== this.hero.y) {
             this.reset();
             return;
         }
-        if (this.hero.id === 'nebula') {
+        if (this.hero.id !== 'cable') {
             this.idle += dt;
             if (!this.matches(this.target) || this.idle >= 2.5) this.reset();
             return;
@@ -47,7 +49,13 @@ export class TargetFocusSystem {
     }
 
     damageMultiplier(target) {
+        if (this.hero.id === 'mockingbird') return this.matches(target) && this.stacks === 1 ? 1.4 : 1;
         return this.hero.id === 'cable' && this.matches(target) && this.elapsed >= 3 ? 1.9 : 1;
+    }
+
+    attackEffects(target) {
+        return this.hero.id === 'mockingbird' && this.matches(target) && this.stacks === 1 && this.shockCooldown <= 0
+            ? [{ type: 'stun', duration: 0.35, power: 1, chance: 1 }] : [];
     }
 
     penetration(target = this.target) {
@@ -57,6 +65,13 @@ export class TargetFocusSystem {
     }
 
     onAttack(target) {
+        if (this.hero.id === 'mockingbird') {
+            const paired = this.matches(target) && this.stacks === 1;
+            if (this.attackEffects(target).length) this.shockCooldown = 2;
+            if (paired) this.hero.recordAbility();
+            this.reset(); this.target = target; this.stacks = paired ? 0 : 1;
+            return;
+        }
         if (this.hero.id === 'cable') {
             if (this.damageMultiplier(target) > 1) { this.elapsed = 0; this.hero.recordAbility(); }
             return;
@@ -69,6 +84,10 @@ export class TargetFocusSystem {
 
     getDisplayState() {
         const valid = this.matches(this.target);
+        if (this.hero.id === 'mockingbird') return {
+            label: valid && this.stacks ? 'Segundo baston preparado' : 'Preparando doble baston',
+            progress: valid ? this.stacks : 0, ready: valid && this.stacks === 1
+        };
         if (this.hero.id === 'cable') return {
             label: valid && this.elapsed >= 3 ? 'Disparo temporal listo' : `Mira temporal ${valid ? this.elapsed.toFixed(1) : '0.0'}/3 s`,
             progress: valid ? this.elapsed / 3 : 0, ready: valid && this.elapsed >= 3

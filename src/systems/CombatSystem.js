@@ -19,6 +19,14 @@ export class CombatSystem {
         }
 
         const enemies = attacker?.game?.enemies || [];
+        if (projectile.beaconRadius > 0) {
+            const radius = projectile.beaconRadius;
+            projectile.beaconRadius = 0;
+            enemies.filter(enemy => enemy.isAlive && CombatSystem.distance(enemy, target) <= radius)
+                .sort((a, b) => CombatSystem.distance(a, target) - CombatSystem.distance(b, target))
+                .slice(0, 6).forEach(enemy => enemy.applyStatus?.({ type: 'reveal', duration: 3, power: 1 }, attacker));
+            attacker?.game?.vfx?.addBurst(target.x, target.y, { radius, color: '#a78bfa' });
+        }
         if (projectile.splashRadius > 0) {
             attacker?.game?.vfx?.addBurst(target.x, target.y, {
                 color: projectile.color,

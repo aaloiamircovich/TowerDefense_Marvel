@@ -1,7 +1,7 @@
 # Identidad y habilidades de los 105 heroes
 
 Fecha: 2026-09-13. Base revisada: commit 553ad63.
-Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes. FASE 3 EN CURSO, cinco lotes.
+Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes. FASE 3 EN CURSO, seis lotes.
 Fases 3 a 10 pendientes. La cobertura comun no certifica el balance individual.
 Los hallazgos de auditoria describen el baseline; ver avances abajo para las
 correcciones ya realizadas. No equivale a completar el rediseño de los 105 kits.
@@ -1381,6 +1381,38 @@ Siguiente lote: Winter Soldier y Punisher, rafagas y supresion sostenida.
 Validacion: npm run check aprobado; npm test repetido tras el caso adicional
 de faseador/comandante, 1.471 pruebas aprobadas. Benchmark p95 0.641 ms;
 smoke desktop 1366x768 y mobile 390x844 sin overflow ni desvio de ruta.
+
+## Fase 3: sexto lote, baliza y doble baston
+
+Kate Bishop prepara una baliza cada cuarto disparo principal. Al impactar
+revela hasta seis vivos a 80 px del centro de impacto por 3 s, antes de
+resistencias. No agrega dano ni se transmite por rebotes/retornos; el radio
+del proyectil se consume una vez y se limpia al reutilizar el pool. Si el
+blanco muere antes de llegar, se pierde junto con la flecha. Si muere por el
+impacto, puede revelar vecinos. Aliados deben conservar su propio alcance.
+Marca probabilistica, deteccion y carcaj de objeto siguen independientes.
+
+Mockingbird alterna preparacion y segundo golpe al 140% de dano al mismo
+blanco. Ese segundo ataque puede aplicar stun garantizado de 0.35 s, sujeto
+a resistencias, con minimo 2 s entre descargas; empieza con 2 s al desplegar.
+Sustituye el stun aleatorio antiguo de 10% por 0.25 s; conserva marca 22%.
+Cambiar blanco, mover, stun, perdida de cobertura, retiro o 2.5 s sin disparar
+quitan preparacion. Resetear preparacion no reinicia la recarga electrica.
+La carga pertenece a disparos principales, no a impactos de firmas/objetos.
+
+24 pruebas nuevas: niveles 1/49/50/51/99/100, impacto diferido, limite, area,
+caducidad, resistencias, blanco muerto, pool, carcaj, reinicios y 60 s a
+cadencia extrema. Maximo 30 descargas en esa prueba, sin disparos extra.
+Sin cambios de sprites, mapas, rarezas o economia. Pendiente comparativa de
+coste de plaza, control aliado acumulado y mapas reales en fase 10.
+
+Fase 3: doce de dieciseis revisados. Siguiente lote: Yelena y Howard the Duck;
+despues quedan Rocket y Peni Parker, con entidades temporales limitadas.
+
+Validacion: npm run check aprobado con 1.586 pruebas. Benchmark p95 0.341 ms;
+smoke desktop 1366x768 y mobile 390x844 sin overflow ni desvio de ruta.
+El estimador de rareza reconoce el stun trasladado a TargetFocusSystem;
+no recalibra dano base ni pretende modelar el combo completo por ruta.
 Simulaciones economicas/campana y auditorias de accesibilidad/lanzamiento OK.
 
 ## Fase 3: tercer lote, rafaga tactica y fuego sostenido

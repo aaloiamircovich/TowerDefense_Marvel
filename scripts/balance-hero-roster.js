@@ -83,6 +83,8 @@ function getUtilityFactor(hero) {
     const effects = [...(hero.special?.attackEffects || [])];
     // Ghost Rider's guaranteed burn lives in StreetKitSystem, not in hero data.
     if (hero.id === 'ghost_rider' && !effects.some((effect) => effect.type === 'burn')) effects.push({ type: 'burn' });
+    // Mockingbird's timed second-hit stun lives in TargetFocusSystem.
+    if (hero.id === 'mockingbird' && !effects.some((effect) => effect.type === 'stun')) effects.push({ type: 'stun' });
     factor -= Math.min(0.18, effects.length * 0.045);
 
     const projectile = hero.special?.projectileProfile || {};

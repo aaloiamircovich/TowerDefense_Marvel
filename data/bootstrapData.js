@@ -8086,7 +8086,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.65,
       "canSeeStealth": true,
       "ability": "BASTONES DE CAMPO",
-      "abilityDesc": "Golpes electricos con buena deteccion y pequena probabilidad de stun.",
+      "abilityDesc": "Alterna preparacion y segundo golpe al 140% contra el mismo blanco. El segundo puede aturdir 0.35 s garantizados, con recarga electrica de 2 s incluso al desplegar. Cambiar blanco, mover, stun o 2.5 s sin atacar pierden preparacion. Conserva deteccion y marca probabilistica.",
       "niche": "comun de control tactico",
       "sprite": "assets/images/heroes/mockingbird/portrait.png",
       "visual": {
@@ -8141,12 +8141,6 @@ window.__MARVEL_TD_DATA__ = {
       "special": {
         "attackEffects": [
           {
-            "type": "stun",
-            "duration": 0.25,
-            "power": 1,
-            "chance": 0.1
-          },
-          {
             "type": "mark",
             "duration": 1.8,
             "power": 0.06,
@@ -8169,7 +8163,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.15,
       "canSeeStealth": true,
       "ability": "FLECHAS TRUCO",
-      "abilityDesc": "Arquera de gran alcance con flechas que marcan y revelan amenazas camufladas.",
+      "abilityDesc": "Cada cuarta flecha revela al impactar hasta 6 enemigos en 80 px durante 3 s antes de resistencias. La baliza no agrega dano ni se propaga por rebotes. Conserva deteccion propia, marca probabilistica y las flechas de su objeto.",
       "niche": "starter comun de largo alcance",
       "sprite": "assets/images/heroes/kate_bishop/portrait.png",
       "visual": {

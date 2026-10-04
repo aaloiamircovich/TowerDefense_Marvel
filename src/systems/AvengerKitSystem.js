@@ -57,6 +57,7 @@ export class AvengerKitSystem {
 
     onAttack(target, stats) {
         this.attackCount++;
+        if (this.hero.id === 'kate_bishop' && this.attackCount % 4 === 0) this.hero.recordAbility();
         if (this.hero.id === 'war_machine' && this.attackCount % 6 === 0 && !this.salvo) {
             this.salvo = { x: target.x, y: target.y, originX: this.hero.x, originY: this.hero.y,
                 due: this.hero.visualTime + 0.9, damage: stats.damage * 0.6 * this.getPowerScale() };
@@ -116,6 +117,7 @@ export class AvengerKitSystem {
     }
 
     getProjectileProfile() {
+        if (this.hero.id === 'kate_bishop' && this.attackCount % 4 === 3) return { beaconRadius: 80 };
         if (this.hero.id === 'hawkeye') {
             if (this.mode === 'explosive') return { splashRadius: this.isArrowPrepared() ? 85 : 68, splashFactor: 0.58 };
             if (this.mode === 'piercing') return { armorPenetration: this.isArrowPrepared() ? 0.8 : 0.65 };
@@ -154,6 +156,10 @@ export class AvengerKitSystem {
     }
 
     getDisplayState() {
+        if (this.hero.id === 'kate_bishop') return {
+            label: `Flecha baliza ${this.attackCount % 4}/3`, progress: (this.attackCount % 4) / 3,
+            ready: this.attackCount % 4 === 3
+        };
         if (this.hero.id === 'war_machine') return {
             label: this.salvo ? 'Salva fijada' : `Salva ${this.attackCount % 6}/6`,
             progress: this.salvo ? 1 : (this.attackCount % 6) / 6, ready: Boolean(this.salvo)
