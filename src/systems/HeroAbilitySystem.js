@@ -29,7 +29,7 @@ export class HeroAbilitySystem {
         this.cosmicKit = new CosmicKitSystem(hero);
         this.streetKit = new StreetKitSystem(hero);
         this.mutantKit = new MutantKitSystem(hero);
-        this.focusKit = ['cable', 'nebula', 'mockingbird'].includes(hero.id) ? new TargetFocusSystem(hero) : null;
+        this.focusKit = ['cable', 'nebula', 'mockingbird', 'yelena_belova'].includes(hero.id) ? new TargetFocusSystem(hero) : null;
     }
 
     update(dt, enemies, stats, projectiles) {
@@ -270,6 +270,7 @@ export class HeroAbilitySystem {
     }
 
     onKill(target) {
+        this.focusKit?.onKill(target);
         this.cosmicKit.onKill();
         this.streetKit.onKill(target);
         this.mutantKit.onKill(target);

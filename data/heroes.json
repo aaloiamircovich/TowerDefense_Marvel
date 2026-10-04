@@ -6136,7 +6136,7 @@
     "fireRate": 1.75,
     "canSeeStealth": true,
     "ability": "VIUDA BLANCA",
-    "abilityDesc": "Dispara rafagas tacticas que marcan objetivos con sigilo y aplican veneno ligero acumulable.",
+    "abilityDesc": "+20% de dano al insistir sobre el mismo blanco con marca activa. Al abatirlo transfiere marca de 6% por 2 s al vivo detectable mas cercano a 120 px y dentro de su alcance. Conserva veneno y marca probabilisticos; cambiar blanco, mover, stun o 2.5 s sin ataque pierde seguimiento.",
     "niche": "deteccion comun y presion sostenida",
     "sprite": "assets/images/heroes/yelena_belova/portrait.png",
     "visual": {
@@ -6851,7 +6851,7 @@
     "fireRate": 1.65,
     "canSeeStealth": false,
     "ability": "CAOS IMPROBABLE",
-    "abilityDesc": "22% de quemar durante 2.5 s: 12% de su dano efectivo por segundo, sin acumularse. Por separado, 24% de ralentizar 18% durante 1.4 s.",
+    "abilityDesc": "Cada tercer disparo garantiza un truco alternado: quemadura, luego ralentizacion. En los otros efectos conserva 22% de quemar durante 2.5 s: 12% de su dano efectivo por segundo, sin acumularse. Por separado, 24% de ralentizar 18% durante 1.4 s.",
     "niche": "control barato irregular",
     "sprite": "assets/images/heroes/howard_the_duck/portrait.png",
     "visual": {

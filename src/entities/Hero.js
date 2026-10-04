@@ -263,7 +263,7 @@ export class Hero {
         if (this.id === 'groot') effects.push({ type: 'slow', duration: 1.8, power: 0.6, chance: 0.5 });
         effects.push(...(this.config.special?.attackEffects || [])
             .filter((effect) => effect.type !== 'heal')
-            .map((effect) => ({ ...effect })));
+            .map((effect) => this.abilitySystem.avengerKit.prepareNativeEffect(effect)));
         const itemEffects = aggregateItemEffects(this.items);
         if (itemEffects.slowChance) effects.push({ type: 'slow', duration: 1.2, power: itemEffects.slowPower || 0.2, chance: itemEffects.slowChance });
         if (itemEffects.armorBreakChance) effects.push({ type: 'armorBreak', duration: 3, power: itemEffects.armorBreakPower || 0.15, chance: itemEffects.armorBreakChance });

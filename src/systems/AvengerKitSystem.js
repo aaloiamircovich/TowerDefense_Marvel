@@ -57,6 +57,7 @@ export class AvengerKitSystem {
 
     onAttack(target, stats) {
         this.attackCount++;
+        if (this.hero.id === 'howard_the_duck' && this.attackCount % 3 === 0) this.hero.recordAbility();
         if (this.hero.id === 'kate_bishop' && this.attackCount % 4 === 0) this.hero.recordAbility();
         if (this.hero.id === 'war_machine' && this.attackCount % 6 === 0 && !this.salvo) {
             this.salvo = { x: target.x, y: target.y, originX: this.hero.x, originY: this.hero.y,
@@ -116,6 +117,12 @@ export class AvengerKitSystem {
         return [];
     }
 
+    prepareNativeEffect(effect) {
+        if (this.hero.id !== 'howard_the_duck' || this.attackCount % 3 !== 2) return { ...effect };
+        const type = Math.floor(this.attackCount / 3) % 2 === 0 ? 'burn' : 'slow';
+        return { ...effect, ...(effect.type === type ? { chance: 1 } : {}) };
+    }
+
     getProjectileProfile() {
         if (this.hero.id === 'kate_bishop' && this.attackCount % 4 === 3) return { beaconRadius: 80 };
         if (this.hero.id === 'hawkeye') {
@@ -156,6 +163,10 @@ export class AvengerKitSystem {
     }
 
     getDisplayState() {
+        if (this.hero.id === 'howard_the_duck') return {
+            label: `Truco ${Math.floor(this.attackCount / 3) % 2 === 0 ? 'fuego' : 'freno'} ${this.attackCount % 3}/2`,
+            progress: (this.attackCount % 3) / 2, ready: this.attackCount % 3 === 2
+        };
         if (this.hero.id === 'kate_bishop') return {
             label: `Flecha baliza ${this.attackCount % 4}/3`, progress: (this.attackCount % 4) / 3,
             ready: this.attackCount % 4 === 3

@@ -1,7 +1,7 @@
 # Identidad y habilidades de los 105 heroes
 
 Fecha: 2026-09-13. Base revisada: commit 553ad63.
-Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes. FASE 3 EN CURSO, seis lotes.
+Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes. FASE 3 EN CURSO, siete lotes.
 Fases 3 a 10 pendientes. La cobertura comun no certifica el balance individual.
 Los hallazgos de auditoria describen el baseline; ver avances abajo para las
 correcciones ya realizadas. No equivale a completar el rediseño de los 105 kits.
@@ -1413,6 +1413,36 @@ Validacion: npm run check aprobado con 1.586 pruebas. Benchmark p95 0.341 ms;
 smoke desktop 1366x768 y mobile 390x844 sin overflow ni desvio de ruta.
 El estimador de rareza reconoce el stun trasladado a TargetFocusSystem;
 no recalibra dano base ni pretende modelar el combo completo por ruta.
+
+## Fase 3: septimo lote, contrato de caza y trucos alternados
+
+Yelena gana 20% de dano propio al repetir blanco con marca activa, sea propia
+o aliada. El primer disparo sobre un blanco nuevo no tiene bonus. Al abatir
+al seguido y marcado transfiere una marca de 6% por 2 s al vivo detectable
+mas cercano, dentro de 120 px del caido Y dentro del alcance propio. No
+inflige dano incidental, revela sigilo ni fuerza la prioridad seleccionada.
+Marca respeta resistencias. Mover, stun, retiro, perdida de cobertura o
+2.5 s sin disparar quitan seguimiento; marca expirada quita el bonus.
+Conserva veneno y probabilidad de marca, sin ingresos nuevos.
+
+Howard garantiza un efecto nativo cada tercer disparo, alternando quemadura
+y ralentizacion, sin repetir el truco garantizado. El otro efecto conserva
+su probabilidad ordinaria: pueden coincidir por azar, no hay dos garantias.
+Potencia/duracion no cambian: burn 12% dano efectivo/s por 2.5 s, slow 18%
+por 1.4 s. Disparos normales mantienen 22% burn y 24% slow. Objetos no ganan
+garantia y proyectiles en vuelo no cambian al preparar el siguiente truco.
+Solo disparos reales cargan el ciclo; no tiempo, secundarios ni stuns.
+
+22 pruebas nuevas: niveles 1/49/50/51/99/100, primer disparo, marca necesaria,
+transferencia unica, alcance/resistencias, reinicios, alternancia, probabilidades
+restantes y vuelo. No modifican sprites/mapas, rarezas, costes o stats base.
+Pendiente balance comparativo de equipos, ingresos y control en rutas de fase 10.
+
+Fase 3: catorce de dieciseis revisados. Siguiente lote: Rocket y Peni Parker,
+con entidades temporales dependientes de su dueno y limites explicitos.
+
+Validacion: npm run check aprobado con 1.608 pruebas. Benchmark p95 0.329 ms;
+smoke desktop 1366x768 y mobile 390x844 sin overflow ni desvio de ruta.
 Simulaciones economicas/campana y auditorias de accesibilidad/lanzamiento OK.
 
 ## Fase 3: tercer lote, rafaga tactica y fuego sostenido

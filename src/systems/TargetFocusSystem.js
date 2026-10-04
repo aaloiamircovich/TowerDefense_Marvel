@@ -49,6 +49,8 @@ export class TargetFocusSystem {
     }
 
     damageMultiplier(target) {
+        if (this.hero.id === 'yelena_belova') return this.matches(target)
+            && target.debuffs?.some(e => e.type === 'mark' && e.duration > 0) ? 1.2 : 1;
         if (this.hero.id === 'mockingbird') return this.matches(target) && this.stacks === 1 ? 1.4 : 1;
         return this.hero.id === 'cable' && this.matches(target) && this.elapsed >= 3 ? 1.9 : 1;
     }
@@ -82,8 +84,30 @@ export class TargetFocusSystem {
         this.stacks = stacks;
     }
 
+    onKill(target) {
+        if (this.hero.id !== 'yelena_belova' || target !== this.target || this.idle >= 2.5
+            || this.hero.stunTimer > 0 || this.x !== this.hero.x || this.y !== this.hero.y
+            || !this.hero.game.heroes?.includes(this.hero)
+            || !target.debuffs?.some(e => e.type === 'mark' && e.duration > 0)) return;
+        const stats = this.hero.getEffectiveStats();
+        const next = (this.hero.game.enemies || []).filter(enemy => enemy !== target && enemy.isAlive
+            && (!enemy.stealth || stats.canSeeStealth)
+            && Math.hypot(enemy.x - target.x, enemy.y - target.y) <= 120
+            && isPointInRangePattern(this.hero, enemy, stats.range, this.hero.rangePattern, stats.rangeGeometryScale))
+            .sort((a, b) => Math.hypot(a.x - target.x, a.y - target.y) - Math.hypot(b.x - target.x, b.y - target.y))[0];
+        this.reset();
+        if (!next) return;
+        next.applyStatus?.({ type: 'mark', duration: 2, power: 0.06 }, this.hero);
+        this.target = next;
+        this.hero.recordAbility();
+    }
+
     getDisplayState() {
         const valid = this.matches(this.target);
+        if (this.hero.id === 'yelena_belova') return {
+            label: valid && this.damageMultiplier(this.target) > 1 ? 'Contrato: +20% dano' : 'Contrato sin marca',
+            progress: null, ready: valid && this.damageMultiplier(this.target) > 1
+        };
         if (this.hero.id === 'mockingbird') return {
             label: valid && this.stacks ? 'Segundo baston preparado' : 'Preparando doble baston',
             progress: valid ? this.stacks : 0, ready: valid && this.stacks === 1

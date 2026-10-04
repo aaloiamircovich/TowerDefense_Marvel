@@ -53,10 +53,10 @@ especificos con objetos y comparativas de rutas siguen pendientes.
 | `cable` | Cable (Epic) | F3/lote 5: 3 s apuntando al mismo jefe/amenaza 4+ preparan siguiente disparo al 190% de dano, sin cambiar cadencia. | Reinicia al perder objetivo, cobertura, mover/stun/retiro; cruz y objeto conservados. Pendiente balance en rutas. |
 | `kate_bishop` | Kate Bishop (Common) | F3/lote 6: cuarta flecha revela hasta seis en 80 px durante 3 s al impactar. Conserva marca, deteccion y carcaj independiente. | Sin dano extra, no balizas por rebotes; si el blanco muere antes pierde flecha. Pendiente rutas/equipos. |
 | `mockingbird` | Mockingbird (Common) | F3/lote 6: segundo golpe al mismo blanco al 140%, stun 0.35 s con recarga electrica 2 s. Sustituye stun aleatorio, conserva marca y Localizador. | Reinicios por cambio blanco, movimiento, stun, cobertura/retiro o 2.5 s sin ataque; recarga no se reinicia al perder combo. |
-| `yelena_belova` | Yelena Belova (Common) | Veneno y marca probabilisticos. | Contrato de caza: concentra ataques sobre el marcado, transfiere marca tras baja; no inhibe soportes como Widow. |
+| `yelena_belova` | Yelena Belova (Common) | F3/lote 7: +20% al insistir sobre marcado; al abatir al seguido transfiere marca a uno cercano detectable dentro de alcance. | Sin revelar, dano incidental ni cambio de prioridad. Pierde seguimiento por interrupciones; veneno/marca base intactos. |
 | `nebula` | Nebula (Rare) | F3/lote 5: +10 puntos de penetracion por disparo previo, maximo 50; +10 contra Tecnologicos tras el primero. | Pierde adaptacion al cambiar blanco, mover/stun/retiro, perder alcance o 2.5 s sin ataque. Techo con objetos 85%; no dano extra sin armadura. |
 | `peni_parker` | Peni Parker (Rare) | F1/lote 13: Overclock acelera disparos por 3.2 s; redes y deteccion sin mina propia. | Una mina de red preparada en el camino dentro de cobertura; enfriamiento tras activarse y limpieza al retirarla. |
-| `howard_the_duck` | Howard the Duck (Common) | F1/lote 2: quemadura 12% dano efectivo/s y slow independiente. | Bolsa de trucos sin repeticion inmediata: alternar dos utilidades legibles; azar acotado, sin picos de economia. |
+| `howard_the_duck` | Howard the Duck (Common) | F3/lote 7: cada tercer disparo garantiza burn o slow alternadamente; el otro efecto sigue probabilistico. | Potencias originales, sin garantias de objetos ni cambio en vuelo. Pendiente aporte de control/DoT por ruta. |
 
 ## Fase 4: combate cercano y combos
 
