@@ -92,7 +92,7 @@ const rivalsHeroes = {
         visualStyle: 'web',
         projectileColor: '#111827'
     }),
-    angela: contract('Angela', 'Cosmico', 'Legendary', 540, 62, 150, 1.05, false, 'HOJAS DE HEVEN', 'Lanzas celestiales perforan lineas y castigan jefes con criticos consistentes.', 'duelista cosmica anti jefe', ['Cosmico', 'Marciales', 'Rivales'], 'vanguard', [5, 3, 2, 2], {
+    angela: contract('Angela', 'Cosmico', 'Legendary', 540, 62, 150, 1.05, false, 'HOJAS DE HEVEN', 'Tres ataques al mismo jefe o amenaza 4+ sin enemigos vivos a 90 px preparan un cuarto ataque con +90% de dano. Una escolta, cambio, movimiento, stun, perdida de cobertura o pausa de 2.5 s reinicia. Conserva penetracion 26%, un rebote y +6 puntos criticos propios.', 'duelista cosmica anti jefe', ['Cosmico', 'Marciales', 'Rivales'], 'vanguard', [5, 3, 2, 2], {
         projectileProfile: { armorPenetration: 0.26, chainCount: 1, chainRange: 80, chainFactor: 0.48 },
         statModifiers: { critChance: 6 },
         visualStyle: 'blade',

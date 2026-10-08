@@ -1,7 +1,7 @@
 # Identidad y habilidades de los 105 heroes
 
 Fecha: 2026-09-13. Base revisada: commit 553ad63.
-Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes. FASE 3 IMPLEMENTADA, ocho lotes. FASE 4 EN CURSO, ocho lotes.
+Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes. FASE 3 IMPLEMENTADA, ocho lotes. FASE 4 EN CURSO, nueve lotes.
 Fases 5 a 10 pendientes. La cobertura comun no certifica el balance individual.
 Los hallazgos de auditoria describen el baseline; ver avances abajo para las
 correcciones ya realizadas. No equivale a completar el rediseño de los 105 kits.
@@ -12,6 +12,47 @@ cambie alguna decision real del jugador. Las propuestas requieren validacion
 antes de fijar porcentajes, tiempos o requisitos nuevos.
 
 ## Alcance y evidencia
+
+### Fase 4, lote 9: Lady Sif, White Tiger, Tigra y Angela (2026-10-08)
+
+- Lady Sif: critico garantizado minimo x2.5 cada4s desde despliegue/uso,
+  solo contra boss (flags runtime/config) o amenaza>=4 con armadura>0 y
+  armorBreak activo de potencia positiva. Respeta defensas; multiplicador
+  critico mayor de objeto gana, no se multiplica dos veces. Consumo al
+  lanzar. Conserva ruptura probabilistica y +5 puntos criticos propios.
+- White Tiger: con recarga4s lista, consume la marca vigente atribuida a
+  ella, potencia8% y duracion<=2s, para un disparo x1.8. Protege marcas
+  ajenas, mas fuertes o prolongadas. Retira solo ese estado al lanzar y
+  omite la marca nativa del mismo proyectil; no consume al renderizar ni
+  consultar stats. Los ataques ordinarios conservan marca28%/2s. No hay
+  traslado logico del heroe: remate visual en cobertura, sin ocupar calle.
+  Conserva deteccion, critico propio y enfoque signature.
+- Tigra: +35% de dano primario contra slow/web vigentes de potencia>0,
+  no acumula por cantidad de controles; stun solo no habilita. No aplica
+  slow/web nativos; necesita un aliado u objeto. Conserva sangrado/critico
+  y enfoque signature. Dano se fija al disparar, no reevalua en vuelo.
+- Angela: tres ataques al mismo elite aislado preparan cuarto x1.9;
+  aislamiento exige ningun otro enemigo vivo/no escapado a<=90px del blanco,
+  incluyendo escoltas ocultas o fuera de cobertura del heroe. Escolta,
+  cambio, movimiento/stun/retiro, muerte, perdida de cobertura/deteccion
+  o pausa2.5s reinician. No ejecuta bosses. Conserva penetracion26%, rebote
+  y critico6 puntos; no altera prioridad elegida.
+
+Reutiliza MartialKitSystem y TargetFocusSystem. Sin cambios de sprites,
+mapas, rarezas, stats base, economia ni vidas. Descripciones y generador
+de Angela sincronizados; bootstrap regenerado.
+
+53 pruebas nuevas en hunt-finishers-contract.test.js: niveles1/49/50/51/99/100,
+condiciones, consumo, marcas ajenas/fuertes, criticos no duplicados,
+aislamiento/limite90px, reinicios, dinero/vidas y stats preservados.
+Suite global: 1.928 pruebas aprobadas; npm run check completo sin errores,
+smoke desktop1366x768/mobile390x844 sin overflow ni desvio de ruta,
+benchmark p95 0.325ms. Balance integral de equipos pendiente
+en fase10; la heuristica de economia no mide todos estos bonus situacionales.
+
+Fase4: 24 de 26 heroes revisados. Quedan Deadpool y Devil Dinosaur. Para
+mantener lotes de cuatro, siguiente lote puede incluir tambien Spider-Man
+y Miles Morales como inicio de fase5, sin darla por completada.
 
 ### Fase 4, lote 8: Valkyrie, Rogue, Beast y Drax (2026-10-08)
 

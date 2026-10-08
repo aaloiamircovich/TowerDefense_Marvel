@@ -17,7 +17,10 @@ export class TargetFocusSystem {
     }
 
     isEligible(target) {
-        if (!['cable', 'drax'].includes(this.hero.id)) return true;
+        if (this.hero.id === 'angela' && !target) return false;
+        if (this.hero.id === 'angela' && (this.hero.game.enemies || []).some(enemy => enemy !== target
+            && enemy.isAlive && !enemy.hasReachedEnd && Math.hypot(enemy.x - target.x, enemy.y - target.y) <= 90)) return false;
+        if (!['cable', 'drax', 'angela'].includes(this.hero.id)) return true;
         return Boolean(target?.isBoss || target?.isFinalBoss || target?.isMiniBoss
             || target?.config?.isBoss || target?.config?.isFinalBoss || target?.config?.isMiniBoss
             || (target?.threat || 0) >= 4);
@@ -49,6 +52,7 @@ export class TargetFocusSystem {
     }
 
     damageMultiplier(target) {
+        if (this.hero.id === 'angela') return this.matches(target) && this.stacks === 3 ? 1.9 : 1;
         if (this.hero.id === 'drax') return this.matches(target) ? 1 + Math.min(5, this.stacks) * 0.08 : 1;
         if (this.hero.id === 'echo') return this.matches(target) && this.stacks === 3 ? 1.6 : 1;
         if (this.hero.id === 'yelena_belova') return this.matches(target)
@@ -78,6 +82,14 @@ export class TargetFocusSystem {
     }
 
     onAttack(target) {
+        if (this.hero.id === 'angela') {
+            if (!this.isEligible(target)) { this.reset(); return; }
+            const prepared = this.matches(target) && this.stacks === 3;
+            const stacks = prepared ? 0 : this.matches(target) ? Math.min(3, this.stacks + 1) : 1;
+            if (prepared) this.hero.recordAbility();
+            this.reset(); this.target = target; this.stacks = stacks;
+            return;
+        }
         if (this.hero.id === 'drax' && !this.isEligible(target)) { this.reset(); return; }
         if (this.hero.id === 'echo') {
             const prepared = this.matches(target) && this.stacks === 3;
@@ -137,6 +149,10 @@ export class TargetFocusSystem {
 
     getDisplayState() {
         const valid = this.matches(this.target);
+        if (this.hero.id === 'angela') return {
+            label: `Caza aislada ${valid ? this.stacks : 0}/3`, progress: valid ? this.stacks / 3 : 0,
+            ready: valid && this.stacks === 3
+        };
         if (this.hero.id === 'drax') return {
             label: `Duelo elite +${valid ? this.stacks * 8 : 0}%`, progress: valid ? this.stacks / 5 : 0,
             ready: valid && this.stacks === 5

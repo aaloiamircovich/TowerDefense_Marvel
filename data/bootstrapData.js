@@ -4689,7 +4689,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.05,
       "canSeeStealth": false,
       "ability": "HOJAS DE HEVEN",
-      "abilityDesc": "Lanzas celestiales perforan lineas y castigan jefes con criticos consistentes.",
+      "abilityDesc": "Tres ataques al mismo jefe o amenaza 4+ sin enemigos vivos a 90 px preparan un cuarto ataque con +90% de dano. Una escolta, cambio, movimiento, stun, perdida de cobertura o pausa de 2.5 s reinicia. Conserva penetracion 26%, un rebote y +6 puntos criticos propios.",
       "niche": "duelista cosmica anti jefe",
       "allowedTerrains": [
         0,
@@ -7720,7 +7720,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.2,
       "canSeeStealth": false,
       "ability": "ESPADA DE ASGARD",
-      "abilityDesc": "Cortes precisos que rompen armadura y ganan critico contra elites.",
+      "abilityDesc": "Cada 4 s prepara un critico minimo x2.5 contra un jefe o amenaza 4+ con armadura y ruptura activa. Consume al disparar; no ejecuta ni ignora defensas. Conserva ruptura 13% por 2.4 s con 32% de probabilidad y +5 puntos criticos propios.",
       "niche": "rara marcial anti elite",
       "sprite": "assets/images/heroes/lady_sif/portrait.png",
       "visual": {
@@ -7882,7 +7882,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.35,
       "canSeeStealth": true,
       "ability": "AMULETO DEL TIGRE",
-      "abilityDesc": "Ataques veloces con deteccion y critico alto contra enemigos marcados.",
+      "abilityDesc": "Cada 4 s puede consumir su marca de 8% para un ataque con +80% de dano; no consume marcas ajenas ni mas fuertes. Consume al lanzar y ese disparo no reaplica su marca nativa. Conserva deteccion, +7 puntos criticos y 28% de marcar por 2 s en ataques ordinarios.",
       "niche": "rara callejera critica",
       "sprite": "assets/images/heroes/white_tiger/portrait.png",
       "visual": {
@@ -7963,7 +7963,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.5,
       "canSeeStealth": false,
       "ability": "CAZADORA FELINA",
-      "abilityDesc": "36% de aplicar sangrado durante 3 s: 20% de su dano efectivo por segundo, sin acumularse. +5 puntos de probabilidad critica.",
+      "abilityDesc": "+35% de dano contra enemigos con slow o red activos; no se acumula por varios controles ni incluye stun solo. No aplica slow/red de forma nativa. Conserva sangrado al 36% por 3 s al 20% del dano efectivo/s y +5 puntos criticos propios.",
       "niche": "rara bestial de sangrado",
       "sprite": "assets/images/heroes/tigra/portrait.png",
       "visual": {

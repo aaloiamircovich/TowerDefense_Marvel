@@ -2,7 +2,7 @@ import { CombatSystem } from './CombatSystem.js';
 import { isPointInRangePattern } from '../utils/RangePattern.js';
 import { TERRAIN } from '../utils/TerrainRules.js';
 
-const RECOVERY = { valkyrie: 5, rogue: 6, beast: 3 };
+const RECOVERY = { valkyrie: 5, rogue: 6, beast: 3, lady_sif: 4, white_tiger: 4, tigra: 1 };
 
 export class MartialKitSystem {
     constructor(hero) { this.hero = hero; this.reset(); }
@@ -46,8 +46,30 @@ export class MartialKitSystem {
     }
 
     damageMultiplier(target) {
+        if (this.hero.id === 'white_tiger') return this.ownedMark(target) ? 1.8 : 1;
+        if (this.hero.id === 'tigra') return this.stationary() && this.covered(target)
+            && target.debuffs?.some(effect => ['slow', 'web'].includes(effect.type) && effect.duration > 0 && effect.power > 0) ? 1.35 : 1;
         return this.hero.id === 'valkyrie' && this.stationary() && this.onHighGround()
             && this.cooldown === 0 && this.covered(target) ? 1.75 : 1;
+    }
+
+    criticalMultiplier(target) {
+        const elite = target?.isBoss || target?.isMiniBoss || target?.isFinalBoss
+            || target?.config?.isBoss || target?.config?.isMiniBoss || target?.config?.isFinalBoss || (target?.threat || 0) >= 4;
+        return this.hero.id === 'lady_sif' && this.stationary() && this.cooldown === 0
+            && elite && target.armor > 0 && this.covered(target)
+            && target.debuffs?.some(effect => effect.type === 'armorBreak' && effect.duration > 0 && effect.power > 0) ? 2.5 : 0;
+    }
+
+    ownedMark(target) {
+        if (this.hero.id !== 'white_tiger' || !this.stationary() || this.cooldown > 0 || !this.covered(target)) return null;
+        // Shared marks can have a stronger ally contribution; never spend those.
+        return target.debuffs?.find(effect => effect.type === 'mark' && effect.source === this.hero
+            && effect.duration > 0 && effect.duration <= 2 && effect.power === 0.08) || null;
+    }
+
+    suppressesNativeEffect(effect, target) {
+        return effect.type === 'mark' && Boolean(this.ownedMark(target));
     }
 
     applyStats(stats) {
@@ -62,6 +84,15 @@ export class MartialKitSystem {
 
     onAttack(target, stats) {
         if (!this.stationary() || !this.covered(target, stats)) return;
+        if (this.hero.id === 'lady_sif' && this.criticalMultiplier(target) > 0) {
+            this.cooldown = 4; this.hero.recordAbility();
+        }
+        const mark = this.ownedMark(target);
+        if (mark) {
+            target.debuffs.splice(target.debuffs.indexOf(mark), 1);
+            this.cooldown = 4; this.hero.recordAbility();
+            this.hero.game.vfx?.addBeam(this.hero, target, { color: '#f8fafc', width: 5, duration: 0.25 });
+        }
         if (this.hero.id === 'valkyrie' && this.damageMultiplier(target) > 1) {
             this.cooldown = 5;
             // Visual charge only: the occupied tile and legal placement never change.
@@ -97,6 +128,11 @@ export class MartialKitSystem {
     }
 
     getDisplayState() {
+        if (this.hero.id === 'tigra') return { label: 'Caza: +35% contra slow/red', progress: null, ready: this.stationary() };
+        if (['lady_sif', 'white_tiger'].includes(this.hero.id)) return {
+            label: `${this.hero.id === 'lady_sif' ? 'Critico: elite con ruptura' : 'Amuleto: requiere marca propia'} | ${this.cooldown.toFixed(1)}s`,
+            progress: 1 - this.cooldown / 4, ready: this.stationary() && this.cooldown === 0
+        };
         if (this.hero.id === 'beast') return { label: `Acrobacia ${this.charge}/2 | ${this.cooldown.toFixed(1)}s`,
             progress: this.charge / 2, ready: this.charge === 2 && this.cooldown === 0 && this.stationary() };
         const labels = { armor: 'Perforacion +20%', runner: 'Cadencia +15%', flying: 'Alcance +15%' };

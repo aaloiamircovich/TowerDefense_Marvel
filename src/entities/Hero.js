@@ -222,7 +222,8 @@ export class Hero {
         const signatureContext = buildSignatureAttackContext(this, target, stats);
         const attackStats = signatureContext.stats || stats;
         const roll = this.game?.random?.next?.() ?? Math.random();
-        const preparedCrit = this.abilitySystem.focusKit?.criticalMultiplier(target) || 0;
+        const preparedCrit = Math.max(this.abilitySystem.focusKit?.criticalMultiplier(target) || 0,
+            this.abilitySystem.martialKit?.criticalMultiplier(target) || 0);
         const isCrit = preparedCrit > 0 || roll * 100 < attackStats.critChance;
         let finalDamage = isCrit ? attackStats.damage * Math.max(1, preparedCrit, attackStats.critDamage || 2) : attackStats.damage;
         finalDamage *= this.abilitySystem.getAttackDamageMultiplier(target);
@@ -267,7 +268,7 @@ export class Hero {
         effects.push(...this.abilitySystem.getAttackEffects(target));
         if (this.id === 'groot') effects.push({ type: 'slow', duration: 1.8, power: 0.6, chance: 0.5 });
         effects.push(...(this.config.special?.attackEffects || [])
-            .filter((effect) => effect.type !== 'heal')
+            .filter((effect) => effect.type !== 'heal' && !this.abilitySystem.martialKit?.suppressesNativeEffect(effect, target))
             .map((effect) => this.abilitySystem.avengerKit.prepareNativeEffect(effect)));
         const itemEffects = aggregateItemEffects(this.items);
         if (itemEffects.slowChance) effects.push({ type: 'slow', duration: 1.2, power: itemEffects.slowPower || 0.2, chance: itemEffects.slowChance });

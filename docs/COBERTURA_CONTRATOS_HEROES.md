@@ -4,6 +4,15 @@ Actualizado: 2026-09-22. Roster: 105. No es una certificacion de balance.
 
 ## Cobertura comun ejecutable
 
+### F4/lote9: critico, marca consumible, control aliado y aislamiento (2026-10-08)
+
+`test/hunt-finishers-contract.test.js`: 53 pruebas para Lady Sif, White Tiger,
+Tigra y Angela en niveles1/49/50/51/99/100. Critico minimo sin multiplicar
+critico de objeto, defensas vigentes, consumo y proteccion de marcas,
+proyectil sin reaplicacion, control activo/no acumulable, escoltas incluso
+ocultas/fuera de cobertura, limite90px, reinicios y stats/vidas/dinero.
+Total global: 1.928 pruebas; no certifica balance por ruta/equipo (fase10).
+
 ### F4/lote 8: terreno, absorcion, pareja y duelo (2026-10-08)
 
 `test/martial-duel-contract.test.js`: 54 pruebas nuevas para Valkyrie, Rogue,
