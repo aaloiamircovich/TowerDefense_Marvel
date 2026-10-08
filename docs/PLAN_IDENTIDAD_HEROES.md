@@ -1,7 +1,7 @@
 # Identidad y habilidades de los 105 heroes
 
 Fecha: 2026-09-13. Base revisada: commit 553ad63.
-Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes. FASE 3 IMPLEMENTADA, ocho lotes. FASE 4 EN CURSO, dos lotes.
+Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes. FASE 3 IMPLEMENTADA, ocho lotes. FASE 4 EN CURSO, tres lotes.
 Fases 5 a 10 pendientes. La cobertura comun no certifica el balance individual.
 Los hallazgos de auditoria describen el baseline; ver avances abajo para las
 correcciones ya realizadas. No equivale a completar el rediseño de los 105 kits.
@@ -12,6 +12,35 @@ cambie alguna decision real del jugador. Las propuestas requieren validacion
 antes de fijar porcentajes, tiempos o requisitos nuevos.
 
 ## Alcance y evidencia
+
+### Fase 4, lote 3: Gamora y Elektra (2026-10-07)
+
+- Gamora conserva ejecucion inclusiva al 25% del objetivo primario no jefe,
+  ignorando defensas. Ahora exige cobertura y deteccion efectivas tambien en
+  el kit; no cambia la prioridad primaria elegida por el jugador.
+  Cuando no ejecuta, el combo elige hasta dos vecinos a 74px dentro de su
+  alcance, primero por menor porcentaje de HP y luego por avance. Conserva
+  dano 48% escalado y penetracion 25%; no ejecuta secundarios. El medidor de
+  habilidad cuenta remates reales, sin duplicar bajas ni recompensas.
+- Elektra prepara Sai Letal durante cuatro segundos desde despliegue o uso.
+  El siguiente ataque a un blanco ya sangrante con HP <=50% recibe x1.75 de
+  dano y consume preparacion. No exige mantener presa, no garantiza critico,
+  no ejecuta ni ignora armadura/barrera de jefes. Consultas, ataques ordinarios
+  y cambios de blanco no reinician ni aceleran la recarga. El sangrado aplicado
+  por ese mismo proyectil no prepara retroactivamente el remate.
+- Conservados sangrado nativo, criticos, Combo Guardian y Apertura Perfecta.
+  Sin cambios de sprites, mapas, rarezas, stats base ni evoluciones.
+- assassin-finishers-contract.test.js agrega 23 pruebas, incluyendo niveles
+  1/49/50/51/99/100, eleccion secundaria, umbrales, recarga, consumo, sigilo,
+  cobertura, estado expirado y defensas de jefe. Continuan los contratos de
+  ejecucion, recompensas unicas y signatures de fases anteriores.
+
+Validacion: npm run check, 1.709 tests aprobados; economia, campania,
+accesibilidad y release sin errores. Smoke desktop 1366x768 y mobile 390x844
+sin overflow, desvio de ruta 0px; benchmark p95 0.350ms en esta maquina.
+
+Siguiente lote: Ant-Man y Shang-Chi. El balance de equipos completos sigue
+pendiente de fase 10; los contratos no certifican cien oleadas de campania.
 
 ### Fase 4, lote 2: Wolverine y X-23 (2026-10-07)
 

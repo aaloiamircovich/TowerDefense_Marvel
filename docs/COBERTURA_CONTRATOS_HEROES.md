@@ -24,6 +24,16 @@ Cada escenario comienza sin enemigos para comprobar ausencia de disparos.
 
 ## Contratos especificos existentes
 
+### Asesinas: fase 4, lote 3 (2026-10-07)
+
+`test/assassin-finishers-contract.test.js`: 23 pruebas con niveles
+1/49/50/51/99/100. Gamora conserva ejecucion primaria y contador; combo limitado
+a dos heridos detectables en cobertura, empate por avance, sin ejecuciones
+secundarias. Elektra respeta preparacion temporal, consumo al disparar, umbral
+50%, sangrado vigente, sigilo, cobertura y defensas del boss. Consultas y
+ataques no reducen recarga. La suite execution-contract mantiene recompensa
+unica y exclusion de todas las variantes de jefe. No certifica balance global.
+
 ### Garras: fase 4, lote 2 (2026-10-07)
 
 `test/claw-pursuit-contract.test.js`: 30 pruebas, niveles 1/49/50/51/99/100.

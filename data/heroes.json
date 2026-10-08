@@ -1081,7 +1081,7 @@
     "fireRate": 1.9,
     "canSeeStealth": true,
     "ability": "ASESINA DE ÉLITE",
-    "abilityDesc": "Ejecuta enemigos no jefes al 25% de salud o menos, ignorando sus defensas. Si no ejecuta, golpea hasta dos enemigos cercanos al objetivo.",
+    "abilityDesc": "Ejecuta enemigos no jefes al 25% de salud o menos, ignorando sus defensas. Si no ejecuta, golpea hasta dos enemigos detectables dentro de su alcance y a 74px del objetivo, priorizando menor porcentaje de vida. El combo hace 48% de poder por escala de habilidad y nunca ejecuta blancos secundarios.",
     "sprite": "assets/images/heroes/gamora/portrait.png",
     "allowedTerrains": [
       1,
@@ -2928,7 +2928,7 @@
     "fireRate": 1.9,
     "canSeeStealth": false,
     "ability": "SAI LETAL",
-    "abilityDesc": "38% de aplicar sangrado durante 2.5 s: 22% de su dano efectivo por segundo, sin acumularse. +8 puntos de probabilidad critica.",
+    "abilityDesc": "38% de aplicar sangrado durante 2.5 s: 22% de su dano efectivo por segundo, sin acumularse. +8 puntos de probabilidad critica. Cada 4s prepara Sai Letal: el siguiente ataque contra un enemigo ya sangrante al 50% de vida o menos inflige 75% de dano extra y consume la carga. Recarga desde despliegue; no ejecuta ni garantiza critico.",
     "niche": "remate y criticos",
     "allowedTerrains": [
       1,

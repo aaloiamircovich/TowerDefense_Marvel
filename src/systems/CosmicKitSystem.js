@@ -35,6 +35,7 @@ export class CosmicKitSystem {
         this.flightOrigin = null;
         this.rootWall = null;
         this.guardianHealTimer = 18;
+        this.executionCount = 0;
     }
 
     update(dt, enemies, stats) {
@@ -111,7 +112,7 @@ export class CosmicKitSystem {
             const ready = this.cooldownRemaining <= 0;
             return { label: ready ? 'Muro de raíces listo' : `Raíces ${this.cooldownRemaining.toFixed(1)} s`, progress: ready ? 1 : 1 - this.cooldownRemaining / 10, ready };
         }
-        if (this.hero.id === 'gamora') return staticState('Ejecución bajo 25% · cadena x2');
+        if (this.hero.id === 'gamora') return staticState(`Remates ${this.executionCount} | umbral 25% | combo x2`);
         if (this.hero.id === 'silver_surfer') return staticState(`Poder Cósmico: ${this.getModeLabel()}`);
         return null;
     }
@@ -217,16 +218,17 @@ export class CosmicKitSystem {
     }
 
     activateGamoraCombo(target, stats) {
-        if (!target?.isAlive) return;
+        if (!this.hero.abilitySystem.getTargetsInRange([target].filter(Boolean), stats.range, stats).length) return;
         const ratio = target.hp / target.maxHp;
         if (ratio <= 0.25 && CombatSystem.executeNonBoss(target, this.hero, this.hero.game.resourceManager).killed) {
+            this.executionCount++;
             this.hero.recordAbility();
             this.hero.game.audio?.play('cosmicBlade');
             return;
         }
-        const chain = (this.hero.game.enemies || [])
-            .filter((enemy) => enemy.isAlive && enemy !== target && distance(enemy, target) <= 74)
-            .sort((a, b) => b.distanceTravelled - a.distanceTravelled)
+        const chain = this.hero.abilitySystem.getTargetsInRange(this.hero.game.enemies || [], stats.range, stats)
+            .filter((enemy) => enemy !== target && distance(enemy, target) <= 74)
+            .sort((a, b) => a.hp / a.maxHp - b.hp / b.maxHp || b.distanceTravelled - a.distanceTravelled)
             .slice(0, 2);
         chain.forEach((enemy) => CombatSystem.applyDamage({ attackerType: this.hero.category, damage: stats.damage * 0.48 * this.getPowerScale(), armorPenetration: 0.25 }, enemy, this.hero, this.hero.game.resourceManager, 1));
         if (chain.length) {

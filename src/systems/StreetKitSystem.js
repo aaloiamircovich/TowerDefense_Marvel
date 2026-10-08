@@ -25,7 +25,7 @@ export class StreetKitSystem {
         this.hero = hero;
         this.mode = STREET_CONTROLS[hero.id]?.defaultMode || null;
         this.attackCount = 0;
-        this.cooldownRemaining = hero.id === 'she_hulk' ? 4 : 0;
+        this.cooldownRemaining = ['she_hulk', 'elektra'].includes(hero.id) ? 4 : 0;
         this.radarTimer = 0;
         this.radarPulseTimer = 0.4;
         this.moonTimer = 0;
@@ -50,6 +50,10 @@ export class StreetKitSystem {
 
     onAttack(target, stats) {
         this.attackCount++;
+        if (this.hero.id === 'elektra' && this.isSaiPrepared(target)) {
+            this.cooldownRemaining = 4;
+            this.hero.recordAbility();
+        }
         if (this.hero.id === 'punisher') {
             const stacks = this.hasSuppressionTarget(target) ? Math.min(4, this.suppression.stacks + 1) : 1;
             this.suppression = { target, stacks, time: this.hero.visualTime, x: this.hero.x, y: this.hero.y };
@@ -73,8 +77,18 @@ export class StreetKitSystem {
     }
 
     getAttackDamageMultiplier(target) {
+        if (this.hero.id === 'elektra') return this.isSaiPrepared(target) ? 1.75 : 1;
         return this.hero.id === 'punisher' && this.hasSuppressionTarget(target)
             ? 1 + this.suppression.stacks * 0.08 : 1;
+    }
+
+    isSaiPrepared(target) {
+        if (this.cooldownRemaining > 0 || this.hero.stunTimer > 0 || !target?.isAlive
+            || target.hp / target.maxHp > 0.5
+            || !target.debuffs?.some(effect => effect.type === 'bleed' && effect.duration > 0)) return false;
+        const stats = this.hero.getEffectiveStats();
+        return (!target.stealth || stats.canSeeStealth)
+            && isPointInRangePattern(this.hero, target, stats.range, this.hero.rangePattern, stats.rangeGeometryScale);
     }
 
     onKill(target) {
@@ -167,6 +181,9 @@ export class StreetKitSystem {
     }
 
     getDisplayState() {
+        if (this.hero.id === 'elektra') return timerState(this.cooldownRemaining > 0
+            ? `Sai ${this.cooldownRemaining.toFixed(1)}s` : 'Sai preparado: sangrado y vida <=50%',
+        1 - this.cooldownRemaining / 4, this.cooldownRemaining === 0);
         if (this.hero.id === 'punisher') {
             const stacks = this.hasSuppressionTarget(this.suppression?.target) ? this.suppression.stacks : 0;
             return { label: `Fuego sostenido +${stacks * 8}%`, progress: stacks / 4, ready: stacks === 4 };
