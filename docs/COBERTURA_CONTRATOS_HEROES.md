@@ -4,6 +4,16 @@ Actualizado: 2026-09-22. Roster: 105. No es una certificacion de balance.
 
 ## Cobertura comun ejecutable
 
+### F4/lote10 + F5/lote1: arsenal, estampida y redes (2026-10-08)
+
+`test/arsenal-web-contract.test.js`: 46 pruebas de Deadpool, Devil Dinosaur,
+Spider-Man y Miles en niveles1/49/50/51/99/100; recarga real y alcance final,
+ventanas/control compartido por victima, inmunidad/resistencia, quorum,
+maximo de victimas, reinicios y conservacion de ruta/vidas/dinero.
+60s de redes extremas dejan>40s con movimiento y<=23 inmovilizaciones.
+Total global: 1.974 pruebas. Los contratos signature anteriores permanecen;
+no prueba todas las combinaciones de control/economia de equipos (fase10).
+
 ### F4/lote9: critico, marca consumible, control aliado y aislamiento (2026-10-08)
 
 `test/hunt-finishers-contract.test.js`: 53 pruebas para Lady Sif, White Tiger,

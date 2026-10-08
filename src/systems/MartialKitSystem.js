@@ -2,7 +2,7 @@ import { CombatSystem } from './CombatSystem.js';
 import { isPointInRangePattern } from '../utils/RangePattern.js';
 import { TERRAIN } from '../utils/TerrainRules.js';
 
-const RECOVERY = { valkyrie: 5, rogue: 6, beast: 3, lady_sif: 4, white_tiger: 4, tigra: 1 };
+const RECOVERY = { valkyrie: 5, rogue: 6, beast: 3, lady_sif: 4, white_tiger: 4, tigra: 1, deadpool: 1.2, devil_dinosaur: 6, miles_morales: 5 };
 
 export class MartialKitSystem {
     constructor(hero) { this.hero = hero; this.reset(); }
@@ -16,6 +16,8 @@ export class MartialKitSystem {
         this.pair = null;
         this.charge = 0;
         this.idle = 0;
+        this.weapon = 0;
+        this.weaponShots = 0;
     }
 
     stationary() {
@@ -40,12 +42,18 @@ export class MartialKitSystem {
         if (this.remaining === 0) this.trait = null;
         if (this.hero.id === 'valkyrie' && !this.onHighGround()) this.cooldown = 5;
         else this.cooldown = Math.max(0, this.cooldown - dt);
+        if (this.hero.id === 'deadpool' && this.weapon === 1 && this.idle >= 2.5) {
+            this.weapon = 0; this.weaponShots = 0; this.cooldown = 1.2;
+        }
+        if (['devil_dinosaur', 'miles_morales'].includes(this.hero.id) && this.idle >= 2.5) this.charge = 0;
         if (this.pair && (this.idle >= 2.5 || !this.pair.every(enemy => this.covered(enemy)) || distance(...this.pair) > 80)) {
             this.pair = null; this.charge = 0;
         }
     }
 
     damageMultiplier(target) {
+        if (this.hero.id === 'deadpool') return this.weapon === 1 && this.stationary() && this.covered(target) ? 1.5 : 1;
+        if (this.hero.id === 'devil_dinosaur') return this.stampedeReady(target) ? 1.65 : 1;
         if (this.hero.id === 'white_tiger') return this.ownedMark(target) ? 1.8 : 1;
         if (this.hero.id === 'tigra') return this.stationary() && this.covered(target)
             && target.debuffs?.some(effect => ['slow', 'web'].includes(effect.type) && effect.duration > 0 && effect.power > 0) ? 1.35 : 1;
@@ -84,6 +92,18 @@ export class MartialKitSystem {
 
     onAttack(target, stats) {
         if (!this.stationary() || !this.covered(target, stats)) return;
+        if (this.hero.id === 'deadpool' && this.canAttack()) {
+            this.idle = 0;
+            this.weaponShots++;
+            if (this.weaponShots >= (this.weapon === 0 ? 3 : 2)) {
+                this.weaponShots = 0;
+                if (this.weapon === 1) this.cooldown = 1.2;
+                this.weapon = 1 - this.weapon;
+                this.hero.recordAbility();
+            }
+        }
+        if (this.hero.id === 'devil_dinosaur') this.stampede(target, stats);
+        if (this.hero.id === 'miles_morales') this.venomStrike(target, stats);
         if (this.hero.id === 'lady_sif' && this.criticalMultiplier(target) > 0) {
             this.cooldown = 4; this.hero.recordAbility();
         }
@@ -127,7 +147,61 @@ export class MartialKitSystem {
         this.hero.recordAbility();
     }
 
+    canAttack() {
+        return this.hero.id !== 'deadpool' || this.cooldown === 0;
+    }
+
+    group(target, stats, radius, groundOnly = false) {
+        if (!this.covered(target, stats) || (groundOnly && target.flying)) return [];
+        return [target, ...(this.hero.game.enemies || []).filter(enemy => enemy !== target && this.covered(enemy, stats)
+            && (!groundOnly || !enemy.flying) && distance(enemy, target) <= radius)
+            .sort((a, b) => distance(a, target) - distance(b, target))];
+    }
+
+    stampedeReady(target) {
+        return this.stationary() && this.cooldown === 0 && this.charge === 2
+            && this.group(target, this.hero.getEffectiveStats(), 58, true).length >= 3;
+    }
+
+    stampede(target, stats) {
+        this.idle = 0;
+        const victims = this.group(target, stats, 58, true).slice(0, 5);
+        if (victims.length < 3) { this.charge = 0; return; }
+        if (this.charge < 2 || this.cooldown > 0) { this.charge = Math.min(2, this.charge + 1); return; }
+        this.charge = 0; this.cooldown = 6;
+        for (const enemy of victims) {
+            if (enemy !== target) CombatSystem.applyDamage({ damage: stats.damage * 0.35, attackerType: this.hero.category }, enemy, this.hero, this.hero.game.resourceManager, 1);
+            if (enemy.isAlive) enemy.applyStatus?.({ type: 'stun', duration: 0.3, power: 1 }, this.hero);
+        }
+        this.hero.game.vfx?.addRing(target.x, target.y, { color: '#ef4444', radius: 58, duration: 0.3 });
+        this.hero.recordAbility();
+    }
+
+    venomStrike(target, stats) {
+        this.idle = 0;
+        if (!target.debuffs?.some(effect => effect.type === 'web' && effect.duration > 0 && effect.stacks > 0)) { this.charge = 0; return; }
+        if (this.charge < 3 || this.cooldown > 0) { this.charge = Math.min(3, this.charge + 1); return; }
+        this.charge = 0; this.cooldown = 5;
+        for (const enemy of this.group(target, stats, 65).slice(0, 3)) {
+            CombatSystem.applyDamage({ damage: stats.damage * 0.45, attackerType: this.hero.category }, enemy, this.hero, this.hero.game.resourceManager, 1);
+            if (enemy.isAlive) {
+                enemy.applyStatus?.({ type: 'stun', duration: 0.2, power: 1 }, this.hero);
+                enemy.applyStatus?.({ type: 'reveal', duration: 2, power: 1 }, this.hero);
+            }
+        }
+        this.hero.game.vfx?.addRing(target.x, target.y, { color: '#ffe45e', radius: 65, duration: 0.3 });
+        this.hero.recordAbility();
+    }
+
     getDisplayState() {
+        if (this.hero.id === 'deadpool') return { label: this.cooldown > 0 ? `Recarga ${this.cooldown.toFixed(1)}s`
+            : `${this.weapon === 0 ? 'Pistolas' : 'Katanas'} ${this.weaponShots}/${this.weapon === 0 ? 3 : 2}`,
+        progress: this.cooldown > 0 ? 1 - this.cooldown / 1.2 : this.weaponShots / (this.weapon === 0 ? 3 : 2), ready: this.canAttack() };
+        if (['devil_dinosaur', 'miles_morales'].includes(this.hero.id)) {
+            const max = this.hero.id === 'devil_dinosaur' ? 2 : 3;
+            return { label: `${max === 2 ? 'Estampida' : 'Bioelectricidad'} ${this.charge}/${max} | ${this.cooldown.toFixed(1)}s`,
+                progress: this.charge / max, ready: this.charge === max && this.cooldown === 0 && this.stationary() };
+        }
         if (this.hero.id === 'tigra') return { label: 'Caza: +35% contra slow/red', progress: null, ready: this.stationary() };
         if (['lady_sif', 'white_tiger'].includes(this.hero.id)) return {
             label: `${this.hero.id === 'lady_sif' ? 'Critico: elite con ruptura' : 'Amuleto: requiere marca propia'} | ${this.cooldown.toFixed(1)}s`,

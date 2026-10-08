@@ -150,7 +150,9 @@ export class Hero {
 
         this.abilitySystem.applyStatModifiers(stats);
         this.applySupportAuras(stats, auraOrigin);
-        return applySignatureStats(this.game.teamSynergy?.applyHeroStats(this, stats) || stats, this);
+        const finalStats = applySignatureStats(this.game.teamSynergy?.applyHeroStats(this, stats) || stats, this);
+        if (this.id === 'deadpool' && this.abilitySystem.martialKit.weapon === 1) finalStats.range = Math.min(finalStats.range, 90);
+        return finalStats;
     }
 
     update(dt, enemies, projectiles) {
@@ -175,7 +177,7 @@ export class Hero {
         this.abilitySystem.update(dt, enemies, stats, projectiles);
         if (this.id === 'moon_knight') stats = this.getEffectiveStats();
 
-        if (this.timer >= 1 / stats.fireRate) {
+        if (this.timer >= 1 / stats.fireRate && (this.abilitySystem.martialKit?.canAttack() ?? true)) {
             const target = this.getBestTarget(enemies, stats);
             if (target) {
                 this.shoot(target, stats, projectiles);
@@ -216,6 +218,7 @@ export class Hero {
 
     shoot(target, stats, projectiles) {
         if (this.isSupportAuraOnly()) return;
+        if (this.abilitySystem.martialKit?.canAttack() === false) return;
         this.animator?.faceVector(target.x - this.x, target.y - this.y);
         this.animator?.playAttack();
 

@@ -185,10 +185,10 @@ test('indicadores ARC y redes siguen los umbrales de evolucion', () => {
     ironMan.abilitySystem.arcCharge = 1;
     ironMan.abilitySystem.arcCooling = 0;
     assert.equal(ironMan.abilitySystem.getDisplayState().label, 'Carga ARC 1/3');
-    assert.equal(spider.abilitySystem.getDisplayState().label, '3 redes inmovilizan');
+    assert.equal(spider.abilitySystem.getDisplayState().label, 'Redes 0/3');
     game.progression = { getHeroEvolution: (id) => ({ id: id === 'iron_man' ? 'iron_man_extremis' : 'iron_spider' }) };
     assert.deepEqual(ironMan.abilitySystem.getDisplayState(), { label: 'Carga ARC 1/2', progress: 0.5, ready: true });
-    assert.equal(spider.abilitySystem.getDisplayState().label, '2 redes inmovilizan');
+    assert.equal(spider.abilitySystem.getDisplayState().label, 'Redes 0/2');
 });
 
 function createHeroConfig(id) {

@@ -1,8 +1,8 @@
 # Identidad y habilidades de los 105 heroes
 
 Fecha: 2026-09-13. Base revisada: commit 553ad63.
-Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes. FASE 3 IMPLEMENTADA, ocho lotes. FASE 4 EN CURSO, nueve lotes.
-Fases 5 a 10 pendientes. La cobertura comun no certifica el balance individual.
+Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes. FASE 3 IMPLEMENTADA, ocho lotes. FASE 4 IMPLEMENTADA, diez lotes. FASE 5 EN CURSO, primer lote.
+Fases 6 a 10 pendientes. La cobertura comun no certifica el balance individual.
 Los hallazgos de auditoria describen el baseline; ver avances abajo para las
 correcciones ya realizadas. No equivale a completar el rediseño de los 105 kits.
 
@@ -12,6 +12,50 @@ cambie alguna decision real del jugador. Las propuestas requieren validacion
 antes de fijar porcentajes, tiempos o requisitos nuevos.
 
 ## Alcance y evidencia
+
+### Lote mixto: cierre F4 e inicio F5 (2026-10-08)
+
+Se mantiene el lote de cuatro: Deadpool y Devil Dinosaur completan los
+26 heroes de F4; Spider-Man y Miles Morales abren F5 (2 de 19 revisados).
+
+- Deadpool: tres pistolas, dos katanas x1.5 con alcance final maximo90px
+  incluso tras bonus de equipo/objetos, recarga real1.2s sin disparos ni
+  procs de ataque. Arranca recargando; mover/stun/retiro reinicia con recarga.
+  Si pasan2.5s sin ataque en katanas, vuelve a pistolas mediante recarga para
+  no quedar bloqueado por enemigos lejanos. Conserva critico/cadencia/bleed
+  nativos y Arsenal sin Fondo independiente; no cura. VFX de arma cambian
+  sin editar sprites. No se modifica su cadencia base por nivel.
+- Devil Dinosaur: dos ataques a un grupo de>=3 terrestres detectables en
+  cobertura y radio58px del primario preparan tercero x1.65; efecto inmediato
+  adicional a hasta4 vecinos por35% poder y stun0.3s resistible a los cinco.
+  Recarga6s desde despliegue/uso, pierde carga al atacar grupo insuficiente,
+  movimiento/stun/retiro o pausa2.5s. Conserva splash ordinario sin cambiar
+  su contrato incidental; sustituye stun aleatorio. No desplaza unidades.
+- Spider-Man: conserva redes3/2 Iron Spider y stun0.7s resistible. Cada enemigo
+  guarda pausa compartida de duracion real del stun+2s; aplicar redes, cambiar
+  fuente o borrar estados no la reinicia. Durante pausa las redes acumulan
+  hasta umbral-1 y ralentizan sin nuevo stun. Inmune a stun no registra falsa
+  activacion; pausa2s aun con inmunidad. Es regla compartida de web, incluyendo
+  Miles/Peni, no inmunidad global a otros tipos de control. Medidor del ultimo
+  objetivo muestra redes y pausa restante.
+- Miles: tres ataques sobre enemigos ya enredados preparan siguiente descarga
+  de45% poder a hasta3 detectables en cobertura a65px, stun0.2s y reveal2s
+  resistibles. Recarga5s, sin controles infinitos por velocidad; ataque sin
+  red activa, movimiento/stun/retiro o pausa2.5s limpian carga. Conserva red
+  probabilistica y Venom Blast signature; elimina stun12% duplicado.
+
+46 pruebas nuevas en arsenal-web-contract.test.js: niveles1/49/50/51/99/100,
+ciclo/recarga por Hero.update, alcance final, quorum/limites de victimas,
+inmunidades/armadura/ruta, fuentes compartidas, resistencias y temporizadores.
+Prueba de60s con impactos extremos: enemigo movil>40s y<=23 inmovilizaciones
+por redes. No certifica control combinado de todos los equipos (fase10).
+Suite global: 1.974 pruebas aprobadas; npm run check completo sin errores,
+smoke desktop1366x768/mobile390x844 sin overflow, desvio de ruta0px y
+benchmark p95 0.325ms. Sin cambios de sprites, mapas,
+rareza, dinero, estrellas ni vidas. Heuristicas reconocen los stuns trasladados
+a runtime; no estiman exactamente todas las nuevas ventanas de dano.
+
+Siguiente lote F5: Groot, Daredevil, Quake y Medusa.
 
 ### Fase 4, lote 9: Lady Sif, White Tiger, Tigra y Angela (2026-10-08)
 

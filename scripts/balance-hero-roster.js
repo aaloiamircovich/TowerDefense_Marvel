@@ -84,7 +84,7 @@ function getUtilityFactor(hero) {
     // Ghost Rider's guaranteed burn lives in StreetKitSystem, not in hero data.
     if (hero.id === 'ghost_rider' && !effects.some((effect) => effect.type === 'burn')) effects.push({ type: 'burn' });
     // Prepared stuns live in the runtime kits instead of the hero data.
-    if (['mockingbird', 'iron_fist', 'jessica_jones'].includes(hero.id) && !effects.some((effect) => effect.type === 'stun')) effects.push({ type: 'stun' });
+    if (['mockingbird', 'iron_fist', 'jessica_jones', 'devil_dinosaur', 'miles_morales'].includes(hero.id) && !effects.some((effect) => effect.type === 'stun')) effects.push({ type: 'stun' });
     if (hero.id === 'okoye' && !effects.some((effect) => effect.type === 'armorBreak')) effects.push({ type: 'armorBreak' });
     for (const [id, type] of [['red_guardian', 'stun'], ['korg', 'slow'], ['echo', 'mark']]) {
         if (hero.id === id && !effects.some(effect => effect.type === type)) effects.push({ type });

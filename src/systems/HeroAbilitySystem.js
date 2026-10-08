@@ -32,7 +32,7 @@ export class HeroAbilitySystem {
         this.streetKit = new StreetKitSystem(hero);
         this.mutantKit = new MutantKitSystem(hero);
         this.focusKit = ['cable', 'nebula', 'mockingbird', 'yelena_belova', 'x_23', 'okoye', 'echo', 'drax', 'angela'].includes(hero.id) ? new TargetFocusSystem(hero) : null;
-        this.martialKit = ['valkyrie', 'rogue', 'beast', 'lady_sif', 'white_tiger', 'tigra'].includes(hero.id) ? new MartialKitSystem(hero) : null;
+        this.martialKit = ['valkyrie', 'rogue', 'beast', 'lady_sif', 'white_tiger', 'tigra', 'deadpool', 'devil_dinosaur', 'miles_morales'].includes(hero.id) ? new MartialKitSystem(hero) : null;
         this.fieldDevice = ['rocket_raccoon', 'peni_parker'].includes(hero.id) ? new FieldDeviceSystem(hero) : null;
     }
 
@@ -73,7 +73,7 @@ export class HeroAbilitySystem {
             }
         }
 
-        if (this.hero.id === 'spiderman') this.hero.game.audio?.play('web');
+        if (this.hero.id === 'spiderman') { this.webTarget = target; this.hero.game.audio?.play('web'); }
         if (this.hero.id === 'capitan_america') this.hero.game.audio?.play('shield');
 
         if (this.hero.id === 'doctor_strange' && this.attackCount % 2 === 0) {
@@ -233,7 +233,11 @@ export class HeroAbilitySystem {
         }
         if (this.hero.id === 'spiderman') {
             const threshold = this.hero.game.progression?.getHeroEvolution?.(this.hero.id)?.id === 'iron_spider' ? 2 : 3;
-            return { label: `${threshold} redes inmovilizan`, progress: null, ready: true };
+            const target = this.webTarget;
+            const stacks = target?.isAlive ? target.debuffs?.find(effect => effect.type === 'web' && effect.duration > 0)?.stacks || 0 : 0;
+            const cooldown = target?.isAlive ? target.webBindCooldown || 0 : 0;
+            return { label: `Redes ${stacks}/${threshold}${cooldown > 0 ? ` | Resistencia ${cooldown.toFixed(1)}s` : ''}`,
+                progress: Math.min(1, stacks / threshold), ready: stacks >= threshold - 1 && cooldown === 0 };
         }
         if (ACTIVE_COOLDOWNS[this.hero.id]) {
             const cooldown = this.getCooldown();
@@ -270,6 +274,7 @@ export class HeroAbilitySystem {
     }
 
     getProjectileVisualStyle() {
+        if (this.hero.id === 'deadpool') return this.martialKit.weapon === 1 ? 'blade' : 'ballistic';
         return this.avengerKit.getProjectileVisualStyle() || this.cosmicKit.getProjectileVisualStyle() || this.streetKit.getProjectileVisualStyle() || this.mutantKit.getProjectileVisualStyle();
     }
 

@@ -152,6 +152,7 @@ export class Enemy {
         this.visual = config.visual || null;
         this.animator = this.visual ? new SpriteAnimator(this.visual) : null;
         this.debuffs = [];
+        this.webBindCooldown = 0;
 
         const renderedSize = Number(config.visual?.size || config.visualSize || (this.isFinalBoss ? 96 : this.isBoss ? 96 : 30));
         this.path = buildEnemyTravelPath(path, game?.currentLevel, renderedSize);
@@ -255,9 +256,12 @@ export class Enemy {
                 web.source = source || web.source;
                 const webThreshold = source?.game?.progression?.getHeroEvolution?.(source.id)?.id === 'iron_spider' ? 2 : 3;
                 if (web.stacks >= webThreshold) {
-                    web.stacks = 0;
-                    this.applyStatus({ type: 'stun', duration: 0.7, power: 1 }, source);
-                    source?.recordAbility?.();
+                    if (this.webBindCooldown <= 0) {
+                        web.stacks = 0;
+                        const applied = this.applyStatus({ type: 'stun', duration: 0.7, power: 1 }, source);
+                        this.webBindCooldown = (applied ? this.getStatusDuration('stun', 0.7) : 0) + 2;
+                        if (applied) source?.recordAbility?.();
+                    } else web.stacks = webThreshold - 1;
                 }
             } else {
                 this.debuffs.push({ type, duration: adjustedDuration, power, source, stacks: 1, tickTimer: 0 });
@@ -298,6 +302,7 @@ export class Enemy {
     }
 
     updateDebuffs(dt) {
+        this.webBindCooldown = Math.max(0, this.webBindCooldown - dt);
         this.debuffs.forEach((debuff) => {
             if (debuff.type === 'poison' && this.isAlive) {
                 updatePoisonStacks(debuff, dt, (layer, elapsed) => this.applyDotTick(layer, elapsed));

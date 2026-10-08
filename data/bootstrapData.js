@@ -78,7 +78,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.95,
       "canSeeStealth": true,
       "ability": "TELARAÑA",
-      "abilityDesc": "Cada impacto acumula una red y reduce 20% la velocidad. Al llegar a tres redes, inmoviliza al objetivo durante 0.7 segundos.",
+      "abilityDesc": "Cada impacto acumula una red de 20% de slow. Tres redes inmovilizan 0.7 s antes de resistencias; Iron Spider requiere dos. Tras ese stun hay 2 s sin nueva inmovilizacion por redes, compartidos por victima; durante la pausa puede ralentizar sin volver a aturdir.",
       "niche": "control constante y detección de sigilo",
       "sprite": "assets/images/heroes/spiderman/portrait.png",
       "visual": {
@@ -4769,7 +4769,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 0.92,
       "canSeeStealth": false,
       "ability": "ESTAMPIDA ROJA",
-      "abilityDesc": "Impactos enormes aturden brevemente y salpican grupos sin moverlos fuera del camino.",
+      "abilityDesc": "Dos ataques a un grupo de 3 terrestres detectables en cobertura y a 58 px preparan una mordida x1.65; agrega golpe de 35% de poder a hasta 4 vecinos y stun 0.3 s a los cinco. Recarga 6 s, no desplaza. Conserva splash basico; mover, stun, retiro o pausa 2.5 s reinician carga.",
       "niche": "tanque de impacto y area",
       "allowedTerrains": [
         1,
@@ -4791,14 +4791,7 @@ window.__MARVEL_TD_DATA__ = {
           "splashRadius": 58,
           "splashFactor": 0.35
         },
-        "attackEffects": [
-          {
-            "type": "stun",
-            "duration": 0.24,
-            "power": 1,
-            "chance": 0.18
-          }
-        ],
+        "attackEffects": [],
         "statModifiers": {
           "damagePct": 0.05
         },
@@ -5190,7 +5183,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 2.05,
       "canSeeStealth": false,
       "ability": "MERCENARIO REGENERATIVO",
-      "abilityDesc": "38% de aplicar sangrado durante 2.4 s: 20% de su dano efectivo por segundo, sin acumularse. +6 puntos de probabilidad critica y +6% de cadencia.",
+      "abilityDesc": "Ciclo: 3 disparos de pistola, 2 cortes de katana con +50% de dano y alcance limitado a 90 px, luego 1.2 s de recarga sin atacar. Despliegue y movimiento reinician con recarga. Conserva sangrado 38% por 2.4 s al 20% de poder/s, +6 puntos criticos y +6% cadencia; no cura la base.",
       "niche": "DPS urbano con sangrado",
       "allowedTerrains": [
         1,
@@ -7225,7 +7218,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.65,
       "canSeeStealth": true,
       "ability": "VENOM STRIKE",
-      "abilityDesc": "Combina telaranas con descargas bioelectricas que inmovilizan brevemente y revelan sigilo.",
+      "abilityDesc": "Tres ataques contra blancos con redes activas cargan una descarga en el siguiente: 45% del poder, stun 0.2 s y revelado 2 s a hasta 3 detectables en cobertura y a 65 px. Recarga 5 s; disparar sin red, mover, stun, retiro o pausa 2.5 s pierde carga. Conserva red probabilistica; sin stun aleatorio.",
       "niche": "aracnido epico de control",
       "sprite": "assets/images/heroes/miles_morales/portrait.png",
       "visual": {
@@ -7285,12 +7278,6 @@ window.__MARVEL_TD_DATA__ = {
             "duration": 2.2,
             "power": 0.36,
             "chance": 0.38
-          },
-          {
-            "type": "stun",
-            "duration": 0.35,
-            "power": 1,
-            "chance": 0.12
           }
         ],
         "visualStyle": "web",

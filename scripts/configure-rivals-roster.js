@@ -98,9 +98,9 @@ const rivalsHeroes = {
         visualStyle: 'blade',
         projectileColor: '#ffd166'
     }),
-    devil_dinosaur: contract('Devil Dinosaur', 'Mutante', 'Legendary', 575, 68, 105, 0.92, false, 'ESTAMPIDA ROJA', 'Impactos enormes aturden brevemente y salpican grupos sin moverlos fuera del camino.', 'tanque de impacto y area', ['Rivales'], 'vanguard', [5, 4, 3, 1], {
+    devil_dinosaur: contract('Devil Dinosaur', 'Mutante', 'Legendary', 575, 68, 105, 0.92, false, 'ESTAMPIDA ROJA', 'Dos ataques a un grupo de 3 terrestres detectables en cobertura y a 58 px preparan una mordida x1.65; agrega golpe de 35% de poder a hasta 4 vecinos y stun 0.3 s a los cinco. Recarga 6 s, no desplaza. Conserva splash basico; mover, stun, retiro o pausa 2.5 s reinician carga.', 'tanque de impacto y area', ['Rivales'], 'vanguard', [5, 4, 3, 1], {
         projectileProfile: { splashRadius: 58, splashFactor: 0.35 },
-        attackEffects: [{ type: 'stun', duration: 0.24, power: 1, chance: 0.18 }],
+        attackEffects: [],
         statModifiers: { damagePct: 0.05 },
         visualStyle: 'impact',
         projectileColor: '#ef4444'
@@ -129,7 +129,7 @@ const rivalsHeroes = {
         visualStyle: 'energy',
         projectileColor: '#facc15'
     }),
-    deadpool: contract('Deadpool', 'Urbano', 'Legendary', 390, 34, 155, 2.05, false, 'MERCENARIO REGENERATIVO', '38% de aplicar sangrado durante 2.4 s: 20% de su dano efectivo por segundo, sin acumularse. +6 puntos de probabilidad critica y +6% de cadencia.', 'DPS urbano con sangrado', ['Callejero', 'Espias', 'Rivales'], 'vanguard', [5, 3, 3, 3], {
+    deadpool: contract('Deadpool', 'Urbano', 'Legendary', 390, 34, 155, 2.05, false, 'MERCENARIO REGENERATIVO', 'Ciclo: 3 disparos de pistola, 2 cortes de katana con +50% de dano y alcance limitado a 90 px, luego 1.2 s de recarga sin atacar. Despliegue y movimiento reinician con recarga. Conserva sangrado 38% por 2.4 s al 20% de poder/s, +6 puntos criticos y +6% cadencia; no cura la base.', 'DPS urbano con sangrado', ['Callejero', 'Espias', 'Rivales'], 'vanguard', [5, 3, 3, 3], {
         attackEffects: [{ type: 'bleed', duration: 2.4, power: 0.2, damageBasis: 'attackDamage', chance: 0.38 }],
         statModifiers: { critChance: 6, fireRatePct: 0.06 },
         visualStyle: 'ballistic',
