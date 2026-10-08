@@ -13,8 +13,8 @@ const allegianceHeroes = {
         visualStyle: 'energy',
         projectileColor: '#9c7cff'
     }),
-    okoye: contract('Okoye', 'Urbano', 'Rare', 260, 40, 110, 1.55, false, 'LANZA DORA MILAJE', 'Controla la primera linea con critico alto y ruptura breve de armadura.', 'vanguardia Wakanda anti elite', ['Wakanda', 'Marciales'], 'vanguard', [4, 4, 4, 2], {
-        attackEffects: [{ type: 'armorBreak', duration: 2.4, power: 0.14, chance: 0.32 }],
+    okoye: contract('Okoye', 'Urbano', 'Rare', 260, 40, 110, 1.55, false, 'LANZA DORA MILAJE', 'La tercera estocada consecutiva a la misma presa aplica ruptura de armadura de 22% durante 3s, sujeta a resistencia de estados. Consume preparacion al disparar; cambiar de blanco, moverla, aturdirla o pasar 2.5s sin atacar reinicia el combo. Conserva +5 puntos criticos, sin ruptura aleatoria.', 'vanguardia Wakanda anti elite', ['Wakanda', 'Marciales'], 'vanguard', [4, 4, 4, 2], {
+        attackEffects: [],
         statModifiers: { critChance: 5 },
         visualStyle: 'blade',
         projectileColor: '#f6c453'

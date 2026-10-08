@@ -24,6 +24,15 @@ Cada escenario comienza sin enemigos para comprobar ausencia de disparos.
 
 ## Contratos especificos existentes
 
+### Primera y ultima linea: fase 4, lote 6 (2026-10-08)
+
+`test/frontline-contract.test.js`: 24 pruebas, niveles 1/49/50/51/99/100.
+Jessica: progreso relativo por ruta propia, umbral inclusivo 75%, cobertura,
+sigilo, prioridad conservada, cooldown y stun inmune/resistible. Okoye:
+ruptura solo en tercer disparo consecutivo, consumo y reinicio por cambios,
+movimiento, stun, retiro, muerte, cobertura/deteccion o inactividad. PathUtils
+rechaza rutas degeneradas y avances invalidos. Sin certificacion de balance global.
+
 ### Luna y chi: fase 4, lote 5 (2026-10-07)
 
 `test/moon-chi-contract.test.js`: 19 pruebas en niveles 1/49/50/51/99/100.

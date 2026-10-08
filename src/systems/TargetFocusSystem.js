@@ -61,6 +61,8 @@ export class TargetFocusSystem {
     }
 
     attackEffects(target) {
+        if (this.hero.id === 'okoye') return this.matches(target) && this.stacks === 2
+            ? [{ type: 'armorBreak', duration: 3, power: 0.22, chance: 1 }] : [];
         return this.hero.id === 'mockingbird' && this.matches(target) && this.stacks === 1 && this.shockCooldown <= 0
             ? [{ type: 'stun', duration: 0.35, power: 1, chance: 1 }] : [];
     }
@@ -72,6 +74,13 @@ export class TargetFocusSystem {
     }
 
     onAttack(target) {
+        if (this.hero.id === 'okoye') {
+            const prepared = this.matches(target) && this.stacks === 2;
+            const stacks = prepared ? 0 : this.matches(target) ? Math.min(2, this.stacks + 1) : 1;
+            if (prepared) this.hero.recordAbility();
+            this.reset(); this.target = target; this.stacks = stacks;
+            return;
+        }
         if (this.hero.id === 'x_23') {
             const finisher = this.criticalMultiplier(target) > 0;
             const stacks = finisher ? 0 : this.matches(target) ? Math.min(3, this.stacks + 1) : 1;
@@ -116,6 +125,10 @@ export class TargetFocusSystem {
 
     getDisplayState() {
         const valid = this.matches(this.target);
+        if (this.hero.id === 'okoye') return {
+            label: `Estocadas ${valid ? this.stacks : 0}/2`, progress: valid ? this.stacks / 2 : 0,
+            ready: valid && this.stacks === 2
+        };
         if (this.hero.id === 'x_23') return {
             label: `Cortes ${valid ? this.stacks : 0}/3${valid && this.stacks === 3 ? ' | requiere sangrado' : ''}`,
             progress: valid ? this.stacks / 3 : 0, ready: this.criticalMultiplier(this.target) > 0

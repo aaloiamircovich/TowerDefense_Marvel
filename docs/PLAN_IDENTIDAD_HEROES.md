@@ -1,7 +1,7 @@
 # Identidad y habilidades de los 105 heroes
 
 Fecha: 2026-09-13. Base revisada: commit 553ad63.
-Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes. FASE 3 IMPLEMENTADA, ocho lotes. FASE 4 EN CURSO, cinco lotes.
+Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes. FASE 3 IMPLEMENTADA, ocho lotes. FASE 4 EN CURSO, seis lotes.
 Fases 5 a 10 pendientes. La cobertura comun no certifica el balance individual.
 Los hallazgos de auditoria describen el baseline; ver avances abajo para las
 correcciones ya realizadas. No equivale a completar el rediseño de los 105 kits.
@@ -12,6 +12,34 @@ cambie alguna decision real del jugador. Las propuestas requieren validacion
 antes de fijar porcentajes, tiempos o requisitos nuevos.
 
 ## Alcance y evidencia
+
+### Fase 4, lote 6: Jessica Jones y Okoye (2026-10-08)
+
+- Jessica activa Ultima linea contra el detectable mas avanzado dentro de
+  su cobertura cuando lleva >=75% de su propia ruta. Calcula progreso por
+  longitud recorrida/ruta, no por coordenada de base ni distancia absoluta
+  entre caminos diferentes. Empates de progreso son elegibles. Sin forzar
+  prioridad primaria: atacar un rezagado no consume ni activa la habilidad.
+  Golpe x1.45 y stun primario 0.5s resistible, recarga minima 3s desde
+  despliegue/uso; sustituye stun aleatorio. No restaura sistema de bonus por fugas.
+- Okoye prepara dos estocadas sobre la misma presa; la tercera aplica
+  armorBreak 22%/3s garantizado, resistible, y consume el combo al disparar.
+  Sustituye ruptura aleatoria. Cambiar, mover, stun, muerte, perdida de
+  cobertura/deteccion o pausa >=2.5s reinician preparacion. Conserva +5 puntos
+  criticos y Lanza Real signature; Jessica conserva Golpe Perfecto.
+- Se actualizan descripciones/generadores y la heuristica reconoce ambos
+  efectos en runtime sin retocar estadisticas base, rarezas ni evoluciones.
+  No se modifican sprites, mapas, dinero ni vidas.
+- frontline-contract.test.js agrega 24 pruebas: niveles 1/49/50/51/99/100,
+  rutas de distinta longitud y con curvas, umbrales, cooldown, stun inmune,
+  resistencias, perdida del combo y ausencia de dobles efectos.
+
+Validacion: npm run check aprobado, 1.783 tests; economia, campania,
+accesibilidad y release sin errores. Smoke desktop 1366x768 y mobile 390x844
+sin overflow, desvio de ruta 0px; benchmark p95 0.321ms en esta maquina.
+
+Siguiente lote: M'Baku y Korg. Sigue pendiente el balance de equipos completos
+en fase 10; las pruebas de contrato no certifican equilibrio de campania.
 
 ### Fase 4, lote 5: Moon Knight e Iron Fist (2026-10-07)
 

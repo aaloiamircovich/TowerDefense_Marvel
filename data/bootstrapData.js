@@ -3004,7 +3004,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.05,
       "canSeeStealth": false,
       "ability": "GOLPE PRIVADO",
-      "abilityDesc": "Baja cadencia, mucho impacto y chance de aturdir al primer enemigo cerca de la base.",
+      "abilityDesc": "Ultima linea: contra el enemigo detectable mas avanzado de su cobertura, si recorrio al menos 75% de su propia ruta, prepara un golpe con 45% de dano extra y stun de 0.5s resistible. Recarga minima 3s desde despliegue o uso. Sin stun aleatorio ni cambio automatico de prioridad.",
       "niche": "tanque urbano economico",
       "allowedTerrains": [
         1,
@@ -3022,14 +3022,7 @@ window.__MARVEL_TD_DATA__ = {
         "detection": 2
       },
       "special": {
-        "attackEffects": [
-          {
-            "type": "stun",
-            "duration": 0.35,
-            "power": 1,
-            "chance": 0.22
-          }
-        ],
+        "attackEffects": [],
         "statModifiers": {
           "damagePct": 0.04
         },
@@ -3509,7 +3502,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.55,
       "canSeeStealth": false,
       "ability": "LANZA DORA MILAJE",
-      "abilityDesc": "Controla la primera linea con critico alto y ruptura breve de armadura.",
+      "abilityDesc": "La tercera estocada consecutiva a la misma presa aplica ruptura de armadura de 22% durante 3s, sujeta a resistencia de estados. Consume preparacion al disparar; cambiar de blanco, moverla, aturdirla o pasar 2.5s sin atacar reinicia el combo. Conserva +5 puntos criticos, sin ruptura aleatoria.",
       "niche": "vanguardia Wakanda anti elite",
       "allowedTerrains": [
         1,
@@ -3527,14 +3520,7 @@ window.__MARVEL_TD_DATA__ = {
         "detection": 2
       },
       "special": {
-        "attackEffects": [
-          {
-            "type": "armorBreak",
-            "duration": 2.4,
-            "power": 0.14,
-            "chance": 0.32
-          }
-        ],
+        "attackEffects": [],
         "statModifiers": {
           "critChance": 5
         },

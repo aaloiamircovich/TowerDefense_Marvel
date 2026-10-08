@@ -1,3 +1,11 @@
+export function getRouteProgress(enemy) {
+    const path = enemy?.path;
+    if (!Array.isArray(path) || path.length < 2 || !Number.isFinite(enemy.distanceTravelled)) return 0;
+    let length = 0;
+    for (let i = 1; i < path.length; i++) length += Math.hypot(path[i].x - path[i - 1].x, path[i].y - path[i - 1].y);
+    return Number.isFinite(length) && length > 0 ? Math.max(0, Math.min(1, enemy.distanceTravelled / length)) : 0;
+}
+
 export function normalizePath(path, width, height, margin = 40) {
     if (!Array.isArray(path) || path.length < 2) {
         return createFallbackPath(width, height, margin);

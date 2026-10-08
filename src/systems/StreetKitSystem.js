@@ -1,6 +1,7 @@
 import { CombatSystem } from './CombatSystem.js';
 import { applyCooldownReductions } from '../utils/AbilityModifiers.js';
 import { isPointInRangePattern } from '../utils/RangePattern.js';
+import { getRouteProgress } from '../utils/PathUtils.js';
 
 const STREET_CONTROLS = {
     shang_chi: {
@@ -25,7 +26,7 @@ export class StreetKitSystem {
         this.hero = hero;
         this.mode = STREET_CONTROLS[hero.id]?.defaultMode || null;
         this.attackCount = 0;
-        this.cooldownRemaining = hero.id === 'iron_fist' ? 5 : ['she_hulk', 'elektra', 'shang_chi'].includes(hero.id) ? 4 : 0;
+        this.cooldownRemaining = hero.id === 'jessica_jones' ? 3 : hero.id === 'iron_fist' ? 5 : ['she_hulk', 'elektra', 'shang_chi'].includes(hero.id) ? 4 : 0;
         this.ringCharge = 0;
         this.radarTimer = 0;
         this.radarPulseTimer = 0.4;
@@ -51,6 +52,10 @@ export class StreetKitSystem {
 
     onAttack(target, stats) {
         this.attackCount++;
+        if (this.hero.id === 'jessica_jones' && this.isLastLineTarget(target)) {
+            this.cooldownRemaining = 3;
+            this.hero.recordAbility();
+        }
         if (this.isChiPrepared()) {
             this.cooldownRemaining = 5;
             this.hero.recordAbility();
@@ -89,6 +94,7 @@ export class StreetKitSystem {
     }
 
     getAttackDamageMultiplier(target) {
+        if (this.hero.id === 'jessica_jones') return this.isLastLineTarget(target) ? 1.45 : 1;
         if (this.hero.id === 'iron_fist') return this.isChiPrepared() ? 1.9 : 1;
         if (this.hero.id === 'elektra') return this.isSaiPrepared(target) ? 1.75 : 1;
         return this.hero.id === 'punisher' && this.hasSuppressionTarget(target)
@@ -106,6 +112,16 @@ export class StreetKitSystem {
 
     isChiPrepared() {
         return this.hero.id === 'iron_fist' && this.cooldownRemaining === 0 && !(this.hero.stunTimer > 0);
+    }
+
+    isLastLineTarget(target) {
+        if (this.cooldownRemaining > 0 || this.hero.stunTimer > 0 || !target?.isAlive || target.hasReachedEnd) return false;
+        const progress = getRouteProgress(target);
+        if (progress < 0.75) return false;
+        const stats = this.hero.getEffectiveStats();
+        const candidates = this.hero.abilitySystem.getTargetsInRange(this.hero.game.enemies || [], stats.range, stats)
+            .filter(enemy => !enemy.hasReachedEnd);
+        return candidates.includes(target) && !candidates.some(enemy => getRouteProgress(enemy) > progress);
     }
 
     onKill(target) {
@@ -148,6 +164,7 @@ export class StreetKitSystem {
     }
 
     getAttackEffects(target) {
+        if (this.hero.id === 'jessica_jones' && this.isLastLineTarget(target)) return [{ type: 'stun', duration: 0.5, power: 1, chance: 1 }];
         if (this.isChiPrepared()) return [{ type: 'stun', duration: 0.45, power: 1, chance: 1 }];
         if (this.hero.id === 'shang_chi' && this.mode === 'guard' && this.isRingFinisher()) {
             return [{ type: 'slow', duration: 1.5, power: 0.45, chance: 1 }];
@@ -207,6 +224,7 @@ export class StreetKitSystem {
     }
 
     getDisplayState() {
+        if (this.hero.id === 'jessica_jones') return timerState(this.cooldownRemaining > 0 ? `Ultima linea ${this.cooldownRemaining.toFixed(1)}s` : 'Ultima linea: ruta >=75%', 1 - this.cooldownRemaining / 3, this.cooldownRemaining === 0);
         if (this.hero.id === 'iron_fist') return timerState(this.isChiPrepared() ? 'Chi preparado' : `Chi ${this.cooldownRemaining.toFixed(1)}s`, 1 - this.cooldownRemaining / 5, this.isChiPrepared());
         if (this.hero.id === 'elektra') return timerState(this.cooldownRemaining > 0
             ? `Sai ${this.cooldownRemaining.toFixed(1)}s` : 'Sai preparado: sangrado y vida <=50%',
