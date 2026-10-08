@@ -1497,7 +1497,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.7,
       "canSeeStealth": true,
       "ability": "CICLO DE KHONSHU",
-      "abilityDesc": "Alterna luna creciente para alcance, luna llena para dano y menguante para cadencia y control.",
+      "abilityDesc": "Ciclo automatico de 10s por fase. Creciente: +22% alcance y -10% dano, un rebote. Llena: +30% dano y -15% cadencia, penetracion 35%. Menguante: +16% cadencia y -10% dano, area 44px y slow 46%/2.2s al blanco principal. Conserva la prioridad elegida; muestra tiempo restante y fase siguiente.",
       "sprite": "assets/images/heroes/moon_knight/portrait.png",
       "allowedTerrains": [
         1
@@ -2773,7 +2773,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.55,
       "canSeeStealth": false,
       "ability": "CHI DE KUN-LUN",
-      "abilityDesc": "Golpes de chi alternan dano concentrado con aturdimiento breve.",
+      "abilityDesc": "Carga chi durante 5s desde despliegue o uso. Su siguiente ataque inflige 90% de dano extra y aturde al blanco principal 0.45s, sujeto a resistencias e inmunidades. Consume la carga al disparar; sin stun aleatorio ni area propia. Conserva +5 puntos de probabilidad critica.",
       "niche": "duelista con control puntual",
       "allowedTerrains": [
         1,
@@ -2794,14 +2794,7 @@ window.__MARVEL_TD_DATA__ = {
         "statModifiers": {
           "critChance": 5
         },
-        "attackEffects": [
-          {
-            "type": "stun",
-            "duration": 0.28,
-            "power": 1,
-            "chance": 0.18
-          }
-        ],
+        "attackEffects": [],
         "visualStyle": "mystic",
         "projectileColor": "#f7d04a"
       },

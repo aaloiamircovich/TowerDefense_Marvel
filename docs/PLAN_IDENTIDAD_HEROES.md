@@ -1,7 +1,7 @@
 # Identidad y habilidades de los 105 heroes
 
 Fecha: 2026-09-13. Base revisada: commit 553ad63.
-Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes. FASE 3 IMPLEMENTADA, ocho lotes. FASE 4 EN CURSO, cuatro lotes.
+Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes. FASE 3 IMPLEMENTADA, ocho lotes. FASE 4 EN CURSO, cinco lotes.
 Fases 5 a 10 pendientes. La cobertura comun no certifica el balance individual.
 Los hallazgos de auditoria describen el baseline; ver avances abajo para las
 correcciones ya realizadas. No equivale a completar el rediseño de los 105 kits.
@@ -12,6 +12,34 @@ cambie alguna decision real del jugador. Las propuestas requieren validacion
 antes de fijar porcentajes, tiempos o requisitos nuevos.
 
 ## Alcance y evidencia
+
+### Fase 4, lote 5: Moon Knight e Iron Fist (2026-10-07)
+
+- Moon Knight mantiene ciclo automatico de 10s por fase. Creciente: alcance
+  +22%, dano -10%, un rebote. Llena: dano +30%, cadencia -15%, penetracion
+  35%. Menguante: cadencia +16%, dano -10%, splash 44px y slow primario
+  46%/2.2s. Las fortalezas anteriores ahora tienen un coste explicito.
+- El medidor muestra segundos restantes y fase siguiente, sin selector de
+  fase ni cambio forzado de prioridad del jugador. Deltas largos avanzan todas
+  las fases transcurridas y conservan residuo. En el frame de transicion se
+  recalculan stats antes de elegir blanco/disparar, evitando mezclar alcance
+  anterior con perfil nuevo. Proyectiles existentes conservan su perfil.
+- Iron Fist prepara chi durante 5s desde despliegue/uso. El siguiente disparo
+  recibe x1.9 de dano y stun primario 0.45s resistible; consume al disparar
+  incluso si luego pierde blanco. Se retira stun nativo aleatorio de 18%.
+  No hay splash, curacion ni critico garantizado; conserva +5 puntos criticos.
+  La heuristica de rareza reconoce su stun en runtime sin cambiar stats base.
+- moon-chi-contract.test.js agrega 19 pruebas: niveles 1/49/50/51/99/100,
+  fases/penalizaciones, transicion de rango y dano en el mismo frame, deltas
+  largos, cooldown, consumo, criticos, stun inmune/resistido y proyectil perdido.
+  No se modifican sprites, mapas, rarezas, objetos ni evoluciones.
+
+Validacion: npm run check aprobado, 1.759 tests; economia, campania,
+accesibilidad y release sin errores. Smoke desktop 1366x768 y mobile 390x844
+sin overflow, desvio de ruta 0px; benchmark p95 0.437ms en esta maquina.
+
+Siguiente lote: Jessica Jones y Okoye. La simulacion de equipos completos
+permanece pendiente de fase 10; los contratos no certifican balance global.
 
 ### Fase 4, lote 4: Ant-Man y Shang-Chi (2026-10-07)
 

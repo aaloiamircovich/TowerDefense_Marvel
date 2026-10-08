@@ -24,6 +24,15 @@ Cada escenario comienza sin enemigos para comprobar ausencia de disparos.
 
 ## Contratos especificos existentes
 
+### Luna y chi: fase 4, lote 5 (2026-10-07)
+
+`test/moon-chi-contract.test.js`: 19 pruebas en niveles 1/49/50/51/99/100.
+Moon Knight: fortalezas/costes de fase, prioridad preservada, deltas largos,
+perfil fijado al disparar y transicion sin stats de la fase anterior. Iron
+Fist: preparacion 5s, dano/stun primario, consumo ante proyectil perdido,
+inmunidad/resistencia de jefe, critico sin duplicacion de bonus, sin curacion
+ni recarga por consultas/movimiento. Sin certificacion de balance de equipos.
+
 ### Pym y anillos: fase 4, lote 4 (2026-10-07)
 
 `test/pym-ring-combo-contract.test.js`: 31 pruebas, niveles 1/49/50/51/99/100.

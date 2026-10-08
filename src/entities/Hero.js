@@ -170,8 +170,9 @@ export class Hero {
         if (this.stunTimer > 0) return;
         if (this.isSupportAuraOnly()) return;
 
-        const stats = this.getEffectiveStats();
+        let stats = this.getEffectiveStats();
         this.abilitySystem.update(dt, enemies, stats, projectiles);
+        if (this.id === 'moon_knight') stats = this.getEffectiveStats();
 
         if (this.timer >= 1 / stats.fireRate) {
             const target = this.getBestTarget(enemies, stats);

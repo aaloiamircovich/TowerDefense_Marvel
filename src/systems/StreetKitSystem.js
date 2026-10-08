@@ -25,7 +25,7 @@ export class StreetKitSystem {
         this.hero = hero;
         this.mode = STREET_CONTROLS[hero.id]?.defaultMode || null;
         this.attackCount = 0;
-        this.cooldownRemaining = ['she_hulk', 'elektra', 'shang_chi'].includes(hero.id) ? 4 : 0;
+        this.cooldownRemaining = hero.id === 'iron_fist' ? 5 : ['she_hulk', 'elektra', 'shang_chi'].includes(hero.id) ? 4 : 0;
         this.ringCharge = 0;
         this.radarTimer = 0;
         this.radarPulseTimer = 0.4;
@@ -51,6 +51,10 @@ export class StreetKitSystem {
 
     onAttack(target, stats) {
         this.attackCount++;
+        if (this.isChiPrepared()) {
+            this.cooldownRemaining = 5;
+            this.hero.recordAbility();
+        }
         if (this.hero.id === 'shang_chi') {
             if (this.isRingFinisher()) {
                 this.ringCharge = 0;
@@ -85,6 +89,7 @@ export class StreetKitSystem {
     }
 
     getAttackDamageMultiplier(target) {
+        if (this.hero.id === 'iron_fist') return this.isChiPrepared() ? 1.9 : 1;
         if (this.hero.id === 'elektra') return this.isSaiPrepared(target) ? 1.75 : 1;
         return this.hero.id === 'punisher' && this.hasSuppressionTarget(target)
             ? 1 + this.suppression.stacks * 0.08 : 1;
@@ -97,6 +102,10 @@ export class StreetKitSystem {
         const stats = this.hero.getEffectiveStats();
         return (!target.stealth || stats.canSeeStealth)
             && isPointInRangePattern(this.hero, target, stats.range, this.hero.rangePattern, stats.rangeGeometryScale);
+    }
+
+    isChiPrepared() {
+        return this.hero.id === 'iron_fist' && this.cooldownRemaining === 0 && !(this.hero.stunTimer > 0);
     }
 
     onKill(target) {
@@ -116,9 +125,9 @@ export class StreetKitSystem {
         if (radarActive) stats.canSeeStealth = true;
 
         if (this.hero.id === 'moon_knight') {
-            if (this.moonPhase === 0) stats.range *= 1.22;
-            if (this.moonPhase === 1) stats.damage *= 1.3;
-            if (this.moonPhase === 2) stats.fireRate *= 1.16;
+            if (this.moonPhase === 0) { stats.range *= 1.22; stats.damage *= 0.9; }
+            if (this.moonPhase === 1) { stats.damage *= 1.3; stats.fireRate *= 0.85; }
+            if (this.moonPhase === 2) { stats.fireRate *= 1.16; stats.damage *= 0.9; }
         }
         if (this.hero.id === 'blade') {
             stats.damage *= 1.08;
@@ -139,6 +148,7 @@ export class StreetKitSystem {
     }
 
     getAttackEffects(target) {
+        if (this.isChiPrepared()) return [{ type: 'stun', duration: 0.45, power: 1, chance: 1 }];
         if (this.hero.id === 'shang_chi' && this.mode === 'guard' && this.isRingFinisher()) {
             return [{ type: 'slow', duration: 1.5, power: 0.45, chance: 1 }];
         }
@@ -197,6 +207,7 @@ export class StreetKitSystem {
     }
 
     getDisplayState() {
+        if (this.hero.id === 'iron_fist') return timerState(this.isChiPrepared() ? 'Chi preparado' : `Chi ${this.cooldownRemaining.toFixed(1)}s`, 1 - this.cooldownRemaining / 5, this.isChiPrepared());
         if (this.hero.id === 'elektra') return timerState(this.cooldownRemaining > 0
             ? `Sai ${this.cooldownRemaining.toFixed(1)}s` : 'Sai preparado: sangrado y vida <=50%',
         1 - this.cooldownRemaining / 4, this.cooldownRemaining === 0);
@@ -205,7 +216,7 @@ export class StreetKitSystem {
             return { label: `Fuego sostenido +${stacks * 8}%`, progress: stacks / 4, ready: stacks === 4 };
         }
         if (this.hero.id === 'daredevil') return timerState(this.radarTimer > 0 ? 'Radar global activo' : 'Radar recargando', this.radarTimer > 0 ? this.radarTimer / 4.5 : 1 - this.radarPulseTimer / 12, this.radarTimer > 0);
-        if (this.hero.id === 'moon_knight') return timerState(`Ciclo: ${MOON_PHASES[this.moonPhase].label}`, this.moonTimer / 10, this.moonPhase === 1);
+        if (this.hero.id === 'moon_knight') return timerState(`${MOON_PHASES[this.moonPhase].label} ${(10 - this.moonTimer).toFixed(1)}s > ${MOON_PHASES[(this.moonPhase + 1) % 3].label}`, this.moonTimer / 10, this.moonPhase === 1);
         if (this.hero.id === 'blade') return timerState(`Sed de sangre ${this.bloodTally}/6`, this.bloodTally / 6, this.bloodTally >= 5);
         if (this.hero.id === 'ghost_rider') return timerState(this.cooldownRemaining <= 0 ? 'Penitencia lista' : `Penitencia ${this.cooldownRemaining.toFixed(1)} s`, this.cooldownRemaining <= 0 ? 1 : 1 - this.cooldownRemaining / 11, this.cooldownRemaining <= 0);
         if (this.hero.id === 'luke_cage') return { label: `Tenacidad: -${Math.round(this.hero.getStunResistance() * 100)}% aturdimiento`, progress: null, ready: true };
@@ -278,8 +289,9 @@ export class StreetKitSystem {
     updateMoonCycle(dt) {
         this.moonTimer += dt;
         if (this.moonTimer < 10) return;
-        this.moonTimer -= 10;
-        this.moonPhase = (this.moonPhase + 1) % MOON_PHASES.length;
+        const phases = Math.floor(this.moonTimer / 10);
+        this.moonTimer %= 10;
+        this.moonPhase = (this.moonPhase + phases) % MOON_PHASES.length;
         this.hero.game.audio?.play('moon');
     }
 
