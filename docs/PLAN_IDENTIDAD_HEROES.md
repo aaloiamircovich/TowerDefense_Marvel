@@ -1,7 +1,7 @@
 # Identidad y habilidades de los 105 heroes
 
 Fecha: 2026-09-13. Base revisada: commit 553ad63.
-Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes. FASE 3 IMPLEMENTADA, ocho lotes. FASE 4 EN CURSO, seis lotes.
+Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes. FASE 3 IMPLEMENTADA, ocho lotes. FASE 4 EN CURSO, siete lotes.
 Fases 5 a 10 pendientes. La cobertura comun no certifica el balance individual.
 Los hallazgos de auditoria describen el baseline; ver avances abajo para las
 correcciones ya realizadas. No equivale a completar el rediseño de los 105 kits.
@@ -12,6 +12,42 @@ cambie alguna decision real del jugador. Las propuestas requieren validacion
 antes de fijar porcentajes, tiempos o requisitos nuevos.
 
 ## Alcance y evidencia
+
+### Fase 4, lote 7: M'Baku, Korg, Red Guardian y Echo (2026-10-08)
+
+Se amplian los lotes a cuatro heroes por pedido del usuario.
+
+- M'Baku retira al atacar 20% de la barrera actual, limitado a 120% de su
+  dano efectivo, cada 4s desde despliegue/uso. El ataque base sigue su viaje;
+  la ruptura especial es inmediata, no transfiere sobrante a HP, ni genera
+  bajas/dinero. Respeta cobertura/deteccion, registra barrera retirada y
+  retrasa su recarga. Conserva ruptura probabilistica y signature.
+- Korg conserva splash; sustituye slow aleatorio por pisoton cada 5s cuando
+  hay >=3 terrestres detectables en cobertura y a <=65px. Afecta hasta 5,
+  priorizando progreso de ruta: 50% del dano efectivo sin penetracion extra,
+  slow 35%/1.5s resistible. No cuenta voladores ni enemigos fuera de radio.
+- Red Guardian conserva rebote. Cada 3s prepara el siguiente lanzamiento:
+  primer rebote busca mayor progreso relativo de ruta entre blancos detectables
+  en alcance y a <=85px del impacto. Stun 0.3s resistible solo si ese blanco
+  supera al primario; sustituye stun aleatorio. Se consume aunque no encuentre
+  intercepcion; rebotes adicionales de objetos no repiten stun. Pool limpia
+  bandera; signatures conservan su propio contrato.
+- Echo aprende con tres ataques a la misma presa: cuarto x1.6 y marca 12%/2.2s
+  garantizada, resistible. Consume al disparar y reinicia por cambio, movimiento,
+  stun, retiro, perdida de cobertura o pausa >=2.5s. Conserva deteccion, critico
+  propio y evolucion; no copia aliados ni hereda mecanicas de bosses.
+- Sin cambios de rareza, estadisticas base, sprites, mapas, vidas ni economia.
+  Medidores en el panel existente. Heuristica de rarezas reconoce los efectos
+  trasladados a runtime; no representa una simulacion integral del nuevo DPS.
+
+Cobertura: jabari-interception-contract.test.js, 40 pruebas nuevas; niveles
+1/49/50/51/99/100, umbrales, resistencias, inmunidades, limites de victimas,
+recarga, ruptura limitada, rutas, foco y reutilizacion de proyectiles.
+Suite global: 1.821 pruebas aprobadas; economia, campania, accesibilidad y
+release sin errores. Smoke desktop 1366x768 y mobile 390x844 sin overflow,
+desvio de ruta 0px. Benchmark p95 0.329ms. Balance de equipos sigue en fase 10.
+
+Fase 4: 16 de 26 heroes revisados. Siguiente lote: Valkyrie, Rogue, Beast y Drax.
 
 ### Fase 4, lote 6: Jessica Jones y Okoye (2026-10-08)
 

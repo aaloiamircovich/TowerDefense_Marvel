@@ -18,6 +18,7 @@ export class Projectile {
         this.radius = config.radius || 5;
         this.splashRadius = config.splashRadius || 0;
         this.beaconRadius = config.beaconRadius || 0;
+        this.interceptBounce = Boolean(config.interceptBounce);
         this.splashFactor = config.splashFactor ?? 0.5;
         this.chainCount = config.chainCount || 0;
         this.chainRange = config.chainRange || 100;

@@ -4,6 +4,17 @@ Actualizado: 2026-09-22. Roster: 105. No es una certificacion de balance.
 
 ## Cobertura comun ejecutable
 
+### F4/lote 7: cuatro heroes (2026-10-08)
+
+`test/jabari-interception-contract.test.js`: 40 pruebas de M'Baku, Korg,
+Red Guardian y Echo en niveles 1/49/50/51/99/100; barreras con limite por
+poder y sin HP sobrante, pisoton con quorum/limite 5, inmunidades, rutas
+propias para intercepcion, bandera de proyectil reciclado, reinicio del
+aprendizaje y conservacion de dinero/vidas/prioridad. Sustituye los dos
+contratos antiguos de probabilidades de Red Guardian/Echo en
+hero-description-contract.test.js. Total global: 1.821 pruebas aprobadas.
+No certifica balance de todos los equipos, rutas ni presupuesto (fase 10).
+
 `test/hero-roster-contract.test.js` recorre el catalogo real, no una lista de
 nombres extraida de textos de habilidades. Tambien exige que cada ID aparezca
 una sola vez en MATRIZ_IDENTIDAD_HEROES.md y valida referencias de signatures.

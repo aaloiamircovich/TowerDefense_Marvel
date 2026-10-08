@@ -27,9 +27,7 @@ function setup(id) {
 for (const [id, status, chance, phrase] of [
     ['crystal', 'slow', 0.45, '45% de ralentizar solo al objetivo principal'],
     ['nightcrawler', 'mark', 0.3, 'solo al objetivo principal'],
-    ['red_guardian', 'stun', 0.12, '12% de aturdir al objetivo principal'],
-    ['nebula', 'armorBreak', 0.34, '34% de reducir la armadura'],
-    ['echo', 'mark', 0.32, '32% de marcar al objetivo principal']
+    ['nebula', 'armorBreak', 0.34, '34% de reducir la armadura']
 ]) {
     test(`${id}: efecto descrito puede aplicar o fallar; no se transmite por rebote/splash`, () => {
         const f = setup(id);

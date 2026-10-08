@@ -6199,7 +6199,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.05,
       "canSeeStealth": false,
       "ability": "DESAFIO JABARI",
-      "abilityDesc": "Golpes frontales rompen armadura y ganan valor contra enemigos blindados en cuellos de botella.",
+      "abilityDesc": "Cada 4 s, al atacar una barrera retira 20% de su valor actual, hasta 120% del dano efectivo, sin transferir excedente a vida. Conserva 28% de romper armadura 10% por 2.2 s.",
       "niche": "vanguardia barata antiarmadura",
       "sprite": "assets/images/heroes/mbaku/portrait.png",
       "visual": {
@@ -6277,7 +6277,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.2,
       "canSeeStealth": false,
       "ability": "ESCUDO SOVIETICO",
-      "abilityDesc": "Lanza un escudo que rebota una vez. Tiene 12% de aturdir al objetivo principal durante 0.25 s antes de resistencias, sea comun o jefe; el rebote solo hace dano.",
+      "abilityDesc": "Escudo con un rebote. Cada 3 s prepara una intercepcion: el primer rebote busca al mas avanzado detectable dentro del alcance; si supera al objetivo principal, lo aturde 0.3 s antes de resistencias. Se consume al lanzar.",
       "niche": "rebote defensivo economico",
       "sprite": "assets/images/heroes/red_guardian/portrait.png",
       "visual": {
@@ -6335,14 +6335,7 @@ window.__MARVEL_TD_DATA__ = {
           "chainRange": 85,
           "chainFactor": 0.48
         },
-        "attackEffects": [
-          {
-            "type": "stun",
-            "duration": 0.25,
-            "power": 1,
-            "chance": 0.12
-          }
-        ],
+        "attackEffects": [],
         "visualStyle": "impact",
         "projectileColor": "#ef4444"
       },
@@ -6359,7 +6352,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 0.95,
       "canSeeStealth": false,
       "ability": "ROCA DE SAKAAR",
-      "abilityDesc": "Impactos pesados salpican en un area pequena y ralentizan a grupos compactos.",
+      "abilityDesc": "Conserva splash de 48 px. Cada 5 s, si hay al menos 3 enemigos terrestres detectables a 65 px y dentro del alcance, pisa hasta 5: 50% del dano efectivo y slow 35% por 1.5 s antes de resistencias. No afecta voladores.",
       "niche": "splash cercano comun",
       "sprite": "assets/images/heroes/korg/portrait.png",
       "visual": {
@@ -6417,14 +6410,7 @@ window.__MARVEL_TD_DATA__ = {
           "splashRadius": 48,
           "splashFactor": 0.34
         },
-        "attackEffects": [
-          {
-            "type": "slow",
-            "duration": 1.3,
-            "power": 0.22,
-            "chance": 0.26
-          }
-        ],
+        "attackEffects": [],
         "visualStyle": "impact",
         "projectileColor": "#a3a3a3"
       },
@@ -6751,7 +6737,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.45,
       "canSeeStealth": true,
       "ability": "MIMESIS PERFECTA",
-      "abilityDesc": "Tiene 32% de marcar al objetivo principal durante 2.2 s antes de resistencias. +4 puntos de probabilidad critica propia; no copia habilidades ni patrones aliados.",
+      "abilityDesc": "Tras 3 ataques seguidos a la misma presa, el cuarto inflige +60% de dano y marca 12% durante 2.2 s antes de resistencias. Pierde el combo al cambiar, moverse, sufrir stun, perder cobertura o pasar 2.5 s sin atacar. +4 puntos criticos propios; no copia aliados.",
       "niche": "duelista comun con marca",
       "sprite": "assets/images/heroes/echo/portrait.png",
       "visual": {
@@ -6804,14 +6790,7 @@ window.__MARVEL_TD_DATA__ = {
       },
       "terrainRole": "grass",
       "special": {
-        "attackEffects": [
-          {
-            "type": "mark",
-            "duration": 2.2,
-            "power": 0.08,
-            "chance": 0.32
-          }
-        ],
+        "attackEffects": [],
         "statModifiers": {
           "critChance": 4
         },

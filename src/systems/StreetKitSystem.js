@@ -28,6 +28,9 @@ export class StreetKitSystem {
         this.attackCount = 0;
         this.cooldownRemaining = hero.id === 'jessica_jones' ? 3 : hero.id === 'iron_fist' ? 5 : ['she_hulk', 'elektra', 'shang_chi'].includes(hero.id) ? 4 : 0;
         this.ringCharge = 0;
+        if (hero.id === 'mbaku') this.cooldownRemaining = 4;
+        if (hero.id === 'korg') this.cooldownRemaining = 5;
+        if (hero.id === 'red_guardian') this.cooldownRemaining = 3;
         this.radarTimer = 0;
         this.radarPulseTimer = 0.4;
         this.moonTimer = 0;
@@ -48,10 +51,21 @@ export class StreetKitSystem {
         if (this.hero.id === 'daredevil') this.updateDaredevil(dt);
         if (this.hero.id === 'moon_knight') this.updateMoonCycle(dt);
         if (this.hero.id === 'ghost_rider') this.updatePenance(enemies, stats);
+        if (this.hero.id === 'korg') this.stompKorg(enemies, stats);
     }
 
     onAttack(target, stats) {
         this.attackCount++;
+        if (this.hero.id === 'mbaku' && this.cooldownRemaining === 0 && this.isCovered(target, stats)
+            && target.behavior?.barrier > 0) {
+            const amount = Math.min(target.behavior.barrier * 0.2, stats.damage * 1.2);
+            const result = target.behavior.absorbDamage(amount);
+            this.hero.recordDamage(result.absorbed);
+            this.cooldownRemaining = 4;
+            this.hero.recordAbility();
+            this.hero.game.vfx?.addBurst(target.x, target.y, { color: '#f7c873', radius: 30 });
+        }
+        if (this.hero.id === 'red_guardian' && this.cooldownRemaining === 0) this.cooldownRemaining = 3;
         if (this.hero.id === 'jessica_jones' && this.isLastLineTarget(target)) {
             this.cooldownRemaining = 3;
             this.hero.recordAbility();
@@ -186,6 +200,7 @@ export class StreetKitSystem {
     }
 
     getProjectileProfile() {
+        if (this.hero.id === 'red_guardian') return { interceptBounce: this.cooldownRemaining === 0 && !(this.hero.stunTimer > 0) };
         if (this.hero.id === 'moon_knight') {
             if (this.moonPhase === 0) return { returning: true, chainCount: 1, chainRange: 105, chainFactor: 0.58 };
             if (this.moonPhase === 1) return { returning: true, armorPenetration: 0.35 };
@@ -224,6 +239,10 @@ export class StreetKitSystem {
     }
 
     getDisplayState() {
+        if (['mbaku', 'korg', 'red_guardian'].includes(this.hero.id)) {
+            const [label, seconds] = { mbaku: ['Desafio: requiere barrera', 4], korg: ['Pisoton: 3 cercanos', 5], red_guardian: ['Intercepcion', 3] }[this.hero.id];
+            return timerState(`${label} | ${this.cooldownRemaining.toFixed(1)}s`, 1 - this.cooldownRemaining / seconds, this.cooldownRemaining === 0);
+        }
         if (this.hero.id === 'jessica_jones') return timerState(this.cooldownRemaining > 0 ? `Ultima linea ${this.cooldownRemaining.toFixed(1)}s` : 'Ultima linea: ruta >=75%', 1 - this.cooldownRemaining / 3, this.cooldownRemaining === 0);
         if (this.hero.id === 'iron_fist') return timerState(this.isChiPrepared() ? 'Chi preparado' : `Chi ${this.cooldownRemaining.toFixed(1)}s`, 1 - this.cooldownRemaining / 5, this.isChiPrepared());
         if (this.hero.id === 'elektra') return timerState(this.cooldownRemaining > 0
@@ -370,6 +389,26 @@ export class StreetKitSystem {
         const progression = this.hero.game.progression?.getHeroBonuses(this.hero.id);
         const synergy = this.hero.game.teamSynergy?.getAbilityModifiers(this.hero);
         return 1 + Math.min(0.35, Math.max(0, this.hero.level - 1) * 0.035) + (progression?.abilityPower || 0) + (synergy?.abilityPower || 0);
+    }
+
+    isCovered(target, stats) {
+        return target?.isAlive && !target.hasReachedEnd && !(this.hero.stunTimer > 0)
+            && (!target.stealth || stats.canSeeStealth)
+            && isPointInRangePattern(this.hero, target, stats.range, this.hero.rangePattern, stats.rangeGeometryScale);
+    }
+
+    stompKorg(enemies, stats) {
+        if (this.cooldownRemaining > 0 || this.hero.stunTimer > 0) return;
+        const victims = enemies.filter(enemy => this.isCovered(enemy, stats) && !enemy.flying && distance(enemy, this.hero) <= 65)
+            .sort((a, b) => getRouteProgress(b) - getRouteProgress(a)).slice(0, 5);
+        if (victims.length < 3) return;
+        this.cooldownRemaining = 5;
+        for (const enemy of victims) {
+            CombatSystem.applyDamage({ attackerType: this.hero.category, damage: stats.damage * 0.5 }, enemy, this.hero, this.hero.game.resourceManager, 1);
+            if (enemy.isAlive) enemy.applyStatus?.({ type: 'slow', duration: 1.5, power: 0.35 }, this.hero);
+        }
+        this.hero.recordAbility();
+        this.hero.game.vfx?.addRing(this.hero.x, this.hero.y, { color: '#a3a3a3', radius: 65, duration: 0.35 });
     }
 
     getCooldown(base) {

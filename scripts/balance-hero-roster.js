@@ -86,6 +86,9 @@ function getUtilityFactor(hero) {
     // Prepared stuns live in the runtime kits instead of the hero data.
     if (['mockingbird', 'iron_fist', 'jessica_jones'].includes(hero.id) && !effects.some((effect) => effect.type === 'stun')) effects.push({ type: 'stun' });
     if (hero.id === 'okoye' && !effects.some((effect) => effect.type === 'armorBreak')) effects.push({ type: 'armorBreak' });
+    for (const [id, type] of [['red_guardian', 'stun'], ['korg', 'slow'], ['echo', 'mark']]) {
+        if (hero.id === id && !effects.some(effect => effect.type === type)) effects.push({ type });
+    }
     factor -= Math.min(0.18, effects.length * 0.045);
 
     const projectile = hero.special?.projectileProfile || {};

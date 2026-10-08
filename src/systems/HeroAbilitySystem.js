@@ -30,7 +30,7 @@ export class HeroAbilitySystem {
         this.cosmicKit = new CosmicKitSystem(hero);
         this.streetKit = new StreetKitSystem(hero);
         this.mutantKit = new MutantKitSystem(hero);
-        this.focusKit = ['cable', 'nebula', 'mockingbird', 'yelena_belova', 'x_23', 'okoye'].includes(hero.id) ? new TargetFocusSystem(hero) : null;
+        this.focusKit = ['cable', 'nebula', 'mockingbird', 'yelena_belova', 'x_23', 'okoye', 'echo'].includes(hero.id) ? new TargetFocusSystem(hero) : null;
         this.fieldDevice = ['rocket_raccoon', 'peni_parker'].includes(hero.id) ? new FieldDeviceSystem(hero) : null;
     }
 

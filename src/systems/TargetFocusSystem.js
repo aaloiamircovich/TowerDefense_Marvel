@@ -49,6 +49,7 @@ export class TargetFocusSystem {
     }
 
     damageMultiplier(target) {
+        if (this.hero.id === 'echo') return this.matches(target) && this.stacks === 3 ? 1.6 : 1;
         if (this.hero.id === 'yelena_belova') return this.matches(target)
             && target.debuffs?.some(e => e.type === 'mark' && e.duration > 0) ? 1.2 : 1;
         if (this.hero.id === 'mockingbird') return this.matches(target) && this.stacks === 1 ? 1.4 : 1;
@@ -61,6 +62,8 @@ export class TargetFocusSystem {
     }
 
     attackEffects(target) {
+        if (this.hero.id === 'echo') return this.matches(target) && this.stacks === 3
+            ? [{ type: 'mark', duration: 2.2, power: 0.12, chance: 1 }] : [];
         if (this.hero.id === 'okoye') return this.matches(target) && this.stacks === 2
             ? [{ type: 'armorBreak', duration: 3, power: 0.22, chance: 1 }] : [];
         return this.hero.id === 'mockingbird' && this.matches(target) && this.stacks === 1 && this.shockCooldown <= 0
@@ -74,6 +77,13 @@ export class TargetFocusSystem {
     }
 
     onAttack(target) {
+        if (this.hero.id === 'echo') {
+            const prepared = this.matches(target) && this.stacks === 3;
+            const stacks = prepared ? 0 : this.matches(target) ? Math.min(3, this.stacks + 1) : 1;
+            if (prepared) this.hero.recordAbility();
+            this.reset(); this.target = target; this.stacks = stacks;
+            return;
+        }
         if (this.hero.id === 'okoye') {
             const prepared = this.matches(target) && this.stacks === 2;
             const stacks = prepared ? 0 : this.matches(target) ? Math.min(2, this.stacks + 1) : 1;
@@ -125,6 +135,10 @@ export class TargetFocusSystem {
 
     getDisplayState() {
         const valid = this.matches(this.target);
+        if (this.hero.id === 'echo') return {
+            label: `Aprendizaje ${valid ? this.stacks : 0}/3`, progress: valid ? this.stacks / 3 : 0,
+            ready: valid && this.stacks === 3
+        };
         if (this.hero.id === 'okoye') return {
             label: `Estocadas ${valid ? this.stacks : 0}/2`, progress: valid ? this.stacks / 2 : 0,
             ready: valid && this.stacks === 2

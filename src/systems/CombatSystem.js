@@ -1,4 +1,6 @@
 import { TypeChart } from '../../data/TypeChart.js';
+import { getRouteProgress } from '../utils/PathUtils.js';
+import { isPointInRangePattern } from '../utils/RangePattern.js';
 
 import { aggregateItemEffects } from './ItemEffectSystem.js';
 import { getPriorityOrderDamageMultiplier } from './SupportAuraSystem.js';
@@ -45,11 +47,20 @@ export class CombatSystem {
             let current = target;
             const visited = new Set([target]);
             for (let jump = 0; jump < projectile.chainCount; jump++) {
+                const intercept = jump === 0 && projectile.interceptBounce && attacker?.id === 'red_guardian';
+                const stats = intercept ? attacker.getEffectiveStats() : null;
                 const next = enemies
                     .filter((enemy) => enemy.isAlive && !visited.has(enemy) && CombatSystem.distance(enemy, current) <= projectile.chainRange)
-                    .sort((a, b) => CombatSystem.distance(a, current) - CombatSystem.distance(b, current))[0];
+                    .filter(enemy => !intercept || (!enemy.hasReachedEnd && (!enemy.stealth || stats.canSeeStealth)
+                        && isPointInRangePattern(attacker, enemy, stats.range, attacker.rangePattern, stats.rangeGeometryScale)))
+                    .sort((a, b) => (intercept ? getRouteProgress(b) - getRouteProgress(a) : 0)
+                        || CombatSystem.distance(a, current) - CombatSystem.distance(b, current))[0];
                 if (!next) break;
                 CombatSystem.applyDamage(projectile, next, attacker, resourceManager, projectile.chainFactor ** (jump + 1));
+                if (intercept && getRouteProgress(next) > getRouteProgress(target) && next.isAlive) {
+                    next.applyStatus?.({ type: 'stun', duration: 0.3, power: 1 }, attacker);
+                    attacker.recordAbility?.();
+                }
                 attacker?.game?.vfx?.addBeam(current, next, {
                     color: projectile.color,
                     width: 3,
