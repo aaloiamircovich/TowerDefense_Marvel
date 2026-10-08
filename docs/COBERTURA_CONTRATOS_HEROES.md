@@ -24,6 +24,15 @@ Cada escenario comienza sin enemigos para comprobar ausencia de disparos.
 
 ## Contratos especificos existentes
 
+### Gamma: fase 4, lote 1 (2026-10-07)
+
+`test/gamma-pressure-contract.test.js`: 19 pruebas de Hulk/She-Hulk en niveles
+1/49/50/51/99/100 con evoluciones reales. Presion acotada e independiente del
+framerate antes de descarga, furia sin vidas perdidas ni cadencia adicional;
+Objecion preparada, recarga desde despliegue, cuatro victimas como maximo,
+inmunidades, sigilo y resistencias. Mantiene los contratos de salto autonomo
+y signatures existentes. No simula balance de equipos de seis contra 100 oleadas.
+
 | Familia | Suites en test/ |
 | --- | --- |
 | DoT y duraciones | status-damage-contract, status-duration-contract, poison-stacks |

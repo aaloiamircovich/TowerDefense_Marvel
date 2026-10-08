@@ -3,15 +3,13 @@ import assert from 'node:assert/strict';
 import { Enemy } from '../src/entities/Enemy.js';
 import { Hero } from '../src/entities/Hero.js';
 
-test('Hulk convierte vidas perdidas en furia y ejecuta salto gamma', () => {
+test('Hulk convierte presion cercana en furia y ejecuta salto gamma', () => {
     const game = createGame();
     const hero = createHero('hulk', game, { damage: 40, range: 70, fireRate: 0.5, category: 'Mutante' });
-    const enemies = [createEnemy(100, 0), createEnemy(135, 0)];
+    const enemies = [createEnemy(40, 0), createEnemy(65, 0)];
     game.heroes = [hero];
     game.enemies = enemies;
-    game.resourceManager.lives = 18;
-
-    hero.abilitySystem.update(0.1, enemies, hero.getEffectiveStats(), []);
+    hero.abilitySystem.update(4.2, enemies, hero.getEffectiveStats(), []);
 
     assert.ok(enemies.every((enemy) => enemy.hp < enemy.maxHp));
     assert.ok(enemies.every((enemy) => enemy.debuffs.some((effect) => effect.type === 'stun')));

@@ -1,8 +1,8 @@
 # Identidad y habilidades de los 105 heroes
 
 Fecha: 2026-09-13. Base revisada: commit 553ad63.
-Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes. FASE 3 IMPLEMENTADA, ocho lotes.
-Fases 4 a 10 pendientes. La cobertura comun no certifica el balance individual.
+Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes. FASE 3 IMPLEMENTADA, ocho lotes. FASE 4 EN CURSO, un lote.
+Fases 5 a 10 pendientes. La cobertura comun no certifica el balance individual.
 Los hallazgos de auditoria describen el baseline; ver avances abajo para las
 correcciones ya realizadas. No equivale a completar el rediseño de los 105 kits.
 
@@ -12,6 +12,33 @@ cambie alguna decision real del jugador. Las propuestas requieren validacion
 antes de fijar porcentajes, tiempos o requisitos nuevos.
 
 ## Alcance y evidencia
+
+### Fase 4, lote 1: Hulk y She-Hulk (2026-10-07)
+
+- Hulk deja de recibir furia por perder vidas. Carga 8 por ataque y 6/s por
+  enemigo detectable dentro de su alcance real, contando hasta tres. Limite
+  100; conserva +0.4% dano por punto, pero se elimina la cadencia por furia.
+  Conserva salto por 50, alcance especial 2.25x, radio 72, dano 120% escalado,
+  stun 0.65s y recarga base 8s. La explosion incidental conserva su contrato.
+- She-Hulk prepara Objecion con tres ataques y espera cuatro segundos desde
+  despliegue o activacion. El siguiente ataque la descarga; estar lista no
+  dispara solo. Dano adicional 55% escalado, principal y hasta tres vecinos
+  detectables a 58px, marca 14%/2.4s. Retroceso 38px (18px jefes) ahora pasa
+  por applyStatus para respetar inmunidades y voladores. Solo el principal
+  recibe stun 0.7s resistible; no cancela habilidades de boss ni provoca.
+  Se elimina control aleatorio por ataque. No cambia la prioridad del jugador.
+- Se conserva el enfoque del objeto signature de She-Hulk y el escalado
+  existente por nivel/evolucion. No cambian sprites, mapas, dinero ni vidas.
+- Contratos nuevos en gamma-pressure-contract.test.js: 19 pruebas, incluyendo
+  niveles 1/49/50/51/99/100, recarga, limite de objetivos, sigilo, inmunidades,
+  presion por tiempo y ausencia de beneficios por perder vidas.
+
+Validacion: npm run check aprobado, 1.656 tests; simulaciones de economia y
+campania, accesibilidad y release sin errores. Smoke desktop 1366x768 y mobile
+390x844 sin overflow, desvio de ruta 0px. Benchmark p95 0.305ms en esta maquina.
+
+Pendiente: resto de fase 4, proximo lote Wolverine y X-23. Las pruebas de
+contrato no certifican el equilibrio de equipos en cien oleadas; fase 10.
 
 Revisados los 105 registros de data/heroes.json, los cuatro KitSystem,
 HeroAbilitySystem, Hero, CombatSystem, estados de Enemy, HeroLevel y

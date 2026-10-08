@@ -84,14 +84,14 @@ test('Shang-Chi configura tres patrones de los Diez Anillos', () => {
     assert.equal(hero.getEffectiveStats().fireRate > hero.fireRate, true);
 });
 
-test('She-Hulk provoca e impacta grupos con retroceso seguro', () => {
+test('She-Hulk prepara e impacta grupos con retroceso seguro', () => {
     const game = createGame();
     const hero = createHero('she_hulk', game, { damage: 55, range: 100, category: 'Mutante' });
     const enemies = [createEnemy(100, 0), createEnemy(130, 0)];
     game.heroes = [hero];
     game.enemies = enemies;
     const start = enemies[1].distanceTravelled;
-
+    hero.abilitySystem.update(4, enemies, hero.getEffectiveStats(), []);
     for (let index = 0; index < 3; index++) hero.abilitySystem.onAttack(enemies[0], hero.getEffectiveStats(), {}, []);
     assert.ok(enemies[1].distanceTravelled < start);
     assert.equal(enemies[1].y, 0);

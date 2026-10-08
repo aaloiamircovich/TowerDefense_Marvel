@@ -25,7 +25,7 @@ export class StreetKitSystem {
         this.hero = hero;
         this.mode = STREET_CONTROLS[hero.id]?.defaultMode || null;
         this.attackCount = 0;
-        this.cooldownRemaining = 0;
+        this.cooldownRemaining = hero.id === 'she_hulk' ? 4 : 0;
         this.radarTimer = 0;
         this.radarPulseTimer = 0.4;
         this.moonTimer = 0;
@@ -56,7 +56,10 @@ export class StreetKitSystem {
         }
         if (this.hero.id === 'daredevil' && this.attackCount % 4 === 0) this.counterDaredevil(target, stats);
         if (this.hero.id === 'ghost_rider' && this.attackCount % 5 === 0) this.pullWithChain(target);
-        if (this.hero.id === 'she_hulk' && this.attackCount % 3 === 0) this.impactSheHulk(target, stats);
+        if (this.hero.id === 'she_hulk') {
+            this.attackCount = Math.min(3, this.attackCount);
+            if (this.attackCount === 3 && this.cooldownRemaining === 0) this.impactSheHulk(target, stats);
+        }
     }
 
     hasSuppressionTarget(target) {
@@ -127,12 +130,6 @@ export class StreetKitSystem {
         if (this.hero.id === 'luke_cage') {
             return [{ type: 'armorBreak', duration: 3.5, power: 0.28, chance: 0.7 }];
         }
-        if (this.hero.id === 'she_hulk') {
-            return [
-                { type: 'knockback', duration: 0, power: 34, chance: 0.48 },
-                { type: 'mark', duration: 2.4, power: 0.12, chance: 0.48 }
-            ];
-        }
         return [];
     }
 
@@ -180,7 +177,7 @@ export class StreetKitSystem {
         if (this.hero.id === 'ghost_rider') return timerState(this.cooldownRemaining <= 0 ? 'Penitencia lista' : `Penitencia ${this.cooldownRemaining.toFixed(1)} s`, this.cooldownRemaining <= 0 ? 1 : 1 - this.cooldownRemaining / 11, this.cooldownRemaining <= 0);
         if (this.hero.id === 'luke_cage') return { label: `Tenacidad: -${Math.round(this.hero.getStunResistance() * 100)}% aturdimiento`, progress: null, ready: true };
         if (this.hero.id === 'shang_chi') return staticState(`Anillos: ${this.getModeLabel()}`);
-        if (this.hero.id === 'she_hulk') return staticState('Provocacion e impacto cada 3 golpes');
+        if (this.hero.id === 'she_hulk') return timerState(`Objecion ${Math.min(3, this.attackCount)}/3 | ${this.cooldownRemaining.toFixed(1)}s`, Math.min(3, this.attackCount) / 3, this.attackCount >= 3 && this.cooldownRemaining === 0);
         return null;
     }
 
@@ -286,12 +283,19 @@ export class StreetKitSystem {
     }
 
     impactSheHulk(target, stats) {
-        const victims = (this.hero.game.enemies || []).filter((enemy) => enemy.isAlive && distance(enemy, target) <= 58);
+        if (!target?.isAlive || (target.stealth && !stats.canSeeStealth)
+            || !isPointInRangePattern(this.hero, target, stats.range, this.hero.rangePattern, stats.rangeGeometryScale)) return;
+        const victims = [target, ...(this.hero.game.enemies || [])
+            .filter((enemy) => enemy !== target && enemy.isAlive && (!enemy.stealth || stats.canSeeStealth) && distance(enemy, target) <= 58)
+            .sort((a, b) => b.distanceTravelled - a.distanceTravelled).slice(0, 3)];
+        this.attackCount = 0;
+        this.cooldownRemaining = 4;
         victims.forEach((enemy) => {
             CombatSystem.applyDamage({ attackerType: this.hero.category, damage: stats.damage * 0.55 * this.getPowerScale(), armorPenetration: 0.15 }, enemy, this.hero, this.hero.game.resourceManager, 1);
             if (enemy.isAlive) {
-                enemy.moveBackward?.(enemy.isBoss ? 18 : 38);
+                enemy.applyStatus?.({ type: 'knockback', duration: 0, power: enemy.isBoss ? 18 : 38 }, this.hero);
                 enemy.applyStatus?.({ type: 'mark', duration: 2.4, power: 0.14 }, this.hero);
+                if (enemy === target) enemy.applyStatus?.({ type: 'stun', duration: 0.7, power: 1 }, this.hero);
             }
         });
         this.hero.game.vfx?.addRing(target.x, target.y, { color: '#91ed55', radius: 62, duration: 0.32 });

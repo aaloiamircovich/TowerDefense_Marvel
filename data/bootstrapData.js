@@ -296,7 +296,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 0.55,
       "canSeeStealth": false,
       "ability": "FURIA GAMMA",
-      "abilityDesc": "Acumula furia al atacar y cuando la defensa pierde vidas. Con 50 de furia salta sobre un grupo, inflige dano en area y aturde sin sacar enemigos de su ruta; es una bomba de corto alcance, no un carry universal.",
+      "abilityDesc": "Gana 8 de furia por ataque y 6 por segundo por enemigo detectable en su alcance, hasta 3 enemigos. La furia aumenta el dano, no la cadencia. Con 50 ejecuta un salto de area a 2.25x alcance, aturde 0.65s y recarga 8s. Perder vidas no da furia.",
       "sprite": "assets/images/heroes/hulk/portrait.png",
       "allowedTerrains": [
         1,
@@ -1562,7 +1562,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.1,
       "canSeeStealth": false,
       "ability": "OBJECION DEFINITIVA",
-      "abilityDesc": "Provoca a grupos marcandolos y encadena impactos que retroceden por el trazado sin abandonar la ruta.",
+      "abilityDesc": "Prepara Objecion en 3 ataques: golpe adicional de 55% de dano a hasta 4 enemigos, marca 14% durante 2.4s y retroceso por la ruta (38px; jefes 18px). Aturde al objetivo principal 0.7s, sujeto a resistencias. Recarga minima de 4s desde despliegue; no provoca ni cancela habilidades de jefes.",
       "sprite": "assets/images/heroes/she_hulk/portrait.png",
       "allowedTerrains": [
         1,

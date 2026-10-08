@@ -13,7 +13,7 @@ const contracts = {
     ghost_rider: { cost: 520, ability: 'ESPIRITU DE VENGANZA', abilityDesc: 'Cada impacto quema durante 4 s: 13.5% de su dano efectivo por segundo, sin acumularse. Sus cadenas arrastran por la ruta y Penitencia castiga la vida perdida de jefes.', niche: 'control pesado y castigo de jefes', metrics: [5, 4, 1, 4] },
     luke_cage: { cost: 210, ability: 'DEFENSOR INQUEBRANTABLE', abilityDesc: 'Los aturdimientos que recibe duran 50% menos. Ataca y tiene 70% de reducir la armadura del objetivo durante 3.5 s antes de resistencias. No potencia aliados.', niche: 'tenacidad propia y ruptura de blindaje', metrics: [3, 4, 5, 1] },
     shang_chi: { cost: 410, ability: 'LEYENDA DE LOS DIEZ ANILLOS', abilityDesc: 'Configura sus anillos en orbita encadenada, rafaga de impacto o guardia de alta cadencia.', niche: 'patrones manuales de combo y control', metrics: [5, 4, 3, 1] },
-    she_hulk: { cost: 350, ability: 'OBJECION DEFINITIVA', abilityDesc: 'Provoca a grupos marcandolos y encadena impactos que retroceden por el trazado sin abandonar la ruta.', niche: 'impacto de area, provocacion y retroceso', metrics: [5, 4, 2, 1] }
+    she_hulk: { cost: 350, ability: 'OBJECION DEFINITIVA', abilityDesc: 'Prepara Objecion en 3 ataques: golpe adicional de 55% de dano a hasta 4 enemigos, marca 14% durante 2.4s y retroceso por la ruta (38px; jefes 18px). Aturde al objetivo principal 0.7s, sujeto a resistencias. Recarga minima de 4s desde despliegue; no provoca ni cancela habilidades de jefes.', niche: 'golpe preparado, control y retroceso', metrics: [5, 4, 2, 1] }
 };
 
 for (const [id, contract] of Object.entries(contracts)) {

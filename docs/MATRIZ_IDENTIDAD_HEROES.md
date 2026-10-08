@@ -62,13 +62,13 @@ especificos con objetos y comparativas de rutas siguen pendientes.
 
 | ID | Heroe (rareza) | Actual | Firma propuesta y limite |
 | --- | --- | --- | --- |
-| `hulk` | Hulk (Mythic) | F1/lote 11: salto fija detectable a 2.25x rango; area/stun incidental. Conserva furia por ataques y vidas perdidas. | Aplastamiento cargado por presion cercana; no premiar perder vidas como via principal. Descarga fuerte y pausa larga. |
+| `hulk` | Hulk (Mythic) | F4/lote 1: furia 8/ataque y 6/s por enemigo cercano detectable (maximo 3); no vidas perdidas ni cadencia por furia. Conserva salto 2.25x y area/stun incidental. | Implementado: descarga por 50 de furia y recarga base 8s; validar balance de equipos en fase 10. |
 | `wolverine` | Wolverine (Epic) | F1/lotes 11/13: salto detectable 3x, regreso 0.8 s; Berserker signature acelera y da critico por 3 s reales. | Perseguir una presa alimenta frenesi; pierde parte al cambiar objetivo, retorno seguro, sin curacion de base. |
 | `gamora` | Gamora (Common) | F1/lote 16: combo secundario y ejecucion garantizada de comunes al 25% o menos, ignorando defensas; excluye todos los jefes. | Ejecucion precisa de debilitados; medir aporte real contra comunes protegidos sin ejecutar bosses. |
 | `ant_man` | Ant-Man (Common) | Diminuto rapido o gigante con splash/retroceso. | Ventanas Pym: diminuto prepara y gigante consume carga; no cambiar forma para eludir cooldown ni mover fuera de ruta. |
 | `shang_chi` | Shang-Chi (Epic) | F2/lote 8: tres modos de anillos, sin monedas ocultas en Guardia; conserva perfiles y cadencia. | Combo de anillos con finalizadores distintos pendiente de fase 4; no aura aliada atacante. |
 | `moon_knight` | Moon Knight (Epic) | Ciclo automatico alcance/dano/cadencia y retorno. | Ciclo lunar previsible que cambia prioridades, no selector manual prometido; debilidad distinta en cada fase. |
-| `she_hulk` | She-Hulk (Rare) | F1/lote 13: enfoque signature hasta diez stacks de 3%, caduca tras 4 s sin atacar; conserva impacto y retroceso. | Objecion al elite delantero: golpe preparado que interrumpe una accion; resistencia de jefe y sin taunt ficticio. |
+| `she_hulk` | She-Hulk (Rare) | F4/lote 1: Objecion preparada en tres ataques, recarga minima 4s; hasta cuatro detectables, marca y retroceso resistible, stun solo principal. Conserva enfoque signature. | Implementado sin taunt ficticio: respeta prioridad elegida; interrumpe movimiento, no acciones de boss. Balance de equipos pendiente. |
 | `iron_fist` | Iron Fist (Epic) | Critico propio y stun probabilistico. | Carga de chi para un golpe concentrado; descanso entre golpes y sin area masiva. |
 | `jessica_jones` | Jessica Jones (Common) | Golpe lento y chance de stun. | Ultima linea: impacto extra al enemigo mas avanzado; condicion explicita de progreso por ruta, no de coordenada de base. |
 | `elektra` | Elektra (Rare) | F1/lote 2: sangrado 22% dano efectivo/s y critico propio. | Remate a un objetivo ya sangrante; consume preparacion, sin cadena de ejecuciones de bosses. |

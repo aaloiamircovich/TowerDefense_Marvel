@@ -9,7 +9,7 @@ const contracts = {
     hulk: {
         cost: 400,
         ability: 'FURIA GAMMA',
-        abilityDesc: 'Acumula furia al atacar y cuando la defensa pierde vidas. Con 50 de furia salta sobre un grupo, inflige daño en área y aturde sin sacar enemigos de su ruta.',
+        abilityDesc: 'Gana 8 de furia por ataque y 6 por segundo por enemigo detectable en su alcance, hasta 3 enemigos. La furia aumenta el dano, no la cadencia. Con 50 ejecuta un salto de area a 2.25x alcance, aturde 0.65s y recarga 8s. Perder vidas no da furia.',
         niche: 'tanque cercano, aguante y control de grupos'
     },
     black_widow: {

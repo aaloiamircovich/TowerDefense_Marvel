@@ -38,7 +38,6 @@ export class AvengerKitSystem {
         this.resource = 0;
         this.attackCount = 0;
         this.cooldownRemaining = 0;
-        this.lastLives = hero.game?.resourceManager?.lives ?? 20;
         this.lastTargetId = null;
         this.redwingAngle = 0;
         this.counteredTargets = new Set();
@@ -49,7 +48,7 @@ export class AvengerKitSystem {
         this.cooldownRemaining = Math.max(0, this.cooldownRemaining - dt);
         this.redwingAngle = (this.redwingAngle + dt * 2.4) % (Math.PI * 2);
 
-        if (this.hero.id === 'hulk') this.updateHulk(enemies, stats);
+        if (this.hero.id === 'hulk') this.updateHulk(enemies, stats, dt);
         if (this.hero.id === 'black_panther') this.updateBlackPanther(enemies, stats);
         if (this.hero.id === 'falcon') this.updateRedwing(enemies, stats);
         if (this.hero.id === 'war_machine') this.updateSalvo(enemies, stats);
@@ -77,7 +76,6 @@ export class AvengerKitSystem {
     applyStatModifiers(stats) {
         if (this.hero.id === 'hulk') {
             stats.damage *= 1 + this.resource * 0.004;
-            stats.fireRate *= 1 + this.resource * 0.0015;
         }
         if (this.hero.id === 'black_panther') {
             stats.damage *= 1 + this.resource * 0.0025;
@@ -241,10 +239,9 @@ export class AvengerKitSystem {
         ctx.restore();
     }
 
-    updateHulk(enemies, stats) {
-        const lives = this.hero.game.resourceManager?.lives ?? this.lastLives;
-        if (lives < this.lastLives) this.resource = Math.min(100, this.resource + (this.lastLives - lives) * 35);
-        this.lastLives = lives;
+    updateHulk(enemies, stats, dt = 0) {
+        const nearby = this.hero.abilitySystem.getTargetsInRange(enemies, stats.range, stats).length;
+        this.resource = Math.min(100, this.resource + Math.min(3, nearby) * 6 * dt);
         if (this.resource < 50 || this.cooldownRemaining > 0) return;
         const target = this.hero.abilitySystem.getTargetsInRange(enemies, stats.range * 2.25, stats)
             .sort((a, b) => b.distanceTravelled - a.distanceTravelled)[0];
