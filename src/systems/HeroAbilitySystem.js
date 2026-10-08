@@ -6,6 +6,7 @@ import { StreetKitSystem } from './StreetKitSystem.js';
 import { MutantKitSystem } from './MutantKitSystem.js';
 import { TargetFocusSystem } from './TargetFocusSystem.js';
 import { FieldDeviceSystem } from './FieldDeviceSystem.js';
+import { MartialKitSystem } from './MartialKitSystem.js';
 import { getLineEndpoint, getLineTargets } from '../utils/LineTargeting.js';
 import { applyCooldownReductions } from '../utils/AbilityModifiers.js';
 import { getHeroRangePattern, isPointInRangePattern } from '../utils/RangePattern.js';
@@ -30,7 +31,8 @@ export class HeroAbilitySystem {
         this.cosmicKit = new CosmicKitSystem(hero);
         this.streetKit = new StreetKitSystem(hero);
         this.mutantKit = new MutantKitSystem(hero);
-        this.focusKit = ['cable', 'nebula', 'mockingbird', 'yelena_belova', 'x_23', 'okoye', 'echo'].includes(hero.id) ? new TargetFocusSystem(hero) : null;
+        this.focusKit = ['cable', 'nebula', 'mockingbird', 'yelena_belova', 'x_23', 'okoye', 'echo', 'drax'].includes(hero.id) ? new TargetFocusSystem(hero) : null;
+        this.martialKit = ['valkyrie', 'rogue', 'beast'].includes(hero.id) ? new MartialKitSystem(hero) : null;
         this.fieldDevice = ['rocket_raccoon', 'peni_parker'].includes(hero.id) ? new FieldDeviceSystem(hero) : null;
     }
 
@@ -55,6 +57,7 @@ export class HeroAbilitySystem {
         this.attackCount++;
         this.fieldDevice?.onAttack(projectileConfig);
         this.focusKit?.onAttack(target);
+        this.martialKit?.onAttack(target, stats);
         this.avengerKit.onAttack(target, stats, projectileConfig, projectiles);
         this.cosmicKit.onAttack(target, stats, projectileConfig, projectiles);
         this.streetKit.onAttack(target, stats, projectileConfig, projectiles);
@@ -89,6 +92,7 @@ export class HeroAbilitySystem {
     }
 
     applyStatModifiers(stats) {
+        this.martialKit?.applyStats(stats);
         this.avengerKit.applyStatModifiers(stats);
         this.cosmicKit.applyStatModifiers(stats);
         this.streetKit.applyStatModifiers(stats);
@@ -100,6 +104,7 @@ export class HeroAbilitySystem {
             * this.mutantKit.getAttackDamageMultiplier()
             * this.streetKit.getAttackDamageMultiplier(target)
             * (this.focusKit?.damageMultiplier(target) || 1)
+            * (this.martialKit?.damageMultiplier(target) || 1)
             * (this.fieldDevice?.damageMultiplier() || 1);
     }
 
@@ -207,6 +212,7 @@ export class HeroAbilitySystem {
     }
 
     getDisplayState() {
+        if (this.martialKit) return this.martialKit.getDisplayState();
         if (this.fieldDevice) return this.fieldDevice.getDisplayState();
         if (this.focusKit) return this.focusKit.getDisplayState();
         const aura = getEffectiveSupportAura(this.hero);
@@ -254,7 +260,7 @@ export class HeroAbilitySystem {
     }
 
     getProjectileProfile() {
-        const profile = { ...this.avengerKit.getProjectileProfile(), ...this.cosmicKit.getProjectileProfile(), ...this.streetKit.getProjectileProfile(), ...this.mutantKit.getProjectileProfile() };
+        const profile = { ...this.avengerKit.getProjectileProfile(), ...this.cosmicKit.getProjectileProfile(), ...this.streetKit.getProjectileProfile(), ...this.mutantKit.getProjectileProfile(), ...this.martialKit?.getProjectileProfile() };
         if (this.hero.game.progression?.getHeroEvolution?.(this.hero.id)?.id === 'iron_spider') profile.armorPenetration = 0.3;
         return profile;
     }

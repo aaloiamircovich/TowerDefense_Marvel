@@ -6894,7 +6894,7 @@
     "fireRate": 1.05,
     "canSeeStealth": false,
     "ability": "CARGA DE VALKIRIA",
-    "abilityDesc": "32% de aplicar sangrado durante 3.4 s: 20% de su dano efectivo por segundo, sin acumularse. +5 puntos de probabilidad critica.",
+    "abilityDesc": "Tras 5 s quieta sobre montana o techo, su siguiente ataque inflige +75% de dano. Se reinicia al moverse, sufrir stun o dejar terreno alto; no cambia su casilla. Conserva 32% de sangrado por 3.4 s al 20% del dano efectivo/s y +5 puntos criticos.",
     "niche": "rara anti jefe cuerpo a cuerpo",
     "sprite": "assets/images/heroes/valkyrie/portrait.png",
     "visual": {
@@ -6976,7 +6976,7 @@
     "fireRate": 1.15,
     "canSeeStealth": false,
     "ability": "ABSORCION MUTANTE",
-    "abilityDesc": "Golpes cercanos reducen la velocidad y marcan elites para que el equipo los remate.",
+    "abilityDesc": "Cada 6 s absorbe un rasgo de un enemigo normal al atacar: armadura da 20% de penetracion; si no, corredor da 15% de cadencia; si no, volador da 15% de alcance. Dura 3 s, no acumula y se pierde al mover, retirar o sufrir stun. Nunca copia bosses. Conserva slow y marca probabilisticos.",
     "niche": "control mutante de corto alcance",
     "sprite": "assets/images/heroes/rogue/portrait.png",
     "visual": {
@@ -7060,7 +7060,7 @@
     "fireRate": 1.35,
     "canSeeStealth": false,
     "ability": "ACROBACIA CIENTIFICA",
-    "abilityDesc": "Ataques acrobaticos rebotan en objetivos cercanos y ralentizan formaciones densas.",
+    "abilityDesc": "Dos ataques con la misma pareja detectable a 80 px preparan un golpe acrobatico al vecino: 65% del dano efectivo y slow 35% por 1.5 s, recarga minima 3 s. Cambiar pareja, mover, stun, perder cobertura o pausa de 2.5 s reinicia el combo. Conserva rebote y slow basicos.",
     "niche": "bestia epica con rebote y control",
     "sprite": "assets/images/heroes/beast/portrait.png",
     "visual": {
@@ -7558,7 +7558,7 @@
     "fireRate": 1.15,
     "canSeeStealth": false,
     "ability": "CUCHILLAS LITERALES",
-    "abilityDesc": "34% de aplicar sangrado durante 3.2 s: 20% de su dano efectivo por segundo, sin acumularse.",
+    "abilityDesc": "Cada ataque previo al mismo jefe o enemigo de amenaza 4+ aporta +8% de dano al siguiente, hasta +40%. Cambiar, mover, stun, perder cobertura o pausa de 2.5 s reinicia el duelo. Conserva 34% de sangrado por 3.2 s al 20% del dano efectivo/s, sin acumularse.",
     "niche": "raro cuerpo a cuerpo anti jefe",
     "sprite": "assets/images/heroes/drax/portrait.png",
     "visual": {

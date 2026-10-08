@@ -4,6 +4,15 @@ Actualizado: 2026-09-22. Roster: 105. No es una certificacion de balance.
 
 ## Cobertura comun ejecutable
 
+### F4/lote 8: terreno, absorcion, pareja y duelo (2026-10-08)
+
+`test/martial-duel-contract.test.js`: 54 pruebas nuevas para Valkyrie, Rogue,
+Beast y Drax; niveles1/49/50/51/99/100, terreno real, recarga/consumo, rasgos
+permitidos/prioridad, exclusiones de boss runtime/config, limites de pareja,
+inmunidades/armadura, techo40% de duelo, reinicios y conservacion de
+dinero/vidas/prioridad. Los contratos existentes de signatures siguen activos.
+Total global: 1.875 pruebas. No sustituye balance de ruta/equipo (fase10).
+
 ### F4/lote 7: cuatro heroes (2026-10-08)
 
 `test/jabari-interception-contract.test.js`: 40 pruebas de M'Baku, Korg,

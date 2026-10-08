@@ -1,7 +1,7 @@
 # Identidad y habilidades de los 105 heroes
 
 Fecha: 2026-09-13. Base revisada: commit 553ad63.
-Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes. FASE 3 IMPLEMENTADA, ocho lotes. FASE 4 EN CURSO, siete lotes.
+Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes. FASE 3 IMPLEMENTADA, ocho lotes. FASE 4 EN CURSO, ocho lotes.
 Fases 5 a 10 pendientes. La cobertura comun no certifica el balance individual.
 Los hallazgos de auditoria describen el baseline; ver avances abajo para las
 correcciones ya realizadas. No equivale a completar el rediseño de los 105 kits.
@@ -12,6 +12,47 @@ cambie alguna decision real del jugador. Las propuestas requieren validacion
 antes de fijar porcentajes, tiempos o requisitos nuevos.
 
 ## Alcance y evidencia
+
+### Fase 4, lote 8: Valkyrie, Rogue, Beast y Drax (2026-10-08)
+
+- Valkyrie prepara el siguiente ataque x1.75 tras 5s quieta en una celda
+  mountain real (montana/techo). Movimiento, stun, retiro o terreno distinto
+  reinician carga; el disparo consume. La carga es un efecto visual, no un
+  traslado de la entidad: adaptacion conservadora de la propuesta de salto,
+  para no ocupar calle/edificios bloqueados ni pisar otra colocacion.
+  Conserva sangrado, critico propio, signature y alcance ordinario.
+- Rogue toma un solo rasgo durante 3s, cada 6s desde despliegue/uso, al atacar
+  un enemigo normal: armadura -> 20 puntos de penetracion; si no, runner ->
+  +15% cadencia; si no, volador -> +15% alcance. Lista cerrada y prioridad
+  explicita, no copia bosses ni roba/suprime pasivas del enemigo. No acumula,
+  no modifica el disparo que activa, se pierde por movimiento/stun/retiro.
+  Conserva slow/marca basicos y buff signature independiente; techo de
+  penetracion total 85% existente.
+- Beast prepara dos ataques con la misma pareja detectable en cobertura y
+  separada <=80px; siguiente ataque con recarga lista aplica al vecino 65%
+  del poder efectivo y slow35%/1.5s resistible. Recarga minima 3s, sin critico
+  extra ni penetracion gratis. Aislado no carga; cambiar pareja, perder
+  cobertura/deteccion, muerte, movimiento/stun/retiro o pausa2.5s reinicia.
+  Conserva rebote/slow basicos; no desplaza aliados ni cambia prioridad.
+- Drax gana 8% de dano por ataque previo al mismo elite (boss por flags
+  runtime/config o amenaza>=4), hasta40% desde el sexto. Cambio, movimiento,
+  stun/retiro, perdida de cobertura/deteccion, muerte o pausa2.5s reinicia.
+  No escala cadencia; conserva sangrado y Golpe Destructor signature.
+
+MartialKitSystem concentra los tres contratos nuevos con estado acotado y
+reinicio compartido; Drax reutiliza TargetFocusSystem. Temporizadores antes
+de seleccionar/disparar evitan un frame extra de buff o cadencia tras expirar.
+Sin cambios de stats base, rarezas, sprites, mapas, monedas ni vidas.
+
+54 pruebas nuevas en martial-duel-contract.test.js: niveles 1/49/50/51/99/100,
+terreno real, consumo, tipos de rasgo/flags de jefe, pareja, inmunidad,
+armadura, reinicios y prioridades. Suite global: 1.875 aprobadas; economia,
+campania, accesibilidad y release sin errores. Smoke desktop1366x768 y
+mobile390x844 sin overflow ni desvio de ruta. Benchmark p95 0.331ms.
+No certifica balance integral de equipos/mapas (fase10).
+
+Fase4: 20 de 26 heroes revisados. Siguiente lote: Lady Sif, White Tiger,
+Tigra y Angela; quedan ademas Deadpool y Devil Dinosaur para cerrar la fase.
 
 ### Fase 4, lote 7: M'Baku, Korg, Red Guardian y Echo (2026-10-08)
 

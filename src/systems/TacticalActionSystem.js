@@ -42,6 +42,7 @@ export class TacticalActionSystem {
         resetSupportAura(hero);
         hero.abilitySystem?.fieldDevice?.clear();
         hero.abilitySystem?.focusKit?.reset();
+        hero.abilitySystem?.martialKit?.reset();
         hero.abilitySystem?.mutantKit?.updatePursuit(0);
         if (hero.abilitySystem?.streetKit) hero.abilitySystem.streetKit.suppression = null;
         if (hero.abilitySystem?.avengerKit) hero.abilitySystem.avengerKit.salvo = null;
