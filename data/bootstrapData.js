@@ -876,7 +876,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.4,
       "canSeeStealth": true,
       "ability": "ESCALA PYM",
-      "abilityDesc": "Alterna manualmente forma diminuta de alta cadencia y forma gigante con impacto y retroceso de área.",
+      "abilityDesc": "Tres ataques diminutos preparan carga Pym. El siguiente ataque gigante consume la carga: impacto adicional de 50% de poder escalado a hasta 5 detectables en cobertura y a 68px del blanco; retrocede 32px (jefes 15px), respetando inmunidades. Recarga minima 4s desde despliegue o impacto, compartida entre formas. Conserva splash gigante ordinario.",
       "sprite": "assets/images/heroes/ant_man/portrait.png",
       "allowedTerrains": [
         1
@@ -1431,7 +1431,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 2.2,
       "canSeeStealth": false,
       "ability": "LEYENDA DE LOS DIEZ ANILLOS",
-      "abilityDesc": "Configura sus anillos en orbita encadenada, rafaga de impacto o guardia de alta cadencia.",
+      "abilityDesc": "Tres ataques preparan un finalizador para el siguiente disparo: Orbita suma un rebote (4) y alcance de cadena 110px; Rafaga amplifica area a 82px y penetracion a 50%; Guardia ralentiza al blanco principal 45% durante 1.5s. Recarga minima 4s desde despliegue o uso. Cambiar patron conserva combo y recarga, sin crear ataques ni monedas.",
       "sprite": "assets/images/heroes/shang_chi/portrait.png",
       "allowedTerrains": [
         1,

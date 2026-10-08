@@ -71,8 +71,10 @@ test('Ant-Man alterna formas diminuta y gigante con impacto seguro', () => {
     const game = createGame(); const hero = createHero('ant_man', game, { damage: 28, range: 110 }); const enemy = createEnemy(90);
     game.heroes = [hero]; game.enemies = [enemy];
     assert.ok(hero.getEffectiveStats().fireRate > hero.fireRate);
-    assert.equal(hero.abilitySystem.setCombatMode('giant'), true); const start = enemy.distanceTravelled;
     for (let i = 0; i < 3; i++) hero.abilitySystem.onAttack(enemy, hero.getEffectiveStats(), {}, []);
+    hero.abilitySystem.update(4, [enemy], hero.getEffectiveStats(), []);
+    assert.equal(hero.abilitySystem.setCombatMode('giant'), true); const start = enemy.distanceTravelled;
+    hero.abilitySystem.onAttack(enemy, hero.getEffectiveStats(), {}, []);
     assert.ok(enemy.distanceTravelled < start); assert.equal(enemy.y, 0);
 });
 

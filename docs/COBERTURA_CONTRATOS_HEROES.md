@@ -24,6 +24,16 @@ Cada escenario comienza sin enemigos para comprobar ausencia de disparos.
 
 ## Contratos especificos existentes
 
+### Pym y anillos: fase 4, lote 4 (2026-10-07)
+
+`test/pym-ring-combo-contract.test.js`: 31 pruebas, niveles 1/49/50/51/99/100.
+Ant-Man carga diminuta/descarga gigante, cinco victimas, consumo, recarga,
+cobertura, inmunidades y retroceso sobre ruta. Shang-Chi prueba cada finalizador,
+su consumo al disparar, perfil de proyectil fijado aunque cambie modo antes
+de impactar, slow primario resistible y sin transmision por rebote. Ambos
+conservan recarga/carga ante consultas y cambios validos/invalidos. No es
+certificacion del balance de equipos de seis heroes a lo largo de la campania.
+
 ### Asesinas: fase 4, lote 3 (2026-10-07)
 
 `test/assassin-finishers-contract.test.js`: 23 pruebas con niveles

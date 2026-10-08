@@ -1,7 +1,7 @@
 # Identidad y habilidades de los 105 heroes
 
 Fecha: 2026-09-13. Base revisada: commit 553ad63.
-Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes. FASE 3 IMPLEMENTADA, ocho lotes. FASE 4 EN CURSO, tres lotes.
+Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes. FASE 3 IMPLEMENTADA, ocho lotes. FASE 4 EN CURSO, cuatro lotes.
 Fases 5 a 10 pendientes. La cobertura comun no certifica el balance individual.
 Los hallazgos de auditoria describen el baseline; ver avances abajo para las
 correcciones ya realizadas. No equivale a completar el rediseño de los 105 kits.
@@ -12,6 +12,34 @@ cambie alguna decision real del jugador. Las propuestas requieren validacion
 antes de fijar porcentajes, tiempos o requisitos nuevos.
 
 ## Alcance y evidencia
+
+### Fase 4, lote 4: Ant-Man y Shang-Chi (2026-10-07)
+
+- Ant-Man prepara tres cargas con ataques diminutos. El siguiente ataque
+  gigante consume las tres para el impacto extra existente (50% poder por
+  escala de habilidad, 20% penetracion). Recarga minima 4s desde despliegue
+  o descarga. Maximo cinco detectables en cobertura a 68px del blanco;
+  retroceso 32px, jefes 15px, via applyStatus para respetar inmunidades y
+  voladores. Gigante no genera cargas. Splash ordinario gigante conservado.
+- Shang-Chi prepara tres ataques y descarga el siguiente cuando cumple 4s
+  de recarga desde despliegue/uso. Orbita: 4 rebotes, distancia 110px.
+  Rafaga: area 82px y penetracion 50%. Guardia: slow primario 45%/1.5s
+  resistible, sin transmitirlo por rebote. Los demas disparos conservan sus
+  perfiles. No se agregan auras, curas, ingresos ni cambios de stats base.
+- Cambiar forma/patron conserva carga y recarga: permite elegir finalizador,
+  pero no genera ataques ni recarga instantanea. Las consultas no consumen
+  preparacion; Shang-Chi consume al disparar aunque luego pierda el blanco.
+  Sin cambios de sprites, mapas, evoluciones o signatures existentes.
+- pym-ring-combo-contract.test.js agrega 31 pruebas, incluyendo niveles
+  1/49/50/51/99/100, cada modo, limites de victimas, sigilo sin deteccion,
+  inmunidades, retroceso sobre ruta y cambios de modo sin reiniciar recarga.
+
+Validacion: npm run check aprobado, 1.740 tests; economia, campania,
+accesibilidad y release sin errores. Smoke desktop 1366x768 y mobile 390x844
+sin overflow, desvio de ruta 0px; benchmark p95 0.314ms en esta maquina.
+
+Siguiente lote: Moon Knight e Iron Fist. El balance de equipos completos
+permanece pendiente de fase 10; los contratos no certifican cien oleadas.
 
 ### Fase 4, lote 3: Gamora y Elektra (2026-10-07)
 

@@ -27,7 +27,8 @@ export class MutantKitSystem {
         this.mode = MUTANT_CONTROLS[hero.id]?.defaultMode || null;
         this.attackCount = 0;
         this.resource = 0;
-        this.cooldownRemaining = 0;
+        this.cooldownRemaining = hero.id === 'ant_man' ? 4 : 0;
+        this.pymCharge = 0;
         this.jumpTimer = 0;
         this.jumpOrigin = null;
         this.weatherZone = null;
@@ -61,7 +62,10 @@ export class MutantKitSystem {
         }
         if (this.hero.id === 'cyclops' && this.attackCount % (this.mode === 'focus' ? 3 : 2) === 0) this.fireOpticLine(target, stats);
         if (this.hero.id === 'scarlet_witch') this.linkHexes(target);
-        if (this.hero.id === 'ant_man' && this.mode === 'giant' && this.attackCount % 3 === 0) this.giantImpact(target, stats);
+        if (this.hero.id === 'ant_man') {
+            if (this.mode === 'tiny') this.pymCharge = Math.min(3, this.pymCharge + 1);
+            else if (this.pymCharge === 3 && this.cooldownRemaining === 0) this.giantImpact(target, stats);
+        }
     }
 
     onKill() {
@@ -167,7 +171,10 @@ export class MutantKitSystem {
         if (this.hero.id === 'storm') return staticState(`Clima: ${this.getModeLabel()}`);
         if (this.hero.id === 'domino') return staticState('Economia: +15% recompensa');
         if (this.hero.id === 'scarlet_witch') return cooldownState('Alteracion temporal', this.cooldownRemaining, 9);
-        if (this.hero.id === 'ant_man') return staticState(`Forma: ${this.getModeLabel()}`);
+        if (this.hero.id === 'ant_man') return {
+            label: `${this.getModeLabel()} | Pym ${this.pymCharge}/3 | ${this.cooldownRemaining.toFixed(1)}s`,
+            progress: this.pymCharge / 3, ready: this.pymCharge === 3 && this.cooldownRemaining === 0
+        };
         if (this.hero.id === 'winter_soldier') return {
             label: `Rafaga ${this.attackCount % 3}/2: ${this.getModeLabel()}`,
             progress: (this.attackCount % 3) / 2, ready: this.isSoldierFinisher()
@@ -350,10 +357,15 @@ export class MutantKitSystem {
     }
 
     giantImpact(target, stats) {
-        const victims = (this.hero.game.enemies || []).filter((enemy) => enemy.isAlive && distance(enemy, target) <= 68);
+        const candidates = this.hero.abilitySystem.getTargetsInRange(this.hero.game.enemies || [], stats.range, stats);
+        if (!candidates.includes(target)) return;
+        const victims = [target, ...candidates.filter(enemy => enemy !== target && distance(enemy, target) <= 68)
+            .sort((a, b) => b.distanceTravelled - a.distanceTravelled).slice(0, 4)];
+        this.pymCharge = 0;
+        this.cooldownRemaining = 4;
         victims.forEach((enemy) => {
             CombatSystem.applyDamage({ attackerType: this.hero.category, damage: stats.damage * 0.5 * this.getPowerScale(), armorPenetration: 0.2 }, enemy, this.hero, this.hero.game.resourceManager, 1);
-            if (enemy.isAlive && !enemy.flying) enemy.moveBackward?.(enemy.isBoss ? 15 : 32);
+            if (enemy.isAlive) enemy.applyStatus?.({ type: 'knockback', duration: 0, power: enemy.isBoss ? 15 : 32 }, this.hero);
         });
         this.hero.game.vfx?.addRing(target.x, target.y, { color: '#ef3340', radius: 72, duration: 0.3 });
         this.hero.game.audio?.play('pym');

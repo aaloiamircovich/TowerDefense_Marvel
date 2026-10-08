@@ -25,7 +25,8 @@ export class StreetKitSystem {
         this.hero = hero;
         this.mode = STREET_CONTROLS[hero.id]?.defaultMode || null;
         this.attackCount = 0;
-        this.cooldownRemaining = ['she_hulk', 'elektra'].includes(hero.id) ? 4 : 0;
+        this.cooldownRemaining = ['she_hulk', 'elektra', 'shang_chi'].includes(hero.id) ? 4 : 0;
+        this.ringCharge = 0;
         this.radarTimer = 0;
         this.radarPulseTimer = 0.4;
         this.moonTimer = 0;
@@ -50,6 +51,13 @@ export class StreetKitSystem {
 
     onAttack(target, stats) {
         this.attackCount++;
+        if (this.hero.id === 'shang_chi') {
+            if (this.isRingFinisher()) {
+                this.ringCharge = 0;
+                this.cooldownRemaining = 4;
+                this.hero.recordAbility();
+            } else this.ringCharge = Math.min(3, this.ringCharge + 1);
+        }
         if (this.hero.id === 'elektra' && this.isSaiPrepared(target)) {
             this.cooldownRemaining = 4;
             this.hero.recordAbility();
@@ -131,6 +139,9 @@ export class StreetKitSystem {
     }
 
     getAttackEffects(target) {
+        if (this.hero.id === 'shang_chi' && this.mode === 'guard' && this.isRingFinisher()) {
+            return [{ type: 'slow', duration: 1.5, power: 0.45, chance: 1 }];
+        }
         if (this.hero.id === 'moon_knight' && this.moonPhase === 2) {
             return [{ type: 'slow', duration: 2.2, power: 0.46, chance: 1 }];
         }
@@ -154,11 +165,16 @@ export class StreetKitSystem {
             return { returning: true, splashRadius: 44, splashFactor: 0.42 };
         }
         if (this.hero.id === 'shang_chi') {
-            if (this.mode === 'orbit') return { chainCount: 3, chainRange: 92, chainFactor: 0.7, returning: true };
-            if (this.mode === 'volley') return { splashRadius: 62, splashFactor: 0.54, armorPenetration: 0.3 };
+            const finisher = this.isRingFinisher();
+            if (this.mode === 'orbit') return { chainCount: finisher ? 4 : 3, chainRange: finisher ? 110 : 92, chainFactor: 0.7, returning: true };
+            if (this.mode === 'volley') return { splashRadius: finisher ? 82 : 62, splashFactor: 0.54, armorPenetration: finisher ? 0.5 : 0.3 };
             return { chainCount: 1, chainRange: 115, chainFactor: 0.82, returning: true };
         }
         return {};
+    }
+
+    isRingFinisher() {
+        return this.hero.id === 'shang_chi' && this.ringCharge === 3 && this.cooldownRemaining === 0;
     }
 
     getProjectileColor() {
@@ -193,7 +209,7 @@ export class StreetKitSystem {
         if (this.hero.id === 'blade') return timerState(`Sed de sangre ${this.bloodTally}/6`, this.bloodTally / 6, this.bloodTally >= 5);
         if (this.hero.id === 'ghost_rider') return timerState(this.cooldownRemaining <= 0 ? 'Penitencia lista' : `Penitencia ${this.cooldownRemaining.toFixed(1)} s`, this.cooldownRemaining <= 0 ? 1 : 1 - this.cooldownRemaining / 11, this.cooldownRemaining <= 0);
         if (this.hero.id === 'luke_cage') return { label: `Tenacidad: -${Math.round(this.hero.getStunResistance() * 100)}% aturdimiento`, progress: null, ready: true };
-        if (this.hero.id === 'shang_chi') return staticState(`Anillos: ${this.getModeLabel()}`);
+        if (this.hero.id === 'shang_chi') return timerState(`${this.getModeLabel()} | Combo ${this.ringCharge}/3 | ${this.cooldownRemaining.toFixed(1)}s`, this.ringCharge / 3, this.isRingFinisher());
         if (this.hero.id === 'she_hulk') return timerState(`Objecion ${Math.min(3, this.attackCount)}/3 | ${this.cooldownRemaining.toFixed(1)}s`, Math.min(3, this.attackCount) / 3, this.attackCount >= 3 && this.cooldownRemaining === 0);
         return null;
     }
