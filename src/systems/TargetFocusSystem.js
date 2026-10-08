@@ -55,6 +55,11 @@ export class TargetFocusSystem {
         return this.hero.id === 'cable' && this.matches(target) && this.elapsed >= 3 ? 1.9 : 1;
     }
 
+    criticalMultiplier(target) {
+        return this.hero.id === 'x_23' && this.matches(target) && this.stacks === 3
+            && target.debuffs?.some(effect => effect.type === 'bleed' && effect.duration > 0) ? 3 : 0;
+    }
+
     attackEffects(target) {
         return this.hero.id === 'mockingbird' && this.matches(target) && this.stacks === 1 && this.shockCooldown <= 0
             ? [{ type: 'stun', duration: 0.35, power: 1, chance: 1 }] : [];
@@ -67,6 +72,13 @@ export class TargetFocusSystem {
     }
 
     onAttack(target) {
+        if (this.hero.id === 'x_23') {
+            const finisher = this.criticalMultiplier(target) > 0;
+            const stacks = finisher ? 0 : this.matches(target) ? Math.min(3, this.stacks + 1) : 1;
+            if (finisher) this.hero.recordAbility();
+            this.reset(); this.target = target; this.stacks = stacks;
+            return;
+        }
         if (this.hero.id === 'mockingbird') {
             const paired = this.matches(target) && this.stacks === 1;
             if (this.attackEffects(target).length) this.shockCooldown = 2;
@@ -104,6 +116,10 @@ export class TargetFocusSystem {
 
     getDisplayState() {
         const valid = this.matches(this.target);
+        if (this.hero.id === 'x_23') return {
+            label: `Cortes ${valid ? this.stacks : 0}/3${valid && this.stacks === 3 ? ' | requiere sangrado' : ''}`,
+            progress: valid ? this.stacks / 3 : 0, ready: this.criticalMultiplier(this.target) > 0
+        };
         if (this.hero.id === 'yelena_belova') return {
             label: valid && this.damageMultiplier(this.target) > 1 ? 'Contrato: +20% dano' : 'Contrato sin marca',
             progress: null, ready: valid && this.damageMultiplier(this.target) > 1

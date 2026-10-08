@@ -5,7 +5,7 @@ const file = path.join(process.cwd(), 'data', 'heroes.json');
 const heroes = JSON.parse(fs.readFileSync(file, 'utf8'));
 const directions = ['north', 'north-east', 'east', 'south-east', 'south', 'south-west', 'west', 'north-west'];
 const contracts = {
-    wolverine: { cost: 420, ability: 'FRENESI REGENERATIVO', abilityDesc: 'Acumula frenesí, acelera sus ataques cuando está rodeado y salta al objetivo prioritario con daño sostenido.', niche: 'asalto cercano, salto y presión continua', metrics: [5, 2, 3, 4] },
+    wolverine: { cost: 420, ability: 'FRENESI REGENERATIVO', abilityDesc: 'Gana 7 de frenesi al atacar y 14 al repetir blanco antes de 3s; cambiar de presa conserva la mitad. Las bajas dan 18. Maximo 100: +18% dano y +20% cadencia, sin bonus por multitudes. Tras 3s sin atacar pierde 12/s; moverlo o aturdirlo lo vacia. Conserva salto por 55, alcance 3x y regreso a su puesto.', niche: 'asalto cercano, salto y presión continua', metrics: [5, 2, 3, 4] },
     jean_grey: { cost: 600, ability: 'FUERZA PHOENIX', abilityDesc: 'Usa telequinesis para retroceder grupos y carga un medidor Phoenix que libera una onda de poder controlada.', niche: 'telequinesis, control y estallido Phoenix', metrics: [5, 5, 4, 4] },
     cyclops: { cost: 260, ability: 'VISOR OPTICO', abilityDesc: 'Orienta rayos en línea y alterna un haz penetrante con rebotes ópticos de alta cadencia.', niche: 'lineas perforantes y rebotes configurables', metrics: [5, 3, 2, 4] },
     storm: { cost: 300, ability: 'DIOSA DEL CLIMA', abilityDesc: 'Crea zonas de ventisca que ralentizan o tormentas eléctricas que encadenan daño sobre la ruta.', niche: 'zonas climaticas y control elemental', metrics: [4, 5, 4, 2] },

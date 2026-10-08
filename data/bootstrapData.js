@@ -745,7 +745,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 2.5,
       "canSeeStealth": true,
       "ability": "FRENESI REGENERATIVO",
-      "abilityDesc": "Acumula frenesí, acelera sus ataques cuando está rodeado y salta al objetivo prioritario para cortar avances peligrosos.",
+      "abilityDesc": "Gana 7 de frenesi al atacar y 14 al repetir blanco antes de 3s; cambiar de presa conserva la mitad. Las bajas dan 18. Maximo 100: +18% dano y +20% cadencia, sin bonus por multitudes. Tras 3s sin atacar pierde 12/s; moverlo o aturdirlo lo vacia. Conserva salto por 55, alcance 3x y regreso a su puesto.",
       "sprite": "assets/images/heroes/wolverine/portrait.png",
       "allowedTerrains": [
         1,
@@ -7435,7 +7435,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.35,
       "canSeeStealth": false,
       "ability": "GARRAS DE CLON",
-      "abilityDesc": "42% de aplicar sangrado durante 3.8 s: 25% de su dano efectivo por segundo, sin acumularse. +8 puntos de probabilidad critica.",
+      "abilityDesc": "42% de aplicar sangrado durante 3.8 s: 25% de su dano efectivo por segundo, sin acumularse. +8 puntos de probabilidad critica. Tras tres ataques al mismo blanco, el siguiente contra esa presa sangrante es critico de al menos x3 y consume la preparacion. Se pierde al cambiar de blanco, moverla, aturdirla o pasar 2.5s sin atacar; no ejecuta jefes.",
       "niche": "duelista epica de sangrado",
       "sprite": "assets/images/heroes/x_23/portrait.png",
       "visual": {

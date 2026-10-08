@@ -32,6 +32,8 @@ export class MutantKitSystem {
         this.jumpOrigin = null;
         this.weatherZone = null;
         this.regenerationTimer = 28;
+        this.pursuit = null;
+        this.jumpPosition = null;
     }
 
     update(dt, enemies, stats) {
@@ -45,7 +47,13 @@ export class MutantKitSystem {
     onAttack(target, stats) {
         this.attackCount++;
         if (this.hero.id === 'winter_soldier' && this.attackCount % 3 === 0) this.hero.recordAbility();
-        if (this.hero.id === 'wolverine') this.resource = Math.min(100, this.resource + 7);
+        if (this.hero.id === 'wolverine') {
+            const same = this.pursuit?.target === target && this.pursuit.idle < 3;
+            if (this.pursuit && !same) this.resource *= 0.5;
+            this.resource = Math.min(100, this.resource + (same ? 14 : 7));
+            const origin = this.jumpOrigin || this.hero;
+            this.pursuit = { target, idle: 0, x: origin.x, y: origin.y };
+        }
         if (this.hero.id === 'jean_grey') {
             const phoenix = this.hero.game.progression?.getHeroEvolution?.(this.hero.id)?.id === 'phoenix';
             this.resource = Math.min(100, this.resource + (phoenix ? 14 : 9));
@@ -66,8 +74,7 @@ export class MutantKitSystem {
 
     applyStatModifiers(stats) {
         if (this.hero.id === 'wolverine') {
-            const nearby = (this.hero.game.enemies || []).filter((enemy) => enemy.isAlive && distance(enemy, this.hero) <= stats.range * 1.3).length;
-            stats.fireRate *= 1 + Math.min(0.5, nearby * 0.08) + this.resource * 0.002;
+            stats.fireRate *= 1 + this.resource * 0.002;
             stats.damage *= 1 + this.resource * 0.0018;
         }
         if (this.hero.id === 'jean_grey') {
@@ -212,6 +219,31 @@ export class MutantKitSystem {
         }
     }
 
+    updatePursuit(dt) {
+        if (this.hero.id !== 'wolverine') return;
+        if (this.jumpOrigin && this.jumpPosition
+            && (this.hero.x !== this.jumpPosition.x || this.hero.y !== this.jumpPosition.y)) {
+            // A manual move wins over the return from the autonomous leap.
+            this.jumpOrigin = null; this.jumpPosition = null; this.jumpTimer = 0;
+            this.pursuit = null; this.resource = 0;
+        }
+        const origin = this.jumpOrigin || this.hero;
+        if (this.hero.stunTimer > 0 || !this.hero.game.heroes?.includes(this.hero)
+            || (this.pursuit && (origin.x !== this.pursuit.x || origin.y !== this.pursuit.y))) {
+            this.pursuit = null; this.resource = 0;
+            if (this.jumpOrigin) {
+                this.hero.x = this.jumpOrigin.x; this.hero.y = this.jumpOrigin.y;
+                this.jumpOrigin = null; this.jumpPosition = null; this.jumpTimer = 0;
+            }
+            return;
+        }
+        if (!this.pursuit) return;
+        const previousIdle = this.pursuit.idle;
+        this.pursuit.idle += dt;
+        const decayTime = Math.max(0, this.pursuit.idle - 3) - Math.max(0, previousIdle - 3);
+        this.resource = Math.max(0, this.resource - decayTime * 12);
+    }
+
     updateWolverine(dt, enemies, stats) {
         if (this.jumpTimer > 0) {
             this.jumpTimer -= dt;
@@ -219,6 +251,7 @@ export class MutantKitSystem {
                 this.hero.x = this.jumpOrigin.x;
                 this.hero.y = this.jumpOrigin.y;
                 this.jumpOrigin = null;
+                this.jumpPosition = null;
             }
             return;
         }
@@ -230,6 +263,7 @@ export class MutantKitSystem {
         this.jumpOrigin = { x: this.hero.x, y: this.hero.y };
         this.hero.x = target.x;
         this.hero.y = target.y - 30;
+        this.jumpPosition = { x: this.hero.x, y: this.hero.y };
         CombatSystem.applyDamage({ attackerType: this.hero.category, damage: stats.damage * 1.25 * this.getPowerScale(), armorPenetration: 0.3 }, target, this.hero, resources, 1);
         this.hero.game.vfx?.addBurst(target.x, target.y, { color: '#f4d03f', radius: 38, duration: 0.26 });
         this.hero.game.audio?.play('claws');

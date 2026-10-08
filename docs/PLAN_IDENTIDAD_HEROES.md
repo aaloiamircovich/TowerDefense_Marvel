@@ -1,7 +1,7 @@
 # Identidad y habilidades de los 105 heroes
 
 Fecha: 2026-09-13. Base revisada: commit 553ad63.
-Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes. FASE 3 IMPLEMENTADA, ocho lotes. FASE 4 EN CURSO, un lote.
+Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes. FASE 3 IMPLEMENTADA, ocho lotes. FASE 4 EN CURSO, dos lotes.
 Fases 5 a 10 pendientes. La cobertura comun no certifica el balance individual.
 Los hallazgos de auditoria describen el baseline; ver avances abajo para las
 correcciones ya realizadas. No equivale a completar el rediseño de los 105 kits.
@@ -12,6 +12,36 @@ cambie alguna decision real del jugador. Las propuestas requieren validacion
 antes de fijar porcentajes, tiempos o requisitos nuevos.
 
 ## Alcance y evidencia
+
+### Fase 4, lote 2: Wolverine y X-23 (2026-10-07)
+
+- Wolverine gana 7 de frenesi en el primer ataque y 14 al repetir presa antes
+  de 3s. Cambiar o retomar la caza tras esa pausa conserva la mitad del medidor
+  antes de sumar 7. Bajas +18, techo 100. Mantiene +18% dano y +20% cadencia
+  al maximo; se elimina la aceleracion adicional por cantidad de enemigos.
+  Tras 3s sin atacar decae 12/s. Mover, retirar o aturdir vacia la carga.
+- Conserva salto por 55, alcance especial 3x, recarga 7s y regreso 0.8s.
+  El salto autonomo no cuenta como recolocacion; un movimiento manual durante
+  el salto cancela el retorno antiguo. Stun devuelve al puesto sin congelar
+  al heroe en la posicion temporal. No mueve al enemigo ni cura la base.
+- X-23 prepara tres ataques contra la misma presa. Su siguiente ataque contra
+  esa presa sangrante es critico garantizado de al menos x3, no multiplicado
+  otra vez por el critico normal; respeta un multiplicador de objeto superior.
+  Consume preparacion incluso si luego el proyectil pierde su blanco. No es
+  ejecucion ni dano porcentual; armadura y resistencias siguen vigentes.
+  Cambio, movimiento, stun, muerte, perdida de cobertura/sigilo o pausa de
+  2.5s reinician cortes. Sin sangrado espera a tres, sin acumular mas.
+- Se conservan sangrado nativo, Berserker y Corte Multiple con Danger Room.
+  Sin cambios de sprites, mapas, rarezas ni estadisticas base/evoluciones.
+- claw-pursuit-contract.test.js agrega 30 pruebas; niveles 1/49/50/51/99/100,
+  jefes, criticos, perdida de preparacion, temporalidad, retorno y signatures.
+
+Validacion: npm run check aprobado, 1.686 tests; economia, campania,
+accesibilidad y release sin errores. Smoke desktop 1366x768 y mobile 390x844
+sin overflow, desvio de ruta 0px; benchmark p95 0.324ms en esta maquina.
+
+Siguiente lote: Gamora y Elektra. Sigue pendiente la simulacion de equipos
+completos de fase 10; estos contratos no certifican el balance de campania.
 
 ### Fase 4, lote 1: Hulk y She-Hulk (2026-10-07)
 

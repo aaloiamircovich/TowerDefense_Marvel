@@ -24,6 +24,16 @@ Cada escenario comienza sin enemigos para comprobar ausencia de disparos.
 
 ## Contratos especificos existentes
 
+### Garras: fase 4, lote 2 (2026-10-07)
+
+`test/claw-pursuit-contract.test.js`: 30 pruebas, niveles 1/49/50/51/99/100.
+Wolverine: carga repetida, penalizacion por cambio, techo, decaimiento temporal,
+sin bonus de multitudes, vaciado al mover/stun/retirar y retorno seguro del salto.
+X-23: preparacion y consumo de critico x3 resistible por jefes, critico mayor sin
+doble multiplicacion, perdida por cambio/cobertura/sigilo/muerte/stun/pausa,
+y convivencia con Danger Room. Se conservan pruebas de salto y buffs temporales.
+No es simulacion de balance de equipos en cien oleadas.
+
 ### Gamma: fase 4, lote 1 (2026-10-07)
 
 `test/gamma-pressure-contract.test.js`: 19 pruebas de Hulk/She-Hulk en niveles

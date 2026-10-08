@@ -155,6 +155,7 @@ export class Hero {
 
     update(dt, enemies, projectiles) {
         this.syncVisual();
+        this.abilitySystem.mutantKit.updatePursuit(dt);
         this.abilitySystem.focusKit?.update(dt, enemies);
         this.abilitySystem.fieldDevice?.update(dt, enemies);
         if (this.stunTimer > 0 && this.id === 'punisher') this.abilitySystem.streetKit.suppression = null;
@@ -219,8 +220,9 @@ export class Hero {
         const signatureContext = buildSignatureAttackContext(this, target, stats);
         const attackStats = signatureContext.stats || stats;
         const roll = this.game?.random?.next?.() ?? Math.random();
-        const isCrit = roll * 100 < attackStats.critChance;
-        let finalDamage = isCrit ? attackStats.damage * Math.max(1, attackStats.critDamage || 2) : attackStats.damage;
+        const preparedCrit = this.abilitySystem.focusKit?.criticalMultiplier(target) || 0;
+        const isCrit = preparedCrit > 0 || roll * 100 < attackStats.critChance;
+        let finalDamage = isCrit ? attackStats.damage * Math.max(1, preparedCrit, attackStats.critDamage || 2) : attackStats.damage;
         finalDamage *= this.abilitySystem.getAttackDamageMultiplier(target);
         this.combatStats.shots++;
         if (isCrit) this.combatStats.crits++;
