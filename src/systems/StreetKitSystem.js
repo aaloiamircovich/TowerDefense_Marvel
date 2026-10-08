@@ -32,7 +32,7 @@ export class StreetKitSystem {
         if (hero.id === 'korg') this.cooldownRemaining = 5;
         if (hero.id === 'red_guardian') this.cooldownRemaining = 3;
         this.radarTimer = 0;
-        this.radarPulseTimer = 0.4;
+        this.radarPulseTimer = 8;
         this.moonTimer = 0;
         this.moonPhase = 0;
         this.bloodTally = 0;
@@ -48,7 +48,7 @@ export class StreetKitSystem {
         this.ringAngle = (this.ringAngle + dt * 2.8) % (Math.PI * 2);
         if (this.hero.id === 'punisher' && !this.hasSuppressionTarget(this.suppression?.target)) this.suppression = null;
 
-        if (this.hero.id === 'daredevil') this.updateDaredevil(dt);
+        if (this.hero.id === 'daredevil') this.updateDaredevil(dt, enemies);
         if (this.hero.id === 'moon_knight') this.updateMoonCycle(dt);
         if (this.hero.id === 'ghost_rider') this.updatePenance(enemies, stats);
         if (this.hero.id === 'korg') this.stompKorg(enemies, stats);
@@ -149,11 +149,6 @@ export class StreetKitSystem {
     }
 
     applyStatModifiers(stats) {
-        const heroes = this.hero.game?.heroes || [];
-        const radarActive = heroes.some((candidate) => candidate.id === 'daredevil'
-            && candidate.abilitySystem?.streetKit?.radarTimer > 0);
-        if (radarActive) stats.canSeeStealth = true;
-
         if (this.hero.id === 'moon_knight') {
             if (this.moonPhase === 0) { stats.range *= 1.22; stats.damage *= 0.9; }
             if (this.moonPhase === 1) { stats.damage *= 1.3; stats.fireRate *= 0.85; }
@@ -252,7 +247,7 @@ export class StreetKitSystem {
             const stacks = this.hasSuppressionTarget(this.suppression?.target) ? this.suppression.stacks : 0;
             return { label: `Fuego sostenido +${stacks * 8}%`, progress: stacks / 4, ready: stacks === 4 };
         }
-        if (this.hero.id === 'daredevil') return timerState(this.radarTimer > 0 ? 'Radar global activo' : 'Radar recargando', this.radarTimer > 0 ? this.radarTimer / 4.5 : 1 - this.radarPulseTimer / 12, this.radarTimer > 0);
+        if (this.hero.id === 'daredevil') return timerState(this.radarTimer > 0 ? 'Pulso local: 190px / 2s' : `Radar ${Math.max(0, this.radarPulseTimer).toFixed(1)}s`, this.radarTimer > 0 ? this.radarTimer / 2 : 1 - this.radarPulseTimer / 8, this.radarTimer > 0);
         if (this.hero.id === 'moon_knight') return timerState(`${MOON_PHASES[this.moonPhase].label} ${(10 - this.moonTimer).toFixed(1)}s > ${MOON_PHASES[(this.moonPhase + 1) % 3].label}`, this.moonTimer / 10, this.moonPhase === 1);
         if (this.hero.id === 'blade') return timerState(`Sed de sangre ${this.bloodTally}/6`, this.bloodTally / 6, this.bloodTally >= 5);
         if (this.hero.id === 'ghost_rider') return timerState(this.cooldownRemaining <= 0 ? 'Penitencia lista' : `Penitencia ${this.cooldownRemaining.toFixed(1)} s`, this.cooldownRemaining <= 0 ? 1 : 1 - this.cooldownRemaining / 11, this.cooldownRemaining <= 0);
@@ -284,7 +279,7 @@ export class StreetKitSystem {
             ctx.strokeStyle = 'rgba(232, 69, 69, 0.5)';
             ctx.lineWidth = 2;
             ctx.beginPath();
-            ctx.arc(this.hero.x, this.hero.y, 34 + (4.5 - this.radarTimer) * 16, 0, Math.PI * 2);
+            ctx.arc(this.hero.x, this.hero.y, 34 + (2 - this.radarTimer) * 78, 0, Math.PI * 2);
             ctx.stroke();
             ctx.restore();
         }
@@ -313,11 +308,14 @@ export class StreetKitSystem {
         }
     }
 
-    updateDaredevil(dt) {
-        this.radarPulseTimer -= dt;
+    updateDaredevil(dt, enemies) {
+        this.radarPulseTimer = Math.max(0, this.radarPulseTimer - dt);
         if (this.radarPulseTimer > 0) return;
-        this.radarTimer = 4.5;
-        this.radarPulseTimer = this.getCooldown(12);
+        const targets = enemies.filter(enemy => enemy.isAlive && !enemy.hasReachedEnd && enemy.nativeStealth && distance(enemy, this.hero) <= 190);
+        if (!targets.length) return;
+        targets.forEach(enemy => enemy.applyStatus({ type: 'reveal', duration: 2, power: 1 }, this.hero));
+        this.radarTimer = 2;
+        this.radarPulseTimer = 8;
         this.hero.game.vfx?.addRing(this.hero.x, this.hero.y, { color: '#e84545', radius: 190, duration: 0.7 });
         this.hero.game.audio?.play('radar');
         this.hero.recordAbility();

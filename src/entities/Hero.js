@@ -160,6 +160,8 @@ export class Hero {
         this.abilitySystem.mutantKit.updatePursuit(dt);
         this.abilitySystem.focusKit?.update(dt, enemies);
         this.abilitySystem.martialKit?.update(dt);
+        this.abilitySystem.cosmicKit.checkRoots();
+        this.abilitySystem.controlKit?.update(dt);
         this.abilitySystem.fieldDevice?.update(dt, enemies);
         if (this.stunTimer > 0 && this.id === 'punisher') this.abilitySystem.streetKit.suppression = null;
         if (this.stunTimer > 0 && this.id === 'war_machine') this.abilitySystem.avengerKit.salvo = null;
@@ -269,7 +271,6 @@ export class Hero {
         const effects = [];
 
         effects.push(...this.abilitySystem.getAttackEffects(target));
-        if (this.id === 'groot') effects.push({ type: 'slow', duration: 1.8, power: 0.6, chance: 0.5 });
         effects.push(...(this.config.special?.attackEffects || [])
             .filter((effect) => effect.type !== 'heal' && !this.abilitySystem.martialKit?.suppressesNativeEffect(effect, target))
             .map((effect) => this.abilitySystem.avengerKit.prepareNativeEffect(effect)));

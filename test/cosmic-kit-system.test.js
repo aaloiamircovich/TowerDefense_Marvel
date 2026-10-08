@@ -44,7 +44,7 @@ test('Groot crea raíces sobre la ruta sin desplazar enemigos', () => {
     game.heroes = [hero];
     game.enemies = [enemy];
 
-    hero.abilitySystem.update(0.1, [enemy], hero.getEffectiveStats(), []);
+    hero.abilitySystem.update(10, [enemy], hero.getEffectiveStats(), []);
     const wall = hero.abilitySystem.cosmicKit.rootWall;
     assert.ok(wall);
     hero.abilitySystem.update(0.2, [enemy], hero.getEffectiveStats(), []);

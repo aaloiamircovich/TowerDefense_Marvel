@@ -1,7 +1,7 @@
 # Identidad y habilidades de los 105 heroes
 
 Fecha: 2026-09-13. Base revisada: commit 553ad63.
-Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes. FASE 3 IMPLEMENTADA, ocho lotes. FASE 4 IMPLEMENTADA, diez lotes. FASE 5 EN CURSO, primer lote.
+Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes. FASE 3 IMPLEMENTADA, ocho lotes. FASE 4 IMPLEMENTADA, diez lotes. FASE 5 EN CURSO, dos lotes.
 Fases 6 a 10 pendientes. La cobertura comun no certifica el balance individual.
 Los hallazgos de auditoria describen el baseline; ver avances abajo para las
 correcciones ya realizadas. No equivale a completar el rediseño de los 105 kits.
@@ -12,6 +12,47 @@ cambie alguna decision real del jugador. Las propuestas requieren validacion
 antes de fijar porcentajes, tiempos o requisitos nuevos.
 
 ## Alcance y evidencia
+
+### Fase 5, lote 2: Groot, Daredevil, Quake y Medusa (2026-10-08)
+
+F5 alcanza 6 de 19 heroes revisados. Sin modificar sprites ni estadisticas
+base por rareza; se sustituyen controles aleatorios por ventanas locales.
+
+- Groot: raices estacionarias de radio48px, duracion3.2s, slow68% terrestre.
+  Fija detectable en alcance1.35x; la zona alcanza ocultos incidentalmente
+  sin revelarlos. Cada enemigo recibe una sola aplicacion resistible por
+  zona; salir termina el efecto. No afecta voladores ni desplaza. Movimiento,
+  stun o retiro cancelan el campo. Recarga fija10s desde despliegue/uso.
+  Elimina los dos slows aleatorios superpuestos del ataque ordinario.
+- Daredevil: pulso de190px revela durante2s resistibles cada8s, desde
+  despliegue; no consume si no hay ocultos nativos. No concede vision global
+  a aliados. Conserva deteccion propia y contraataque cada cuatro ataques.
+  Los revelados ya emitidos terminan por su propio tiempo, no al retirarlo.
+- Quake: tras4s, siguiente ataque terrestre proyecta linea de semiancho24px
+  dentro de cobertura. Hasta5 detectables terrestres reciben45% poder,
+  ruptura16% por2s y slow30% por1.2s resistibles. No desplaza ni toca voladores
+  con la onda; el ataque basico mantiene sus blancos habituales. Recarga4s
+  desde despliegue/uso, reiniciada por movimiento/stun/retiro.
+- Medusa: siguiente ataque tras5s enlaza hasta3 detectables a85px del ancla,
+  todos dentro de cobertura. Reparte60% de slow entre el numero inicial de
+  enlaces (60/30/20%) durante2s resistibles; no redistribuye al perder uno.
+  Salir de cobertura, separarse del ancla, muerte del ancla, mover/stun/retiro
+  termina el agarre. Conserva rebote corto y signature independiente.
+
+Los slows de campo son contribuciones independientes: nunca se suman entre
+si ni borran el slow ordinario de un aliado. Gana el mayor control vigente;
+inmunidad y resistencia se comprueban al aplicarlo, sin renovar cada frame.
+38 pruebas nuevas en zone-control-contract.test.js cubren niveles
+1/49/50/51/99/100, caps, radios, ventanas, inmunidad/resistencia, lifecycle,
+conservacion de ruta y contraataque. Contratos previos actualizados para
+las nuevas reglas, no para mantener vision global ni controles aleatorios.
+Las heuristicas reconocen los efectos trasladados a runtime; no representan
+exactamente su DPS ni certifican todas las combinaciones de equipo (fase10).
+
+Validacion: npm run check completo, 2.012 pruebas aprobadas; benchmark p95
+0.294ms, smoke desktop1366x768/mobile390x844 sin overflow ni desvio de ruta.
+
+Siguiente lote: Iceman, Storm, Crystal y Namor.
 
 ### Lote mixto: cierre F4 e inicio F5 (2026-10-08)
 

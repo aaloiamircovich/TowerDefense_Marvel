@@ -35,13 +35,13 @@ test('objetos frontera agregan herramientas para nuevos perfiles', () => {
     }
 });
 
-test('Hero aplica perfiles especiales declarados en datos', () => {
+test('Quake conserva visual especial y traslada control a la onda preparada', () => {
     const hero = new Hero(heroes.quake, 0, 0, createGame());
     const stats = hero.getEffectiveStats();
     const effects = hero.getProjectileEffects();
 
-    assert.ok(effects.some((effect) => effect.type === 'armorBreak'));
-    assert.ok(effects.some((effect) => effect.type === 'slow'));
+    assert.equal(effects.length, 0);
+    assert.equal(hero.abilitySystem.controlKit.cooldown, 4);
     assert.equal(hero.getProjectileVisualStyle(), 'sonic');
     assert.equal(hero.getProjectileColor(), '#76e4f7');
     assert.ok(stats.range >= heroes.quake.range);

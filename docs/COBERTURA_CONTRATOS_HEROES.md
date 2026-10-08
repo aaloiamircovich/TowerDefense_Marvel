@@ -4,6 +4,16 @@ Actualizado: 2026-09-22. Roster: 105. No es una certificacion de balance.
 
 ## Cobertura comun ejecutable
 
+### F5/lote2: campos, radar, linea y enlaces (2026-10-08)
+
+`test/zone-control-contract.test.js`: 38 pruebas de Groot, Daredevil, Quake
+y Medusa en niveles1/49/50/51/99/100. Radios inclusivos, caps, cooldowns,
+deteccion local, exclusiones de vuelo, inmunidad/resistencia, limpieza
+por movimiento/stun/retiro sin borrar efectos aliados y rutas sin desplazar.
+Preserva contraataque/rebote y estadisticas base; no certifica todas las
+combinaciones signature/equipos ni la economia completa (fase10).
+Suite completa: 2.012 pruebas aprobadas; npm run check sin errores.
+
 ### F4/lote10 + F5/lote1: arsenal, estampida y redes (2026-10-08)
 
 `test/arsenal-web-contract.test.js`: 46 pruebas de Deadpool, Devil Dinosaur,

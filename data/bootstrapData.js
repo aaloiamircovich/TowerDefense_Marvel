@@ -811,7 +811,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.8,
       "canSeeStealth": true,
       "ability": "RADAR DE HELL'S KITCHEN",
-      "abilityDesc": "Emite pulsos que revelan sigilo para todo el equipo y responde cada cuatro ataques con un contraataque preciso.",
+      "abilityDesc": "Revela ocultos a 190px durante 2s cada 8s. Conserva deteccion propia y contraataca cada cuatro ataques; no da vision global.",
       "sprite": "assets/images/heroes/daredevil/portrait.png",
       "allowedTerrains": [
         1
@@ -827,7 +827,7 @@ window.__MARVEL_TD_DATA__ = {
         "support": 4,
         "detection": 5
       },
-      "niche": "deteccion global y respuesta veloz",
+      "niche": "revelado local y respuesta veloz",
       "visual": {
         "portrait": "assets/images/heroes/daredevil/portrait.png",
         "size": 96,
@@ -1006,7 +1006,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 0.7,
       "canSeeStealth": false,
       "ability": "MURO DE RAÍCES",
-      "abilityDesc": "Levanta raices sobre la ruta que ralentizan grupos sin desplazarlos. Su valor principal es control y cobertura de curvas, no DPS frontal.",
+      "abilityDesc": "Cada 10s fija raices de radio 48px durante 3.2s: ralentizan 68% a terrestres mientras permanecen dentro. No bloquean la ruta; moverlo o aturdirlo cancela la zona.",
       "sprite": "assets/images/heroes/groot/portrait.png",
       "allowedTerrains": [
         1
@@ -1060,14 +1060,7 @@ window.__MARVEL_TD_DATA__ = {
       "terrainRole": "grass",
       "special": {
         "statModifiers": {},
-        "attackEffects": [
-          {
-            "type": "slow",
-            "duration": 2.2,
-            "power": 0.32,
-            "chance": 0.42
-          }
-        ]
+        "attackEffects": []
       },
       "evolutionId": "groot_evolution"
     },
@@ -2530,7 +2523,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.45,
       "canSeeStealth": true,
       "ability": "ONDA SISMICA",
-      "abilityDesc": "Vibraciones aplican ruptura y ralentizan tanques sin sacarlos del camino.",
+      "abilityDesc": "Cada 4s un ataque terrestre libera una linea sismica: hasta 5 terrestres reciben 45% de poder, ruptura 16% por 2s y slow 30% por 1.2s. Sin desplazar ni afectar voladores.",
       "niche": "ruptura y control estable",
       "allowedTerrains": [
         1,
@@ -2548,20 +2541,7 @@ window.__MARVEL_TD_DATA__ = {
         "detection": 4
       },
       "special": {
-        "attackEffects": [
-          {
-            "type": "armorBreak",
-            "duration": 3.2,
-            "power": 0.16,
-            "chance": 0.35
-          },
-          {
-            "type": "slow",
-            "duration": 1,
-            "power": 0.18,
-            "chance": 0.35
-          }
-        ],
+        "attackEffects": [],
         "visualStyle": "sonic",
         "projectileColor": "#76e4f7"
       },
@@ -2614,7 +2594,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.6,
       "canSeeStealth": false,
       "ability": "CABELLO PRENSIL",
-      "abilityDesc": "Atrapa grupos cercanos con control sostenido y rebotes cortos.",
+      "abilityDesc": "Cada 5s enlaza hasta 3 enemigos cercanos durante 2s: reparte 60% de ralentizacion entre ellos. Salir del alcance o separarse del ancla rompe el agarre. Conserva rebote corto.",
       "niche": "control de grupos cortos",
       "allowedTerrains": [
         1,
@@ -2637,14 +2617,7 @@ window.__MARVEL_TD_DATA__ = {
           "chainRange": 85,
           "chainFactor": 0.5
         },
-        "attackEffects": [
-          {
-            "type": "slow",
-            "duration": 1.7,
-            "power": 0.38,
-            "chance": 0.42
-          }
-        ],
+        "attackEffects": [],
         "visualStyle": "whip",
         "projectileColor": "#ff5d8f"
       },

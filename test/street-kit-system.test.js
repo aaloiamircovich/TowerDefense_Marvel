@@ -3,15 +3,17 @@ import assert from 'node:assert/strict';
 import { Enemy } from '../src/entities/Enemy.js';
 import { Hero } from '../src/entities/Hero.js';
 
-test('Daredevil activa radar global y comparte deteccion de sigilo', () => {
+test('Daredevil revela ocultos locales sin compartir vision global', () => {
     const game = createGame();
     const daredevil = createHero('daredevil', game, { canSeeStealth: true });
     const ally = createHero('iron_man', game, { canSeeStealth: false });
     game.heroes = [daredevil, ally];
 
-    daredevil.abilitySystem.update(0.5, [], daredevil.getEffectiveStats(), []);
+    const hidden = createEnemy(100, 0, { stealth: true });
+    daredevil.abilitySystem.update(8, [hidden], daredevil.getEffectiveStats(), []);
     assert.ok(daredevil.abilitySystem.streetKit.radarTimer > 0);
-    assert.equal(ally.getEffectiveStats().canSeeStealth, true);
+    assert.equal(ally.getEffectiveStats().canSeeStealth, false);
+    assert.equal(hidden.stealth, false);
 });
 
 test('Moon Knight alterna alcance, dano y control con el ciclo lunar', () => {

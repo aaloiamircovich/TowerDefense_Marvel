@@ -30,7 +30,7 @@ export class CosmicKitSystem {
         this.mode = COSMIC_CONTROLS[hero.id]?.defaultMode || null;
         this.attackCount = 0;
         this.resource = 0;
-        this.cooldownRemaining = 0;
+        this.cooldownRemaining = hero.id === 'groot' ? 10 : 0;
         this.flightTimer = 0;
         this.flightOrigin = null;
         this.rootWall = null;
@@ -198,23 +198,41 @@ export class CosmicKitSystem {
     }
 
     updateGroot(dt, enemies, stats) {
+        this.checkRoots();
+        if (this.hero.stunTimer > 0 || !this.hero.game.heroes?.includes(this.hero)) return;
         if (this.rootWall) {
             this.rootWall.duration -= dt;
-            enemies.filter((enemy) => enemy.isAlive && distance(enemy, this.rootWall) <= this.rootWall.radius)
-                .forEach((enemy) => enemy.applyStatus?.({ type: 'slow', duration: 0.4, power: 0.68 }, this.hero));
             if (this.rootWall.duration <= 0) this.rootWall = null;
         }
         if (!this.rootWall && this.cooldownRemaining <= 0) {
             const target = this.hero.abilitySystem.getTargetsInRange(enemies, stats.range * 1.35, stats)
+                .filter(enemy => !enemy.flying && !enemy.hasReachedEnd)
                 .sort((a, b) => b.distanceTravelled - a.distanceTravelled)[0];
             if (target) {
-                this.rootWall = { x: target.x, y: target.y, radius: 48, duration: 3.2 };
-                this.cooldownRemaining = this.getCooldown(10);
+                this.rootWall = { x: target.x, y: target.y, radius: 48, duration: 3.2, originX: this.hero.x, originY: this.hero.y, touched: new Set() };
+                this.cooldownRemaining = 10;
                 this.hero.game.vfx?.addRing(target.x, target.y, { color: '#78c85a', radius: 52, duration: 0.5 });
                 this.hero.game.audio?.play('roots');
                 this.hero.recordAbility();
             }
         }
+        const wall = this.rootWall;
+        if (!wall) return;
+        for (const enemy of enemies) {
+            if (wall.touched.has(enemy) || !enemy.isAlive || enemy.flying || enemy.hasReachedEnd || distance(enemy, wall) > wall.radius) continue;
+            wall.touched.add(enemy);
+            enemy.applyFieldSlow?.(0.68, wall.duration, this.hero, () => this.rootWall === wall
+                && wall.duration > 0 && this.rootsValid(wall) && !enemy.flying && !enemy.hasReachedEnd && distance(enemy, wall) <= wall.radius);
+        }
+    }
+
+    rootsValid(wall) {
+        return !(this.hero.stunTimer > 0) && this.hero.game.heroes?.includes(this.hero)
+            && this.hero.x === wall.originX && this.hero.y === wall.originY;
+    }
+
+    checkRoots() {
+        if (this.rootWall && !this.rootsValid(this.rootWall)) this.rootWall = null;
     }
 
     activateGamoraCombo(target, stats) {

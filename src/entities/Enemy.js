@@ -270,7 +270,7 @@ export class Enemy {
             return true;
         }
 
-        const existing = this.debuffs.find((debuff) => debuff.type === type);
+        const existing = this.debuffs.find((debuff) => debuff.type === type && !debuff.fieldActive);
         if (existing) {
             existing.duration = Math.max(existing.duration, adjustedDuration);
             if (dot) {
@@ -286,6 +286,15 @@ export class Enemy {
             this.debuffs.push({ type, duration: adjustedDuration, power, source, tickTimer: 0, stacks: 1, ...dot, explicitDamageBasis: Boolean(effect.damageBasis) });
         }
         source?.recordStatusApplied?.({ ...effect, duration: adjustedDuration }, this);
+        return true;
+    }
+
+    applyFieldSlow(power, duration, source, fieldActive) {
+        // Keep field contributions separate so leaving a zone preserves allied slows.
+        if (this.config.immuneToSlow || !this.isAlive) return false;
+        const adjustedDuration = this.getStatusDuration('slow', duration);
+        this.debuffs.push({ type: 'slow', power, duration: adjustedDuration, source, fieldActive });
+        source?.recordStatusApplied?.({ type: 'slow', power, duration: adjustedDuration }, this);
         return true;
     }
 
@@ -323,9 +332,10 @@ export class Enemy {
             }
             debuff.duration -= dt;
         });
-        this.debuffs = this.debuffs.filter((debuff) => debuff.duration > 0);
+        this.debuffs = this.debuffs.filter((debuff) => debuff.duration > 0 && (!debuff.fieldActive || debuff.fieldActive()));
 
-        const slow = this.debuffs.find((debuff) => debuff.type === 'slow');
+        const slow = this.debuffs.filter((debuff) => debuff.type === 'slow')
+            .reduce((best, effect) => !best || effect.power > best.power ? effect : best, null);
         const web = this.debuffs.find((debuff) => debuff.type === 'web' && debuff.stacks > 0);
         const stunned = this.debuffs.some((debuff) => debuff.type === 'stun');
         const haste = this.debuffs.find((debuff) => debuff.type === 'haste');

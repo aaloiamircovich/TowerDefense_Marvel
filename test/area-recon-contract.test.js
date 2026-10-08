@@ -15,6 +15,7 @@ function setup(id) {
         return hero;
     };
     const hero = addHero(id);
+    if (id === 'groot') hero.abilitySystem.cosmicKit.cooldownRemaining = 0;
     const spawn = (x, config = {}) => {
         const enemy = new Enemy({ id: 'target', hp: 10000, speed: 40, category: hero.category, ...config }, [{ x: 0, y: 0 }, { x: 2000, y: 0 }], game);
         enemy.x = x;
@@ -62,7 +63,7 @@ test('raices existentes conservan centro y slow incidental, sin revelar ni despl
     kit.update(0, game.enemies, stats);
     const center = kit.rootWall.x;
     anchor.isAlive = false;
-    const hidden = spawn(center + 48, { stealth: true, flying: true });
+    const hidden = spawn(center + 48, { stealth: true });
     const outside = spawn(center + 48.01);
     kit.update(0.1, game.enemies, stats);
     assert.equal(kit.rootWall.x, center);
@@ -71,7 +72,7 @@ test('raices existentes conservan centro y slow incidental, sin revelar ni despl
     assert.equal(hidden.hp, hidden.maxHp);
     assert.equal(hidden.debuffs[0].type, 'slow');
     closeTo(hidden.debuffs[0].power, 0.68);
-    closeTo(hidden.debuffs[0].duration, 0.4);
+    closeTo(hidden.debuffs[0].duration, 3.1);
     assert.equal(outside.debuffs.length, 0);
     assert.equal(hero.combatStats.abilityActivations, 1);
 });
