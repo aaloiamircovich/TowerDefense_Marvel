@@ -117,7 +117,7 @@ const rivalsHeroes = {
         visualStyle: 'mystic',
         projectileColor: '#d946ef'
     }),
-    peni_parker: contract('Peni Parker', 'Tecnologico', 'Rare', 345, 29, 165, 1.9, true, 'SP//DR LINK', 'Dron aracnido con red electrica: detecta sigilo y frena oleadas rapidas.', 'tecnologia anti corredores', ['Tecnologia', 'Callejero', 'Rivales'], 'support', [3, 5, 4, 5], {
+    peni_parker: contract('Peni Parker', 'Tecnologico', 'Rare', 345, 29, 165, 1.9, true, 'SP//DR LINK', 'Tras 8 s prepara una mina en la posicion de un enemigo detectado dentro de alcance. Arma en 1 s y caduca en 5 s; un enemigo a 26 px activa red de 35% por 2 s a hasta cinco detectados en 65 px y dentro de cobertura. Sin dano. Mover, stun o retirar cancela.', 'tecnologia anti corredores', ['Tecnologia', 'Callejero', 'Rivales'], 'support', [3, 5, 4, 5], {
         attackEffects: [{ type: 'web', duration: 2.0, power: 0.18, chance: 0.45 }],
         statModifiers: { detectStealth: true, fireRatePct: 0.06 },
         visualStyle: 'web',
@@ -176,7 +176,7 @@ const rivalsHeroes = {
         visualStyle: 'impact',
         projectileColor: '#5be7ff'
     }),
-    rocket_raccoon: contract('Rocket Raccoon', 'Tecnologico', 'Rare', 335, 36, 185, 1.65, true, 'ARSENAL GUARDIAN', 'Dispara proyectiles explosivos con dano de area pequeno y 14% de penetracion de armadura. Detecta sigilo para sus propios ataques; no despliega torretas.', 'artilleria tecnologica versatil', ['Guardianes', 'Tecnologia', 'Rivales'], 'artillery', [4, 4, 3, 5], {
+    rocket_raccoon: contract('Rocket Raccoon', 'Tecnologico', 'Rare', 335, 36, 185, 1.65, true, 'ARSENAL GUARDIAN', 'Despliega una torreta durante 5 s tras 6 s de recarga. Mientras esta activa reserva 20% del dano de sus disparos para fuego directo cada 0.5 s, sin efectos de objetos ni recargas en cadena. Conserva splash y 14% de penetracion. Mover, stun o retirar cancela y pierde la reserva.', 'artilleria tecnologica versatil', ['Guardianes', 'Tecnologia', 'Rivales'], 'artillery', [4, 4, 3, 5], {
         projectileProfile: { splashRadius: 44, splashFactor: 0.3, armorPenetration: 0.14 },
         statModifiers: { detectStealth: true, fireRatePct: 0.05 },
         visualStyle: 'explosive',

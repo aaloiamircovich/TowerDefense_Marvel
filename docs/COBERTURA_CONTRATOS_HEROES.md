@@ -49,6 +49,7 @@ Cada escenario comienza sin enemigos para comprobar ausencia de disparos.
 | Mira y adaptacion | target-focus-contract: 37 pruebas de niveles, jefes, limites, reinicios, cruz, categorias tecnologicas, armadura, vuelo, objetos y 60 s de ataques |
 | Baliza y doble baston | beacon-baton-contract: 24 pruebas de niveles, impacto, radio, limite, resistencias, pool, carcaj, reinicios y 60 s de descarga limitada |
 | Caza y trucos | hunt-tricks-contract: 22 pruebas de niveles, blanco marcado, transferencia unica, resistencias, limites, reinicios, alternancia y vuelo |
+| Dispositivos | field-devices-contract: 29 pruebas de niveles, reserva de dano, limites, duracion/recarga, minas, resistencias, retiro/stun, baja sin hooks y 60 s |
 
 Los nombres corresponden a archivos `.test.js`. Las pruebas focalizadas
 son necesarias: pasar el recorrido comun no demuestra que cada condicion
@@ -61,9 +62,9 @@ anunciada en una ficha este implementada.
 - Fase 2 implementada: Luke, nueve soportes, acumulacion aditiva, evolucion y
   economia heredada. El 15% por disparo de Domino sigue intacto; la contabilidad
   probada no reemplaza el balance de ingreso por partida de fase 10.
-- Fase 3: catorce tiradores revisados; pendientes Rocket y Peni Parker.
-- Fases 3-7: las demas propuestas de firma en la matriz; minas, clones y torretas no existen
-  por mencionarlas en un documento. Deben implementarse y probarse en su lote.
+- Fase 3 implementada en ocho lotes: dieciseis tiradores revisados. Dispositivos de Rocket/Peni limitados y dependientes del dueno.
+- Fases 4-7: las demas propuestas de firma en la matriz. Las entidades nuevas
+  que aun no tienen lote implementado no existen solo por mencionarlas aqui.
 - Fase 8: todos los cruces de evolucion/signature sobre los kits nuevos.
 - Fase 9: lectura compacta de condiciones e indicadores.
 - Fase 10: equipos de seis, presupuesto equivalente, mapas y jefes con movimiento,

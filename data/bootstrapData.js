@@ -5049,7 +5049,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.9,
       "canSeeStealth": true,
       "ability": "SP//DR LINK",
-      "abilityDesc": "Dron aracnido con red electrica: detecta sigilo y frena oleadas rapidas.",
+      "abilityDesc": "Tras 8 s prepara una mina en la posicion de un enemigo detectado dentro de alcance. Arma en 1 s y caduca en 5 s; un enemigo a 26 px activa red de 35% por 2 s a hasta cinco detectados en 65 px y dentro de cobertura. Sin dano. Mover, stun o retirar cancela.",
       "niche": "tecnologia anti corredores",
       "allowedTerrains": [
         1,
@@ -5885,7 +5885,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.65,
       "canSeeStealth": true,
       "ability": "ARSENAL GUARDIAN",
-      "abilityDesc": "Dispara proyectiles explosivos con dano de area pequeno y 14% de penetracion de armadura. Detecta sigilo para sus propios ataques; no despliega torretas.",
+      "abilityDesc": "Despliega una torreta durante 5 s tras 6 s de recarga. Mientras esta activa reserva 20% del dano de sus disparos para fuego directo cada 0.5 s, sin efectos de objetos ni recargas en cadena. Conserva splash y 14% de penetracion. Mover, stun o retirar cancela y pierde la reserva.",
       "niche": "artilleria tecnologica versatil",
       "allowedTerrains": [
         3

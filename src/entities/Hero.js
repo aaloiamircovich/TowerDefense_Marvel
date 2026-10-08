@@ -156,6 +156,7 @@ export class Hero {
     update(dt, enemies, projectiles) {
         this.syncVisual();
         this.abilitySystem.focusKit?.update(dt, enemies);
+        this.abilitySystem.fieldDevice?.update(dt, enemies);
         if (this.stunTimer > 0 && this.id === 'punisher') this.abilitySystem.streetKit.suppression = null;
         if (this.stunTimer > 0 && this.id === 'war_machine') this.abilitySystem.avengerKit.salvo = null;
         updateSignatureTimers(this, dt);
@@ -329,9 +330,10 @@ export class Hero {
         this.combatStats.damageDealt += Math.max(0, amount || 0);
     }
 
-    recordKill(resourceManager, target = null) {
+    recordKill(resourceManager, target = null, secondaryEntity = false) {
         this.combatStats.kills++;
         this.killCount++;
+        if (secondaryEntity) return;
         this.abilitySystem.onKill(target);
         resolveSignatureOnKill(this, target);
     }

@@ -1,8 +1,8 @@
 # Identidad y habilidades de los 105 heroes
 
 Fecha: 2026-09-13. Base revisada: commit 553ad63.
-Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes. FASE 3 EN CURSO, siete lotes.
-Fases 3 a 10 pendientes. La cobertura comun no certifica el balance individual.
+Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes. FASE 3 IMPLEMENTADA, ocho lotes.
+Fases 4 a 10 pendientes. La cobertura comun no certifica el balance individual.
 Los hallazgos de auditoria describen el baseline; ver avances abajo para las
 correcciones ya realizadas. No equivale a completar el rediseño de los 105 kits.
 
@@ -1443,6 +1443,44 @@ con entidades temporales dependientes de su dueno y limites explicitos.
 
 Validacion: npm run check aprobado con 1.608 pruebas. Benchmark p95 0.329 ms;
 smoke desktop 1366x768 y mobile 390x844 sin overflow ni desvio de ruta.
+
+## Fase 3: octavo lote, dispositivos de Rocket y Peni
+
+Rocket despliega una torreta por 5 s tras 6 s de recarga, incluida la primera.
+Mientras existe, el disparo principal usa 80% de dano; 20% se reserva para
+un pulso directo cada 0.5 s contra un blanco segun prioridad del dueno, dentro
+de cobertura y deteccion efectivas. No agrega dano bruto gratuito. La reserva
+es como maximo dos ataques efectivos de dano; exceso, caducidad o cancelacion
+lo pierden. No copia splash, estados, efectos al impactar ni firmas. Conserva
+14% penetracion; aporta contadores de dano/bajas, pero una baja de torreta no
+activa hooks de habilidad/objeto. Recompensa normal de enemigo sigue en GameLoop.
+Sin blanco no gasta reserva, sin disparos principales no genera dano propio.
+
+Peni prepara una mina tras 8 s, en la posicion del blanco detectado dentro de
+alcance. Es una posicion fija sobre la ruta ocupada por el enemigo, no un
+heroe colocable. Arma en 1 s y caduca a los 5 s. Un enemigo valido a 26 px
+activa web 35% por 2 s a hasta cinco vivos detectados a 65 px Y dentro de la
+cobertura de Peni. No hace dano. Resistencias y acumulacion normal de web
+permanecen; recarga de 8 s comienza al activar/caducar/cancelar, no al colocar.
+
+Un dispositivo por dueno, nunca entradas nuevas en equipo/heroes. Mover,
+retirar, salir del equipo o stun elimina dispositivo y reserva y reinicia
+recarga. Los relojes usan dt de simulacion. Vistas usan pequenos indicadores
+geometricos del dispositivo, no cambios en sprites de personajes/mapas.
+Objetos y ataques principales de ambos siguen separados de los dispositivos.
+
+29 pruebas nuevas: niveles 1/49/50/51/99/100, presupuesto, recarga/duracion,
+limites, blancos, radio, armamento, resistencias, retiro/stun/equipo, baja sin
+hooks y 60 s a cadencia extrema. Comparacion normalizada de Rocket conserva
+80%+20% sin defensas; perder splash o reserva puede bajar su dano real. No
+certifica equipos/rutas ni perma-control combinado; pendientes fase 10.
+
+Fase 3 implementada: dieciseis de dieciseis revisados, ocho lotes. Siguiente:
+fase 4, combate cercano y combos, empezando por Hulk y She-Hulk.
+
+Validacion de cierre: npm run check repetido el 2026-10-07, 1.637 pruebas
+aprobadas; benchmark p95 0.347 ms. Smoke 1366x768 y 390x844 sin overflow
+ni desvio de ruta. No equivale a certificar el balance completo de campana.
 Simulaciones economicas/campana y auditorias de accesibilidad/lanzamiento OK.
 
 ## Fase 3: tercer lote, rafaga tactica y fuego sostenido

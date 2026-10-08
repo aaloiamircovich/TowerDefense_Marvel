@@ -123,7 +123,7 @@ export class CombatSystem {
         CombatSystem.addDamageText(projectile, target, attacker, result);
         CombatSystem.addImpactVfx(projectile, target, attacker, result, factor);
         attacker?.recordDamage?.(result.damage);
-        if (result.killed) CombatSystem.creditKill(target, attacker, resourceManager);
+        if (result.killed) CombatSystem.creditKill(target, attacker, resourceManager, Boolean(projectile.secondaryEntity));
     }
 
     static buildImpactVfxState(projectile = {}, result = {}, factor = 1) {
@@ -194,12 +194,12 @@ export class CombatSystem {
         });
     }
 
-    static creditKill(target, attacker, resourceManager) {
+    static creditKill(target, attacker, resourceManager, secondaryEntity = false) {
         if (!attacker || target.killCredited) return;
         target.killCredited = true;
 
         if (attacker.recordKill) {
-            attacker.recordKill(resourceManager, target);
+            attacker.recordKill(resourceManager, target, secondaryEntity);
             return;
         }
 

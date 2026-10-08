@@ -74,7 +74,7 @@ test('Nebula: ruptura no exige categoria tecnologica', () => {
     assert.match(heroes.nebula.abilityDesc, /sin restriccion de categoria/);
 });
 
-test('Rocket: un proyectil ordinario con splash y penetracion, sin entidad nueva', () => {
+test('Rocket: disparo ordinario conserva splash y penetracion antes de desplegar torreta', () => {
     const f = setup('rocket_raccoon');
     const primary = f.spawn();
     const shots = [];
@@ -83,7 +83,8 @@ test('Rocket: un proyectil ordinario con splash y penetracion, sin entidad nueva
     assert.equal(shots[0].splashRadius, 44);
     assert.equal(shots[0].armorPenetration, 0.14);
     assert.deepEqual(f.game.heroes, [f.hero]);
-    assert.match(heroes.rocket_raccoon.abilityDesc, /no despliega torretas/);
+    assert.equal(f.hero.abilitySystem.fieldDevice.device, null);
+    assert.match(heroes.rocket_raccoon.abilityDesc, /torreta durante 5 s/);
 });
 
 test('descripciones corregidas permanecen sincronizadas con generadores y bootstrap', () => {
