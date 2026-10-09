@@ -1,7 +1,7 @@
 # Identidad y habilidades de los 105 heroes
 
 Fecha: 2026-09-13. Base revisada: commit 553ad63.
-Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes. FASE 3 IMPLEMENTADA, ocho lotes. FASE 4 IMPLEMENTADA, diez lotes. FASE 5 EN CURSO, cuatro lotes.
+Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes. FASE 3 IMPLEMENTADA, ocho lotes. FASE 4 IMPLEMENTADA, diez lotes. FASE 5 EN CURSO, cinco lotes.
 Fases 6 a 10 pendientes. La cobertura comun no certifica el balance individual.
 Los hallazgos de auditoria describen el baseline; ver avances abajo para las
 correcciones ya realizadas. No equivale a completar el rediseño de los 105 kits.
@@ -12,6 +12,52 @@ cambie alguna decision real del jugador. Las propuestas requieren validacion
 antes de fijar porcentajes, tiempos o requisitos nuevos.
 
 ## Alcance y evidencia
+
+### Fase 5, lote 5: Mantis, Emma Frost, Nightcrawler y Cosmo (2026-10-08)
+
+F5 alcanza 18 de 20 heroes revisados. Se conservan sprites, mapas, rarezas,
+estadisticas base, progresion/evolucion y firmas de objetos.
+
+- Mantis: ataque preparado cada6s lleva sueno de2s al impacto. Respeta
+  inmunidad/resistencia de stun y tiene icono propio. Cualquier daño directo,
+  incluso absorbido por barrera, despierta; DoT no lo rompe. Mantis no fija
+  ni dispara a dormidos, pero proyectiles previos y aliados pueden despertar.
+  La victima guarda recuperacion compartida de duracion real del sueno+4s,
+  independiente de retirar efectos/fuente. Conserva marca aleatoria10%,
+  sustituye slow nativo, no cura. El sueno emitido persiste al retirar Mantis.
+- Emma: selector Psiquica/Diamante. Psiquica prepara cada3s marca17%/2.8s y
+  slow28%/1.6s garantizados al impacto. Diamante no emite esos controles y
+  resiste60% del stun recibido, sin limpiar el ya recibido ni modificarlo
+  retroactivamente. Cambiar modo no reinicia cooldown ni borra proyectiles
+  emitidos. Conserva deteccion, critico propio4 puntos y bonus de evolucion;
+  no es aura de buff aliado.
+- Nightcrawler: cada6s al atacar golpea hasta3 detectables en cobertura,
+  con45% poder adicional y saltos de<=90px, sin repetir victima. El sprite
+  visita posiciones capturadas0.18s por salto y vuelve; no altera coordenadas
+  logicas, terreno, alcance ni ocupacion. Pausa disparos durante esa secuencia,
+  no procs extra por cada salto. Movimiento/stun/retiro cancela visual y
+  preparacion, sin devolverlo a coordenadas antiguas. ReduceMotion evita
+  traslacion visual. Conserva rebotes2 y efectos nativos al primario.
+- Cosmo: ataque preparado cada5s enlaza primario y hasta3 vecinos detectables
+  en cobertura, a90px del ancla. Marca14%/2.5s resistible, maxima no sumada
+  con marcas aliadas. Separacion, perdida/muerte del ancla, salir de cobertura,
+  mover/stun/retiro o expiracion retiran solo su contribucion. Propagacion de
+  daño ordinario se conserva; la red no se propaga por proyectil ni da stun.
+
+44 pruebas nuevas en psychic-bamf-contract.test.js cubren niveles
+1/49/50/51/99/100, despertar directo vs DoT/barrera, inmunidades/resistencias,
+recuperacion entre fuentes, selector sin limpieza de stun, limites de salto,
+retorno visual sin mover casilla y redes independientes de marcas aliadas.
+El helper de campo ahora admite slow y mark; siguen vigentes los contratos
+de Groot/Storm/Jeff/Medusa. Presupuesto heuristico reconoce efectos preparados,
+no certifica DPS exacto ni balance de todos los equipos (fase10 pendiente).
+
+Validacion: 2.147 pruebas aprobadas; npm run check completo sin errores.
+Benchmark p95 0.394ms; smoke desktop1366x768/mobile390x844 sin overflow
+y desvio de ruta0px. No se modifican dinero, estrellas ni vidas.
+
+Siguiente lote mixto: Heimdall y Squirrel Girl cierran F5; Blade y Ghost Rider
+abren F6 para mantener lotes de cuatro heroes.
 
 ### Fase 5, lote 4: Namora, Triton, Jeff y Luna Snow (2026-10-08)
 

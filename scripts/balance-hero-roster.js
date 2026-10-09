@@ -93,6 +93,10 @@ function getUtilityFactor(hero) {
         if (hero.id === id && !effects.some(effect => effect.type === type)) effects.push({ type });
     }
     factor -= Math.min(0.18, effects.length * 0.045);
+    // Prepared sleep, psychic debuffs and linked marks retain their utility budget.
+    if (hero.id === 'mantis') factor -= 0.045;
+    if (hero.id === 'emma_frost') factor -= 0.09;
+    if (hero.id === 'cosmo') factor -= 0.045;
     // These native controls moved from random projectile effects to prepared kits.
     if (['namora', 'triton', 'jeff_the_land_shark', 'luna_snow'].includes(hero.id) && effects.length === 0) factor -= 0.045;
 

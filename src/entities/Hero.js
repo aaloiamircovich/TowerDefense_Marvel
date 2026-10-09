@@ -164,6 +164,7 @@ export class Hero {
         this.abilitySystem.controlKit?.update(dt);
         this.abilitySystem.elementalKit?.update(dt);
         this.abilitySystem.coastalKit?.update(dt);
+        this.abilitySystem.psychicKit?.update(dt);
         this.abilitySystem.mutantKit.checkWeather();
         this.abilitySystem.fieldDevice?.update(dt, enemies);
         if (this.stunTimer > 0 && this.id === 'punisher') this.abilitySystem.streetKit.suppression = null;
@@ -182,7 +183,8 @@ export class Hero {
         this.abilitySystem.update(dt, enemies, stats, projectiles);
         if (this.id === 'moon_knight') stats = this.getEffectiveStats();
 
-        if (this.timer >= 1 / stats.fireRate && (this.abilitySystem.martialKit?.canAttack() ?? true)) {
+        if (this.timer >= 1 / stats.fireRate && (this.abilitySystem.martialKit?.canAttack() ?? true)
+            && (this.abilitySystem.psychicKit?.canAttack() ?? true)) {
             const target = this.getBestTarget(enemies, stats);
             if (target) {
                 this.shoot(target, stats, projectiles);
@@ -195,6 +197,7 @@ export class Hero {
     getBestTarget(enemies, stats) {
         const inRange = enemies.filter((enemy) => {
             if (!enemy.isAlive) return false;
+            if (this.id === 'mantis' && enemy.debuffs?.some(effect => effect.type === 'sleep' && effect.duration > 0)) return false;
             if (enemy.stealth && !stats.canSeeStealth) return false;
             return isPointInRangePattern(this, enemy, stats.range, this.rangePattern, stats.rangeGeometryScale);
         });
@@ -224,6 +227,8 @@ export class Hero {
     shoot(target, stats, projectiles) {
         if (this.isSupportAuraOnly()) return;
         if (this.abilitySystem.martialKit?.canAttack() === false) return;
+        if (this.abilitySystem.psychicKit?.canAttack() === false) return;
+        if (this.id === 'mantis' && target?.debuffs?.some(effect => effect.type === 'sleep' && effect.duration > 0)) return;
         this.animator?.faceVector(target.x - this.x, target.y - this.y);
         this.animator?.playAttack();
 
@@ -375,7 +380,8 @@ export class Hero {
     }
 
     getStunResistance() {
-        return Math.min(0.8, Math.max(0, Number(this.config.special?.stunResistance) || 0));
+        const diamond = this.id === 'emma_frost' && this.abilitySystem.psychicKit?.mode === 'diamond' ? 0.6 : 0;
+        return Math.min(0.8, Math.max(diamond, Number(this.config.special?.stunResistance) || 0));
     }
 
     applyStun(duration = 1) {
@@ -395,7 +401,7 @@ export class Hero {
     recordStatusApplied(effect = {}, target = null) {
         const type = effect.type;
         const duration = Math.max(0, Number(effect.duration || 0));
-        if (['slow', 'stun', 'web', 'knockback'].includes(type)) {
+        if (['slow', 'stun', 'sleep', 'web', 'knockback'].includes(type)) {
             this.combatStats.controlSeconds += duration || (type === 'knockback' ? 0.8 : 0);
         }
         if (type === 'armorBreak') this.combatStats.armorBreaks++;
@@ -444,6 +450,9 @@ export class Hero {
             ctx.stroke();
         }
 
+        const offset = this.abilitySystem.psychicKit?.visualOffset();
+        ctx.save();
+        if (offset && (offset.x || offset.y)) ctx.translate(offset.x, offset.y);
         const animated = this.animator?.render(ctx, this.x, this.y) || false;
         if (!animated && this.legacyImage?.complete && this.legacyImage.naturalWidth > 0) {
             const previousSmoothing = ctx.imageSmoothingEnabled;
@@ -456,6 +465,7 @@ export class Hero {
         } else if (!animated) {
             this.renderFallback(ctx);
         }
+        ctx.restore();
         this.abilitySystem.render(ctx);
         renderSignatureVisuals(this, ctx);
 

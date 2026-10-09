@@ -107,10 +107,10 @@ especificos con objetos y comparativas de rutas siguen pendientes.
 | `triton` | Triton (Common) | F5/lote4: sonar dirigido desde agua cada6s, revela3 ocultos por3s resistibles a65px del primario en cobertura. | No gasta sin ocultos, no vision global; deteccion propia y firma conservadas. |
 | `jeff_the_land_shark` | Jeff The Land Shark (Rare) | F5/lote4: corriente90x44px por2.5s cada6s, slow45% terrestre resistible. | Salida/mover/stun/retiro corta solo su campo; sin desplazar, ejecutar ni curar. |
 | `luna_snow` | Luna Snow (Rare) | F5/lote4: pulso cada1.5s alterna25/50% slow0.9s a4 detectables en cobertura/radio50. | Ritmo visible, sin escarcha ni stun; conserva splash38px y deteccion. |
-| `mantis` | Mantis (Rare) | Slow y marca. | Sueno de un blanco que se rompe con dano directo; gran control al reservarlo, no otra aura de ataque. |
-| `emma_frost` | Emma Frost (Legendary) | Marca, slow y critico propio. | Concentracion psiquica o diamante resistente al control; debuffs enemigos, no buff aliado mientras ataca. |
-| `nightcrawler` | Nightcrawler (Epic) | Rebotes, slow y marca; sin teletransporte de kit. | Salto BAMF entre pocos blancos con retorno al origen; enfriamiento y sin ocupar calle permanentemente. |
-| `cosmo` | Cosmo (Rare) | Propagacion de marca y deteccion. | Red psiquica de marcas con limite de enlaces; amplifica ventana de equipo sin ser stun global. |
+| `mantis` | Mantis (Rare) | F5/lote5: sueno2s al impacto cada6s; daño directo despierta, DoT no. | Mantis evita dormidos; recuperacion compartida duracion real+4s. Conserva marca, sin curar. |
+| `emma_frost` | Emma Frost (Legendary) | F5/lote5: modo psiquico mark17%/slow28% cada3s o Diamante60% resistencia al stun. | Cambio no limpia stun ni reinicia cooldown; critico/deteccion propios conservados, no aura. |
+| `nightcrawler` | Nightcrawler (Epic) | F5/lote5: BAMF45% poder a3 detectables cada6s, saltos<=90px en cobertura. | Traslacion solo visual0.18s por punto; pausa disparos, regreso sin alterar casilla, conserva rebotes. |
+| `cosmo` | Cosmo (Rare) | F5/lote5: red de4 marcas14%/2.5s a90px del ancla cada5s. | Separacion/perdida del ancla rompe contribucion sin borrar marca aliada; no stun global. |
 | `heimdall` | Heimdall (Rare) | Cruz, deteccion propia y marca. | Vigilancia de una salida: revelado anticipado en brazos de la cruz; cobertura geometrica, no vision universal. |
 | `squirrel_girl` | Squirrel Girl (Common) | Slow y aumento estatico de cadencia; sin invocacion. | Rafaga de hostigadores temporales contra rezagados; una entidad logica, presupuesto acotado y sin plazas extra. |
 

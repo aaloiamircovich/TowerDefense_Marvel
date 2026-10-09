@@ -4780,7 +4780,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.45,
       "canSeeStealth": true,
       "ability": "DIAMANTE PSIQUICO",
-      "abilityDesc": "Detecta sigilo para sus propios ataques. Puede marcar y ralentizar al objetivo principal, sea comun o jefe. +4 puntos de probabilidad critica propia; no potencia aliados.",
+      "abilityDesc": "Forma psiquica: cada 3s prepara marca 17% por 2.8s y slow 28% por 1.6s al impacto. Diamante: resiste 60% del aturdimiento pero no aplica esos controles. Conserva deteccion y +4 puntos de critica propia; no potencia aliados.",
       "niche": "soporte mutante de control",
       "allowedTerrains": [
         1,
@@ -4798,20 +4798,7 @@ window.__MARVEL_TD_DATA__ = {
         "detection": 5
       },
       "special": {
-        "attackEffects": [
-          {
-            "type": "mark",
-            "duration": 2.8,
-            "power": 0.17,
-            "chance": 0.42
-          },
-          {
-            "type": "slow",
-            "duration": 1.6,
-            "power": 0.28,
-            "chance": 0.28
-          }
-        ],
+        "attackEffects": [],
         "statModifiers": {
           "detectStealth": true,
           "critChance": 4,
@@ -5612,7 +5599,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.65,
       "canSeeStealth": true,
       "ability": "EMPATIA PSIQUICA",
-      "abilityDesc": "Calma grupos peligrosos con ralentizacion y marca tactica desde gran distancia.",
+      "abilityDesc": "Cada 6s prepara sueno de 2s al impacto sobre un enemigo. El dano directo lo despierta; Mantis evita disparar a dormidos. La victima conserva 4s de recuperacion tras la duracion del sueno. Conserva marca tactica y no cura.",
       "niche": "soporte guardian de control tactico",
       "allowedTerrains": [
         1,
@@ -5631,12 +5618,6 @@ window.__MARVEL_TD_DATA__ = {
       },
       "special": {
         "attackEffects": [
-          {
-            "type": "slow",
-            "duration": 2.6,
-            "power": 0.44,
-            "chance": 0.5
-          },
           {
             "type": "mark",
             "duration": 2,
@@ -5855,7 +5836,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.85,
       "canSeeStealth": true,
       "ability": "SALTO BAMF",
-      "abilityDesc": "Sus ataques rebotan hasta dos veces entre enemigos cercanos. Detecta sigilo y puede marcar o ralentizar solo al objetivo principal; no crea nubes ni se teletransporta.",
+      "abilityDesc": "Cada 6s encadena BAMF entre hasta 3 detectados en su alcance, a 90px por salto, con 45% poder adicional. Su sprite salta y vuelve sin cambiar la casilla; pausa disparos durante el salto. Conserva rebotes y marca o slow solo al objetivo principal.",
       "niche": "movilidad mutante, deteccion y control corto",
       "allowedTerrains": [
         1,
@@ -7543,7 +7524,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.4,
       "canSeeStealth": true,
       "ability": "TELEPATIA ESPACIAL",
-      "abilityDesc": "Detecta unidades ocultas y propaga marcas psiquicas entre enemigos agrupados.",
+      "abilityDesc": "Cada 5s enlaza hasta 4 detectados en su alcance a 90px del objetivo: marca 14% por 2.5s. Separarse o perder el ancla rompe la red sin borrar marcas aliadas. Conserva deteccion y propagacion de dano, sin stun global.",
       "niche": "raro detector y propagacion",
       "sprite": "assets/images/heroes/cosmo/portrait.png",
       "visual": {
@@ -7602,14 +7583,7 @@ window.__MARVEL_TD_DATA__ = {
           "propagationRadius": 90,
           "propagationFactor": 0.28
         },
-        "attackEffects": [
-          {
-            "type": "mark",
-            "duration": 2.6,
-            "power": 0.1,
-            "chance": 0.36
-          }
-        ],
+        "attackEffects": [],
         "visualStyle": "mystic",
         "projectileColor": "#fde68a"
       },

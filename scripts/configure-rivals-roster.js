@@ -105,8 +105,8 @@ const rivalsHeroes = {
         visualStyle: 'impact',
         projectileColor: '#ef4444'
     }),
-    emma_frost: contract('Emma Frost', 'Mutante', 'Legendary', 470, 34, 180, 1.45, true, 'DIAMANTE PSIQUICO', 'Detecta sigilo para sus propios ataques. Puede marcar y ralentizar al objetivo principal, sea comun o jefe. +4 puntos de probabilidad critica propia; no potencia aliados.', 'soporte mutante de control', ['Mutantes', 'X-Men', 'Rivales'], 'support', [3, 5, 5, 5], {
-        attackEffects: [{ type: 'mark', duration: 2.8, power: 0.17, chance: 0.42 }, { type: 'slow', duration: 1.6, power: 0.28, chance: 0.28 }],
+    emma_frost: contract('Emma Frost', 'Mutante', 'Legendary', 470, 34, 180, 1.45, true, 'DIAMANTE PSIQUICO', 'Forma psiquica: cada 3s prepara marca 17% por 2.8s y slow 28% por 1.6s al impacto. Diamante: resiste 60% del aturdimiento pero no aplica esos controles. Conserva deteccion y +4 puntos de critica propia; no potencia aliados.', 'soporte mutante de control', ['Mutantes', 'X-Men', 'Rivales'], 'support', [3, 5, 5, 5], {
+        attackEffects: [],
         statModifiers: { detectStealth: true, critChance: 4, rangePct: 0.05 },
         visualStyle: 'ice',
         projectileColor: '#e0f2fe'
@@ -165,8 +165,8 @@ const rivalsHeroes = {
         visualStyle: 'ice',
         projectileColor: '#93c5fd'
     }),
-    mantis: contract('Mantis', 'Cosmico', 'Rare', 305, 24, 175, 1.65, true, 'EMPATIA PSIQUICA', 'Calma grupos peligrosos con ralentizacion y marca tactica desde gran distancia.', 'soporte guardian de control', ['Guardianes', 'Rivales'], 'support', [2, 5, 5, 5], {
-        attackEffects: [{ type: 'slow', duration: 2.6, power: 0.44, chance: 0.5 }, { type: 'mark', duration: 2.0, power: 0.1, chance: 0.3 }],
+    mantis: contract('Mantis', 'Cosmico', 'Rare', 305, 24, 175, 1.65, true, 'EMPATIA PSIQUICA', 'Cada 6s prepara sueno de 2s al impacto sobre un enemigo. El dano directo lo despierta; Mantis evita disparar a dormidos. La victima conserva 4s de recuperacion tras la duracion del sueno. Conserva marca tactica y no cura.', 'soporte guardian de control', ['Guardianes', 'Rivales'], 'support', [2, 5, 5, 5], {
+        attackEffects: [{ type: 'mark', duration: 2.0, power: 0.1, chance: 0.3 }],
         statModifiers: { detectStealth: true, rangePct: 0.05 },
         visualStyle: 'mystic',
         projectileColor: '#86efac'

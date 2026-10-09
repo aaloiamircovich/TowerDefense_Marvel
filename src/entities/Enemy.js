@@ -8,6 +8,7 @@ const imageCache = new Map();
 
 const STATUS_VISUALS = {
     stun: { color: '#ffd166', symbol: '!' },
+    sleep: { color: '#b6ff9d', symbol: 'Z' },
     slow: { color: '#40c9ff', symbol: '~' },
     burn: { color: '#ff6b35', symbol: 'F' },
     poison: { color: '#69e58c', symbol: 'P' },
@@ -105,7 +106,7 @@ export function buildEnemyStatusPips(debuffs = [], limit = 4) {
             return map;
         }, new Map());
 
-    const priority = { stun: 9, web: 8, slow: 7, burn: 6, poison: 6, curse: 6, bleed: 6, armorBreak: 5, mark: 4, haste: 3 };
+    const priority = { stun: 9, sleep: 9, web: 8, slow: 7, burn: 6, poison: 6, curse: 6, bleed: 6, armorBreak: 5, mark: 4, haste: 3 };
     const entries = [...active.values()]
         .sort((a, b) => (priority[b.type] || 1) - (priority[a.type] || 1) || b.duration - a.duration)
         .map((status) => {
@@ -153,6 +154,7 @@ export class Enemy {
         this.animator = this.visual ? new SpriteAnimator(this.visual) : null;
         this.debuffs = [];
         this.webBindCooldown = 0;
+        this.sleepRecovery = 0;
         this.frost = { stacks: 0, remaining: 0, cooldown: 0 };
 
         const renderedSize = Number(config.visual?.size || config.visualSize || (this.isFinalBoss ? 96 : this.isBoss ? 96 : 30));
@@ -192,6 +194,9 @@ export class Enemy {
             .filter((status) => status.type === 'barrierScan' && status.duration > 0)
             .reduce((strongest, status) => Math.max(strongest, status.power), 0) : 0;
         const barrierResult = this.behavior.absorbDamage(finalDamage, 1 + barrierBonus);
+        if (options.direct && (barrierResult.absorbed > 0 || barrierResult.remaining > 0)) {
+            this.debuffs = this.debuffs.filter(effect => effect.type !== 'sleep');
+        }
         const appliedDamage = Math.min(this.hp, barrierResult.remaining);
         this.hp -= appliedDamage;
 
@@ -226,6 +231,14 @@ export class Enemy {
         if (DOT_TYPES.has(type) && !dot) return false;
         if (type === 'slow' && this.config.immuneToSlow) return false;
         if (type === 'stun' && this.config.immuneToStun) return false;
+        if (type === 'sleep') {
+            if (this.config.immuneToStun || this.sleepRecovery > 0 || !this.isAlive) return false;
+            const time = this.getStatusDuration('stun', Math.min(2, duration));
+            this.sleepRecovery = time + 4;
+            this.debuffs.push({ type, duration: time, power: 1, source });
+            source?.recordStatusApplied?.({ type, duration: time, power: 1 }, this);
+            return true;
+        }
         if (type === 'knockback') {
             if (this.flying || this.config.immuneToKnockback) return false;
             this.moveBackward(power);
@@ -291,11 +304,19 @@ export class Enemy {
     }
 
     applyFieldSlow(power, duration, source, fieldActive) {
+        return this.applyFieldStatus('slow', power, duration, source, fieldActive);
+    }
+
+    applyFieldMark(power, duration, source, fieldActive) {
+        return this.applyFieldStatus('mark', power, duration, source, fieldActive);
+    }
+
+    applyFieldStatus(type, power, duration, source, fieldActive) {
         // Keep field contributions separate so leaving a zone preserves allied slows.
-        if (this.config.immuneToSlow || !this.isAlive) return false;
-        const adjustedDuration = this.getStatusDuration('slow', duration);
-        this.debuffs.push({ type: 'slow', power, duration: adjustedDuration, source, fieldActive });
-        source?.recordStatusApplied?.({ type: 'slow', power, duration: adjustedDuration }, this);
+        if ((type === 'slow' && this.config.immuneToSlow) || !this.isAlive) return false;
+        const adjustedDuration = this.getStatusDuration(type, duration);
+        this.debuffs.push({ type, power, duration: adjustedDuration, source, fieldActive });
+        source?.recordStatusApplied?.({ type, power, duration: adjustedDuration }, this);
         return true;
     }
 
@@ -325,6 +346,7 @@ export class Enemy {
     }
 
     updateDebuffs(dt) {
+        this.sleepRecovery = Math.max(0, this.sleepRecovery - dt);
         this.frost.cooldown = Math.max(0, this.frost.cooldown - dt);
         this.frost.remaining = Math.max(0, this.frost.remaining - dt);
         if (this.frost.remaining === 0) this.frost.stacks = 0;
@@ -354,7 +376,7 @@ export class Enemy {
         const slow = this.debuffs.filter((debuff) => debuff.type === 'slow')
             .reduce((best, effect) => !best || effect.power > best.power ? effect : best, null);
         const web = this.debuffs.find((debuff) => debuff.type === 'web' && debuff.stacks > 0);
-        const stunned = this.debuffs.some((debuff) => debuff.type === 'stun');
+        const stunned = this.debuffs.some((debuff) => debuff.type === 'stun' || debuff.type === 'sleep');
         const haste = this.debuffs.find((debuff) => debuff.type === 'haste');
 
         if (stunned) {
@@ -370,7 +392,7 @@ export class Enemy {
 
     getDamageTakenMultiplier() {
         const mark = this.debuffs
-            .filter((debuff) => debuff.type === 'mark')
+            .filter((debuff) => debuff.type === 'mark' && debuff.duration > 0 && (!debuff.fieldActive || debuff.fieldActive()))
             .reduce((strongest, debuff) => Math.max(strongest, debuff.power), 0);
         return 1 + mark;
     }

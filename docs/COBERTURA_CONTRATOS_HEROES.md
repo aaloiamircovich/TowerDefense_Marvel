@@ -4,6 +4,15 @@ Actualizado: 2026-09-22. Roster: 105. No es una certificacion de balance.
 
 ## Cobertura comun ejecutable
 
+### F5/lote5: sueno, diamante, BAMF y red psiquica (2026-10-08)
+
+`test/psychic-bamf-contract.test.js`: 44 pruebas para Mantis, Emma Frost,
+Nightcrawler y Cosmo en niveles1/49/50/51/99/100. Impacto, despertar por daño
+directo/barrera pero no DoT, recuperacion por victima, dos modos sin limpiar
+stun, caps/rango, retorno visual, lifecycle y marcas aliadas independientes.
+Conserva las firmas y la evolucion; balance de equipos sigue pendiente.
+Suite global: 2.147 pruebas aprobadas; npm run check completo sin errores.
+
 ### F5/lote4: emboscada, sonar, corriente y ritmo (2026-10-08)
 
 `test/coastal-rhythm-contract.test.js`: 46 pruebas de Namora, Triton, Jeff

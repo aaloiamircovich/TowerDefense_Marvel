@@ -63,6 +63,7 @@ test('Emma: mark/slow tambien sobre comunes; critico y deteccion propios, no aur
     const target = f.spawn();
     const ally = new Hero({ id: 'ally', damage: 10, range: 100, fireRate: 1, critChance: 5 }, 20, 0, f.game);
     f.game.heroes.push(ally);
+    f.hero.abilitySystem.psychicKit.update(3);
     f.hit(target);
     assert.deepEqual(target.debuffs.map((effect) => effect.type).sort(), ['mark', 'slow']);
     assert.equal(f.hero.getEffectiveStats().critChance, f.hero.critChance + 4);
