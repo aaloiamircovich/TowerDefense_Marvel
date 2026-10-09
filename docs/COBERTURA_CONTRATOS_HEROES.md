@@ -4,6 +4,17 @@ Actualizado: 2026-09-22. Roster: 105. No es una certificacion de balance.
 
 ## Cobertura comun ejecutable
 
+### F5/lote3: escarcha, clima, elementos y marea (2026-10-08)
+
+`test/elemental-weather-contract.test.js`: 45 pruebas para Iceman, Storm,
+Crystal y Namor en niveles1/49/50/51/99/100. Inmunidades, resistencias,
+recuperacion compartida, caps/cobertura, lifecycle, modos inmutables por
+zona, ciclo/colores sin objeto, captura de daño, dt, terreno y preparacion.
+60s de escarcha extrema conservan>=50s de movimiento. Contratos anteriores
+actualizados para cooldown inicial de Storm y nuevo ciclo nativo de Crystal.
+No certifica todas las combinaciones signature/equipos ni balance global.
+Suite global: 2.057 pruebas aprobadas; smoke desktop/mobile sin overflow.
+
 ### F5/lote2: campos, radar, linea y enlaces (2026-10-08)
 
 `test/zone-control-contract.test.js`: 38 pruebas de Groot, Daredevil, Quake

@@ -44,6 +44,8 @@ export class TacticalActionSystem {
         hero.abilitySystem?.focusKit?.reset();
         hero.abilitySystem?.martialKit?.reset();
         hero.abilitySystem?.controlKit?.reset();
+        hero.abilitySystem?.elementalKit?.reset();
+        hero.abilitySystem?.mutantKit?.checkWeather();
         hero.abilitySystem?.cosmicKit?.checkRoots();
         hero.abilitySystem?.mutantKit?.updatePursuit(0);
         if (hero.abilitySystem?.streetKit) hero.abilitySystem.streetKit.suppression = null;

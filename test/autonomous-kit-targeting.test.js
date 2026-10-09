@@ -23,6 +23,7 @@ function setup(contract) {
     const hero = new Hero(roster[contract.id], 0, 0, game);
     game.heroes = [hero];
     const kit = hero.abilitySystem[contract.kit];
+    if (contract.id === 'storm') kit.cooldownRemaining = 0;
     kit.resource = 80;
     const stats = { ...hero.getEffectiveStats(), canSeeStealth: false };
     const reach = stats.range * contract.range;
@@ -127,7 +128,7 @@ for (const mode of ['blizzard', 'lightning']) {
         f.update();
         assert.equal(f.kit.weatherZone.x, anchor.x);
         anchor.isAlive = false;
-        f.update(0.1);
+        f.update(0.8);
         if (mode === 'blizzard') assert.ok(hidden.debuffs.some((entry) => entry.type === 'slow'));
         else assert.ok(hidden.hp < hidden.maxHp);
         assert.equal(hidden.stealth, true);

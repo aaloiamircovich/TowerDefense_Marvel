@@ -27,7 +27,7 @@ export class MutantKitSystem {
         this.mode = MUTANT_CONTROLS[hero.id]?.defaultMode || null;
         this.attackCount = 0;
         this.resource = 0;
-        this.cooldownRemaining = hero.id === 'ant_man' ? 4 : 0;
+        this.cooldownRemaining = hero.id === 'ant_man' ? 4 : hero.id === 'storm' ? 9 : 0;
         this.pymCharge = 0;
         this.jumpTimer = 0;
         this.jumpOrigin = null;
@@ -110,7 +110,6 @@ export class MutantKitSystem {
 
     getAttackEffects() {
         if (this.hero.id === 'jean_grey') return [{ type: 'slow', duration: 1.8, power: 0.34, chance: 0.7 }];
-        if (this.hero.id === 'storm' && this.mode === 'blizzard') return [{ type: 'slow', duration: 2.2, power: 0.48, chance: 1 }];
         if (this.hero.id === 'scarlet_witch') return [{ type: 'mark', duration: 4, power: 0.2, chance: 1 }];
         if (this.hero.id === 'winter_soldier' && this.mode === 'shock' && this.isSoldierFinisher()) {
             return [{ type: 'stun', duration: 0.6, power: 1, chance: 1 }];
@@ -168,7 +167,9 @@ export class MutantKitSystem {
         if (this.hero.id === 'wolverine') return meter(`Frenesi ${Math.round(this.resource)}/100`, this.resource, 55);
         if (this.hero.id === 'jean_grey') return meter(`Phoenix ${Math.round(this.resource)}/100`, this.resource, 100);
         if (this.hero.id === 'cyclops') return staticState(`Visor: ${this.getModeLabel()}`);
-        if (this.hero.id === 'storm') return staticState(`Clima: ${this.getModeLabel()}`);
+        if (this.hero.id === 'storm') return cooldownState(this.weatherZone
+            ? `Zona ${this.weatherZone.mode === 'blizzard' ? 'Ventisca' : 'Tormenta'} ${this.weatherZone.duration.toFixed(1)}s; siguiente ${this.getModeLabel()}`
+            : `Clima: ${this.getModeLabel()}`, this.cooldownRemaining, 9);
         if (this.hero.id === 'domino') return staticState('Economia: +15% recompensa');
         if (this.hero.id === 'scarlet_witch') return cooldownState('Alteracion temporal', this.cooldownRemaining, 9);
         if (this.hero.id === 'ant_man') return {
@@ -201,7 +202,7 @@ export class MutantKitSystem {
     render(ctx) {
         if (this.weatherZone) {
             ctx.save();
-            ctx.strokeStyle = this.mode === 'blizzard' ? 'rgba(157,233,255,.65)' : 'rgba(246,241,164,.7)';
+            ctx.strokeStyle = this.weatherZone.mode === 'blizzard' ? 'rgba(157,233,255,.65)' : 'rgba(246,241,164,.7)';
             ctx.lineWidth = 3;
             ctx.beginPath();
             ctx.arc(this.weatherZone.x, this.weatherZone.y, this.weatherZone.radius, 0, Math.PI * 2);
@@ -297,25 +298,48 @@ export class MutantKitSystem {
     }
 
     updateWeather(dt, enemies, stats) {
+        this.checkWeather();
+        if (this.hero.stunTimer > 0 || !this.hero.game.heroes?.includes(this.hero)) return;
         if (this.weatherZone) {
-            this.weatherZone.duration -= dt;
-            const victims = enemies.filter((enemy) => enemy.isAlive && distance(enemy, this.weatherZone) <= this.weatherZone.radius);
-            if (this.mode === 'blizzard') victims.forEach((enemy) => enemy.applyStatus?.({ type: 'slow', duration: 0.5, power: 0.55 }, this.hero));
-            else if (this.weatherZone.tick <= 0) {
-                victims.slice(0, 4).forEach((enemy) => CombatSystem.applyDamage({ attackerType: this.hero.category, damage: stats.damage * 0.42 * this.getPowerScale() }, enemy, this.hero, this.hero.game.resourceManager, 1));
-                this.weatherZone.tick = 0.8;
+            const zone = this.weatherZone;
+            zone.tick += Math.min(dt, zone.duration);
+            zone.duration = Math.max(0, zone.duration - dt);
+            if (zone.mode === 'lightning') {
+                while (zone.tick + 1e-9 >= 0.8) {
+                    zone.tick -= 0.8;
+                    enemies.filter(enemy => enemy.isAlive && !enemy.hasReachedEnd && distance(enemy, zone) <= zone.radius)
+                        .sort((a, b) => b.distanceTravelled - a.distanceTravelled).slice(0, 4)
+                        .forEach(enemy => CombatSystem.applyDamage({ attackerType: this.hero.category, damage: zone.damage }, enemy, this.hero, this.hero.game.resourceManager, 1));
+                }
+            } else {
+                for (const enemy of enemies) {
+                    if (!enemy.isAlive || enemy.hasReachedEnd || zone.duration <= 0 || zone.touched.has(enemy) || distance(enemy, zone) > zone.radius) continue;
+                    zone.touched.add(enemy);
+                    enemy.applyFieldSlow?.(0.55, zone.duration, this.hero, () => this.weatherZone === zone && zone.duration > 0
+                        && this.weatherValid(zone) && !enemy.hasReachedEnd && distance(enemy, zone) <= zone.radius);
+                }
             }
-            this.weatherZone.tick -= dt;
-            if (this.weatherZone.duration <= 0) this.weatherZone = null;
+            if (zone.duration <= 0) this.weatherZone = null;
         }
         if (this.weatherZone || this.cooldownRemaining > 0) return;
         const target = this.hero.abilitySystem.getTargetsInRange(enemies, stats.range, stats)
+            .filter(enemy => !enemy.hasReachedEnd)
             .sort((a, b) => b.distanceTravelled - a.distanceTravelled)[0];
         if (!target) return;
-        this.weatherZone = { x: target.x, y: target.y, radius: 72, duration: 4.2, tick: 0 };
-        this.cooldownRemaining = this.getCooldown(9);
+        this.weatherZone = { x: target.x, y: target.y, radius: 72, duration: 4.2, tick: 0,
+            mode: this.mode, damage: stats.damage * 0.42 * this.getPowerScale(), originX: this.hero.x, originY: this.hero.y, touched: new Set() };
+        this.cooldownRemaining = 9;
         this.hero.game.audio?.play('weather');
         this.hero.recordAbility();
+    }
+
+    weatherValid(zone) {
+        return !(this.hero.stunTimer > 0) && this.hero.game.heroes?.includes(this.hero)
+            && this.hero.x === zone.originX && this.hero.y === zone.originY;
+    }
+
+    checkWeather() {
+        if (this.weatherZone && !this.weatherValid(this.weatherZone)) this.weatherZone = null;
     }
 
     updateHexTime(enemies, stats) {

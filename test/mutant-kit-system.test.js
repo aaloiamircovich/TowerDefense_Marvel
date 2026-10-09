@@ -43,7 +43,7 @@ test('Cyclops alterna linea penetrante y rebotes opticos', () => {
 test('Storm crea clima de hielo y electricidad sobre la ruta', () => {
     const game = createGame(); const hero = createHero('storm', game, { range: 200 }); const enemy = createEnemy(100);
     game.heroes = [hero]; game.enemies = [enemy];
-    hero.abilitySystem.update(0.1, [enemy], hero.getEffectiveStats(), []);
+    hero.abilitySystem.update(9, [enemy], hero.getEffectiveStats(), []);
     hero.abilitySystem.update(0.2, [enemy], hero.getEffectiveStats(), []);
     assert.ok(enemy.debuffs.some((effect) => effect.type === 'slow')); assert.equal(enemy.y, 0);
     assert.equal(hero.abilitySystem.setCombatMode('lightning'), true);

@@ -8,6 +8,7 @@ import { TargetFocusSystem } from './TargetFocusSystem.js';
 import { FieldDeviceSystem } from './FieldDeviceSystem.js';
 import { MartialKitSystem } from './MartialKitSystem.js';
 import { ControlKitSystem } from './ControlKitSystem.js';
+import { ElementalKitSystem } from './ElementalKitSystem.js';
 import { getLineEndpoint, getLineTargets } from '../utils/LineTargeting.js';
 import { applyCooldownReductions } from '../utils/AbilityModifiers.js';
 import { getHeroRangePattern, isPointInRangePattern } from '../utils/RangePattern.js';
@@ -36,6 +37,7 @@ export class HeroAbilitySystem {
         this.martialKit = ['valkyrie', 'rogue', 'beast', 'lady_sif', 'white_tiger', 'tigra', 'deadpool', 'devil_dinosaur', 'miles_morales'].includes(hero.id) ? new MartialKitSystem(hero) : null;
         this.fieldDevice = ['rocket_raccoon', 'peni_parker'].includes(hero.id) ? new FieldDeviceSystem(hero) : null;
         this.controlKit = ['quake', 'medusa'].includes(hero.id) ? new ControlKitSystem(hero) : null;
+        this.elementalKit = ['iceman', 'crystal', 'namor'].includes(hero.id) ? new ElementalKitSystem(hero) : null;
     }
 
     update(dt, enemies, stats, projectiles) {
@@ -61,6 +63,7 @@ export class HeroAbilitySystem {
         this.focusKit?.onAttack(target);
         this.martialKit?.onAttack(target, stats);
         this.controlKit?.onAttack(target, stats);
+        this.elementalKit?.onAttack(target, stats);
         this.avengerKit.onAttack(target, stats, projectileConfig, projectiles);
         this.cosmicKit.onAttack(target, stats, projectileConfig, projectiles);
         this.streetKit.onAttack(target, stats, projectileConfig, projectiles);
@@ -108,6 +111,7 @@ export class HeroAbilitySystem {
             * this.streetKit.getAttackDamageMultiplier(target)
             * (this.focusKit?.damageMultiplier(target) || 1)
             * (this.martialKit?.damageMultiplier(target) || 1)
+            * (this.elementalKit?.damageMultiplier() || 1)
             * (this.fieldDevice?.damageMultiplier() || 1);
     }
 
@@ -217,6 +221,7 @@ export class HeroAbilitySystem {
     getDisplayState() {
         if (this.martialKit) return this.martialKit.getDisplayState();
         if (this.controlKit) return this.controlKit.getDisplayState();
+        if (this.elementalKit) return this.elementalKit.getDisplayState();
         if (this.fieldDevice) return this.fieldDevice.getDisplayState();
         if (this.focusKit) return this.focusKit.getDisplayState();
         const aura = getEffectiveSupportAura(this.hero);
@@ -274,6 +279,7 @@ export class HeroAbilitySystem {
     }
 
     getProjectileColor() {
+        if (this.hero.id === 'crystal' && this.elementalKit.cooldown === 0) return ['#f97316', '#a7f3ff', '#fff19c'][this.elementalKit.element];
         return this.avengerKit.getProjectileColor() || this.cosmicKit.getProjectileColor() || this.streetKit.getProjectileColor() || this.mutantKit.getProjectileColor();
     }
 

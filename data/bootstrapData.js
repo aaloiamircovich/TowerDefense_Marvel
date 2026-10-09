@@ -1756,12 +1756,12 @@ window.__MARVEL_TD_DATA__ = {
       "category": "Mutante",
       "rarity": "Legendary",
       "cost": 565,
-      "damage": 38,
+      "damage": 41,
       "range": 200,
       "fireRate": 1.4,
       "canSeeStealth": false,
       "ability": "DIOSA DEL CLIMA",
-      "abilityDesc": "Crea zonas de ventisca que ralentizan o tormentas eléctricas que encadenan daño sobre la ruta.",
+      "abilityDesc": "Cada 9s crea una zona de 4.2s: ventisca ralentiza 55% dentro; tormenta pulsa cada 0.8s sobre hasta 4 enemigos. Cambiar clima solo afecta la proxima zona. Moverla o aturdirla cancela el clima.",
       "sprite": "assets/images/heroes/storm/portrait.png",
       "allowedTerrains": [
         0,
@@ -1822,20 +1822,7 @@ window.__MARVEL_TD_DATA__ = {
           "propagationRadius": 115,
           "propagationFactor": 0.32
         },
-        "attackEffects": [
-          {
-            "type": "slow",
-            "duration": 2.4,
-            "power": 0.42,
-            "chance": 0.46
-          },
-          {
-            "type": "stun",
-            "duration": 0.22,
-            "power": 1,
-            "chance": 0.12
-          }
-        ]
+        "attackEffects": []
       },
       "evolutionId": "storm_evolution"
     },
@@ -2670,10 +2657,11 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 0.95,
       "canSeeStealth": false,
       "ability": "TRIDENTE ATLANTE",
-      "abilityDesc": "Puede defender desde agua, rompe armadura y golpea elites de frente.",
+      "abilityDesc": "Defiende agua o pasto con penetracion. En agua inflige 20% mas dano; tres ataques preparan una marea contra hasta 3 vecinos, con recarga de 6s. Moverlo o 3s sin atacar pierde la carga.",
       "niche": "vanguardia acuatica anti elite",
       "allowedTerrains": [
-        0
+        0,
+        1
       ],
       "tags": [
         "Atlánticos",
@@ -2732,7 +2720,7 @@ window.__MARVEL_TD_DATA__ = {
           ]
         }
       },
-      "terrainRole": "aquatic",
+      "terrainRole": "amphibious",
       "evolutionId": "namor_evolution"
     },
     "iron_fist": {
@@ -3312,7 +3300,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.55,
       "canSeeStealth": false,
       "ability": "CERO ABSOLUTO",
-      "abilityDesc": "Ralentiza de forma consistente y cubre curvas con splash helado.",
+      "abilityDesc": "Una rafaga por segundo aplica escarcha a hasta 4 detectados cercanos: slow 30% y, tras 3 exposiciones, congela 0.6s. La escarcha caduca en 3s; cada victima tiene 4s de recuperacion tras congelarse.",
       "niche": "slow de area y control",
       "allowedTerrains": [
         1,
@@ -3334,14 +3322,7 @@ window.__MARVEL_TD_DATA__ = {
           "splashRadius": 44,
           "splashFactor": 0.28
         },
-        "attackEffects": [
-          {
-            "type": "slow",
-            "duration": 1.9,
-            "power": 0.45,
-            "chance": 0.55
-          }
-        ],
+        "attackEffects": [],
         "visualStyle": "ice",
         "projectileColor": "#a7f3ff"
       },
@@ -3634,7 +3615,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.35,
       "canSeeStealth": false,
       "ability": "ELEMENTOS DE ATTILAN",
-      "abilityDesc": "Proyectiles con dano de area y 45% de ralentizar solo al objetivo principal. Con evolucion y Cristal Terrigeno, alterna fuego, hielo y rayos cada siete ataques.",
+      "abilityDesc": "Cada 2s el siguiente ataque alterna fuego (15% poder/s por 2s), hielo (slow 35% por 1.5s) y rayos (50% poder a 2 vecinos). El proximo elemento es visible; conserva splash y su ciclo signature con evolucion y Cristal Terrigeno.",
       "niche": "control inhumano de area",
       "allowedTerrains": [
         0,
@@ -3657,14 +3638,7 @@ window.__MARVEL_TD_DATA__ = {
           "splashRadius": 46,
           "splashFactor": 0.28
         },
-        "attackEffects": [
-          {
-            "type": "slow",
-            "duration": 1.7,
-            "power": 0.36,
-            "chance": 0.45
-          }
-        ],
+        "attackEffects": [],
         "statModifiers": {
           "rangePct": 0.04
         },

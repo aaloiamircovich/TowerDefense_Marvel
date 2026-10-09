@@ -162,6 +162,8 @@ export class Hero {
         this.abilitySystem.martialKit?.update(dt);
         this.abilitySystem.cosmicKit.checkRoots();
         this.abilitySystem.controlKit?.update(dt);
+        this.abilitySystem.elementalKit?.update(dt);
+        this.abilitySystem.mutantKit.checkWeather();
         this.abilitySystem.fieldDevice?.update(dt, enemies);
         if (this.stunTimer > 0 && this.id === 'punisher') this.abilitySystem.streetKit.suppression = null;
         if (this.stunTimer > 0 && this.id === 'war_machine') this.abilitySystem.avengerKit.salvo = null;

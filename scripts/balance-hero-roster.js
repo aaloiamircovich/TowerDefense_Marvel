@@ -59,6 +59,9 @@ for (const rarity of Object.keys(TARGET_DPS_BY_RARITY)) {
 if (checkMode) {
     const brokenMedians = medians.filter((entry, index) => index > 0 && entry.value < medians[index - 1].value);
     if (changed > 0) {
+        for (const row of rows.filter(row => row.currentDamage !== row.nextDamage)) {
+            console.error(`${row.id}: dano actual ${row.currentDamage}, presupuesto ${row.nextDamage}`);
+        }
         console.error('ERROR: hay heroes fuera del presupuesto de DPS por rareza. Ejecuta npm run balance:heroes para recalibrar.');
         process.exitCode = 1;
     }
@@ -86,7 +89,7 @@ function getUtilityFactor(hero) {
     // Prepared stuns live in the runtime kits instead of the hero data.
     if (['mockingbird', 'iron_fist', 'jessica_jones', 'devil_dinosaur', 'miles_morales'].includes(hero.id) && !effects.some((effect) => effect.type === 'stun')) effects.push({ type: 'stun' });
     if (hero.id === 'okoye' && !effects.some((effect) => effect.type === 'armorBreak')) effects.push({ type: 'armorBreak' });
-    for (const [id, type] of [['red_guardian', 'stun'], ['korg', 'slow'], ['echo', 'mark'], ['groot', 'slow'], ['quake', 'slow'], ['quake', 'armorBreak'], ['medusa', 'slow']]) {
+    for (const [id, type] of [['red_guardian', 'stun'], ['korg', 'slow'], ['echo', 'mark'], ['groot', 'slow'], ['quake', 'slow'], ['quake', 'armorBreak'], ['medusa', 'slow'], ['iceman', 'slow'], ['crystal', 'slow'], ['storm', 'slow']]) {
         if (hero.id === id && !effects.some(effect => effect.type === type)) effects.push({ type });
     }
     factor -= Math.min(0.18, effects.length * 0.045);

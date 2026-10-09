@@ -45,7 +45,7 @@ const terrainProfiles = {
     loki: 'flyer',
     magneto: 'flyer',
 
-    namor: 'aquatic',
+    namor: 'amphibious',
     namora: 'aquatic',
     triton: 'aquatic',
 

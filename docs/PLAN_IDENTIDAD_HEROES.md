@@ -1,7 +1,7 @@
 # Identidad y habilidades de los 105 heroes
 
 Fecha: 2026-09-13. Base revisada: commit 553ad63.
-Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes. FASE 3 IMPLEMENTADA, ocho lotes. FASE 4 IMPLEMENTADA, diez lotes. FASE 5 EN CURSO, dos lotes.
+Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes. FASE 3 IMPLEMENTADA, ocho lotes. FASE 4 IMPLEMENTADA, diez lotes. FASE 5 EN CURSO, tres lotes.
 Fases 6 a 10 pendientes. La cobertura comun no certifica el balance individual.
 Los hallazgos de auditoria describen el baseline; ver avances abajo para las
 correcciones ya realizadas. No equivale a completar el rediseño de los 105 kits.
@@ -12,6 +12,58 @@ cambie alguna decision real del jugador. Las propuestas requieren validacion
 antes de fijar porcentajes, tiempos o requisitos nuevos.
 
 ## Alcance y evidencia
+
+### Fase 5, lote 3: Iceman, Storm, Crystal y Namor (2026-10-08)
+
+F5 alcanza 10 de 19 heroes revisados. Se mantienen sprites, mapas, rarezas,
+rango/cadencia base, niveles persistentes y contratos signature. Solo Storm
+ajusta daño base38 a41 al retirar el stun aleatorio: es el presupuesto de
+rareza calculado por la heuristica existente sin ese control, no un aumento
+general de estadisticas ni una certificacion de balance de partida completa.
+
+- Iceman: rafaga al atacar, como maximo una por segundo desde despliegue,
+  a primario y hasta3 vecinos detectables en cobertura/radio44px. Aplica
+  slow30%/1.2s y una escarcha que caduca tras3s sin exposicion. Tres escarchas
+  congelan0.6s resistibles; el enemigo guarda recuperacion compartida de4s
+  mas duracion real del stun. Inmunidad a stun conserva pausa4s, sin falso
+  stun; slow y stun respetan inmunidades independientes. Conserva splash
+  ordinario pero reemplaza slow aleatorio. No son efectos del splash.
+- Storm: zona72px/4.2s cada9s, incluido despliegue. Captura modo y daño al
+  crearla: cambiar modo prepara la siguiente, no transforma la existente.
+  Ventisca slow55% resistible una vez por enemigo/zona, termina al salir.
+  Tormenta pulsa cada0.8s, cinco veces, hasta4 victimas por avance, con42%
+  poder y escala de habilidad ya existente. Tick acotado a vida de zona y
+  consistente entre dt grandes/pequeños para blancos estacionarios. Ancla
+  detectable dentro del anillo; vecinos incidentales pueden estar ocultos
+  o en punto ciego, sin revelado. Movimiento/stun/retiro cancelan la zona.
+  Retira slow/stun nativos de proyectil; conserva perfiles de propagacion
+  y rebote electrico. Recarga compartida no cambia por alternar modos.
+- Crystal: cada2s, siguiente ataque activa solo una fase del ciclo visible:
+  fuego15% poder/s por2s al primario, hielo slow35%/1.5s al primario, rayos
+  50% poder a hasta2 vecinos detectables en cobertura/radio75px. Color de
+  proyectil preparado coincide con fase. Empieza en fuego sin objeto;
+  movimiento/stun/retiro reinicia fase y preparacion. Conserva splash y el
+  ciclo signature independiente, que aun exige evolucion y Cristal Terrigeno.
+- Namor: ahora anfibio (agua/pasto), no habilita calles ni montañas. Ataque
+  basico conserva penetracion24% y poder base en tierra. Sobre agua real,
+  daño primario x1.2; tres ataques preparan siguiente marea de60% poder a
+  hasta3 vecinos detectables en cobertura/radio55px. Recarga6s desde
+  despliegue/uso. Mover/stun/retiro, salir del agua o3s sin ataque limpian
+  carga. No empuja, no cura y no necesita mapa acuatico para ser util.
+
+45 pruebas nuevas: niveles1/49/50/51/99/100 con evolucion normal, cooldowns,
+caps, inmunidades/resistencias, ciclo/colores, limpieza, captura de daño,
+terrenos y dt. Prueba extrema60s de escarcha deja>=50s con movimiento.
+Los efectos preparados salen al disparar, separados del proyectil ordinario;
+no modifican las reglas generales de splash ni rebote de otros heroes.
+Las heuristicas de roster reconocen slows trasladados, no calculan todo el
+DPS de estos kits. Control mixto/economia/equipos siguen pendientes de F10.
+
+Validacion: 2.057 pruebas aprobadas; chequeos de balance, campaña,
+accesibilidad y lanzamiento sin errores. Benchmark p95 0.332ms; smoke
+desktop1366x768/mobile390x844 sin overflow y desvio de ruta0px.
+
+Siguiente lote: Namora, Triton, Jeff The Land Shark y Luna Snow.
 
 ### Fase 5, lote 2: Groot, Daredevil, Quake y Medusa (2026-10-08)
 

@@ -153,6 +153,7 @@ export class Enemy {
         this.animator = this.visual ? new SpriteAnimator(this.visual) : null;
         this.debuffs = [];
         this.webBindCooldown = 0;
+        this.frost = { stacks: 0, remaining: 0, cooldown: 0 };
 
         const renderedSize = Number(config.visual?.size || config.visualSize || (this.isFinalBoss ? 96 : this.isBoss ? 96 : 30));
         this.path = buildEnemyTravelPath(path, game?.currentLevel, renderedSize);
@@ -298,6 +299,19 @@ export class Enemy {
         return true;
     }
 
+    applyFrost(source) {
+        if (!this.isAlive || this.hasReachedEnd) return;
+        this.applyStatus({ type: 'slow', power: 0.3, duration: 1.2 }, source);
+        // The victim owns the recovery window, shared by all sources of native frost.
+        if (this.frost.cooldown > 0) return;
+        this.frost.remaining = 3;
+        this.frost.stacks++;
+        if (this.frost.stacks < 3) return;
+        const frozen = this.applyStatus({ type: 'stun', duration: 0.6, power: 1 }, source);
+        this.frost.stacks = 0;
+        this.frost.cooldown = 4 + (frozen ? this.getStatusDuration('stun', 0.6) : 0);
+    }
+
     applyDotTick(debuff, elapsed) {
         const stackCount = Math.max(1, Number(debuff.stacks || 1));
         const damage = debuff.damagePerSecond * stackCount * elapsed;
@@ -311,6 +325,9 @@ export class Enemy {
     }
 
     updateDebuffs(dt) {
+        this.frost.cooldown = Math.max(0, this.frost.cooldown - dt);
+        this.frost.remaining = Math.max(0, this.frost.remaining - dt);
+        if (this.frost.remaining === 0) this.frost.stacks = 0;
         this.webBindCooldown = Math.max(0, this.webBindCooldown - dt);
         this.debuffs.forEach((debuff) => {
             if (debuff.type === 'poison' && this.isAlive) {

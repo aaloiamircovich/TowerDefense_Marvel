@@ -25,7 +25,6 @@ function setup(id) {
 }
 
 for (const [id, status, chance, phrase] of [
-    ['crystal', 'slow', 0.45, '45% de ralentizar solo al objetivo principal'],
     ['nightcrawler', 'mark', 0.3, 'solo al objetivo principal'],
     ['nebula', 'armorBreak', 0.34, '34% de reducir la armadura']
 ]) {
@@ -47,6 +46,17 @@ for (const [id, status, chance, phrase] of [
         assert.equal(failed.debuffs.length, 0);
     });
 }
+
+test('Crystal: ciclo preparado sustituye slow aleatorio, splash no transmite fuego', () => {
+    const f = setup('crystal'), target = f.spawn(), neighbor = f.spawn();
+    neighbor.x += 10;
+    f.hero.abilitySystem.elementalKit.update(2);
+    f.hero.shoot(target, f.hero.getEffectiveStats(), []);
+    assert.equal(target.debuffs[0].type, 'burn');
+    assert.equal(neighbor.debuffs.length, 0);
+    assert.equal(f.hero.getProjectileEffects(target).length, 0);
+    assert.match(heroes.crystal.abilityDesc, /Cada 2s.*15% poder\/s.*35%.*50%/);
+});
 
 test('Emma: mark/slow tambien sobre comunes; critico y deteccion propios, no aura aliada', () => {
     const f = setup('emma_frost');
