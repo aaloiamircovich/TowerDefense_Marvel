@@ -1141,7 +1141,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 0.9,
       "canSeeStealth": true,
       "ability": "REALIDAD ENLAZADA",
-      "abilityDesc": "Conecta maldiciones entre enemigos y altera temporalmente la velocidad de toda una sección de la oleada. La maldicion inflige dano porcentual y se aprovecha de su propagacion en cadena.",
+      "abilityDesc": "Cada 7s, al atacar a un maldito, enlaza hasta 4 malditos detectables en alcance y a 90px del ancla. Si al menos 2 permanecen juntos durante 2s, reciben 70% de poder adicional. Conserva maldicion propagable, marca primaria y pulso temporal; mover, aturdir o retirar cancela la red.",
       "sprite": "assets/images/heroes/scarlet_witch/portrait.png",
       "allowedTerrains": [
         0,
@@ -3039,7 +3039,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.35,
       "canSeeStealth": true,
       "ability": "MANTO OSCURO",
-      "abilityDesc": "Revela sigilo y ralentiza enemigos marcados por sombras.",
+      "abilityDesc": "Cada 6s al atacar abre un manto fijo de 65px durante 3s: revela y ralentiza 42% a hasta 6 enemigos que entren. Salir del manto termina solo sus efectos; respeta resistencias y no renueva por reentrada. No teletransporta enemigos ni comparte vision global.",
       "niche": "deteccion mistica y control",
       "allowedTerrains": [
         0,
@@ -3062,14 +3062,7 @@ window.__MARVEL_TD_DATA__ = {
           "detectStealth": true,
           "rangePct": 0.08
         },
-        "attackEffects": [
-          {
-            "type": "slow",
-            "duration": 2.2,
-            "power": 0.42,
-            "chance": 0.42
-          }
-        ],
+        "attackEffects": [],
         "visualStyle": "mystic",
         "projectileColor": "#5d4bff"
       },
@@ -3122,7 +3115,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.65,
       "canSeeStealth": true,
       "ability": "DAGAS DE LUZ",
-      "abilityDesc": "Lanza luz que marca y salta a un segundo objetivo cercano, abriendo ventanas de dano para el equipo.",
+      "abilityDesc": "Al disparar deja una marca propia de 12% durante 3s. Cada 4s, disparar a una presa con esa marca la consume y descarga 65% de poder sobre ella y hasta 2 marcados propios consecutivos a 95px, dentro de su alcance. Conserva rebote basico y marcas aliadas; no cura.",
       "niche": "marca y rebote luminoso",
       "allowedTerrains": [
         0,
@@ -3146,14 +3139,7 @@ window.__MARVEL_TD_DATA__ = {
           "chainRange": 95,
           "chainFactor": 0.55
         },
-        "attackEffects": [
-          {
-            "type": "mark",
-            "duration": 2,
-            "power": 0.12,
-            "chance": 0.36
-          }
-        ],
+        "attackEffects": [],
         "statModifiers": {
           "detectStealth": true
         },
@@ -3209,7 +3195,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.05,
       "canSeeStealth": false,
       "ability": "ESPADA ALMA",
-      "abilityDesc": "Cortes mistico-mutantes rompen armadura y generan rebote dimensional. Los cortes dimensionales dejan una maldicion breve en formaciones densas.",
+      "abilityDesc": "Cada 6s prepara un corte contra un enemigo ya maldito: 50% de dano extra y ruptura20% durante 3.5s al impacto. Tras 0.4s, el retorno causa 60% de poder con penetracion55% si la presa sigue maldita y en alcance. Conserva maldicion y rebote basico; mover, aturdir o retirar cancela el retorno.",
       "niche": "ruptura y dano mistico",
       "allowedTerrains": [
         1,
@@ -3234,12 +3220,6 @@ window.__MARVEL_TD_DATA__ = {
           "chainFactor": 0.45
         },
         "attackEffects": [
-          {
-            "type": "armorBreak",
-            "duration": 3.5,
-            "power": 0.2,
-            "chance": 0.3
-          },
           {
             "type": "curse",
             "duration": 3.4,

@@ -61,8 +61,10 @@ test('Domino genera economia sin desviar enemigos de la ruta', () => {
 test('Scarlet Witch enlaza maldiciones y altera el tiempo', () => {
     const game = createGame(); const hero = createHero('scarlet_witch', game, { range: 220 }); const enemies = [createEnemy(100), createEnemy(130)];
     game.heroes = [hero]; game.enemies = enemies;
+    enemies.forEach(enemy => enemy.applyStatus({ type: 'curse', power: 0.0048, duration: 4 }, hero));
+    hero.abilitySystem.mysticKit.update(7);
     hero.abilitySystem.onAttack(enemies[0], hero.getEffectiveStats(), {}, []);
-    assert.ok(enemies.every((enemy) => enemy.debuffs.some((effect) => effect.type === 'mark')));
+    assert.equal(hero.abilitySystem.mysticKit.network.targets.length, 2);
     hero.abilitySystem.update(0.1, enemies, hero.getEffectiveStats(), []);
     assert.ok(enemies.every((enemy) => enemy.debuffs.some((effect) => effect.type === 'slow')));
 });

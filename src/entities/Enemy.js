@@ -210,7 +210,8 @@ export class Enemy {
     }
 
     get stealth() {
-        return this.nativeStealth && !this.debuffs?.some((effect) => effect.type === 'reveal' && effect.duration > 0);
+        return this.nativeStealth && !this.debuffs?.some((effect) => effect.type === 'reveal' && effect.duration > 0
+            && (!effect.fieldActive || effect.fieldActive()));
     }
 
     set stealth(value) {

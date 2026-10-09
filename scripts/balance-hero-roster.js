@@ -98,6 +98,7 @@ function getUtilityFactor(hero) {
     if (hero.id === 'emma_frost') factor -= 0.09;
     if (hero.id === 'cosmo') factor -= 0.045;
     if (['heimdall', 'squirrel_girl'].includes(hero.id) && effects.length === 0) factor -= 0.045;
+    if (['cloak', 'dagger', 'magik'].includes(hero.id)) factor -= 0.045;
     // These native controls moved from random projectile effects to prepared kits.
     if (['namora', 'triton', 'jeff_the_land_shark', 'luna_snow'].includes(hero.id) && effects.length === 0) factor -= 0.045;
 

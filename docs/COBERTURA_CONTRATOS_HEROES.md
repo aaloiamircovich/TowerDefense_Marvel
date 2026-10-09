@@ -4,6 +4,17 @@ Actualizado: 2026-09-22. Roster: 105. No es una certificacion de balance.
 
 ## Cobertura comun ejecutable
 
+### F6/lote2: red, manto, marcas de luz y corte dimensional (2026-10-09)
+
+`test/mystic-network-contract.test.js`: 46 pruebas para Scarlet Witch,
+Cloak, Dagger y Magik en niveles1/49/50/51/99/100. Maduracion y caps,
+aislamiento, snapshot de poder, zona y salida inmediata del revelado,
+resistencias sin renovacion, marca propia consumida sin borrar aliadas,
+retorno condicionado y lifecycle. Se conservan contratos previos del
+pulso Hex y firmas/evoluciones. Suite global: 2.240 pruebas aprobadas,
+npm run check completo sin errores y smoke desktop/mobile sin overflow.
+No certifica el balance de todas las combinaciones de equipos.
+
 ### F5/lote6 y F6/lote1: vigilancia y cazadores (2026-10-09)
 
 `test/vigilance-hunters-contract.test.js`: 47 pruebas para Heimdall,

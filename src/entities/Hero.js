@@ -166,6 +166,7 @@ export class Hero {
         this.abilitySystem.coastalKit?.update(dt);
         this.abilitySystem.psychicKit?.update(dt);
         this.abilitySystem.vigilanceKit?.update(dt);
+        this.abilitySystem.mysticKit?.update(dt);
         this.abilitySystem.streetKit.checkHunterPosition();
         this.abilitySystem.mutantKit.checkWeather();
         this.abilitySystem.fieldDevice?.update(dt, enemies);

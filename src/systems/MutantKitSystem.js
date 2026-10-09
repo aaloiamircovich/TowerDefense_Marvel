@@ -61,7 +61,6 @@ export class MutantKitSystem {
             if (this.attackCount % 4 === 0) this.telekineticPush(target, stats);
         }
         if (this.hero.id === 'cyclops' && this.attackCount % (this.mode === 'focus' ? 3 : 2) === 0) this.fireOpticLine(target, stats);
-        if (this.hero.id === 'scarlet_witch') this.linkHexes(target);
         if (this.hero.id === 'ant_man') {
             if (this.mode === 'tiny') this.pymCharge = Math.min(3, this.pymCharge + 1);
             else if (this.pymCharge === 3 && this.cooldownRemaining === 0) this.giantImpact(target, stats);
@@ -371,13 +370,6 @@ export class MutantKitSystem {
         this.hero.game.vfx?.addBeam(this.hero, getLineEndpoint(this.hero, target, length), { color: '#ff3535', width: this.mode === 'focus' ? 8 : 5, duration: 0.2 });
         this.hero.game.audio?.play('optic');
         this.hero.recordAbility();
-    }
-
-    linkHexes(target) {
-        const linked = (this.hero.game.enemies || []).filter((enemy) => enemy.isAlive && distance(enemy, target) <= 145)
-            .sort((a, b) => b.distanceTravelled - a.distanceTravelled).slice(0, 4);
-        linked.forEach((enemy) => enemy.applyStatus?.({ type: 'mark', duration: 4, power: 0.18 }, this.hero));
-        if (linked.length > 1) this.hero.recordAbility();
     }
 
     giantImpact(target, stats) {

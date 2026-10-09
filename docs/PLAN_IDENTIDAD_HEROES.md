@@ -1,7 +1,7 @@
 # Identidad y habilidades de los 105 heroes
 
 Fecha: 2026-09-13. Base revisada: commit 553ad63.
-Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes. FASE 3 IMPLEMENTADA, ocho lotes. FASE 4 IMPLEMENTADA, diez lotes. FASE 5 IMPLEMENTADA, seis lotes. FASE 6 EN CURSO, un lote mixto.
+Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes. FASE 3 IMPLEMENTADA, ocho lotes. FASE 4 IMPLEMENTADA, diez lotes. FASE 5 IMPLEMENTADA, seis lotes. FASE 6 EN CURSO, dos lotes.
 Fases 7 a 10 pendientes. La cobertura comun no certifica el balance individual.
 Los hallazgos de auditoria describen el baseline; ver avances abajo para las
 correcciones ya realizadas. No equivale a completar el rediseño de los 105 kits.
@@ -12,6 +12,51 @@ cambie alguna decision real del jugador. Las propuestas requieren validacion
 antes de fijar porcentajes, tiempos o requisitos nuevos.
 
 ## Alcance y evidencia
+
+### F6/lote2: Scarlet Witch, Cloak, Dagger y Magik (2026-10-09)
+
+F6 alcanza6/16 heroes revisados. No modifica sprites, mapas, rareza,
+estadisticas base, niveles/evolucion ni condiciones de firmas de objetos.
+
+- Scarlet Witch: red preparada7s al disparar a un maldito; hasta4 malditos
+  detectables en cobertura y a90px del ancla. Madura2s; con al menos2
+  supervivientes conectados detona70% del poder capturado a cada uno.
+  Separacion, perdida de maldicion o muerte del ancla cancela. Sustituye
+  marca de area por cada disparo; mantiene marca primaria20%, maldicion
+  propagable, rebote y pulso temporal incidental1.25x de F1/lote12.
+- Cloak: manto fijo65px/3s cada6s al disparar; hasta6 victimas por ventana,
+  incluidas voladoras u ocultas. Revelado y slow42% resistibles una vez
+  por victima, solo dentro del campo. Entradas tardias reciben tiempo
+  restante; salir, vencer o retirar fuente invalida solo su contribucion.
+  Conserva deteccion propia y8% alcance; sustituye slow aleatorio. No
+  cambia rutas ni posiciones. Getter de sigilo ahora respeta campo activo.
+- Dagger: al disparar deja marca propia12%/3s, resistible y no renovada
+  antes de expirar. Preparacion4s permite consumir esa marca al disparar
+  otra vez y descargar65% poder sobre hasta3 marcados propios encadenados
+  a95px en cobertura. El consumo borra solo su efecto, nunca marcas
+  aliadas; no las usa como combustible. Conserva rebote basico1, sin cura.
+  La marca nativa aleatoria se sustituye por estas contribuciones separadas.
+- Magik: corte preparado6s requiere curse previa (propia o aliada).
+  Disparo1.5x y ruptura20%/3.5s garantizada al impacto. Tras0.4s retorna
+  60% del poder capturado, penetracion55%, solo si la misma presa sigue
+  maldita, detectable y en cobertura. Sin mover al heroe ni al enemigo;
+  sin procs de item/ataque/curse adicionales en el retorno. Mantiene
+  curse aleatoria y rebote basico; elimina ruptura aleatoria redundante.
+
+Cooldowns iniciales y fijos; mover/stun/retiro cancela la preparacion y
+los estados propios pendientes. Los proyectiles emitidos siguen su curso.
+Los danos secundarios no activan otro ataque ni firmas. Presupuesto
+heuristico conserva utilidad de los efectos trasladados a runtime;
+no equivale a certificar todos los equipos/economia, pendiente F10.
+
+46 pruebas nuevas cubren niveles1/49/50/51/99/100, caps, deteccion/cobertura,
+ruptura de enlaces, marcas propias vs aliadas, expiracion/resistencias,
+retirada, dano capturado, perdida de curse y ausencia de curacion.
+Validacion: 2.240 pruebas aprobadas; npm run check completo sin errores.
+Benchmark p95 0.322ms; smoke desktop1366x768/mobile390x844 sin overflow,
+desvio de ruta0px. Balance combinado de todos los equipos sigue pendiente.
+
+Siguiente lote F6: Black Cat, Elsa Bloodstone, Gambit y Hela.
 
 ### F5/lote6 y F6/lote1: Heimdall, Squirrel Girl, Blade y Ghost Rider (2026-10-09)
 
