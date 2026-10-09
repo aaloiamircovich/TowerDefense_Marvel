@@ -32,15 +32,15 @@ const allegianceHeroes = {
         visualStyle: 'elemental',
         projectileColor: '#f97316'
     }),
-    namora: contract('Namora', 'Atlantico', 'Rare', 300, 44, 125, 1.35, false, 'HOJA ATLANTE', 'Puede operar en agua y castiga enemigos blindados cerca de la base.', 'duelista anfibia anti blindaje', ['Atlanticos', 'Marciales'], 'vanguard', [4, 3, 3, 2], {
+    namora: contract('Namora', 'Atlantico', 'Rare', 300, 44, 125, 1.35, false, 'HOJA ATLANTE', 'Desde agua, tras preparar 3s, su primer ataque a una presa nueva inflige 65% mas dano y ruptura 16% por 2.8s. Cada enemigo solo puede recibir una emboscada de esta Namora.', 'duelista anfibia anti blindaje', ['Atlanticos', 'Marciales'], 'vanguard', [4, 3, 3, 2], {
         projectileProfile: { armorPenetration: 0.22 },
-        attackEffects: [{ type: 'armorBreak', duration: 2.8, power: 0.16, chance: 0.3 }],
+        attackEffects: [],
         statModifiers: { allowWater: true, damagePct: 0.04 },
         visualStyle: 'water',
         projectileColor: '#22d3ee'
     }),
-    triton: contract('Triton', 'Atlantico', 'Rare', 280, 30, 160, 1.45, true, 'RASTREADOR ABISAL', 'Detecta sigilo desde agua y ralentiza corredores con presion submarina.', 'soporte anfibio de deteccion', ['Atlanticos', 'Inhumanos', 'Cosmico'], 'support', [3, 5, 4, 5], {
-        attackEffects: [{ type: 'slow', duration: 2.0, power: 0.4, chance: 0.45 }],
+    triton: contract('Triton', 'Atlantico', 'Rare', 280, 30, 160, 1.45, true, 'RASTREADOR ABISAL', 'Desde agua, un ataque preparado cada 6s revela hasta 3 ocultos a 65px del objetivo durante 3s, dentro de su alcance. Conserva deteccion propia; no concede vision global ni consume sonar sin ocultos.', 'soporte anfibio de deteccion', ['Atlanticos', 'Inhumanos', 'Cosmico'], 'support', [3, 5, 4, 5], {
+        attackEffects: [],
         statModifiers: { allowWater: true, detectStealth: true, rangePct: 0.06 },
         visualStyle: 'water',
         projectileColor: '#67e8f9'

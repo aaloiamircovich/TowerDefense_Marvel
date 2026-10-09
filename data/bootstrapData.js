@@ -3694,7 +3694,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.35,
       "canSeeStealth": false,
       "ability": "HOJA ATLANTE",
-      "abilityDesc": "Puede operar en agua y castiga enemigos blindados cerca de la base.",
+      "abilityDesc": "Desde agua, tras preparar 3s, su primer ataque a una presa nueva inflige 65% mas dano y ruptura 16% por 2.8s. Cada enemigo solo puede recibir una emboscada de esta Namora.",
       "niche": "duelista anfibia anti blindaje",
       "allowedTerrains": [
         0
@@ -3714,14 +3714,7 @@ window.__MARVEL_TD_DATA__ = {
         "projectileProfile": {
           "armorPenetration": 0.22
         },
-        "attackEffects": [
-          {
-            "type": "armorBreak",
-            "duration": 2.8,
-            "power": 0.16,
-            "chance": 0.3
-          }
-        ],
+        "attackEffects": [],
         "statModifiers": {
           "allowWater": true,
           "damagePct": 0.04
@@ -3778,7 +3771,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.45,
       "canSeeStealth": true,
       "ability": "RASTREADOR ABISAL",
-      "abilityDesc": "Detecta sigilo desde agua y ralentiza corredores con presion submarina.",
+      "abilityDesc": "Desde agua, un ataque preparado cada 6s revela hasta 3 ocultos a 65px del objetivo durante 3s, dentro de su alcance. Conserva deteccion propia; no concede vision global ni consume sonar sin ocultos.",
       "niche": "soporte anfibio de deteccion",
       "allowedTerrains": [
         0
@@ -3795,14 +3788,7 @@ window.__MARVEL_TD_DATA__ = {
         "detection": 5
       },
       "special": {
-        "attackEffects": [
-          {
-            "type": "slow",
-            "duration": 2,
-            "power": 0.4,
-            "chance": 0.45
-          }
-        ],
+        "attackEffects": [],
         "statModifiers": {
           "allowWater": true,
           "detectStealth": true,
@@ -5291,7 +5277,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.75,
       "canSeeStealth": true,
       "ability": "MAREA AMABLE",
-      "abilityDesc": "Control anfibio que opera en agua, detecta sigilo y ralentiza amenazas cerca de la base.",
+      "abilityDesc": "Cada 6s un ataque terrestre deja una corriente de 90x44px durante 2.5s: ralentiza 45% a terrestres dentro. Salir, moverlo o aturdirlo corta el efecto. No desplaza, elimina enemigos ni cura la base.",
       "niche": "soporte anfibio de control",
       "allowedTerrains": [
         0,
@@ -5309,14 +5295,7 @@ window.__MARVEL_TD_DATA__ = {
         "detection": 5
       },
       "special": {
-        "attackEffects": [
-          {
-            "type": "slow",
-            "duration": 2,
-            "power": 0.42,
-            "chance": 0.48
-          }
-        ],
+        "attackEffects": [],
         "statModifiers": {
           "allowWater": true,
           "detectStealth": true
@@ -5555,7 +5534,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.55,
       "canSeeStealth": true,
       "ability": "HIELO POP",
-      "abilityDesc": "Proyectiles de hielo ralentizan corredores y estabilizan el tramo final con control seguro.",
+      "abilityDesc": "Como maximo cada 1.5s, un ataque emite un pulso a hasta 4 detectados a 50px: alterna slow 25% y 50% por 0.9s. Conserva splash y deteccion; no acumula escarcha ni congela.",
       "niche": "slow a distancia y deteccion",
       "allowedTerrains": [
         1,
@@ -5577,14 +5556,7 @@ window.__MARVEL_TD_DATA__ = {
           "splashRadius": 38,
           "splashFactor": 0.25
         },
-        "attackEffects": [
-          {
-            "type": "slow",
-            "duration": 2.2,
-            "power": 0.46,
-            "chance": 0.52
-          }
-        ],
+        "attackEffects": [],
         "statModifiers": {
           "detectStealth": true
         },

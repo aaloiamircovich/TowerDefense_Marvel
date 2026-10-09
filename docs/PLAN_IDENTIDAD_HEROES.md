@@ -1,7 +1,7 @@
 # Identidad y habilidades de los 105 heroes
 
 Fecha: 2026-09-13. Base revisada: commit 553ad63.
-Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes. FASE 3 IMPLEMENTADA, ocho lotes. FASE 4 IMPLEMENTADA, diez lotes. FASE 5 EN CURSO, tres lotes.
+Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes. FASE 3 IMPLEMENTADA, ocho lotes. FASE 4 IMPLEMENTADA, diez lotes. FASE 5 EN CURSO, cuatro lotes.
 Fases 6 a 10 pendientes. La cobertura comun no certifica el balance individual.
 Los hallazgos de auditoria describen el baseline; ver avances abajo para las
 correcciones ya realizadas. No equivale a completar el rediseño de los 105 kits.
@@ -13,9 +13,55 @@ antes de fijar porcentajes, tiempos o requisitos nuevos.
 
 ## Alcance y evidencia
 
+### Fase 5, lote 4: Namora, Triton, Jeff y Luna Snow (2026-10-08)
+
+F5 alcanza 14 de 20 heroes revisados. Recuento corregido contra la matriz:
+esta fase contiene20, no19. No cambia el roster ni añade fases.
+Sprites, mapas, rarezas, estadisticas base, permisos de terreno y firmas
+de objetos permanecen. Los cuatro controles nativos aleatorios se sustituyen
+por habilidades preparadas con cooldown desde despliegue.
+
+- Namora: preparacion3s y agua real; primer ataque a una presa no atacada
+  antes por esa instancia causa x1.65 y lleva ruptura16%/2.8s resistible
+  al impacto. Conserva penetracion22%. Disparar durante preparacion consume
+  la oportunidad inicial sobre esa presa; esperar despues no la recupera.
+  El historial debil por enemigo sobrevive mover/stun/reset, sin retener
+  enemigos muertos en memoria; nueva instancia empieza preparando3s.
+- Triton: sonar dirigido por ataque desde agua real, cooldown6s. Revela
+  hasta3 enemigos con sigilo nativo a65px del primario dentro de cobertura
+  durante3s resistibles, incluidos voladores. Sin ocultos no gasta cooldown.
+  No da deteccion global a aliados; conserva deteccion propia y reemplaza
+  slow aleatorio por esta ventana. Revelados emitidos terminan por tiempo.
+- Jeff: ataque terrestre preparado cada6s crea corriente estacionaria
+  90x44px centrada en el primario y orientada desde Jeff hacia ese punto.
+  Dura2.5s, slow45% resistible una vez por victima/campo, solo terrestres.
+  Campo incidental puede cubrir ocultos o vecinos fuera del alcance sin
+  revelarlos; el ancla exige cobertura/deteccion. Salir, mover/stun/retiro
+  o expirar elimina solo su contribucion, conservando slows aliados.
+  No desplaza, ejecuta, ingiere bosses ni cura la base.
+- Luna Snow: ataque preparado cada1.5s como maximo emite pulso a primario
+  y hasta3 vecinos detectables dentro de cobertura/radio50px. Alterna
+  slow25% y50% durante0.9s resistibles; siguiente pulso visible. No acumula
+  escarcha ni aplica stun. Conserva splash38px y deteccion propios.
+
+Movimiento/stun/retiro reinicia preparacion y ritmo. Las ventanas cortas
+no escalan con cadencia/nivel; el daño ordinario mantiene progresion y
+evolucion. Las firmas de objetos siguen siendo efectos independientes.
+46 pruebas nuevas en coastal-rhythm-contract.test.js: niveles
+1/49/50/51/99/100, impacto vs disparo, historial, agua real, geometria,
+inmunidad/resistencia, caps, limpieza, cooldown y conservacion de ruta/vidas.
+La heuristica conserva presupuesto por control trasladado, no certifica
+DPS exacto ni todas las combinaciones de equipos (fase10 pendiente).
+
+Validacion completa: 2.103 pruebas aprobadas; npm run check sin errores.
+Benchmark p95 0.338ms; smoke desktop1366x768/mobile390x844 sin overflow,
+desvio de ruta0px. Sin cambios en dinero, estrellas ni curacion de base.
+
+Siguiente lote: Mantis, Emma Frost, Nightcrawler y Cosmo.
+
 ### Fase 5, lote 3: Iceman, Storm, Crystal y Namor (2026-10-08)
 
-F5 alcanza 10 de 19 heroes revisados. Se mantienen sprites, mapas, rarezas,
+F5 alcanza 10 de 20 heroes revisados. Se mantienen sprites, mapas, rarezas,
 rango/cadencia base, niveles persistentes y contratos signature. Solo Storm
 ajusta daño base38 a41 al retirar el stun aleatorio: es el presupuesto de
 rareza calculado por la heuristica existente sin ese control, no un aumento
@@ -67,7 +113,7 @@ Siguiente lote: Namora, Triton, Jeff The Land Shark y Luna Snow.
 
 ### Fase 5, lote 2: Groot, Daredevil, Quake y Medusa (2026-10-08)
 
-F5 alcanza 6 de 19 heroes revisados. Sin modificar sprites ni estadisticas
+F5 alcanza 6 de 20 heroes revisados. Sin modificar sprites ni estadisticas
 base por rareza; se sustituyen controles aleatorios por ventanas locales.
 
 - Groot: raices estacionarias de radio48px, duracion3.2s, slow68% terrestre.
@@ -109,7 +155,7 @@ Siguiente lote: Iceman, Storm, Crystal y Namor.
 ### Lote mixto: cierre F4 e inicio F5 (2026-10-08)
 
 Se mantiene el lote de cuatro: Deadpool y Devil Dinosaur completan los
-26 heroes de F4; Spider-Man y Miles Morales abren F5 (2 de 19 revisados).
+26 heroes de F4; Spider-Man y Miles Morales abren F5 (2 de 20 revisados).
 
 - Deadpool: tres pistolas, dos katanas x1.5 con alcance final maximo90px
   incluso tras bonus de equipo/objetos, recarga real1.2s sin disparos ni

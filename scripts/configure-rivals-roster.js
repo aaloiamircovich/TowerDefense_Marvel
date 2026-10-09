@@ -140,8 +140,8 @@ const rivalsHeroes = {
         visualStyle: 'energy',
         projectileColor: '#a7f3ff'
     }),
-    jeff_the_land_shark: contract('Jeff The Land Shark', 'Mutante', 'Rare', 260, 26, 135, 1.75, true, 'MAREA AMABLE', 'Control anfibio que opera en agua, detecta sigilo y ralentiza avances hacia la base.', 'soporte anfibio de control', ['Rivales'], 'support', [2, 5, 5, 5], {
-        attackEffects: [{ type: 'slow', duration: 2.0, power: 0.42, chance: 0.48 }],
+    jeff_the_land_shark: contract('Jeff The Land Shark', 'Mutante', 'Rare', 260, 26, 135, 1.75, true, 'MAREA AMABLE', 'Cada 6s un ataque terrestre deja una corriente de 90x44px durante 2.5s: ralentiza 45% a terrestres dentro. Salir, moverlo o aturdirlo corta el efecto. No desplaza, elimina enemigos ni cura la base.', 'soporte anfibio de control', ['Rivales'], 'support', [2, 5, 5, 5], {
+        attackEffects: [],
         statModifiers: { allowWater: true, detectStealth: true },
         visualStyle: 'water',
         projectileColor: '#67e8f9'
@@ -158,9 +158,9 @@ const rivalsHeroes = {
         visualStyle: 'mystic',
         projectileColor: '#7ee081'
     }),
-    luna_snow: contract('Luna Snow', 'Cosmico', 'Rare', 340, 31, 180, 1.55, true, 'HIELO POP', 'Proyectiles de hielo ralentizan corredores y estabilizan el tramo final.', 'slow a distancia y deteccion', ['Cosmico', 'Rivales'], 'support', [3, 5, 4, 5], {
+    luna_snow: contract('Luna Snow', 'Cosmico', 'Rare', 340, 31, 180, 1.55, true, 'HIELO POP', 'Como maximo cada 1.5s, un ataque emite un pulso a hasta 4 detectados a 50px: alterna slow 25% y 50% por 0.9s. Conserva splash y deteccion; no acumula escarcha ni congela.', 'slow a distancia y deteccion', ['Cosmico', 'Rivales'], 'support', [3, 5, 4, 5], {
         projectileProfile: { splashRadius: 38, splashFactor: 0.25 },
-        attackEffects: [{ type: 'slow', duration: 2.2, power: 0.46, chance: 0.52 }],
+        attackEffects: [],
         statModifiers: { detectStealth: true },
         visualStyle: 'ice',
         projectileColor: '#93c5fd'

@@ -103,10 +103,10 @@ especificos con objetos y comparativas de rutas siguen pendientes.
 | `storm` | Storm (Legendary) | F5/lote3: zona72px/4.2s cada9s captura modo y daño; ventisca55% o cinco pulsos42% a4. | Cambiar modo prepara siguiente zona; conserva anillo/ancla detectable y excepcion incidental. Mover/stun/retiro cancela. |
 | `crystal` | Crystal (Common) | F5/lote3: ciclo nativo fuego/hielo/rayos cada2s con siguiente fase y color visibles. | Una fase por activacion; splash y ciclo signature con evolucion/objeto siguen independientes. |
 | `namor` | Namor (Legendary) | F5/lote3: anfibio agua/pasto; daño x1.2 en agua, tres ataques preparan marea60% a3 vecinos cada6s. | Tierra conserva poder base/penetracion; agua real requerida, pausa3s/mover/stun/retiro limpian carga. |
-| `namora` | Namora (Common) | Agua, penetracion y ruptura. | Emboscada costera de primer impacto; preparacion entre presas, distinta del dano sostenido de Namor. |
-| `triton` | Triton (Common) | Agua, deteccion propia y slow. | Exploracion abisal: revela al equipo desde posicion acuatica; dano bajo y cobertura localizada. |
-| `jeff_the_land_shark` | Jeff The Land Shark (Rare) | Agua, deteccion y slow. | Corriente que reduce la velocidad de un tramo corto; sin curar ni tragar/eliminar bosses. |
-| `luna_snow` | Luna Snow (Rare) | Splash pequeno, slow y deteccion. | Ritmo de hielo: pulsos de slow coordinados, utiles ante oleadas rapidas; no congelacion permanente de Iceman. |
+| `namora` | Namora (Common) | F5/lote4: agua real, primer ataque preparado a presa nueva x1.65 y ruptura16%/2.8s al impacto; cooldown3s. | Historial por enemigo no se borra al mover/stun; ataque prematuro consume oportunidad, conserva penetracion22%. |
+| `triton` | Triton (Common) | F5/lote4: sonar dirigido desde agua cada6s, revela3 ocultos por3s resistibles a65px del primario en cobertura. | No gasta sin ocultos, no vision global; deteccion propia y firma conservadas. |
+| `jeff_the_land_shark` | Jeff The Land Shark (Rare) | F5/lote4: corriente90x44px por2.5s cada6s, slow45% terrestre resistible. | Salida/mover/stun/retiro corta solo su campo; sin desplazar, ejecutar ni curar. |
+| `luna_snow` | Luna Snow (Rare) | F5/lote4: pulso cada1.5s alterna25/50% slow0.9s a4 detectables en cobertura/radio50. | Ritmo visible, sin escarcha ni stun; conserva splash38px y deteccion. |
 | `mantis` | Mantis (Rare) | Slow y marca. | Sueno de un blanco que se rompe con dano directo; gran control al reservarlo, no otra aura de ataque. |
 | `emma_frost` | Emma Frost (Legendary) | Marca, slow y critico propio. | Concentracion psiquica o diamante resistente al control; debuffs enemigos, no buff aliado mientras ataca. |
 | `nightcrawler` | Nightcrawler (Epic) | Rebotes, slow y marca; sin teletransporte de kit. | Salto BAMF entre pocos blancos con retorno al origen; enfriamiento y sin ocupar calle permanentemente. |

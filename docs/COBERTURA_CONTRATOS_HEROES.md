@@ -4,6 +4,15 @@ Actualizado: 2026-09-22. Roster: 105. No es una certificacion de balance.
 
 ## Cobertura comun ejecutable
 
+### F5/lote4: emboscada, sonar, corriente y ritmo (2026-10-08)
+
+`test/coastal-rhythm-contract.test.js`: 46 pruebas de Namora, Triton, Jeff
+y Luna Snow en niveles1/49/50/51/99/100. Impacto preparado, historial por
+presa, agua real, radios/bordes/diagonales, caps, inmunidad/resistencia,
+cooldown extremo, reinicios y campos independientes de slows aliados.
+No modifica firmas; no certifica balance combinado de equipos/economia.
+Suite global: 2.103 pruebas aprobadas, npm run check completo sin errores.
+
 ### F5/lote3: escarcha, clima, elementos y marea (2026-10-08)
 
 `test/elemental-weather-contract.test.js`: 45 pruebas para Iceman, Storm,

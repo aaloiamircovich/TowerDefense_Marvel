@@ -9,6 +9,7 @@ import { FieldDeviceSystem } from './FieldDeviceSystem.js';
 import { MartialKitSystem } from './MartialKitSystem.js';
 import { ControlKitSystem } from './ControlKitSystem.js';
 import { ElementalKitSystem } from './ElementalKitSystem.js';
+import { CoastalKitSystem } from './CoastalKitSystem.js';
 import { getLineEndpoint, getLineTargets } from '../utils/LineTargeting.js';
 import { applyCooldownReductions } from '../utils/AbilityModifiers.js';
 import { getHeroRangePattern, isPointInRangePattern } from '../utils/RangePattern.js';
@@ -38,6 +39,7 @@ export class HeroAbilitySystem {
         this.fieldDevice = ['rocket_raccoon', 'peni_parker'].includes(hero.id) ? new FieldDeviceSystem(hero) : null;
         this.controlKit = ['quake', 'medusa'].includes(hero.id) ? new ControlKitSystem(hero) : null;
         this.elementalKit = ['iceman', 'crystal', 'namor'].includes(hero.id) ? new ElementalKitSystem(hero) : null;
+        this.coastalKit = ['namora', 'triton', 'jeff_the_land_shark', 'luna_snow'].includes(hero.id) ? new CoastalKitSystem(hero) : null;
     }
 
     update(dt, enemies, stats, projectiles) {
@@ -64,6 +66,7 @@ export class HeroAbilitySystem {
         this.martialKit?.onAttack(target, stats);
         this.controlKit?.onAttack(target, stats);
         this.elementalKit?.onAttack(target, stats);
+        this.coastalKit?.onAttack(target, stats);
         this.avengerKit.onAttack(target, stats, projectileConfig, projectiles);
         this.cosmicKit.onAttack(target, stats, projectileConfig, projectiles);
         this.streetKit.onAttack(target, stats, projectileConfig, projectiles);
@@ -90,6 +93,7 @@ export class HeroAbilitySystem {
     getAttackEffects(target) {
         const effects = [...this.avengerKit.getAttackEffects(target), ...this.cosmicKit.getAttackEffects(target), ...this.streetKit.getAttackEffects(target), ...this.mutantKit.getAttackEffects(target)];
         effects.push(...(this.focusKit?.attackEffects(target) || []));
+        effects.push(...(this.coastalKit?.attackEffects(target) || []));
         if (this.hero.id === 'spiderman') {
             const evolved = this.hero.game.progression?.getHeroEvolution?.(this.hero.id)?.id === 'iron_spider';
             effects.push({ type: 'web', duration: evolved ? 3.2 : 2.6, power: evolved ? 0.28 : 0.2, chance: 1 });
@@ -112,6 +116,7 @@ export class HeroAbilitySystem {
             * (this.focusKit?.damageMultiplier(target) || 1)
             * (this.martialKit?.damageMultiplier(target) || 1)
             * (this.elementalKit?.damageMultiplier() || 1)
+            * (this.coastalKit?.damageMultiplier(target) || 1)
             * (this.fieldDevice?.damageMultiplier() || 1);
     }
 
@@ -222,6 +227,7 @@ export class HeroAbilitySystem {
         if (this.martialKit) return this.martialKit.getDisplayState();
         if (this.controlKit) return this.controlKit.getDisplayState();
         if (this.elementalKit) return this.elementalKit.getDisplayState();
+        if (this.coastalKit) return this.coastalKit.getDisplayState();
         if (this.fieldDevice) return this.fieldDevice.getDisplayState();
         if (this.focusKit) return this.focusKit.getDisplayState();
         const aura = getEffectiveSupportAura(this.hero);
@@ -291,6 +297,7 @@ export class HeroAbilitySystem {
     render(ctx) {
         this.fieldDevice?.render(ctx);
         this.controlKit?.render(ctx);
+        this.coastalKit?.render(ctx);
         this.avengerKit.render(ctx);
         this.cosmicKit.render(ctx);
         this.streetKit.render(ctx);
