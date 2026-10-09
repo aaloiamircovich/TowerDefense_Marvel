@@ -79,8 +79,8 @@ const rivalsHeroes = {
         visualStyle: 'blade',
         projectileColor: '#ff8cff'
     }),
-    squirrel_girl: contract('Squirrel Girl', 'Urbano', 'Rare', 255, 24, 150, 2.15, false, 'EMBOSCADA IMPROBABLE', 'Invoca una rafaga de golpes rapidos que ralentiza corredores y limpia rezagados.', 'cadencia alta y control economico', ['Callejero', 'Rivales'], 'support', [3, 4, 4, 2], {
-        attackEffects: [{ type: 'slow', duration: 1.4, power: 0.28, chance: 0.36 }],
+    squirrel_girl: contract('Squirrel Girl', 'Urbano', 'Rare', 255, 24, 150, 2.15, false, 'EMBOSCADA IMPROBABLE', 'Cada 6s, al atacar, hostiga al terrestre detectable mas avanzado en su alcance: 4 golpes de 30% de poder cada 0.75s. El primero ralentiza 28% durante 1.4s. Una sola entidad logica, sin cupo de equipo ni efectos extra; salir del alcance, mover o aturdir cancela.', 'cadencia alta y control economico', ['Callejero', 'Rivales'], 'support', [3, 4, 4, 2], {
+        attackEffects: [],
         statModifiers: { fireRatePct: 0.08 },
         visualStyle: 'impact',
         projectileColor: '#f59e0b'

@@ -35,15 +35,16 @@ export class StreetKitSystem {
         this.radarPulseTimer = 8;
         this.moonTimer = 0;
         this.moonPhase = 0;
-        this.bloodTally = 0;
-        this.lifeStealCooldown = 0;
+        this.hunterX = hero.x;
+        this.hunterY = hero.y;
+        if (hero.id === 'blade') this.cooldownRemaining = 6;
+        if (hero.id === 'ghost_rider') this.cooldownRemaining = 11;
         this.ringAngle = 0;
         this.suppression = null;
     }
 
     update(dt, enemies, stats) {
         this.cooldownRemaining = Math.max(0, this.cooldownRemaining - dt);
-        this.lifeStealCooldown = Math.max(0, this.lifeStealCooldown - dt);
         this.radarTimer = Math.max(0, this.radarTimer - dt);
         this.ringAngle = (this.ringAngle + dt * 2.8) % (Math.PI * 2);
         if (this.hero.id === 'punisher' && !this.hasSuppressionTarget(this.suppression?.target)) this.suppression = null;
@@ -56,6 +57,11 @@ export class StreetKitSystem {
 
     onAttack(target, stats) {
         this.attackCount++;
+        if (this.hero.id === 'blade' && this.isDaywalkerPrepared(target)) {
+            this.cooldownRemaining = 6;
+            this.hero.recordAbility();
+            this.hero.game.audio?.play('blood');
+        }
         if (this.hero.id === 'mbaku' && this.cooldownRemaining === 0 && this.isCovered(target, stats)
             && target.behavior?.barrier > 0) {
             const amount = Math.min(target.behavior.barrier * 0.2, stats.damage * 1.2);
@@ -108,6 +114,7 @@ export class StreetKitSystem {
     }
 
     getAttackDamageMultiplier(target) {
+        if (this.hero.id === 'blade') return this.isDaywalkerPrepared(target) ? 2 : 1;
         if (this.hero.id === 'jessica_jones') return this.isLastLineTarget(target) ? 1.45 : 1;
         if (this.hero.id === 'iron_fist') return this.isChiPrepared() ? 1.9 : 1;
         if (this.hero.id === 'elektra') return this.isSaiPrepared(target) ? 1.75 : 1;
@@ -138,14 +145,27 @@ export class StreetKitSystem {
         return candidates.includes(target) && !candidates.some(enemy => getRouteProgress(enemy) > progress);
     }
 
-    onKill(target) {
-        if (this.hero.id !== 'blade') return;
-        this.bloodTally++;
-        if (this.bloodTally < 6 || this.lifeStealCooldown > 0) return;
-        this.bloodTally = 0;
-        this.lifeStealCooldown = 24;
-        this.hero.recordAbility();
-        this.hero.game.audio?.play('blood');
+    onKill() {}
+
+    isDaywalkerPrepared(target) {
+        return this.cooldownRemaining === 0 && this.hero.game.heroes.includes(this.hero)
+            && this.hunterX === this.hero.x && this.hunterY === this.hero.y
+            && this.isCovered(target, this.hero.getEffectiveStats())
+            && (target.isBoss || target.threat >= 4) && target.hp <= target.maxHp * 0.5
+            && target.debuffs?.some(effect => effect.type === 'bleed' && effect.duration > 0);
+    }
+
+    resetHunter() {
+        if (!['blade', 'ghost_rider'].includes(this.hero.id)) return;
+        this.hunterX = this.hero.x; this.hunterY = this.hero.y;
+        this.cooldownRemaining = this.hero.id === 'blade' ? 6 : 11;
+        this.attackCount = 0;
+    }
+
+    checkHunterPosition() {
+        if (!['blade', 'ghost_rider'].includes(this.hero.id)) return;
+        if (this.hero.stunTimer > 0 || !this.hero.game.heroes.includes(this.hero)
+            || this.hunterX !== this.hero.x || this.hunterY !== this.hero.y) this.resetHunter();
     }
 
     applyStatModifiers(stats) {
@@ -156,7 +176,6 @@ export class StreetKitSystem {
         }
         if (this.hero.id === 'blade') {
             stats.damage *= 1.08;
-            stats.fireRate *= 1 + Math.min(0.18, this.bloodTally * 0.025);
         }
         if (this.hero.id === 'shang_chi') {
             if (this.mode === 'orbit') stats.range *= 1.15;
@@ -249,7 +268,7 @@ export class StreetKitSystem {
         }
         if (this.hero.id === 'daredevil') return timerState(this.radarTimer > 0 ? 'Pulso local: 190px / 2s' : `Radar ${Math.max(0, this.radarPulseTimer).toFixed(1)}s`, this.radarTimer > 0 ? this.radarTimer / 2 : 1 - this.radarPulseTimer / 8, this.radarTimer > 0);
         if (this.hero.id === 'moon_knight') return timerState(`${MOON_PHASES[this.moonPhase].label} ${(10 - this.moonTimer).toFixed(1)}s > ${MOON_PHASES[(this.moonPhase + 1) % 3].label}`, this.moonTimer / 10, this.moonPhase === 1);
-        if (this.hero.id === 'blade') return timerState(`Sed de sangre ${this.bloodTally}/6`, this.bloodTally / 6, this.bloodTally >= 5);
+        if (this.hero.id === 'blade') return timerState(`Daywalker: elite sangrante <=50% | ${this.cooldownRemaining.toFixed(1)}s`, 1 - this.cooldownRemaining / 6, this.cooldownRemaining === 0);
         if (this.hero.id === 'ghost_rider') return timerState(this.cooldownRemaining <= 0 ? 'Penitencia lista' : `Penitencia ${this.cooldownRemaining.toFixed(1)} s`, this.cooldownRemaining <= 0 ? 1 : 1 - this.cooldownRemaining / 11, this.cooldownRemaining <= 0);
         if (this.hero.id === 'luke_cage') return { label: `Tenacidad: -${Math.round(this.hero.getStunResistance() * 100)}% aturdimiento`, progress: null, ready: true };
         if (this.hero.id === 'shang_chi') return timerState(`${this.getModeLabel()} | Combo ${this.ringCharge}/3 | ${this.cooldownRemaining.toFixed(1)}s`, this.ringCharge / 3, this.isRingFinisher());
@@ -331,18 +350,18 @@ export class StreetKitSystem {
     }
 
     updatePenance(enemies, stats) {
-        if (this.cooldownRemaining > 0) return;
+        if (this.cooldownRemaining > 0 || this.hero.stunTimer > 0 || !this.hero.game.heroes.includes(this.hero)) return;
         const boss = this.hero.abilitySystem.getTargetsInRange(enemies, stats.range * 1.3, stats)
-            .filter((enemy) => enemy.isBoss)
-            .sort((a, b) => b.distanceTravelled - a.distanceTravelled)[0];
+            .filter((enemy) => enemy.isBoss && !enemy.hasReachedEnd)
+            .sort((a, b) => getRouteProgress(b) - getRouteProgress(a))[0];
         if (!boss) return;
         const missingHealth = 1 - boss.hp / boss.maxHp;
-        const damage = Math.min(boss.maxHp * 0.12, stats.damage * (1.4 + missingHealth * 2.2)) * this.getPowerScale();
-        CombatSystem.applyDamage({ attackerType: this.hero.category, damage, armorPenetration: 0.55 }, boss, this.hero, this.hero.game.resourceManager, 1);
+        const damage = Math.min(boss.maxHp * 0.12, stats.damage * (1.4 + missingHealth * 2.2) * this.getPowerScale());
+        CombatSystem.applyDamage({ attackerType: this.hero.category, damage, damageCap: boss.maxHp * 0.12, armorPenetration: 0.55 }, boss, this.hero, this.hero.game.resourceManager, 1);
         this.hero.game.vfx?.addBeam(this.hero, boss, { color: '#ff7a1a', width: 10, duration: 0.35 });
         this.hero.game.audio?.play('penance');
         this.hero.recordAbility();
-        this.cooldownRemaining = this.getCooldown(11);
+        this.cooldownRemaining = 11;
     }
 
     counterDaredevil(target, stats) {
@@ -354,9 +373,11 @@ export class StreetKitSystem {
     }
 
     pullWithChain(target) {
-        if (!target?.isAlive || target.flying) return;
+        if (!this.isCovered(target, this.hero.getEffectiveStats()) || target.flying || target.hellChainRecovery > 0
+            || !this.hero.game.heroes.includes(this.hero)) return;
         const moved = target.moveBackward?.(target.isBoss ? 24 : 58) || 0;
         if (moved <= 0) return;
+        target.hellChainRecovery = 6;
         this.hero.game.vfx?.addBeam(this.hero, target, { color: '#ff7a1a', width: 5, duration: 0.25 });
         this.hero.game.audio?.play('chain');
         this.hero.recordAbility();

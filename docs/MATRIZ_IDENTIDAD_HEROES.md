@@ -111,15 +111,15 @@ especificos con objetos y comparativas de rutas siguen pendientes.
 | `emma_frost` | Emma Frost (Legendary) | F5/lote5: modo psiquico mark17%/slow28% cada3s o Diamante60% resistencia al stun. | Cambio no limpia stun ni reinicia cooldown; critico/deteccion propios conservados, no aura. |
 | `nightcrawler` | Nightcrawler (Epic) | F5/lote5: BAMF45% poder a3 detectables cada6s, saltos<=90px en cobertura. | Traslacion solo visual0.18s por punto; pausa disparos, regreso sin alterar casilla, conserva rebotes. |
 | `cosmo` | Cosmo (Rare) | F5/lote5: red de4 marcas14%/2.5s a90px del ancla cada5s. | Separacion/perdida del ancla rompe contribucion sin borrar marca aliada; no stun global. |
-| `heimdall` | Heimdall (Rare) | Cruz, deteccion propia y marca. | Vigilancia de una salida: revelado anticipado en brazos de la cruz; cobertura geometrica, no vision universal. |
-| `squirrel_girl` | Squirrel Girl (Common) | Slow y aumento estatico de cadencia; sin invocacion. | Rafaga de hostigadores temporales contra rezagados; una entidad logica, presupuesto acotado y sin plazas extra. |
+| `heimdall` | Heimdall (Rare) | F5/lote6: pulso5s sobre3 amenazas avanzadas en cruz; revela y marca11%/2.5s resistibles. | Implementado; sin vision global, cooldown inicial y reinicio al mover/stun/retiro. |
+| `squirrel_girl` | Squirrel Girl (Common) | F5/lote6: hostigamiento6s, cuatro golpes30% cada0.75s y slow inicial28%/1.4s sobre terrestre avanzado. | Implementado; una entidad, sin plazas/procs, poder capturado y cancelacion al perder presa/cobertura/fuente. |
 
 ## Fase 6: estados, marcas y magia
 
 | ID | Heroe (rareza) | Actual | Firma propuesta y limite |
 | --- | --- | --- | --- |
-| `blade` | Blade (Epic) | F1/lote 4: sangrado 21% poder/s, 30% en elites; veneno y medidor por bajas. | Cazador de elites: sangrado escalado por poder y remate preparado; sustituir activacion vacia del contador, sin sanar base. |
-| `ghost_rider` | Ghost Rider (Legendary) | F1/lotes 4/11: quemadura unica 13.5% poder/s; Penitencia fija jefe detectable a 1.3x rango. Conserva deteccion innata y cadena. | Penitencia segun dano sufrido por el blanco, con techo especifico para bosses; no acumular retroceso infinito. |
+| `blade` | Blade (Epic) | F6/lote1: remate2x cada6s contra elite sangrante con vida<=50%; conserva sangrado y veneno. | Implementado; sustituye contador/cadencia por bajas, sin ejecucion ni curacion; consume al disparar. |
+| `ghost_rider` | Ghost Rider (Legendary) | F6/lote1: Penitencia11s a1.3x rango, cap12% tras multiplicadores; cadena cada5 ataques con recuperacion6s/victima. | Implementado; prioridad de ruta, cooldown inicial/fijo, sin arrastre de voladores/fuera de cobertura; quemadura conservada. |
 | `scarlet_witch` | Scarlet Witch (Secret) | F1/lote 12: Hex conserva pulso circular incidental 1.25x, slow resistible; marcas, curse y propagacion sin cambios. | Red de maldiciones que madura y detona de forma limitada; conservar rango de preparacion y debilidad ante aislamiento. |
 | `cloak` | Cloak (Rare) | Deteccion propia y slow; no revelado global. | Ventana oscura que revela dentro de una zona pequena; sin teleportar enemigos fuera de ruta. |
 | `dagger` | Dagger (Rare) | Marca y rebote; rebote no hereda marca hoy. | Dagas que consumen marcas para limpiar blancos consecutivos; sin curacion y sin depender obligatoriamente de Cloak. |

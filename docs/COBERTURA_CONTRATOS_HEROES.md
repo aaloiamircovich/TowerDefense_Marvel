@@ -4,6 +4,17 @@ Actualizado: 2026-09-22. Roster: 105. No es una certificacion de balance.
 
 ## Cobertura comun ejecutable
 
+### F5/lote6 y F6/lote1: vigilancia y cazadores (2026-10-09)
+
+`test/vigilance-hunters-contract.test.js`: 47 pruebas para Heimdall,
+Squirrel Girl, Blade y Ghost Rider en niveles1/49/50/51/99/100. Cruz y
+prioridad local, cuatro impactos sin procs, poder capturado, diferencias
+de dt, remate condicionado sin ejecucion/curacion, lifecycle, tope despues
+de marcas y recuperacion de cadena compartida. Contratos autonomos y de
+StreetKit actualizados para preparacion inicial y retiro del contador vacio.
+Suite global: 2.194 pruebas aprobadas; npm run check completo sin errores,
+smoke desktop/mobile sin overflow. No certifica balance de equipos.
+
 ### F5/lote5: sueno, diamante, BAMF y red psiquica (2026-10-08)
 
 `test/psychic-bamf-contract.test.js`: 44 pruebas para Mantis, Emma Frost,

@@ -23,7 +23,7 @@ function setup(contract) {
     const hero = new Hero(roster[contract.id], 0, 0, game);
     game.heroes = [hero];
     const kit = hero.abilitySystem[contract.kit];
-    if (contract.id === 'storm') kit.cooldownRemaining = 0;
+    if (['storm', 'ghost_rider'].includes(contract.id)) kit.cooldownRemaining = 0;
     kit.resource = 80;
     const stats = { ...hero.getEffectiveStats(), canSeeStealth: false };
     const reach = stats.range * contract.range;
@@ -160,7 +160,7 @@ test('Penitencia excluye soldados y conserva formula y limite de dano contra jef
         const boss = f.spawn(undefined, { hp });
         boss.hp = hp * 0.5;
         const before = boss.hp;
-        const expected = Math.min(hp * 0.12, f.stats.damage * 2.5) * f.kit.getPowerScale();
+        const expected = Math.min(hp * 0.12, f.stats.damage * 2.5 * f.kit.getPowerScale());
         f.update();
         assert.equal(f.center().x, boss.x);
         assert.ok(Math.abs(before - boss.hp - expected) < 1e-6);

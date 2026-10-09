@@ -37,13 +37,14 @@ test('Blade sangra elites sin curar la base', () => {
 
     for (let index = 0; index < 6; index++) hero.abilitySystem.onKill();
     assert.equal(game.resourceManager.lives, 19);
-    assert.ok(hero.abilitySystem.streetKit.lifeStealCooldown > 0);
+    assert.equal(hero.abilitySystem.streetKit.cooldownRemaining, 6);
+    assert.equal(hero.combatStats.abilityActivations, 0);
 });
 
 test('Ghost Rider arrastra por la ruta y usa Penitencia solo contra jefes', () => {
     const game = createGame();
     const hero = createHero('ghost_rider', game, { damage: 60, range: 180, category: 'Mistico' });
-    const boss = createEnemy(200, 0, { isBoss: true, hp: 1000 });
+    const boss = createEnemy(170, 0, { isBoss: true, hp: 1000 });
     boss.hp = 600;
     game.heroes = [hero];
     game.enemies = [boss];
@@ -53,7 +54,7 @@ test('Ghost Rider arrastra por la ruta y usa Penitencia solo contra jefes', () =
     assert.ok(boss.distanceTravelled < start);
     assert.equal(boss.y, 0);
     const beforePenance = boss.hp;
-    hero.abilitySystem.update(0.1, [boss], hero.getEffectiveStats(), []);
+    hero.abilitySystem.update(11, [boss], hero.getEffectiveStats(), []);
     assert.ok(boss.hp < beforePenance);
 });
 

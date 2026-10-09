@@ -105,7 +105,9 @@ export class CombatSystem {
         const typeMultiplier = TypeChart[projectile.attackerType]?.[target.category] || 1;
         const markMultiplier = target.getDamageTakenMultiplier?.() || 1;
         const orderMultiplier = getPriorityOrderDamageMultiplier(attacker, target);
-        const result = target.takeDamage(projectile.damage * factor * typeMultiplier * markMultiplier * orderMultiplier, {
+        const modifiedDamage = projectile.damage * factor * typeMultiplier * markMultiplier * orderMultiplier;
+        const damage = Number.isFinite(projectile.damageCap) ? Math.min(modifiedDamage, Math.max(0, projectile.damageCap)) : modifiedDamage;
+        const result = target.takeDamage(damage, {
             armorPenetration: projectile.armorPenetration || 0,
             attackerType: projectile.attackerType,
             direct: true

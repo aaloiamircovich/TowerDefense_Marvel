@@ -155,6 +155,7 @@ export class Enemy {
         this.debuffs = [];
         this.webBindCooldown = 0;
         this.sleepRecovery = 0;
+        this.hellChainRecovery = 0;
         this.frost = { stacks: 0, remaining: 0, cooldown: 0 };
 
         const renderedSize = Number(config.visual?.size || config.visualSize || (this.isFinalBoss ? 96 : this.isBoss ? 96 : 30));
@@ -346,6 +347,7 @@ export class Enemy {
     }
 
     updateDebuffs(dt) {
+        this.hellChainRecovery = Math.max(0, this.hellChainRecovery - dt);
         this.sleepRecovery = Math.max(0, this.sleepRecovery - dt);
         this.frost.cooldown = Math.max(0, this.frost.cooldown - dt);
         this.frost.remaining = Math.max(0, this.frost.remaining - dt);

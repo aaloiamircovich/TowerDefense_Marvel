@@ -1904,7 +1904,7 @@
     "fireRate": 1.8,
     "canSeeStealth": true,
     "ability": "CAZADOR DAYWALKER",
-    "abilityDesc": "Cada impacto sangra: 21% de su dano efectivo por segundo durante 3.6 s; contra jefes o amenaza 4+, 30% durante 5 s. No acumula sangrados. Conserva toxina acumulable.",
+    "abilityDesc": "Cada impacto sangra: 21% de su dano efectivo por segundo durante 3.6 s; contra jefes o amenaza 4+, 30% durante 5 s. No acumula sangrados. Conserva toxina acumulable. Cada 6s prepara un remate de doble dano contra jefes o amenaza 4+ sangrantes con vida <=50%. Sustituye el contador de bajas; no cura ni acelera por matar.",
     "sprite": "assets/images/heroes/blade/portrait.png",
     "allowedTerrains": [
       1,
@@ -1981,7 +1981,7 @@
     "fireRate": 0.95,
     "canSeeStealth": true,
     "ability": "ESPIRITU DE VENGANZA",
-    "abilityDesc": "Cada impacto quema durante 4 s: 13.5% de su dano efectivo por segundo, sin acumularse. Sus cadenas arrastran por la ruta y Penitencia castiga la vida perdida de jefes.",
+    "abilityDesc": "Cada impacto quema durante 4s: 13.5% de su dano efectivo por segundo. Sus cadenas cada 5 ataques arrastran 58px, o 24px a jefes, con recuperacion compartida de 6s por victima. Penitencia cada 11s castiga jefes a 1.3x alcance: 1.4 a 3.6x poder segun vida perdida, escalado y limitado a 12% de vida maxima antes de mitigacion. No cura.",
     "sprite": "assets/images/heroes/ghost_rider/portrait.png",
     "allowedTerrains": [
       1,
@@ -4449,7 +4449,7 @@
     "fireRate": 2.15,
     "canSeeStealth": false,
     "ability": "EMBOSCADA IMPROBABLE",
-    "abilityDesc": "Invoca una rafaga de golpes rapidos que ralentiza corredores y limpia rezagados.",
+    "abilityDesc": "Cada 6s, al atacar, hostiga al terrestre detectable mas avanzado en su alcance: 4 golpes de 30% de poder cada 0.75s. El primero ralentiza 28% durante 1.4s. Una sola entidad logica, sin cupo de equipo ni efectos extra; salir del alcance, mover o aturdir cancela.",
     "niche": "cadencia alta y control economico",
     "allowedTerrains": [
       1
@@ -4466,14 +4466,7 @@
       "detection": 2
     },
     "special": {
-      "attackEffects": [
-        {
-          "type": "slow",
-          "duration": 1.4,
-          "power": 0.28,
-          "chance": 0.36
-        }
-      ],
+      "attackEffects": [],
       "statModifiers": {
         "fireRatePct": 0.08
       },
@@ -7680,7 +7673,7 @@
     "fireRate": 1.05,
     "canSeeStealth": true,
     "ability": "VISTA DEL BIFROST",
-    "abilityDesc": "Vigilancia de largo alcance que revela sigilo y marca amenazas antes de entrar al frente.",
+    "abilityDesc": "Cada 5s revela y marca durante 2.5s hasta 3 amenazas mas avanzadas dentro de su cruz. Marca de 11%, no acumulable con otras marcas. Comparte el revelado de esas victimas, no vision global. Mover, retirar o aturdir reinicia la preparacion.",
     "niche": "raro detector de largo alcance",
     "sprite": "assets/images/heroes/heimdall/portrait.png",
     "visual": {
@@ -7734,14 +7727,7 @@
     "terrainRole": "high",
     "rangePattern": "cross",
     "special": {
-      "attackEffects": [
-        {
-          "type": "mark",
-          "duration": 3,
-          "power": 0.11,
-          "chance": 0.38
-        }
-      ],
+      "attackEffects": [],
       "statModifiers": {
         "detectStealth": true
       },

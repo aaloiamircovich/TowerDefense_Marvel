@@ -1,8 +1,8 @@
 # Identidad y habilidades de los 105 heroes
 
 Fecha: 2026-09-13. Base revisada: commit 553ad63.
-Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes. FASE 3 IMPLEMENTADA, ocho lotes. FASE 4 IMPLEMENTADA, diez lotes. FASE 5 EN CURSO, cinco lotes.
-Fases 6 a 10 pendientes. La cobertura comun no certifica el balance individual.
+Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes. FASE 3 IMPLEMENTADA, ocho lotes. FASE 4 IMPLEMENTADA, diez lotes. FASE 5 IMPLEMENTADA, seis lotes. FASE 6 EN CURSO, un lote mixto.
+Fases 7 a 10 pendientes. La cobertura comun no certifica el balance individual.
 Los hallazgos de auditoria describen el baseline; ver avances abajo para las
 correcciones ya realizadas. No equivale a completar el rediseño de los 105 kits.
 
@@ -12,6 +12,47 @@ cambie alguna decision real del jugador. Las propuestas requieren validacion
 antes de fijar porcentajes, tiempos o requisitos nuevos.
 
 ## Alcance y evidencia
+
+### F5/lote6 y F6/lote1: Heimdall, Squirrel Girl, Blade y Ghost Rider (2026-10-09)
+
+F5 completa20/20 heroes; F6 inicia2/16. Sin cambios de sprites, mapas,
+rareza, estadisticas base, niveles, evolucion ni firmas de objetos.
+
+- Heimdall: cada5s vigila hasta3 enemigos mas avanzados por progreso
+  normalizado de ruta dentro de su cruz. Revela y marca11% durante2.5s,
+  con resistencia y sin vision global para aliados. El pulso vacio no
+  consume; retirar fuente no borra efectos ya emitidos. Sustituye marca
+  aleatoria del proyectil y conserva deteccion propia.
+- Squirrel Girl: ataque preparado cada6s crea un hostigamiento logico
+  sobre el terrestre detectable mas avanzado en cobertura. Cuatro impactos
+  de30% del poder capturado cada0.75s, una entidad, sin plazas ni ataques
+  recursivos. Solo el primero aplica slow28%/1.4s resistible. Salir del
+  alcance, morir o volverse oculto cancela sin cambiar de presa. Sustituye
+  slow aleatorio; conserva8% de cadencia propia. Indicador junto a la presa.
+- Blade: prepara cada6s un disparo de doble dano contra jefe/amenaza4+
+  sangrante con vida<=50%. Consumo al disparar, sin ejecucion. El proyectil
+  lleva el sangrado existente escalado por su dano efectivo. Sustituye
+  contador de bajas vacio y su aceleracion variable; conserva8% de dano,
+  veneno y sangrado de21%/3.6s o30%/5s para elites. No sana.
+- Ghost Rider: Penitencia conserva formula por fraccion de vida perdida
+  y alcance1.3x, pero limita12% de vida maxima despues del escalado y de
+  multiplicadores de impacto, antes de defensas. Cooldown fijo11s desde
+  despliegue, sin reducciones. Priorizacion por progreso de ruta. Cada5
+  ataques puede arrastrar58px,24px a jefes, solo terrestres en cobertura.
+  Recuperacion6s por victima compartida entre fuentes, no borrada al
+  retirarlas. Conserva quemadura13.5%/4s y deteccion.
+
+Los cuatro reinician preparacion al mover, aturdir o retirar. No cambian
+recursos, estrellas ni vidas. damageCap es opcional en CombatSystem; los
+ataques sin tope conservan multiplicadores. Presupuesto heuristico mantiene
+la utilidad de controles trasladados a runtime, sin recalibrar dano base.
+47 pruebas nuevas: niveles1/49/50/51/99/100, limites, resistencias, retirada,
+cadencia extrema, dt, snapshot, cap con marca y recuperacion compartida.
+Validacion: 2.194 pruebas aprobadas; npm run check completo sin errores.
+Benchmark p95 0.335ms; smoke desktop1366x768/mobile390x844 sin overflow y
+desvio de ruta0px. Balance de todas las combinaciones de equipos sigue en F10.
+
+Siguiente lote F6: Scarlet Witch, Cloak, Dagger y Magik.
 
 ### Fase 5, lote 5: Mantis, Emma Frost, Nightcrawler y Cosmo (2026-10-08)
 

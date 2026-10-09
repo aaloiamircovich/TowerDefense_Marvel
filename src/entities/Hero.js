@@ -165,6 +165,8 @@ export class Hero {
         this.abilitySystem.elementalKit?.update(dt);
         this.abilitySystem.coastalKit?.update(dt);
         this.abilitySystem.psychicKit?.update(dt);
+        this.abilitySystem.vigilanceKit?.update(dt);
+        this.abilitySystem.streetKit.checkHunterPosition();
         this.abilitySystem.mutantKit.checkWeather();
         this.abilitySystem.fieldDevice?.update(dt, enemies);
         if (this.stunTimer > 0 && this.id === 'punisher') this.abilitySystem.streetKit.suppression = null;

@@ -11,6 +11,7 @@ import { ControlKitSystem } from './ControlKitSystem.js';
 import { ElementalKitSystem } from './ElementalKitSystem.js';
 import { CoastalKitSystem } from './CoastalKitSystem.js';
 import { PsychicKitSystem } from './PsychicKitSystem.js';
+import { VigilanceKitSystem } from './VigilanceKitSystem.js';
 import { getLineEndpoint, getLineTargets } from '../utils/LineTargeting.js';
 import { applyCooldownReductions } from '../utils/AbilityModifiers.js';
 import { getHeroRangePattern, isPointInRangePattern } from '../utils/RangePattern.js';
@@ -42,6 +43,7 @@ export class HeroAbilitySystem {
         this.elementalKit = ['iceman', 'crystal', 'namor'].includes(hero.id) ? new ElementalKitSystem(hero) : null;
         this.coastalKit = ['namora', 'triton', 'jeff_the_land_shark', 'luna_snow'].includes(hero.id) ? new CoastalKitSystem(hero) : null;
         this.psychicKit = ['mantis', 'emma_frost', 'nightcrawler', 'cosmo'].includes(hero.id) ? new PsychicKitSystem(hero) : null;
+        this.vigilanceKit = ['heimdall', 'squirrel_girl'].includes(hero.id) ? new VigilanceKitSystem(hero) : null;
     }
 
     update(dt, enemies, stats, projectiles) {
@@ -70,6 +72,7 @@ export class HeroAbilitySystem {
         this.elementalKit?.onAttack(target, stats);
         this.coastalKit?.onAttack(target, stats);
         this.psychicKit?.onAttack(target, stats);
+        this.vigilanceKit?.onAttack(target, stats);
         this.avengerKit.onAttack(target, stats, projectileConfig, projectiles);
         this.cosmicKit.onAttack(target, stats, projectileConfig, projectiles);
         this.streetKit.onAttack(target, stats, projectileConfig, projectiles);
@@ -233,6 +236,7 @@ export class HeroAbilitySystem {
         if (this.elementalKit) return this.elementalKit.getDisplayState();
         if (this.coastalKit) return this.coastalKit.getDisplayState();
         if (this.psychicKit) return this.psychicKit.getDisplayState();
+        if (this.vigilanceKit) return this.vigilanceKit.getDisplayState();
         if (this.fieldDevice) return this.fieldDevice.getDisplayState();
         if (this.focusKit) return this.focusKit.getDisplayState();
         const aura = getEffectiveSupportAura(this.hero);
@@ -307,6 +311,7 @@ export class HeroAbilitySystem {
         this.controlKit?.render(ctx);
         this.coastalKit?.render(ctx);
         this.psychicKit?.render(ctx);
+        this.vigilanceKit?.render(ctx);
         this.avengerKit.render(ctx);
         this.cosmicKit.render(ctx);
         this.streetKit.render(ctx);
