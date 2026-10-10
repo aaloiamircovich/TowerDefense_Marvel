@@ -4,6 +4,17 @@ Actualizado: 2026-09-22. Roster: 105. No es una certificacion de balance.
 
 ## Cobertura comun ejecutable
 
+### F6/lote4: ignicion, pacto, concentracion y biomasa (2026-10-09)
+
+`test/darkfire-consumption-contract.test.js`:46 pruebas para Human Torch,
+The Hood, Psylocke y Venom en niveles1/49/50/51/99/100. Calor continuo,
+entradas/salidas, pacto penalizado, marcas vigentes, cooldowns/lifecycle,
+consumo de poison por fuente, fracciones pendientes, cap tras marcas,
+salud pequena y una sola baja. Se conservan contratos de veneno y
+Penitencia. Suite global: 2.331 pruebas aprobadas, npm run check completo
+sin errores; benchmark p95: 0.393 ms. Smoke desktop 1366x768 y mobile
+390x844 sin overflow, desvio de ruta 0px. Balance de equipos sigue pendiente.
+
 ### F6/lote3: suerte, caceria, cartas y necroespinas (2026-10-09)
 
 `test/fate-hunt-contract.test.js`:45 pruebas para Black Cat, Elsa,

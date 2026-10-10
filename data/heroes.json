@@ -4161,7 +4161,7 @@
     "fireRate": 1.65,
     "canSeeStealth": false,
     "ability": "NOVA FLAME",
-    "abilityDesc": "Llamas con dano de area. 34% de quemar al objetivo principal durante 2.5 s: 37.5% de su dano efectivo por segundo, sin acumularse.",
+    "abilityDesc": "Cada 7s al atacar crea una zona fija de 55px durante 3s. La ignicion final causa 90% del poder capturado a hasta 4 detectados en alcance que hayan permanecido al menos 2s seguidos dentro. Conserva splash y quemadura: 34% de aplicar 37.5% de dano efectivo/s durante 2.5s.",
     "niche": "area aerea y quemadura",
     "allowedTerrains": [
       0,
@@ -4248,7 +4248,7 @@
     "fireRate": 1.35,
     "canSeeStealth": true,
     "ability": "PACTO DEMONICO",
-    "abilityDesc": "Balas malditas revelan infiltrados, marcan soportes y aumentan el dano recibido. Sus balas dejan una maldicion persistente.",
+    "abilityDesc": "Tras 3s prepara un disparo con maldicion de 0.38% de salud maxima/s por 3.6s y marca16% por 2.4s. El pacto reduce25% sus siguientes disparos; despues de 1.5s puede cobrar contra esa presa aun maldita con80% extra. Cobrar, perder presa o vencer4s inicia recarga4s. Conserva deteccion propia.",
     "niche": "marca oscura, maldicion y deteccion",
     "allowedTerrains": [
       1,
@@ -4266,20 +4266,7 @@
       "detection": 5
     },
     "special": {
-      "attackEffects": [
-        {
-          "type": "mark",
-          "duration": 2.4,
-          "power": 0.16,
-          "chance": 0.4
-        },
-        {
-          "type": "curse",
-          "duration": 3.6,
-          "power": 0.0038,
-          "chance": 0.44
-        }
-      ],
+      "attackEffects": [],
       "statModifiers": {
         "detectStealth": true
       },
@@ -4335,7 +4322,7 @@
     "fireRate": 1.55,
     "canSeeStealth": true,
     "ability": "KATANA PSIQUICA",
-    "abilityDesc": "Cortes psiquicos rompen defensa, revelan sigilo y rematan amenazas avanzadas.",
+    "abilityDesc": "Atacar a una presa marcada inicia concentracion. Tras 1.5s manteniendo esa presa, y con recarga5s lista, el siguiente corte garantiza critico de al menos2.75x y ruptura28% por2s al impacto. Cambiar presa, perder marca o alcance, o no atacar durante3s reinicia. Conserva penetracion22% y deteccion.",
     "niche": "duelista mutante anti sigilo",
     "allowedTerrains": [
       1,
@@ -4356,14 +4343,7 @@
       "projectileProfile": {
         "armorPenetration": 0.22
       },
-      "attackEffects": [
-        {
-          "type": "armorBreak",
-          "duration": 2.6,
-          "power": 0.18,
-          "chance": 0.38
-        }
-      ],
+      "attackEffects": [],
       "statModifiers": {
         "detectStealth": true,
         "critChance": 5
@@ -4493,7 +4473,7 @@
     "fireRate": 1.18,
     "canSeeStealth": false,
     "ability": "SIMBIONTE DEPREDADOR",
-    "abilityDesc": "Golpes de masa simbionte atraviesan armadura y ralentizan objetivos marcados. El simbionte aplica veneno acumulable basado en la salud maxima.",
+    "abilityDesc": "Conserva slow y veneno acumulable. Cada6s al atacar puede consumir3 capas propias de veneno de la presa para devorar: 1.5x poder +1% salud maxima, limitado a4x poder y, contra jefes,2% de salud maxima tras multiplicadores. Liquida el veneno ya transcurrido y conserva las capas aliadas. No ejecuta ni cura.",
     "niche": "control simbionte, veneno porcentual y presion antiarmadura",
     "allowedTerrains": [
       1,

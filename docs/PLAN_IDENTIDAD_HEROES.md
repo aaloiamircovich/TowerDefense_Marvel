@@ -1,7 +1,7 @@
 # Identidad y habilidades de los 105 heroes
 
 Fecha: 2026-09-13. Base revisada: commit 553ad63.
-Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes. FASE 3 IMPLEMENTADA, ocho lotes. FASE 4 IMPLEMENTADA, diez lotes. FASE 5 IMPLEMENTADA, seis lotes. FASE 6 EN CURSO, tres lotes.
+Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes. FASE 3 IMPLEMENTADA, ocho lotes. FASE 4 IMPLEMENTADA, diez lotes. FASE 5 IMPLEMENTADA, seis lotes. FASE 6 EN CURSO, cuatro lotes.
 Fases 7 a 10 pendientes. La cobertura comun no certifica el balance individual.
 Los hallazgos de auditoria describen el baseline; ver avances abajo para las
 correcciones ya realizadas. No equivale a completar el rediseño de los 105 kits.
@@ -12,6 +12,51 @@ cambie alguna decision real del jugador. Las propuestas requieren validacion
 antes de fijar porcentajes, tiempos o requisitos nuevos.
 
 ## Alcance y evidencia
+
+### F6/lote4: Human Torch, The Hood, Psylocke y Venom (2026-10-09)
+
+F6 alcanza14/16 heroes. Sin cambios de sprites, mapas, rareza, estadisticas
+base, progresion/evolucion ni firmas de objetos.
+
+- Human Torch: ataque preparado7s crea zona fija55px/3s. Hasta4 detectados
+  en cobertura acumulan calor continuo; salir reinicia y entradas tardias
+  no heredan tiempo. Al finalizar, permanencia>=2s recibe90% del poder
+  capturado. Una ignicion, sin estados/procs adicionales. Conserva splash,
+  quemadura nativa37.5%/2.5s y Nova Flame del traje con evolucion.
+- The Hood: cooldown inicial3s prepara curse0.38%/3.6s y marca16%/2.4s
+  garantizadas al impacto. Pacto sobre esa presa, ventana4s; mientras
+  espera, sus disparos causan75% del dano. Tras1.5s puede cobrar sobre
+  esa misma presa aun maldita con1.8x, sin area. Cobrar, perder presa o
+  vencer ventana inicia cooldown4s. Sustituye marca/curse aleatorias;
+  conserva deteccion y firma por baja. No concede revelado global.
+- Psylocke: atacar a marcado inicia concentracion1.5s sobre esa presa.
+  Con cooldown5s listo, siguiente ataque garantiza critico>=2.75x y
+  ruptura28%/2s al impacto. Cambiar presa, perder marca/cobertura o
+  inactividad3s reinicia. Marca de campo inactiva no cuenta. Reemplaza
+  ruptura aleatoria y mantiene penetracion22%, critico propio y firma.
+- Venom: ataque preparado6s consume3 capas propias activas de veneno,
+  priorizando las mas cercanas a vencer, nunca capas aliadas. Mordida
+  min(4x poder,1.5x poder+1% vida maxima), limitada a2% vida maxima de
+  jefe tras multiplicadores y antes de defensas. Sin ejecucion/curacion.
+  Liquida fracciones ya transcurridas de capas consumidas; no cobra dano
+  futuro ni duplica credito si esa liquidacion mata antes de morder.
+  Conserva veneno nativo aleatorio, slow, splash y signature.
+
+Mover/stun/retiro cancela preparacion y estados propios pendientes, no
+proyectiles emitidos ni venenos ya aplicados. Cooldowns independientes de
+cadencia. Los ataques con damageCap permiten fracciones para que el piso
+normal de1 de dano no viole topes porcentuales con salud pequena.
+Los ataques sin cap siguen con su comportamiento habitual.
+
+46 pruebas nuevas cubren niveles1/49/50/51/99/100, calor y reentrada,
+pacto con coste, concentracion/marcas, consumo por fuente, liquidacion,
+caps con marcas, muerte durante consumo, recursos y lifecycle. Contratos
+de veneno y Penitencia siguen vigentes. Validacion: 2.331 pruebas aprobadas,
+npm run check completo sin errores. Benchmark p95: 0.393 ms; smoke desktop
+1366x768 y mobile 390x844 sin overflow, desvio de ruta 0px.
+El presupuesto heuristico no certifica todas las combinaciones (F10).
+
+Siguiente lote mixto: Jubilee y Loki cierran F6; Thor y Doctor Strange abren F7.
 
 ### F6/lote3: Black Cat, Elsa Bloodstone, Gambit y Hela (2026-10-09)
 

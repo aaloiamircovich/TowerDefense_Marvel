@@ -101,6 +101,8 @@ function getUtilityFactor(hero) {
     if (['cloak', 'dagger', 'magik'].includes(hero.id)) factor -= 0.045;
     if (hero.id === 'elsa_bloodstone') factor -= 0.045;
     if (hero.id === 'gambit') factor -= 0.08;
+    if (hero.id === 'the_hood') factor -= 0.09;
+    if (hero.id === 'psylocke') factor -= 0.045;
     // These native controls moved from random projectile effects to prepared kits.
     if (['namora', 'triton', 'jeff_the_land_shark', 'luna_snow'].includes(hero.id) && effects.length === 0) factor -= 0.045;
 

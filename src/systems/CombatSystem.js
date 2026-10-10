@@ -110,6 +110,7 @@ export class CombatSystem {
         const result = target.takeDamage(damage, {
             armorPenetration: projectile.armorPenetration || 0,
             attackerType: projectile.attackerType,
+            fractional: Number.isFinite(projectile.damageCap),
             direct: true
         });
 

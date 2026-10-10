@@ -59,22 +59,22 @@ const rivalsHeroes = {
         visualStyle: 'mystic',
         projectileColor: '#69e58c'
     }),
-    human_torch: contract('Human Torch', 'Cosmico', 'Rare', 360, 36, 175, 1.65, false, 'NOVA FLAME', 'Llamas con dano de area. 34% de quemar al objetivo principal durante 2.5 s: 37.5% de su dano efectivo por segundo, sin acumularse.', 'area aerea y quemadura', ['Cosmico', 'Rivales'], 'artillery', [4, 4, 2, 2], {
+    human_torch: contract('Human Torch', 'Cosmico', 'Rare', 360, 36, 175, 1.65, false, 'NOVA FLAME', 'Cada 7s al atacar crea una zona fija de 55px durante 3s. La ignicion final causa 90% del poder capturado a hasta 4 detectados en alcance que hayan permanecido al menos 2s seguidos dentro. Conserva splash y quemadura: 34% de aplicar 37.5% de dano efectivo/s durante 2.5s.', 'area aerea y quemadura', ['Cosmico', 'Rivales'], 'artillery', [4, 4, 2, 2], {
         projectileProfile: { splashRadius: 48, splashFactor: 0.32 },
         attackEffects: [{ type: 'burn', duration: 2.5, power: 0.375, damageBasis: 'attackDamage', chance: 0.34 }],
         statModifiers: { rangePct: 0.04 },
         visualStyle: 'fire',
         projectileColor: '#ff7b3d'
     }),
-    the_hood: contract('The Hood', 'Mistico', 'Rare', 310, 40, 155, 1.35, true, 'PACTO DEMONICO', 'Balas malditas revelan infiltrados, marcan soportes y aumentan el dano recibido.', 'marca oscura y deteccion', ['Oscuros', 'Callejero', 'Rivales'], 'support', [4, 3, 3, 5], {
-        attackEffects: [{ type: 'mark', duration: 2.4, power: 0.16, chance: 0.4 }],
+    the_hood: contract('The Hood', 'Mistico', 'Rare', 310, 40, 155, 1.35, true, 'PACTO DEMONICO', 'Tras 3s prepara un disparo con maldicion de 0.38% de salud maxima/s por 3.6s y marca16% por 2.4s. El pacto reduce25% sus siguientes disparos; despues de 1.5s puede cobrar contra esa presa aun maldita con80% extra. Cobrar, perder presa o vencer4s inicia recarga4s. Conserva deteccion propia.', 'marca oscura y deteccion', ['Oscuros', 'Callejero', 'Rivales'], 'support', [4, 3, 3, 5], {
+        attackEffects: [],
         statModifiers: { detectStealth: true },
         visualStyle: 'mystic',
         projectileColor: '#b865ff'
     }),
-    psylocke: contract('Psylocke', 'Mutante', 'Legendary', 455, 48, 135, 1.55, true, 'KATANA PSIQUICA', 'Cortes psiquicos rompen defensa, revelan sigilo y rematan amenazas avanzadas.', 'duelista mutante anti sigilo', ['Mutantes', 'X-Men', 'Marciales', 'Rivales'], 'vanguard', [5, 4, 2, 5], {
+    psylocke: contract('Psylocke', 'Mutante', 'Legendary', 455, 48, 135, 1.55, true, 'KATANA PSIQUICA', 'Atacar a una presa marcada inicia concentracion. Tras 1.5s manteniendo esa presa, y con recarga5s lista, el siguiente corte garantiza critico de al menos2.75x y ruptura28% por2s al impacto. Cambiar presa, perder marca o alcance, o no atacar durante3s reinicia. Conserva penetracion22% y deteccion.', 'duelista mutante anti sigilo', ['Mutantes', 'X-Men', 'Marciales', 'Rivales'], 'vanguard', [5, 4, 2, 5], {
         projectileProfile: { armorPenetration: 0.22 },
-        attackEffects: [{ type: 'armorBreak', duration: 2.6, power: 0.18, chance: 0.38 }],
+        attackEffects: [],
         statModifiers: { detectStealth: true, critChance: 5 },
         visualStyle: 'blade',
         projectileColor: '#ff8cff'
@@ -85,7 +85,7 @@ const rivalsHeroes = {
         visualStyle: 'impact',
         projectileColor: '#f59e0b'
     }),
-    venom: contract('Venom', 'Mutante', 'Legendary', 500, 58, 120, 1.18, false, 'SIMBIONTE DEPREDADOR', 'Golpes de masa simbionte atraviesan armadura y ralentizan objetivos marcados.', 'vanguardia anti blindaje', ['Oscuros', 'Callejero', 'Rivales'], 'vanguard', [5, 4, 2, 2], {
+    venom: contract('Venom', 'Mutante', 'Legendary', 500, 58, 120, 1.18, false, 'SIMBIONTE DEPREDADOR', 'Conserva slow y veneno acumulable. Cada6s al atacar puede consumir3 capas propias de veneno de la presa para devorar: 1.5x poder +1% salud maxima, limitado a4x poder y, contra jefes,2% de salud maxima tras multiplicadores. Liquida el veneno ya transcurrido y conserva las capas aliadas. No ejecuta ni cura.', 'vanguardia anti blindaje', ['Oscuros', 'Callejero', 'Rivales'], 'vanguard', [5, 4, 2, 2], {
         projectileProfile: { armorPenetration: 0.2, splashRadius: 36, splashFactor: 0.25 },
         attackEffects: [{ type: 'slow', duration: 1.5, power: 0.34, chance: 0.34 }],
         statModifiers: { damagePct: 0.06 },

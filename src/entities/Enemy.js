@@ -1,7 +1,7 @@
 import { EnemyBehaviorSystem, SABOTAGE_SECONDS } from '../systems/EnemyBehaviorSystem.js';
 import { SpriteAnimator } from '../rendering/SpriteAnimator.js';
 import { DOT_TYPES, resolveStatusDamage } from '../utils/StatusDamage.js';
-import { addPoisonStacks, updatePoisonStacks } from '../systems/PoisonStatus.js';
+import { addPoisonStacks, updatePoisonStacks, consumePoisonStacks } from '../systems/PoisonStatus.js';
 
 let enemyUid = 0;
 const imageCache = new Map();
@@ -345,6 +345,14 @@ export class Enemy {
             debuff.source?.recordKill?.(debuff.source?.game?.resourceManager, this);
         }
         return this.isAlive;
+    }
+
+    consumePoison(source, count) {
+        const poison = this.debuffs.find(effect => effect.type === 'poison');
+        if (!this.isAlive || !poison) return 0;
+        const consumed = consumePoisonStacks(poison, source, count, (layer, elapsed) => this.applyDotTick(layer, elapsed));
+        if (poison.stacks === 0) this.debuffs = this.debuffs.filter(effect => effect !== poison);
+        return consumed;
     }
 
     updateDebuffs(dt) {

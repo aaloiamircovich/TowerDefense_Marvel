@@ -66,6 +66,20 @@ export function updatePoisonStacks(status, dt, applyTick) {
     syncSummary(status);
 }
 
+export function consumePoisonStacks(status, source, count, applyTick) {
+    if (!Number.isInteger(count) || count <= 0 || count > MAX_STACKS) return 0;
+    const selected = status.applications.filter(layer => layer.source === source && layer.duration > 0)
+        .sort((a, b) => a.duration - b.duration).slice(0, count);
+    if (selected.length !== count) return 0;
+    status.applications = status.applications.filter(layer => !selected.includes(layer));
+    syncSummary(status);
+    // Settle elapsed poison before exchanging its remaining lifetime for the bite.
+    for (const layer of selected) {
+        if (layer.tickTimer > 0 && !applyTick(layer, layer.tickTimer)) break;
+    }
+    return count;
+}
+
 function syncSummary(status) {
     status.stacks = status.applications.length;
     status.duration = Math.max(0, ...status.applications.map((entry) => entry.duration));
