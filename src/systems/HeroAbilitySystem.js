@@ -13,6 +13,7 @@ import { CoastalKitSystem } from './CoastalKitSystem.js';
 import { PsychicKitSystem } from './PsychicKitSystem.js';
 import { VigilanceKitSystem } from './VigilanceKitSystem.js';
 import { MysticKitSystem } from './MysticKitSystem.js';
+import { FateKitSystem } from './FateKitSystem.js';
 import { getLineEndpoint, getLineTargets } from '../utils/LineTargeting.js';
 import { applyCooldownReductions } from '../utils/AbilityModifiers.js';
 import { getHeroRangePattern, isPointInRangePattern } from '../utils/RangePattern.js';
@@ -46,6 +47,7 @@ export class HeroAbilitySystem {
         this.psychicKit = ['mantis', 'emma_frost', 'nightcrawler', 'cosmo'].includes(hero.id) ? new PsychicKitSystem(hero) : null;
         this.vigilanceKit = ['heimdall', 'squirrel_girl'].includes(hero.id) ? new VigilanceKitSystem(hero) : null;
         this.mysticKit = ['scarlet_witch', 'cloak', 'dagger', 'magik'].includes(hero.id) ? new MysticKitSystem(hero) : null;
+        this.fateKit = ['black_cat', 'elsa_bloodstone', 'gambit', 'hela'].includes(hero.id) ? new FateKitSystem(hero) : null;
     }
 
     update(dt, enemies, stats, projectiles) {
@@ -76,6 +78,7 @@ export class HeroAbilitySystem {
         this.psychicKit?.onAttack(target, stats);
         this.vigilanceKit?.onAttack(target, stats);
         this.mysticKit?.onAttack(target, stats);
+        this.fateKit?.onAttack(target, stats, projectileConfig);
         this.avengerKit.onAttack(target, stats, projectileConfig, projectiles);
         this.cosmicKit.onAttack(target, stats, projectileConfig, projectiles);
         this.streetKit.onAttack(target, stats, projectileConfig, projectiles);
@@ -105,6 +108,7 @@ export class HeroAbilitySystem {
         effects.push(...(this.coastalKit?.attackEffects(target) || []));
         effects.push(...(this.psychicKit?.attackEffects(target) || []));
         effects.push(...(this.mysticKit?.attackEffects(target) || []));
+        effects.push(...(this.fateKit?.attackEffects(target) || []));
         if (this.hero.id === 'spiderman') {
             const evolved = this.hero.game.progression?.getHeroEvolution?.(this.hero.id)?.id === 'iron_spider';
             effects.push({ type: 'web', duration: evolved ? 3.2 : 2.6, power: evolved ? 0.28 : 0.2, chance: 1 });
@@ -129,6 +133,7 @@ export class HeroAbilitySystem {
             * (this.elementalKit?.damageMultiplier() || 1)
             * (this.coastalKit?.damageMultiplier(target) || 1)
             * (this.mysticKit?.damageMultiplier(target) || 1)
+            * (this.fateKit?.damageMultiplier(target) || 1)
             * (this.fieldDevice?.damageMultiplier() || 1);
     }
 
@@ -243,6 +248,7 @@ export class HeroAbilitySystem {
         if (this.psychicKit) return this.psychicKit.getDisplayState();
         if (this.vigilanceKit) return this.vigilanceKit.getDisplayState();
         if (this.mysticKit) return this.mysticKit.getDisplayState();
+        if (this.fateKit) return this.fateKit.getDisplayState();
         if (this.fieldDevice) return this.fieldDevice.getDisplayState();
         if (this.focusKit) return this.focusKit.getDisplayState();
         const aura = getEffectiveSupportAura(this.hero);
@@ -319,6 +325,7 @@ export class HeroAbilitySystem {
         this.psychicKit?.render(ctx);
         this.vigilanceKit?.render(ctx);
         this.mysticKit?.render(ctx);
+        this.fateKit?.render(ctx);
         this.avengerKit.render(ctx);
         this.cosmicKit.render(ctx);
         this.streetKit.render(ctx);
@@ -326,6 +333,7 @@ export class HeroAbilitySystem {
     }
 
     onKill(target) {
+        this.fateKit?.onKill(target);
         this.focusKit?.onKill(target);
         this.cosmicKit.onKill();
         this.streetKit.onKill(target);

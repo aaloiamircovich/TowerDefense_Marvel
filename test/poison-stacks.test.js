@@ -178,11 +178,16 @@ for (const bossId of ['ultron_prime', 'thanos_final']) {
             let expected = 0;
             for (const id of ['black_widow', 'blade', 'elsa_bloodstone', 'venom', 'yelena_belova']) {
                 const hero = new Hero(heroes[id], 0, 0, { heroes: [], enemies: [target], resourceManager: { lives: 20 }, random: { next: () => 0 } });
+                hero.game.heroes.push(hero);
+                if (id === 'elsa_bloodstone') {
+                    hero.abilitySystem.fateKit.update(4);
+                    for (let n = 0; n < 3; n++) hero.abilitySystem.fateKit.onAttack(target, hero.getEffectiveStats(), {});
+                }
                 const effect = hero.getProjectileEffects(target).find((entry) => entry.type === 'poison');
                 CombatSystem.applyEffects([effect], target, hero);
-                expected += target.maxHp * effect.power * effect.duration * Math.max(0.2, 1 - target.statusResistance - (target.config.statusResistances?.poison || 0));
+                expected += target.maxHp * effect.power * (effect.stacks || 1) * effect.duration * Math.max(0.2, 1 - target.statusResistance - (target.config.statusResistances?.poison || 0));
             }
-            assert.equal(target.debuffs[0].stacks, 5);
+            assert.equal(target.debuffs[0].stacks, 6);
             for (let time = 0; time < 10; time += dt) target.updateDebuffs(dt);
             closeTo(target.maxHp - target.hp, expected);
         }

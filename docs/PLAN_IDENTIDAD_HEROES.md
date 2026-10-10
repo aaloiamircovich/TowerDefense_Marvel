@@ -1,7 +1,7 @@
 # Identidad y habilidades de los 105 heroes
 
 Fecha: 2026-09-13. Base revisada: commit 553ad63.
-Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes. FASE 3 IMPLEMENTADA, ocho lotes. FASE 4 IMPLEMENTADA, diez lotes. FASE 5 IMPLEMENTADA, seis lotes. FASE 6 EN CURSO, dos lotes.
+Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes. FASE 3 IMPLEMENTADA, ocho lotes. FASE 4 IMPLEMENTADA, diez lotes. FASE 5 IMPLEMENTADA, seis lotes. FASE 6 EN CURSO, tres lotes.
 Fases 7 a 10 pendientes. La cobertura comun no certifica el balance individual.
 Los hallazgos de auditoria describen el baseline; ver avances abajo para las
 correcciones ya realizadas. No equivale a completar el rediseño de los 105 kits.
@@ -12,6 +12,51 @@ cambie alguna decision real del jugador. Las propuestas requieren validacion
 antes de fijar porcentajes, tiempos o requisitos nuevos.
 
 ## Alcance y evidencia
+
+### F6/lote3: Black Cat, Elsa Bloodstone, Gambit y Hela (2026-10-09)
+
+F6 alcanza10/16 heroes. Sin cambios de sprites/mapas, rareza, estadisticas
+base, progresion/evolucion ni condiciones de activacion de objetos signature.
+
+- Black Cat: acumula hasta3 disparos no criticos. Con cooldown3s listo,
+  el siguiente garantiza critico propio (multiplicador normal o superior
+  por equipo, no multiplicado otra vez). Todo critico reinicia la carga;
+  solo consumir la garantia reinicia cooldown. Conserva marca/deteccion,
+  no genera dinero. La firma Matriz recibe el resultado critico habitual.
+- Elsa: tres disparos consecutivos al mismo jefe/amenaza4+ preparan
+  municion. Con cooldown4s, el siguiente lleva20% extra y2 capas de
+  veneno garantizadas al impacto:0.54% salud maxima/s,4s resistibles.
+  Cambiar presa, perder cobertura o inactividad>=2.5s quita carga. Soldados
+  no cargan. Sustituye veneno aleatorio general; mantiene penetracion,
+  ruptura aleatoria y la firma Bloodstone separada. Respeta bolsa12 capas,
+  autoria y duracion independiente de contribuciones aliadas.
+- Gambit: tres cartas sobre la misma presa y cooldown4s preparan una
+  detonacion al siguiente disparo:65% poder sobre primario+3 detectados
+  como maximo, a60px y en cobertura. Se conserva rebote2 y se elimina
+  propagacion2 que duplicaba impactos secundarios en cada disparo.
+  Cambio de presa, salir de cobertura o inactividad>=2.5s quita carga;
+  explosion no aplica estados ni activa nuevas firmas/procs.
+- Hela: una baja propia de enemigo maldito en cobertura arma necroespinas
+  tras0.6s en el punto de muerte. Hasta3 detectados a65px y en cobertura,
+  70% del poder capturado al armar. Cooldown6s, un estado pendiente.
+  Bajas secundarias no activan espinas ni firma; sin procs de ataque,
+  estados ni dinero extra. Conserva sangrado, curse, penetracion y rebote.
+
+Cooldowns desde despliegue; mover/stun/retiro borra carga/espinas pendientes
+y reinicia preparacion. Proyectiles ya emitidos conservan sus efectos.
+No cambia vidas, estrellas ni niveles. El presupuesto heuristico conserva
+el coste de utilidad trasladado a kits, no certifica DPS exacto de equipos.
+
+45 pruebas nuevas en fate-hunt-contract.test.js: niveles1/49/50/51/99/100,
+criticos naturales/garantizados, cadencia extrema, elites vs soldados,
+resistencias/capas propias y aliadas, cobertura/caps, cambios de presa,
+retirada, dano capturado y ausencia de recursion por bajas. Contratos de
+veneno sobre Ultron/Thanos ahora preparan la municion de Elsa explicitamente.
+Validacion: 2.285 pruebas aprobadas, npm run check completo sin errores.
+Benchmark p95 0.354ms; smoke desktop1366x768/mobile390x844 sin overflow
+y desvio de ruta0px. Balance combinado de equipos permanece pendiente en F10.
+
+Siguiente lote F6: Human Torch, The Hood, Psylocke y Venom.
 
 ### F6/lote2: Scarlet Witch, Cloak, Dagger y Magik (2026-10-09)
 

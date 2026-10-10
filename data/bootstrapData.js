@@ -3826,7 +3826,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 2.05,
       "canSeeStealth": true,
       "ability": "GOLPE DE SUERTE",
-      "abilityDesc": "Roba tempo de los corredores: criticos altos, marca breve y deteccion callejera.",
+      "abilityDesc": "Tres disparos sin critico cargan Mala Suerte. Con preparacion de 3s, el siguiente es critico garantizado; cualquier critico reinicia la carga. Conserva marca breve y deteccion, sin generar dinero.",
       "niche": "critico, sigilo y control ligero",
       "allowedTerrains": [
         1,
@@ -3908,7 +3908,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.3,
       "canSeeStealth": true,
       "ability": "BLOODSTONE",
-      "abilityDesc": "Dispara municion anti monstruos con ruptura de armadura y dano sostenido contra elites. La municion alquimica suma veneno acumulable a blancos resistentes.",
+      "abilityDesc": "Tres ataques consecutivos a la misma presa jefe o amenaza4+ preparan municion Bloodstone. Con recarga de4s, el siguiente inflige20% extra y aplica2 capas de veneno: 0.54% de salud maxima/s durante4s. Cambiar presa o pasar2.5s sin atacar reinicia la caceria. Conserva ruptura y penetracion; sin bonus contra soldados.",
       "niche": "cazadora anti elite con deteccion",
       "allowedTerrains": [
         3
@@ -3934,12 +3934,6 @@ window.__MARVEL_TD_DATA__ = {
             "duration": 3,
             "power": 0.16,
             "chance": 0.34
-          },
-          {
-            "type": "poison",
-            "duration": 4,
-            "power": 0.0036,
-            "chance": 0.36
           }
         ],
         "statModifiers": {
@@ -3997,7 +3991,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.55,
       "canSeeStealth": false,
       "ability": "CARGA CINETICA",
-      "abilityDesc": "Cartas cargadas encadenan entre enemigos cercanos y castigan grupos compactos.",
+      "abilityDesc": "Tres cartas consecutivas sobre la misma presa cargan una detonacion. Con recarga de4s, la siguiente causa65% de poder adicional a hasta4 detectados a60px y dentro de su alcance. Conserva2 rebotes pero elimina la propagacion duplicada. Cambiar presa o pasar2.5s sin atacar pierde la carga.",
       "niche": "rebote mutante para oleadas medias",
       "allowedTerrains": [
         1,
@@ -4018,10 +4012,7 @@ window.__MARVEL_TD_DATA__ = {
         "projectileProfile": {
           "chainCount": 2,
           "chainRange": 95,
-          "chainFactor": 0.45,
-          "propagationCount": 2,
-          "propagationRadius": 95,
-          "propagationFactor": 0.3
+          "chainFactor": 0.45
         },
         "statModifiers": {
           "critChance": 4
@@ -4078,7 +4069,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 0.85,
       "canSeeStealth": false,
       "ability": "ESPINAS DE HEL",
-      "abilityDesc": "Perfora armadura y rebota. 42% de sangrar durante 3.2 s: 24% de su dano efectivo por segundo, sin acumularse. 48% de maldecir: 0.42% de salud maxima/s durante 4.5 s.",
+      "abilityDesc": "Perfora armadura y rebota. 42% de sangrar durante3.2s:24% de poder/s. 48% de maldecir:0.42% de salud maxima/s durante4.5s. Cada6s, una baja propia de un maldito en alcance prepara necroespinas: tras0.6s causan70% de poder a hasta3 detectados a65px. No generan otras espinas.",
       "niche": "artilleria mistica anti jefe",
       "allowedTerrains": [
         0,

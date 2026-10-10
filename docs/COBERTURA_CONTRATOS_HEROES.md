@@ -4,6 +4,17 @@ Actualizado: 2026-09-22. Roster: 105. No es una certificacion de balance.
 
 ## Cobertura comun ejecutable
 
+### F6/lote3: suerte, caceria, cartas y necroespinas (2026-10-09)
+
+`test/fate-hunt-contract.test.js`:45 pruebas para Black Cat, Elsa,
+Gambit y Hela en niveles1/49/50/51/99/100. Criticos/cadencia, capas y
+resistencias de veneno, preparacion contra elite, caps/cobertura, cambio
+de presa, lifecycle y bajas secundarias sin recursion ni dinero extra.
+Contratos de poison-stacks ajustados para preparar Elsa y contabilizar
+sus dos capas; firmas de objetos conservadas. Suite global:2.285 pruebas
+aprobadas y npm run check completo sin errores; smoke desktop/mobile sin
+overflow. No certifica todas las combinaciones de equipos y economia.
+
 ### F6/lote2: red, manto, marcas de luz y corte dimensional (2026-10-09)
 
 `test/mystic-network-contract.test.js`: 46 pruebas para Scarlet Witch,

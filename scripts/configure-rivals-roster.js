@@ -34,26 +34,26 @@ export const RIVALS_HERO_IDS = [
 ];
 
 const rivalsHeroes = {
-    black_cat: contract('Black Cat', 'Urbano', 'Rare', 245, 31, 135, 2.05, true, 'GOLPE DE SUERTE', 'Roba tempo de los corredores: criticos altos, marca breve y deteccion callejera.', 'critico, sigilo y control ligero', ['Callejero', 'Espias', 'Rivales'], 'support', [4, 3, 3, 5], {
+    black_cat: contract('Black Cat', 'Urbano', 'Rare', 245, 31, 135, 2.05, true, 'GOLPE DE SUERTE', 'Tres disparos sin critico cargan Mala Suerte. Con preparacion de 3s, el siguiente es critico garantizado; cualquier critico reinicia la carga. Conserva marca breve y deteccion, sin generar dinero.', 'critico, sigilo y control ligero', ['Callejero', 'Espias', 'Rivales'], 'support', [4, 3, 3, 5], {
         statModifiers: { critChance: 8, detectStealth: true },
         attackEffects: [{ type: 'mark', duration: 1.8, power: 0.12, chance: 0.36 }],
         visualStyle: 'blade',
         projectileColor: '#f8fafc'
     }),
-    elsa_bloodstone: contract('Elsa Bloodstone', 'Mistico', 'Rare', 330, 44, 170, 1.3, true, 'BLOODSTONE', 'Dispara municion anti monstruos con ruptura de armadura y dano sostenido contra elites.', 'cazadora anti elite con deteccion', ['Oscuros', 'Callejero', 'Rivales'], 'artillery', [5, 3, 2, 5], {
+    elsa_bloodstone: contract('Elsa Bloodstone', 'Mistico', 'Rare', 330, 44, 170, 1.3, true, 'BLOODSTONE', 'Tres ataques consecutivos a la misma presa jefe o amenaza4+ preparan municion Bloodstone. Con recarga de4s, el siguiente inflige20% extra y aplica2 capas de veneno: 0.54% de salud maxima/s durante4s. Cambiar presa o pasar2.5s sin atacar reinicia la caceria. Conserva ruptura y penetracion; sin bonus contra soldados.', 'cazadora anti elite con deteccion', ['Oscuros', 'Callejero', 'Rivales'], 'artillery', [5, 3, 2, 5], {
         projectileProfile: { armorPenetration: 0.22 },
         attackEffects: [{ type: 'armorBreak', duration: 3.0, power: 0.16, chance: 0.34 }],
         statModifiers: { detectStealth: true },
         visualStyle: 'ballistic',
         projectileColor: '#ff3b5f'
     }),
-    gambit: contract('Gambit', 'Mutante', 'Rare', 335, 37, 165, 1.55, false, 'CARGA CINETICA', 'Cartas cargadas encadenan entre enemigos cercanos y castigan grupos compactos.', 'rebote mutante para oleadas medias', ['Mutantes', 'X-Men', 'Rivales'], 'artillery', [4, 4, 2, 3], {
+    gambit: contract('Gambit', 'Mutante', 'Rare', 335, 37, 165, 1.55, false, 'CARGA CINETICA', 'Tres cartas consecutivas sobre la misma presa cargan una detonacion. Con recarga de4s, la siguiente causa65% de poder adicional a hasta4 detectados a60px y dentro de su alcance. Conserva2 rebotes pero elimina la propagacion duplicada. Cambiar presa o pasar2.5s sin atacar pierde la carga.', 'rebote mutante para oleadas medias', ['Mutantes', 'X-Men', 'Rivales'], 'artillery', [4, 4, 2, 3], {
         projectileProfile: { chainCount: 2, chainRange: 95, chainFactor: 0.45 },
         statModifiers: { critChance: 4 },
         visualStyle: 'energy',
         projectileColor: '#d86cff'
     }),
-    hela: contract('Hela', 'Mistico', 'Legendary', 620, 70, 180, 0.85, false, 'ESPINAS DE HEL', 'Perfora armadura y rebota. 42% de sangrar durante 3.2 s: 24% de su dano efectivo por segundo, sin acumularse. 48% de maldecir: 0.42% de salud maxima/s durante 4.5 s.', 'artilleria mistica anti jefe', ['Mistico', 'Oscuros', 'Rivales'], 'artillery', [5, 3, 2, 2], {
+    hela: contract('Hela', 'Mistico', 'Legendary', 620, 70, 180, 0.85, false, 'ESPINAS DE HEL', 'Perfora armadura y rebota. 42% de sangrar durante3.2s:24% de poder/s. 48% de maldecir:0.42% de salud maxima/s durante4.5s. Cada6s, una baja propia de un maldito en alcance prepara necroespinas: tras0.6s causan70% de poder a hasta3 detectados a65px. No generan otras espinas.', 'artilleria mistica anti jefe', ['Mistico', 'Oscuros', 'Rivales'], 'artillery', [5, 3, 2, 2], {
         projectileProfile: { armorPenetration: 0.32, chainCount: 1, chainRange: 90, chainFactor: 0.5 },
         attackEffects: [{ type: 'bleed', duration: 3.2, power: 0.24, damageBasis: 'attackDamage', chance: 0.42 }, { type: 'curse', duration: 4.5, power: 0.0042, chance: 0.48 }],
         visualStyle: 'mystic',

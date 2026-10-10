@@ -167,6 +167,7 @@ export class Hero {
         this.abilitySystem.psychicKit?.update(dt);
         this.abilitySystem.vigilanceKit?.update(dt);
         this.abilitySystem.mysticKit?.update(dt);
+        this.abilitySystem.fateKit?.update(dt);
         this.abilitySystem.streetKit.checkHunterPosition();
         this.abilitySystem.mutantKit.checkWeather();
         this.abilitySystem.fieldDevice?.update(dt, enemies);
@@ -239,6 +240,7 @@ export class Hero {
         const attackStats = signatureContext.stats || stats;
         const roll = this.game?.random?.next?.() ?? Math.random();
         const preparedCrit = Math.max(this.abilitySystem.focusKit?.criticalMultiplier(target) || 0,
+            this.abilitySystem.fateKit?.criticalMultiplier(target) || 0,
             this.abilitySystem.martialKit?.criticalMultiplier(target) || 0);
         const isCrit = preparedCrit > 0 || roll * 100 < attackStats.critChance;
         let finalDamage = isCrit ? attackStats.damage * Math.max(1, preparedCrit, attackStats.critDamage || 2) : attackStats.damage;
