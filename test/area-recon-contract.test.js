@@ -175,11 +175,13 @@ for (const [id, multiplier, cooldown] of [['jean_grey', 1.2, 12], ['scarlet_witc
         hero.rangePattern = 'ring';
         const kit = hero.abilitySystem.mutantKit;
         kit.resource = 100;
+        kit.cooldownRemaining = 0;
         const stats = { ...hero.getEffectiveStats(), canSeeStealth: false };
         const target = spawn(10, { stealth: true, flying: true });
         assert.equal(hero.getBestTarget([target], stats), null);
         kit.update(0, game.enemies, stats);
         assert.equal(kit.cooldownRemaining, cooldown);
+        if (id === 'jean_grey') kit.update(0.6, game.enemies, stats);
         assert.equal(target.stealth, true);
         assert.equal(target.x, 10);
         if (id === 'jean_grey') assert.ok(target.hp < target.maxHp);
@@ -191,6 +193,7 @@ for (const [id, multiplier, cooldown] of [['jean_grey', 1.2, 12], ['scarlet_witc
         const { hero, game, spawn } = setup(id);
         const kit = hero.abilitySystem.mutantKit;
         kit.resource = 100;
+        kit.cooldownRemaining = 0;
         const stats = hero.getEffectiveStats();
         const range = stats.range * multiplier;
         const outside = spawn(range + 0.01);
@@ -214,6 +217,7 @@ for (const [id, multiplier, cooldown] of [['jean_grey', 1.2, 12], ['scarlet_witc
         kit.update(0, game.enemies, stats);
         assert.equal(kit.cooldownRemaining, cooldown);
         assert.equal(kit.resource, id === 'jean_grey' ? 0 : 100);
+        if (id === 'jean_grey') kit.update(0.6, game.enemies, stats);
         assert.equal(outside.hp, outside.maxHp);
         assert.equal(outside.debuffs.length, 0);
         assert.equal(dead.hp, dead.maxHp);
@@ -227,11 +231,13 @@ test('Phoenix conserva dano base/evolucion y retroceso reducido de jefes, no de 
         if (evolved) game.progression = { getHeroBonuses: () => null, getHeroEvolution: () => ({ id: 'phoenix' }) };
         const kit = hero.abilitySystem.mutantKit;
         kit.resource = 100;
+        kit.cooldownRemaining = 0;
         const stats = hero.getEffectiveStats();
         const soldier = spawn(120);
         const boss = spawn(150, { isBoss: true });
         const flyer = spawn(180, { flying: true });
         kit.update(0, game.enemies, stats);
+        kit.update(0.6, game.enemies, stats);
         for (const enemy of [soldier, boss, flyer]) closeTo(enemy.maxHp - enemy.hp, stats.damage * (evolved ? 1.25 : 0.95) * kit.getPowerScale());
         closeTo(soldier.x, 72);
         closeTo(boss.x, 130);

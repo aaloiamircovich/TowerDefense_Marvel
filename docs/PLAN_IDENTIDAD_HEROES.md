@@ -1,7 +1,7 @@
 # Identidad y habilidades de los 105 heroes
 
 Fecha: 2026-09-13. Base revisada: commit 553ad63.
-Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes. FASE 3 IMPLEMENTADA, ocho lotes. FASE 4 IMPLEMENTADA, diez lotes. FASE 5 IMPLEMENTADA, seis lotes. FASE 6 IMPLEMENTADA, cinco lotes. FASE 7 EN CURSO, un lote.
+Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes. FASE 3 IMPLEMENTADA, ocho lotes. FASE 4 IMPLEMENTADA, diez lotes. FASE 5 IMPLEMENTADA, seis lotes. FASE 6 IMPLEMENTADA, cinco lotes. FASE 7 EN CURSO, dos lotes.
 Fases 8 a 10 pendientes. La cobertura comun no certifica el balance individual.
 Los hallazgos de auditoria describen el baseline; ver avances abajo para las
 correcciones ya realizadas. No equivale a completar el rediseño de los 105 kits.
@@ -12,6 +12,55 @@ cambie alguna decision real del jugador. Las propuestas requieren validacion
 antes de fijar porcentajes, tiempos o requisitos nuevos.
 
 ## Alcance y evidencia
+
+### F7/lote2: Captain Marvel, Vision, Star-Lord y Jean Grey (2026-10-11)
+
+F7 alcanza6/16 heroes. Sin cambios de sprites, mapas, rarezas, estadisticas
+base ni condiciones de evolucion/objetos signature.
+
+- Captain Marvel: carga12 por ataque/24 por baja no secundaria. Con60 y
+  cooldown inicial/fijo9s consume energia y fija linea2.2x alcance, ancho26px.
+  Preparacion0.45s; descarga85% poder capturado por escala de habilidad a6
+  victimas como maximo, penetracion35%. No sigue al blanco tras preparar;
+  rayos conservan impactos incidentales sobre ocultos, no pueden fijarlos.
+  Vuelo visual de ida/vuelta0.9s: coordenadas logicas nunca cambian y no
+  dispara durante preparacion/vuelo. ReduceMotion evita desplazamiento visual.
+  Carga mantiene dano+0.35%/punto, elimina cadencia+0.18%/punto.
+- Vision: conserva multiplicadores de sus dos modos. Intangible cubre linea
+  1.35x, ancho28px, hasta4 impactos70% poder por escala de habilidad, pen35%;
+  densa concentra110% poder escalado con pen70% en el primario, no atraviesa.
+  Tres ataques preparan rayo, cooldown inicial/fijo4s. Cambio de modo pierde
+  carga, exige al menos4s de recarga y bloquea ataques/cambio durante1.25s.
+  Repetir modo actual no reinicia ni regala tiempo. Overclock permanece.
+- Star-Lord: primario seleccionable conservado. Secundario separado a otro
+  blanco detectado/en cobertura cada1s, tambien desde despliegue. Plasma
+  complementa con slow42%/1.2s; cryo con burn23% poder capturado/s durante3s;
+  incendiaria con plasma pen28%. Dano68% poder por escala de habilidad.
+  No copia critico, perfil, objeto, cadenas ni procs/economia del primario.
+  Blanco aislado no consume recarga. Cambiar municion no reinicia cooldown
+  ni transforma proyectiles emitidos; la quemadura guarda su poder al salir.
+- Jean: carga9/16 por ataque/baja,14/24 con evolucion Phoenix. Con100 y
+  cooldown inicial/fijo12s prepara0.6s sin atacar. Onda radial1.2x captura
+  dano95% (Phoenix125%) por escala de habilidad y pen35% (Phoenix50%);
+  limita6 victimas, empuje48px/20px jefes, respeta vuelo e inmunidad.
+  Conserva AoE incidental sobre ocultos. Tras onda,2s con dano-25% y sin
+  generar carga. Sustituye telequinesis cada4 ataques, elimina rango por
+  carga. Conserva slow nativo y Dark Phoenix signature del objeto.
+
+Movimiento, stun o retiro reinician carga/preparacion y cancelan emisiones
+pendientes; nunca alteran nivel ni recursos persistentes. Proyectiles ya
+emitidos sobreviven. Los impactos secundarios acreditan una baja sin activar
+firmas por baja; quemadura secundaria conserva esta autoria al elegir el
+DoT mas fuerte. El pool limpia secondaryEntity al reutilizar proyectiles.
+46 pruebas nuevas en niveles1/49/50/51/99/100; contratos previos adaptados
+para preparacion, autoria, municion complementaria y geometria conservada.
+Validacion: 2.431 pruebas aprobadas, npm run check completo sin errores.
+Benchmark p95: 0.370ms. Smoke desktop1366x768/mobile390x844 sin overflow,
+desvio de ruta0px. Probe Playwright confirma vuelo visible (4432 pixeles
+distintos), casilla logica intacta y radio Phoenix252px en el fixture.
+Balance completo de equipos pendiente de F10.
+
+Siguiente lote F7: Cyclops, Silver Surfer, Nova y Black Bolt.
 
 ### F6/lote5 y F7/lote1: Jubilee, Loki, Thor y Doctor Strange (2026-10-11)
 

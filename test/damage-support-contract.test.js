@@ -111,6 +111,7 @@ test('segundo blaster de Star-Lord y sus impactos no cuentan como ataques nuevos
     const other = new Enemy({ id: 'other', hp: 1e9, speed: 1 }, [{ x: 85, y: 0 }, { x: 3000, y: 0 }], f.game);
     f.game.enemies.push(other);
     f.tick(9);
+    star.abilitySystem.cosmicKit.update(1, [], star.getEffectiveStats());
     const shots = f.attack(1, star);
     assert.equal(shots.length, 2);
     assert.equal(f.support.supportNetworkState.charge, 1);

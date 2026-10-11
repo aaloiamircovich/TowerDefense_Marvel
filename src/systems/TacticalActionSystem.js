@@ -39,6 +39,9 @@ export class TacticalActionSystem {
 
         const index = this.game.heroes.indexOf(hero);
         this.game.heroes.splice(index, 1);
+        hero.abilitySystem?.cosmicKit?.checkEnergyPosition();
+        hero.abilitySystem?.avengerKit?.checkDensityPosition();
+        hero.abilitySystem?.mutantKit?.checkPhoenixPosition();
         resetSupportAura(hero);
         hero.abilitySystem?.fieldDevice?.clear();
         hero.abilitySystem?.focusKit?.reset();

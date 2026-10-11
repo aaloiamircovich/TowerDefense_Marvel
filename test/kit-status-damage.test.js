@@ -88,6 +88,9 @@ test('cambiar municion no transforma proyectiles emitidos ni estados ya aplicado
 
 test('segundo blaster respeta sigilo, rango efectivo y no repite el blanco principal', () => {
     const unit = hero('star_lord');
+    unit.game.heroes = [unit];
+    unit.abilitySystem.setCombatMode('cryo');
+    unit.abilitySystem.cosmicKit.update(1, [], unit.getEffectiveStats());
     const primary = enemy({}, 80);
     const hidden = enemy({ stealth: true }, 90);
     const distant = enemy({}, 230);
@@ -97,7 +100,9 @@ test('segundo blaster respeta sigilo, rango efectivo y no repite el blanco princ
     const projectiles = [];
     unit.abilitySystem.cosmicKit.fireSecondBlaster(primary, config, projectiles, stats);
     assert.equal(projectiles[0].target, distant);
-    assert.equal(projectiles[0].effects[0].damageBasis, 'attackDamage');
+    assert.equal(projectiles[0].effects[0].damageBasis, 'flat');
+    assert.equal(projectiles[0].effects[0].type, 'burn');
+    unit.abilitySystem.cosmicKit.update(1, [], unit.getEffectiveStats());
     projectiles.length = 0;
     unit.game.enemies = [primary, hidden];
     unit.abilitySystem.cosmicKit.fireSecondBlaster(primary, config, projectiles, stats);
@@ -108,6 +113,8 @@ test('segundo blaster respeta sigilo, rango efectivo y no repite el blanco princ
 
 test('segundo blaster conserva el patron geometrico y rechaza enemigos muertos', () => {
     const unit = hero('star_lord');
+    unit.game.heroes = [unit];
+    unit.abilitySystem.cosmicKit.update(1, [], unit.getEffectiveStats());
     unit.rangePattern = 'ring';
     const primary = enemy({}, 120);
     const inner = enemy({}, 10);

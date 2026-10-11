@@ -73,6 +73,7 @@ test('Vision alterna densidad y atraviesa enemigos alineados', () => {
     game.enemies = [aligned, outside];
 
     assert.equal(hero.abilitySystem.setCombatMode('dense'), true);
+    hero.abilitySystem.avengerKit.update(4, [], hero.getEffectiveStats());
     for (let index = 0; index < 3; index++) hero.abilitySystem.onAttack(aligned, hero.getEffectiveStats(), { damage: 30 }, []);
 
     assert.ok(aligned.hp < aligned.maxHp);

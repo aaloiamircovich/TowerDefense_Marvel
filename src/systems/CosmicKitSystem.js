@@ -36,30 +36,35 @@ export class CosmicKitSystem {
         this.rootWall = null;
         this.guardianHealTimer = 18;
         this.executionCount = 0;
+        this.energyOrigin = { x: hero.x, y: hero.y };
+        this.binaryRun = null;
+        this.blasterCooldown = 1;
+        if (hero.id === 'captain_marvel') this.cooldownRemaining = 9;
     }
 
     update(dt, enemies, stats) {
+        this.checkEnergyPosition();
         this.cooldownRemaining = Math.max(0, this.cooldownRemaining - dt);
+        this.blasterCooldown = Math.max(0, this.blasterCooldown - dt);
         if (this.hero.id === 'captain_marvel') this.updateCaptainMarvel(dt, enemies, stats);
         if (this.hero.id === 'groot') this.updateGroot(dt, enemies, stats);
     }
 
     onAttack(target, stats, projectileConfig, projectiles) {
         this.attackCount++;
-        if (this.hero.id === 'captain_marvel') this.resource = Math.min(100, this.resource + 12);
+        if (this.hero.id === 'captain_marvel' && this.canAttack()) this.resource = Math.min(100, this.resource + 12);
         if (this.hero.id === 'star_lord') this.fireSecondBlaster(target, projectileConfig, projectiles, stats);
         if (this.hero.id === 'gamora') this.activateGamoraCombo(target, stats);
         if (this.hero.id === 'silver_surfer' && this.attackCount % 2 === 0) this.fireCosmicTrajectory(target, stats);
     }
 
     onKill() {
-        if (this.hero.id === 'captain_marvel') this.resource = Math.min(100, this.resource + 24);
+        if (this.hero.id === 'captain_marvel' && this.canAttack()) this.resource = Math.min(100, this.resource + 24);
     }
 
     applyStatModifiers(stats) {
         if (this.hero.id === 'captain_marvel') {
             stats.damage *= 1 + this.resource * 0.0035;
-            stats.fireRate *= 1 + this.resource * 0.0018;
         }
         if (this.hero.id === 'silver_surfer') {
             if (this.mode === 'power') stats.damage *= 1.22;
@@ -106,8 +111,12 @@ export class CosmicKitSystem {
     }
 
     getDisplayState() {
-        if (this.hero.id === 'captain_marvel') return meter(`Energía binaria ${Math.round(this.resource)}/100`, this.resource);
-        if (this.hero.id === 'star_lord') return staticState(`Blásters: ${this.getModeLabel()}`);
+        if (this.hero.id === 'captain_marvel') return {
+            label: this.binaryRun ? 'Pasada binaria: trayectoria fijada'
+                : `Binaria ${Math.round(this.resource)}/60 | ${this.cooldownRemaining.toFixed(1)}s`,
+            progress: Math.min(1, this.resource / 60), ready: this.resource >= 60 && this.cooldownRemaining === 0 && !this.binaryRun
+        };
+        if (this.hero.id === 'star_lord') return staticState(`Blasters: ${this.getModeLabel()} | secundario ${this.blasterCooldown.toFixed(1)}s`);
         if (this.hero.id === 'groot') {
             const ready = this.cooldownRemaining <= 0;
             return { label: ready ? 'Muro de raíces listo' : `Raíces ${this.cooldownRemaining.toFixed(1)} s`, progress: ready ? 1 : 1 - this.cooldownRemaining / 10, ready };
@@ -134,6 +143,11 @@ export class CosmicKitSystem {
     }
 
     render(ctx) {
+        if (this.binaryRun?.windup > 0) {
+            ctx.save(); ctx.strokeStyle = '#ffd45f'; ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.moveTo(this.hero.x, this.hero.y);
+            ctx.lineTo(this.binaryRun.endpoint.x, this.binaryRun.endpoint.y); ctx.stroke(); ctx.restore();
+        }
         if (this.rootWall) {
             ctx.save();
             ctx.strokeStyle = '#78c85a';
@@ -155,45 +169,80 @@ export class CosmicKitSystem {
         }
     }
 
+    checkEnergyPosition() {
+        if (!['captain_marvel', 'star_lord'].includes(this.hero.id)) return;
+        if (!(this.hero.stunTimer > 0) && this.hero.game.heroes.includes(this.hero)
+            && this.hero.x === this.energyOrigin.x && this.hero.y === this.energyOrigin.y) return;
+        this.energyOrigin = { x: this.hero.x, y: this.hero.y };
+        this.resource = 0; this.binaryRun = null; this.flightTimer = 0; this.flightOrigin = null;
+        this.blasterCooldown = 1;
+        if (this.hero.id === 'captain_marvel') this.cooldownRemaining = 9;
+    }
+
+    canAttack() { return this.hero.id !== 'captain_marvel' || !this.binaryRun; }
+
+    visualOffset() {
+        if (!this.binaryRun || this.binaryRun.windup > 0 || this.hero.game.reduceMotion
+            || this.hero.game.progression?.state?.settings?.reduceMotion) return { x: 0, y: 0 };
+        const progress = 1 - this.flightTimer / 0.9;
+        const factor = 1 - Math.abs(progress * 2 - 1);
+        return { x: (this.binaryRun.destination.x - this.hero.x) * factor,
+            y: (this.binaryRun.destination.y - this.hero.y) * factor };
+    }
+
     updateCaptainMarvel(dt, enemies, stats) {
-        if (this.flightTimer > 0) {
-            this.flightTimer -= dt;
-            if (this.flightTimer <= 0 && this.flightOrigin) {
-                this.hero.x = this.flightOrigin.x;
-                this.hero.y = this.flightOrigin.y;
-                this.flightOrigin = null;
+        if (this.hero.stunTimer > 0 || !this.hero.game.heroes.includes(this.hero)) return;
+        if (this.binaryRun) {
+            const run = this.binaryRun;
+            if (run.windup > 0) {
+                run.windup = Math.max(0, run.windup - dt);
+                if (run.windup > 0) return;
+                const victims = getLineTargets(this.hero, run.endpoint, enemies.filter(enemy => !enemy.hasReachedEnd), run.length, 26)
+                    .sort((a, b) => distance(a, this.hero) - distance(b, this.hero)).slice(0, 6);
+                for (const enemy of victims) CombatSystem.applyDamage({ attackerType: this.hero.category,
+                    damage: run.damage, armorPenetration: 0.35, secondaryEntity: true }, enemy, this.hero, this.hero.game.resourceManager, 1);
+                this.hero.game.vfx?.addBeam(this.hero, run.endpoint, { color: '#ffd45f', width: 13, duration: 0.3 });
+                this.hero.game.audio?.play('binary'); this.flightTimer = 0.9;
+            } else {
+                this.flightTimer = Math.max(0, this.flightTimer - dt);
+                if (this.flightTimer === 0) { this.binaryRun = null; this.flightOrigin = null; }
             }
             return;
         }
         if (this.resource < 60 || this.cooldownRemaining > 0) return;
         const length = stats.range * 2.2;
         const target = this.hero.abilitySystem.getTargetsInRange(enemies, length, stats)
+            .filter(enemy => !enemy.hasReachedEnd)
             .sort((a, b) => b.distanceTravelled - a.distanceTravelled)[0];
         if (!target) return;
         this.flightOrigin = { x: this.hero.x, y: this.hero.y };
         const endpoint = { x: target.x, y: target.y - 34 };
         const beamEndpoint = getLineEndpoint(this.hero, target, length);
-        const victims = getLineTargets(this.hero, target, enemies, length, 26);
-        victims.forEach((enemy) => CombatSystem.applyDamage({ attackerType: this.hero.category, damage: stats.damage * 0.85 * this.getPowerScale(), armorPenetration: 0.35 }, enemy, this.hero, this.hero.game.resourceManager, 1));
-        this.hero.game.vfx?.addBeam(this.hero, beamEndpoint, { color: '#ffd45f', width: 13, duration: 0.3 });
-        this.hero.x = endpoint.x;
-        this.hero.y = endpoint.y;
-        this.flightTimer = 1.25;
-        this.cooldownRemaining = this.getCooldown(9);
+        this.binaryRun = { endpoint: beamEndpoint, destination: endpoint, length, windup: 0.45,
+            damage: stats.damage * 0.85 * this.getPowerScale() };
+        this.cooldownRemaining = 9;
         this.resource -= 60;
-        this.hero.game.audio?.play('binary');
         this.hero.recordAbility();
     }
 
     fireSecondBlaster(primaryTarget, projectileConfig, projectiles, stats = this.hero.getEffectiveStats()) {
+        if (this.blasterCooldown > 0 || this.hero.stunTimer > 0 || !this.hero.game.heroes.includes(this.hero)) return;
         const target = this.hero.abilitySystem.getTargetsInRange(this.hero.game.enemies || [], stats.range, stats)
-            .filter((enemy) => enemy !== primaryTarget)
+            .filter((enemy) => enemy !== primaryTarget && !enemy.hasReachedEnd)
             .sort((a, b) => b.distanceTravelled - a.distanceTravelled)[0];
         if (!target) return;
-        const config = { ...projectileConfig, damage: projectileConfig.damage * 0.68 * this.getPowerScale(), radius: 4 };
+        const complement = this.mode === 'plasma' ? 'cryo' : this.mode === 'cryo' ? 'incendiary' : 'plasma';
+        const effects = complement === 'cryo' ? [{ type: 'slow', duration: 1.2, power: 0.42, chance: 1 }]
+            : complement === 'incendiary' ? [{ type: 'burn', duration: 3, power: stats.damage * 0.23,
+                damageBasis: 'flat', secondaryEntity: true, chance: 1 }] : [];
+        const config = { attacker: this.hero, attackerType: this.hero.category, secondaryEntity: true,
+            damage: stats.damage * 0.68 * this.getPowerScale(), effects, radius: 4, visualStyle: 'blaster',
+            armorPenetration: complement === 'plasma' ? 0.28 : 0,
+            color: { plasma: '#7ce7ff', cryo: '#8ff4ff', incendiary: '#ff7b45' }[complement] };
         if (this.hero.game.spawnProjectile) this.hero.game.spawnProjectile(this.hero.x + 8, this.hero.y, target, config);
         else projectiles.push(new Projectile(this.hero.x + 8, this.hero.y, target, config));
         this.hero.game.audio?.play('blaster');
+        this.blasterCooldown = 1;
         this.hero.recordAbility();
     }
 
@@ -279,10 +328,6 @@ export class CosmicKitSystem {
         const config = COSMIC_CONTROLS[this.hero.id];
         return config?.options.find((option) => option.id === this.mode)?.label || '';
     }
-}
-
-function meter(label, value) {
-    return { label, progress: Math.max(0, Math.min(1, value / 100)), ready: value >= 60 };
 }
 
 function staticState(label) {

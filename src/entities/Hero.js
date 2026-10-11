@@ -157,6 +157,9 @@ export class Hero {
 
     update(dt, enemies, projectiles) {
         this.syncVisual();
+        this.abilitySystem.cosmicKit.checkEnergyPosition();
+        this.abilitySystem.avengerKit.checkDensityPosition();
+        this.abilitySystem.mutantKit.checkPhoenixPosition();
         this.abilitySystem.mutantKit.updatePursuit(dt);
         this.abilitySystem.focusKit?.update(dt, enemies);
         this.abilitySystem.martialKit?.update(dt);
@@ -187,9 +190,10 @@ export class Hero {
 
         let stats = this.getEffectiveStats();
         this.abilitySystem.update(dt, enemies, stats, projectiles);
-        if (this.id === 'moon_knight') stats = this.getEffectiveStats();
+        if (['moon_knight', 'captain_marvel', 'jean_grey'].includes(this.id)) stats = this.getEffectiveStats();
 
         if (this.timer >= 1 / stats.fireRate && (this.abilitySystem.martialKit?.canAttack() ?? true)
+            && this.abilitySystem.cosmicKit.canAttack() && this.abilitySystem.avengerKit.canAttack() && this.abilitySystem.mutantKit.canAttack()
             && (this.abilitySystem.psychicKit?.canAttack() ?? true)) {
             const target = this.getBestTarget(enemies, stats);
             if (target) {
@@ -233,6 +237,7 @@ export class Hero {
     shoot(target, stats, projectiles) {
         if (this.isSupportAuraOnly()) return;
         if (this.abilitySystem.martialKit?.canAttack() === false) return;
+        if (!this.abilitySystem.cosmicKit.canAttack() || !this.abilitySystem.avengerKit.canAttack() || !this.abilitySystem.mutantKit.canAttack()) return;
         if (this.abilitySystem.psychicKit?.canAttack() === false) return;
         if (this.id === 'mantis' && target?.debuffs?.some(effect => effect.type === 'sleep' && effect.duration > 0)) return;
         this.animator?.faceVector(target.x - this.x, target.y - this.y);
@@ -458,7 +463,7 @@ export class Hero {
             ctx.stroke();
         }
 
-        const offset = this.abilitySystem.psychicKit?.visualOffset();
+        const offset = this.abilitySystem.psychicKit?.visualOffset() || this.abilitySystem.cosmicKit.visualOffset();
         ctx.save();
         if (offset && (offset.x || offset.y)) ctx.translate(offset.x, offset.y);
         const animated = this.animator?.render(ctx, this.x, this.y) || false;

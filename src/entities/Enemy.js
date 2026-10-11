@@ -292,14 +292,14 @@ export class Enemy {
             if (dot) {
                 // Compare resolved DPS, not coefficients from different damage bases.
                 if (dot.damagePerSecond >= existing.damagePerSecond) {
-                    Object.assign(existing, dot, { power, source, explicitDamageBasis: Boolean(effect.damageBasis) });
+                    Object.assign(existing, dot, { power, source, explicitDamageBasis: Boolean(effect.damageBasis), secondaryEntity: Boolean(effect.secondaryEntity) });
                 }
             } else {
                 existing.power = Math.max(existing.power, power);
                 existing.source = source || existing.source;
             }
         } else {
-            this.debuffs.push({ type, duration: adjustedDuration, power, source, tickTimer: 0, stacks: 1, ...dot, explicitDamageBasis: Boolean(effect.damageBasis) });
+            this.debuffs.push({ type, duration: adjustedDuration, power, source, tickTimer: 0, stacks: 1, ...dot, explicitDamageBasis: Boolean(effect.damageBasis), secondaryEntity: Boolean(effect.secondaryEntity) });
         }
         source?.recordStatusApplied?.({ ...effect, duration: adjustedDuration }, this);
         return true;
@@ -342,7 +342,7 @@ export class Enemy {
         debuff.source?.recordDamage?.(result.damage);
         if (result.killed && !this.killCredited) {
             this.killCredited = true;
-            debuff.source?.recordKill?.(debuff.source?.game?.resourceManager, this);
+            debuff.source?.recordKill?.(debuff.source?.game?.resourceManager, this, Boolean(debuff.secondaryEntity));
         }
         return this.isAlive;
     }

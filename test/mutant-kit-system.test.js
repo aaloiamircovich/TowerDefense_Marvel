@@ -16,9 +16,13 @@ test('Jean Grey empuja por la ruta y libera el medidor Phoenix', () => {
     const game = createGame(); const hero = createHero('jean_grey', game, { damage: 60, range: 220 }); const enemies = [createEnemy(120), createEnemy(150)];
     game.heroes = [hero]; game.enemies = enemies;
     for (let i = 0; i < 4; i++) hero.abilitySystem.onAttack(enemies[0], hero.getEffectiveStats(), {}, []);
-    assert.ok(enemies[1].distanceTravelled < 150); assert.equal(enemies[1].y, 0);
+    assert.equal(enemies[1].distanceTravelled, 150); assert.equal(enemies[1].y, 0);
     hero.abilitySystem.mutantKit.resource = 100; const hp = enemies[0].hp;
+    hero.abilitySystem.mutantKit.cooldownRemaining = 0;
     hero.abilitySystem.update(0.1, enemies, hero.getEffectiveStats(), []);
+    assert.equal(enemies[0].hp, hp);
+    hero.abilitySystem.update(0.6, enemies, hero.getEffectiveStats(), []);
+    assert.ok(enemies[1].distanceTravelled < 150);
     assert.ok(enemies[0].hp < hp); assert.equal(hero.abilitySystem.mutantKit.resource, 0);
 });
 

@@ -4,6 +4,18 @@ Actualizado: 2026-09-22. Roster: 105. No es una certificacion de balance.
 
 ## Cobertura comun ejecutable
 
+### F7/lote2: pasada binaria, densidad, blasters y Phoenix (2026-10-11)
+
+`test/energy-identity-contract.test.js`:46 pruebas en niveles1/49/50/51/99/100,
+limites de victimas, trayectoria fija, casilla estable, cooldowns, cambio de
+modo, agotamiento, lifecycle, no recursion/economia y autoria del DoT.
+Contratos previos de rayos, pulsos, firmas y soporte mantienen geometria,
+resistencias y evoluciones; se actualiza el momento de emision.
+Suite global: 2.431 pruebas aprobadas, npm run check completo sin errores;
+benchmark p95: 0.370ms. Smoke desktop1366x768/mobile390x844 sin overflow
+ni desvio de ruta. Probe visual confirma desplazamiento del sprite sin
+cambio de casilla y onda Phoenix visible. Balance de equipos pendiente.
+
 ### F6/lote5 y F7/lote1: destello, ilusion, conductividad y portal (2026-10-11)
 
 `test/arcane-storm-contract.test.js`:54 pruebas para Jubilee, Loki, Thor

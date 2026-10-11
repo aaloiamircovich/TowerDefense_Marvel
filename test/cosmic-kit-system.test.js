@@ -10,9 +10,12 @@ test('Captain Marvel vuela, atraviesa la línea y regresa a su posición', () =>
     game.heroes = [hero];
     game.enemies = [enemy];
     hero.abilitySystem.cosmicKit.resource = 60;
+    hero.abilitySystem.cosmicKit.cooldownRemaining = 0;
 
     hero.abilitySystem.update(0.1, [enemy], hero.getEffectiveStats(), []);
-    assert.notEqual(hero.x, 0);
+    assert.equal(hero.x, 0);
+    assert.equal(hero.abilitySystem.cosmicKit.canAttack(), false);
+    hero.abilitySystem.update(0.45, [enemy], hero.getEffectiveStats(), []);
     assert.equal(enemy.y, 0);
     assert.ok(enemy.hp < enemy.maxHp);
     hero.abilitySystem.update(1.4, [enemy], hero.getEffectiveStats(), []);
@@ -27,7 +30,7 @@ test('Star-Lord dispara a dos blancos y cambia munición', () => {
     game.heroes = [hero];
     game.enemies = targets;
     const projectiles = [];
-
+    hero.abilitySystem.cosmicKit.update(1, [], hero.getEffectiveStats());
     hero.abilitySystem.onAttack(targets[0], hero.getEffectiveStats(), { attacker: hero, damage: 20, effects: [] }, projectiles);
     assert.equal(projectiles.length, 1);
     assert.equal(projectiles[0].target, targets[1]);

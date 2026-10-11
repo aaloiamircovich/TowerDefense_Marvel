@@ -33,7 +33,7 @@ const contracts = {
     vision: {
         cost: 520,
         ability: 'CONTROL DE DENSIDAD',
-        abilityDesc: 'Alterna entre fase intangible de alcance y cadencia, y masa densa de gran daño. Cada tercer ataque proyecta un rayo que atraviesa la línea enemiga.',
+        abilityDesc: 'Intangible cubre mas y su rayo atraviesa hasta4 enemigos; densa concentra dano y penetracion en uno. Tres ataques preparan el rayo con recarga4s. Cambiar densidad pierde carga y bloquea ataques1.25s. Conserva Overclock del objeto y evolucion.',
         niche: 'daño lineal configurable y cobertura de terrenos'
     },
     falcon: {

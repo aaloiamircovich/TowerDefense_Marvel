@@ -41,6 +41,7 @@ test('Captain Marvel no consume energia ni cooldown si solo hay blancos ocultos'
     hero.game.enemies = [target];
     const kit = hero.abilitySystem.cosmicKit;
     kit.resource = 60;
+    kit.cooldownRemaining = 0;
     kit.update(0.1, [target], hero.getEffectiveStats());
     assert.equal(kit.resource, 60);
     assert.equal(kit.cooldownRemaining, 0);
@@ -54,8 +55,11 @@ test('Captain Marvel puede fijar un oculto con deteccion efectiva', () => {
     const target = enemy(100, 0, true);
     const kit = hero.abilitySystem.cosmicKit;
     kit.resource = 60;
+    kit.cooldownRemaining = 0;
     kit.update(0.1, [target], { ...hero.getEffectiveStats(), canSeeStealth: true });
     assert.equal(kit.resource, 0);
+    assert.equal(target.hp, target.maxHp);
+    kit.update(0.45, [target], hero.getEffectiveStats());
     assert.ok(target.hp < target.maxHp);
     assert.equal(target.stealth, true);
 });
@@ -69,12 +73,15 @@ test('Captain Marvel fija visible, atraviesa ocultos incidentales y dibuja el al
     const behind = enemy(-10);
     const kit = hero.abilitySystem.cosmicKit;
     kit.resource = 60;
+    kit.cooldownRemaining = 0;
     const stats = hero.getEffectiveStats();
     const pastEnd = enemy(stats.range * 2.2 + 1);
     hero.game.enemies = [primary, hidden, lateral, behind, pastEnd];
     kit.update(0.1, hero.game.enemies, stats);
-    assert.equal(hero.x, primary.x);
-    assert.equal(hero.y, primary.y - 34);
+    assert.equal(hero.x, 0);
+    assert.equal(hero.y, 0);
+    assert.equal(primary.hp, primary.maxHp);
+    kit.update(0.45, hero.game.enemies, stats);
     assert.ok(primary.hp < primary.maxHp);
     assert.ok(hidden.hp < hidden.maxHp);
     for (const target of [lateral, behind, pastEnd]) assert.equal(target.hp, target.maxHp);
@@ -98,9 +105,11 @@ test('Captain Marvel conserva alcance especial 2.2x con limite inclusivo', () =>
         const { hero, beams } = makeHero('captain_marvel');
         const kit = hero.abilitySystem.cosmicKit;
         kit.resource = 60;
+        kit.cooldownRemaining = 0;
         const stats = hero.getEffectiveStats();
         const target = enemy(stats.range * 2.2 + offset);
         kit.update(0.1, [target], stats);
+        kit.update(0.45, [target], stats);
         assert.equal(beams.length, offset === 0 ? 1 : 0);
         assert.equal(kit.resource, offset === 0 ? 0 : 60);
     }

@@ -42,9 +42,16 @@ export class AvengerKitSystem {
         this.redwingAngle = 0;
         this.counteredTargets = new Set();
         this.salvo = null;
+        this.densityOrigin = { x: hero.x, y: hero.y };
+        this.densityCharge = 0;
+        this.densityCooldown = 4;
+        this.densityShift = 0;
     }
 
     update(dt, enemies, stats) {
+        this.checkDensityPosition();
+        this.densityCooldown = Math.max(0, this.densityCooldown - dt);
+        this.densityShift = Math.max(0, this.densityShift - dt);
         this.cooldownRemaining = Math.max(0, this.cooldownRemaining - dt);
         this.redwingAngle = (this.redwingAngle + dt * 2.4) % (Math.PI * 2);
 
@@ -70,7 +77,10 @@ export class AvengerKitSystem {
             if (this.attackCount % 4 === 0) this.hero.recordAbility();
         }
         if (this.hero.id === 'black_panther') this.chargeKineticEnergy(target);
-        if (this.hero.id === 'vision' && this.attackCount % 3 === 0) this.fireDensityBeam(target, stats);
+        if (this.hero.id === 'vision' && this.canAttack()) {
+            this.densityCharge = Math.min(3, this.densityCharge + 1);
+            if (this.densityCharge === 3 && this.densityCooldown === 0) this.fireDensityBeam(target, stats);
+        }
     }
 
     applyStatModifiers(stats) {
@@ -185,7 +195,11 @@ export class AvengerKitSystem {
             progress: (this.attackCount % 4) / 3, ready: this.isArrowPrepared()
         };
         if (this.hero.id === 'black_panther') return meterState(`Energía cinética ${Math.round(this.resource)}/100`, this.resource);
-        if (this.hero.id === 'vision') return staticState(`Densidad ${this.getModeLabel().toLowerCase()}`);
+        if (this.hero.id === 'vision') return {
+            label: this.densityShift > 0 ? `Cambio de densidad ${this.densityShift.toFixed(1)}s`
+                : `${this.getModeLabel()} | Rayo ${this.densityCharge}/3 | ${this.densityCooldown.toFixed(1)}s`,
+            progress: this.densityCharge / 3, ready: this.canAttack() && this.densityCooldown === 0 && this.densityCharge >= 2
+        };
         if (this.hero.id === 'falcon') {
             const ready = this.cooldownRemaining <= 0;
             return { label: `Redwing: ${this.getModeLabel()}`, progress: ready ? 1 : 1 - this.cooldownRemaining / 2.4, ready };
@@ -201,6 +215,11 @@ export class AvengerKitSystem {
     setMode(mode) {
         const config = CONTROL_MODES[this.hero.id];
         if (!config?.options.some((option) => option.id === mode)) return false;
+        if (this.hero.id === 'vision' && mode !== this.mode) {
+            if (this.densityShift > 0) return false;
+            this.densityShift = 1.25; this.densityCharge = 0;
+            this.densityCooldown = Math.max(4, this.densityCooldown);
+        }
         this.mode = mode;
         return true;
     }
@@ -306,15 +325,30 @@ export class AvengerKitSystem {
         this.cooldownRemaining = this.getCooldown(5);
     }
 
+    checkDensityPosition() {
+        if (this.hero.id !== 'vision') return;
+        if (!(this.hero.stunTimer > 0) && this.hero.game.heroes.includes(this.hero)
+            && this.hero.x === this.densityOrigin.x && this.hero.y === this.densityOrigin.y) return;
+        this.densityOrigin = { x: this.hero.x, y: this.hero.y };
+        this.densityCharge = 0; this.densityCooldown = 4; this.densityShift = 1.25;
+    }
+
+    canAttack() { return this.hero.id !== 'vision' || this.densityShift === 0; }
+
     fireDensityBeam(target, stats) {
+        if (!this.hero.abilitySystem.getTargetsInRange([target], stats.range, stats).length || target.hasReachedEnd) return;
         const distanceLimit = stats.range * (this.mode === 'dense' ? 1.05 : 1.35);
         const width = this.mode === 'dense' ? 18 : 28;
         const damage = stats.damage * (this.mode === 'dense' ? 1.1 : 0.7) * this.getPowerScale();
-        const targets = getLineTargets(this.hero, target, this.hero.game.enemies || [], distanceLimit, width);
-        targets.forEach((enemy) => CombatSystem.applyDamage({ attackerType: this.hero.category, damage, armorPenetration: this.mode === 'dense' ? 0.7 : 0.35 }, enemy, this.hero, this.hero.game.resourceManager, 1));
-        const endpoint = getLineEndpoint(this.hero, target, distanceLimit);
+        const targets = this.mode === 'dense' ? [target] : getLineTargets(this.hero, target,
+            (this.hero.game.enemies || []).filter(enemy => !enemy.hasReachedEnd), distanceLimit, width)
+            .sort((a, b) => distance(a, this.hero) - distance(b, this.hero)).slice(0, 4);
+        targets.forEach((enemy) => CombatSystem.applyDamage({ attackerType: this.hero.category, damage,
+            secondaryEntity: true, armorPenetration: this.mode === 'dense' ? 0.7 : 0.35 }, enemy, this.hero, this.hero.game.resourceManager, 1));
+        const endpoint = this.mode === 'dense' ? target : getLineEndpoint(this.hero, target, distanceLimit);
         this.hero.game.vfx?.addBeam(this.hero, endpoint, { color: this.mode === 'dense' ? '#ffd84a' : '#65f5d1', width: this.mode === 'dense' ? 12 : 7, duration: 0.24 });
         this.hero.game.audio?.play('density');
+        this.densityCharge = 0; this.densityCooldown = 4;
         this.hero.recordAbility();
     }
 

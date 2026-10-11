@@ -27,7 +27,7 @@ export class MutantKitSystem {
         this.mode = MUTANT_CONTROLS[hero.id]?.defaultMode || null;
         this.attackCount = 0;
         this.resource = 0;
-        this.cooldownRemaining = hero.id === 'ant_man' ? 4 : hero.id === 'storm' ? 9 : 0;
+        this.cooldownRemaining = hero.id === 'ant_man' ? 4 : hero.id === 'storm' ? 9 : hero.id === 'jean_grey' ? 12 : 0;
         this.pymCharge = 0;
         this.jumpTimer = 0;
         this.jumpOrigin = null;
@@ -35,12 +35,17 @@ export class MutantKitSystem {
         this.regenerationTimer = 28;
         this.pursuit = null;
         this.jumpPosition = null;
+        this.phoenixOrigin = { x: hero.x, y: hero.y };
+        this.phoenixWave = null;
+        this.phoenixExhaustion = 0;
     }
 
     update(dt, enemies, stats) {
+        this.checkPhoenixPosition();
         this.cooldownRemaining = Math.max(0, this.cooldownRemaining - dt);
+        this.phoenixExhaustion = Math.max(0, this.phoenixExhaustion - dt);
         if (this.hero.id === 'wolverine') this.updateWolverine(dt, enemies, stats);
-        if (this.hero.id === 'jean_grey') this.updatePhoenix(enemies, stats);
+        if (this.hero.id === 'jean_grey') this.updatePhoenix(dt, enemies, stats);
         if (this.hero.id === 'storm') this.updateWeather(dt, enemies, stats);
         if (this.hero.id === 'scarlet_witch') this.updateHexTime(enemies, stats);
     }
@@ -55,10 +60,9 @@ export class MutantKitSystem {
             const origin = this.jumpOrigin || this.hero;
             this.pursuit = { target, idle: 0, x: origin.x, y: origin.y };
         }
-        if (this.hero.id === 'jean_grey') {
+        if (this.hero.id === 'jean_grey' && !this.phoenixWave && this.phoenixExhaustion === 0) {
             const phoenix = this.hero.game.progression?.getHeroEvolution?.(this.hero.id)?.id === 'phoenix';
             this.resource = Math.min(100, this.resource + (phoenix ? 14 : 9));
-            if (this.attackCount % 4 === 0) this.telekineticPush(target, stats);
         }
         if (this.hero.id === 'cyclops' && this.attackCount % (this.mode === 'focus' ? 3 : 2) === 0) this.fireOpticLine(target, stats);
         if (this.hero.id === 'ant_man') {
@@ -69,7 +73,7 @@ export class MutantKitSystem {
 
     onKill() {
         if (this.hero.id === 'wolverine') this.resource = Math.min(100, this.resource + 18);
-        if (this.hero.id === 'jean_grey') {
+        if (this.hero.id === 'jean_grey' && !this.phoenixWave && this.phoenixExhaustion === 0) {
             const phoenix = this.hero.game.progression?.getHeroEvolution?.(this.hero.id)?.id === 'phoenix';
             this.resource = Math.min(100, this.resource + (phoenix ? 24 : 16));
         }
@@ -82,7 +86,7 @@ export class MutantKitSystem {
         }
         if (this.hero.id === 'jean_grey') {
             stats.damage *= 1 + this.resource * 0.002;
-            stats.range *= 1 + this.resource * 0.001;
+            if (this.phoenixExhaustion > 0) stats.damage *= 0.75;
         }
         if (this.hero.id === 'cyclops') {
             if (this.mode === 'focus') stats.damage *= 1.24;
@@ -164,7 +168,12 @@ export class MutantKitSystem {
 
     getDisplayState() {
         if (this.hero.id === 'wolverine') return meter(`Frenesi ${Math.round(this.resource)}/100`, this.resource, 55);
-        if (this.hero.id === 'jean_grey') return meter(`Phoenix ${Math.round(this.resource)}/100`, this.resource, 100);
+        if (this.hero.id === 'jean_grey') return {
+            label: this.phoenixWave ? 'Phoenix: preparando onda' : this.phoenixExhaustion > 0
+                ? `Agotamiento ${this.phoenixExhaustion.toFixed(1)}s | -25% dano`
+                : `Phoenix ${Math.round(this.resource)}/100 | ${this.cooldownRemaining.toFixed(1)}s`,
+            progress: this.resource / 100, ready: this.resource === 100 && this.cooldownRemaining === 0 && !this.phoenixWave
+        };
         if (this.hero.id === 'cyclops') return staticState(`Visor: ${this.getModeLabel()}`);
         if (this.hero.id === 'storm') return cooldownState(this.weatherZone
             ? `Zona ${this.weatherZone.mode === 'blizzard' ? 'Ventisca' : 'Tormenta'} ${this.weatherZone.duration.toFixed(1)}s; siguiente ${this.getModeLabel()}`
@@ -199,6 +208,10 @@ export class MutantKitSystem {
     }
 
     render(ctx) {
+        if (this.phoenixWave) {
+            ctx.save(); ctx.strokeStyle = '#ff5a82'; ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.arc(this.hero.x, this.hero.y, this.phoenixWave.range, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
+        }
         if (this.weatherZone) {
             ctx.save();
             ctx.strokeStyle = this.weatherZone.mode === 'blizzard' ? 'rgba(157,233,255,.65)' : 'rgba(246,241,164,.7)';
@@ -280,20 +293,44 @@ export class MutantKitSystem {
         this.cooldownRemaining = this.getCooldown(7);
     }
 
-    updatePhoenix(enemies, stats) {
+    checkPhoenixPosition() {
+        if (this.hero.id !== 'jean_grey') return;
+        if (!(this.hero.stunTimer > 0) && this.hero.game.heroes.includes(this.hero)
+            && this.hero.x === this.phoenixOrigin.x && this.hero.y === this.phoenixOrigin.y) return;
+        this.phoenixOrigin = { x: this.hero.x, y: this.hero.y };
+        this.resource = 0; this.phoenixWave = null; this.phoenixExhaustion = 0; this.cooldownRemaining = 12;
+    }
+
+    canAttack() { return this.hero.id !== 'jean_grey' || !this.phoenixWave; }
+
+    updatePhoenix(dt, enemies, stats) {
+        if (this.hero.stunTimer > 0 || !this.hero.game.heroes.includes(this.hero)) return;
+        if (this.phoenixWave) {
+            const wave = this.phoenixWave;
+            wave.remaining = Math.max(0, wave.remaining - dt);
+            if (wave.remaining > 0) return;
+            this.phoenixWave = null;
+            this.phoenixExhaustion = 2;
+            const targets = enemies.filter(enemy => enemy.isAlive && !enemy.hasReachedEnd && distance(enemy, this.hero) <= wave.range)
+                .sort((a, b) => distance(a, this.hero) - distance(b, this.hero)).slice(0, 6);
+            for (const enemy of targets) {
+                CombatSystem.applyDamage({ attackerType: this.hero.category, damage: wave.damage,
+                    armorPenetration: wave.penetration, secondaryEntity: true }, enemy, this.hero, this.hero.game.resourceManager, 1);
+                if (enemy.isAlive) enemy.applyStatus({ type: 'knockback', power: enemy.isBoss || enemy.config.isMiniBoss ? 20 : 48 }, this.hero);
+            }
+            this.hero.game.vfx?.addRing(this.hero.x, this.hero.y, { color: '#ff5a82', radius: wave.range, duration: 0.55 });
+            this.hero.game.audio?.play('phoenix');
+            return;
+        }
         if (this.resource < 100 || this.cooldownRemaining > 0) return;
-        const targets = enemies.filter((enemy) => enemy.isAlive && distance(enemy, this.hero) <= stats.range * 1.2);
+        const targets = enemies.filter((enemy) => enemy.isAlive && !enemy.hasReachedEnd && distance(enemy, this.hero) <= stats.range * 1.2);
         if (!targets.length) return;
-        targets.forEach((enemy) => {
-            const phoenix = this.hero.game.progression?.getHeroEvolution?.(this.hero.id)?.id === 'phoenix';
-            CombatSystem.applyDamage({ attackerType: this.hero.category, damage: stats.damage * (phoenix ? 1.25 : 0.95) * this.getPowerScale(), armorPenetration: phoenix ? 0.5 : 0.35 }, enemy, this.hero, this.hero.game.resourceManager, 1);
-            if (enemy.isAlive && !enemy.flying) enemy.moveBackward?.(enemy.isBoss ? 20 : 48);
-        });
-        this.hero.game.vfx?.addRing(this.hero.x, this.hero.y, { color: '#ff5a82', radius: stats.range * 1.2, duration: 0.55 });
-        this.hero.game.audio?.play('phoenix');
+        const phoenix = this.hero.game.progression?.getHeroEvolution?.(this.hero.id)?.id === 'phoenix';
+        this.phoenixWave = { remaining: 0.6, range: stats.range * 1.2,
+            damage: stats.damage * (phoenix ? 1.25 : 0.95) * this.getPowerScale(), penetration: phoenix ? 0.5 : 0.35 };
         this.hero.recordAbility();
         this.resource = 0;
-        this.cooldownRemaining = this.getCooldown(12);
+        this.cooldownRemaining = 12;
     }
 
     updateWeather(dt, enemies, stats) {
@@ -350,17 +387,6 @@ export class MutantKitSystem {
         this.hero.game.audio?.play('hex');
         this.hero.recordAbility();
         this.cooldownRemaining = this.getCooldown(9);
-    }
-
-    telekineticPush(target, stats) {
-        const victims = (this.hero.game.enemies || []).filter((enemy) => enemy.isAlive && distance(enemy, target) <= 64);
-        victims.forEach((enemy) => {
-            CombatSystem.applyDamage({ attackerType: this.hero.category, damage: stats.damage * 0.38 * this.getPowerScale() }, enemy, this.hero, this.hero.game.resourceManager, 1);
-            if (enemy.isAlive && !enemy.flying) enemy.moveBackward?.(enemy.isBoss ? 18 : 42);
-        });
-        this.hero.game.vfx?.addBurst(target.x, target.y, { color: '#ff8cc8', radius: 66, duration: 0.28 });
-        this.hero.game.audio?.play('telekinesis');
-        this.hero.recordAbility();
     }
 
     fireOpticLine(target, stats) {

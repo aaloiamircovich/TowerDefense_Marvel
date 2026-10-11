@@ -665,7 +665,7 @@
     "fireRate": 0.75,
     "canSeeStealth": false,
     "ability": "ENERGÍA BINARIA",
-    "abilityDesc": "Carga energia al atacar y derrotar enemigos. Con 60 puede atravesar la linea y volver. 34% de quemar durante 3.6 s: 9.5% de su dano efectivo por segundo, sin acumularse.",
+    "abilityDesc": "Carga12 por ataque y24 por baja principal. Con60 y recarga9s prepara0.45s una pasada fija a2.2x alcance, hasta6 victimas; vuelo visual0.9s sin cambiar casilla ni disparar. La carga mejora dano, no cadencia. Conserva quemadura9.5% poder/s y evolucion.",
     "sprite": "assets/images/heroes/captain_marvel/portrait.png",
     "allowedTerrains": [
       0,
@@ -940,7 +940,7 @@
     "fireRate": 1.6,
     "canSeeStealth": false,
     "ability": "BLÁSTERS ELEMENTALES",
-    "abilityDesc": "Dispara a dos blancos. Alterna plasma perforante, municion criogenica o fuego: 23% de su dano efectivo por segundo durante 3 s, sin acumularse.",
+    "abilityDesc": "Dos blancos distintos. Primario seleccionable; secundario cada1s complementa plasma con hielo, hielo con fuego y fuego con plasma. Dano68% por escala de habilidad, sin copiar criticos, objetos, cadenas ni generar oro extra. Fuego23% poder/s durante3s.",
     "sprite": "assets/images/heroes/star_lord/portrait.png",
     "allowedTerrains": [
       1
@@ -1223,7 +1223,7 @@
     "fireRate": 1.3,
     "canSeeStealth": true,
     "ability": "CONTROL DE DENSIDAD",
-    "abilityDesc": "Alterna entre fase intangible de alcance y cadencia, y masa densa de gran daño. Cada tercer ataque proyecta un rayo que atraviesa la línea enemiga.",
+    "abilityDesc": "Intangible cubre mas y su rayo atraviesa hasta4 enemigos; densa concentra dano y penetracion en uno. Tres ataques preparan el rayo con recarga4s. Cambiar densidad pierde carga y bloquea ataques1.25s. Conserva Overclock del objeto y evolucion.",
     "sprite": "assets/images/heroes/vision/portrait.png",
     "allowedTerrains": [
       0,
@@ -1620,7 +1620,7 @@
     "fireRate": 1,
     "canSeeStealth": true,
     "ability": "FUERZA PHOENIX",
-    "abilityDesc": "Usa telequinesis para retroceder grupos y carga un medidor Phoenix que libera una onda de poder controlada.",
+    "abilityDesc": "Carga9 por ataque y16 por baja principal,14/24 como Phoenix. Con100 y recarga12s prepara una onda0.6s a1.2x alcance, maximo6 victimas. Empuja48px,20px jefes, respeta inmunidad y vuelo. Luego2s de agotamiento: -25% dano y sin carga. Conserva Dark Phoenix del objeto.",
     "sprite": "assets/images/heroes/jean_grey/portrait.png",
     "allowedTerrains": [
       0,

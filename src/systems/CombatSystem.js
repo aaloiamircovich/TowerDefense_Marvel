@@ -12,7 +12,7 @@ export class CombatSystem {
         const primary = CombatSystem.applyDamage(projectile, target, attacker, resourceManager, 1);
         let hits = 1;
 
-        if (attacker?.items?.length) {
+        if (!projectile.secondaryEntity && attacker?.items?.length) {
             CombatSystem.applyItemEffects(attacker, target, resourceManager);
         }
 
