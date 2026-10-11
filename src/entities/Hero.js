@@ -169,6 +169,7 @@ export class Hero {
         this.abilitySystem.mysticKit?.update(dt);
         this.abilitySystem.fateKit?.update(dt);
         this.abilitySystem.darkfireKit?.update(dt);
+        this.abilitySystem.arcaneStormKit?.update(dt);
         this.abilitySystem.streetKit.checkHunterPosition();
         this.abilitySystem.mutantKit.checkWeather();
         this.abilitySystem.fieldDevice?.update(dt, enemies);

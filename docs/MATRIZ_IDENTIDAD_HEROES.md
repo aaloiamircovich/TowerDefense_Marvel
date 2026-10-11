@@ -132,15 +132,15 @@ especificos con objetos y comparativas de rutas siguen pendientes.
 | `the_hood` | The Hood (Rare) | F6/lote4: curse/marca preparada, penalizacion25% y cobro1.8x tras1.5s; ventana4s, recarga4s. | Implementado; misma presa maldita, sin cobro gratis al perderla; sustituye estados aleatorios, sin cura. |
 | `psylocke` | Psylocke (Epic) | F6/lote4: concentracion1.5s sobre marcado prepara critico>=2.75x y ruptura28%/2s, cooldown5s. | Implementado; cambio/perdida de marca/cobertura o inactividad3s reinicia; sin area adicional. |
 | `venom` | Venom (Epic) | F6/lote4: consume3 venenos propios cada6s para mordida limitada por poder y2% salud maxima de jefe. | Implementado; nunca consume aliadas; liquida fraccion transcurrida, sin ejecucion/curacion ni doble baja. |
-| `jubilee` | Jubilee (Rare) | F1/lote 6: con Danger Room y evolucion, pulso de fuego en area 20% poder/s cada 10 ataques; conserva splash/slow nativos. | Destello preparado que interrumpe una habilidad enemiga; control breve sin copiar congelacion ni dano cosmico. |
-| `loki` | Loki (Legendary) | Slow, marca, curse y propagacion; no clones. | Una ilusion con dano reducido que replica un hechizo permitido; cooldown compartido y cero recursion de procs/economia. |
+| `jubilee` | Jubilee (Rare) | F6/lote5: destello6s retrasa un ciclo de apoyo preparado a0-1s, resistible, recuperacion6s/victima. | Implementado; sin stun, jefes ni phasers, conserva splash/slow y Danger Room; no gasta preparacion en blanco inelegible. |
+| `loki` | Loki (Legendary) | F6/lote5: ilusion5s replica tras0.6s dano55% y slow42%/1.2s a misma presa en cobertura. | Implementado; sprite existente sin plazas, sin criticos/objetos/propagacion/economia extra; principales conservados. |
 
 ## Fase 7: energia y alcance especial
 
 | ID | Heroe (rareza) | Actual | Firma propuesta y limite |
 | --- | --- | --- | --- |
-| `thor` | Thor (Mythic) | Cadena y tormenta cada 11 s. | Conductividad entre enemigos cercanos: descarga madura al conectar suficientes; menos eficaz contra un blanco aislado. |
-| `doctor_strange` | Doctor Strange (Legendary) | Anillo, duplicado cada 2 ataques y campo temporal. | Portal con destino y radio declarados; duplicacion limitada y punto ciego coherente, no ignorar reglas por accidente. |
+| `thor` | Thor (Mythic) | F7/lote1: red de3-5 a80px cada11s, madura1s para145% poder y stun0.3s; conserva cadena basica. | Implementado; pierde descarga al desconectar ancla/grupo; no carga aislados ni ocultos, sin nuevos procs. |
+| `doctor_strange` | Doctor Strange (Legendary) | F7/lote1: portal65px/3s cada9s,4 contactos slow45%, un eco65% tras0.65s. | Implementado; todo en anillo, sin duplicar objetos/cadenas; campo fijo, no retarget, cancela al perder cobertura. |
 | `captain_marvel` | Captain Marvel (Legendary) | F1/lotes 5 y 8: quemadura 9.5% poder/s; pasada con deteccion efectiva, alcance 2.2x, regreso al origen y rayo de longitud correcta. | Pasada binaria preparada que vuelve a su casilla; pobre giro contra grupos fuera de linea y enfriamiento real. |
 | `vision` | Vision (Legendary) | F1/lote 13: Overclock con cadencia y penetracion de proyectil por 3.2 s; conserva densidades y rayo. | Elegir penetracion concentrada o cobertura en fase; incompatibilidad temporal de modos, sin reunir ambas ventajas. |
 | `star_lord` | Star-Lord (Rare) | F1/lote 4: incendiaria 23% poder/s, segundo blaster con deteccion y alcance efectivos. | Dos blancos distintos con elementos complementarios; pierde parte de su dano ante boss aislado. |

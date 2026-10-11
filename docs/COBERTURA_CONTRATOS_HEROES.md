@@ -4,6 +4,18 @@ Actualizado: 2026-09-22. Roster: 105. No es una certificacion de balance.
 
 ## Cobertura comun ejecutable
 
+### F6/lote5 y F7/lote1: destello, ilusion, conductividad y portal (2026-10-11)
+
+`test/arcane-storm-contract.test.js`:54 pruebas para Jubilee, Loki, Thor
+y Doctor Strange en niveles1/49/50/51/99/100. Ventana de interrupcion,
+recuperacion compartida, resistencias, jefes intactos, lifecycle, snapshot,
+conectividad, punto ciego, campo limitado, procs/recursos y dibujo del clon.
+Se actualizan seis contratos anteriores de tormenta y portal para el nuevo
+comportamiento. Suite global: 2.385 pruebas aprobadas, npm run check completo
+sin errores; benchmark p95: 0.320ms. Smoke desktop1366x768/mobile390x844
+sin overflow ni desvio de ruta. Probe visual verifica ilusion con sprite,
+conexiones y portal. Balance de equipos pendiente.
+
 ### F6/lote4: ignicion, pacto, concentracion y biomasa (2026-10-09)
 
 `test/darkfire-consumption-contract.test.js`:46 pruebas para Human Torch,

@@ -25,6 +25,7 @@ export class EnemyBehaviorSystem {
         this.temporaryStealth = 0;
         this.sabotageRemaining = 0;
         this.sabotageLockout = 0;
+        this.interruptRecovery = 0;
     }
 
     update(dt) {
@@ -33,6 +34,7 @@ export class EnemyBehaviorSystem {
         const blockedTime = this.archetype === 'phaser' ? 0 : Math.min(dt, this.sabotageRemaining);
         this.sabotageRemaining = Math.max(0, this.sabotageRemaining - dt);
         this.sabotageLockout = Math.max(0, this.sabotageLockout - dt);
+        this.interruptRecovery = Math.max(0, this.interruptRecovery - dt);
         this.actionTimer -= dt - blockedTime;
         this.barrierRechargeDelay = Math.max(0, this.barrierRechargeDelay - dt);
         const affix = this.enemy.config.affix?.id;
@@ -71,6 +73,20 @@ export class EnemyBehaviorSystem {
             || !Number.isFinite(duration) || duration <= 0) return false;
         this.sabotageRemaining = Math.min(SABOTAGE_SECONDS, duration);
         this.sabotageLockout = this.sabotageRemaining + 3;
+        return true;
+    }
+
+    interruptAction() {
+        // One skipped support action, not a movement stun or a cancelled boss phase.
+        if (!this.enemy.isAlive || this.enemy.hasReachedEnd || !isSabotageTarget(this.enemy)
+            || this.archetype === 'phaser' || this.enemy.config.immuneToInterrupt
+            || this.interruptRecovery > 0 || this.sabotageRemaining > 0
+            || !Number.isFinite(this.actionTimer) || this.actionTimer > 1 || this.actionTimer < 0
+            || (this.archetype === 'summoner' && this.summonsRemaining <= 0)) return false;
+        const base = this.enemy.config.behaviorCooldown || (this.archetype === 'summoner' ? 7
+            : this.archetype === 'commander' || this.enemy.config.affix?.id === 'commander' ? 5 : 4);
+        this.actionTimer += this.enemy.getStatusDuration('interrupt', base);
+        this.interruptRecovery = 6;
         return true;
     }
 

@@ -1,4 +1,3 @@
-import { Projectile } from '../entities/Projectile.js';
 import { CombatSystem } from './CombatSystem.js';
 import { AvengerKitSystem } from './AvengerKitSystem.js';
 import { CosmicKitSystem } from './CosmicKitSystem.js';
@@ -15,15 +14,10 @@ import { VigilanceKitSystem } from './VigilanceKitSystem.js';
 import { MysticKitSystem } from './MysticKitSystem.js';
 import { FateKitSystem } from './FateKitSystem.js';
 import { DarkfireKitSystem } from './DarkfireKitSystem.js';
+import { ArcaneStormKitSystem } from './ArcaneStormKitSystem.js';
 import { getLineEndpoint, getLineTargets } from '../utils/LineTargeting.js';
-import { applyCooldownReductions } from '../utils/AbilityModifiers.js';
 import { getHeroRangePattern, isPointInRangePattern } from '../utils/RangePattern.js';
 import { getEffectiveSupportAura, getSupportAuraDisplayState } from './SupportAuraSystem.js';
-
-const ACTIVE_COOLDOWNS = {
-    thor: 11,
-    doctor_strange: 9
-};
 
 export const ARC_COOLING_SECONDS = 2;
 
@@ -34,7 +28,6 @@ export class HeroAbilitySystem {
         this.arcCharge = 0;
         // Re-deploying must not bypass the reactor's thermal limit.
         this.arcCooling = hero.id === 'iron_man' ? ARC_COOLING_SECONDS : 0;
-        this.cooldownRemaining = 0;
         this.avengerKit = new AvengerKitSystem(hero);
         this.cosmicKit = new CosmicKitSystem(hero);
         this.streetKit = new StreetKitSystem(hero);
@@ -50,23 +43,15 @@ export class HeroAbilitySystem {
         this.mysticKit = ['scarlet_witch', 'cloak', 'dagger', 'magik'].includes(hero.id) ? new MysticKitSystem(hero) : null;
         this.fateKit = ['black_cat', 'elsa_bloodstone', 'gambit', 'hela'].includes(hero.id) ? new FateKitSystem(hero) : null;
         this.darkfireKit = ['human_torch', 'the_hood', 'psylocke', 'venom'].includes(hero.id) ? new DarkfireKitSystem(hero) : null;
+        this.arcaneStormKit = ['jubilee', 'loki', 'thor', 'doctor_strange'].includes(hero.id) ? new ArcaneStormKitSystem(hero) : null;
     }
 
     update(dt, enemies, stats, projectiles) {
         this.arcCooling = Math.max(0, this.arcCooling - dt);
-        this.cooldownRemaining = Math.max(0, this.cooldownRemaining - dt);
         this.avengerKit.update(dt, enemies, stats, projectiles);
         this.cosmicKit.update(dt, enemies, stats, projectiles);
         this.streetKit.update(dt, enemies, stats, projectiles);
         this.mutantKit.update(dt, enemies, stats, projectiles);
-        if (this.cooldownRemaining > 0) return;
-
-        const targets = this.getTargetsInRange(enemies, stats.range, stats);
-        if (this.hero.id === 'thor' && targets.length >= 2) {
-            this.activateThorStorm(targets, stats);
-        } else if (this.hero.id === 'doctor_strange' && targets.length >= 1) {
-            this.activateTemporalField(targets, stats);
-        }
     }
 
     onAttack(target, stats, projectileConfig, projectiles) {
@@ -82,6 +67,7 @@ export class HeroAbilitySystem {
         this.mysticKit?.onAttack(target, stats);
         this.fateKit?.onAttack(target, stats, projectileConfig);
         this.darkfireKit?.onAttack(target, stats);
+        this.arcaneStormKit?.onAttack(target, stats);
         this.avengerKit.onAttack(target, stats, projectileConfig, projectiles);
         this.cosmicKit.onAttack(target, stats, projectileConfig, projectiles);
         this.streetKit.onAttack(target, stats, projectileConfig, projectiles);
@@ -99,10 +85,6 @@ export class HeroAbilitySystem {
 
         if (this.hero.id === 'spiderman') { this.webTarget = target; this.hero.game.audio?.play('web'); }
         if (this.hero.id === 'capitan_america') this.hero.game.audio?.play('shield');
-
-        if (this.hero.id === 'doctor_strange' && this.attackCount % 2 === 0) {
-            this.duplicateThroughPortal(target, projectileConfig, projectiles, stats);
-        }
     }
 
     getAttackEffects(target) {
@@ -167,62 +149,6 @@ export class HeroAbilitySystem {
         return true;
     }
 
-    activateThorStorm(targets, stats) {
-        const selected = [...targets]
-            .sort((a, b) => b.distanceTravelled - a.distanceTravelled)
-            .slice(0, 5);
-        const damage = stats.damage * 1.45 * this.getPowerScale();
-
-        selected.forEach((enemy) => {
-            CombatSystem.applyDamage({ attackerType: this.hero.category, damage }, enemy, this.hero, this.hero.game.resourceManager, 1);
-            if (enemy.isAlive) enemy.applyStatus?.({ type: 'stun', duration: 0.4, power: 1 }, this.hero);
-            this.hero.game.vfx?.addLightning(enemy.x, enemy.y);
-        });
-
-        this.hero.game.audio?.play('thunder');
-        this.hero.recordAbility();
-        this.cooldownRemaining = this.getCooldown();
-    }
-
-    activateTemporalField(targets, stats = this.hero.getEffectiveStats()) {
-        targets.forEach((enemy) => enemy.applyStatus?.({
-            type: 'slow',
-            duration: 3,
-            power: 0.62
-        }, this.hero));
-
-        this.hero.game.vfx?.addRing(this.hero.x, this.hero.y, {
-            color: '#f5a623',
-            radius: stats.range,
-            duration: 0.65
-        });
-        this.hero.game.audio?.play('portal');
-        this.hero.recordAbility();
-        this.cooldownRemaining = this.getCooldown();
-    }
-
-    duplicateThroughPortal(primaryTarget, projectileConfig, projectiles, stats = this.hero.getEffectiveStats()) {
-        const candidates = this.getTargetsInRange(this.hero.game.enemies, stats.range, stats);
-        const target = candidates.find((enemy) => enemy !== primaryTarget)
-            || candidates.find((enemy) => enemy === primaryTarget);
-        if (!target) return;
-        const angle = Math.atan2(target.y - this.hero.y, target.x - this.hero.x);
-        const portalX = this.hero.x + Math.cos(angle) * 26;
-        const portalY = this.hero.y + Math.sin(angle) * 26;
-
-        const duplicateConfig = {
-            ...projectileConfig,
-            damage: projectileConfig.damage * 0.65 * this.getPowerScale(),
-            radius: Math.max(3, projectileConfig.radius - 1),
-            visualStyle: 'mystic'
-        };
-        if (this.hero.game.spawnProjectile) this.hero.game.spawnProjectile(portalX, portalY, target, duplicateConfig);
-        else projectiles.push(new Projectile(portalX, portalY, target, duplicateConfig));
-        this.hero.game.vfx?.addRing(portalX, portalY, { color: '#f5a623', radius: 24, duration: 0.38 });
-        this.hero.game.audio?.play('portal');
-        this.hero.recordAbility();
-    }
-
     getTargetsInRange(enemies, range, stats = this.hero.getEffectiveStats()) {
         const pattern = getHeroRangePattern(this.hero);
         return enemies.filter((enemy) => enemy.isAlive
@@ -232,11 +158,6 @@ export class HeroAbilitySystem {
 
     getArcInterval() {
         return this.hero.game.progression?.getHeroEvolution?.(this.hero.id)?.id === 'iron_man_extremis' ? 2 : 3;
-    }
-
-    getCooldown() {
-        const base = ACTIVE_COOLDOWNS[this.hero.id] || 0;
-        return applyCooldownReductions(this.hero, base);
     }
 
     getPowerScale() {
@@ -255,6 +176,7 @@ export class HeroAbilitySystem {
         if (this.mysticKit) return this.mysticKit.getDisplayState();
         if (this.fateKit) return this.fateKit.getDisplayState();
         if (this.darkfireKit) return this.darkfireKit.getDisplayState();
+        if (this.arcaneStormKit) return this.arcaneStormKit.getDisplayState();
         if (this.fieldDevice) return this.fieldDevice.getDisplayState();
         if (this.focusKit) return this.focusKit.getDisplayState();
         const aura = getEffectiveSupportAura(this.hero);
@@ -280,15 +202,6 @@ export class HeroAbilitySystem {
             const cooldown = target?.isAlive ? target.webBindCooldown || 0 : 0;
             return { label: `Redes ${stacks}/${threshold}${cooldown > 0 ? ` | Resistencia ${cooldown.toFixed(1)}s` : ''}`,
                 progress: Math.min(1, stacks / threshold), ready: stacks >= threshold - 1 && cooldown === 0 };
-        }
-        if (ACTIVE_COOLDOWNS[this.hero.id]) {
-            const cooldown = this.getCooldown();
-            const ready = this.cooldownRemaining <= 0;
-            return {
-                label: ready ? 'Habilidad lista' : `${this.cooldownRemaining.toFixed(1)} s`,
-                progress: ready ? 1 : 1 - this.cooldownRemaining / cooldown,
-                ready
-            };
         }
         return this.avengerKit.getDisplayState() || this.cosmicKit.getDisplayState() || this.streetKit.getDisplayState() || this.mutantKit.getDisplayState();
     }
@@ -333,6 +246,7 @@ export class HeroAbilitySystem {
         this.mysticKit?.render(ctx);
         this.fateKit?.render(ctx);
         this.darkfireKit?.render(ctx);
+        this.arcaneStormKit?.render(ctx);
         this.avengerKit.render(ctx);
         this.cosmicKit.render(ctx);
         this.streetKit.render(ctx);

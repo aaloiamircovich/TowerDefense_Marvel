@@ -146,13 +146,13 @@ const rivalsHeroes = {
         visualStyle: 'water',
         projectileColor: '#67e8f9'
     }),
-    jubilee: contract('Jubilee', 'Mutante', 'Rare', 300, 30, 170, 1.75, false, 'FUEGOS PLASMOIDES', 'Explosiones luminosas encadenan dano leve y ralentizan grupos cerca de curvas.', 'control mutante de area', ['Mutantes', 'X-Men', 'Rivales'], 'support', [3, 5, 4, 3], {
+    jubilee: contract('Jubilee', 'Mutante', 'Rare', 300, 30, 170, 1.75, false, 'FUEGOS PLASMOIDES', 'Cada 6s prepara un destello al disparar a un apoyo, invocador o comandante a 1s o menos de actuar: retrasa esa accion un ciclo, reducido por resistencia. Recuperacion de 6s por enemigo; no afecta jefes ni movimiento. Conserva splash, slow y Danger Room.', 'control mutante de area', ['Mutantes', 'X-Men', 'Rivales'], 'support', [3, 5, 4, 3], {
         projectileProfile: { splashRadius: 42, splashFactor: 0.28 },
         attackEffects: [{ type: 'slow', duration: 1.3, power: 0.3, chance: 0.34 }],
         visualStyle: 'energy',
         projectileColor: '#f472b6'
     }),
-    loki: contract('Loki', 'Mistico', 'Legendary', 560, 42, 190, 1.25, true, 'ILUSION REAL', 'Ilusiones marcan amenazas y ralentizan la vanguardia enemiga sin romper la ruta.', 'control mistico y deteccion', ['Mistico', 'Oscuros', 'Cosmico', 'Rivales'], 'support', [4, 5, 5, 5], {
+    loki: contract('Loki', 'Mistico', 'Legendary', 560, 42, 190, 1.25, true, 'ILUSION REAL', 'Cada 5s prepara una ilusion: tras 0.6s replica 55% del poder y slow42% durante 1.2s sobre la misma presa en alcance. Sin criticos, objetos, propagacion ni monedas adicionales. Conserva estados y propagacion del ataque principal.', 'control mistico y deteccion', ['Mistico', 'Oscuros', 'Cosmico', 'Rivales'], 'support', [4, 5, 5, 5], {
         attackEffects: [{ type: 'slow', duration: 2.4, power: 0.42, chance: 0.45 }, { type: 'mark', duration: 2.2, power: 0.13, chance: 0.34 }],
         statModifiers: { detectStealth: true, cooldown: 0.04 },
         visualStyle: 'mystic',

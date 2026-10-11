@@ -218,7 +218,7 @@
     "fireRate": 0.8,
     "canSeeStealth": false,
     "ability": "TORMENTA DIVINA",
-    "abilityDesc": "Sus ataques encadenan rayos. Cada 11 segundos, Tormenta Divina golpea hasta cinco enemigos y los aturde brevemente.",
+    "abilityDesc": "Rayos encadenados. Cada 11s, atacar a 3-5 enemigos conectados por tramos de 80px prepara una descarga de 145% poder tras 1s, con stun0.3s resistible. Deben mantener la conexion y cobertura; aislados no activan tormenta.",
     "niche": "daño masivo contra grupos",
     "sprite": "assets/images/heroes/thor/portrait.png",
     "visual": {
@@ -587,7 +587,7 @@
     "fireRate": 0.95,
     "canSeeStealth": true,
     "ability": "PORTAL MÍSTICO",
-    "abilityDesc": "Cada segundo ataque se duplica mediante un portal. Cada 9 segundos crea un campo temporal que ralentiza enemigos cercanos; su anillo controla zonas, pero paga con menor dano plano.",
+    "abilityDesc": "Cada 9s abre al atacar un portal fijo de 65px durante 3s: slow45% resistible a 4 enemigos y un eco de 65% poder tras 0.65s. Eco sin efectos de objetos ni cadenas. Todo respeta su anillo y punto ciego; perder cobertura cancela el eco.",
     "niche": "amplificación de proyectiles y control temporal",
     "sprite": "assets/images/heroes/doctor_strange/portrait.png",
     "visual": {
@@ -5282,7 +5282,7 @@
     "fireRate": 1.75,
     "canSeeStealth": false,
     "ability": "FUEGOS PLASMOIDES",
-    "abilityDesc": "Explosiones luminosas encadenan dano leve y ralentizan grupos cerca de curvas.",
+    "abilityDesc": "Cada 6s prepara un destello al disparar a un apoyo, invocador o comandante a 1s o menos de actuar: retrasa esa accion un ciclo, reducido por resistencia. Recuperacion de 6s por enemigo; no afecta jefes ni movimiento. Conserva splash, slow y Danger Room.",
     "niche": "control mutante de area",
     "allowedTerrains": [
       1,
@@ -5364,7 +5364,7 @@
     "fireRate": 1.25,
     "canSeeStealth": true,
     "ability": "ILUSION REAL",
-    "abilityDesc": "Ilusiones marcan amenazas y ralentizan la vanguardia enemiga sin romper la ruta. Las ilusiones pueden propagar una maldicion ligera entre grupos.",
+    "abilityDesc": "Cada 5s prepara una ilusion: tras 0.6s replica 55% del poder y slow42% durante 1.2s sobre la misma presa en alcance. Sin criticos, objetos, propagacion ni monedas adicionales. Conserva estados y propagacion del ataque principal.",
     "niche": "control mistico y deteccion",
     "allowedTerrains": [
       0,

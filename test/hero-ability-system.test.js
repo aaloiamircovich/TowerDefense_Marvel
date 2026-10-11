@@ -98,17 +98,21 @@ test('Iron Spider inmoviliza con dos redes y detecta sigilo', () => {
     assert.equal(hero.getEffectiveStats().canSeeStealth, true);
 });
 
-test('Thor activa Tormenta Divina con varios objetivos', () => {
+test('Thor prepara Tormenta Divina con tres objetivos conectados', () => {
     const game = createGame();
-    const targets = [createEnemy(50, 0), createEnemy(90, 0)];
+    const targets = [createEnemy(50, 0), createEnemy(90, 0), createEnemy(130, 0)];
     game.enemies = targets;
     const hero = new Hero(createHeroConfig('thor'), 0, 0, game);
     game.heroes = [hero];
 
-    hero.abilitySystem.update(0.1, targets, hero.getEffectiveStats(), []);
+    const kit = hero.abilitySystem.arcaneStormKit;
+    kit.update(11);
+    hero.abilitySystem.onAttack(targets[0], hero.getEffectiveStats(), {}, []);
+    assert.ok(targets.every(target => target.hp === 100));
+    kit.update(1);
 
     assert.ok(targets.every((target) => target.hp < 100));
-    assert.ok(hero.abilitySystem.cooldownRemaining > 10);
+    assert.equal(kit.cooldown, 10);
     assert.equal(hero.combatStats.abilityActivations, 1);
 });
 
@@ -116,11 +120,11 @@ test('cooldown de habilidad activa no baja solo por nivel', () => {
     const levelOne = new Hero({ ...createHeroConfig('thor'), level: 1 }, 0, 0, createGame());
     const levelHundred = new Hero({ ...createHeroConfig('thor'), level: 100 }, 0, 0, createGame());
 
-    assert.equal(levelOne.abilitySystem.getCooldown(), 11);
-    assert.equal(levelHundred.abilitySystem.getCooldown(), 11);
+    assert.equal(levelOne.abilitySystem.arcaneStormKit.cooldown, 11);
+    assert.equal(levelHundred.abilitySystem.arcaneStormKit.cooldown, 11);
 });
 
-test('Doctor Strange duplica cada segundo proyectil', () => {
+test('Doctor Strange prepara un eco sin duplicar proyectiles ni sus efectos', () => {
     const game = createGame();
     const targets = [createEnemy(50, 0), createEnemy(80, 0)];
     game.enemies = targets;
@@ -128,52 +132,62 @@ test('Doctor Strange duplica cada segundo proyectil', () => {
     game.heroes = [hero];
     const projectiles = [];
     const config = { damage: 10, attacker: hero, attackerType: 'Místico', effects: [], radius: 5 };
-
+    const kit = hero.abilitySystem.arcaneStormKit;
+    kit.update(9);
     hero.abilitySystem.onAttack(targets[0], hero.getEffectiveStats(), config, projectiles);
     hero.abilitySystem.onAttack(targets[0], hero.getEffectiveStats(), config, projectiles);
 
-    assert.equal(projectiles.length, 1);
-    assert.equal(projectiles[0].target, targets[1]);
-    assert.equal(projectiles[0].damage, 6.5);
+    assert.equal(projectiles.length, 0);
+    assert.equal(kit.echo.target, targets[1]);
+    assert.equal(kit.echo.damage, 6.5);
     assert.equal(hero.combatStats.abilityActivations, 1);
 });
 
 test('Strange respeta punto ciego, sigilo y alcance efectivo en campo y portales', () => {
     const game = createGame();
     const hero = new Hero({ ...createHeroConfig('doctor_strange'), rangePattern: 'ring' }, 0, 0, game);
+    game.heroes = [hero];
     const [inner, visible, hidden, buffRange] = [10, 110, 120, 230].map((x) => createEnemy(x, 0));
     hidden.stealth = true;
     game.enemies = [inner, visible, hidden, buffRange];
     const stats = { ...hero.getEffectiveStats(), range: 250, canSeeStealth: false };
+    hero.getEffectiveStats = () => stats;
     assert.deepEqual(hero.abilitySystem.getTargetsInRange(game.enemies, stats.range, stats), [visible, buffRange]);
-    hero.abilitySystem.update(0.1, game.enemies, stats, []);
+    const kit = hero.abilitySystem.arcaneStormKit;
+    kit.update(9);
+    kit.onAttack(buffRange, stats);
     assert.equal(inner.debuffs.length, 0);
     assert.equal(hidden.debuffs.length, 0);
     assert.equal(buffRange.debuffs[0].type, 'slow');
-    const projectiles = [];
-    hero.abilitySystem.duplicateThroughPortal(visible, { damage: 10, radius: 5 }, projectiles, stats);
-    assert.equal(projectiles[0].target, buffRange);
+    assert.equal(visible.debuffs.length, 0);
+    assert.equal(kit.echo.target, buffRange);
     assert.ok(hero.abilitySystem.getTargetsInRange(game.enemies, stats.range, { ...stats, canSeeStealth: true }).includes(hidden));
 });
 
 test('portal no duplica hacia un objetivo muerto si no quedan candidatos validos', () => {
     const game = createGame();
     const hero = new Hero(createHeroConfig('doctor_strange'), 0, 0, game);
+    game.heroes = [hero];
     const target = createEnemy(100, 0);
     target.isAlive = false;
     game.enemies = [target];
-    const projectiles = [];
-    hero.abilitySystem.duplicateThroughPortal(target, { damage: 10, radius: 5 }, projectiles);
-    assert.equal(projectiles.length, 0);
+    const kit = hero.abilitySystem.arcaneStormKit;
+    kit.update(9);
+    kit.onAttack(target, hero.getEffectiveStats());
+    assert.equal(kit.portal, null);
     assert.equal(hero.combatStats.abilityActivations, 0);
 });
 
 test('Thor no activa tormenta usando enemigos que no puede detectar', () => {
     const game = createGame();
     const hero = new Hero(createHeroConfig('thor'), 0, 0, game);
-    const targets = [createEnemy(50, 0), createEnemy(100, 0)];
-    targets[1].stealth = true;
-    hero.abilitySystem.update(0.1, targets, hero.getEffectiveStats(), []);
+    game.heroes = [hero];
+    const targets = [createEnemy(50, 0), createEnemy(80, 0), createEnemy(100, 0)];
+    game.enemies = targets;
+    targets[2].stealth = true;
+    const kit = hero.abilitySystem.arcaneStormKit;
+    kit.update(11);
+    kit.onAttack(targets[0], hero.getEffectiveStats());
     assert.equal(hero.combatStats.abilityActivations, 0);
     assert.equal(targets[1].hp, 100);
 });

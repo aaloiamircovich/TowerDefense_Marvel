@@ -1,8 +1,8 @@
 # Identidad y habilidades de los 105 heroes
 
 Fecha: 2026-09-13. Base revisada: commit 553ad63.
-Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes. FASE 3 IMPLEMENTADA, ocho lotes. FASE 4 IMPLEMENTADA, diez lotes. FASE 5 IMPLEMENTADA, seis lotes. FASE 6 EN CURSO, cuatro lotes.
-Fases 7 a 10 pendientes. La cobertura comun no certifica el balance individual.
+Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes. FASE 3 IMPLEMENTADA, ocho lotes. FASE 4 IMPLEMENTADA, diez lotes. FASE 5 IMPLEMENTADA, seis lotes. FASE 6 IMPLEMENTADA, cinco lotes. FASE 7 EN CURSO, un lote.
+Fases 8 a 10 pendientes. La cobertura comun no certifica el balance individual.
 Los hallazgos de auditoria describen el baseline; ver avances abajo para las
 correcciones ya realizadas. No equivale a completar el rediseño de los 105 kits.
 
@@ -12,6 +12,48 @@ cambie alguna decision real del jugador. Las propuestas requieren validacion
 antes de fijar porcentajes, tiempos o requisitos nuevos.
 
 ## Alcance y evidencia
+
+### F6/lote5 y F7/lote1: Jubilee, Loki, Thor y Doctor Strange (2026-10-11)
+
+F6 cierra16/16 heroes; F7 empieza2/16. Sin cambios de sprites, mapas,
+rareza, estadisticas base, niveles, evoluciones ni firmas de objetos.
+
+- Jubilee: destello preparado6s al disparar contra apoyo/invocador/comandante
+  cuya accion vence en0-1s. Retrasa un ciclo, reducido por resistencia a
+  interrupt; recuperacion compartida6s por enemigo. No consume invocaciones,
+  no paraliza movimiento, no afecta jefes, phasers ni enemigos agotados,
+  inmunes o ya saboteados. Sin blanco elegible conserva preparacion.
+  Conserva splash, slow y firma Danger Room.
+- Loki: una ilusion preparada5s replica tras0.6s sobre la misma presa
+  detectable y en cobertura. Dano55% poder capturado, slow42%/1.2s resistible.
+  Reutiliza sprite existente como imagen translucida; no entidad ni plaza.
+  No copia criticos, estados de objeto, propagacion, economia ni procs por
+  baja secundaria. El ataque principal conserva estados y propagacion.
+- Thor: ataque preparado11s necesita3-5 enemigos conectados por tramos80px,
+  todos detectados y en cobertura. Red madura1s con dano145% poder capturado
+  y stun0.3s resistible. Perder ancla o quedar con menos de3 conectados
+  cancela sin devolver recarga; los nuevos no heredan carga. Reemplaza
+  tormenta automatica inmediata/escala adicional; conserva rayos basicos.
+- Strange: ataque preparado9s abre portal fijo65px/3s en la presa. Hasta4
+  contactos unicos reciben slow45% resistible mientras siguen en campo y
+  anillo; salir retira solo esta contribucion, nunca slow aliado. Eco unico
+  tras0.65s de65% poder capturado al vecino mas cercano o al primario si no
+  hay vecino, sin retarget ni procs. Presa debe seguir en portal y anillo.
+  Sustituye duplicado cada dos ataques y slow global; punto ciego coherente.
+
+Periodos iniciales/fijos independientes de cadencia y nivel. Mover, stun o
+retiro cancelan estados pendientes y reinician preparacion; no borran estados
+ya aplicados ni proyectiles emitidos. No curan base ni cambian casillas.
+54 pruebas nuevas y 6 contratos antiguos actualizados cubren niveles
+1/49/50/51/99/100, ventanas, resistencias, lifecycle, conectividad,
+blindspot, snapshot, no recursion, inmunidad compartida y dibujo de ilusion.
+Validacion: 2.385 pruebas aprobadas y npm run check completo sin errores.
+Benchmark p95: 0.320ms. Smoke desktop1366x768/mobile390x844 sin overflow,
+desvio de ruta0px. Probe visual Playwright: sprite de ilusion visible
+(1189 pixeles diferentes), tres nodos conectados y portal65px renderizados.
+Balance completo de equipos pendiente de F10.
+
+Siguiente lote F7: Captain Marvel, Vision, Star-Lord y Jean Grey.
 
 ### F6/lote4: Human Torch, The Hood, Psylocke y Venom (2026-10-09)
 
