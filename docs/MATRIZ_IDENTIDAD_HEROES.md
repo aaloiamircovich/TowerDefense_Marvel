@@ -145,16 +145,16 @@ especificos con objetos y comparativas de rutas siguen pendientes.
 | `vision` | Vision (Legendary) | F7/lote2: rayo tras3 ataques y4s; fase atraviesa4, densa pen70% sobre uno. | Implementado; cambiar pierde carga y bloquea1.25s, sin reunir modos; Overclock conservado. |
 | `star_lord` | Star-Lord (Rare) | F7/lote2: secundario1s contra otro blanco, elemento complementario y dano68% escalado. | Implementado; sin copia de objetos/criticos/area ni oro extra; aislados pierden secundario, burn con snapshot. |
 | `jean_grey` | Jean Grey (Mythic) | F7/lote2:100 energia y12s preparan onda0.6s/1.2x,6 victimas; agotamiento2s con -25% dano/sin carga. | Implementado; empuje48/20 respeta vuelo/inmunes, sustituye empuje cada4 ataques; no rango por carga, Dark Phoenix conservado. |
-| `cyclops` | Cyclops (Epic) | X, modos opticos y rayo extra. | Haz sostenido que premia alineacion precisa; perder carga al cambiar de linea y no rellenar toda la X con AoE. |
-| `silver_surfer` | Silver Surfer (Mythic) | X de largo alcance, tres modos y rayo periodico. | Trayectoria cosmica: cruza filas largas, mediocre junto a su origen o fuera de diagonales; excepciones de rango visibles. |
-| `nova` | Nova (Legendary) | Un rebote y penetracion; sin pulso cargado. | Carga Nova para un pulso de energia que se agota; ventana potente seguida de recarga, distinta de cadena permanente de Thor. |
-| `black_bolt` | Black Bolt (Legendary) | Splash, penetracion y slow. | Silencio preparatorio y grito lineal: golpe enorme poco frecuente; cambiar objetivo pierde carga, no aura atacante. |
-| `magneto` | Magneto (Mythic) | Splash, penetracion y ruptura. | Fragmentos al romper barreras alimentan una descarga magnetica; fuerte contra blindados, limitado contra blancos sin armadura. |
-| `adam_warlock` | Adam Warlock (Mythic) | Rebotes y modificadores propios; sin capullo de kit. | Capullo que carga fuera de accion y emerge con una descarga; sin resucitar heroes ni curar corazones. |
-| `ms_marvel` | Ms. Marvel (Rare) | Un rebote y penetracion. | Cadena fotonica que prepara un impacto final en el ultimo blanco; validar identidad del roster antes de cambiar nombre o arte. |
-| `sentry` | Sentry (Mythic) | F1/lotes 1 y 16: splash y quemadura 30% dano efectivo/s; The Void nivel 100 con objeto ejecuta comunes cada 24 ataques, bosses reciben x3 sujeto a defensas. | Energia solar acumulada con descarga y agotamiento; The Void solo segun evolucion existente, no modo libre temprano. |
-| `beta_ray_bill` | Beta Ray Bill (Legendary) | Tres rebotes y stun. | Stormbreaker regresa al objetivo inicial con un impacto concentrado; menos control de grupo que Thor. |
-| `yondu` | Yondu (Common) | Cruz y dos rebotes decrecientes. | Una flecha persistente recorre objetivos distintos y vuelve; limite de recorrido, no generar proyectiles ilimitados. |
+| `cyclops` | Cyclops (Epic) | F7/lote3: carga3/2 en misma direccion, rayo1.3x hasta4; girar10 grados o inactividad3s pierde carga. | Implementado; modos conservados, no rellena X con AoE, reinicio por modo/movimiento/stun/retiro. |
+| `silver_surfer` | Silver Surfer (Mythic) | F7/lote3: linea1.25x hasta6, factor distancia35%-120%, cada2 ataques. | Implementado; semiancho24px, mas debil cerca, carga se pierde por modo/movimiento/stun/retiro. |
+| `nova` | Nova (Legendary) | F7/lote3:5 ataques y6s, pulso110% en70px hasta4. | Implementado; consume carga, no stun, rebote y penetracion conservados. |
+| `black_bolt` | Black Bolt (Legendary) | F7/lote3:3 ataques misma presa y10s, prepara1s, grito250%/pen45% hasta5 en linea1.2x. | Implementado; silencio sin atacar, linea fija, perdida de presa/cobertura cancela, sin devolver recarga. |
+| `magneto` | Magneto (Mythic) | F7/lote3:3 barreras rotas y6s, descarga120%/pen45% en85px hasta4. | Implementado; rupturas verificadas en impacto, descargas no crean fragmentos; conserva armorBreak. |
+| `adam_warlock` | Adam Warlock (Mythic) | F7/lote3:2s fuera de accion y12s, capullo2s, siguientes3 ataques145%. | Implementado; no cura ni resucita ni modifica aliados; posicion nueva cancela reserva. |
+| `ms_marvel` | Ms. Marvel (Rare) | F7/lote3: cada4s impacto real prepara remate105% tras0.22s a otro blanco en105px. | Implementado; sin rebote constante, identidad fotonica y arte conservados, cobertura/deteccion obligatorias. |
+| `sentry` | Sentry (Mythic) | F7/lote3:6 ataques y10s, preparacion0.5s, onda130%/pen15% hasta5, agotamiento2s dano-35%. | Implementado; sin carga durante agotamiento; burn y The Void nivel100 con objeto conservados. |
+| `beta_ray_bill` | Beta Ray Bill (Legendary) | F7/lote3:un rebote; cada4s retorno0.6s al primario por120%/pen25%. | Implementado; regreso requiere cobertura/deteccion, no stun adicional, firma Stormbreaker conservada. |
+| `yondu` | Yondu (Common) | F7/lote3:una flecha, dos saltos distintos95px/60%,0.22s entre tramos y retorno. | Implementado; bloquea disparos durante vuelo/ruta, token evita retornos viejos, sin procs secundarios. |
 
 ## Lectura transversal
 

@@ -38,9 +38,16 @@ export class MutantKitSystem {
         this.phoenixOrigin = { x: hero.x, y: hero.y };
         this.phoenixWave = null;
         this.phoenixExhaustion = 0;
+        this.opticOrigin = { x: hero.x, y: hero.y };
+        this.opticDirection = null;
+        this.opticCharge = 0;
+        this.opticIdle = 0;
     }
 
     update(dt, enemies, stats) {
+        this.checkOpticPosition();
+        this.opticIdle += dt;
+        if (this.opticIdle >= 3) { this.opticCharge = 0; this.opticDirection = null; }
         this.checkPhoenixPosition();
         this.cooldownRemaining = Math.max(0, this.cooldownRemaining - dt);
         this.phoenixExhaustion = Math.max(0, this.phoenixExhaustion - dt);
@@ -64,7 +71,17 @@ export class MutantKitSystem {
             const phoenix = this.hero.game.progression?.getHeroEvolution?.(this.hero.id)?.id === 'phoenix';
             this.resource = Math.min(100, this.resource + (phoenix ? 14 : 9));
         }
-        if (this.hero.id === 'cyclops' && this.attackCount % (this.mode === 'focus' ? 3 : 2) === 0) this.fireOpticLine(target, stats);
+        if (this.hero.id === 'cyclops') {
+            this.checkOpticPosition();
+            const angle = Math.atan2(target.y - this.hero.y, target.x - this.hero.x);
+            if (this.opticDirection !== null && Math.cos(angle - this.opticDirection) < Math.cos(Math.PI / 18)) this.opticCharge = 0;
+            if (!this.opticCharge) this.opticDirection = angle;
+            this.opticIdle = 0;
+            this.opticCharge++;
+            if (this.opticCharge >= (this.mode === 'focus' ? 3 : 2)) {
+                this.opticCharge = 0; this.fireOpticLine(target, stats);
+            }
+        }
         if (this.hero.id === 'ant_man') {
             if (this.mode === 'tiny') this.pymCharge = Math.min(3, this.pymCharge + 1);
             else if (this.pymCharge === 3 && this.cooldownRemaining === 0) this.giantImpact(target, stats);
@@ -174,7 +191,7 @@ export class MutantKitSystem {
                 : `Phoenix ${Math.round(this.resource)}/100 | ${this.cooldownRemaining.toFixed(1)}s`,
             progress: this.resource / 100, ready: this.resource === 100 && this.cooldownRemaining === 0 && !this.phoenixWave
         };
-        if (this.hero.id === 'cyclops') return staticState(`Visor: ${this.getModeLabel()}`);
+        if (this.hero.id === 'cyclops') return staticState(`Visor: ${this.getModeLabel()} | Linea ${this.opticCharge}/${this.mode === 'focus' ? 3 : 2}`);
         if (this.hero.id === 'storm') return cooldownState(this.weatherZone
             ? `Zona ${this.weatherZone.mode === 'blizzard' ? 'Ventisca' : 'Tormenta'} ${this.weatherZone.duration.toFixed(1)}s; siguiente ${this.getModeLabel()}`
             : `Clima: ${this.getModeLabel()}`, this.cooldownRemaining, 9);
@@ -199,6 +216,7 @@ export class MutantKitSystem {
     setMode(mode) {
         const config = MUTANT_CONTROLS[this.hero.id];
         if (!config?.options.some((option) => option.id === mode)) return false;
+        if (this.hero.id === 'cyclops' && this.mode !== mode) { this.opticCharge = 0; this.opticDirection = null; }
         this.mode = mode;
         return true;
     }
@@ -389,10 +407,20 @@ export class MutantKitSystem {
         this.cooldownRemaining = this.getCooldown(9);
     }
 
+    checkOpticPosition() {
+        if (this.hero.id !== 'cyclops') return;
+        if (this.hero.x !== this.opticOrigin.x || this.hero.y !== this.opticOrigin.y
+            || this.hero.stunTimer > 0 || !this.hero.game.heroes.includes(this.hero)) {
+            this.opticCharge = 0; this.opticDirection = null; this.opticIdle = 0;
+            this.opticOrigin = { x: this.hero.x, y: this.hero.y };
+        }
+    }
+
     fireOpticLine(target, stats) {
         const length = stats.range * 1.3;
-        const victims = getLineTargets(this.hero, target, this.hero.game.enemies || [], length, this.mode === 'focus' ? 24 : 38);
-        victims.forEach((enemy) => CombatSystem.applyDamage({ attackerType: this.hero.category, damage: stats.damage * (this.mode === 'focus' ? 0.86 : 0.55) * this.getPowerScale(), armorPenetration: this.mode === 'focus' ? 0.6 : 0.25 }, enemy, this.hero, this.hero.game.resourceManager, 1));
+        const victims = getLineTargets(this.hero, target, (this.hero.game.enemies || []).filter(e => !e.hasReachedEnd), length, this.mode === 'focus' ? 24 : 38)
+            .sort((a, b) => distance(this.hero, a) - distance(this.hero, b)).slice(0, 4);
+        victims.forEach((enemy) => CombatSystem.applyDamage({ attackerType: this.hero.category, secondaryEntity: true, damage: stats.damage * (this.mode === 'focus' ? 0.86 : 0.55) * this.getPowerScale(), armorPenetration: this.mode === 'focus' ? 0.6 : 0.25 }, enemy, this.hero, this.hero.game.resourceManager, 1));
         this.hero.game.vfx?.addBeam(this.hero, getLineEndpoint(this.hero, target, length), { color: '#ff3535', width: this.mode === 'focus' ? 8 : 5, duration: 0.2 });
         this.hero.game.audio?.play('optic');
         this.hero.recordAbility();

@@ -157,6 +157,9 @@ export class Hero {
 
     update(dt, enemies, projectiles) {
         this.syncVisual();
+        this.abilitySystem.energyReserveKit?.update(dt);
+        this.abilitySystem.mutantKit.checkOpticPosition();
+        this.abilitySystem.cosmicKit.checkTrajectoryPosition();
         this.abilitySystem.cosmicKit.checkEnergyPosition();
         this.abilitySystem.avengerKit.checkDensityPosition();
         this.abilitySystem.mutantKit.checkPhoenixPosition();
@@ -193,6 +196,7 @@ export class Hero {
         if (['moon_knight', 'captain_marvel', 'jean_grey'].includes(this.id)) stats = this.getEffectiveStats();
 
         if (this.timer >= 1 / stats.fireRate && (this.abilitySystem.martialKit?.canAttack() ?? true)
+            && (this.abilitySystem.energyReserveKit?.canAttack() ?? true)
             && this.abilitySystem.cosmicKit.canAttack() && this.abilitySystem.avengerKit.canAttack() && this.abilitySystem.mutantKit.canAttack()
             && (this.abilitySystem.psychicKit?.canAttack() ?? true)) {
             const target = this.getBestTarget(enemies, stats);
@@ -237,6 +241,7 @@ export class Hero {
     shoot(target, stats, projectiles) {
         if (this.isSupportAuraOnly()) return;
         if (this.abilitySystem.martialKit?.canAttack() === false) return;
+        if (this.abilitySystem.energyReserveKit?.canAttack() === false) return;
         if (!this.abilitySystem.cosmicKit.canAttack() || !this.abilitySystem.avengerKit.canAttack() || !this.abilitySystem.mutantKit.canAttack()) return;
         if (this.abilitySystem.psychicKit?.canAttack() === false) return;
         if (this.id === 'mantis' && target?.debuffs?.some(effect => effect.type === 'sleep' && effect.duration > 0)) return;
@@ -281,6 +286,7 @@ export class Hero {
             radius: isCrit ? 7 : 5,
             visualStyle: this.getProjectileVisualStyle()
         };
+        this.abilitySystem.energyReserveKit?.prepareProjectile(projectileConfig, target, attackStats);
         if (this.game?.spawnProjectile) this.game.spawnProjectile(this.x, this.y, target, projectileConfig);
         else projectiles.push(new Projectile(this.x, this.y, target, projectileConfig));
         this.abilitySystem.onAttack(target, attackStats, projectileConfig, projectiles);

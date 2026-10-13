@@ -1695,7 +1695,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.2,
       "canSeeStealth": true,
       "ability": "VISOR OPTICO",
-      "abilityDesc": "Orienta rayos en línea y alterna un haz penetrante con rebotes ópticos de alta cadencia.",
+      "abilityDesc": "Mantener la misma linea carga el visor: 3 ataques penetrantes o 2 en modo rebote disparan un rayo a hasta 4 enemigos. Girar mas de 10 grados, cambiar modo, moverse o estar 3 s inactivo pierde la carga.",
       "sprite": "assets/images/heroes/cyclops/portrait.png",
       "allowedTerrains": [
         3
@@ -1837,7 +1837,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 0.6,
       "canSeeStealth": false,
       "ability": "PODER CÓSMICO",
-      "abilityDesc": "Traza rayos cosmicos en forma de X con alcance enorme. Su potencia es brutal en lineas abiertas, pero ya no cumple rol de detector universal.",
+      "abilityDesc": "Cada 2 ataques traza una linea estrecha hasta 1.25 veces su alcance y atraviesa hasta 6 enemigos. La descarga rinde entre 35% y 120% segun la distancia: necesita diagonales abiertas, no combate cercano. Cambiar modo o posicion pierde la carga.",
       "sprite": "assets/images/heroes/silver_surfer/portrait.png",
       "allowedTerrains": [
         0,
@@ -2430,7 +2430,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1,
       "canSeeStealth": false,
       "ability": "PULSO NOVA",
-      "abilityDesc": "Proyectiles cosmicos atraviesan parte de la linea y encadenan energia residual.",
+      "abilityDesc": "Cinco ataques cargan un pulso de 110% de dano en 70px alrededor del blanco, hasta 4 enemigos. Recarga inicial y entre pulsos de 6 s. Conserva penetracion y un rebote residual; moverlo pierde la carga.",
       "niche": "linea cosmica y rebotes",
       "allowedTerrains": [
         0,
@@ -3510,7 +3510,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 0.9,
       "canSeeStealth": false,
       "ability": "SUSURRO DE ATTILAN",
-      "abilityDesc": "Ondas sonicas atraviesan blindaje y golpean grupos compactos.",
+      "abilityDesc": "Tres ataques al mismo blanco preparan un grito durante 1 s sin atacar: 250% de dano, 45% de penetracion y hasta 5 enemigos en linea de 1.2 veces su alcance. Recarga 10 s. Si el blanco sale de la linea, pierde el grito.",
       "niche": "artilleria inhumana de area",
       "allowedTerrains": [
         0,
@@ -4800,7 +4800,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 0.95,
       "canSeeStealth": false,
       "ability": "CAMPO MAGNETICO",
-      "abilityDesc": "Aplasta blindajes con area magnetica y penetracion superior desde posiciones elevadas.",
+      "abilityDesc": "Romper una barrera con sus proyectiles genera un fragmento. Con 3, descarga 120% de dano y 45% de penetracion sobre hasta 4 enemigos en 85px. Recarga 6 s; sus descargas no generan mas fragmentos. Conserva ruptura de armadura.",
       "niche": "artilleria anti blindaje",
       "allowedTerrains": [
         0,
@@ -4967,7 +4967,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1,
       "canSeeStealth": false,
       "ability": "CAPULLO CUANTICO",
-      "abilityDesc": "Energia cosmica encadena objetivos y potencia el sosten ofensivo de equipos largos.",
+      "abilityDesc": "Tras 2 s sin blancos en cobertura y recarga de 12 s, entra en un capullo durante 2 s sin atacar. Al salir, sus siguientes 3 ataques hacen 45% mas dano. No cura ni resucita. Moverlo cancela capullo y rafaga.",
       "niche": "soporte cosmico, cadenas y presion sostenida",
       "allowedTerrains": [
         0,
@@ -5873,7 +5873,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.35,
       "canSeeStealth": false,
       "ability": "DESCARGA FOTONICA",
-      "abilityDesc": "Rafagas de energia que encadenan entre enemigos y cargan impactos concentrados contra grupos medianos.",
+      "abilityDesc": "Cada 4 s prepara un remate fotonico: despues del impacto inicial, salta a otro enemigo visible en cobertura a 105px o menos e inflige 105% de su dano. No repite blanco ni encadena nuevas habilidades.",
       "niche": "artilleria cosmica de rebote y DPS sostenido",
       "allowedTerrains": [
         0,
@@ -6422,7 +6422,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 1.25,
       "canSeeStealth": false,
       "ability": "FLECHA YAKA",
-      "abilityDesc": "La flecha teledirigida encadena multiples objetivos con menor dano en cada salto.",
+      "abilityDesc": "Una sola flecha Yaka: tras impactar visita hasta otros 2 enemigos visibles en cobertura, separados como maximo 95px, con 60% de dano por salto. No vuelve a disparar hasta su retorno. Moverlo cancela el recorrido.",
       "niche": "cadena comun de largo alcance",
       "sprite": "assets/images/heroes/yondu/portrait.png",
       "visual": {
@@ -7140,7 +7140,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 0.95,
       "canSeeStealth": true,
       "ability": "PODER DE UN MILLON DE SOLES",
-      "abilityDesc": "Salpicadura amplia. 45% de aplicar quemadura durante 4.2 s: 30% de su dano efectivo por segundo, sin acumularse.",
+      "abilityDesc": "Seis ataques cargan una descarga solar: prepara 0.5 s sin atacar y golpea hasta 5 enemigos en su radio por 130% de dano. Recarga 10 s; despues pierde 35% de dano durante 2 s y no carga. Conserva quemadura y condiciones de The Void.",
       "niche": "mythic de area y quemadura",
       "sprite": "assets/images/heroes/sentry/portrait.png",
       "visual": {
@@ -7306,7 +7306,7 @@ window.__MARVEL_TD_DATA__ = {
       "fireRate": 0.85,
       "canSeeStealth": false,
       "ability": "STORMBREAKER KORBINITA",
-      "abilityDesc": "Rayos divinos encadenan objetivos y pueden aturdir al primer enemigo golpeado.",
+      "abilityDesc": "Stormbreaker conserva un rebote y el aturdimiento del impacto primario. Cada 4 s, tras impactar, regresa sobre ese mismo blanco por 120% de dano y 25% de penetracion, sin aplicar otro stun. El retorno requiere blanco visible en cobertura.",
       "niche": "legendary electrico contra grupos",
       "sprite": "assets/images/heroes/beta_ray_bill/portrait.png",
       "visual": {

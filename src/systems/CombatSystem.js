@@ -77,6 +77,7 @@ export class CombatSystem {
             hits += propagated;
         }
 
+        attacker?.abilitySystem?.energyReserveKit?.onImpact(projectile, target);
         return { ...primary, hits };
     }
 
@@ -107,6 +108,7 @@ export class CombatSystem {
         const orderMultiplier = getPriorityOrderDamageMultiplier(attacker, target);
         const modifiedDamage = projectile.damage * factor * typeMultiplier * markMultiplier * orderMultiplier;
         const damage = Number.isFinite(projectile.damageCap) ? Math.min(modifiedDamage, Math.max(0, projectile.damageCap)) : modifiedDamage;
+        const barrierBefore = target.behavior?.barrier || 0;
         const result = target.takeDamage(damage, {
             armorPenetration: projectile.armorPenetration || 0,
             attackerType: projectile.attackerType,
@@ -114,6 +116,8 @@ export class CombatSystem {
             direct: true
         });
 
+        if (barrierBefore > 0 && target.behavior.barrier === 0)
+            attacker?.abilitySystem?.energyReserveKit?.onBarrierBroken(projectile);
         CombatSystem.recordDamageResult(projectile, target, attacker, resourceManager, result, factor);
         return result;
     }

@@ -55,6 +55,9 @@ export class TacticalActionSystem {
         hero.abilitySystem?.fateKit?.reset();
         hero.abilitySystem?.darkfireKit?.reset();
         hero.abilitySystem?.arcaneStormKit?.reset();
+        hero.abilitySystem?.energyReserveKit?.reset();
+        hero.abilitySystem?.mutantKit?.checkOpticPosition();
+        hero.abilitySystem?.cosmicKit?.checkTrajectoryPosition();
         hero.abilitySystem?.streetKit?.resetHunter();
         hero.abilitySystem?.mutantKit?.checkWeather();
         hero.abilitySystem?.cosmicKit?.checkRoots();

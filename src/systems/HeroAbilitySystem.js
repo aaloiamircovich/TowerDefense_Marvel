@@ -15,6 +15,7 @@ import { MysticKitSystem } from './MysticKitSystem.js';
 import { FateKitSystem } from './FateKitSystem.js';
 import { DarkfireKitSystem } from './DarkfireKitSystem.js';
 import { ArcaneStormKitSystem } from './ArcaneStormKitSystem.js';
+import { EnergyReserveKitSystem, ENERGY_PERIOD } from './EnergyReserveKitSystem.js';
 import { getLineEndpoint, getLineTargets } from '../utils/LineTargeting.js';
 import { getHeroRangePattern, isPointInRangePattern } from '../utils/RangePattern.js';
 import { getEffectiveSupportAura, getSupportAuraDisplayState } from './SupportAuraSystem.js';
@@ -44,6 +45,7 @@ export class HeroAbilitySystem {
         this.fateKit = ['black_cat', 'elsa_bloodstone', 'gambit', 'hela'].includes(hero.id) ? new FateKitSystem(hero) : null;
         this.darkfireKit = ['human_torch', 'the_hood', 'psylocke', 'venom'].includes(hero.id) ? new DarkfireKitSystem(hero) : null;
         this.arcaneStormKit = ['jubilee', 'loki', 'thor', 'doctor_strange'].includes(hero.id) ? new ArcaneStormKitSystem(hero) : null;
+        this.energyReserveKit = Object.hasOwn(ENERGY_PERIOD, hero.id) ? new EnergyReserveKitSystem(hero) : null;
     }
 
     update(dt, enemies, stats, projectiles) {
@@ -68,6 +70,7 @@ export class HeroAbilitySystem {
         this.fateKit?.onAttack(target, stats, projectileConfig);
         this.darkfireKit?.onAttack(target, stats);
         this.arcaneStormKit?.onAttack(target, stats);
+        this.energyReserveKit?.onAttack(target, stats);
         this.avengerKit.onAttack(target, stats, projectileConfig, projectiles);
         this.cosmicKit.onAttack(target, stats, projectileConfig, projectiles);
         this.streetKit.onAttack(target, stats, projectileConfig, projectiles);
@@ -121,6 +124,7 @@ export class HeroAbilitySystem {
             * (this.mysticKit?.damageMultiplier(target) || 1)
             * (this.fateKit?.damageMultiplier(target) || 1)
             * (this.darkfireKit?.damageMultiplier(target) || 1)
+            * (this.energyReserveKit?.damageMultiplier() || 1)
             * (this.fieldDevice?.damageMultiplier() || 1);
     }
 
@@ -167,6 +171,7 @@ export class HeroAbilitySystem {
     }
 
     getDisplayState() {
+        if (this.energyReserveKit) return this.energyReserveKit.getDisplayState();
         if (this.martialKit) return this.martialKit.getDisplayState();
         if (this.controlKit) return this.controlKit.getDisplayState();
         if (this.elementalKit) return this.elementalKit.getDisplayState();
@@ -223,6 +228,7 @@ export class HeroAbilitySystem {
 
     getProjectileProfile() {
         const profile = { ...this.avengerKit.getProjectileProfile(), ...this.cosmicKit.getProjectileProfile(), ...this.streetKit.getProjectileProfile(), ...this.mutantKit.getProjectileProfile(), ...this.martialKit?.getProjectileProfile() };
+        Object.assign(profile, this.energyReserveKit?.getProjectileProfile());
         if (this.hero.game.progression?.getHeroEvolution?.(this.hero.id)?.id === 'iron_spider') profile.armorPenetration = 0.3;
         return profile;
     }
@@ -238,6 +244,7 @@ export class HeroAbilitySystem {
     }
 
     render(ctx) {
+        this.energyReserveKit?.render(ctx);
         this.fieldDevice?.render(ctx);
         this.controlKit?.render(ctx);
         this.coastalKit?.render(ctx);

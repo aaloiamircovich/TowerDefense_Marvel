@@ -1,7 +1,7 @@
 # Identidad y habilidades de los 105 heroes
 
 Fecha: 2026-09-13. Base revisada: commit 553ad63.
-Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes. FASE 3 IMPLEMENTADA, ocho lotes. FASE 4 IMPLEMENTADA, diez lotes. FASE 5 IMPLEMENTADA, seis lotes. FASE 6 IMPLEMENTADA, cinco lotes. FASE 7 EN CURSO, dos lotes.
+Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes. FASE 3 IMPLEMENTADA, ocho lotes. FASE 4 IMPLEMENTADA, diez lotes. FASE 5 IMPLEMENTADA, seis lotes. FASE 6 IMPLEMENTADA, cinco lotes. FASE 7 IMPLEMENTADA, tres lotes.
 Fases 8 a 10 pendientes. La cobertura comun no certifica el balance individual.
 Los hallazgos de auditoria describen el baseline; ver avances abajo para las
 correcciones ya realizadas. No equivale a completar el rediseño de los 105 kits.
@@ -12,6 +12,63 @@ cambie alguna decision real del jugador. Las propuestas requieren validacion
 antes de fijar porcentajes, tiempos o requisitos nuevos.
 
 ## Alcance y evidencia
+
+### F7/lote3: los diez restantes, cierre16/16 (2026-10-12)
+
+Cyclops, Silver Surfer, Nova, Black Bolt, Magneto, Adam Warlock, Ms. Marvel,
+Sentry, Beta Ray Bill y Yondu. Sin cambios de sprites, mapas, rarezas,
+estadisticas base ni requisitos de evolucion/signature.
+
+- Cyclops: conserva modos; carga3 ataques focus/2 ricochet en una misma
+  direccion (tolerancia10 grados desde inicio de carga). Girar, cambiar modo,
+  moverse, stun, retiro o3s inactivo reinicia. Rayo1.3x, hasta4 victimas,
+  conserva coeficientes86%/55% por escala de habilidad y pen60%/25%.
+- Silver Surfer: dos ataques; trayectoria1.25x, semiancho24px, hasta6 victimas.
+  Conserva factores por modo; cada impacto multiplica por distancia/rango,
+  limitado35%-120%. Posicion/modo/stun/retiro pierde carga. No es global.
+- Nova: cinco ataques y6s inicial/fijo liberan110% de poder efectivo en70px,
+  maximo4 victimas. Consume carga; conserva rebote y penetracion nativos.
+- Black Bolt: tres ataques a misma presa y10s preparan1s sin atacar; linea
+  fija1.2x, semiancho24px, maximo5, dano250%, pen45%. Muerte, fuga, perdida
+  de cobertura o salida de linea de la presa cancela sin devolver recarga.
+- Magneto: ruptura real de barrera por proyectil no secundario da1 fragmento,
+  maximo3. Siguiente ataque con3 y6s disponibles descarga120%/pen45%,85px,
+  maximo4. Golpes parciales, armadura sola y descargas no fabrican fragmentos.
+- Adam: tras2s sin blancos detectables en cobertura, y recarga12s disponible,
+  capullo2s sin atacar; sale con3 ataques a145%. No cura, resucita ni da aura.
+- Ms. Marvel: reemplaza rebote constante por remate cada4s. Solo impacto
+  primario real inicia salto0.22s a otro blanco detectable/en cobertura a105px,
+  dano105%. Conserva identidad fotonica del roster y penetracion.
+- Sentry: seis ataques y10s preparan0.5s sin atacar; onda130%/pen15% sobre
+  hasta5 en radio actual. Luego2s con dano-35% y sin carga solar. Conserva
+  burn y The Void nivel100 con objeto, no desbloquea evolucion anticipada.
+- Bill: un rebote nativo en vez de3; cada4s impacto primario inicia retorno
+  tras0.6s contra ese mismo blanco si sigue detectable/en cobertura,120%
+  poder y25% penetracion. No aplica otro stun ni copia perfil del proyectil.
+- Yondu: reemplaza cadenas instantaneas por una ruta Yaka, maximo2 saltos
+  nuevos a95px y60% poder,0.22s entre tramos y retorno. No ataca durante
+  vuelo/ruta. Flecha visible; no repite blancos ni persigue fuera de cruz.
+
+Preparaciones/rutas/cargas se cancelan al mover, retirar o recibir stun;
+nivel y economia persistentes intactos. Proyectiles emitidos conservan su
+impacto, pero token invalidado no puede iniciar una nueva ruta. Pool limpia
+token al reutilizar/desactivar. Secundarios acreditan dano/baja sin firmas
+por baja, objetos ni nuevas cadenas. AoE/rayos conservan impactos incidentales
+sobre ocultos; las rutas dirigidas requieren deteccion. Todas las nuevas
+descargas excluyen enemigos que ya alcanzaron la salida.
+
+126 pruebas nuevas: contratos en niveles1/49/50/51/99/100, cancelaciones,
+limites, autoria y30 simulaciones20s con Hero.update/Projectile.update reales
+(diez heroes a niveles1/50/100). Suite total:2.557 pruebas. Las simulaciones
+usan blancos controlados, no sustituyen la comparacion de equipos de F10.
+Probe Playwright muestra capullo, grito y onda preparados; Yaka cambia60
+pixeles al avanzar, sprites existentes cargados. Descripciones actualizadas.
+Validacion final: npm run check completo,2.557/2.557 pruebas,0 errores de
+datos/accesibilidad/release. Benchmark p95:0.406ms. Smoke desktop1366x768 y
+mobile390x844 sin overflow, desvio de ruta0px. Economia/presupuesto/campana
+heuristicos aprobados; no representan todavia el balance de los nuevos kits.
+Siguiente: F8, compatibilidad de evoluciones y objetos para todo el roster;
+luego F9 claridad de activaciones y F10 balance comparativo entre equipos.
 
 ### F7/lote2: Captain Marvel, Vision, Star-Lord y Jean Grey (2026-10-11)
 
@@ -60,7 +117,8 @@ desvio de ruta0px. Probe Playwright confirma vuelo visible (4432 pixeles
 distintos), casilla logica intacta y radio Phoenix252px en el fixture.
 Balance completo de equipos pendiente de F10.
 
-Siguiente lote F7: Cyclops, Silver Surfer, Nova y Black Bolt.
+Siguiente lote previsto entonces: Cyclops, Silver Surfer, Nova y Black Bolt;
+ampliado a los diez pendientes y completado en F7/lote3.
 
 ### F6/lote5 y F7/lote1: Jubilee, Loki, Thor y Doctor Strange (2026-10-11)
 

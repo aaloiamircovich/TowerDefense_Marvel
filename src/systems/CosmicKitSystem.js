@@ -39,10 +39,13 @@ export class CosmicKitSystem {
         this.energyOrigin = { x: hero.x, y: hero.y };
         this.binaryRun = null;
         this.blasterCooldown = 1;
+        this.trajectoryOrigin = { x: hero.x, y: hero.y };
+        this.trajectoryCharge = 0;
         if (hero.id === 'captain_marvel') this.cooldownRemaining = 9;
     }
 
     update(dt, enemies, stats) {
+        this.checkTrajectoryPosition();
         this.checkEnergyPosition();
         this.cooldownRemaining = Math.max(0, this.cooldownRemaining - dt);
         this.blasterCooldown = Math.max(0, this.blasterCooldown - dt);
@@ -55,7 +58,10 @@ export class CosmicKitSystem {
         if (this.hero.id === 'captain_marvel' && this.canAttack()) this.resource = Math.min(100, this.resource + 12);
         if (this.hero.id === 'star_lord') this.fireSecondBlaster(target, projectileConfig, projectiles, stats);
         if (this.hero.id === 'gamora') this.activateGamoraCombo(target, stats);
-        if (this.hero.id === 'silver_surfer' && this.attackCount % 2 === 0) this.fireCosmicTrajectory(target, stats);
+        if (this.hero.id === 'silver_surfer') {
+            this.checkTrajectoryPosition();
+            if (++this.trajectoryCharge >= 2) { this.trajectoryCharge = 0; this.fireCosmicTrajectory(target, stats); }
+        }
     }
 
     onKill() {
@@ -134,6 +140,7 @@ export class CosmicKitSystem {
     setMode(mode) {
         const config = COSMIC_CONTROLS[this.hero.id];
         if (!config?.options.some((option) => option.id === mode)) return false;
+        if (this.hero.id === 'silver_surfer' && this.mode !== mode) this.trajectoryCharge = 0;
         this.mode = mode;
         return true;
     }
@@ -304,11 +311,23 @@ export class CosmicKitSystem {
         }
     }
 
+    checkTrajectoryPosition() {
+        if (this.hero.id !== 'silver_surfer') return;
+        if (this.hero.x !== this.trajectoryOrigin.x || this.hero.y !== this.trajectoryOrigin.y
+            || this.hero.stunTimer > 0 || !this.hero.game.heroes.includes(this.hero)) {
+            this.trajectoryCharge = 0;
+            this.trajectoryOrigin = { x: this.hero.x, y: this.hero.y };
+        }
+    }
+
     fireCosmicTrajectory(target, stats) {
         const length = stats.range * 1.25;
-        const victims = getLineTargets(this.hero, target, this.hero.game.enemies || [], length, 32);
+        const victims = getLineTargets(this.hero, target, (this.hero.game.enemies || []).filter(e => !e.hasReachedEnd), length, 24)
+            .sort((a, b) => distance(this.hero, a) - distance(this.hero, b)).slice(0, 6);
         const factor = this.mode === 'power' ? 0.75 : this.mode === 'control' ? 0.48 : 0.38;
-        victims.forEach((enemy) => CombatSystem.applyDamage({ attackerType: this.hero.category, damage: stats.damage * factor * this.getPowerScale(), armorPenetration: 0.4 }, enemy, this.hero, this.hero.game.resourceManager, 1));
+        victims.forEach((enemy) => CombatSystem.applyDamage({ attackerType: this.hero.category, secondaryEntity: true,
+            damage: stats.damage * factor * this.getPowerScale() * Math.max(0.35, Math.min(1.2, distance(this.hero, enemy) / stats.range)),
+            armorPenetration: 0.4 }, enemy, this.hero, this.hero.game.resourceManager, 1));
         this.hero.game.vfx?.addBeam(this.hero, getLineEndpoint(this.hero, target, length), { color: this.getProjectileColor(), width: 9, duration: 0.22 });
         this.hero.game.audio?.play('cosmic');
         this.hero.recordAbility();
