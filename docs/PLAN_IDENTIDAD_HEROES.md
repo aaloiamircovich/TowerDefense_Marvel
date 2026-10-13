@@ -2,7 +2,8 @@
 
 Fecha: 2026-09-13. Base revisada: commit 553ad63.
 Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes. FASE 3 IMPLEMENTADA, ocho lotes. FASE 4 IMPLEMENTADA, diez lotes. FASE 5 IMPLEMENTADA, seis lotes. FASE 6 IMPLEMENTADA, cinco lotes. FASE 7 IMPLEMENTADA, tres lotes.
-Fases 8 a 10 pendientes. La cobertura comun no certifica el balance individual.
+FASE 8 EN CURSO, primer lote transversal. Fases 9 y 10 pendientes.
+La cobertura comun no certifica el balance individual.
 Los hallazgos de auditoria describen el baseline; ver avances abajo para las
 correcciones ya realizadas. No equivale a completar el rediseño de los 105 kits.
 
@@ -12,6 +13,36 @@ cambie alguna decision real del jugador. Las propuestas requieren validacion
 antes de fijar porcentajes, tiempos o requisitos nuevos.
 
 ## Alcance y evidencia
+
+### F8/lote1: evolucion, equipamiento y autoria secundaria (2026-10-12)
+
+Primera matriz transversal:105 heroes x82 objetos (mas caso sin objeto),
+en umbral evolutivo-1, umbral y100. Verifica estadisticas finitas, requisitos
+de firma, transformacion ligada al objeto y evolucion por nivel conservada
+al retirarlo. Ademas cubre las82 parejas de habilidades exclusivas y los
+9 soportes con todos los objetos, sin disparos ni curacion de base.
+
+Correcciones:
+- getSignatureConfig exige que el objeto consultado este realmente en el
+  primer/unico slot. Falcon ya no dibuja el Redwing del objeto sin equiparlo.
+- Pulsos, rayos, proyectiles adicionales, maldicion por baja y The Void
+  atribuyen sus impactos a una fuente secundaria. Mantienen dano, creditos
+  normales de baja y contador de bajas, sin volver a activar kits por baja
+  ni efectos de objeto por impacto. No cambia el ingreso explicito propio
+  de Doble Suerte ni la economia del ataque principal.
+- Quemaduras/otros DoT de firma conservan esa autoria hasta su ultima baja.
+  Disparos extras no heredan el token de ruta primaria de los kits F7;
+  preservan sus perfiles de dano, efectos y blancos.
+- executeNonBoss conserva comportamiento principal por defecto: solamente
+  la firma The Void pide ejecucion secundaria; restricciones de jefe intactas.
+
+194 pruebas nuevas en evolution-item-compatibility.test.js; total2.751.
+Validacion: npm run check completo aprobado,0 errores; benchmark p95:0.356ms.
+Smoke desktop1366x768/mobile390x844 sin overflow y desvio de ruta0px.
+Sin cambios de sprites, mapas, rarezas, requisitos evolutivos o coeficientes.
+No cierra F8: resta probar interacciones temporales/equipamiento durante
+preparaciones y combate para cada familia. Esta matriz estatica y de firmas
+no certifica el balance comparativo de F10.
 
 ### F7/lote3: los diez restantes, cierre16/16 (2026-10-12)
 

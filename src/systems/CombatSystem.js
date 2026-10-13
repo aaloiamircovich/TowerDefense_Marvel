@@ -122,7 +122,7 @@ export class CombatSystem {
         return result;
     }
 
-    static executeNonBoss(target, attacker, resourceManager, color) {
+    static executeNonBoss(target, attacker, resourceManager, color, secondaryEntity = false) {
         if (!target?.isAlive || !Number.isFinite(target.hp) || target.hp <= 0
             || target.isBoss || target.isFinalBoss || target.isMiniBoss
             || target.config?.isBoss || target.config?.isFinalBoss || target.config?.isMiniBoss) {
@@ -133,7 +133,7 @@ export class CombatSystem {
         const result = { damage: target.hp, killed: true };
         target.hp = 0;
         target.isAlive = false;
-        CombatSystem.recordDamageResult({ attackerType: attacker?.category, color }, target, attacker, resourceManager, result);
+        CombatSystem.recordDamageResult({ attackerType: attacker?.category, color, secondaryEntity }, target, attacker, resourceManager, result);
         return result;
     }
 

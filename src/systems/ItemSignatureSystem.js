@@ -185,6 +185,7 @@ export function hasSignatureItem(hero, itemId) {
 }
 
 export function getSignatureConfig(hero, itemId = getEquippedItem(hero)?.id) {
+    if (!itemId || getEquippedItem(hero)?.id !== itemId) return null;
     const config = ITEM_SIGNATURES[itemId]?.[hero?.id];
     if (!config) return null;
     const evolution = hero?.game?.progression?.getHeroEvolution?.(hero.id);
@@ -255,6 +256,7 @@ export function resolveSignatureOnKill(hero, defeatedTarget = null) {
 
     state.killChainActive = true;
     CombatSystem.applyDamage({
+        secondaryEntity: true,
         attackerType: hero.category,
         damage: (stats.damage || hero.damage || 0) * (config.damageFactor || 0.45),
         color: config.color || '#7f1d1d',
@@ -368,6 +370,7 @@ function triggerSignature(hero, target, stats, projectileConfig, projectiles, co
 function strikePulse(hero, target, stats, config) {
     const damage = stats.damage * (config.damageFactor || 0.75);
     const projectile = {
+        secondaryEntity: true,
         attackerType: hero.category,
         damage,
         color: config.color,
@@ -410,6 +413,7 @@ function strikeLine(hero, target, stats, config) {
     const endpoint = getLineEndpoint(hero, target, length);
     const targets = getLineTargets(hero, target, hero.game?.enemies || [], length, config.lineWidth || 30);
     const projectile = {
+        secondaryEntity: true,
         attackerType: hero.category,
         damage: stats.damage * (config.damageFactor || 0.7),
         color: config.color,
@@ -448,10 +452,10 @@ function strikeMulti(hero, target, stats, config, projectiles) {
 
 function strikeVoid(hero, target, stats, config) {
     if (!target?.isAlive) return;
-    const result = CombatSystem.executeNonBoss(target, hero, hero.game?.resourceManager, config.color);
+    const result = CombatSystem.executeNonBoss(target, hero, hero.game?.resourceManager, config.color, true);
     if (!result.killed) {
         const damage = stats.damage * (config.damageFactor || 3);
-        CombatSystem.applyDamage({ attackerType: hero.category, damage, color: config.color, armorPenetration: 0.65 }, target, hero, hero.game?.resourceManager, 1);
+        CombatSystem.applyDamage({ secondaryEntity: true, attackerType: hero.category, damage, color: config.color, armorPenetration: 0.65 }, target, hero, hero.game?.resourceManager, 1);
     }
     hero.game?.vfx?.addBurst?.(target.x, target.y, { color: '#111827', radius: 74, duration: 0.42 });
     announce(hero, target, config);
@@ -577,13 +581,16 @@ export function updateSignatureTimers(hero, dt) {
 }
 
 function applyEffects(effects = [], target, hero) {
-    (effects || []).forEach((effect) => CombatSystem.applyEffects([{ ...effect }], target, hero));
+    (effects || []).forEach((effect) => CombatSystem.applyEffects([{ ...effect, secondaryEntity: true }], target, hero));
 }
 
 function spawnProjectile(hero, target, config, projectiles = []) {
     if (!target?.isAlive) return;
-    if (hero.game?.spawnProjectile) hero.game.spawnProjectile(hero.x, hero.y, target, config);
-    else projectiles.push(new Projectile(hero.x, hero.y, target, config));
+    // Extra shots keep their damage/profile, but never inherit a primary route token or item procs.
+    const secondary = { ...config, secondaryEntity: true, energyToken: null,
+        effects: (config.effects || []).map(effect => ({ ...effect, secondaryEntity: true })) };
+    if (hero.game?.spawnProjectile) hero.game.spawnProjectile(hero.x, hero.y, target, secondary);
+    else projectiles.push(new Projectile(hero.x, hero.y, target, secondary));
 }
 
 function getTargetsInRange(hero, range) {
