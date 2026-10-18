@@ -10,10 +10,18 @@ export class Projectile {
         this.y = y;
         this.target = target;
         this.attacker = config.attacker || null;
+        this.impactItems = this.attacker?.items ? this.attacker.items.slice(0, 1).map(item => ({
+            effects: { ...item.effects }, flags: [...(item.flags || [])]
+        })) : null;
         this.damage = config.damage || 10;
         this.attackerType = config.attackerType || 'Urbano';
         this.speed = config.projectileSpeed || 420;
-        this.effects = config.effects || [];
+        const effects = config.effects || [];
+        const statusDamage = effects.some(effect => effect.damageBasis === 'attackDamage')
+            ? this.attacker?.getEffectiveStats?.()?.damage ?? this.attacker?.damage : undefined;
+        this.effects = effects.map(effect => effect.damageBasis === 'attackDamage'
+            && effect.attackDamageSnapshot === undefined && Number.isFinite(statusDamage)
+            ? { ...effect, attackDamageSnapshot: statusDamage } : { ...effect });
         this.color = config.color || '#ffd166';
         this.radius = config.radius || 5;
         this.splashRadius = config.splashRadius || 0;
@@ -40,6 +48,7 @@ export class Projectile {
         this.isActive = false;
         this.target = null;
         this.attacker = null;
+        this.impactItems = null;
         this.effects = [];
         this.energyToken = null;
     }

@@ -1118,9 +1118,16 @@ export class ProgressionManager {
 
     applyEquippedItem(hero) {
         const slots = this.state.equippedItems[hero.id] || {};
+        const previousItemId = hero.items?.[0]?.id || null;
         hero.items = Object.values(slots).map((itemId) => this.data.items[itemId]
             ? { ...this.data.items[itemId] }
             : null).filter(Boolean);
+        if (previousItemId !== (hero.items[0]?.id || null)) {
+            // Switching equipment discards banked item procs, not native kit cooldowns or emitted attacks.
+            hero.signatureState = {};
+            hero.lastTargetId = null;
+            hero.consecutiveHits = 0;
+        }
     }
 
     addOwnedItem(itemId) {

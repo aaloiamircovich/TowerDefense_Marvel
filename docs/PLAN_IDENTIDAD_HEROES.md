@@ -2,7 +2,7 @@
 
 Fecha: 2026-09-13. Base revisada: commit 553ad63.
 Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes. FASE 3 IMPLEMENTADA, ocho lotes. FASE 4 IMPLEMENTADA, diez lotes. FASE 5 IMPLEMENTADA, seis lotes. FASE 6 IMPLEMENTADA, cinco lotes. FASE 7 IMPLEMENTADA, tres lotes.
-FASE 8 EN CURSO, primer lote transversal. Fases 9 y 10 pendientes.
+FASE 8 EN CURSO, dos lotes transversales. Fases 9 y 10 pendientes.
 La cobertura comun no certifica el balance individual.
 Los hallazgos de auditoria describen el baseline; ver avances abajo para las
 correcciones ya realizadas. No equivale a completar el rediseño de los 105 kits.
@@ -13,6 +13,36 @@ cambie alguna decision real del jugador. Las propuestas requieren validacion
 antes de fijar porcentajes, tiempos o requisitos nuevos.
 
 ## Alcance y evidencia
+
+### F8/lote2: transiciones de equipo y proyectiles emitidos (2026-10-17)
+
+El cambio real de objeto en ProgressionManager.applyEquippedItem elimina
+reservas signature (cargas, rafagas pendientes, buffs y enfoque) y racha de
+impactos consecutivos del objeto. Reequipar no las recupera. Sincronizar o
+aplicar el mismo objeto conserva progreso. Transferencias y loadouts usan
+la misma ruta; ni nivel ni estado/recarga del kit nativo se reinician.
+
+Los proyectiles capturan una copia de efectos/flags del unico objeto al
+emitirse. Cambiar equipo antes de impactar no agrega ni quita ingresos o
+efectos por impacto del disparo ya emitido. Las firmas secundarias siguen
+sin activar esos efectos. El pool descarta el snapshot al desactivar y lo
+renueva al reutilizar; proyectiles sin snapshot conservan el fallback.
+
+Burn/bleed basados en attackDamage guardan attackDamageSnapshot al emitir
+el proyectil: subir nivel o cambiar objeto no cambia su DPS en vuelo. No
+modifica la plantilla original; conserva damageBasis y autoria secundaria.
+Los efectos flat y basados en maxHealth mantienen sus unidades. Efectos
+directos sin snapshot siguen resolviendo poder al aplicarse.
+
+194 pruebas nuevas:105 heroes con transiciones,82 firmas quitar/reequipar,
+transferencia, loadout, preparacion Captain con poder capturado/recarga
+intactos, DoT de Human Torch/Sentry, pool y efectos por impacto. No modifica
+mapas, sprites, coeficientes ni requisitos de evolucion. F8 sigue en curso:
+resta profundizar estados diferidos/campos y transiciones de evolucion por
+familia; no es una certificacion de balance global.
+Validacion: npm run check completo aprobado;2.945 pruebas,0 fallos.
+Benchmark p95:0.314ms. Smoke desktop1366x768/mobile390x844 sin overflow,
+desvio de ruta0px. Sin errores de datos, accesibilidad o release.
 
 ### F8/lote1: evolucion, equipamiento y autoria secundaria (2026-10-12)
 

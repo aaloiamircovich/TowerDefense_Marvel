@@ -6,7 +6,7 @@ export function resolveStatusDamage(effect, target, source) {
     if (!DAMAGE_BASES.has(basis)) return null;
     const power = Number(effect.power ?? 0.5);
     const base = basis === 'maxHealth' ? Number(target.maxHp)
-        : basis === 'attackDamage' ? Number(source?.getEffectiveStats?.()?.damage ?? source?.damage ?? 0)
+        : basis === 'attackDamage' ? Number(effect.attackDamageSnapshot ?? source?.getEffectiveStats?.()?.damage ?? source?.damage ?? 0)
             : 1;
     if (!Number.isFinite(power) || power < 0 || !Number.isFinite(base) || base < 0) return null;
     const damagePerSecond = base * power;

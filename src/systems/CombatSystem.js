@@ -12,8 +12,9 @@ export class CombatSystem {
         const primary = CombatSystem.applyDamage(projectile, target, attacker, resourceManager, 1);
         let hits = 1;
 
-        if (!projectile.secondaryEntity && attacker?.items?.length) {
-            CombatSystem.applyItemEffects(attacker, target, resourceManager);
+        const impactItems = projectile.impactItems ?? attacker?.items;
+        if (!projectile.secondaryEntity && impactItems?.length) {
+            CombatSystem.applyItemEffects(attacker, target, resourceManager, impactItems);
         }
 
         if (target.isAlive) {
@@ -224,8 +225,8 @@ export class CombatSystem {
         attacker.killCount = (attacker.killCount || 0) + 1;
     }
 
-    static applyItemEffects(attacker, target, resourceManager) {
-        const itemEffects = aggregateItemEffects(attacker.items);
+    static applyItemEffects(attacker, target, resourceManager, items = attacker.items) {
+        const itemEffects = aggregateItemEffects(items);
         if (itemEffects.onHitCredit) {
             resourceManager?.addCredits(itemEffects.onHitCredit);
             attacker.recordGold?.(itemEffects.onHitCredit);
@@ -238,7 +239,7 @@ export class CombatSystem {
                 attacker.recordGold?.(credits);
             }
         }
-        attacker.items.forEach((item) => {
+        items.forEach((item) => {
             if (item.flags?.includes('slow_on_armor') && target.armor > 0) {
                 target.applyStatus?.({ type: 'slow', duration: 1, power: 0.5 }, attacker)
                     ?? target.applyDebuff?.('slow', 1, 0.5);
