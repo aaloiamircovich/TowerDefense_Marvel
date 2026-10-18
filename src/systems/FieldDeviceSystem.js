@@ -16,7 +16,7 @@ export class FieldDeviceSystem {
     }
 
     valid(enemy, stats) {
-        return enemy.isAlive && (!enemy.stealth || stats.canSeeStealth)
+        return enemy.isAlive && !enemy.hasReachedEnd && (!enemy.stealth || stats.canSeeStealth)
             && isPointInRangePattern(this.hero, enemy, stats.range, this.hero.rangePattern, stats.rangeGeometryScale);
     }
 
@@ -27,7 +27,7 @@ export class FieldDeviceSystem {
         if (!this.device) {
             this.cooldown = Math.max(0, this.cooldown - dt);
             if (this.cooldown > 0) return;
-            const target = this.hero.getBestTarget(enemies, stats);
+            const target = this.hero.getBestTarget(enemies.filter(enemy => this.valid(enemy, stats)), stats);
             if (!target) return;
             this.device = { x: target.x, y: target.y, life: 5, arm: 1, fire: 0.5, budget: 0 };
             this.hero.recordAbility();
@@ -39,7 +39,7 @@ export class FieldDeviceSystem {
         if (this.hero.id === 'rocket_raccoon') {
             device.fire -= dt;
             if (device.fire > 0 || device.budget <= 0) return;
-            const target = this.hero.getBestTarget(enemies, stats);
+            const target = this.hero.getBestTarget(enemies.filter(enemy => this.valid(enemy, stats)), stats);
             if (!target) return;
             const damage = device.budget;
             device.budget = 0;
@@ -68,8 +68,8 @@ export class FieldDeviceSystem {
     onAttack(projectile) {
         if (this.hero.id !== 'rocket_raccoon' || !this.device) return;
         // Primary damage already paid the 20% reserve; secondary fire cannot refill it.
-        this.device.budget = Math.min(this.device.budget + projectile.damage * 0.25,
-            this.hero.getEffectiveStats().damage * 2);
+        const available = Math.max(0, this.hero.getEffectiveStats().damage * 2 - this.device.budget);
+        this.device.budget += Math.min(projectile.damage * 0.25, available);
     }
 
     getDisplayState() {
