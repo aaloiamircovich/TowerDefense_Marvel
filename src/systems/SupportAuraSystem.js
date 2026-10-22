@@ -133,7 +133,9 @@ export function applySupportAurasToStats(stats, recipient, origin = recipient) {
 
 export function getPriorityOrderDamageMultiplier(attacker, target) {
     const allies = attacker?.game?.heroes || [];
-    if (!target?.isAlive || !target.debuffs?.some((effect) => effect.type === 'mark' && effect.duration > 0)
+    if (!target?.isAlive || target.hasReachedEnd
+        || !target.debuffs?.some((effect) => effect.type === 'mark' && effect.duration > 0
+            && (!effect.fieldActive || effect.fieldActive()))
         || !allies.includes(attacker) || auraConfig(attacker)?.type || attacker.stunTimer > 0) return 1;
     let multiplier = 1;
     for (const source of allies) {

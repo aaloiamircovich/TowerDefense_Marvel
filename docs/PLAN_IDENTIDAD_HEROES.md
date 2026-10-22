@@ -2,7 +2,7 @@
 
 Fecha: 2026-09-13. Base revisada: commit 553ad63.
 Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes. FASE 3 IMPLEMENTADA, ocho lotes. FASE 4 IMPLEMENTADA, diez lotes. FASE 5 IMPLEMENTADA, seis lotes. FASE 6 IMPLEMENTADA, cinco lotes. FASE 7 IMPLEMENTADA, tres lotes.
-FASE 8 EN CURSO, tres lotes. Fases 9 y 10 pendientes.
+FASE 8 EN CURSO, cuatro lotes. Fases 9 y 10 pendientes.
 La cobertura comun no certifica el balance individual.
 Los hallazgos de auditoria describen el baseline; ver avances abajo para las
 correcciones ya realizadas. No equivale a completar el rediseño de los 105 kits.
@@ -13,6 +13,25 @@ cambie alguna decision real del jugador. Las propuestas requieren validacion
 antes de fijar porcentajes, tiempos o requisitos nuevos.
 
 ## Alcance y evidencia
+
+### F8/lote4: marcas de campo y retornos misticos (2026-10-22)
+
+Maria Hill comprueba la validez de las marcas de campo al resolver su
+orden condicional, sin esperar al siguiente update de debuffs del enemigo.
+Una marca de Dagger desactivada por movimiento, stun, retiro, alcance o
+duracion ya no habilita el bonus. Una marca aliada independiente conserva
+la orden; los enemigos escapados no la habilitan.
+
+52 pruebas nuevas en mystic-aura-transition-contract.test.js cubren esa
+interaccion en niveles49/50/99/100 y las transiciones49->50 y99->100 de
+Scarlet Witch y Magik. Redes y retornos mantienen el dano capturado; se
+cancelan ante muerte, escape, perdida de alcance, maldicion o deteccion.
+No duplican impactos al actualizar de nuevo. No cambian valores base,
+sprites, mapas ni reglas de evolucion. F8 sigue en curso: esta cobertura
+no sustituye la revision restante ni el balance de equipos de F10.
+Validacion: npm run check aprobado, 3.065 pruebas sin fallos, benchmark
+p95 0.400ms y smoke desktop1366x768/mobile390x844 sin overflow ni desvio
+de ruta. Datos, accesibilidad y lanzamiento sin errores.
 
 ### F8/lote3: preparaciones, campos y reserva de Rocket (2026-10-17)
 
