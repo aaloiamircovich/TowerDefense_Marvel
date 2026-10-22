@@ -2,7 +2,9 @@
 
 Fecha: 2026-09-13. Base revisada: commit 553ad63.
 Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes. FASE 3 IMPLEMENTADA, ocho lotes. FASE 4 IMPLEMENTADA, diez lotes. FASE 5 IMPLEMENTADA, seis lotes. FASE 6 IMPLEMENTADA, cinco lotes. FASE 7 IMPLEMENTADA, tres lotes.
-FASE 8 EN CURSO, cinco lotes. Fases 9 y 10 pendientes.
+FASE 8 EN CURSO, seis lotes. Fases 9 y 10 pendientes.
+Railway: verificaciones suspendidas por pedido del usuario (2026-10-22)
+hasta nuevo aviso. Se mantienen commit y push a GitHub.
 La cobertura comun no certifica el balance individual.
 Los hallazgos de auditoria describen el baseline; ver avances abajo para las
 correcciones ya realizadas. No equivale a completar el rediseño de los 105 kits.
@@ -13,6 +15,29 @@ cambie alguna decision real del jugador. Las propuestas requieren validacion
 antes de fijar porcentajes, tiempos o requisitos nuevos.
 
 ## Alcance y evidencia
+
+### F8/lote6: enlaces proyectados y persistencia de auras/reservas (2026-10-22)
+
+Profesor X usa la posicion propuesta al calcular los enlaces de un heroe
+desplegado que se esta moviendo. El reparto contempla al nuevo participante
+sin modificar coordenadas ni enlaces reales. Antes, entrar al radio en una
+consulta getEffectiveStats(center) devolvia la cadencia sin el buff.
+15 regresiones en niveles1/49/50/99/100 con1/3/5 aliados reproducen el fallo
+y comparan la consulta con la colocacion efectiva, incluida la salida.
+
+18 pruebas de los nueve soportes usan ProgressionManager real para cruzar
+49->50 y99->100, equipar/cambiar/quitar objetos. Conservan ciclos, carga y
+duracion del aura; potencia y radio coinciden con la progresion prevista.
+No disparan ni curan. Otras16 pruebas verifican las reservas nativas de Nova,
+Black Bolt, Magneto, Adam Warlock, Ms. Marvel, Sentry, Beta Ray Bill y Yondu
+durante esas transiciones y sincronizaciones. Cambiar objetos no regala una
+activacion ni reinicia la preparacion. No modifica valores base ni sprites.
+
+49 pruebas nuevas en support-transition-state.test.js. La cobertura de este
+lote no certifica balance de equipos ni cierra todas las familias de F8.
+Validacion: npm run check aprobado y npm test repetido tras ampliar la
+bateria: 3.243 pruebas sin fallos. Benchmark p95 0.422ms, smoke de escritorio
+1366x768 y movil390x844 sin overflow ni desvio de ruta. Railway no consultado.
 
 ### F8/lote5: impactos sobre escapados y rutas de retorno (2026-10-22)
 

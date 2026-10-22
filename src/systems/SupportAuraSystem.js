@@ -56,12 +56,16 @@ export function getEvolvedSupportAura(hero, level = hero.level || hero.config?.l
     return aura;
 }
 
-export function getMentalLinks(hero, level = hero.level || hero.config?.level || 1) {
+export function getMentalLinks(hero, level = hero.level || hero.config?.level || 1, recipient = null, origin = recipient) {
     if (!isCadenceSupport(hero, 'profesor_x') || hero.stunTimer > 0 || !hero.game?.heroes?.includes(hero)) return [];
     const radius = getEvolvedSupportAura(hero, level).range;
     // Count deployed attackers, not their effective stats: aura evaluation must not recurse.
-    return hero.game.heroes.filter((ally) => ally !== hero && !auraConfig(ally)?.type && !(ally.stunTimer > 0)
-        && Math.hypot(hero.x - ally.x, hero.y - ally.y) <= radius);
+    return hero.game.heroes.filter((ally) => {
+        // Placement previews substitute one position without changing the deployed formation.
+        const point = ally === recipient ? origin : ally;
+        return ally !== hero && !auraConfig(ally)?.type && !(ally.stunTimer > 0)
+            && Math.hypot(hero.x - point.x, hero.y - point.y) <= radius;
+    });
 }
 
 function hasNetwork(hero) {
@@ -79,10 +83,10 @@ function networkState(hero) {
     return state;
 }
 
-export function getEffectiveSupportAura(hero, { level = hero.level || hero.config?.level || 1, recipient = null } = {}) {
+export function getEffectiveSupportAura(hero, { level = hero.level || hero.config?.level || 1, recipient = null, origin = recipient } = {}) {
     const aura = getEvolvedSupportAura(hero, level);
-    if (recipient && isCadenceSupport(hero, 'profesor_x') && !getMentalLinks(hero, level).includes(recipient)) return null;
-    if (aura) aura.power *= getSupportAuraPowerMultiplier(hero, level);
+    if (recipient && isCadenceSupport(hero, 'profesor_x') && !getMentalLinks(hero, level, recipient, origin).includes(recipient)) return null;
+    if (aura) aura.power *= getSupportAuraPowerMultiplier(hero, level, recipient, origin);
     if (aura && hasPriorityOrder(hero)) aura.targetCondition = 'mark';
     if (aura && isRangeSupport(hero, 'mister_fantastic')) aura.outerRangeOnly = true;
     if (aura && isRangeSupport(hero, 'wong')) {
@@ -92,7 +96,7 @@ export function getEffectiveSupportAura(hero, { level = hero.level || hero.confi
     return aura;
 }
 
-export function getSupportAuraPowerMultiplier(hero, level = hero.level || hero.config?.level || 1) {
+export function getSupportAuraPowerMultiplier(hero, level = hero.level || hero.config?.level || 1, recipient = null, origin = recipient) {
     if (hasPriorityOrder(hero)) return PRIORITY_ORDER.powerMultiplier;
     if (isCadenceSupport(hero, 'wasp')) {
         if (!hero.game?.heroes?.includes(hero)) return PYM_LINK.powerMultiplier;
@@ -100,7 +104,7 @@ export function getSupportAuraPowerMultiplier(hero, level = hero.level || hero.c
     }
     if (isCadenceSupport(hero, 'profesor_x')) {
         if (!hero.game?.heroes?.includes(hero)) return MENTAL_LINK.perAllyMultiplier;
-        const count = getMentalLinks(hero, level).length;
+        const count = getMentalLinks(hero, level, recipient, origin).length;
         return count ? Math.min(MENTAL_LINK.perAllyMultiplier, MENTAL_LINK.budgetMultiplier / count) : 0;
     }
     return hasNetwork(hero) && networkState(hero).remaining > 0 && !(hero.stunTimer > 0)
@@ -112,7 +116,7 @@ export function applySupportAurasToStats(stats, recipient, origin = recipient) {
     let outerRange = 0;
     for (const source of recipient.game?.heroes || []) {
         if (source === recipient || source.stunTimer > 0) continue;
-        const aura = getEffectiveSupportAura(source, { recipient });
+        const aura = getEffectiveSupportAura(source, { recipient, origin });
         if (!aura?.type || Math.hypot(source.x - origin.x, source.y - origin.y) > aura.range) continue;
         const power = Math.max(0, Number(aura.power || 0));
         if (!aura.targetCondition && Object.hasOwn(bonuses, aura.type)) bonuses[aura.type] += power;
