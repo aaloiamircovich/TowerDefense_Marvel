@@ -51,7 +51,7 @@ export class EnergyReserveKitSystem {
     }
 
     onImpact(projectile, target) {
-        if (!this.active() || projectile.secondaryEntity || !this.flight
+        if (!this.active() || target?.hasReachedEnd || projectile.secondaryEntity || !this.flight
             || target !== this.flight.target || projectile.energyToken !== this.flight.token) return;
         const flight = this.flight; this.flight = null;
         this.route = { remaining: this.hero.id === 'beta_ray_bill' ? 0.6 : 0.22, origin: { x: target.x, y: target.y }, primary: target,

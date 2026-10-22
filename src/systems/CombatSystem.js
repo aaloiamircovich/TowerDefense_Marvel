@@ -7,7 +7,7 @@ import { getPriorityOrderDamageMultiplier } from './SupportAuraSystem.js';
 
 export class CombatSystem {
     static applyImpact(projectile, target, attacker, resourceManager) {
-        if (!target?.isAlive) return { damage: 0, killed: false, hits: 0 };
+        if (!target?.isAlive || target.hasReachedEnd) return { damage: 0, killed: false, hits: 0 };
 
         const primary = CombatSystem.applyDamage(projectile, target, attacker, resourceManager, 1);
         let hits = 1;
@@ -25,7 +25,7 @@ export class CombatSystem {
         if (projectile.beaconRadius > 0) {
             const radius = projectile.beaconRadius;
             projectile.beaconRadius = 0;
-            enemies.filter(enemy => enemy.isAlive && CombatSystem.distance(enemy, target) <= radius)
+            enemies.filter(enemy => enemy.isAlive && !enemy.hasReachedEnd && CombatSystem.distance(enemy, target) <= radius)
                 .sort((a, b) => CombatSystem.distance(a, target) - CombatSystem.distance(b, target))
                 .slice(0, 6).forEach(enemy => enemy.applyStatus?.({ type: 'reveal', duration: 3, power: 1 }, attacker));
             attacker?.game?.vfx?.addBurst(target.x, target.y, { radius, color: '#a78bfa' });
@@ -37,7 +37,7 @@ export class CombatSystem {
                 duration: 0.32
             });
             enemies
-                .filter((enemy) => enemy !== target && enemy.isAlive && CombatSystem.distance(enemy, target) <= projectile.splashRadius)
+                .filter((enemy) => enemy !== target && enemy.isAlive && !enemy.hasReachedEnd && CombatSystem.distance(enemy, target) <= projectile.splashRadius)
                 .forEach((enemy) => {
                     CombatSystem.applyDamage(projectile, enemy, attacker, resourceManager, projectile.splashFactor);
                     hits++;
@@ -51,7 +51,7 @@ export class CombatSystem {
                 const intercept = jump === 0 && projectile.interceptBounce && attacker?.id === 'red_guardian';
                 const stats = intercept ? attacker.getEffectiveStats() : null;
                 const next = enemies
-                    .filter((enemy) => enemy.isAlive && !visited.has(enemy) && CombatSystem.distance(enemy, current) <= projectile.chainRange)
+                    .filter((enemy) => enemy.isAlive && !enemy.hasReachedEnd && !visited.has(enemy) && CombatSystem.distance(enemy, current) <= projectile.chainRange)
                     .filter(enemy => !intercept || (!enemy.hasReachedEnd && (!enemy.stealth || stats.canSeeStealth)
                         && isPointInRangePattern(attacker, enemy, stats.range, attacker.rangePattern, stats.rangeGeometryScale)))
                     .sort((a, b) => (intercept ? getRouteProgress(b) - getRouteProgress(a) : 0)
@@ -84,7 +84,7 @@ export class CombatSystem {
 
     static propagateImpact(projectile, target, attacker, resourceManager, enemies = []) {
         const candidates = enemies
-            .filter((enemy) => enemy !== target && enemy.isAlive && CombatSystem.distance(enemy, target) <= projectile.propagationRadius)
+            .filter((enemy) => enemy !== target && enemy.isAlive && !enemy.hasReachedEnd && CombatSystem.distance(enemy, target) <= projectile.propagationRadius)
             .sort((a, b) => CombatSystem.distance(a, target) - CombatSystem.distance(b, target))
             .slice(0, projectile.propagationCount);
 
@@ -102,7 +102,7 @@ export class CombatSystem {
     }
 
     static applyDamage(projectile, target, attacker, resourceManager, factor) {
-        if (!target?.isAlive) return { damage: 0, killed: false };
+        if (!target?.isAlive || target.hasReachedEnd) return { damage: 0, killed: false };
 
         const typeMultiplier = TypeChart[projectile.attackerType]?.[target.category] || 1;
         const markMultiplier = target.getDamageTakenMultiplier?.() || 1;
@@ -124,7 +124,7 @@ export class CombatSystem {
     }
 
     static executeNonBoss(target, attacker, resourceManager, color, secondaryEntity = false) {
-        if (!target?.isAlive || !Number.isFinite(target.hp) || target.hp <= 0
+        if (!target?.isAlive || target.hasReachedEnd || !Number.isFinite(target.hp) || target.hp <= 0
             || target.isBoss || target.isFinalBoss || target.isMiniBoss
             || target.config?.isBoss || target.config?.isFinalBoss || target.config?.isMiniBoss) {
             return { damage: 0, killed: false };

@@ -2,7 +2,7 @@
 
 Fecha: 2026-09-13. Base revisada: commit 553ad63.
 Estado: FASE 1 EN CIERRE, diecisiete lotes. FASE 2 IMPLEMENTADA, ocho lotes. FASE 3 IMPLEMENTADA, ocho lotes. FASE 4 IMPLEMENTADA, diez lotes. FASE 5 IMPLEMENTADA, seis lotes. FASE 6 IMPLEMENTADA, cinco lotes. FASE 7 IMPLEMENTADA, tres lotes.
-FASE 8 EN CURSO, cuatro lotes. Fases 9 y 10 pendientes.
+FASE 8 EN CURSO, cinco lotes. Fases 9 y 10 pendientes.
 La cobertura comun no certifica el balance individual.
 Los hallazgos de auditoria describen el baseline; ver avances abajo para las
 correcciones ya realizadas. No equivale a completar el rediseño de los 105 kits.
@@ -13,6 +13,27 @@ cambie alguna decision real del jugador. Las propuestas requieren validacion
 antes de fijar porcentajes, tiempos o requisitos nuevos.
 
 ## Alcance y evidencia
+
+### F8/lote5: impactos sobre escapados y rutas de retorno (2026-10-22)
+
+CombatSystem descarta impactos, dano directo y ejecuciones sobre enemigos
+que alcanzaron la salida. Splash, rebotes, propagacion y balizas los excluyen
+antes de ordenar o limitar candidatos: no consumen cupos ni conectan rutas.
+Projectile deja de perseguir un blanco escapado. Ms. Marvel, Yondu y Beta
+Ray Bill no inician una ruta desde ese blanco, incluso con un token valido.
+El impacto letal legitimo conserva su ruta: morir por el golpe no es escapar.
+
+129 pruebas nuevas en escaped-impact-contract.test.js: impactos primarios
+de los105 heroes sin dano, estados, ingresos ni activaciones tras escapar;
+secundarios y ejecuciones; tokens de retorno; transiciones49->50,99->100,
+equipar y quitar objeto. Los retornos conservan el dano preparado y no
+generan ingresos secundarios. La primera bateria reprodujo114 fallos antes
+del arreglo y paso completa despues. No cambia el dano base ni los sprites.
+F8 sigue en curso; quedan por cerrar las restantes interacciones de reservas
+y auras antes de pasar a las fases9 y10.
+Validacion: npm run check completo aprobado, 3.194 pruebas sin fallos,
+benchmark p95 0.304ms; smoke desktop1366x768/mobile390x844 sin overflow,
+desvio de ruta0px y validadores de datos/accesibilidad/release sin errores.
 
 ### F8/lote4: marcas de campo y retornos misticos (2026-10-22)
 

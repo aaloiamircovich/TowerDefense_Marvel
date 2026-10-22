@@ -59,7 +59,7 @@ export class Projectile {
             return;
         }
 
-        if (this.phase === 'outbound' && !this.target.isAlive) {
+        if (this.phase === 'outbound' && (!this.target.isAlive || this.target.hasReachedEnd)) {
             this.isActive = false;
             return;
         }
